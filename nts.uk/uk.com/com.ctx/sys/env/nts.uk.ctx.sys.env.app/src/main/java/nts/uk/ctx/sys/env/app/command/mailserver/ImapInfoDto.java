@@ -6,8 +6,8 @@ package nts.uk.ctx.sys.env.app.command.mailserver;
 
 import lombok.Data;
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
+/**
+ * The Class ImapInfoDto.
  */
 @Data
 public class ImapInfoDto {
@@ -44,6 +44,9 @@ public class ImapInfoDto {
 		this.imapPort = imapPort;
 	}
 	
+	/**
+	 * Instantiates a new imap info dto.
+	 */
 	public ImapInfoDto() {
 		super();
 	}

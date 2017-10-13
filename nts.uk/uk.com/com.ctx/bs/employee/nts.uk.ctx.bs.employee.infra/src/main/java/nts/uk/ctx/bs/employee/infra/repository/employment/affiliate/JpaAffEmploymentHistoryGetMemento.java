@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employment.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryGetMemento;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.EmploymentCode;
 import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHist;
 import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaAffEmploymentHistoryGetMemento.
@@ -48,8 +48,8 @@ public class JpaAffEmploymentHistoryGetMemento implements AffEmploymentHistoryGe
 	 * EmploymentHistoryGetMemento#getPeriod()
 	 */
 	@Override
-	public Period getPeriod() {
-		return new Period(this.employmentHistory.getKmnmtEmploymentHistPK().getStrD(),
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.employmentHistory.getKmnmtEmploymentHistPK().getStrD(),
 				this.employmentHistory.getEndD());
 	}
 

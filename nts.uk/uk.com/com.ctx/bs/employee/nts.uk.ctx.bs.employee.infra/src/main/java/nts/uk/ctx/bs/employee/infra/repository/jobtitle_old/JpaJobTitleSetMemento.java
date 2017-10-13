@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle_old;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionId;
@@ -13,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionName;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.CjtmtJobTitle;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.CjtmtJobTitlePK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleSetMemento.
@@ -82,9 +82,9 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 	 * setPeriod(nts.uk.ctx.basic.dom.common.history.Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.typeValue.setStartDate(period.getStartDate());
-		this.typeValue.setEndDate(period.getEndDate());
+	public void setPeriod(DatePeriod period) {
+		this.typeValue.setStartDate(period.start());
+		this.typeValue.setEndDate(period.end());
 	}
 
 	/*

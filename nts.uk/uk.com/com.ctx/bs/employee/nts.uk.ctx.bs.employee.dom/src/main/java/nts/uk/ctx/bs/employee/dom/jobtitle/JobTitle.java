@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
 import java.util.Collections;
@@ -42,7 +46,7 @@ public class JobTitle extends AggregateRoot {
         Collections.sort(this.jobTitleHistory, new Comparator<JobTitleHistory>() {
             @Override
             public int compare(JobTitleHistory obj1, JobTitleHistory obj2) {
-                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+                return obj2.getPeriod().start().compareTo(obj1.getPeriod().start());
             }
         });
 	}
@@ -56,6 +60,16 @@ public class JobTitle extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setJobTitleId(this.jobTitleId);
 		memento.setJobTitleHistory(this.jobTitleHistory);
+	}
+	
+	/**
+	 * Gets the lastest history.
+	 *
+	 * @return the lastest history
+	 */
+	public JobTitleHistory getLastestHistory() {
+		int indexLastestHistory = 0;
+        return this.jobTitleHistory.get(indexLastestHistory);
 	}
 
 	/* (non-Javadoc)

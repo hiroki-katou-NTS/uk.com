@@ -1,7 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.assigned;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AssignedWorkplaceMemento {
 
@@ -27,7 +27,7 @@ public interface AssignedWorkplaceMemento {
 	 * Get period
 	 * @return period
 	 * */
-	public Period getPeriod();
+	public DatePeriod getPeriod();
 	
 	/**
 	 * Set employee id
@@ -51,5 +51,5 @@ public interface AssignedWorkplaceMemento {
 	 * Set period
 	 * @param period
 	 * */
-	public void setPeriod(Period period);
+	public void setPeriod(DatePeriod period);
 }

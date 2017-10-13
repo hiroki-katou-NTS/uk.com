@@ -68,9 +68,9 @@ public class JpaRoundingGetMemento implements RoundingGetMemento {
 	@Override
 	public AmountRounding getAmountRounding() {
 		nts.uk.ctx.at.shared.dom.common.amountrounding.Unit unit = nts.uk.ctx.at.shared.dom.common.amountrounding.Unit
-				.valueOf(this.entity.getTimeRoundingUnit());
+				.valueOf(this.entity.getAmountRoundingUnit());
 		nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding rounding = nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding
-				.valueOf(this.entity.getTimeRounding());
+				.valueOf(this.entity.getAmountRounding());
 		return new AmountRounding(unit, rounding);
 	}
 

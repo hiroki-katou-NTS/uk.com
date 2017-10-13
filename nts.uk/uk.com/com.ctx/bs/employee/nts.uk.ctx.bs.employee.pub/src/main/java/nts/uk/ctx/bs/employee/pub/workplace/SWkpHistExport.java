@@ -6,21 +6,26 @@ package nts.uk.ctx.bs.employee.pub.workplace;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Class WorkplaceInfoExport.
+ * The Class SWkpHistExport.
  */
+// 社員所属職場履歴を取得
 @Data
 @Builder
-public class WorkplaceInfoExport {
+public class SWkpHistExport {
 
-	/** The company id. */
-	private String companyId;
+	/** The date range. */
+	// 配属期間
+	private DatePeriod dateRange;
 
-	/** The history id. */
-	private String historyId;
+	/** The employee id. */
+	// 社員ID
+	private String employeeId;
 
 	/** The workplace id. */
+	// 職場ID
 	private String workplaceId;
 
 	/** The workplace code. */
@@ -29,13 +34,8 @@ public class WorkplaceInfoExport {
 	/** The workplace name. */
 	private String workplaceName;
 
-	/** The wkp generic name. */
-	private String wkpGenericName;
-
 	/** The wkp display name. */
+	// 職場表示名
 	private String wkpDisplayName;
-
-	/** The outside wkp code. */
-	private String outsideWkpCode;
 
 }

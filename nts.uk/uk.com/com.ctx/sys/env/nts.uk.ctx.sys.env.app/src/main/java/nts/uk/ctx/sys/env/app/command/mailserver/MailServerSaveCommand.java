@@ -22,7 +22,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.UseServer;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Instantiates a new mail server save command.
+ * The Class MailServerSaveCommand.
  */
 @Data
 public class MailServerSaveCommand implements MailServerGetMemento {
@@ -51,6 +51,9 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	/** The imap dto. */
 	private ImapInfoDto imapDto;
 	
+	/**
+	 * Instantiates a new mail server save command.
+	 */
 	public MailServerSaveCommand(){
 		super();
 	}

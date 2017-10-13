@@ -7,11 +7,11 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace_old;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.workplace_old.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkPlaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkPlaceHistoryGetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWkpHist;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceHistoryGetMemento.
@@ -60,8 +60,8 @@ public class JpaWorkplaceHistoryGetMemento implements WorkPlaceHistoryGetMemento
 	 * getPeriod()
 	 */
 	@Override
-	public Period getPeriod() {
-		return new Period(this.cwpmtWkpHist.getStrD(), this.cwpmtWkpHist.getEndD());
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.cwpmtWkpHist.getStrD(), this.cwpmtWkpHist.getEndD());
 	}
 
 	/*
