@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf009.b {
             prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
             prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
             useMulti : KnockoutObservable<boolean> = ko.observable(true);
+            self.approvalSource = self.kaf000_a.approvalList;
 
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
@@ -187,37 +188,78 @@ module nts.uk.at.view.kaf009.b {
          * 3: delete
          */
             getCommand(appId :string) {
-                let self = this;
-                let command: common.GoBackCommand = new common.GoBackCommand();
-                command.appID = appId;
-                command.appDate = self.appDate();
-                command.workTypeCD = self.workTypeCd();
-                command.siftCD = self.siftCD();
-                command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
-                command.goWorkAtr1 = self.selectedGo();
-                command.backHomeAtr1 = self.selectedBack();
-                command.workTimeStart1 = self.timeStart1();
-                command.workTimeEnd1 = self.timeEnd1();
-                command.goWorkAtr2 = self.selectedGo2();
-                command.backHomeAtr2 = self.selectedBack2();
-                command.workTimeStart2 = self.timeStart2();
-                command.workTimeEnd2 = self.timeEnd2();
-                command.workLocationCD1 = self.workLocationCD();
-                command.workLocationCD2 = self.workLocationCD2();
-                command.appCommand = new common.ApplicationCommand(
-                    self.selectedReason(),
-                    self.prePostSelected(),
-                    self.appDate(),
-                    self.employeeName(),
-                    self.multilContent(),
-                    self.appDate(),
-                    self.multilContent(),
-                    self.employeeName(),
-                    self.appDate(),
-                    self.appDate(),
-                    self.appDate(),
-                    self.appDate());
-                return command;
+//                let self = this;
+//                let command: common.GoBackCommand = new common.GoBackCommand();
+//                command.appID = appId;
+//                command.appDate = self.appDate();
+//                command.workTypeCD = self.workTypeCd();
+//                command.siftCD = self.siftCD();
+//                command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+//                command.goWorkAtr1 = self.selectedGo();
+//                command.backHomeAtr1 = self.selectedBack();
+//                command.workTimeStart1 = self.timeStart1();
+//                command.workTimeEnd1 = self.timeEnd1();
+//                command.goWorkAtr2 = self.selectedGo2();
+//                command.backHomeAtr2 = self.selectedBack2();
+//                command.workTimeStart2 = self.timeStart2();
+//                command.workTimeEnd2 = self.timeEnd2();
+//                command.workLocationCD1 = self.workLocationCD();
+//                command.workLocationCD2 = self.workLocationCD2();
+//                command.appCommand = new common.ApplicationCommand(
+//                    self.selectedReason(),
+//                    self.prePostSelected(),
+//                    self.appDate(),
+//                    self.employeeName(),
+//                    self.multilContent(),
+//                    self.appDate(),
+//                    self.multilContent(),
+//                    self.employeeName(),
+//                    self.appDate(),
+//                    self.appDate(),
+//                    self.appDate(),
+//                    self.appDate());
+//                
+//                
+//                
+//                
+//                return command;
+                
+            let self = this; 
+            let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
+            goBackCommand.workTypeCD = self.workTypeCd();
+            goBackCommand.siftCD = self.siftCD();
+            goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+            goBackCommand.goWorkAtr1 = self.selectedGo();
+            goBackCommand.backHomeAtr1 = self.selectedBack();
+            goBackCommand.workTimeStart1 = self.timeStart1();
+            goBackCommand.workTimeEnd1 = self.timeEnd1();
+            goBackCommand.goWorkAtr2 = self.selectedGo2();
+            goBackCommand.backHomeAtr2 = self.selectedBack2();
+            goBackCommand.workTimeStart2 = self.timeStart2();
+            goBackCommand.workTimeEnd2 = self.timeEnd2();
+            goBackCommand.workLocationCD1 = self.workLocationCD();
+            goBackCommand.workLocationCD2 = self.workLocationCD2();
+            
+            let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
+                self.selectedReason(),
+                self.prePostSelected(),
+                self.appDate(),
+                self.employeeID,
+                self.multilContent(),
+                self.appDate(),
+                self.multilContent(),
+                self.employeeID,
+                self.appDate(),
+                self.appDate(),
+                self.appDate(),
+                self.appDate());
+            
+            let commandTotal = {
+                goBackCommand : goBackCommand,
+                appCommand : appCommand,
+                appApprovalPhaseCmds : self.approvalSource
+                }
+            return commandTotal;
             }
 
             /**

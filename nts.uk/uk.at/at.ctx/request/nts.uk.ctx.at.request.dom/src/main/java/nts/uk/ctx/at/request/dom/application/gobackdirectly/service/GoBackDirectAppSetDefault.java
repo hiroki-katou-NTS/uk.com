@@ -86,7 +86,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		//アルゴリズム「直行直帰基本データ」を実行する
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
-		if (!application.isPresent()) {
+		if (application.isPresent()) {
 			data.prePostAtr = application.get().getPrePostAtr().value;
 			if (!application.get().getApplicationReason().v().equals(":")) {
 				data.appReasonId = application.get().getApplicationReason().v().split(":")[0];

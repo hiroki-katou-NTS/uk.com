@@ -343,8 +343,8 @@ module nts.uk.at.view.kaf009.share {
          * 
          */
         export class GoBackCommand {
-            //appDate: string;
-            //appID: string;
+            appDate: string;
+            appID: string;
             workTypeCD: string;
             siftCD: string;
             workChangeAtr: number;
@@ -358,8 +358,6 @@ module nts.uk.at.view.kaf009.share {
             workTimeStart2: number;
             workTimeEnd2: number;
             workLocationCD2: string;
-            //appCommand: ApplicationCommand;
-            //appApprovalPhaseCmds: Array<common.AppApprovalPhase>;
         }
         
         

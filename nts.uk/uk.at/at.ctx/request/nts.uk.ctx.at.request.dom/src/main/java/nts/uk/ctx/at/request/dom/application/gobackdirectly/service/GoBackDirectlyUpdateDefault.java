@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -32,6 +33,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 
 	@Inject
 	private GoBackDirectlyRepository goBackDirectlyRepo;
+	
+	@Inject 
+	private ApplicationRepository appRepo;
 
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -52,8 +56,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		if (goBackAtr == GoBackDirectAtr.NOT) {
 			throw new BusinessException("Msg_307");
 		} else {
-			GoBackDirectLateEarlyOuput lateEarlyOut = goBackDirectlyRegisterService
-					.goBackDirectLateEarlyCheck(goBackDirectly);
+			GoBackDirectLateEarlyOuput lateEarlyOut = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly);
 			// 直行直帰申請共通設定.早退遅刻設定がチェックするの場合、メッセージを表示する
 			Optional<GoBackDirectlyCommonSetting> commonSet = commonSetRepo.findByCompanyID(companyId);
 			if (lateEarlyOut.isError && commonSet.isPresent()) {
@@ -67,7 +70,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				}
 			} else {
 				//アルゴリズム「直行直帰更新」を実行する
+				this.appRepo.updateApplication(application);
 				this.updateGoBackDirectly(goBackDirectly);
+				
 			}
 		}
 	}
