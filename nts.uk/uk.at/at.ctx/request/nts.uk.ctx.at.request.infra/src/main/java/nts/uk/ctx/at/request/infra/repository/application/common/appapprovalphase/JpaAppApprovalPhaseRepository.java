@@ -41,89 +41,36 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.setParameter("phaseID", phaseID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 	
-
-
 	@Override
 	public void create(AppApprovalPhase appApprovalPhase) {
-		this.commandProxy().insert(toEntity(appApprovalPhase));
-		
+		this.commandProxy().insert(KrqdtAppApprovalPhase.toEntity(appApprovalPhase));
 	}
+	
 	@Override
 	public void update(AppApprovalPhase appApprovalPhase) {
-		KrqdtAppApprovalPhase newEntity = toEntity(appApprovalPhase);
+		KrqdtAppApprovalPhase newEntity = KrqdtAppApprovalPhase.toEntity(appApprovalPhase);
 		KrqdtAppApprovalPhase updateEntity = this.queryProxy().find(newEntity.krqdtAppApprovalPhasePK, KrqdtAppApprovalPhase.class).get();
 		updateEntity.approvalForm  = newEntity.approvalForm;
 		updateEntity.dispOrder = newEntity.dispOrder;
 		updateEntity.approvalATR = newEntity.approvalATR;
 		this.commandProxy().update(updateEntity);
-		
 	}
+	
 	@Override
 	public void delete(AppApprovalPhase appAprovalPhase) {
 		this.commandProxy().remove(KrqdtAppApprovalPhase.class, new KrqdtAppApprovalPhasePK(appAprovalPhase.getCompanyID(), appAprovalPhase.getPhaseID()));
 		this.getEntityManager().flush();
-		
 	}
-	public static AppApprovalPhase toDomain(KrqdtAppApprovalPhase entity) {
-		return AppApprovalPhase.createFromJavaType(
-				entity.krqdtAppApprovalPhasePK.companyID,
-				entity.appID,
-				entity.krqdtAppApprovalPhasePK.phaseID,
-				Integer.valueOf(entity.approvalForm).intValue(),
-				Integer.valueOf(entity.dispOrder).intValue(),
-				Integer.valueOf(entity.approvalATR).intValue(),
-				entity.approvalFrames.stream().map(c -> JpaApprovalFrameRepository.toDomain(c)).collect(Collectors.toList()));
-	}
-	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
-		List<KrqdtApprovalFrame> approvalFrames  = domain.getListFrame().stream().map(x -> {
-			
-			List<KafdtApproveAccepted> kafdtApproveAccepteds = x.getListApproveAccepted().stream()
-					.map(k -> {
-						KafdtApproveAcceptedPK kafdtApproveAcceptedPK = new KafdtApproveAcceptedPK(domain.getCompanyID(),k.getAppAcceptedID());
-						return new KafdtApproveAccepted(
-								kafdtApproveAcceptedPK,
-								x.getFrameID(), 
-								k.getApproverSID(),
-								k.getApprovalATR().value,
-								k.getConfirmATR().value,
-								k.getApprovalDate(),
-								k.getReason().v(),
-								k.getRepresenterSID(),null);
-					}).collect(Collectors.toList());
-			
-			KrqdtApprovalFramePK krqdtApprovalFramePK = new KrqdtApprovalFramePK(domain.getCompanyID(), x.getFrameID());
-			return new KrqdtApprovalFrame(krqdtApprovalFramePK,
-					domain.getPhaseID(),
-					x.getDispOrder(),
-					kafdtApproveAccepteds);
-		}).collect(Collectors.toList());
-		
-		return new KrqdtAppApprovalPhase (
-					new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getPhaseID()),
-					domain.getAppID(),
-					domain.getApprovalForm().value,
-					domain.getDispOrder(),
-					domain.getApprovalATR().value,
-					approvalFrames
-					);
-	}
-
 
 	//get List Phase by AppID
-	
 	public List<AppApprovalPhase> findPhaseByAppID(String companyID, String appID) {
 		return this.queryProxy()
 				.query(SELECT_BY_APP_ID, KrqdtAppApprovalPhase.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 	}
-
-
-
-
-
 }
