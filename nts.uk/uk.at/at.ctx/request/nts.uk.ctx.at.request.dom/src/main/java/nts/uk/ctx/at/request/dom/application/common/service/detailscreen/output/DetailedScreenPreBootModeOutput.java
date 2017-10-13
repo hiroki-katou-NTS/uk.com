@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 
-@Value
+@Data
 @AllArgsConstructor
 public class DetailedScreenPreBootModeOutput {
 	//利用者
