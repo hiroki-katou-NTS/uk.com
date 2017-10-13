@@ -73,16 +73,16 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	
 	// 打刻申請の新規登録
 	private void appStampRegistration(AppStamp appStamp) {
-		newBeforeRegister.processBeforeRegister(
+		/*newBeforeRegister.processBeforeRegister(
 				appStamp.getCompanyID(), 
 				appStamp.getApplicantSID(), 
 				appStamp.getApplicationDate(), 
 				appStamp.getPrePostAtr(), 
 				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
-				appStamp.getApplicationType().value);
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
+				appStamp.getApplicationType().value);*/
+		// registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
 		appStampRepository.addStamp(appStamp);
-		newAfterRegister.processAfterRegister(appStamp.getCompanyID(), appStamp.getApplicationID());
+		// newAfterRegister.processAfterRegister(appStamp);
 	}
 	
 	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){

@@ -45,6 +45,7 @@
 									<input id="email_auth"
 										data-bind="ntsTextEditor: {
 											value: emailAuth,
+											required: true,
                                            	constraint: 'EmailAuthentication'}" />
 								</div>
 								<button id="test_send_mail" data-bind="click: showDialogTest"
@@ -96,9 +97,11 @@
 							</td>
 							<td>
 								<div class="input_002">
-									<input id="email_auth"
+									<input id="password"
 										data-bind="ntsTextEditor: {
 											value: password,
+											required: true,
+											option: {textmode: 'password'},
                                            	constraint: 'Password'}" />
 								</div>
 							</td>
@@ -120,10 +123,11 @@
 											required: true }">#{i18n.getText('CMM050_12')}</div>
 								</td>
 								<td>
-									<div class="port_input">
+									<div>
 										<input id="smtp_port"
 											data-bind="ntsTextEditor: {
 												value: smtpPort,
+												required: true,
 	                                           	constraint: 'Port'}" />
 									</div>
 								</td>
@@ -141,6 +145,7 @@
 										<input id="smtp_server"
 											data-bind="ntsTextEditor: {
 												value: smtpServer,
+												required: true,
 	                                           	constraint: 'Server'}" />
 									</div>
 								</td>
@@ -161,9 +166,10 @@
 								</td>
 								<td class="valign-center">
 									<div class="port_input">
-										<input id="smtp_port"
+										<input id="imap_port"
 											data-bind="ntsTextEditor: {
 												value: imapPort,
+												required: true,
 	                                           	constraint: 'Port'}" />
 									</div>
 								</td>
@@ -191,11 +197,12 @@
 											required: true }">#{i18n.getText('CMM050_23')}</div>
 								</td>
 								<td>
-									<div class="port_input">
-										<input id="smtp_server"
+									<div>
+										<input id="imap_server"
 											data-bind="ntsTextEditor: {
 												value: imapServer,
 												enable: imapServerEnable,
+												required: true,
 	                                           	constraint: 'Server'}" />
 									</div>
 								</td>
@@ -214,10 +221,11 @@
 											required: true }">#{i18n.getText('CMM050_16')}</div>
 								</td>
 								<td class="valign-center">
-									<div class="port_input">
-										<input id="smtp_port"
+									<div>
+										<input id="pop_port"
 											data-bind="ntsTextEditor: {
 												value: popPort,
+												required: true,
 	                                           	constraint: 'Port'}" />
 									</div>
 								</td>
@@ -243,11 +251,12 @@
 											required: true }">#{i18n.getText('CMM050_19')}</div>
 								</td>
 								<td>
-									<div class="port_input">
-										<input id="smtp_server"
+									<div>
+										<input id="pop_server"
 											data-bind="ntsTextEditor: {
 												value: popServer,
 												enable: popServerEnable,
+												required: true,
 	                                           	constraint: 'Server'}" />
 									</div>
 								</td>
@@ -264,7 +273,7 @@
 										#{i18n.getText('CMM050_25')}</div>
 								</td>
 								<td>
-									<div class="port_input">
+									<div>
 										<div id="combo-box" 
 											data-bind="ntsComboBox: {
 												options: encryptionMethodArray,

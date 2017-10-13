@@ -34,7 +34,6 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 	protected void handle(CommandHandlerContext<OptionalItemSaveCommand> context) {
 		OptionalItem dom = new OptionalItem(context.getCommand());
 
-		//TODO
 		this.repository.update(dom);
 
 	}

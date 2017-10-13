@@ -116,8 +116,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		return Optional.of(SEmpHistExport.builder().employeeId(employeeId)
 				.employmentCode(employment.getEmploymentCode().v())
 				.employmentName(employment.getEmploymentName().v())
-				.startDate(empHist.getPeriod().getStartDate())
-				.endDate(empHist.getPeriod().getEndDate()).build());
+				.period(empHist.getPeriod()).build());
 	}
 
 }

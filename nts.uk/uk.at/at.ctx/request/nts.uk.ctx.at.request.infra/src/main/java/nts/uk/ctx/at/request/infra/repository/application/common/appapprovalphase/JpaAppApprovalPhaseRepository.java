@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
+import nts.uk.ctx.at.request.infra.repository.application.common.approvalframe.JpaApprovalFrameRepository;
 
 
 
@@ -74,7 +75,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 				Integer.valueOf(entity.approvalForm).intValue(),
 				Integer.valueOf(entity.dispOrder).intValue(),
 				Integer.valueOf(entity.approvalATR).intValue(),
-				null);
+				entity.approvalFrames.stream().map(c -> JpaApprovalFrameRepository.toDomain(c)).collect(Collectors.toList()));
 	}
 	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
 		List<KrqdtApprovalFrame> approvalFrames  = domain.getListFrame().stream().map(x -> {

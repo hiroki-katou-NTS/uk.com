@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.pub.employment;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SEmpHistExport.
@@ -28,12 +28,8 @@ public class SEmpHistExport {
 	// 雇用名称
 	private String employmentName;
 
-	/** The start date. */
-	// 配属期間 start
-	private GeneralDate startDate;
-
-	/** The end date. */
-	// 配属期間 end
-	private GeneralDate endDate;
+	/** The period. */
+	// 配属期間 
+	private DatePeriod period;
 
 }

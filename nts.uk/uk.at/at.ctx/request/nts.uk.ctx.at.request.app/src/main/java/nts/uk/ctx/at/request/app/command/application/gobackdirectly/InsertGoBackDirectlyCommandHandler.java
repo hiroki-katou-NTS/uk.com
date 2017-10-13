@@ -36,6 +36,33 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();
+		//approval phase
+		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
+				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
+						companyId, 
+						"", 
+						"", 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
+						appApprovalPhaseCmd.dispOrder, 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
+						//Frame
+						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
+								companyId, 
+								"", 
+								approvalFrame.dispOrder, 
+								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
+										companyId, 
+										"", 
+										approveAccepted.approverSID,
+										ApprovalAtr.UNAPPROVED.value,
+										approveAccepted.confirmATR,
+										null,
+										approveAccepted.reason,
+										approveAccepted.representerSID
+										)).collect(Collectors.toList())
+								)).collect(Collectors.toList())
+						))
+				.collect(Collectors.toList());
 		//get new Application Item
 		Application newApp = Application.createFromJavaType(
 				companyId, 
@@ -57,7 +84,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.appCommand.getReflectPlanEnforce(),
 				command.appCommand.getStartDate(), 
 				command.appCommand.getEndDate(), 
-				null);
+				appApprovalPhases);
 		
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
@@ -76,36 +103,9 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.goBackCommand.workTimeStart2,
 				command.goBackCommand.workTimeEnd2, 
 				command.goBackCommand.workLocationCD2);
-		//approval phase
-		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
-				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
-						companyId, 
-						"", 
-						"", 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
-						appApprovalPhaseCmd.dispOrder, 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
-						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
-								companyId, 
-								"", 
-								approvalFrame.dispOrder, 
-								approvalFrame.approveAcceptedCmds.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
-										companyId, 
-										"", 
-										approveAccepted.approverSID,
-										ApprovalAtr.UNAPPROVED.value,
-										approveAccepted.confirmATR,
-										null,
-										approveAccepted.reason,
-										approveAccepted.representerSID
-										)).collect(Collectors.toList())
-								)).collect(Collectors.toList())
-						))
-				.collect(Collectors.toList());
-		
 		//登録ボタンをクリックする
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		newAfterRegister.processAfterRegister(companyId, newApp.getApplicationID());
+		//newAfterRegister.processAfterRegister(newApp);
 	}
 }

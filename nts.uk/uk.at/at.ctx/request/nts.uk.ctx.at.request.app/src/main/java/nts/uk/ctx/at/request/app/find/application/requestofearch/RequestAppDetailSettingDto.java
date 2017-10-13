@@ -25,6 +25,7 @@ public class RequestAppDetailSettingDto {
 	public int requiredInstructionFlg;
 
 	public static RequestAppDetailSettingDto convertToDto(RequestAppDetailSetting domain) {
+		if(domain==null) return null;
 		return new RequestAppDetailSettingDto(domain.getCompanyId(), domain.getAppType().value, domain.getMemo().v(),
 				domain.getUserAtr().value, domain.getPrerequisiteForpauseFlg().value, domain.getOtAppSettingFlg().value,
 				domain.getHolidayTimeAppCalFlg().value, domain.getLateOrLeaveAppCancelFlg().value,

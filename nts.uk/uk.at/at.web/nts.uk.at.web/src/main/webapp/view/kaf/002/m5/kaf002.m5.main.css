@@ -18,6 +18,12 @@
 .m5-inline-div {
 	display: inline-block;
 }
+.m5-label {
+	margin-top: 7px;
+	margin-bottom: -5px;
+	margin-left: 5px;
+	width: 70px;
+}
 .m5-checkBox {
 	margin-left: 3px;
 	margin-right: -7px;

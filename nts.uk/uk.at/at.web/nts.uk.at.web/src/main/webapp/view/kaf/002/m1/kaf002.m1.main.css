@@ -21,8 +21,10 @@
 	padding: 3px;
 }
 .m1-label {
-	margin-bottom: 10px;
+	margin-top: 7px;
+	margin-bottom: -5px;
 	margin-left: 5px;
+	width: 100px;
 }
 .m1-time-editor {
 	width: 80px;

@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,10 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpAppStampDetail krqdpAppStampDetailsPK;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
 
 	@Column(name="GO_OUT_REASON_ATR")
 	public Integer goOutReasonAtr;

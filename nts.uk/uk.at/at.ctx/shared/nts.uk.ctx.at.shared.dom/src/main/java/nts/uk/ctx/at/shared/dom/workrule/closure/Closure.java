@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
  * The Class Closure.
@@ -34,10 +33,6 @@ public class Closure extends AggregateRoot {
 	// 当月
 	private CurrentMonth closureMonth;
 
-	/** The emp codes. */
-	// 雇用コード
-	private List<EmploymentCode> empCodes;
-
 	/** The closure histories. */
 	// 締め変更履歴
 	@Setter
@@ -54,7 +49,6 @@ public class Closure extends AggregateRoot {
 		this.closureId = memento.getClosureId();
 		this.useClassification = memento.getUseClassification();
 		this.closureMonth = memento.getClosureMonth();
-		this.empCodes = memento.getEmpCodes();
 		this.closureHistories = memento.getClosureHistories();
 	}
 
@@ -69,7 +63,6 @@ public class Closure extends AggregateRoot {
 		memento.setClosureId(this.closureId);
 		memento.setUseClassification(this.useClassification);
 		memento.setClosureMonth(this.closureMonth);
-		memento.setEmpCodes(this.empCodes);
 		memento.setClosureHistories(this.closureHistories);
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
@@ -46,7 +47,12 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		GeneralDate baseDate = null;
 		// ドメインモデル「申請承認設定」を取得する ( Acquire the domain model "application approval setting" )
 		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
+		if(!applicationSettingOp.isPresent()){
+			throw new RuntimeException("khong co application setting");
+		}
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		
+		appCommonSettingOutput.applicationSetting = applicationSetting;
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
 		if(appTypeDiscreteSettingOp.isPresent()) {
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();

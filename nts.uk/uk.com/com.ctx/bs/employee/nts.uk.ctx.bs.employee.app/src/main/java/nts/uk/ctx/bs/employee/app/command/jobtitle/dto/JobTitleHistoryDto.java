@@ -1,39 +1,72 @@
 package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.Period;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JobTitleHistoryDto.
  */
-@Data
-public class JobTitleHistoryDto implements JobTitleHistorySetMemento {
+@Getter
+@Setter
+public class JobTitleHistoryDto {
 
 	/** The history id. */
-    public String historyId;
+	public String historyId;
 
-    /** The period. */
-    public Period period;
-	
+	/** The period. */
+	public PeriodDto period;
+
 	/**
-	 * Sets the history id.
+	 * To domain.
 	 *
-	 * @param historyId the new history id
+	 * @return the job title history
 	 */
-	@Override
-	public void setHistoryId(HistoryId historyId) {
-		this.historyId = historyId.v();
+	public JobTitleHistory toDomain() {
+		return new JobTitleHistory(new JobTitleHistoryGetMementoImpl(this));
 	}
 
 	/**
-	 * Sets the period.
-	 *
-	 * @param period the new period
+	 * The Class JobTitleHistoryGetMementoImpl.
 	 */
-	@Override
-	public void setPeriod(Period period) {
-		this.period = period;
+	public class JobTitleHistoryGetMementoImpl implements JobTitleHistoryGetMemento {
+
+		/** The job title history dto. */
+		private JobTitleHistoryDto dto;
+
+		/**
+		 * Instantiates a new job title history get memento impl.
+		 *
+		 * @param jobTitleHistoryDto the job title history dto
+		 */
+		public JobTitleHistoryGetMementoImpl(JobTitleHistoryDto dto) {
+			this.dto = dto;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento#getHistoryId()
+		 */
+		@Override
+		public HistoryId getHistoryId() {
+			String historyId = this.dto.getHistoryId();
+			if (StringUtil.isNullOrEmpty(historyId, true)) {
+				historyId = IdentifierUtil.randomUniqueId();
+			}
+			return new HistoryId(historyId);
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento#getPeriod()
+		 */
+		@Override
+		public DatePeriod getPeriod() {
+			return new DatePeriod(this.dto.getPeriod().getStartDate(),
+					this.dto.getPeriod().getEndDate());
+		}
 	}
 }

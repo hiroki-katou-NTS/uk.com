@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistorySetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.WorkplaceId;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaAffWorkplaceHistorySetMemento.
@@ -39,9 +39,9 @@ public class JpaAffWorkplaceHistorySetMemento implements AffWorkplaceHistorySetM
 	 * Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setStrD(period.getStartDate());
-		this.workplaceHistory.setEndD(period.getEndDate());
+	public void setPeriod(DatePeriod period) {
+		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setStrD(period.start());
+		this.workplaceHistory.setEndD(period.end());
 	}
 
 	/*
