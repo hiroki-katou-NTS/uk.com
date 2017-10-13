@@ -32,11 +32,9 @@ public class ScheduleErrorLog extends AggregateRoot {
 	private String employeeId;
 
 	/**
-	 * To domain.
+	 * Instantiates a new schedule error log.
 	 *
-	 * @param memento
-	 *            the memento
-	 * @return the schedule error log
+	 * @param memento the memento
 	 */
 	public ScheduleErrorLog(ScheduleErrorLogGetMemento memento) {
 		this.errorContent = memento.getErrorContent();

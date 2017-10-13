@@ -1,13 +1,18 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 
 /**
- * 
- * @author sonnh1
- *
+ * The Interface BasicScheduleRepository.
  */
 public interface BasicScheduleRepository {
 
@@ -33,4 +38,23 @@ public interface BasicScheduleRepository {
 	 * @param bSchedule
 	 */
 	void update(BasicSchedule bSchedule);
+	
+	
+	/**
+	 * Find child care by id.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	public List<ChildCareSchedule> findChildCareById(String employeeId, GeneralDate baseDate); 
+	
+	/**
+	 * Find person fee by id.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	public List<WorkSchedulePersonFee> findPersonFeeById(String employeeId, GeneralDate baseDate); 
 }

@@ -30,4 +30,29 @@ public class ChildCareSchedule extends DomainObject{
 	/** The child care atr. */
 	// 育児介護区分
 	private ChildCareAtr childCareAtr;
+	
+	/**
+	 * Instantiates a new child care schedule.
+	 *
+	 * @param memento the memento
+	 */
+	public ChildCareSchedule(ChildCareScheduleGetMemento memento) {
+		this.childCareNumber = memento.getChildCareNumber();
+		this.childCareScheduleStart = memento.getChildCareScheduleEnd();
+		this.childCareScheduleEnd = memento.getChildCareScheduleEnd();
+		this.childCareAtr = memento.getChildCareAtr();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ChildCareScheduleSetMemento memento){
+		memento.setChildCareNumber(this.childCareNumber);
+		memento.setChildCareScheduleStart(this.childCareScheduleStart);
+		memento.setChildCareScheduleEnd(this.childCareScheduleEnd);
+		memento.setChildCareAtr(this.childCareAtr);
+	}
 }
