@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf009.b {
             prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
             prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
             useMulti : KnockoutObservable<boolean> = ko.observable(true);
-            self.approvalSource = self.kaf000_a.approvalList;
+            //self.approvalSource = self.kaf000_a.approvalList;
 
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
