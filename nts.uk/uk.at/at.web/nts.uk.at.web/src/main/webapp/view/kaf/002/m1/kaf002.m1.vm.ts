@@ -172,7 +172,7 @@ module nts.uk.at.view.kaf002.m1 {
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});    
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});    
                     }
                 });  
             }

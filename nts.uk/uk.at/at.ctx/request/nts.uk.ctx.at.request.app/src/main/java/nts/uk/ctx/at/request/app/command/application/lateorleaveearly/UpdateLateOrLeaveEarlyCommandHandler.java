@@ -62,7 +62,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
 		
 		//「4-2.詳細画面登録後の処理」を実行する
-		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getCompanyID(), domainLateOrLeaveEarly.getAppID());
+		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly);
 		
 	}
 	

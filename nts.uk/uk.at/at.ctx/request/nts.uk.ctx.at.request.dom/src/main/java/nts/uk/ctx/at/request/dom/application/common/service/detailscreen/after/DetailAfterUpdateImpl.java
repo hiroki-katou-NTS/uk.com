@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
@@ -28,6 +29,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class DetailAfterUpdateImpl implements DetailAfterUpdate {
@@ -52,6 +55,9 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 
 	@Inject
 	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
+	
+	@Inject
+	private MailSender mailSender;
 
 	public void processAfterDetailScreenRegistration(Application application) {
 		String companyID = application.getCompanyID();
@@ -126,6 +132,12 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」を取得する ???
 			System.out.println("Send mail to: "+destinationList);
+			try {
+				mailSender.send("NSVC", "", new MailContents("nts","approvalChange"));
+			} catch (SendMailFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
