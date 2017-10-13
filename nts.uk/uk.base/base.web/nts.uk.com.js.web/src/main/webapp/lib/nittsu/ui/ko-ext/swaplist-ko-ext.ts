@@ -42,7 +42,8 @@ module nts.uk.ui.koExtentions {
             var height = ko.unwrap(data.height);
             var showSearchBox = ko.unwrap(data.showSearchBox);
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
-            var columns: KnockoutObservableArray<any> = data.columns;
+            var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
+            var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
 
             $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
@@ -51,10 +52,18 @@ module nts.uk.ui.koExtentions {
             $swap.parent().height(height);
             $swap.addClass("ntsSwapList-container");
 
-            var gridWidth = _.sumBy(columns(), c => {
+            let leftGridWidth = _.sumBy(leftColumns(), c => {
                 return c.width;
             });
-            var iggridColumns = _.map(columns(), c => {
+            let rightGridWidth = _.sumBy(rightColumns(), c => {
+                return c.width;
+            });
+            var leftIggridColumns = _.map(leftColumns(), c => {
+                c["key"] = c.key === undefined ? c.prop : c.key;
+                c["dataType"] = 'string';
+                return c;
+            });
+            var rightIggridColumns = _.map(rightColumns(), c => {
                 c["key"] = c.key === undefined ? c.prop : c.key;
                 c["dataType"] = 'string';
                 return c;
@@ -63,7 +72,7 @@ module nts.uk.ui.koExtentions {
             
             var grid1Id = "#" + elementId + "-grid1";
             var grid2Id = "#" + elementId + "-grid2";
-            if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showEright)) {
+            if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                 
                 var initSearchArea = function ($SearchArea, targetId, searchMode){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
@@ -88,7 +97,7 @@ module nts.uk.ui.koExtentions {
                 $searchArea.append("<div class='ntsSwapSearchLeft'/>")
                     .append("<div class='ntsSwapSearchRight'/>");
                 $searchArea.css({position: "relative"});
-                var searchAreaWidth = gridWidth + CHECKBOX_WIDTH;
+                var searchAreaWidth = leftGridWidth + CHECKBOX_WIDTH;
                 if(showSearchBox.showLeft){
                     var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                     
@@ -100,7 +109,7 @@ module nts.uk.ui.koExtentions {
                 if(showSearchBox.showRight){
                     var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                     
-                    $searchRightContainer.width(gridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
+                    $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
                     initSearchArea($searchRightContainer, grid2Id, data.searchMode);
                 }
@@ -123,19 +132,20 @@ module nts.uk.ui.koExtentions {
 //                            { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
           
-            $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
+            $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
+            $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
             
-            var criterion = _.map(columns(), c => { return c.key === undefined ? c.prop : c.key; });
-            
+            var leftCriterion = _.map(leftColumns(), c => { return c.key === undefined ? c.prop : c.key; });
+            var rightCriterion = _.map(rightColumns(), c => { return c.key === undefined ? c.prop : c.key; });
             var swapParts: Array<SwapPart> = new Array<SwapPart>();
             swapParts.push(new GridSwapPart().listControl($grid1)
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
                                 .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
                                 .setDataSource(originalSource)
-                                .setSearchCriterion(data.searchCriterion || criterion)
+                                .setSearchCriterion(data.leftSearchCriterion || data.searchCriterion || leftCriterion)
                                 .setSearchMode(data.searchMode || "highlight")
-                                .setColumns(columns())
+                                .setColumns(leftColumns())
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
@@ -147,9 +157,9 @@ module nts.uk.ui.koExtentions {
                                 .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .setDataSource(data.value())
-                                .setSearchCriterion(data.searchCriterion || criterion) 
+                                .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 
                                 .setSearchMode(data.searchMode || "highlight")
-                                .setColumns(columns())  
+                                .setColumns(rightColumns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
@@ -159,10 +169,10 @@ module nts.uk.ui.koExtentions {
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
             
             $grid1.igGrid({
-                width: gridWidth + CHECKBOX_WIDTH, 
+                width: leftGridWidth + CHECKBOX_WIDTH, 
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
-                columns: iggridColumns,
+                columns: leftIggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features,
@@ -177,10 +187,10 @@ module nts.uk.ui.koExtentions {
             $grid1.ntsGridList('setupSelecting');
 
             $grid2.igGrid({
-                width: gridWidth + CHECKBOX_WIDTH,
+                width: rightGridWidth + CHECKBOX_WIDTH,
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
-                columns: iggridColumns,
+                columns: rightIggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features,

@@ -10,10 +10,11 @@ module nts.uk.com.view.cmm008.a {
             listComponentOption: any;
             empList: KnockoutObservableArray<ItemModel>;
             enableEmpCode: KnockoutObservable<boolean>;
-            mode: KnockoutObservable<Mode>;
+            isUpdateMode: KnockoutObservable<boolean>;
             
             constructor() {
                 var self = this;
+                self.isUpdateMode = ko.observable(false);
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
                 self.selectedCode = ko.observable("");
@@ -25,7 +26,6 @@ module nts.uk.com.view.cmm008.a {
                         self.clearData();
                     }
                 });
-                self.mode = ko.observable(Mode.UPDATE);
                 
                 // Initial listComponentOption
                 self.listComponentOption = {
@@ -82,7 +82,7 @@ module nts.uk.com.view.cmm008.a {
                         self.employmentModel().updateEmpData(employment);
                         self.employmentModel().isEnableCode(false);
                         self.enableDelete(true);
-                        self.mode(Mode.UPDATE);
+                        self.isUpdateMode(true);
                         $('#empName').focus();
                     }
                 });
@@ -97,7 +97,7 @@ module nts.uk.com.view.cmm008.a {
                 self.employmentModel().resetEmpData();
                 self.enableDelete(false);
                 self.clearErrors();
-                self.mode(Mode.ADD);
+                self.isUpdateMode(false);
                 $('#empCode').focus();
             }
 
@@ -110,13 +110,13 @@ module nts.uk.com.view.cmm008.a {
                 if (self.hasError()) {
                     return;
                 }
-                var command = {
-                    employmentCode: self.employmentModel().employmentCode(),
-                    employmentName: self.employmentModel().employmentName(),
-                    empExternalCode: self.employmentModel().empExternalCode(),
-                    memo: self.employmentModel().memo(),
-                    mode: self.mode()
-                };
+                let command: any = {};
+                    command.employmentCode = self.employmentModel().employmentCode();
+                    command.employmentName = self.employmentModel().employmentName();
+                    command.empExternalCode = self.employmentModel().empExternalCode();
+                    command.memo = self.employmentModel().memo();
+                    command.isUpdateMode = self.isUpdateMode();
+                
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -273,14 +273,6 @@ module nts.uk.com.view.cmm008.a {
                 this.empExternalCode(dto.empExternalCode);
                 this.memo(dto.memo);
             }
-        }
-        
-        /**
-         * Mode
-         */
-        export class Mode {
-            static ADD = 1;
-            static UPDATE = 2;
         }
         
         /**

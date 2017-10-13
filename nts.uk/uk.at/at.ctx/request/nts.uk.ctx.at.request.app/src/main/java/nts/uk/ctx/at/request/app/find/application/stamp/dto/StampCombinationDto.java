@@ -11,7 +11,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class StampCombinationDto {
 	
+	// giá trị enum
 	private Integer value;
 	
+	// tên enum
 	private String name;
 }

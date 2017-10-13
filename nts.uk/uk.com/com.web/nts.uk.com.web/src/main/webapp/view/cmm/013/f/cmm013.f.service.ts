@@ -9,7 +9,7 @@ module nts.uk.com.view.cmm013.f {
          *  Service paths
          */
         var servicePath: any = {
-            findMaxOrder: "bs/employee/jobtitle/sequence/maxOrder",
+            findMaxOrder: "bs/employee/jobtitle/sequence/findMaxOrder",
             findAllSequenceMaster: "bs/employee/jobtitle/sequence/findAll",
             findBySequenceCode: "bs/employee/jobtitle/sequence/find",
             saveSequenceMaster: "bs/employee/jobtitle/sequence/save",

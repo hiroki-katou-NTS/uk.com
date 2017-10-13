@@ -6,6 +6,14 @@ import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @Getter
+
+/**
+ * 
+ * @author tuannv
+ *
+ */
+
+// 選択肢履歴ドメイン
 public class PerInfoHistorySelection {
 	private String histId;
 	private String selectionItemId;
@@ -13,8 +21,10 @@ public class PerInfoHistorySelection {
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 
-	public static PerInfoHistorySelection historySelection(String histId, String selectionItemId, String companyCode,
-			GeneralDate endDate, GeneralDate startDate) {
+	public static PerInfoHistorySelection createHistorySelection(String histId, String selectionItemId,
+			String companyCode, GeneralDate endDate, GeneralDate startDate) {
+
+		// 選択肢履歴 パラメーター帰還
 		return new PerInfoHistorySelection(histId, selectionItemId, companyCode, startDate, endDate);
 	}
 }

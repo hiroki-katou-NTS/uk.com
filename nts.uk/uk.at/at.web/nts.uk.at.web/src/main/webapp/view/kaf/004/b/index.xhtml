@@ -7,23 +7,27 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 800 };</script>
 			<com:ValidatorScript>
 				 nts.uk.ctx.at.request.dom.application.common.AppReason
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf004.b.style.css" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+			<com:stylefile path="../../000/a/kaf000.a.main.css" />
 			<com:scriptfile path="kaf004.b.start.js" />
 			<com:scriptfile path="kaf004.b.service.js" />
 			<com:scriptfile path="kaf004.b.vm.js" />
+			
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF004_4')}</a>
+					data-bind="ntsLinkButton: { jump: 'nts.uk.at.web/view/kaf/004/a/index.xhtml' }">#{i18n.getText('KAF004_4')}</a>
 				<button class="proceed" data-bind="click : registryButtonClick">#{i18n.getText('KAF004_8')}</button>
-				<button>#{i18n.getText('KAF004_9')}</button>
+				<button data-bind= "click : openSetting">#{i18n.getText('KAF004_9')}</button>
 				<div data-bind="ntsCheckBox: { checked: sendMail }">#{i18n.getText('KAF004_10')}</div>
 			</div>
 			<div id="contents-area">
@@ -33,7 +37,7 @@
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_11')}</div>
-						<label style="margin-left: 45px;" class="applicant">11111</label>
+						<label style="margin-left: 45px;" data-bind = "text: applicantName"></label>
 					</div>
 					<div class="note-right"
 						style="height: 110px; width: 200px; background-color: #BEBEBE; float: right;"></div>
@@ -74,28 +78,21 @@
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
 							<label style="margin-left: 25px;">#{i18n.getText('KAF004_21')}</label>
-							<label style="margin-left: 15px; margin-right: 15px;">08:30</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">12:00</label>
-							<label style="margin-left: 25px; margin-right: 15px;">13:00</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">17:30</label>
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime1"></label>
 						</div>
 						<div class="valign-center control-group row">
 							<label style="margin-left: 115px;">#{i18n.getText('KAF004_22')}</label>
 							<!-- 	fix cứng time -->
-							<label style="margin-left: 15px; margin-right: 15px;">10:30</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">11:00</label>
-							<label style="margin-left: 25px; margin-right: 15px;">14:00</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">17:00</label>
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime2"></label>
 						</div>
 						<div class="valign-center control-group row">
 							<div style="margin-left: 110px;"
 								data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
-							<input
-								data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />
-							<!-- <div data-bind="text: ko.toJSON(lateTime1)	"></div> -->
+							<!-- 	fix tam time 
+							 <input data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'" /> -->
+							<label>2:00</label> 
 							<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
-							<input
-								data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
+							 <input data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
 						</div>
 						<br />
 						<div class="valign-center control-group row">
@@ -115,22 +112,15 @@
 							<div id="inputdate"
 								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 						</div>
-						<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
 							<label style="margin-left: 25px;">#{i18n.getText('KAF004_21')}</label>
-							<label style="margin-left: 15px; margin-right: 15px;">08:30</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">12:00</label>
-							<label style="margin-left: 25px; margin-right: 15px;">13:00</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">17:30</label>
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime1"></label>
 						</div>
 						<div class="valign-center control-group row">
 							<label style="margin-left: 115px;">#{i18n.getText('KAF004_22')}</label>
 							<!-- 	fix cứng time -->
-							<label style="margin-left: 15px; margin-right: 15px;">10:30</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">11:00</label>
-							<label style="margin-left: 25px; margin-right: 15px;">14:00</label>
-							~ <label style="margin-left: 15px; margin-right: 15px;">17:00</label>
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime2"></label>
 						</div>
 						<div class="valign-center control-group row">
 							<div style="margin-left: 110px;"
@@ -236,6 +226,11 @@
 		                   	},
 							
 							}" />
+						</div>
+					</div>
+					<div data-bind="if: kaf000_a2">
+						<div data-bind="with: kaf000_a2">
+							<ui:include src="../../000/a/index2.xhtml" />	
 						</div>
 					</div>
 				</div>

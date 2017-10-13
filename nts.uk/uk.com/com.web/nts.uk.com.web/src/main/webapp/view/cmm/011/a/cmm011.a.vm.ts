@@ -25,8 +25,8 @@ module nts.uk.com.view.cmm011.a {
             creationType: CreationType;
             
             isNewMode: KnockoutObservable<boolean>;
-            isValidWorplace: KnockoutObservable<boolean>;
-            isValidWorplaceHistory: KnockoutObservable<boolean>;
+            isWkpHistoryLatest: KnockoutObservable<boolean>;
+            isWkpConfigHistLatest: KnockoutObservable<boolean>;
             
             isLoadedScreen: boolean;
             
@@ -35,7 +35,7 @@ module nts.uk.com.view.cmm011.a {
                 
                 self.wkpConfigHistId = null;
                 self.strDWorkplace = ko.observable(null);
-                self.endDWorkplace = ko.observable("9999/12/31");
+                self.endDWorkplace = ko.observable(nts.uk.resource.getText("CMM011_27"));
                 self.treeWorkplace = ko.observable(new TreeWorkplaceModel(self));
                 self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
                 
@@ -47,20 +47,12 @@ module nts.uk.com.view.cmm011.a {
                 
                 self.creationType = null;
                 
-                self.isNewMode = ko.observable(true);
-                self.isValidWorplace = ko.computed(function() {
-                    if (self.isNewMode()) {
-                        return false;
-                    }
-                    return !nts.uk.text.isNullOrEmpty(self.strDWorkplace());
-                });
-                self.isValidWorplaceHistory = ko.computed(function() {
+                self.isNewMode = ko.observable(false);
+                self.isWkpHistoryLatest = ko.computed(function() {
                     self.workplaceHistory().selectedHistoryId();
-                    if (self.isNewMode()) {
-                        return false;
-                    }
                     return self.workplaceHistory().isSelectedLatestHistory();
                 });
+                self.isWkpConfigHistLatest = ko.observable(true);
                 
                 self.isLoadedScreen = false;
                 
@@ -133,6 +125,7 @@ module nts.uk.com.view.cmm011.a {
                 let self = this;
                 
                 let command: any = {};
+                command.historyIdWkpConfigInfo = self.wkpConfigHistId;
                 command.startDWkpConfigInfo = new Date(self.strDWorkplace());
                 command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
                 
@@ -165,6 +158,7 @@ module nts.uk.com.view.cmm011.a {
                 service.saveWkp(command).done(function() {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    
                     self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
                         if (self.isNewMode()) {
                             self.treeWorkplace().selectedWpkId(command.wkpIdSelected);
@@ -225,6 +219,7 @@ module nts.uk.com.view.cmm011.a {
                     if (!dialogData) {
                         return;
                     }
+                    self.isWkpConfigHistLatest(dialogData.isWkpConfigHistLatest);
                     self.wkpConfigHistId = dialogData.historyId;
                     self.strDWorkplace(dialogData.startDate);
                     self.endDWorkplace(dialogData.endDate);
@@ -254,8 +249,9 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
                         let creationType: CreationType = nts.uk.ui.windows.getShared("CreatedWorkplaceCondition");
                         if (creationType) {
-                            self.isNewMode(false);
+                            self.isNewMode(true);
                             self.creationType = creationType;
+                            self.workplaceHistory().newHistory();
                         }
                     });
                 }).fail((res: any) => {
@@ -288,6 +284,26 @@ module nts.uk.com.view.cmm011.a {
                 $('#wkpName').ntsError('clear');
                 $('#wkpDisplayName').ntsError('clear');
                 $('#wkpFullName').ntsError('clear');
+            }
+            
+            /**
+             * initData
+             */
+            public initData(data: any) {
+                let self = this;
+                if (data) {
+                    self.workplaceCode(data.workplaceCode);
+                    self.workplaceName(data.workplaceName);
+                    self.wkpDisplayName(data.wkpDisplayName);
+                    self.wkpFullName(data.wkpGenericName);
+                    self.externalCode(data.outsideWkpCode);
+                } else {
+                    self.workplaceCode(null);
+                    self.workplaceName(null);
+                    self.wkpDisplayName(null);
+                    self.wkpFullName(null);
+                    self.externalCode(null);
+                }
             }
             
             /**
@@ -344,6 +360,8 @@ module nts.uk.com.view.cmm011.a {
                     // existed workplace
                     if (dataList && dataList.length > 0) {
                         self.parentModel.isNewMode(false);
+                    } else {
+                        $('#wkpCd').focus();
                     }
                 });
                 
@@ -606,6 +624,8 @@ module nts.uk.com.view.cmm011.a {
                     //update list hist
                     self.lstWpkHistory(lstWpkHistory);
                     
+                    $('#wkpName').focus();
+                    
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((res: any) => {
@@ -613,6 +633,16 @@ module nts.uk.com.view.cmm011.a {
                     self.parentModel.showMessageError(res);
                 });
                 return dfd.promise();
+            }
+            
+            /**
+             * newHistory
+             */
+            public newHistory() {
+                let self = this;
+                self.lstWpkHistory([]);
+                let newHist: IHistory = {historyId: null, startDate: self.parentModel.strDWorkplace(), endDate: "9999/12/31"};
+                self.lstWpkHistory.push(newHist);
             }
             
             /**
@@ -624,13 +654,7 @@ module nts.uk.com.view.cmm011.a {
                 nts.uk.ui.block.grayout();
                 service.getWkpInfoByHistId(wkpId, historyId).done(function(data:any) {
                     nts.uk.ui.block.clear();
-                    if (data) {
-                        self.parentModel.workplaceCode(data.workplaceCode);
-                        self.parentModel.workplaceName(data.workplaceName);
-                        self.parentModel.wkpDisplayName(data.wkpDisplayName);
-                        self.parentModel.wkpFullName(data.wkpGenericName);
-                        self.parentModel.externalCode(data.outsideWkpCode);
-                    }
+                    self.parentModel.initData(data);
                     dfd.resolve();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();

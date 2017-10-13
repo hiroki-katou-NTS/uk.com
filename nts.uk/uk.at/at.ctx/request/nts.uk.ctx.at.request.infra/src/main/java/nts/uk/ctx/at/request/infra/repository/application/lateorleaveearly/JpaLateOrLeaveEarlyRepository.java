@@ -123,7 +123,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 							new KafdtApplicationPK(
 									domain.getCompanyID(), 
 									domain.getApplicationID()), 
-							(int)(long)domain.getVersion(),
+							domain.getVersion(),
 							domain.getApplicationReason().v().split(":")[0],
 							domain.getPrePostAtr().value, 
 							domain.getInputDate(), 

@@ -73,10 +73,12 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	public GoBackDirectAppSet getGoBackDirectAppSet(String appID) {
 		String companyID = AppContexts.user().companyId();
 		GoBackDirectAppSet data = new GoBackDirectAppSet();
-		Application app = appRepo.getAppById(companyID, appID).get();
-		data.application = app;
+		Optional<Application> application = appRepo.getAppById(companyID, appID);
+		if(application.isPresent()) {
+			data.application = application.get();
+		}
 		//14-2.詳細画面起動前モードの判断
-		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.getDetailedScreenPreBootMode(app, app.getApplicationDate());
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.getDetailedScreenPreBootMode(application.get(), application.get().getApplicationDate());
 		data.detailedScreenPreBootModeOutput = preBootOuput;
 		//14-1.詳細画面起動前申請共通設定を取得する
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);
@@ -84,13 +86,13 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		//アルゴリズム「直行直帰基本データ」を実行する
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
-		if (app != null) {
-			data.prePostAtr = app.getPrePostAtr().value;
-			if (!app.getApplicationReason().v().equals(":")) {
-				data.appReasonId = app.getApplicationReason().v().split(":")[0];
-				data.appReason = app.getApplicationReason().v().split(":")[1];
+		if (!application.isPresent()) {
+			data.prePostAtr = application.get().getPrePostAtr().value;
+			if (!application.get().getApplicationReason().v().equals(":")) {
+				data.appReasonId = application.get().getApplicationReason().v().split(":")[0];
+				data.appReason = application.get().getApplicationReason().v().split(":")[1];
 			}
-			data.appDate = app.getApplicationDate().toString("yyyy/MM/dd");
+			data.appDate = application.get().getApplicationDate().toString("yyyy/MM/dd");
 		}
 		if (goBackDirect != null) {
 			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())

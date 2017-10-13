@@ -1,14 +1,15 @@
 module nts.uk.at.view.kmk002.d {
     export module viewmodel {
 
-        import FormulaSetting = nts.uk.at.view.kmk002.a.viewmodel.FormulaSetting;
+        import FormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.FormulaSettingDto;
+        import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;
         import ParamToD = nts.uk.at.view.kmk002.a.viewmodel.ParamToD;
 
         export class ScreenModel {
-            formulaSetting: FormulaSettingVm;
+            formulaSetting: FormulaSetting;
 
             constructor() {
-                this.formulaSetting = new FormulaSettingVm();
+                this.formulaSetting = new FormulaSetting();
             }
 
             /**
@@ -22,7 +23,7 @@ module nts.uk.at.view.kmk002.d {
                 let dto = nts.uk.ui.windows.getShared('paramToD');
 
                 // Set params to view model
-                self.formulaSetting.fromParam(dto);
+                self.formulaSetting.fromDto(dto);
 
                 dfd.resolve();
                 return dfd.promise();
@@ -46,7 +47,7 @@ module nts.uk.at.view.kmk002.d {
                 nts.uk.ui.windows.close();
             }
         }
-        class FormulaSettingVm extends FormulaSetting {
+        class FormulaSetting {
             formulaId: string; //TODO dung lam gi?
             formulaName: string;
             performanceAtr: number; //TODO dung lam gi ?
@@ -55,8 +56,33 @@ module nts.uk.at.view.kmk002.d {
             selectedItemLeft: KnockoutObservable<any>;
             selectedItemRight: KnockoutObservable<any>;
 
+            minusSegment: KnockoutObservable<number>;
+            operator: KnockoutObservable<number>;
+            leftItem: FormulaSettingItem;
+            rightItem: FormulaSettingItem;
+
+            operatorDatasource: KnockoutObservableArray<any>;
+
             constructor() {
-                super();
+                this.minusSegment = ko.observable(0);
+                this.operator = ko.observable(0);
+                this.leftItem = new FormulaSettingItem();
+                this.rightItem = new FormulaSettingItem();
+
+                // fixed 
+                this.leftItem.dispOrder = 1;
+                this.leftItem.settingMethod(0);
+                this.rightItem.dispOrder = 2;
+                this.rightItem.settingMethod(1);
+
+                this.operatorDatasource = ko.observableArray([
+                    { code: 0, name: '+' },
+                    { code: 1, name: '-' },
+                    { code: 2, name: '*' },
+                    { code: 3, name: '/' }
+                ]);
+                
+                //abc
                 this.formulaName = '';
                 this.performanceAtr = 0;
                 this.selectedItemLeft = ko.observable();
@@ -171,21 +197,83 @@ module nts.uk.at.view.kmk002.d {
             /**
              * Convert to viewmodel
              */
-            public fromParam(dto: ParamToD): void {
+            public fromDto(dto: ParamToD): void {
                 let self = this;
                 self.formulaId = dto.formulaId;
                 self.formulaName = dto.formulaName;
                 self.formulaAtr = dto.formulaAtr;
-                super.fromDto(dto.formulaSetting);
+                self.minusSegment(dto.formulaSetting.minusSegment);
+                self.operator(dto.formulaSetting.operator);
+                self.leftItem.fromDto(dto.formulaSetting.leftItem);
+                self.rightItem.fromDto(dto.formulaSetting.rightItem);
             }
 
             /**
-             * Convert to dto.
+             * convert viewmodel to dto
              */
-            public toDto(): any {
-                //TODO
+            public toDto(): FormulaSettingDto {
+                let self = this;
+                let dto: FormulaSettingDto = <FormulaSettingDto>{};
+
+                dto.minusSegment = self.minusSegment();
+                dto.operator = self.operator();
+                dto.leftItem = this.leftItem.toDto();
+                dto.rightItem = this.rightItem.toDto();
+
+                return dto;
             }
 
+        }
+        /**
+         * Formula setting item
+         */
+        class FormulaSettingItem {
+            settingMethod: KnockoutObservable<number>;
+            dispOrder: number;
+            inputValue: KnockoutObservable<number>;
+            formulaItemId: KnockoutObservable<string>;
+
+            constructor() {
+                this.settingMethod = ko.observable(1);
+                this.dispOrder = 1;
+                this.inputValue = ko.observable(1);
+                this.formulaItemId = ko.observable(nts.uk.util.randomId());
+            }
+
+            /**
+             * is input value check
+             */
+            public isInputValue(): boolean {
+                if (this.settingMethod() == 0) {
+                    return false;
+                }
+                return true;
+            }
+
+            /**
+             * convert dto to viewmodel
+             */
+            public fromDto(dto: SettingItemDto): void {
+                this.settingMethod(dto.settingMethod);
+                this.dispOrder = dto.dispOrder;
+                this.inputValue(dto.inputValue);
+                this.formulaItemId(dto.formulaItemId);
+            }
+
+            /**
+             * convert viewmodel to dto
+             */
+            public toDto(): SettingItemDto {
+                let self = this;
+                let dto: SettingItemDto = <SettingItemDto>{};
+
+                dto.settingMethod = this.settingMethod();
+                dto.dispOrder = this.dispOrder;
+                dto.inputValue = this.inputValue();
+                dto.formulaItemId = this.formulaItemId();
+
+                return dto;
+            }
         }
     }
 }

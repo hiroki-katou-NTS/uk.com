@@ -10,6 +10,10 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class EmployeeFileManagement extends AggregateRoot{
 	
+	/**
+	 * domain : 社員ファイル管理
+	 */
+	
 	/** The employeeId 社員ID */
 	private String sId;
 	
@@ -22,11 +26,9 @@ public class EmployeeFileManagement extends AggregateRoot{
 
 	/** The DocumentFileID */
 	private List<DocumentFile> documentFileID;
-
 	
 	public static EmployeeFileManagement createFromJavaType(String sId, String avatarFileID,String mapFileID ) {
 		return new EmployeeFileManagement(sId, avatarFileID, mapFileID, null);
-	 
 	}
 	
 	

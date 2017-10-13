@@ -36,10 +36,11 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 		EmployeeApproverRootQuery query = context.getQuery();
 
 		// get worplaces: employee info
-		Map<String, WpApproverAsAppOutput> wpApprover = registerApprovalRoot.lstEmps(companyId, query.getBaseDate(),
-				query.getLstEmpIds(), query.getRootAtr(), query.getLstApps());
+//		Map<String, WpApproverAsAppOutput> wpApprover1 = registerApprovalRoot.lstEmps(companyId, query.getBaseDate(),
+//				query.getLstEmpIds(), query.getRootAtr(), query.getLstApps());
+//		System.out.println(wpApprover1);
 
-
+		Map<String, WpApproverAsAppOutput> wpApprover = new HashMap<>();
 		EmployeeApproverAsApplicationOutput employeeApp = null;
 		EmployeeApproverOutput employeeInfor = new EmployeeApproverOutput("1", "A");
 		List<ApproverAsApplicationInforOutput> appLst = new ArrayList<>();
@@ -83,9 +84,6 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 			wpApprover.put(String.valueOf(i), output);
 		}
 		
-		
-	
-
 		if (wpApprover.isEmpty()) {
 			throw new BusinessException("ko co' data");
 		}

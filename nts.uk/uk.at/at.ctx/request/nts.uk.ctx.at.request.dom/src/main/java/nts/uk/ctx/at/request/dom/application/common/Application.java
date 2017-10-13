@@ -187,4 +187,12 @@ public class Application extends AggregateRoot{
 	 public void changeApplicationReason(AppReason applicationReason) {
 		 this.applicationReason = applicationReason;
 	 }
+	 
+	 /**
+	  * change value of applicationReason
+	  * @param applicationReason
+	  */
+	 public void changeListPhase(List<AppApprovalPhase> listPhase) {
+		 this.listPhase = listPhase;
+	 }
 }

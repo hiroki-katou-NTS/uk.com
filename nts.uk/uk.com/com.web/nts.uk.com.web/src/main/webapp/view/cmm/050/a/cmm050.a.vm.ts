@@ -167,6 +167,12 @@ module nts.uk.com.view.cmm050.a {
              */
             public registerMailSetting() {
                 let _self = this;
+                 
+                // Validate
+                if (_self.hasError()) {
+                    return;
+                }
+                
                 var dfd = $.Deferred<void>();
                 
                 // validate input pop info
@@ -260,6 +266,44 @@ module nts.uk.com.view.cmm050.a {
                 
                 return dfd.promise();
             }
+            
+        /**
+         * Check Errors all input.
+         */
+        private hasError(): boolean {
+            let _self = this;
+            _self.clearErrors();
+            $('#email_auth').ntsEditor("validate");
+            $('#password').ntsEditor("validate");
+            $('#smtp_port').ntsEditor("validate");
+            $('#smtp_server').ntsEditor("validate");
+            $('#imap_port').ntsEditor("validate");
+            $('#imap_server').ntsEditor("validate");
+            $('#pop_port').ntsEditor("validate");
+            $('#pop_server').ntsEditor("validate");
+            if ($('.nts-input').ntsError('hasError')) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Clear Errors
+         */
+        private clearErrors(): void {
+
+             // Clear errors
+            $('#email_auth').ntsEditor("clear");
+            $('#password').ntsEditor("clear");
+            $('#smtp_port').ntsEditor("clear");
+            $('#smtp_server').ntsEditor("clear");
+            $('#imap_port').ntsEditor("clear");
+            $('#imap_server').ntsEditor("clear");
+            $('#pop_port').ntsEditor("clear");
+            $('#pop_server').ntsEditor("clear");
+            // Clear error inputs
+            $('.nts-input').ntsError('clear');
+        }
             
             /**
              * Get mail server setting

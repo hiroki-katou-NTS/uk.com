@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClosureWs.
@@ -145,12 +145,12 @@ public class ClosureWs {
 	@Path("getday")
 	public DayMonthDto getDay(DayMonthInDto input){
 		ClosureGetMonthDay closureGetMonthDay = new ClosureGetMonthDay();
-		Period period = closureGetMonthDay.getDayMonth(
+		DatePeriod period = closureGetMonthDay.getDayMonth(
 				new ClosureDate(input.getClosureDate(), input.getClosureDate() == 0),
 				input.getMonth());
 		DayMonthDto dto = new DayMonthDto();
-		dto.setBeginDay(period.getStartDate().toString());
-		dto.setEndDay(period.getEndDate().toString());
+		dto.setBeginDay(period.start().toString());
+		dto.setEndDay(period.end().toString());
 		return dto;
 	}
 	/**
@@ -172,12 +172,12 @@ public class ClosureWs {
 		DayMonthDto afterClosureDate = new DayMonthDto();
 
 		beforeClosureDate
-				.setBeginDay(dayMonthChange.getBeforeClosureDate().getStartDate().toString());
-		beforeClosureDate.setEndDay(dayMonthChange.getBeforeClosureDate().getEndDate().toString());
+				.setBeginDay(dayMonthChange.getBeforeClosureDate().start().toString());
+		beforeClosureDate.setEndDay(dayMonthChange.getBeforeClosureDate().end().toString());
 
 		afterClosureDate
-				.setBeginDay(dayMonthChange.getAfterClosureDate().getStartDate().toString());
-		afterClosureDate.setEndDay(dayMonthChange.getAfterClosureDate().getEndDate().toString());
+				.setBeginDay(dayMonthChange.getAfterClosureDate().start().toString());
+		afterClosureDate.setEndDay(dayMonthChange.getAfterClosureDate().end().toString());
 		dto.setBeforeClosureDate(beforeClosureDate);
 		dto.setAfterClosureDate(afterClosureDate);
 		return dto;
