@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
@@ -44,8 +46,10 @@ public class PerInfoInitValueSettingCtgFinder {
 
 	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(String settingId) {
 
-		return this.settingCtgRepo.getAllCategoryBySetId(settingId).stream()
+		List<PerInfoInitValueSettingCtgDto> settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream()
 				.map(c -> PerInfoInitValueSettingCtgDto.fromDomain(c)).collect(Collectors.toList());
+
+		return settingList;
 
 	}
 

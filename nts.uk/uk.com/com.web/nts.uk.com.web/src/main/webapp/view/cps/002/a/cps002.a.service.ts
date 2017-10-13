@@ -10,6 +10,9 @@ module cps002.a.service {
         'getCardNumber': 'basic/organization/employee/getGenerateCardNo',
         'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
         'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
+        'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
+        'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
+        'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}'
 
     };
 
@@ -39,6 +42,19 @@ module cps002.a.service {
 
     export function validateEmpInfo(employeeCode, cardNo) {
         return ajax(paths.validateEmpInfo, { employeeCode: employeeCode, cardNo: cardNo });
+    }
+
+    export function getCopySetting() {
+        return ajax(paths.getCopySetting);
+    }
+
+    export function getAllInitValueSetting() {
+        return ajax(paths.getAllInitValueSetting);
+    }
+
+    export function getAllInitValueCtgSetting(settingId: string) {
+        return ajax(format(paths.getAllInitValueCtgSetting, settingId));
+
     }
 
 }

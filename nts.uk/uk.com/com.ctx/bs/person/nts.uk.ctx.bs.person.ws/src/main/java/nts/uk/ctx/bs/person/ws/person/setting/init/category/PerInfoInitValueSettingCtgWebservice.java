@@ -30,7 +30,7 @@ public class PerInfoInitValueSettingCtgWebservice extends WebService {
 
 	@POST
 	@Path("findAllBySetId/{settingId}")
-	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(@PathParam("findAllBySetId") String settingId) {
+	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(@PathParam("settingId") String settingId) {
 		return this.finder.getAllCategoryBySetId(settingId);
 	}
 

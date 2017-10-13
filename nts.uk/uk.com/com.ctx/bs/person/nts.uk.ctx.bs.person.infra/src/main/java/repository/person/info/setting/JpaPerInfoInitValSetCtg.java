@@ -20,8 +20,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " INNER JOIN PpemtPerInfoCtgCm cm " + " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
-			+ " WHERE b.abolitionAtr = 0 " + " AND cm.personEmployeeType = 2 " + " AND cm.categoryType >< 2 "
-			+ " AND cm.categoryType >< 5 " + " AND cm.categoryParentCd IS NULL" + " AND b.settingId = : settingId"
+			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingId = :settingId"
 			+ " ORDER BY e.disporder ";
 
 	private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, "
@@ -75,7 +74,6 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	@Override
 	public void add(PerInfoInitValSetCtg domain) {
 		this.commandProxy().insert(toEntity(domain));
-
 	}
 
 	@Override
