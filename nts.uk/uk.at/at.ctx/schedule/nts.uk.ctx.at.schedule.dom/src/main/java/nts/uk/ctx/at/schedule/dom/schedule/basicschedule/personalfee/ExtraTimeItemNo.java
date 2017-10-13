@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalcost;
+package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee;
 
 /**
  * The Enum ExtraTimeItemNo.

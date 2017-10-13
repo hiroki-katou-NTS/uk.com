@@ -19,7 +19,7 @@ public class WorkScheduleBusCal extends DomainObject{
 	private WorkScheduleMasterReferenceAtr referenceBusinessDayCalendar;
 	
 	/** The reference basic work. */
-	// 就業時間帯の参照先
+	// 基本勤務の参照先
 	private WorkScheduleMasterReferenceAtr referenceBasicWork;
 	
 	/** The working hours. */
