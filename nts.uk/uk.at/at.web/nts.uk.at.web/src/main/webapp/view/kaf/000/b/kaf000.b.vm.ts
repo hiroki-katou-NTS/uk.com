@@ -16,7 +16,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //list appID 
         listReasonByAppID: KnockoutObservableArray<String>;
 
-
         /**
          * value obj 
          */
@@ -147,7 +146,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
 
-                //self.checkDisplayStart();
+                self.checkDisplayStart();
+                self.checkDisplayAction();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -160,7 +160,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     //b1_7
                     self.enableRelease(true);
 
-
+                    
                     if (self.outputDetailCheck().authorizableFlags == true) {
                         //例：ログイン者の承認区分が未承認
                         if (self.outputDetailCheck().approvalATR == 0) {
@@ -321,7 +321,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 dfd.resolve(data);
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            });
+            }); 
             return dfd.promise();
         }
         //get all reason by app ID
@@ -420,6 +420,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.denyApp(self.dataApplication()).done(function() {
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_222' })
                 dfd.resolve();
             });
             return dfd.promise();
@@ -479,25 +480,27 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     });
                     //lấy vị trí appID vừa xóa trong listAppID
                     let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
-                    if (index > -1) {
+                    if (index > -1 && index != self.listAppMeta.length-1) {
                         //xóa appID vừa xóa trong list
-                        self.listAppMeta.splice(index, 1);
+                        self.appID(self.listAppMeta[index+1].appID);
                     }
+                    
+                    self.listAppMeta.splice(index, 1);
                     //nếu vị trí vừa xóa khác vị trí cuối
                     if (index != self.listAppMeta.length - 1) {
                         //gán lại appId mới tại vị trí chính nó
-                        self.appID(self.listAppMeta[index].appID);
+                        self.btnAfter();
                     } else {
                         //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
-                        self.appID(self.listAppMeta[index - 1].appID);
+                        self.btnBefore();
                     }
+                    
                     //if list # null    
-                    if (self.listAppMeta.length != 0) {
-                        
-                    } else { //nếu list null thì trả về màn hình mẹ
+                    if (self.listAppMeta.length == 0) {
+                        //nếu list null thì trả về màn hình mẹ
                         nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
                     }
-
+            
                     dfd.resolve();
                 });
             });
@@ -734,5 +737,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.applicationReason = applicationReason;
             }
         }
+        
     }
 }

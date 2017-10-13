@@ -78,7 +78,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 			data.application = application.get();
 		}
 		//14-2.詳細画面起動前モードの判断
-		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.getDetailedScreenPreBootMode(application.get(), application.get().getApplicationDate());
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(application.get(), application.get().getApplicationDate());
 		data.detailedScreenPreBootModeOutput = preBootOuput;
 		//14-1.詳細画面起動前申請共通設定を取得する
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);

@@ -108,6 +108,9 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	}
 	
 	private KrqdtAppLateOrLeave toEntity (LateOrLeaveEarly domain){
+		int index = domain.getApplicationReason().v().indexOf(":");
+		String appReasonId = domain.getApplicationReason().v().substring(0, index);
+		String applicationReason = domain.getApplicationReason().v().substring(index + 1);
 		return new KrqdtAppLateOrLeave (
 					new KrqdtAppLateOrLeavePK(domain.getCompanyID(), domain.getAppID()),
 					domain.getActualCancelAtr(),
@@ -124,13 +127,13 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 									domain.getCompanyID(), 
 									domain.getApplicationID()), 
 							domain.getVersion(),
-							domain.getApplicationReason().v().split(":")[0],
+							appReasonId,
 							domain.getPrePostAtr().value, 
 							domain.getInputDate(), 
 							domain.getEnteredPersonSID(), 
 							domain.getReversionReason().v(), 
 							domain.getApplicationDate(), 
-							domain.getApplicationReason().v().split(":")[1].substring(1), 
+							applicationReason, 
 							domain.getApplicationType().value, 
 							domain.getApplicantSID(), 
 							domain.getReflectPlanScheReason().value, 

@@ -4,7 +4,6 @@ module nts.uk.at.view.kdw003.a {
         var screenModel = new nts.uk.at.view.kdw003.a.viewmodel.ScreenModel();
         screenModel.startPage().done(() => {
             screenModel.loadKcp009();
-            screenModel.loadGrid();
             __viewContext.bind(screenModel);
         });
     });

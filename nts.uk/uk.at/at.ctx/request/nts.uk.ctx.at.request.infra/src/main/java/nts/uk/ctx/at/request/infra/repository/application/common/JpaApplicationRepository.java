@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.infra.repository.application.common;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -17,8 +18,12 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
+import nts.uk.ctx.at.request.infra.repository.application.common.appapprovalphase.JpaAppApprovalPhaseRepository;
+import nts.uk.ctx.at.request.infra.repository.application.common.approvalframe.JpaApprovalFrameRepository;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
@@ -53,9 +58,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
 				entity.startDate,
 				entity.endDate,
-				null);
+				entity.appApprovalPhases.stream().map(c -> JpaAppApprovalPhaseRepository.toDomain(c)).collect(Collectors.toList()));
 	}
-
 	private KafdtApplication toEntity(Application domain) {
 		String applicationReason = domain.getApplicationReason().v();
 		String appReasonID = "";
