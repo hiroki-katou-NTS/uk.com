@@ -35,6 +35,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         settingName: value,
                         itemList: data
                     });
+                    if (data.length > 0) {
+                        service.getAllItemByCtgId(data[0].perInfoCtgId).done((item: Array<any>) => {
+                            console.log(item);
+
+                        })
+                    }
 
                     self.currentCategory.valueHasMutated();
                 });
