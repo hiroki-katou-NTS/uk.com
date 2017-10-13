@@ -56,8 +56,7 @@ public class StartCheckErrorDefault implements StartCheckErrorService {
 				// 「申請設定」．承認ルートの基準日がシステム日付時点の場合
 				if (appSet.get().getBaseDateFlg() == BaseDateFlg.SYSTEM_DATE) {
 					// lay tu Cache
-					List<ApprovalRootImport> approvalRootOutputs = approvalRootRepo
-							.getApprovalRootOfSubjectRequest(companyId, employeeId, 1, appType, GeneralDate.today());
+					List<ApprovalRootImport> approvalRootOutputs = approvalRootRepo.getApprovalRootOfSubjectRequest(companyId, employeeId, 1, appType, GeneralDate.today());
 					if (approvalRootOutputs.size() > 0) {
 						ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
 						if (approvalRootOutput.getErrorFlag() != null) {
@@ -70,6 +69,7 @@ public class StartCheckErrorDefault implements StartCheckErrorService {
 						}
 					} else {
 						// 「申請設定」．承認ルートの基準日が申請対象日時点の場合
+						// DO NOT
 					}
 				}
 			}

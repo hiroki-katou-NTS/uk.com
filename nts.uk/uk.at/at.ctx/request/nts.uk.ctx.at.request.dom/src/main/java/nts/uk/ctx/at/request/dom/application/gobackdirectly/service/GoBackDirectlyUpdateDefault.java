@@ -52,7 +52,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				application.getPrePostAtr());
 		// アルゴリズム「直行直帰するチェック」を実行する
 		GoBackDirectAtr goBackAtr = goBackDirectlyRegisterService.goBackDirectCheck(goBackDirectly);
-
+		
 		if (goBackAtr == GoBackDirectAtr.NOT) {
 			throw new BusinessException("Msg_307");
 		} else {
@@ -70,9 +70,8 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				}
 			} else {
 				//アルゴリズム「直行直帰更新」を実行する
-				this.appRepo.updateApplication(application);
+				//this.appRepo.updateApplication(application);
 				this.updateGoBackDirectly(goBackDirectly);
-				
 			}
 		}
 	}
@@ -97,8 +96,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		// ドメインモデル「直行直帰申請」の更新する
 		this.goBackDirectlyRepo.update(goBackDirectly);
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		this.detailAfterUpdate.processAfterDetailScreenRegistration(companyID, goBackDirectly.getAppID());
-
+		//this.detailAfterUpdate.processAfterDetailScreenRegistration(companyID, goBackDirectly.getAppID());
 	}
 
 }

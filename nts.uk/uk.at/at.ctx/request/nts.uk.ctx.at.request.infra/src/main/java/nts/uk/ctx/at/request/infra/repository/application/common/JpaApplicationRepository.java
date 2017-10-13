@@ -148,28 +148,32 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public void updateApplication(Application application) {
 		KafdtApplication newEntity = toEntity(application);
-		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class)
-				.get();
-		updateEntity.appReasonId = newEntity.appReasonId;
-		updateEntity.prePostAtr = newEntity.prePostAtr;
-		updateEntity.inputDate = newEntity.inputDate;
-		updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
-		updateEntity.reversionReason = newEntity.reversionReason;
-		updateEntity.applicationDate = newEntity.applicationDate;
-		updateEntity.applicationReason = newEntity.applicationReason;
-		updateEntity.applicationType = newEntity.applicationType;
-		updateEntity.applicantSID = newEntity.applicantSID;
-		updateEntity.reflectPlanScheReason = newEntity.reflectPlanScheReason;
-		updateEntity.reflectPlanTime = newEntity.reflectPlanTime;
-		updateEntity.reflectPlanState = newEntity.reflectPlanState;
-		updateEntity.reflectPlanEnforce = newEntity.reflectPlanEnforce;
-		updateEntity.reflectPerScheReason = newEntity.reflectPerScheReason;
-		updateEntity.reflectPerTime = newEntity.reflectPerTime;
-		updateEntity.reflectPerState = newEntity.reflectPerState;
-		updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
-		updateEntity.startDate = newEntity.startDate;
-		updateEntity.endDate = newEntity.endDate;
-		this.commandProxy().update(updateEntity);
+		Optional<KafdtApplication> app = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class);
+		if(app.isPresent()) {
+			KafdtApplication updateEntity = app.get();
+			updateEntity.appReasonId = newEntity.appReasonId;
+			updateEntity.prePostAtr = newEntity.prePostAtr;
+			updateEntity.inputDate = newEntity.inputDate;
+			updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
+			updateEntity.reversionReason = newEntity.reversionReason;
+			updateEntity.applicationDate = newEntity.applicationDate;
+			updateEntity.applicationReason = newEntity.applicationReason;
+			updateEntity.applicationType = newEntity.applicationType;
+			updateEntity.applicantSID = newEntity.applicantSID;
+			updateEntity.reflectPlanScheReason = newEntity.reflectPlanScheReason;
+			updateEntity.reflectPlanTime = newEntity.reflectPlanTime;
+			updateEntity.reflectPlanState = newEntity.reflectPlanState;
+			updateEntity.reflectPlanEnforce = newEntity.reflectPlanEnforce;
+			updateEntity.reflectPerScheReason = newEntity.reflectPerScheReason;
+			updateEntity.reflectPerTime = newEntity.reflectPerTime;
+			updateEntity.reflectPerState = newEntity.reflectPerState;
+			updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
+			updateEntity.startDate = newEntity.startDate;
+			updateEntity.endDate = newEntity.endDate;
+			this.commandProxy().update(updateEntity);
+			
+		}		
+		
 	}
 
 	/**
