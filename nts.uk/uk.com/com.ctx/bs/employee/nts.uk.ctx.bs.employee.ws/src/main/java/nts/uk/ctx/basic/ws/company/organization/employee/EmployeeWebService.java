@@ -219,6 +219,6 @@ public class EmployeeWebService extends WebService {
 	@POST
 	@Path("getallemployeetodelete")
 	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
-		return null;
+		return employeeFinder.getAllEmployeeInfoToDelete();
 	}
 }
