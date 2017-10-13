@@ -424,6 +424,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
+                console.log(self.periodStartDate());
                 service.checkThreeMonth(self.periodStartDate()).done(function(check) {
                     if (check) {
                         // show message confirm 567

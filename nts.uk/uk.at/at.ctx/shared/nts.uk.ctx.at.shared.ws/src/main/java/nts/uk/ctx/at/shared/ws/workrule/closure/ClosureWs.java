@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
@@ -81,8 +82,8 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("findPeriodById/{closureId}")
-	public DatePeriod findPeriodById(@PathParam("closureId") int closureId) {
-		return this.finder.findByIdGetMonthDay(closureId);
+	public DayMonthOutDto findPeriodById(@PathParam("closureId") int closureId) {
+		return new DayMonthOutDto(this.finder.findByIdGetMonthDay(closureId));
 	}
 	
 	/**
