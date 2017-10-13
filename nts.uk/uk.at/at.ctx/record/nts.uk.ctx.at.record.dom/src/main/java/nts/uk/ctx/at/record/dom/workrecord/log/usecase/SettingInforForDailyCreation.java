@@ -10,7 +10,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class SettingInformationForDailyCreation {
+public class SettingInforForDailyCreation {
 
 	/**
 	 *	0 : もう一度作り直す 

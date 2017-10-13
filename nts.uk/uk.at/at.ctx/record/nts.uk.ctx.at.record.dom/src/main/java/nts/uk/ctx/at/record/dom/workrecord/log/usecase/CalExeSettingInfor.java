@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
  *
  */
 @Getter
-public class CalculationExecutionSettingInformation {
+public class CalExeSettingInfor {
 	
 	/**
 	 * 0 : 日別作成
@@ -28,6 +28,6 @@ public class CalculationExecutionSettingInformation {
 	 */
 	private ExecutionType executionType;
 	
-	private SettingInformationForDailyCreation partResetClass;
+	private SettingInforForDailyCreation partResetClass;
 
 }

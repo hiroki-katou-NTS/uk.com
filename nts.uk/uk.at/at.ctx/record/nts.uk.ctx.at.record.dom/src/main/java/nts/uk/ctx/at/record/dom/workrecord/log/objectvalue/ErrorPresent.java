@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.log.objectvalue;
  * @author danpv
  *
  */
-public enum ErrorPresentation {
+public enum ErrorPresent {
 
 	// エラーあり
 	HasError(0),
@@ -17,7 +17,7 @@ public enum ErrorPresentation {
 
 	public final int value;
 
-	private ErrorPresentation(int value) {
+	private ErrorPresent(int value) {
 		this.value = value;
 	}
 

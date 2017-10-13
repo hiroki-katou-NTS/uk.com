@@ -5,14 +5,14 @@ package nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalculationExecutionSettingInformation;
+import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalExeSettingInfor;
 
 /**
  * @author danpv
  *
  */
 @Getter
-public class CaseSpecificExecutionContent extends AggregateRoot {
+public class CaseSpecExeContent extends AggregateRoot {
 
 	private long id;
 
@@ -20,6 +20,6 @@ public class CaseSpecificExecutionContent extends AggregateRoot {
 
 	private String useCaseName;
 
-	private CalculationExecutionSettingInformation settingInformation;
+	private CalExeSettingInfor settingInformation;
 
 }

@@ -4,17 +4,18 @@
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.EmployeeExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
 
 /**
  * @author danpv
  *
  */
 @Getter
-public class CalculationExecutionSettingInformation {
+public class ComplStateOfExeContents {
 
 	private ExecutionContent executionContent;
 
-	private ExecutionType executionType;
+	private EmployeeExecutionStatus status;
+
 }
