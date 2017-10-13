@@ -88,10 +88,10 @@ public interface EmployeeRepository {
 
 	Boolean isDuplicateCardNo(String companyId, String cardNumber);
 	
+	//laitv
 	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
 
-	
-	//laitv
+	List<Object[]> getAllEmployeeInfoToDelete();
 	/**
 	 * 
 	 * temporary delete Employee 

@@ -26,9 +26,6 @@ module cps001.b.vm {
                     }
                 });
             }
-
-
-
         }
 
         pushData() {
@@ -75,7 +72,6 @@ module cps001.b.vm {
                 self.employeeCode(param.employeeCode || '');
                 self.personName(param.personName || '');
                 self.reason(param.reason || '');
-
             }
         }
     }

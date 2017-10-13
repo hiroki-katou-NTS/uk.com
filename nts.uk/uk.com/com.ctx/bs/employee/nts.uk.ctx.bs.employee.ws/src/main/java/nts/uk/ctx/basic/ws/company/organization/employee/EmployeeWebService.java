@@ -215,4 +215,10 @@ public class EmployeeWebService extends WebService {
 	public void delereEmployee(EmployeeDeleteCommand command) {
 		this.empDeleteHandler.handle(command);
 	}
+	
+	@POST
+	@Path("getallemployeetodelete")
+	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
+		return null;
+	}
 }

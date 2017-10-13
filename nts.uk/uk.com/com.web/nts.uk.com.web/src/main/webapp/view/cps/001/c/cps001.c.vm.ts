@@ -10,9 +10,16 @@ module cps001.c.vm {
 
     export class ViewModel {
 
-        constructor() {
-            let self = this;
+        listEmpDelete: KnockoutObservableArray<IEmployees> = ko.observableArray([]);
+        currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
+        detail: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ datedelete: '', reason: '', newCode: '', newName:'' }));
 
+        constructor() {
+            let self = this,
+            currentEmployee = self.currentEmployee(),
+            detail = self.detail();
+
+            
             self.start();
         }
 
@@ -21,20 +28,48 @@ module cps001.c.vm {
 
         }
 
-        saveData() {
-            let self = this;
 
-            // push data layout to webservice
-            block();
-            service.saveData({}).done(() => {
-                self.start();
-                info({ messageId: "Msg_15" }).then(function() {
-                    unblock();
-                });
-            }).fail((mes) => {
-                unblock();
-                alert(mes.message);
-            });
+    }
+
+    interface IEmployees {
+        code: string;
+        name: string;
+    }
+    
+     class Employee {
+        code: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+         
+        constructor(param?: IEmployees) {
+            let self = this;
+            if (param) {
+                self.code(param.code || '');
+                self.name(param.name || '');
+            }
         }
     }
+    
+      interface IEmployeeInfo {
+        datedelete: string;
+        reason: string;
+        newCode: string;
+        newName: string;
+    }
+    
+     class EmployeeInfo {
+        datedelete: KnockoutObservable<string> = ko.observable('');
+        reason: KnockoutObservable<string> = ko.observable('');
+        newCode: KnockoutObservable<string> = ko.observable('');
+        newName: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IEmployeeInfo) {
+            let self = this;
+
+            self.datedelete(param.datedelete || '');
+            self.reason(param.reason || '');
+            self.newCode(param.newCode || '');
+            self.newName(param.newName || '');
+        }
+    }
+
 }

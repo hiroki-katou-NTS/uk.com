@@ -78,6 +78,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	
 	public final String GET_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
+	
+	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
+			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId ";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -296,6 +299,12 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	@Override
 	public void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement) {
 		this.commandProxy().insert(toEntityDeleteEmpManagent(deleteEmpManagement));
+	}
+
+	@Override
+	public List<Object[]> getAllEmployeeInfoToDelete() {
+		List<Object[]> lst = this.queryProxy().query(GET_ALL_EMPLOYEE_INFO_TO_DELETE).getList();
+		return lst;
 	}
 
 }
