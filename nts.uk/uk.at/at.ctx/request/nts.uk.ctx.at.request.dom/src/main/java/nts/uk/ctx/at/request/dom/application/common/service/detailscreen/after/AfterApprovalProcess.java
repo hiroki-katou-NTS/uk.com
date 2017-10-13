@@ -14,7 +14,7 @@ public interface AfterApprovalProcess {
 	/**
 	 * 詳細画面承認後の処理
 	 */
-	public void detailScreenAfterApprovalProcess(Application application);
+	public List<String> detailScreenAfterApprovalProcess(Application application);
 
 	/**
 	 * 1.申請個別のエラーチェック

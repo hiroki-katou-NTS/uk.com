@@ -6,8 +6,8 @@ package nts.uk.ctx.sys.env.app.command.mailserver;
 
 import lombok.Data;
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
+/**
+ * The Class SmtpInfoDto.
  */
 @Data
 public class SmtpInfoDto {

@@ -5,7 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface AffiliationClassificationHistoryGetMemento.
@@ -24,7 +24,7 @@ public interface AffClassHistoryGetMemento {
 	 *
 	 * @return the period
 	 */
-	Period getPeriod();
+	DatePeriod getPeriod();
 	
 	
 	/**

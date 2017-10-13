@@ -20,6 +20,10 @@ public class GoBackDirectSettingDto {
 	 */
 	String employeeName;
 	/**
+	 * 社員.社員ID
+	 */
+	String sID;
+	/**
 	 * 申請定型理由
 	 */
 	List<ApplicationReasonDto> listReasonDto;
@@ -37,9 +41,10 @@ public class GoBackDirectSettingDto {
 				GoBackDirectlyCommonSettingDto.convertToDto(
 						domain.getGoBackDirectSet().get()),
 						domain.getEmployeeName(), 
+						domain.getSID(), 
 						domain.getListAppReason().stream()
-							.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
-						AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()));
+						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
+				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()));
 	}
 
 }

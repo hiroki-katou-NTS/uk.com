@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace;
 
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 /**
  * The Interface WorkplaceHistorySetMemento.
  */
@@ -21,5 +23,5 @@ public interface WorkplaceHistorySetMemento {
 	 *
 	 * @param period the new period
 	 */
-	public void setPeriod(Period period);
+	public void setPeriod(DatePeriod period);
 }

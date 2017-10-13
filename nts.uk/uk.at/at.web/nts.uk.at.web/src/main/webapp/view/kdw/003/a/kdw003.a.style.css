@@ -1,11 +1,90 @@
-#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining, #btnExtraction{vertical-align: text-bottom;}
-#btnVacationRemaining{margin-left: 200px;}
-#dislayFormatLbl{margin-left: 20px;}
-#right-content{margin-left: 80px;width: 1200px;}
-#emp-component, #cbListDate{margin-top: 10px;}
-#btn-signAll{margin: 0px 0 0 200px;}
-#btn-setting {float:right;margin: 3px 100px 0 20px;}
-#btn-saveColumnWidth {float:right;margin-top: 3px;}
-.grid-container {margin: 15px 0 0 0px;}
+#function-content {
+	width: 1200px;
+}
+
+#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
+	#btnExtraction {
+	vertical-align: text-bottom;
+}
+
+#btnVacationRemaining {
+	margin-left: 200px;
+}
+
+#dislayFormatLbl {
+	margin-left: 20px;
+}
+
+#right-content {
+	margin-left: 80px;
+	width: 1200px;
+}
+
+#emp-component, #cbListDate {
+	margin-top: 10px;
+}
+
+#btn-signAll {
+	margin: 0px 0 0 200px;
+}
+
+#btn-saveColumnWidth {
+	float: right;
+	margin-top: 3px;
+}
+
+.grid-container {
+	margin: 15px 0 0 0px;
+}
+
+.setting-container {
+	display: inline-block;
+	float: right;
+	margin: 3px 100px 0 20px;
+	position: relative;
+}
+
+#setting-content {
+	height: 200px;
+	width: 290px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	position: absolute;
+	z-index: 2;
+	background-color: white;
+	margin-left: -293px;
+	padding: 15px;
+	display: none;
+}
+
+#cbCursorMoveDirection {
+	width: 20px;
+	min-width: 65px;
+	vertical-align: middle;
+	margin-bottom: 10px;
+}
+
+.vacationRemaining-container {
+	display: inline-block;
+	position: relative;
+}
+
+#vacationRemaining-content {
+	height: 68px;
+	width: 340px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	position: absolute;
+	z-index: 2;
+	background-color: white;
+	margin-left: -50px;
+	padding: 15px;
+	margin-top: 2px;
+	display: none;
+}
+
+#vacationRemaining-content button {
+	width: 110px;
+}
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */

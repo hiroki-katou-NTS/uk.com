@@ -11,10 +11,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
+import nts.uk.ctx.at.request.infra.repository.application.common.approveaccepted.JpaApproveAcceptedRepository;
 /**
  * 
  * @author hieult
@@ -79,12 +81,12 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 		return list;
 	}
 
-	private ApprovalFrame toDomain(KrqdtApprovalFrame entity) {
+	public static ApprovalFrame toDomain(KrqdtApprovalFrame entity) {
 		return ApprovalFrame.createFromJavaType(
 				entity.krqdtApprovalFramePK.companyID,
 				entity.krqdtApprovalFramePK.frameID, 
 				entity.dispOrder, 
-				null);
+				entity.kafdtApproveAccepteds.stream().map(c -> JpaApproveAcceptedRepository.toDomain(c)).collect(Collectors.toList()));
 	}
 
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain, String phaseID) {

@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author hungnm
@@ -73,6 +74,14 @@ public class DailyPerformanceCorrectionDto {
 			state.add("ntsgrid-disable");
 			lstCellState.add(new DPCellStateDto(data.getId(), header.getKey(), state));
 			this.setLstCellState(lstCellState);
+		}
+	}
+
+	public void markLoginUser(){
+		for(DailyPerformanceEmployeeDto employee: lstEmployee){
+			if(employee.getId().equals(AppContexts.user().employeeId())){
+				employee.setLoginUser(true);
+			}
 		}
 	}
 	

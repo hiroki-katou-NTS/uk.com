@@ -6,6 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class DocumentFile {
+	
+	/**
+	 * 電子書類ファイル
+	 */
 
 	/** The UploadOrder */
 	private UploadOrder uploadOrder;

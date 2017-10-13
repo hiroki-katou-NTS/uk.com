@@ -23,6 +23,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         //
         appType : KnockoutObservable<number>;
+        
+        approvalList: Array<model.AppApprovalPhase> = [];
         constructor(){
             let self = this;
 
@@ -34,7 +36,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //item approval root
             self.approvalRoot = ko.observableArray([]);
             //obj input approval root (new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'))
-            self.objApprovalRootInput = ko.observable(null);
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput("", 1,1,new Date());
             // app ID
             self.appType = ko.observable(0);
             //obj input get message deadline 
@@ -77,6 +79,37 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 if(self.listApprovalRoot !=null && self.listApprovalRoot().length>0 ){
                     self.approvalRoot(self.listApprovalRoot()[0]);
                 }
+                let listPhase = self.approvalRoot().beforeApprovers; 
+                let approvalList = [];
+                for(let x = 1; x <= listPhase.length; x++){
+                    let phaseLoop = listPhase[x-1];
+                    let appPhase = new model.AppApprovalPhase(
+                        "",
+                        "",
+                        phaseLoop.approvalForm,
+                        x,
+                        0,
+                        []); 
+                    for(let y = 1; y <= phaseLoop.approvers.length; y++){
+                        let frameLoop = phaseLoop.approvers[y-1];
+                        let appFrame = new model.ApprovalFrame(
+                            "",
+                            y,
+                            []);
+                        let appAccepted = new model.ApproveAccepted(
+                            "",
+                            frameLoop.sid,
+                            0,
+                            frameLoop.confirmPerson ? 1 : 0,
+                            "",
+                            "",
+                            frameLoop.sid);
+                        appFrame.listApproveAccepted.push(appAccepted);
+                        appPhase.listFrame.push(appFrame);   
+                    };
+                    approvalList.push(appPhase);    
+                };
+                self.approvalList = approvalList;
                 dfd.resolve(data);    
             }).fail(function (res: any){
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
@@ -289,6 +322,64 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 this.deadline = deadline;
             }
         }// end class outputMessageDeadline
+        
+        export class AppApprovalPhase {
+            appID: String;
+            phaseID: String;
+            approvalForm: number;
+            dispOrder: number;
+            approvalATR: number;
+            listFrame : Array<ApprovalFrame>;
+            constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number, 
+                    approvalATR: number,
+                    listFrame : Array<ApprovalFrame>) {
+                this.appID = appID;
+                this.phaseID = phaseID;
+                this.approvalForm = approvalForm;
+                this.dispOrder = dispOrder;
+                this.approvalATR = approvalATR;
+                this.listFrame = listFrame;
+            }
+        }
+
+        // class ApprovalFrame
+        export class ApprovalFrame {
+            frameID : String;
+            dispOrder:number;
+            listApproveAccepted: Array<ApproveAccepted>;
+            constructor(frameID : String, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
+                this.frameID = frameID;
+                this.dispOrder = dispOrder;
+                this.listApproveAccepted = listApproveAccepted;
+                
+            }
+        }//end class frame  
+
+        //class ApproveAccepted
+        export class ApproveAccepted {
+            appAccedtedID : String;
+            approverSID: String;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: String;
+            reason: String;
+            representerSID: String;
+            constructor(appAccedtedID : String,
+                    approverSID: String,
+                    approvalATR: number,
+                    confirmATR: number,
+                    approvalDate: String,
+                    reason: String,
+                    representerSID: String){
+                this.appAccedtedID = appAccedtedID;
+                this.approverSID = approverSID;
+                this.approvalATR = approvalATR;
+                this.confirmATR = confirmATR;
+                this.approvalDate = approvalDate;
+                this.reason = reason;
+                this.representerSID = representerSID;
+            }
+        }
         
     }
 }

@@ -44,7 +44,7 @@ public class Workplace extends AggregateRoot{
         Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
             @Override
             public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
-                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+                return obj2.getPeriod().start().compareTo(obj1.getPeriod().start());
             }
         });
 	}

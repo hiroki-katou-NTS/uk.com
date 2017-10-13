@@ -100,7 +100,6 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
 		// 承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
-		EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput();
 		for (EmployeeImport empInfor : lstEmps) {
 			List<String> appTypes = new ArrayList<>();
 			for (ApplicationType appType : ApplicationType.values()) {
@@ -115,9 +114,8 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 			}
 
 			if (!CollectionUtil.isEmpty(appTypes)) {
-				empInfo.setAppType(appTypes);
 				// TODO can phai them thong tin worplace cho employee
-				empInfo.setEmpInfor(empInfor);
+				EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput(empInfor, appTypes);
 				lstUnRegister.add(empInfo);
 			}
 		}

@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface AffiliationWorkplaceHistorySetMemento.
@@ -16,7 +16,7 @@ public interface AffWorkplaceHistorySetMemento {
 	 *
 	 * @param period the period
 	 */
-	void setPeriod(Period period);
+	void setPeriod(DatePeriod period);
 	
 	
 	/**

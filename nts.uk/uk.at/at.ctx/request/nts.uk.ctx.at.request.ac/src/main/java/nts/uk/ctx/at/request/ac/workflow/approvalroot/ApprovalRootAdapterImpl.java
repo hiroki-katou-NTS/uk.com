@@ -16,10 +16,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverInfoExport;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
@@ -30,6 +32,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	
 	@Inject
 	private EmployeeAdapter employeeAdapter;
+	
+	@Inject 
+	private SyJobTitlePub syJobTitlePub;
 
 	@Override
 	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
@@ -126,15 +131,22 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	}
 	
 	private ApproverInfoImport convertApproverInfoImport(ApproverInfoExport approverInfoExport) {
+		String companyID = AppContexts.user().companyId();
 		ApproverInfoImport temp = new  ApproverInfoImport(
-				null, // jobID 
+				approverInfoExport.getJobId(), // jobID 
 				approverInfoExport.getSid(),
 				approverInfoExport.getApprovalPhaseId(),
 				approverInfoExport.isConfirmPerson(),
 				approverInfoExport.getOrderNumber(),
-				1 // int approvalAtr  = 0,1
+				approverInfoExport.getApprovalAtr() // int approvalAtr  = 0,1
 				);
-		temp.addEmployeeName(employeeAdapter.getEmployeeName(approverInfoExport.getSid()));
+		if(approverInfoExport.getApprovalAtr() ==0) {//if pesson
+			temp.addEmployeeName(employeeAdapter.getEmployeeName(approverInfoExport.getSid()));
+		}
+		if(approverInfoExport.getApprovalAtr() ==1) {
+			temp.addEmployeeName(syJobTitlePub.findByJobId(companyID, approverInfoExport.getJobId(), GeneralDate.today()).get().getPositionName());
+
+		}
 		return temp;
 		
 	}

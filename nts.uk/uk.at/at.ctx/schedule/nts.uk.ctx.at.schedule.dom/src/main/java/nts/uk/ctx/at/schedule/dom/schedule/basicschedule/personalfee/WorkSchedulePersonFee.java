@@ -21,4 +21,25 @@ public class WorkSchedulePersonFee extends DomainObject{
 	/** The personal fee amount. */
 	// 人件費金額
 	private PersonalFeeAmount personalFeeAmount; 
+	
+	
+	/**
+	 * Instantiates a new work schedule person fee.
+	 *
+	 * @param memento the memento
+	 */
+	public WorkSchedulePersonFee(WorkSchedulePersonFeeGetMemento memento) {
+		this.no = memento.getNo();
+		this.personalFeeAmount = memento.getPersonalFeeAmount();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkSchedulePersonFeeSetMemento memento){
+		memento.setNo(this.no);
+		memento.setPersonalFeeAmount(this.personalFeeAmount);
+	}
 }
