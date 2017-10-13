@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.command.employee;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
@@ -8,12 +9,13 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
 public class EmployeeDeleteCommand {
 	
 	/** The employment Id. */
-	private String employeeId;
+	private String sId;
 	
 	/** The reason delete employee. */
-	private String reasonDelete;
+	private String reason;
 	
 }

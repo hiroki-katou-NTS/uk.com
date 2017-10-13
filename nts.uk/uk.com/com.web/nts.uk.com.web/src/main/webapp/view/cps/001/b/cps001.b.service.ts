@@ -14,6 +14,6 @@ module cps001.b.service {
     }
     
     export function deleteEmp(modelDelete : any) {
-        return ajax(format(paths.deleteEmp, modelDelete));
+        return ajax(paths.deleteEmp, modelDelete);
     }
 }

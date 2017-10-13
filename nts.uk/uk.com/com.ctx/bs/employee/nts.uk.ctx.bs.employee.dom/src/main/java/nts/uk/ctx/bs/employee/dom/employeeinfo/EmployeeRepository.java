@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
 
 /**
  * The Interface EmployeeRepository.
@@ -87,6 +88,14 @@ public interface EmployeeRepository {
 
 	Boolean isDuplicateCardNo(String companyId, String cardNumber);
 	
+	//laitv
 	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
 
+	List<Object[]> getAllEmployeeInfoToDelete();
+	/**
+	 * 
+	 * temporary delete Employee 
+	 * @param domain: DeleteEmpManagement
+	 */
+	void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement);
 }

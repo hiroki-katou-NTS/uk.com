@@ -3,7 +3,7 @@ module cps001.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': '',
+        'getListTemporaryEmpDelete': '',
         'saveData': ''
     };
 

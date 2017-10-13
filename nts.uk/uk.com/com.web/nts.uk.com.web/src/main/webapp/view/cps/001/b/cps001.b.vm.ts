@@ -4,6 +4,7 @@ module cps001.b.vm {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import showDialog = nts.uk.ui.dialog;
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
@@ -25,22 +26,23 @@ module cps001.b.vm {
                     }
                 });
             }
-
-
-
         }
 
         pushData() {
             let self = this,
-                empDelete: ModelDelete = self.empDelete();
+                empDelete: IModelDto = ko.toJS(self.empDelete);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
                     //employeeId: any = getShared('CPS001B_PARAM') || null;
                     employeeId = "90000000-0000-0000-0000-000000000001";
                 if (employeeId) {
-                    service.deleteEmp(new EmpDelete(employeeId, empDelete.reason + "")).done((result) => {
-                        setShared('CPS001B_VALUE', {});
-                        console.log(result);
+                    let command = { sId: employeeId, reason: empDelete.reason };
+                    service.deleteEmp(command).done(() => {
+                        showDialog.info({ messageId: "Msg_16" }).then(function() {
+                            setShared('CPS001B_VALUE', {});
+                            close();
+                        });
+
                     });
                 }
             }).ifCancel(() => {
@@ -70,21 +72,7 @@ module cps001.b.vm {
                 self.employeeCode(param.employeeCode || '');
                 self.personName(param.personName || '');
                 self.reason(param.reason || '');
-
             }
         }
     }
-
-    class EmpDelete {
-        employeeId: string;
-        reasonDelete: string;
-        constructor(employeeId: string, reasonDelete: string) {
-            this.employeeId = employeeId;
-            this.reasonDelete = reasonDelete;
-        }
-    }
-
-
-
-
 }

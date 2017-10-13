@@ -16,10 +16,14 @@ import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagement;
+import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagementPK;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
@@ -74,6 +78,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	
 	public final String GET_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
+	
+	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
+			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId ";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -100,6 +107,18 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return domain;
 	}
 
+	private BsymtDeleteEmpManagement toEntityDeleteEmpManagent(DeleteEmpManagement domain) {
+		BsymtDeleteEmpManagementPK pk = new BsymtDeleteEmpManagementPK(domain.getSid());
+		BsymtDeleteEmpManagement entity = new BsymtDeleteEmpManagement();
+		entity.setBsymtDeleteEmpManagementPK(pk);
+		entity.setReason(domain.getReasonRemoveEmp().toString());
+		entity.setIsDeleted(0); // 0 : false
+		entity.setDeleteDate(domain.getDeleteDate());
+		
+		return entity;
+		
+		
+	}
 	@Override
 	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
 		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployee.class)
@@ -275,6 +294,17 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		Optional<Object[]> empInfo = this.queryProxy().query(GET_EMPLOYEE_INFO_TO_DELETE)
 				.setParameter("sId", employeeId).getSingle();
 		return empInfo;
+	}
+
+	@Override
+	public void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement) {
+		this.commandProxy().insert(toEntityDeleteEmpManagent(deleteEmpManagement));
+	}
+
+	@Override
+	public List<Object[]> getAllEmployeeInfoToDelete() {
+		List<Object[]> lst = this.queryProxy().query(GET_ALL_EMPLOYEE_INFO_TO_DELETE).getList();
+		return lst;
 	}
 
 }
