@@ -259,7 +259,6 @@ module nts.uk.com.view.cmm018.a {
                        self.showinfoSelectedEmployee(true);
                        self.selectedEmployee(dataList);
                         __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(dataList);
-                       
                    },
                    onSearchOnlyClicked: function(data: vmbase.EmployeeSearchDto) {
                        self.showinfoSelectedEmployee(true);
@@ -1383,7 +1382,6 @@ module nts.uk.com.view.cmm018.a {
                 self.lstNameAppType = ko.observableArray([]);
                 self.dataSourceB = ko.observable(null);
                 self.dataDisplay = ko.observableArray([]);
-                self.getDataCompanyPr();
                 let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'abc','123',0, '',0,0);
                 let aaa = new vmbase.CompanyAppRootADto(false, true,0,'1','','','',a, a, a, a, a);
                     self.cpA.push(aaa);
@@ -1394,7 +1392,9 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: company
                     if(self.tabSelectedB()==0){
-                        self.getDataCompanyPr();
+                        if(self.dataIB() != null){
+                            self.getDataCompanyPr();
+                        }
                         let com = self.findRootComB(codeChanged);
                         //TH: item data
                         if(com != null && com !== undefined){
@@ -1418,6 +1418,9 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: work place
                     else if(self.tabSelectedB()==1){
+                        if(self.dataIB() != null){
+                            self.getDataWorkplacePr();
+                        }
                         let wp = self.findRootWpD(codeChanged);
                         if(wp != null && wp !== undefined){
                             self.historyStr(wp.workplace.startDate + ' ~ ' + wp.workplace.endDate);
@@ -1434,11 +1437,13 @@ module nts.uk.com.view.cmm018.a {
                         //TH: 1,2,appName
                         else{
                             self.comRoot(null);
-//                            self.showItem(codeChanged);
                         }
                     }
                     //TH: person
                     else{
+                        if(self.dataIB() != null){
+                            self.getDataPersonPr();
+                        }
                         let ps = self.findRootPsF(codeChanged);
                         if(ps != null && ps !== undefined){
                             self.historyStr(ps.person.startDate + ' ~ ' + ps.person.endDate);
@@ -1455,7 +1460,6 @@ module nts.uk.com.view.cmm018.a {
                         //TH: 1,2,appName
                         else{
                             self.comRoot(null);
-//                            self.showItem(codeChanged);
                         }
                     }
                     self.comRoot.valueHasMutated();
