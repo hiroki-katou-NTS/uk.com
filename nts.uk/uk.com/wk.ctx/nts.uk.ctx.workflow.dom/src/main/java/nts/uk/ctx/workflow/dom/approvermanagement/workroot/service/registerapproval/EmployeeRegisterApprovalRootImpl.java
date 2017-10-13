@@ -74,14 +74,12 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		// ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
 		List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate);
 		// 選択する対象社員リストを先頭から最後までループする(loop list nhan vien da chon tu dau den cuoi)
-		// du lieu cua employee trong workplace
-		Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo = new HashMap<>();
 		for (String empId : lstEmpIds) {
 			List<ApprovalRootCommonOutput> appOfEmployee = new ArrayList<>();
 			// ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート = false)
 			if (rootAtr == EmploymentRootAtr.COMMON.value) {
 				appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, baseDate);
-				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, 99, "共通ルート", mapEmpRootInfo);
+				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, 99, "共通ルート");
 			}
 			// 選択する申請対象をループする(loop theo loại don xin da chon)
 			for (String appType : lstApps) {
@@ -89,8 +87,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				ApplicationType appTypeE = EnumAdaptor.valueOf(Integer.parseInt(appType), ApplicationType.class);
 				appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, appTypeE,
 						baseDate);
-				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, appTypeE.value, appTypeE.nameId,
-						mapEmpRootInfo);
+				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, appTypeE.value, appTypeE.nameId);
 			}
 
 		}
@@ -99,12 +96,12 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 
 	private Map<String, WpApproverAsAppOutput> getData(List<ApprovalRootCommonOutput> lstAppOfEmployee,
 			String companyID, String empId, GeneralDate baseDate, Map<String, WpApproverAsAppOutput> appOutput,
-			int apptyle, String appTypeName, Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo) {
+			int apptyle, String appTypeName) {
 		// list phase cua employee
 		List<ApproverAsApplicationInforOutput> phaseInfors = new ArrayList<>();
 		// du lieu cua phase trong employee
 		Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppType = new HashMap<>();
-
+		Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo = new HashMap<>();
 		// 終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
 		if (!CollectionUtil.isEmpty(lstAppOfEmployee)) {
 			// 2.承認ルートを整理する

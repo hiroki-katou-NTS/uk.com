@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         fontWeightBack: KnockoutObservable<number> = ko.observable(0);
         
         //勤務を変更する 
-        workChangeAtr: KnockoutObservable<boolean> = ko.observable(true);
+        workChangeAtr: KnockoutObservable<boolean> = ko.observable(false);
         //勤務種類
         workTypeCd: KnockoutObservable<string> = ko.observable('');
         workTypeName: KnockoutObservable<string> = ko.observable('');
@@ -98,28 +98,30 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             var dfd = $.Deferred();
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: any) {
-                //申請制限設定.申請理由が必須
-                self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
-                if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
-                    //send Mail
-                    self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
-                    //pre Post Enable
-                    self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);   
-                }
-                //pre Post display
-                self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
-                //共通設定.複数回勤務
-                self.useMulti(settingData.dutiesMulti);
-                //get all work Location source  
-                self.getAllWorkLocation();
-                //get employeeID login 
-                self.employeeID = settingData.sid;
                 if(!nts.uk.util.isNullOrEmpty(settingData)){
-                    //get Reason
+                    //申請制限設定.申請理由が必須
+                    self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
+                    if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
+                        //登録時にメールを送信する
+                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
+                        //事前事後区分 Enable
+                        self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);   
+                    }
+                    //事前事後区分
+                    self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+                    //共通設定.複数回勤務
+                    self.useMulti(settingData.dutiesMulti);
+                    //場所選択
+                    self.getAllWorkLocation();
+                    //申請者 ID
+                    self.employeeID = settingData.sid;
+                    //勤務を変更する
+                    self.workChangeAtr(settingData.goBackSettingDto.workChangeFlg == 1 ? true : false);
+                    //定型理由
                     self.setReasonControl(settingData.listReasonDto);
-                    //set employee Name
+                    //申請者
                     self.employeeName(settingData.employeeName);
-                    //set Common Setting
+                    //直行直帰申請共通設定
                     self.setGoBackCommonSetting(settingData.goBackSettingDto);
                 }
                 dfd.resolve();
@@ -134,15 +136,71 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
-            nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
-                service.insertGoBackDirect(self.getCommand()).done(function() {
-                    alert("Insert Done");
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                })
-            }).ifNo(function() {
-                nts.uk.ui.block.clear();
+            var promiseResult = self.checkBeforeInsert();
+            promiseResult.done((result) => {
+                if (result) {
+                    nts.uk.ui.block.invisible();
+                    service.insertGoBackDirect(self.getCommand()).done(function() {
+                        alert("Insert Done");
+                    }).fail(function(res) {
+                        console.log(res);
+                        //$('#inpStartTime1').ntsError('set', {messageId:"Msg_297"});
+                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    }).then(function(){
+                        nts.uk.ui.block.clear();    
+                    })
+                }
             });
+        }
+        
+        /**
+         * 
+         */
+        checkBeforeInsert(): JQueryPromise<boolean> {
+            let self = this;
+            let dfd = $.Deferred();
+            //check before Insert 
+            
+           if(self.checkUse()){
+               service.checkInsertGoBackDirect(self.getCommand()).done(function(){
+                   dfd.resolve(true);
+                }).fail(function(res){
+                    if(res.messageId =="Msg_297"){
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
+                           dfd.resolve(true);
+                        }).ifNo(function() {
+                            nts.uk.ui.block.clear();
+                   dfd.resolve(false);
+                        });
+                    } else if(res.messageId == "Msg_298"){
+                        dfd.reject();
+                        //Chưa có THỰC TÍCH nên chưa chưa so sánh các giá trị nhập vào được
+                        //khi có so sánh trên server thì gửi thêm vị trí giá trị giờ nhập sai nữa
+                        $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                        $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                        $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                        $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                    }
+                })
+           }
+            return dfd;
+        }
+        
+        /**
+         * アルゴリズム「直行直帰するチェック」を実行する
+         */
+        checkUse(){
+            let self = this;
+            if (self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0) {
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
+                    return true;
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return false;
+                });
+            } else {
+                return true;
+            }
         }
         /**
          * get All Work Location
