@@ -85,7 +85,7 @@ public class WorkplaceConfigInfoFinder {
         // get list hierarchy
         List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
         List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
-        lstHierarchy.stream().forEach(item -> {
+        lstHierarchy.forEach(item -> {
             Optional<Workplace> opWorkplace = this.wkpRepo.findByWorkplaceId(companyId, item.getWorkplaceId());
             if (!opWorkplace.isPresent()) {
                 throw new RuntimeException(String.format("Workplace %s didn't exist.", item.getWorkplaceId()));

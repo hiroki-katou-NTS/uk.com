@@ -27,6 +27,9 @@ module nts.uk.com.view.cmm011.a {
             isNewMode: KnockoutObservable<boolean>;
             isWkpHistoryLatest: KnockoutObservable<boolean>;
             isWkpConfigHistLatest: KnockoutObservable<boolean>;
+            
+            // when delete workplace config history (screen B)
+            isDeleteWkpConfigHistory: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -50,8 +53,9 @@ module nts.uk.com.view.cmm011.a {
                     self.workplaceHistory().selectedHistoryId();
                     return self.workplaceHistory().isSelectedLatestHistory();
                 });
-                self.isWkpConfigHistLatest = ko.observable(true);
-
+                self.isWkpConfigHistLatest = ko.observable(false);
+                self.isDeleteWkpConfigHistory =  ko.observable(false);
+                
                 // subscribe
                 self.strDWorkplace.subscribe((newValue) => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) {
@@ -61,6 +65,11 @@ module nts.uk.com.view.cmm011.a {
                     // load again tree workplace
                     self.treeWorkplace().findLstWorkplace(newValue).done(() => {
                         if (self.treeWorkplace().lstWorkplace() && self.treeWorkplace().lstWorkplace().length > 0) {
+                            
+                            // reload workplace history
+                            if (self.treeWorkplace().lstWorkplace()[0].workplaceId == self.treeWorkplace().selectedWpkId()) {
+                                self.isDeleteWkpConfigHistory.valueHasMutated;
+                            }
                             self.treeWorkplace().selectFirst();
                         }
                     });
@@ -75,6 +84,13 @@ module nts.uk.com.view.cmm011.a {
                     }
                     self.wkpDisplayName(wkpDisplayName + newValue);
                     self.wkpFullName(wkpFullName + newValue);
+                });
+                self.isDeleteWkpConfigHistory.subscribe(newValue => {
+                    if (!newValue) {
+                        return;
+                    }
+                    // reload workplace history
+                    self.treeWorkplace().selectedWpkId.valueHasMutated();
                 });
             }
 
@@ -104,6 +120,7 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.block.clear();
                     // set start date, end date
                     if (data && data.length > 0) {
+                        self.isWkpConfigHistLatest(true);
                         self.wkpConfigHistId = data[0].historyId;
                         self.strDWorkplace(data[0].startDate);
                         self.endDWorkplace(data[0].endDate);
@@ -221,6 +238,7 @@ module nts.uk.com.view.cmm011.a {
                     if (!dialogData) {
                         return;
                     }
+                    self.isDeleteWkpConfigHistory(dialogData.isDeletionMode);
                     self.isWkpConfigHistLatest(dialogData.isWkpConfigHistLatest);
                     self.wkpConfigHistId = dialogData.historyId;
                     self.strDWorkplace(dialogData.startDate);

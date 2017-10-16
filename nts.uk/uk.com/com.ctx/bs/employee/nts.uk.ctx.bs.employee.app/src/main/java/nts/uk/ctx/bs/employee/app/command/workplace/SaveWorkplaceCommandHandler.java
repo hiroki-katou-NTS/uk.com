@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.info.WorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.app.command.workplace.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.workplace.CreateWorkpceType;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -56,11 +56,6 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         String companyId = AppContexts.user().companyId();
         SaveWorkplaceCommand command = context.getCommand();
         
-        // valid existed workplace code
-        if (this.wkpInfoRepo.isExistedWkpCd(companyId, command.getWkpInfor().getWorkplaceCode())) {
-            throw new BusinessException("Msg_3");
-        }
-        
         if (command.getIsAddMode()) {
             this.addWorkplace(companyId, command);
         } else {
@@ -77,6 +72,12 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
      * @param command the command
      */
     private void addWorkplace(String companyId, SaveWorkplaceCommand command) {
+        
+        // valid existed workplace code
+        if (this.wkpInfoRepo.isExistedWkpCd(companyId, command.getWkpInfor().getWorkplaceCode())) {
+            throw new BusinessException("Msg_3");
+        }
+        
         // insert domain workplace
         Workplace newWorkplace = command.getWorkplace().toDomain(companyId);
         this.wkpRepo.add(newWorkplace);

@@ -14,13 +14,12 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
+import nts.uk.ctx.bs.employee.dom.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,19 +38,13 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
     @Inject
     private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
     
-    /** The workplace repo. */
+    /** The wkp service. */
     @Inject
-    private WorkplaceRepository workplaceRepo;
+    private WorkplaceService wkpService;
     
     /** The wkp config service. */
     @Inject
     private WkpConfigService wkpConfigService;
-    
-    /** The Constant DATE_FORMAT. */
-    private static final String DATE_FORMAT = "yyyy/MM/dd";
-    
-    /** The Constant MAX_DATE. */
-    private static final String MAX_DATE = "9999/12/31";
     
     /* (non-Javadoc)
      * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -81,8 +74,7 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         // update end date of previous history (below history that is removed)
         int idxPrevHistLatest = 1;
         String prevHistIdLatest = wkpConfig.getWkpConfigHistory().get(idxPrevHistLatest).getHistoryId();
-        this.wkpConfigService.updatePrevHistory(companyId, prevHistIdLatest,
-                GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
+        this.wkpConfigService.updatePrevHistory(companyId, prevHistIdLatest, HistoryUtil.getMaxDate());
         
         // find all workplace of history that is removed
         Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = this.wkpConfigInfoRepo.find(companyId,
@@ -96,7 +88,8 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         
         // remove workplace of history
         lstWkpId.forEach((wkpId) -> {
-            this.workplaceRepo.removeByWkpId(companyId, wkpId);
+            this.wkpService.removeWkpHistory(companyId, wkpId,
+                    wkpConfig.getWkpConfigHistoryLatest().getPeriod().start());
         });
     }
 
