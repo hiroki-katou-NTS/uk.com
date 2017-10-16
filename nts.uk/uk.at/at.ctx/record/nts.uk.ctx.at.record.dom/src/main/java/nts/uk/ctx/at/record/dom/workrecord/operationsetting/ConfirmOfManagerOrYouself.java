@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
-public enum ConfirmationOfManagerOrYouself {
+public enum ConfirmOfManagerOrYouself {
 	
 	CAN_CHECK_WHEN_ERROR(0),
 	
@@ -10,7 +10,7 @@ public enum ConfirmationOfManagerOrYouself {
 	
 	public final int value;
 	
-	private ConfirmationOfManagerOrYouself(int value) {
+	private ConfirmOfManagerOrYouself(int value) {
 		this.value = value;
 	}
 

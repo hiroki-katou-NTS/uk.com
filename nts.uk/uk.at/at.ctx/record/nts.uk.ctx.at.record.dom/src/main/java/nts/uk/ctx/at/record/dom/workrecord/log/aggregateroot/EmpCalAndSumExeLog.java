@@ -12,32 +12,45 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.log.CaseExecutionContentId;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutedMenu;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionStatusOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExeStateOfCalAndSum;
 
 /**
  * @author danpv
  *
  */
 @Getter
-public class EmploymentCalculationAndSummaryExecutionLog extends AggregateRoot {
+public class EmpCalAndSumExeLog extends AggregateRoot {
 
-	private long Id;
+	private long empCalAndSumExecLogId;
 
 	private String companyId;
 
 	private String employeeId;
-	
+
+	/**
+	 * 締めID
+	 */
 	private int closureId;
-	
+
 	private GeneralDate executionDate;
-	
+
 	private YearMonth processingMonth;
 
+	/**
+	 * ・選択して実行 ・ケース別実行
+	 */
 	private ExecutedMenu executedMenu;
 
+	/**
+	 * List log
+	 * 1->4 elements
+	 */
 	private List<ExecutionLog> executionLogs;
 
-	private ExecutionStatusOfCalAndSum executionStatus;
+	/**
+	 * ・完了 　・完了（エラーあり）　 ・処理中 　・実行中止 　・中断開始 　・中断終了
+	 */
+	private ExeStateOfCalAndSum executionStatus;
 
 	private CaseExecutionContentId operationCase;
 

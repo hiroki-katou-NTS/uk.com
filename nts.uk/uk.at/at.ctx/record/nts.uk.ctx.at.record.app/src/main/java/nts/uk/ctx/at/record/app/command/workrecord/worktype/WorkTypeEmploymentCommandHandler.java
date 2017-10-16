@@ -13,7 +13,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorktypeGroup;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
-import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmploymentRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class WorkTypeEmploymentCommandHandler extends CommandHandler<WorkTypeEmploymentCommand> {
 
 	@Inject
-	private WorkingTypeChangedByEmploymentRepoInterface workTypeRepo;
+	private WorkingTypeChangedByEmpRepo workTypeRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkTypeEmploymentCommand> context) {
@@ -38,7 +38,7 @@ public class WorkTypeEmploymentCommandHandler extends CommandHandler<WorkTypeEmp
 				.collect(Collectors.toList());
 		WorkingTypeChangedByEmployment workingType = new WorkingTypeChangedByEmployment(new CompanyId(companyId),
 				new EmploymentCode(employmentCode), changeableWorkTypeGroups);
-		workTypeRepo.saveWorkingTypeChangedByEmployment(workingType);
+		workTypeRepo.save(workingType);
 	}
 
 }

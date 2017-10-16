@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.log.objectvalue;
  * @author danpv
  *
  */
-public enum ExecutionStatusOfCalAndSum {
+public enum ExeStateOfCalAndSum {
 
 	// 完了
 	Done(0),
@@ -29,7 +29,7 @@ public enum ExecutionStatusOfCalAndSum {
 
 	public final int value;
 
-	private ExecutionStatusOfCalAndSum(int value) {
+	private ExeStateOfCalAndSum(int value) {
 		this.value = value;
 	}
 
