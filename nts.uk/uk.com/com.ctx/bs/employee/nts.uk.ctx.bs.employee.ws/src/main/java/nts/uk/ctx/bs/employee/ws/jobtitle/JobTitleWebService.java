@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.ws.jobtitle;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -7,10 +9,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.basic.ws.company.organization.jobtitle.Kcp003Dto;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.SaveJobTitleHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.SaveJobTitleHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.JobTitleFinder;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleFindDto;
+import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleItemDto;
 
 /**
  * The Class JobTitleWebService.
@@ -26,6 +30,12 @@ public class JobTitleWebService extends WebService {
 	/** The save job title history command handler. */
 	@Inject
 	private SaveJobTitleHistoryCommandHandler saveJobTitleHistoryCommandHandler;
+	
+	@Path("findAll")
+	@POST
+	public List<JobTitleItemDto> findAll(Kcp003Dto dto) {
+		return this.jobTitleFinder.findAll(dto.getBaseDate());
+	}
 	
 	/**
 	 * Find by job id.
