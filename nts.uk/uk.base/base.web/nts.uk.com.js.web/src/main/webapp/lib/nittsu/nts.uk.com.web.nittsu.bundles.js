@@ -21010,7 +21010,8 @@ var nts;
                         constructSite.buildFileChangeHandler();
                         var customOption = {
                             aspectRatio: freeResize ? 0 : resizeRatio,
-                            dragMode: croppable ? "crop" : "none"
+                            dragMode: croppable ? "crop" : "none",
+                            modal: false
                         };
                         constructSite.buildImageLoadedHandler(zoomble, customOption);
                         constructSite.buildSrcChangeHandler();
@@ -21104,6 +21105,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.buildImageLoadedHandler = function (zoomble, customOption) {
                         var self = this;
+                        self.$root.data("img-status", self.buildImgStatus("not init", 0));
                         self.$imagePreview.on('load', function () {
                             var image = new Image();
                             image.src = self.$imagePreview.attr("src");
@@ -21125,36 +21127,95 @@ var nts;
                                 jQuery.extend(option, customOption);
                                 self.cropper = new Cropper(self.$imagePreview[0], option);
                                 self.$root.data("cropper", self.cropper);
+                                self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                                var evtData = {
+                                    size: self.$root.data("size"),
+                                    height: this.height,
+                                    width: this.width,
+                                    name: self.$root.data("file-name"),
+                                    fileType: self.$root.data("file-type")
+                                };
+                                self.$root.trigger("imgloaded", evtData);
                             };
+                        }).on("error", function () {
+                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                         });
+                    };
+                    ImageEditorConstructSite.prototype.buildImgStatus = function (status, statusCode) {
+                        return {
+                            imgOnView: statusCode === 4 ? true : false,
+                            imgStatus: status,
+                            imgStatusCode: statusCode
+                        };
                     };
                     ImageEditorConstructSite.prototype.buildSrcChangeHandler = function () {
                         var self = this;
                         self.$root.bind("srcchanging", function (evt, query) {
+                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
                             var target = self.helper.getUrl(query);
-                            var xhr = new XMLHttpRequest();
+                            var xhr = self.getXRequest();
+                            if (xhr === null) {
+                                self.destroyImg();
+                                return;
+                            }
                             xhr.open('GET', target);
                             xhr.responseType = 'blob';
                             xhr.onload = function (e) {
                                 if (this.status == 200) {
-                                    var reader = new FileReader();
-                                    reader.readAsDataURL(xhr.response);
-                                    reader.onload = function () {
-                                        self.helper.getFileNameFromUrl().done(function (fileName) {
-                                            var fileType = xhr.response.type.split("/")[1], fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
-                                            self.backupData(null, fileName, fileType, xhr.response.size);
-                                            self.$imagePreview.attr("src", reader.result);
-                                        });
-                                    };
+                                    if (xhr.response.type.indexOf("image") >= 0) {
+                                        var reader = new FileReader();
+                                        reader.readAsDataURL(xhr.response);
+                                        reader.onload = function () {
+                                            self.helper.getFileNameFromUrl().done(function (fileName) {
+                                                var fileType = xhr.response.type.split("/")[1], fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
+                                                self.backupData(null, fileName, fileType, xhr.response.size);
+                                                self.$imagePreview.attr("src", reader.result);
+                                            });
+                                        };
+                                    }
+                                    else {
+                                        self.destroyImg();
+                                    }
+                                }
+                                else {
+                                    self.destroyImg();
                                 }
                             };
                             xhr.send();
                         });
                     };
+                    ImageEditorConstructSite.prototype.destroyImg = function () {
+                        var self = this;
+                        nts.uk.ui.dialog.alert("画像データが正しくないです。。");
+                        self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                        self.backupData(null, "", "", 0);
+                        self.$imagePreview.attr("src", "");
+                        self.$imageSizeLbl.text("");
+                        if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
+                            self.cropper.destroy();
+                        }
+                        self.$root.data("cropper", self.cropper);
+                    };
+                    ImageEditorConstructSite.prototype.getXRequest = function () {
+                        if (typeof XDomainRequest != "undefined") {
+                            return new XDomainRequest();
+                        }
+                        else if (typeof XMLHttpRequest != "undefined") {
+                            return new XMLHttpRequest();
+                        }
+                        else if (window.ActiveXObject) {
+                            return new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        else {
+                            return null;
+                        }
+                    };
                     ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
                         var self = this;
                         self.$inputFile.change(function () {
+                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
                             if (nts.uk.util.isNullOrEmpty(this.files)) {
+                                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                                 return;
                             }
                             self.assignImageToView(this.files[0]);
@@ -21167,6 +21228,9 @@ var nts;
                             fr.onload = function () {
                                 self.$imagePreview.attr("src", fr.result);
                                 self.backupData(file, file.name, file.type.split("/")[1], file.size);
+                            };
+                            fr.onerror = function () {
+                                self.destroyImg();
                             };
                             fr.readAsDataURL(file);
                         }
@@ -21387,10 +21451,16 @@ var nts;
                             case "clear": {
                                 return clear($element);
                             }
+                            case "getImgStatus": {
+                                return getImgStatus($element);
+                            }
                             default:
                                 return;
                         }
                     };
+                    function getImgStatus($element) {
+                        return $element.data("img-status");
+                    }
                     function uploadImage($element, option) {
                         var dfd = $.Deferred();
                         var dataFile = $element.find(".image-preview").attr("src");
@@ -21406,7 +21476,7 @@ var nts;
                                 "y": cropperData.y,
                                 "width": cropperData.width,
                                 "height": cropperData.height,
-                                "crop": $element.data('checkbox').checked()
+                                "crop": nts.uk.util.isNullOrEmpty($element.data('checkbox')) ? false : $element.data('checkbox').checked()
                             };
                             nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
                                 if (data !== undefined && data.businessException) {
@@ -21631,3 +21701,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
