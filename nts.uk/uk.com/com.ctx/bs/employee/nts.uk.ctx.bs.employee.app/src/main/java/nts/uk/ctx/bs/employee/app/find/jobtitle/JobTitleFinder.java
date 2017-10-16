@@ -61,7 +61,9 @@ public class JobTitleFinder {
 		String companyId = AppContexts.user().companyId();
 		List<JobTitleInfo> jobs = infoRepository.findAll(companyId, baseDate);
 
-		return jobs.stream().map(job -> JobTitleItemDto.builder().code(job.getJobTitleCode().v())
-				.name(job.getJobTitleName().v()).build()).collect(Collectors.toList());
+		return jobs.stream()
+				.map(job -> JobTitleItemDto.builder().id(job.getJobTitleId().v())
+						.code(job.getJobTitleCode().v()).name(job.getJobTitleName().v()).build())
+				.collect(Collectors.toList());
 	}
 }
