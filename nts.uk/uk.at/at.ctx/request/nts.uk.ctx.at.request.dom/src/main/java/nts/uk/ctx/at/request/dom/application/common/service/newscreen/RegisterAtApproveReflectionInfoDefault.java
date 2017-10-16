@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.core.config.yaml.YamlConfiguration;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
@@ -45,7 +47,9 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepo;
-
+	@Inject
+	private AfterApprovalProcess afterProcess;
+	
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application) {
 		String appID = application.getApplicationID();
@@ -75,7 +79,12 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				continue;
 			}
 			List<ApprovalFrame> listFrame = appPhase.getListFrame();
-			
+			List<String> allAcceptedPhase = new ArrayList<>();
+			appPhase.getListFrame().stream().forEach(x -> {
+				x.getListApproveAccepted().stream().forEach(y -> {
+					allAcceptedPhase.add(y.getApproverSID());
+				});
+			});
 			for (ApprovalFrame frame : listFrame) {
 				boolean checkAllApproval = true;				
 				List<ApproveAccepted> lstApprover = frame.getListApproveAccepted();
@@ -115,7 +124,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 									UUID.randomUUID().toString(),
 									"", 
 									ApprovalAtr.APPROVED.value, 
-									ConfirmAtr.USEATR_USE.value, 
+									ConfirmAtr.USEATR_USE.value, //can xem lai
 									GeneralDate.today(),
 									"", //xem lai comment
 									loginEmp);
@@ -124,87 +133,118 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 					}
 				}
 				
-			}	
+			}
 			// 「承認フェーズ」．承認形態をチェックする(check 「承認フェーズ」．承認形態)
 			ApprovalForm aprovalForm = appPhase.getApprovalForm();
-			// 「承認フェーズ」．承認形態が誰か一人
-			// 承認フラグ
+			// 承認完了フラグ
 			boolean flgApprovalDone = false;
 			// Trường hợp chỉ có một người approval
+			// 「承認フェーズ」．承認形態が誰か一人
 			if (aprovalForm == ApprovalForm.SINGLEAPPROVED) {
 				flgApprovalDone = false;	
-				// if文：「承認枠」1．確定区分 == true OR 「承認枠」2．確定区分 == true OR...「承認枠」5．確定区分 == true
+				
+				// if文：「承認枠」1．確定区分 == true OR 「承認枠」2．確定区分 == true OR...「承認枠」5．確定区分 == true		
+				boolean isConfirmAtr = true;
+				List<String> lstApproverIds = new ArrayList<>();
 				for (ApprovalFrame frame : listFrame) {
-					List<String> lstApproverIds = frame.getListApproveAccepted().stream()
+					lstApproverIds = frame.getListApproveAccepted().stream()
 							.map(x -> x.getApproverSID()).collect(Collectors.toList());
-					List<String> listApproved = approvalProcess.actualReflectionStateDecision(
-							application.getApplicationID(), appPhase.getPhaseID(), ApprovalAtr.APPROVED);
+					
+					//確定者を設定したかチェックする(check có cài đặt người 確定者 hay không)
 					for (ApproveAccepted accepted : frame.getListApproveAccepted()) {
-						// if文がtrue ==>> 確定者が承認済かチェックする(
-						if (accepted.getConfirmATR() == ConfirmAtr.USEATR_USE) {
-							// 確定者が承認済かチェックする
-							if (accepted.getApprovalATR() == ApprovalAtr.APPROVED) {
-								flgApprovalDone = true;
-							} else {
-								// アルゴリズム「承認代行情報の取得処理」を実行する
-								AgentPubImport agency = this.approvalAgencyInformationService
-										.getApprovalAgencyInformation(companyID, lstApproverIds);
-								if (!agency.isFlag()) {
-									flgApprovalDone = false;
-								}
+						if(accepted.getConfirmATR() == ConfirmAtr.USEATR_NOTUSE) {
+							isConfirmAtr = false;
+							break;
+						}
+					}
+				}
+				//if文がtrue
+				if(isConfirmAtr) {
+					
+					//確定者が承認済かチェックする(check nguoif 確定者 đã xác nhận hay chưa)
+					boolean isConfirmted = true;
+					for (ApprovalFrame frame : listFrame) {
+						for(ApproveAccepted accepted : frame.getListApproveAccepted()) {
+							if(accepted.getConfirmATR() == ConfirmAtr.USEATR_USE && accepted.getApprovalATR() != ApprovalAtr.APPROVED) {
+								isConfirmted = false;
+								break;
 							}
-						} else {
-							// if文がfalse ==> 承認済の承認枠があるかチェックする
-							if (accepted.getApprovalATR() == ApprovalAtr.APPROVED) {
-								flgApprovalDone = true;
-							} else {
-								AgentPubImport agency = this.approvalAgencyInformationService
-										.getApprovalAgencyInformation(companyID, lstApproverIds);
-								if (!agency.isFlag()) {
-									flgApprovalDone = false;
-								}
+						}
+					}
+					
+					//if文がtrue
+					if(isConfirmted) {
+						flgApprovalDone = true;
+					}else {
+						//アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
+						AgentPubImport agency = this.approvalAgencyInformationService
+								.getApprovalAgencyInformation(companyID, lstApproverIds);
+						if (agency.isFlag()) {
+							flgApprovalDone = true;
+						}
+					}
+				}else {
+					boolean isApproved = true;
+					//承認済の承認枠があるかチェックする(check xem có 承認枠 đã được xác nhận hay khồng)
+					for (ApprovalFrame frame : listFrame) {
+						for(ApproveAccepted accepted : frame.getListApproveAccepted()) {
+							if(accepted.getApprovalATR() != ApprovalAtr.APPROVED) {
+								isApproved = false;
+								break;
 							}
+						}
+					}
+					
+					//if文がtrue
+					if(isApproved) {
+						flgApprovalDone = true;
+					}else {
+						//アルゴリズム「承認者一覧を取得する」を実行する(thực hiện xử lý 「承認者一覧を取得する」)
+						//アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
+						AgentPubImport agency = this.approvalAgencyInformationService
+								.getApprovalAgencyInformation(companyID, allAcceptedPhase);
+						if (agency.isFlag()) {
+							flgApprovalDone = true;
 						}
 					}
 				}
 			} else {
 				// 「承認フェーズ」．承認形態が全員承認
 				flgApprovalDone = true;
-				// 全員承認したかチェックする
-				boolean allApprovePhase = true;
+				// 全員承認したかチェックする(check xem tất cả người xác nhận đã xác nhận chưa)
+				boolean isApproved = true;
 				for (ApprovalFrame frame : listFrame) {
-					// 全員承認したかチェックする
-					// tat ca da dc approver
-					if (!this.isFrameApprove(frame)) {
-						allApprovePhase = false;
+					for(ApproveAccepted accepted : frame.getListApproveAccepted()) {
+						if(accepted.getApprovalATR() != ApprovalAtr.APPROVED) {
+							isApproved = false;
+							break;
+						}
 					}
 				}
-				if (!allApprovePhase) {
-					// 未承認の承認者一覧を取得する
-					List<String> listUnApprover = approvalProcess.actualReflectionStateDecision(
-							application.getApplicationID(), appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
-					// 承認代行情報の取得処理
+				//if文がtrue
+				if(isApproved) {
+					flgApprovalDone = true;
+				}else {
+					//アルゴリズム「未承認の承認者一覧を取得する」を実行する(thực hiện xử lý 「未承認の承認者一覧を取得する」)
+					List<String> lstNotApproved = afterProcess.actualReflectionStateDecision("", appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
+					//アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
+					
 					AgentPubImport agency = this.approvalAgencyInformationService
-							.getApprovalAgencyInformation(companyID, listUnApprover);
-					if (!agency.isFlag()) {
-						flgApprovalDone = false;
+							.getApprovalAgencyInformation(companyID, lstNotApproved);
+					if (agency.isFlag()) {
+						flgApprovalDone = true;
 					}
-				}
-
+				}				
 			}
-			// その以外
+			// 承認完了フラグをチェックする(check 承認完了フラグ)
 			if (flgApprovalDone) {
 				// 承認完了フラグをチェックする
 				// ループ中のドメインモデル「承認フェーズ」．承認区分 = 承認済
-				appPhase.changeApprovalATR(ApprovalAtr.APPROVED);
-				listAppPhase.add(appPhase);
-				listDispOrder.add(appPhase.getDispOrder());
+				appPhase.changeApprovalATR(ApprovalAtr.APPROVED);				
 			} else {
 				listAppPhase.add(appPhase);
 			}
 		}
-		output.setAppApprovalPhase(listAppPhase);
-		output.setDispOrderPhase(listDispOrder);
 		return application;
 	}
 	/**
