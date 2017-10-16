@@ -2,87 +2,99 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime;
 
 import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KscmtChildCareSchedulePK.
+ * The Class KscmtWorkSchTimePK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KscmtChildCareSchedulePK implements Serializable {
+public class KscmtWorkSchTimePK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
+	
+	/** The sid. */
 	@Basic(optional = false)
     @NotNull
     @Column(name = "SID")
     private String sid;
     
-    /** The date. */
+    /** The ymd. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "YMD")
-	public GeneralDate ymd;
-    
-    /** The child care number. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CHILD_CARE_NUMBER")
-    private int childCareNumber;
+    @Convert(converter = GeneralDateToDBConverter.class)
+    private GeneralDate ymd;
 
-    public KscmtChildCareSchedulePK() {
+    /**
+     * Instantiates a new kscmt work sch time PK.
+     */
+    public KscmtWorkSchTimePK() {
     }
 
-    public KscmtChildCareSchedulePK(String sid, GeneralDate ymd, int childCareNumber) {
-        this.sid = sid;
-        this.ymd = ymd;
-        this.childCareNumber = childCareNumber;
-    }
 
-    @Override
+    /**
+     * Instantiates a new kscmt work sch time PK.
+     *
+     * @param sid the sid
+     * @param ymd the ymd
+     */
+    public KscmtWorkSchTimePK(String sid, GeneralDate ymd) {
+		this.sid = sid;
+		this.ymd = ymd;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (sid != null ? sid.hashCode() : 0);
         hash += (ymd != null ? ymd.hashCode() : 0);
-        hash += (int) childCareNumber;
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscmtChildCareSchedulePK)) {
+        if (!(object instanceof KscmtWorkSchTimePK)) {
             return false;
         }
-        KscmtChildCareSchedulePK other = (KscmtChildCareSchedulePK) object;
+        KscmtWorkSchTimePK other = (KscmtWorkSchTimePK) object;
         if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
             return false;
         }
         if ((this.ymd == null && other.ymd != null) || (this.ymd != null && !this.ymd.equals(other.ymd))) {
             return false;
         }
-        if (this.childCareNumber != other.childCareNumber) {
-            return false;
-        }
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        return "entity.KscmtChildCareSchedulePK[ sid=" + sid + ", ymd=" + ymd + ", childCareNumber=" + childCareNumber + " ]";
+        return "entity.KscmtWorkScheduleTimePK[ sid=" + sid + ", ymd=" + ymd + " ]";
     }
     
 }

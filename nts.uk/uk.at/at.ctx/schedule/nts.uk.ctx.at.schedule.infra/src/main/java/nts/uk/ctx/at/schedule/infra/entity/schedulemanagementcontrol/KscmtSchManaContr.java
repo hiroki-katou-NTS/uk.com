@@ -6,47 +6,53 @@ package nts.uk.ctx.at.schedule.infra.entity.schedulemanagementcontrol;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtScheduleManCon.
+ * The Class KscmtSchManaContr.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCHEDULE_MAN_CON")
-public class KscmtScheduleManCon implements Serializable {
+@Table(name = "KSCMT_SCH_MANA_CONTR")
+public class KscmtSchManaContr implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The sid. */
     @Id
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "SID")
     private String sid;
     
-    /** The schedule man atr. */
-    @Column(name = "SCHEDULE_MAN_ATR")
-    private int scheduleManAtr;
+    /** The sch manage atr. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "SCH_MANAGE_ATR")
+    private int schManageAtr;
 
     /**
-     * Instantiates a new kscmt schedule man con.
+     * Instantiates a new kscmt sch mana contr.
      */
-    public KscmtScheduleManCon() {
+    public KscmtSchManaContr() {
     }
 
     /**
-     * Instantiates a new kscmt schedule man con.
+     * Instantiates a new kscmt sch mana contr.
      *
      * @param sid the sid
      */
-    public KscmtScheduleManCon(String sid) {
+    public KscmtSchManaContr(String sid) {
         this.sid = sid;
     }
 
@@ -66,10 +72,10 @@ public class KscmtScheduleManCon implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtScheduleManCon)) {
+        if (!(object instanceof KscmtSchManaContr)) {
             return false;
         }
-        KscmtScheduleManCon other = (KscmtScheduleManCon) object;
+        KscmtSchManaContr other = (KscmtSchManaContr) object;
         if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
             return false;
         }
@@ -81,7 +87,8 @@ public class KscmtScheduleManCon implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KscmtScheduleManCon[ sid=" + sid + " ]";
+        return "entity.KscmtSchManaContr[ sid=" + sid + " ]";
     }
+    
     
 }

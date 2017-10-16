@@ -33,8 +33,8 @@ public class KscmtWsPersonFee implements Serializable {
     
     /** The personal pee amount. */
     @NotNull
-    @Column(name = "PERSONAL_PEE_AMOUNT")
-    private int personalPeeAmount;
+    @Column(name = "PERSONAL_FEE_AMOUNT")
+    private int personalFeeAmount;
 
     public KscmtWsPersonFee() {
     }

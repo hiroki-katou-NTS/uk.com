@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
+
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,87 +21,100 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KscmtScheduleExcLog.
+ * The Class KscmtSchExecutionLog.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCHEDULE_EXC_LOG")
-public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
-	
+@Table(name = "KSCMT_SCH_EXECUTION_LOG")
+public class KscmtSchExecutionLog implements Serializable {
+    
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kscmt schedule exc log PK. */
+    /** The kscmt sch execution log PK. */
     @EmbeddedId
-    protected KscmtScheduleExcLogPK kscmtScheduleExcLogPK;
+    protected KscmtSchExecutionLogPK kscmtSchExecutionLogPK;
     
     /** The exe sid. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "EXE_SID")
     private String exeSid;
     
     /** The exe str D. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "EXE_STR_D")
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeStrD;
-
+    
     /** The exe end D. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "EXE_END_D")
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeEndD;
-
+    
     /** The start ymd. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "START_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate startYmd;
-
+    
     /** The end ymd. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "END_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endYmd;
-
-    /** The completion status. */
-    @Column(name = "COMPLETION_STATUS")
-    private Integer completionStatus;
     
+    /** The completion status. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "COMPLETION_STATUS")
+    private int completionStatus;
+
     /**
-     * Instantiates a new kscmt schedule exc log.
+     * Instantiates a new kscmt sch execution log.
      */
-    public KscmtScheduleExcLog() {
+    public KscmtSchExecutionLog() {
     }
 
     /**
-     * Instantiates a new kscmt schedule exc log.
+     * Instantiates a new kscmt sch execution log.
      *
-     * @param kscmtScheduleExcLogPK the kscmt schedule exc log PK
+     * @param kscmtSchExecutionLogPK the kscmt sch execution log PK
      */
-    public KscmtScheduleExcLog(KscmtScheduleExcLogPK kscmtScheduleExcLogPK) {
-        this.kscmtScheduleExcLogPK = kscmtScheduleExcLogPK;
+    public KscmtSchExecutionLog(KscmtSchExecutionLogPK kscmtSchExecutionLogPK) {
+        this.kscmtSchExecutionLogPK = kscmtSchExecutionLogPK;
     }
+
 
     /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+     * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtScheduleExcLogPK != null ? kscmtScheduleExcLogPK.hashCode() : 0);
+        hash += (kscmtSchExecutionLogPK != null ? kscmtSchExecutionLogPK.hashCode() : 0);
         return hash;
     }
 
     /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+     * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtScheduleExcLog)) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof KscmtSchExecutionLog)) {
             return false;
         }
-        KscmtScheduleExcLog other = (KscmtScheduleExcLog) object;
-        if ((this.kscmtScheduleExcLogPK == null && other.kscmtScheduleExcLogPK != null) || (this.kscmtScheduleExcLogPK != null && !this.kscmtScheduleExcLogPK.equals(other.kscmtScheduleExcLogPK))) {
+        KscmtSchExecutionLog other = (KscmtSchExecutionLog) object;
+        if ((this.kscmtSchExecutionLogPK == null && other.kscmtSchExecutionLogPK != null) || (this.kscmtSchExecutionLogPK != null && !this.kscmtSchExecutionLogPK.equals(other.kscmtSchExecutionLogPK))) {
             return false;
         }
         return true;
@@ -109,15 +125,8 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KscmtScheduleExcLog[ kscmtScheduleExcLogPK=" + kscmtScheduleExcLogPK + " ]";
+        return "entity.KscmtSchExecutionLog[ kscmtSchExecutionLogPK=" + kscmtSchExecutionLogPK + " ]";
     }
-
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
-	protected Object getKey() {
-		return this.getKscmtScheduleExcLogPK();
-	}
     
 }
+

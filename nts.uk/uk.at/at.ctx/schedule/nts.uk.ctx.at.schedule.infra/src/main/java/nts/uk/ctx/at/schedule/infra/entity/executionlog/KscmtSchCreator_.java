@@ -7,15 +7,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KscmtScheduleCreator_.
+ * The Class KscmtSchCreator_.
  */
-@StaticMetamodel(KscmtScheduleCreator.class)
-public class KscmtScheduleCreator_ {
+@StaticMetamodel(KscmtSchCreator.class)
+public class KscmtSchCreator_ {
 	
-	/** The kscmt schedule creator PK. */
-    public static volatile SingularAttribute<KscmtScheduleCreator, KscmtScheduleCreatorPK> kscmtScheduleCreatorPK;
+	/** The kscmt sch creator PK. */
+    public static volatile SingularAttribute<KscmtSchCreator, KscmtSchCreatorPK> kscmtSchCreatorPK;
     
     /** The exe status. */
-    public static volatile SingularAttribute<KscmtScheduleCreator, Integer> exeStatus;
+    public static volatile SingularAttribute<KscmtSchCreator, Integer> exeStatus;
     
 }

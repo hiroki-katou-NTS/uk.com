@@ -3,19 +3,20 @@
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.executionlog;
+
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KscmtScheduleExcLogPK_.
+ * The Class KscmtSchErrorLog_.
  */
-@StaticMetamodel(KscmtScheduleExcLogPK.class)
-public class KscmtScheduleExcLogPK_ {
+@StaticMetamodel(KscmtSchErrorLog.class)
+public class KscmtSchErrorLog_ {
 
-	 /** The cid. */
-    public static volatile SingularAttribute<KscmtScheduleExcLogPK, String> cid;
-    
-    /** The patternCd. */
-    public static volatile SingularAttribute<KscmtScheduleExcLogPK, String> exeId;
-	
+	/** The kscmt sch error log PK. */
+	public static volatile SingularAttribute<KscmtSchErrorLog, KscmtSchErrorLogPK> kscmtSchErrorLogPK;
+
+	/** The err content. */
+	public static volatile SingularAttribute<KscmtSchErrorLog, String> errContent;
+
 }
