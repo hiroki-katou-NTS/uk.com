@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.assigned;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter

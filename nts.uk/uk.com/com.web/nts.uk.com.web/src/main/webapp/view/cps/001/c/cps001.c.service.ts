@@ -3,15 +3,20 @@ module cps001.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': '',
-        'saveData': ''
+        'getListTemporaryEmpDelete': 'basic/organization/employee/getallemployeetodelete',
+        'getDetail': 'basic/organization/employee/getdetailemployeetodelete/{0}',
+        'restoreData': 'basic/organization/employee/restoredata'
     };
 
     export function getData() {
-        return ajax(paths.getData);
+        return ajax(paths.getListTemporaryEmpDelete);
     }
 
-    export function saveData(command) {
-        return ajax(paths.saveData, command);
+    export function getDetail(employeeId: any) {
+        return ajax(format(paths.getDetail, employeeId));
+    }
+
+    export function restoreData(command : any) {
+        return ajax(paths.restoreData, command);
     }
 }

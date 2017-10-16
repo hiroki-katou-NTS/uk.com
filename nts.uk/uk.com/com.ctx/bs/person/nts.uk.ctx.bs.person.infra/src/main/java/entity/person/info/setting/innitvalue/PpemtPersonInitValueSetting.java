@@ -15,20 +15,28 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BPSST_PER_INIT_SET_CTG")
-public class BpsstPersonInitValueSettingCtg extends UkJpaEntity implements Serializable {
+@Table(name = "PPEMT_PER_INIT_SET")
+public class PpemtPersonInitValueSetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsstPersonInitValueSettingCtgPk settingCtgPk;
+	public PpemtPersonInitValueSettingPk initValueSettingPk;
 
 	@Basic(optional = false)
-	@Column(name = "PER_INIT_SET_ID")
-	public String settingId;
+	@Column(name = "CID")
+	public String companyId;
+
+	@Basic(optional = false)
+	@Column(name = "PER_INIT_SET_CODE")
+	public String settingCode;
+
+	@Basic(optional = false)
+	@Column(name = "PER_INIT_SET_NAME")
+	public String settingName;
 
 	@Override
 	protected Object getKey() {
-		return settingCtgPk;
+		return initValueSettingPk;
 	}
 
 }

@@ -2,16 +2,18 @@ module cps001.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
 
-    let paths = {
-        getDetails: "basic/organization/employee/getemployeeinfo/{0}"
+    let paths : any = {
+        'getDetails': 'basic/organization/employee/getemployeetodelete/{0}',
+        'deleteEmp': 'basic/organization/employee/deleteemployee',
     };
 
 
-   /**
-    * add  Maintenance Layout
-    */
    
-    export function getEmployee(employeeId) {
+    export function getEmployee(employeeId : string) {
         return ajax(format(paths.getDetails, employeeId));
+    }
+    
+    export function deleteEmp(modelDelete : any) {
+        return ajax(paths.deleteEmp, modelDelete);
     }
 }
