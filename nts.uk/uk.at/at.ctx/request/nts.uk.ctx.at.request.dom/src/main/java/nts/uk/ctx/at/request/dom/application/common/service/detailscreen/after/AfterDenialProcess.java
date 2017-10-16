@@ -17,5 +17,5 @@ public interface AfterDenialProcess {
 	 * 
 	 * @param application
 	 */
-	public String detailedScreenAfterDenialProcess(Application application);
+	public String detailedScreenAfterDenialProcess(Application application, String memo);
 }
