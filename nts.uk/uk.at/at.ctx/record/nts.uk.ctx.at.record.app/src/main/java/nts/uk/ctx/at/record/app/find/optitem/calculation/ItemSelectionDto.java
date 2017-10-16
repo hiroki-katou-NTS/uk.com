@@ -48,7 +48,7 @@ public class ItemSelectionDto implements ItemSelectionSetMemento {
 	 */
 	@Override
 	public void setListSelectedAttendanceItem(List<SelectedAttendanceItem> items) {
-		items.stream().map(item -> {
+		this.attendanceItems = items.stream().map(item -> {
 			SelectedAttendanceItemDto dto = new SelectedAttendanceItemDto();
 			item.saveToMemento(dto);
 			return dto;
