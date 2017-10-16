@@ -284,10 +284,14 @@ module cps002.a.vm {
 
                         self.categorySelectedId(result[0].id);
                     }
-                    $('#emp_reg_info_wizard').ntsWizard("goto", 1);
+
                 }).fail((error) => {
 
-                    dialog({ messageId: error.message });
+                    dialog({ messageId: error.message }).then(() => {
+                        
+                        $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+
+                    });
 
                 });
 
