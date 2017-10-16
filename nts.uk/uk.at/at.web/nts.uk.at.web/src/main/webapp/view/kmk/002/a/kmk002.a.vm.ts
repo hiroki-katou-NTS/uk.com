@@ -522,10 +522,18 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 // Remove selected formulas.
+                let updatedList = self.calcFormulas();
                 OptionalItem.selectedFormulas().forEach(order => {
-                    //_.remove(self.calcFormulas(), item => item.orderNo == order);
-                    self.calcFormulas.remove(item => item.orderNo == order);
+                    // clear error.
+                    $('#formulaName'+ (order - 1)).ntsError('clear');
+                    $('#settingResult'+ (order - 1)).ntsError('clear');
+
+                    // remove item.
+                    _.remove(updatedList, item => item.orderNo == order);
                 });
+
+                // update formula list.
+                self.calcFormulas(updatedList);
 
                 // clear selected
                 OptionalItem.selectedFormulas([]);
@@ -863,7 +871,7 @@ module nts.uk.at.view.kmk002.a {
                         if (itemNo) {
                             self.loadOptionalItemDetail(itemNo);
                             // clear error.
-                            $('.nts-input').ntsError('clear');
+                            $('.nts-editor').ntsError('clear');
                         }
                     });
                 });
