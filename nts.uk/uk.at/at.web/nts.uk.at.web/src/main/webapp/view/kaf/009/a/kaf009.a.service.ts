@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf009.a.service {
         getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
         insertGoBackDirectly: "/at/request/application/gobackdirectly/insertGoBackDirectly",
-        checkInsertGoBackDirectly: "/at/request/application/gobackdirectly/checkBeforeInsertGoBackDirectly",
+        checkInsertGoBackDirectly: "/at/request/application/gobackdirectly/checkBeforeChangeGoBackDirectly",
         updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
     /**

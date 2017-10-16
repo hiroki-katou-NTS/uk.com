@@ -141,9 +141,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 if (result) {
                     nts.uk.ui.block.invisible();
                     service.insertGoBackDirect(self.getCommand()).done(function() {
-                        alert("Insert Done");
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail(function(res) {
-                        console.log(res);
                         //$('#inpStartTime1').ntsError('set', {messageId:"Msg_297"});
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     }).then(function(){
@@ -160,7 +159,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             //check before Insert 
-            
            if(self.checkUse()){
                service.checkInsertGoBackDirect(self.getCommand()).done(function(){
                    dfd.resolve(true);
@@ -174,16 +172,18 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         });
                     } else if(res.messageId == "Msg_298"){
                         dfd.reject();
-                        //Chưa có THỰC TÍCH nên chưa chưa so sánh các giá trị nhập vào được
+                        //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
                         //khi có so sánh trên server thì gửi thêm vị trí giá trị giờ nhập sai nữa
                         $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
                         $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
                         $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
                         $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                    }else{
+                       nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); }); 
                     }
                 })
            }
-            return dfd;
+           return dfd;
         }
         
         /**

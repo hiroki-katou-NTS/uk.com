@@ -30,7 +30,7 @@ public class UpdateGoBackDirectlyCommand {
 	/**
 	 * 就業時間帯
 	 */
-	String siftCd;
+	String siftCD;
 	/**
 	 * 勤務を変更する
 	 */

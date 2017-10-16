@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -43,6 +44,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 	@Inject
 	AppApprovalPhaseRepository appApprovalPhaseRepository;
+	@Inject 
+	NewAfterRegister newAfterRegister;
 
 	/**
 	 * 
@@ -52,12 +55,29 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		String employeeID = application.getEnteredPersonSID();
 		//アルゴリズム「直行直帰登録」を実行する
 		//2-2.新規画面登録時承認反映情報の整理 
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		Application newApp = registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 		goBackDirectRepo.insert(goBackDirectly);
-		appRepo.addApplication(application);
-		this.approvalRegistration(appApprovalPhases, application.getApplicationID());
+		approvalRegistration(appApprovalPhases,newApp.getApplicationID());
+		appRepo.addApplication(newApp);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		//newAfterRegister.processAfterRegister(newApp);
+		newAfterRegister.processAfterRegister(newApp);
+		
+	}
+	
+	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
+		appApprovalPhases.forEach(appApprovalPhase -> {
+			appApprovalPhase.setAppID(appID);
+			String phaseID = appApprovalPhase.getPhaseID();
+			appApprovalPhase.setPhaseID(phaseID);
+			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
+				String frameID = approvalFrame.getFrameID();
+				approvalFrame.setFrameID(frameID);
+				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
+					String appAcceptedID = appAccepted.getAppAcceptedID();
+					appAccepted.setAppAcceptedID(appAcceptedID);
+				});
+			});
+		});
 	}
 	
 	@Override
@@ -74,6 +94,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //				application.getPrePostAtr(), 
 //				1, 
 //				application.getApplicationType().value);
+		
+		 if(true) throw new BusinessException("Msg_297");	
 		// アルゴリズム「直行直帰するチェック」を実行する
 		if (this.goBackDirectCheck(goBackDirectly) == GoBackDirectAtr.IS) {
 			// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
@@ -88,27 +110,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				}
 			}
 		}
-	}
-	/**
-	 * 
-	 * @param appApprovalPhases
-	 * @param appID
-	 */
-	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
-		appApprovalPhases.forEach(appApprovalPhase -> {
-			appApprovalPhase.setAppID(appID);
-			String phaseID = UUID.randomUUID().toString();
-			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
-				String frameID = UUID.randomUUID().toString();
-				approvalFrame.setFrameID(frameID);
-				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					String appAcceptedID = UUID.randomUUID().toString();
-					appAccepted.setAppAcceptedID(appAcceptedID);
-				});
-			});
-			appApprovalPhaseRepository.create(appApprovalPhase);
-		});
 	}
 	
 	/**
