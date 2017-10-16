@@ -19,7 +19,7 @@ public interface RegisterAtApproveReflectionInfoService {
 	 * 
 	 * @param appID
 	 */
-	public ApprovalInfoOutput organizationOfApprovalInfo(Application application);
+	public Application organizationOfApprovalInfo(Application application);
 	
 	/**
 	 *実績反映状態の判断 
