@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
+import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDetailDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
 import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
@@ -220,5 +221,16 @@ public class EmployeeWebService extends WebService {
 	@Path("getallemployeetodelete")
 	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
 		return employeeFinder.getAllEmployeeInfoToDelete();
+	}
+	
+	@POST
+	@Path("getdetailemployeetodelete/{employeeId}")
+	public EmployeeToDeleteDetailDto getDetailEmpDelete(@PathParam("employeeId") String employeeId) {
+		return employeeFinder.getEmployeeDetailInfoToDelete(employeeId);
+	}
+	
+	@POST
+	@Path("restoredata")
+	public void restoreData() {
 	}
 }

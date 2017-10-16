@@ -13,7 +13,7 @@ module cps001.c.vm {
 
         listEmpDelete: KnockoutObservableArray<IEmployees> = ko.observableArray([]);
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
-        detail: KnockoutObservable<IEmployeeInfo> = ko.observable(null);
+        detail: KnockoutObservable<EmployeeInfo> = ko.observable(null);
 
         constructor() {
             let self = this,
@@ -21,21 +21,19 @@ module cps001.c.vm {
                 listEmpDelete = self.listEmpDelete(),
                 detail = self.detail();
 
+            self.start();
+
             currentEmployee.code.subscribe(x => {
                 if (x) {
-                    // clear all error message
-                    clearError();
-                    service.getDetail(x).done((data: IEmployeeInfo) => {
+                    let self = this;
+                    let emp: IEmployees = self.findByCode(x, self.listEmpDelete());
+                    service.getDetail(emp.id).done((data: IEmployeeInfo) => {
                         if (data) {
-                            self.detail(data);
+                            self.detail(new EmployeeInfo(data));
                         }
                     });
                 }
             });
-
-
-
-            self.start();
         }
 
         start() {
@@ -48,22 +46,47 @@ module cps001.c.vm {
                     currentEmployee.code(data[0].code);
                 }
             });
-
         }
 
-        saveData() {
+        reStoreData() {
             let self = this;
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => { 
+            let itemListLength = self.listEmpDelete().length;
+                
+            
+            }).ifCancel(() => {
+
+            });
         }
 
+        private findByCode(code: string, sources: any) {
+            let self = this;
+            if (!sources || !sources.length) {
+                return undefined;
+            }
+            let listEmp = ko.toJS(sources);
+            return _.find(listEmp, function(item: IEmployees) { return item.code == code; });
+        }
 
+        private findByIndex(code: string, sources: any) {
+            let self = this;
+            if (!sources || !sources.length) {
+                return undefined;
+            }
+
+            let indexOfItemSelected = _.findIndex(ko.toJS(sources), function(item: IEmployees) { return item.code == code; });
+
+        }
     }
 
     interface IEmployees {
         code: string;
         name: string;
+        id: string;
     }
 
     class Employee {
+        id: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
 
@@ -72,6 +95,7 @@ module cps001.c.vm {
             if (param) {
                 self.code(param.code || '');
                 self.name(param.name || '');
+                self.id(param.id || '');
             }
         }
     }
