@@ -241,7 +241,7 @@
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div
-											data-bind="ntsFormLabel: { constraint: ['DecimalPart'], required: true }"
+											data-bind="ntsFormLabel: { constraint: ['DecimalPart'], required: false }"
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_21')}' "></span>
 										</div>
@@ -255,7 +255,7 @@
 									            	width: '175px',
 									            	textalign: 'left'
 									            }),
-												required: true,
+												required: false,
 												enable: true,
 												readonly: false,
 												immediate: false}" />
@@ -308,7 +308,7 @@
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
 									            	decimallength: decimalPart>8?8:decimalPart,
-									            	width: '80px',
+									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
 									            	currencyposition:'right'
@@ -325,7 +325,7 @@
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
 									            	decimallength: decimalPart>8?8:decimalPart ,
-									            	width: '80px',
+									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
 									            	currencyposition:'right'
