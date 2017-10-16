@@ -14,11 +14,16 @@ module nts.uk.at.view.kml002.b.viewmodel {
         enableProjectItem2: KnockoutObservable<boolean>;
         enableNumerical1: KnockoutObservable<boolean>;
         enableNumerical2: KnockoutObservable<boolean>;
+        attrLabel: KnockoutObservable<String>;
+        itemNameLabel: KnockoutObservable<String>;
         
         constructor() {
             var self = this;
             
-            var data = nts.uk.ui.windows.getShared("KML002_DIALOG_B_DATA");
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            self.attrLabel = ko.observable(data.attribute);
+            self.itemNameLabel = ko.observable(data.itemName);
             
             self.radioForm = ko.observableArray([
                 { id: 0, name: nts.uk.resource.getText("KML002_25") },

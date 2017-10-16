@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
 @AllArgsConstructor
 @Getter
@@ -22,11 +23,14 @@ public class VerticalCalItem {
     private CalculateAtr calculateAtr;
     
     /* 表示区分 */
-    private int displayAtr;
+    private DisplayAtr displayAtr;
     
     /* 累計区分 */
     private CumulativeAtr cumulativeAtr;
     
     /* 属性 */
     private Attributes attributes;
+    
+    // 端数処理
+ 	private Rounding rounding;
 }

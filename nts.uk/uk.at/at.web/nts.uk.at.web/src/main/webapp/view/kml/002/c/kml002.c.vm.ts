@@ -9,9 +9,16 @@ module nts.uk.at.view.kml002.c.viewmodel {
         rightItemcolumns: KnockoutObservable<any>;
         currentRightCodeList: KnockoutObservableArray<any>;
         rightItems: KnockoutObservableArray<NewItemModel>;
+        attrLabel: KnockoutObservable<String>;
+        itemNameLabel: KnockoutObservable<String>;
         
         constructor() {
             var self = this;
+            
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            self.attrLabel = ko.observable(data.attribute);
+            self.itemNameLabel = ko.observable(data.itemName);
             
             self.items = ko.observableArray([]);
             self.rightItems = ko.observableArray([]);

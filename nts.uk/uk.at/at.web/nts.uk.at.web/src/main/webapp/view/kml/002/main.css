@@ -39,6 +39,10 @@ table.item-setting tr td:first-child {
 /* 
 	Screen A styles 
 */
+.useCls button.nts-switch-button, .workSchedule button.nts-switch-button, .units button.nts-switch-button {
+    width: 82px;
+}
+
 .contents-area-a {
     padding: 20px;
 }
