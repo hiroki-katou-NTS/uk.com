@@ -124,6 +124,17 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Get symbol value by formula id.
+             */
+            public getSymbolById(id: string): string {
+                let self = this;
+                let rs = _.find(self.calcFormulas(), item => {
+                    item.formulaId == id;
+                });
+                return rs ? rs.symbolValue : 'formula not found';
+            }
+
+            /**
              * Initial datasource
              */
             private initDatasource(): void {
@@ -308,6 +319,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // bind function
                 f.reCheckAll = self.reCheckAll.bind(self);
+                f.getSymbolById = self.getSymbolById.bind(self);
 
                 // Set order
                 f.orderNo = order;
@@ -555,9 +567,17 @@ module nts.uk.at.view.kmk002.a {
 
                             // bind function
                             formula.reCheckAll = self.reCheckAll.bind(self);
+                            formula.getSymbolById = self.getSymbolById.bind(self);
 
                             // convert dto to viewmodel
                             formula.fromDto(item);
+
+                            // set formula setting result
+                            if (formula.calcAtr() == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.calcAtr)) {
+                                formula.setItemSelectionResult(formula.itemSelection);
+                            } else {
+                                formula.setFormulaSettingResult(formula.formulaSetting);
+                            }
 
                             return formula;
                         });
@@ -892,9 +912,10 @@ module nts.uk.at.view.kmk002.a {
             private isValidData(): boolean {
                 let self = this;
 
-                // validate required formulaName
+                // validate required formulaName & required setting formula
                 self.optionalItem.calcFormulas().forEach((item, index) => {
                     $('#formulaName'+index).ntsEditor('validate');
+                    $('#settingResult'+index).ntsEditor('validate');
                 });
 
                 // check has error.
@@ -1035,6 +1056,7 @@ module nts.uk.at.view.kmk002.a {
 
             // function
             reCheckAll: () => void;
+            getSymbolById: (id: string) => string;
 
             // Enums datasource
             formulaAtrDs: EnumConstantDto[];
@@ -1300,15 +1322,7 @@ module nts.uk.at.view.kmk002.a {
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml').onClosed(() => {
                     let dto: ItemSelectionDto = nts.uk.ui.windows.getShared('returnFromC');
                     if (dto) {
-                        // set formula setting
-                        self.itemSelection = dto;
-
-                        // set result display
-                        let result = '';
-                        dto.attendanceItems.forEach(item => {
-                            result += item.operatorText + ' ' + item.attendanceItemName + ' ';
-                        });
-                        self.settingResult(result);
+                        self.setItemSelectionResult(dto);
                     }
                 });
             }
@@ -1334,36 +1348,63 @@ module nts.uk.at.view.kmk002.a {
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
                     let dto: FormulaSettingDto = nts.uk.ui.windows.getShared('returnFromD');
                     if (dto) {
-                        let result;
-                        let leftItem;
-                        let rightItem;
-
-                        // set formula setting.
-                        self.formulaSetting = dto;
-
-                        // get item selection enum value.
-                        let itemSelectionMethod = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.settingMethod);
-                        let operator = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_FORMULA.operatorAtr);
-
-                        // set left item
-                        if (dto.leftItem.settingMethod == itemSelectionMethod) {
-                            leftItem = dto.leftItem.formulaItemId; //TODO get symbol from id.
-                        } else {
-                            leftItem = dto.leftItem.inputValue;
-                        }
-
-                        // set right item
-                        if (dto.rightItem.settingMethod == itemSelectionMethod) {
-                            rightItem = dto.rightItem.formulaItemId;
-                        } else {
-                            rightItem = dto.rightItem.inputValue;
-                        }
-
-                        // set result
-                        result = leftItem + ' ' + operator + ' ' + rightItem;
-                        self.settingResult(result);
+                       self.setFormulaSettingResult(dto);
                     }
                 });
+            }
+
+            /**
+             * Display the setting of formula setting
+             */
+            public setFormulaSettingResult(dto: FormulaSettingDto): void {
+                let self = this;
+                let result;
+                let leftItem;
+                let rightItem;
+
+                // set formula setting.
+                self.formulaSetting = dto;
+
+                // get item selection enum value.
+                let itemSelectionMethod = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.settingMethod);
+                let operator = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_FORMULA.operatorAtr);
+
+                // set left item
+                if (dto.leftItem.settingMethod == itemSelectionMethod) {
+                    leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
+                } else {
+                    leftItem = dto.leftItem.inputValue;
+                }
+
+                // set right item
+                if (dto.rightItem.settingMethod == itemSelectionMethod) {
+                    rightItem = self.getSymbolById(dto.rightItem.formulaItemId);
+                } else {
+                    rightItem = dto.rightItem.inputValue;
+                }
+
+                // set result
+                result = leftItem + ' ' + operator + ' ' + rightItem;
+                self.settingResult(result);
+            }
+
+            /**
+             * Display the setting of formula setting
+             */
+            public setItemSelectionResult(dto: any): void {
+                let self = this;
+                // set formula setting
+                self.itemSelection = dto;
+
+                // set result display
+                let result = '';
+                dto.attendanceItems.forEach(item => {
+                    result += item.operatorText + ' ' + item.attendanceItemName + ' ';
+                });
+                self.settingResult(result);
+
+                // clear error
+                $('#settingResult' + (self.orderNo - 1)).ntsEditor('validate');
             }
 
             /**

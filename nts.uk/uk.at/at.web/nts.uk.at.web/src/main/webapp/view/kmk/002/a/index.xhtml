@@ -274,6 +274,7 @@
                                     </td>
                                     <td><input data-bind="attr: {'id': 'formulaName' + $index()},
                                     ntsTextEditor: {
+                                       name: '#[KMK002_40]',
                                        value: formulaName,
                                        enable: true, 
                                        required: true}"/>
@@ -295,7 +296,8 @@
                                        </com:ko>
                                     </td>
                                     <td>
-                                       <input data-bind="ntsTextEditor: {
+                                       <input data-bind="attr: {'id': 'settingResult' + $index()},
+                                       ntsTextEditor: {
                                           value: settingResult,
                                           readonly: true,
                                           enable: true, 
