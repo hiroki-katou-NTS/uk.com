@@ -17,18 +17,19 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 	private final String SEL_ALL = " SELECT c FROM PpemtPersonInitValueSetting c" + " WHERE c.companyId = :companyId"
 			+ " ORDER BY c.settingCode";
 
-	private final String SEL_ALL_HAS_CHILD = " SELECT c FROM PpemtPersonInitValueSetting is"
-			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" + " ON ic.settingId = is.initValueSettingPk.settingId"
+	private final String SEL_ALL_HAS_CHILD = " SELECT iv FROM PpemtPersonInitValueSetting iv"
+			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" + " ON ic.settingId = iv.initValueSettingPk.settingId"
 			+ " LEFT JOIN PpemtPerInfoCtg pc" + " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND pc.abolitionAtr=0"
 			+ " LEFT JOIN PpemtPersonInitValueSettingItem ii"
 			+ " ON ii.settingItemPk.perInfoCtgId= ic.settingCtgPk.perInfoCtgId "
-			+ " AND ii.settingItemPk.settingId = is.initValueSettingPk.settingId"
+			+ " AND ii.settingItemPk.settingId = iv.initValueSettingPk.settingId"
 			+ " LEFT JOIN PpemtPerInfoItem pi ON"
-			+ " pi.ppemtPerInfoItemPK.perInfoItemDefId= ii.settingItemPk.perInfoItemDefId AND "
-			+ " pi.abolitionAtr=0"
-			+ " WHERE is.companyId = :companyId AND ii.settingItemPk.perInfoItemDefId IS NOT NULL"
-			+ " ORDER BY is.settingCode";
+			+ " pi.ppemtPerInfoItemPK.perInfoItemDefId= ii.settingItemPk.perInfoItemDefId"
+			+ " AND pi.abolitionAtr = 0"
+			+ " WHERE iv.companyId = :companyId"
+			+ " AND ii.settingItemPk.perInfoItemDefId != NULL"
+			+ " ORDER BY iv.settingCode";
 
 	private final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";
