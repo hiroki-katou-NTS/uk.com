@@ -19,14 +19,16 @@ public class VerticalTime extends AggregateRoot {
 	/**固定縦計設定NO**/
 	private FixedItemAtr fixedItemAtr;
 	
+	private int verticalTimeNo;
+	
 	/**表示区分**/
 	private DisplayAtr displayAtr;
 	
 	/**時刻**/
 	private StartClock startClock;
 
-	public static VerticalTime createFromJavaType(String companyId, int fixedItemAtr, int displayAtr, int startClock){
-		return new VerticalTime(companyId, EnumAdaptor.valueOf(fixedItemAtr, FixedItemAtr.class),
+	public static VerticalTime createFromJavaType(String companyId, int fixedItemAtr, int verticalTimeNo, int displayAtr, int startClock){
+		return new VerticalTime(companyId, EnumAdaptor.valueOf(fixedItemAtr, FixedItemAtr.class),verticalTimeNo,
 				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),new StartClock (startClock));
 	}
 }

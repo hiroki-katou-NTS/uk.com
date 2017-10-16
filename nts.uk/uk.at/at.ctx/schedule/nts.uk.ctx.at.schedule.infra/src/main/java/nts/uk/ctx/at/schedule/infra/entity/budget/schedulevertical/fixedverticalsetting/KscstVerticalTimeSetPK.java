@@ -22,5 +22,8 @@ public class KscstVerticalTimeSetPK implements Serializable{
 	@Column(name = "FIXED_ITEM_ATR")
 	public int fixedItemAtr;
 	
+	@Column(name = "VERTICAL_TIME_NO")
+	public int verticalTimeNo;
 	
+
 }

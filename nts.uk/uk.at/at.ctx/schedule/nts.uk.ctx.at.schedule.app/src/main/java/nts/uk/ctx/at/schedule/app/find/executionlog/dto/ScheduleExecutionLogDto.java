@@ -29,7 +29,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public String executionEmployeeId;
 
 	/** The period. */
-	public DatePeriod period;
+	public PeriodDto period;
 	
 	//imported class
 	/** The employee code. */
@@ -83,7 +83,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	 */
 	@Override
 	public void setPeriod(DatePeriod period) {
-		this.period = period;
+		this.period = new PeriodDto(period.start(),period.end());
 	}
 	
 	/**
