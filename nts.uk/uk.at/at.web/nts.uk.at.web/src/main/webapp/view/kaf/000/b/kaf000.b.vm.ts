@@ -77,7 +77,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             let self = this;
             //reason input event
-            self.appReasonEvent = ko.observable('123');
+            self.appReasonEvent = ko.observable('');
             // Metadata
             self.listAppMeta = listAppMetadata;
             self.appType = ko.observable(currentApp.appType);
@@ -337,7 +337,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.listReasonByAppID(data);
                 if (self.listReasonByAppID().length > 0) {
                     self.reasonApp(self.listReasonByAppID()[0].toString());
-                    self.reasonToApprover(self.listReasonByAppID()[1].toString());
+                    if(self.listReasonByAppID().length > 1){
+                        self.reasonToApprover(self.listReasonByAppID()[1].toString());    
+                    }
+                    
 //                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
 //                        self.listReasonToApprover(
 //                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
@@ -434,19 +437,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
-            nts.uk.ui.dialog.confirm({ messageId: 'Msg_222' }).ifYes(function() {
-                service.denyApp(self.inputCommonData()).done(function(data) {
-                    self.getAllDataByAppID(self.appID()).done(function(value){
+            service.denyApp(self.inputCommonData()).done(function(data) {
+                self.getAllDataByAppID(self.appID()).done(function(value){
+                    nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
                         if (!data) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
                         }
                     });
-                    dfd.resolve();
-               }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                }); 
-            });
+                });
+                dfd.resolve();
+           }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+            }); 
                 
             return dfd.promise();
         }

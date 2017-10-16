@@ -77,8 +77,9 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			}
 			
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
-			appRepo.updateApplication(application);
+			
 		}
+		appRepo.updateApplication(application);
 		
 		if(!cancelFlag) return;
 		

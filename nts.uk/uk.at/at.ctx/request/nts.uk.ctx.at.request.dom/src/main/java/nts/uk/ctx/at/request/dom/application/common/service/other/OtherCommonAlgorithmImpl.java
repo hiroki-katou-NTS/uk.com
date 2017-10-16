@@ -44,8 +44,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
 	
-	@Inject
-	private ClosureRepository closureRepository;
+		@Inject
+		private ClosureRepository closureRepository;
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
