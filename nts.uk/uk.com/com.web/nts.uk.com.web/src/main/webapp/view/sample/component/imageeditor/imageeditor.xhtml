@@ -9,7 +9,7 @@
 		
         <ui:composition template="../../../../master/base.xhtml">
             <ui:define name="htmlHead">
-            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	<script>var dialogSize = { width: 1000, height: 800 };</script>
 				<com:stylefile path="../../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../../catalog/catalog.js" />
@@ -30,7 +30,8 @@
 								<button data-bind="click: upload">Upload File</button><br/>
 								<button data-bind="click: getImage">Show File Uploaded</button><br/>
 								<input data-bind="ntsTextEditor: {value: url}"></input><button data-bind="click: show">Show By URL</button><br/>
-								<button data-bind="click: clear">Clear Crop Area</button>
+								<button data-bind="click: clear">Clear Crop Area</button><br/>
+								<button data-bind="click: dialog">Open In Dialog</button>
 							</div>
 						</div>
 						<article class="cf">
@@ -161,6 +162,26 @@
 											<tr>
 												<th><h4>$("#test").ntsImageEditor("clear");</h4></th>
 												<th><h4>For clear crop area is selected.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test").ntsImageEditor("getImgStatus");</h4></th>
+												<th><h4>Get image status.</h4></th>
+											</tr>
+										</thead>
+									</table><br/>
+									<table>
+										<colgroup>
+											<col width="500px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h3>Events</h3></th>
+												<th><h3>Description</h3></th>
+											</tr>
+											<tr>
+												<th><h4>self.$root.bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+												});</h4></th>
+												<th><h4>Event is fired when image is loaded</h4></th>
 											</tr>
 										</thead>
 									</table>
