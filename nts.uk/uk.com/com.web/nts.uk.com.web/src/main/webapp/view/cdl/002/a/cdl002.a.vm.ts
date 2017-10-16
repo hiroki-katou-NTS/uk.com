@@ -33,6 +33,7 @@ module nts.uk.com.view.cdl002.a {
                     isDialog: true,
                     isShowNoSelectRow: self.isDisplayUnselect(),
                     maxRows: 10,
+                    tabindex: 1
                 };
             }
 
