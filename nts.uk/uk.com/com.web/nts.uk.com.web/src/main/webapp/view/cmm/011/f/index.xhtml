@@ -34,7 +34,7 @@
 				<span data-bind="text: workplaceName"></span>
 			</div>
 
-			<div id="radio-group-box" tabindex="19" data-bind="ntsRadioBoxGroup: {
+			<div id="radio-group-box" tabindex="1" data-bind="ntsRadioBoxGroup: {
 				name: '#[CMM011_31]',
 				options: itemList,
 				optionsValue: 'value',
@@ -43,9 +43,9 @@
 				enable: enableRadioGroup}"></div>
 
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="7"
+				<button class="x-large proceed" tabindex="2"
 					data-bind="click: execution">#{i18n.getText('CMM011_28')}</button>
-				<button class="large" tabindex="8" data-bind="click: close">#{i18n.getText('CMM011_30')}</button>
+				<button class="large" tabindex="3" data-bind="click: close">#{i18n.getText('CMM011_30')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

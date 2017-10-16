@@ -257,8 +257,8 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
         boolean isCreatedTop = createType == CreateWorkpceType.CREATE_ON_TOP
                 && hierarchyCd.length() > hierarchyCdSelected.length();
         // when create at below
-        boolean isCreatedBelow = hierarchyCd.length() > hierarchyCdSelected.length()
-                && createType == CreateWorkpceType.CREATE_ON_BELOW && !hierarchyCd.startsWith(hierarchyCdSelected);
+        boolean isCreatedBelow = createType == CreateWorkpceType.CREATE_ON_BELOW
+                && hierarchyCd.length() > hierarchyCdSelected.length() && !hierarchyCd.startsWith(hierarchyCdSelected);
         return isCreatedTop || isCreatedBelow;
     }
 
