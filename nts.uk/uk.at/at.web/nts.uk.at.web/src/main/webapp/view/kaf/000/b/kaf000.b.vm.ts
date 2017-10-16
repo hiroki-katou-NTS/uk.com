@@ -252,10 +252,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
-            }).fail(function(res: any){
+            }).fail(function(res: any) {
                 dfd.reject();
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            });
+            }); 
             return dfd.promise();
         }
 
@@ -424,13 +424,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_222' }).ifYes(function() {
-                service.denyApp(self.dataApplication()).done(function() {
+                service.denyApp(self.dataApplication()).done(function(data) {
                     self.getAllDataByAppID(self.appID()).done(function(value){
-                        
+                        if (!data) {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
+                        }
                     });
                     dfd.resolve();
-               }).fail(function(res: any){
-                   nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                });
             });
                 
@@ -491,29 +491,30 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         if (data.length != 0) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
                         }
+                        //lấy vị trí appID vừa xóa trong listAppID
+                        let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
+                        if (index > -1 && index != self.listAppMeta.length-1) {
+                            //xóa appID vừa xóa trong list
+                            self.appID(self.listAppMeta[index+1].appID);
+                        }
+                        
+                        self.listAppMeta.splice(index, 1);
+                        //nếu vị trí vừa xóa khác vị trí cuối
+                        if (index != self.listAppMeta.length - 1) {
+                            //gán lại appId mới tại vị trí chính nó
+                            self.btnAfter();
+                        } else {
+                            //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
+                            self.btnBefore();
+                        }
+                        
+                        //if list # null    
+                        if (self.listAppMeta.length == 0) {
+                            //nếu list null thì trả về màn hình mẹ
+                            nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+                        }
                     });
-                    //lấy vị trí appID vừa xóa trong listAppID
-                    let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
-                    if (index > -1 && index != self.listAppMeta.length-1) {
-                        //xóa appID vừa xóa trong list
-                        self.appID(self.listAppMeta[index+1].appID);
-                    }
                     
-                    self.listAppMeta.splice(index, 1);
-                    //nếu vị trí vừa xóa khác vị trí cuối
-                    if (index != self.listAppMeta.length - 1) {
-                        //gán lại appId mới tại vị trí chính nó
-                        self.btnAfter();
-                    } else {
-                        //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
-                        self.btnBefore();
-                    }
-                    
-                    //if list # null    
-                    if (self.listAppMeta.length == 0) {
-                        //nếu list null thì trả về màn hình mẹ
-                        nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
-                    }
             
                     dfd.resolve();
                 });
