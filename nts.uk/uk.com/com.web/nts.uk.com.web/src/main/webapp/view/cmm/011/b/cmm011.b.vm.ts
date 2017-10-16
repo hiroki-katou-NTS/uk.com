@@ -77,7 +77,11 @@ module nts.uk.com.view.cmm011.b {
              */
             private shareData() {
                 let self = this;
-                nts.uk.ui.windows.setShared("ShareDateScreenParent", self.toJSonDate(true));
+                let shareData: any = self.toJSonDate(true);
+                shareData.isWkpConfigHistLatest = self.workplaceHistory().isSelectedLatestHistory();
+                shareData.historyId = self.workplaceHistory().getSelectedHistoryByHistId().historyId;
+                
+                nts.uk.ui.windows.setShared("ShareDateScreenParent", shareData);
                 nts.uk.ui.windows.close();
             }
             
@@ -117,7 +121,7 @@ module nts.uk.com.view.cmm011.b {
                 let self = this;
                 
                 let startDate: any = new Date(self.startDate());
-                let endDate: any = new Date("9999-12-31");
+                let endDate: any = new Date(nts.uk.resource.getText("CMM011_27"));
                 
                 // if selection mode, reset start date (startDate cann't be initial)
                 if (self.workplaceHistory().screenMode() == ScreenMode.SelectionMode) {
@@ -131,7 +135,7 @@ module nts.uk.com.view.cmm011.b {
                 }
                 return {
                     startDate: startDate,
-                    endDate: endDate //TODO: CMM011_27
+                    endDate: endDate
                 }
             }
             
@@ -231,7 +235,8 @@ module nts.uk.com.view.cmm011.b {
                     service.removeWkpConfig(command).done(() => {
                         self.findAllHistory();
                     }).fail((res: any) => {
-                        self.parentModel.showMessageError(res);
+//                        self.parentModel.showMessageError(res);
+                        nts.uk.ui.dialog.bundledErrors(res);
                     });
                 });
             }

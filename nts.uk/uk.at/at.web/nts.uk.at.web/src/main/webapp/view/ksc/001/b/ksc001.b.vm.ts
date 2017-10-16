@@ -4,6 +4,7 @@ module nts.uk.at.view.ksc001.b {
     import PeriodDto = service.model.PeriodDto;
     import UserInfoDto = service.model.UserInfoDto;
     import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
+    import ScheduleExecutionLogSaveRespone = service.model.ScheduleExecutionLogSaveRespone;
 
     export module viewmodel {
         export class ScreenModel {
@@ -296,7 +297,7 @@ module nts.uk.at.view.ksc001.b {
                 if (self.checkCreateMethodAtrPatternSchedule()) {
                     data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
                 }
-                if (self.checkCreateMethodAtrCopyPastSchedule) {
+                if (self.checkCreateMethodAtrCopyPastSchedule()) {
                     data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
                 }
                 data.confirm = self.confirm();
@@ -377,22 +378,22 @@ module nts.uk.at.view.ksc001.b {
                     lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_8"));
                 }
                 if (self.resetWorkingHours()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
                 }
                 if (self.resetDirectLineBounce()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
                 }
                 if (self.resetMasterInfo()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
                 }
                 if (self.resetTimeChildCare()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
                 }
                 if (self.resetAbsentHolidayBusines()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
                 }
                 if (self.resetTimeAssignment()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
                 }
                 if (self.confirm()) {
                     lstLabelInfomation.push(nts.uk.resource.getText("KSC001_17"));
@@ -423,6 +424,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
+                console.log(self.periodStartDate());
                 service.checkThreeMonth(self.periodStartDate()).done(function(check) {
                     if (check) {
                         // show message confirm 567
@@ -489,11 +491,13 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var user: UserInfoDto = self.getUserLogin();
                 self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
-                service.saveScheduleExecutionLog(self.collectionData()).done(function(){
-                   alert('YES'); 
+                service.addScheduleExecutionLog(self.collectionData()).done(function(data){
+                    nts.uk.ui.windows.setShared('inputData', data);
+                    console.log(data);
+                    nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
+                    });
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
-                });
+                
             }
             
             

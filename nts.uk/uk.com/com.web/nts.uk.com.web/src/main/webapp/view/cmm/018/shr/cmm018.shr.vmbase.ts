@@ -4,10 +4,7 @@ module nts.uk.com.view.cmm018.shr {
         export class DataResigterDto{
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
-            checkDelete: boolean;
             checkAddHist: boolean;
-            checkAddRoot: boolean;
-            checkEdit: boolean;
             workpplaceId: string;
             employeeId: string;
             startDate: string;
@@ -15,17 +12,13 @@ module nts.uk.com.view.cmm018.shr {
             addHist: IData;
             lstAppType: Array<number>;
             root: Array<CompanyAppRootADto>;
-            constructor(rootType: number, checkDelete: boolean,
-                checkAddHist: boolean, checkAddRoot: boolean,
-                checkEdit: boolean, workpplaceId: string,
+            constructor(rootType: number, checkAddHist: boolean,
+                workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<number>,
                 root: Array<CompanyAppRootADto>){
                     this.rootType = rootType;
-                    this.checkDelete = checkDelete;
                     this.checkAddHist = checkAddHist;
-                    this.checkAddRoot = checkAddRoot;
-                    this.checkEdit = checkEdit;
                     this.workpplaceId = workpplaceId;
                     this.employeeId = employeeId;
                     this.startDate = startDate; 
@@ -55,6 +48,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //data after grouping history (get from db)
         export class DataFullDto{
+            workplaceId: string;
             lstCompany: Array<DataDisplayComDto> ;
             lstWorkplace: Array<DataDisplayWpDto> ;
             lstPerson: Array<DataDisplayPsDto> ;
@@ -93,8 +87,8 @@ module nts.uk.com.view.cmm018.shr {
             dateRange: string;
             startDate: string;
             endDate: string;
-            overLap: string;
-            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: string) {
+            overLap: any;
+            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: any) {
                 this.id = id;
                 this.dateRange = dateRange;
                 this.startDate = startDate;
@@ -124,7 +118,7 @@ module nts.uk.com.view.cmm018.shr {
             check: number;
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
-            lstAppType: Array<String>;
+            lstAppType: Array<number>;
         }
         //ScreenI
         export class IData{
@@ -163,7 +157,7 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            /**check 申請承認の種類区分: 会社(0)　－　職場(1)　－　社員(2)*/
             check: number;
             /**「履歴を削除する」を選択する か(0)、「履歴を修正する」を選択する か(1)。*/
             editOrDelete: number;
@@ -192,7 +186,7 @@ module nts.uk.com.view.cmm018.shr {
         //ScrenJ
         export interface JData_Param{
             /** name */
-            name: string
+            name?: string
             /**開始日*/
             startDate: string;
             /**終了日*/
@@ -206,9 +200,7 @@ module nts.uk.com.view.cmm018.shr {
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
             /** 編集対象期間履歴が重なっているかチェックする*/
-            overlapFlag: boolean;
-            /**開始日 previous*/
-            startDatePrevious: string;
+            overlapFlag?: boolean;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
         }
@@ -241,6 +233,7 @@ module nts.uk.com.view.cmm018.shr {
         export class CommonApprovalRootDto{
             /**会社名*/
             companyName: string;
+            workplaceId: string;
             lstCompanyRoot: Array<CompanyAppRootDto>;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto>;
             lstPersonRoot: Array<PersonAppRootDto>;
@@ -307,6 +300,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //list display right
         export class CompanyAppRootADto{
+            color: boolean;
             common: boolean;
             appTypeValue: number;
             appTypeName: string;
@@ -318,7 +312,8 @@ module nts.uk.com.view.cmm018.shr {
             appPhase3: ApprovalPhaseDto;
             appPhase4: ApprovalPhaseDto;
             appPhase5: ApprovalPhaseDto;
-            constructor(common: boolean,
+            constructor(color: boolean, 
+            common: boolean,
             appTypeValue: number,
             appTypeName: string,
             approvalId: string,
@@ -328,6 +323,7 @@ module nts.uk.com.view.cmm018.shr {
             appPhase3: ApprovalPhaseDto,
             appPhase4: ApprovalPhaseDto, 
             appPhase5: ApprovalPhaseDto){
+                this.color = color;
                 this.common = common;
                 this.appTypeValue = appTypeValue;
                 this.appTypeName = appTypeName;
@@ -475,6 +471,8 @@ module nts.uk.com.view.cmm018.shr {
             jobTitleId: string;
             /**社員ID*/
             employeeId: string;
+            /**社員Name*/
+            name: string;
             /**順序*/
             orderNumber: number;
             /**区分*/
@@ -482,16 +480,35 @@ module nts.uk.com.view.cmm018.shr {
             /**確定者*/
             confirmPerson: number;
             constructor(approverId: string, jobTitleId: string,
-                employeeId: string, orderNumber: number,
+                employeeId: string, name: string,orderNumber: number,
                 approvalAtr: number, confirmPerson: number)
             {
                 this.approverId = approverId;
                 this.jobTitleId = jobTitleId;
                 this.employeeId = employeeId;
                 this.orderNumber = orderNumber;
+                this.name = name;
                 this.approvalAtr = approvalAtr;
                 this.confirmPerson = confirmPerson;
             }
+            
+        }
+        export class EmployeeKcp009{
+                id: string;
+                code: string;
+                businessName: string;
+                workplaceName: string;
+                depName: string;
+            constructor(id: string, code: string,
+                businessName: string, workplaceName: string,depName: string)
+            {
+                this.id = id;
+                this.code = code;
+                this.businessName = businessName;
+                this.workplaceName = workplaceName;
+                this.depName = depName;
+            }
+            
         }
         export class ProcessHandler {
             
@@ -538,7 +555,7 @@ module nts.uk.com.view.cmm018.shr {
         export interface ComponentOption {
             systemReference: SystemType;
             isDisplayOrganizationName: boolean;
-            employeeInputList: KnockoutObservableArray<EmployeeModel>;
+            employeeInputList: KnockoutObservableArray<EmployeeKcp009>;
             targetBtnText: string;
             selectedItem: KnockoutObservable<string>;
             tabIndex: number;
@@ -556,6 +573,54 @@ module nts.uk.com.view.cmm018.shr {
             static PERSONNEL = 3;
             static ACCOUNTING = 4;
             static OH = 6;
+        }
+        export interface GroupOption {
+            baseDate?: KnockoutObservable<Date>;
+            // クイック検索タブ
+            isQuickSearchTab: boolean;
+            // 参照可能な社員すべて
+            isAllReferableEmployee: boolean;
+            //自分だけ
+            isOnlyMe: boolean;
+            //おなじ部門の社員
+            isEmployeeOfWorkplace: boolean;
+            //おなじ＋配下部門の社員
+            isEmployeeWorkplaceFollow: boolean;
+            // 詳細検索タブ
+            isAdvancedSearchTab: boolean;
+            //複数選択 
+            isMutipleCheck: boolean;
+            
+            //社員指定タイプ or 全社員タイプ
+            isSelectAllEmployee: boolean;
+        
+            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+        
+            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
+            
+            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
+            
+            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
+            
+            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+        }
+        export interface EmployeeSearchDto {
+            employeeId: string;
+            
+            employeeCode: string;
+            
+            employeeName: string;
+            
+            workplaceCode: string;
+            
+            workplaceId: string;
+            
+            workplaceName: string;
+        }
+        export enum RootType {
+            COMPANY = 0,
+            WORKPLACE = 1,
+            PERSON = 2
         }
     }
 }

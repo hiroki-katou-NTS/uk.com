@@ -1,58 +1,92 @@
 module nts.uk.at.view.ksc001.f {
     
-    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
-    
     export module service {
         var paths = {
-            findCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/find",
-            saveCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/save"
+            findScheduleExecutionLogById: "at/schedule/exelog/findById",
+            findScheduleExecutionLogInfoById: "at/schedule/exelog/findInfoById",
+            executionScheduleExecutionLog: "at/schedule/exelog/execution",
+            findAllScheduleErrorLog: "at/schedule/exelog/findAllError"
         }
 
         /**
-         * call service find setting
+         * call service find ScheduleExecutionLog by id
          */
-        export function findCommonGuidelineSetting(): JQueryPromise<model.CommonGuidelineSettingDto> {
-            return nts.uk.request.ajax('at', paths.findCommonGuidelineSetting);
-        }
-
-        export function saveCommonGuidelineSetting(command: model.CommonGuidelineSettingDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.saveCommonGuidelineSetting, command);
+        export function findScheduleExecutionLogById(executionId: string): JQueryPromise<model.ScheduleExecutionLogDto> {
+            return nts.uk.request.ajax('at', paths.findScheduleExecutionLogById + '/' + executionId);
         }
         
+        /**
+         * executionScheduleExecutionLog
+         */
+        export function executionScheduleExecutionLog(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.executionScheduleExecutionLog, command);
+        }
+        
+        /**
+         * call service find ScheduleExecutionLogInfo by id
+         */
+        export function findScheduleExecutionLogInfoById(executionId: string): JQueryPromise<model.ScheduleExecutionLogInfoDto> {
+            return nts.uk.request.ajax('at', paths.findScheduleExecutionLogInfoById + '/' + executionId);
+        }
+        /**
+         * call service find all ScheduleErrorLog
+         */
+        export function findAllScheduleErrorLog(executionId: string): JQueryPromise<model.ScheduleErrorLogDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllScheduleErrorLog + '/' + executionId);
+        }
 
         export module model {
             
-            
-            export interface EstimatedAlarmColorDto {
-                guidelineCondition: number;
-                color: string;
+            export interface ExecutionContentDto {
+                copyStartDate: Date;
+                createMethodAtr: number;
+                confirm: boolean;
+                implementAtr: number;
+                processExecutionAtr: number;
+                reCreateAtr: number;
+                resetMasterInfo: boolean;
+                resetAbsentHolidayBusines: boolean;
+                resetWorkingHours: boolean;
+                resetTimeAssignment: boolean;
+                resetDirectLineBounce: boolean;
+                resetTimeChildCare: boolean;
             }
             
-            export interface ReferenceConditionDto {
-                yearlyDisplayCondition: number;
-                monthlyDisplayCondition: number;
-                alarmCheckCondition: number;
+            export interface ExecutionDateTimeDto{
+                executionStartDate: Date;
+                executionEndDate: Date;    
             }
             
-            export interface CommonGuidelineSettingDto {
-                /** The alarm colors. */
-                alarmColors: EstimatedAlarmColorDto[];
-
-                /** The estimate time. */
-                estimateTime: ReferenceConditionDto;
-
-                /** The estimate price. */
-                estimatePrice: ReferenceConditionDto;
-
-                /** The estimate number of days. */
-                estimateNumberOfDays: ReferenceConditionDto;
+            export interface PeriodDto{
+                startDate: Date;
+                endDate: Date;    
             }
             
+           export interface ScheduleExecutionLogDto{
+               completionStatus: string;
+               executionId: string;
+               executionContent: ExecutionContentDto;
+               executionDateTime: ExecutionDateTimeDto;
+               executionEmployeeId: string;
+               period: PeriodDto;
+               employeeCode: string;
+               employeeName: string;
+           }
             
-            export interface EstimatedConditionDto {
-                code: number;
-                name: string;
-            }
+           export interface ScheduleExecutionLogInfoDto {
+               totalNumber: number;
+               totalNumberCreated: number;
+               totalNumberError: number;
+           }
+            
+           export interface ScheduleErrorLogDto {
+               errorContent: string;
+               executionId: string;
+               date: Date;
+               employeeId: string;
+               employeeCode: string;
+               employeeName: string;
+           }
         }
     }
 }

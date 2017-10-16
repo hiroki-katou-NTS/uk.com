@@ -17,8 +17,6 @@ public interface AuthorityFormatDailyRepository {
 
 	void add(List<AuthorityFomatDaily> authorityFomatDailies);
 	
-	boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode);
-	
 	void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 	
 	void deleteExistData(List<Integer> attendanceItemIds);

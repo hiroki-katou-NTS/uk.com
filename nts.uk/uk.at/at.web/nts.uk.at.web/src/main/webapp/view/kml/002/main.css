@@ -4,15 +4,15 @@
 	Screen H styles 
 */
 #sidebar-area {
-    width: 120px;
+	width: 120px;
 }
 
 .contents-area {
-    padding: 20px 58px;
+	padding: 20px 58px;
 }
 
 table.item-setting {
-    margin-top: 20px;
+	margin-top: 20px;
 }
 
 table.item-setting thead tr td {
@@ -44,7 +44,7 @@ table.item-setting tr td:first-child {
 }
 
 .contents-area-a {
-    padding: 20px;
+	padding: 20px;
 }
 
 .left-contents {
@@ -76,8 +76,8 @@ table.input-form-a tr {
 }
 
 table.calculator-items {
-    margin-top: 10px;
-    float: left;
+	margin-top: 10px;
+	float: left;
 }
 
 table.calculator-items thead {
@@ -91,8 +91,8 @@ table.calculator-items tr {
 table.calculator-items td {
 	border-bottom: 1px solid #CCC;
 	border-top: 1px solid #CCC;
-	border-left: 1px solid #CCC;    
-    padding: 0px 3px;
+	border-left: 1px solid #CCC;
+	padding: 0px 3px;
 }
 
 table.calculator-items thead, table.calculator-items tbody {
@@ -106,7 +106,8 @@ table.calculator-items tbody {
 	border: 1px solid #CCC;
 }
 
-table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2) {
+table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2)
+	{
 	text-align: center;
 }
 
@@ -120,7 +121,7 @@ table.calculator-items tbody td {
 }
 
 .item-name {
-	width: 120px;	
+	width: 120px;
 }
 
 .display-atr {
@@ -144,7 +145,7 @@ table.calculator-items tbody td {
 }
 
 .cbx-list-header {
-    width: 32px;
+	width: 32px;
 }
 
 .number-header {
@@ -180,8 +181,8 @@ table.calculator-items tbody td {
 }
 
 .cbx-list-item {
-    width: 31px;
-    height: 42px;
+	width: 31px;
+	height: 42px;
 }
 
 .number-item {
@@ -234,9 +235,9 @@ table.link-notes td {
 
 .up-down-button {
 	float: right;
-    width: 30px;
-    padding: 16px;
-    margin-top: 132px;
+	width: 30px;
+	padding: 16px;
+	margin-top: 132px;
 }
 
 .down-btn {
@@ -244,16 +245,16 @@ table.link-notes td {
 }
 
 .formula-setting-btn {
-    background: url(../002/a/KML002_1.png) no-repeat scroll 0 0 transparent;
-    width: 28px;
-    height: 28px;
+	background: url(../002/a/KML002_1.png) no-repeat scroll 0 0 transparent;
+	width: 28px;
+	height: 28px;
 }
 
 /* 
 	Screen B styles 
 */
 table.cal-formula-form-data td {
-    padding: 10px 10px;
+	padding: 10px 10px;
 }
 
 table.cal-formula-form-data td:nth-child(3) {
@@ -261,16 +262,16 @@ table.cal-formula-form-data td:nth-child(3) {
 }
 
 table.cal-formula-input-form {
-    margin: 0 20px;
+	margin: 0 20px;
 }
 
 table.cal-formula-input-form td {
-    padding: 10px 10px;
+	padding: 10px 10px;
 }
 
 .project-item {
 	min-width: 0 !important;
-    width: 160px !important;
+	width: 160px !important;
 }
 
 .numerical {
@@ -279,11 +280,12 @@ table.cal-formula-input-form td {
 
 .operator-item {
 	min-width: 0 !important;
-    width: 60px !important;
+	width: 60px !important;
 }
 
 table.cal-formula-input-form tr:nth-child(1) td:nth-child(1), table.cal-formula-input-form tr:nth-child(1) td:nth-child(2),
-table.cal-formula-input-form tr:nth-child(1) td:nth-child(4), table.cal-formula-input-form tr:nth-child(1) td:nth-child(5) {
+	table.cal-formula-input-form tr:nth-child(1) td:nth-child(4), table.cal-formula-input-form tr:nth-child(1) td:nth-child(5)
+	{
 	border-bottom: 1px solid #B1B1B1;
 }
 
@@ -296,7 +298,7 @@ input.ui-igcombo-field.ui-corner-all.ui-unselectable {
 }
 
 label.ntsRadioBox {
-    padding: 15px 0;
+	padding: 15px 0;
 }
 
 /* 
@@ -308,14 +310,14 @@ label.ntsRadioBox {
 
 .categories {
 	float: left;
-    margin-top: 2px;
-    width: 132px;
+	margin-top: 2px;
+	width: 132px;
 }
 
 .cbx-checked {
 	float: left;
-    margin: 10px -5px;
-    width: 100%;
+	margin: 10px -5px;
+	width: 100%;
 }
 
 .search-box {
@@ -327,16 +329,16 @@ label.ntsRadioBox {
 }
 
 .right-tbl {
-    float: left;
-    margin: 152px 24px;
-    height: 160px;
+	float: left;
+	margin: 152px 24px;
+	height: 160px;
 }
 
 .function-btns {
 	float: left;
 	width: 50px;
-    margin: 205px -28px;
-    height: 70px;
+	margin: 205px -28px;
+	height: 70px;
 }
 
 button.addition, button.subtraction, button.left-btn {
@@ -344,18 +346,18 @@ button.addition, button.subtraction, button.left-btn {
 }
 
 button.subtraction, button.left-btn {
-    margin-top: 24px;
+	margin-top: 24px;
 }
 
 i.icon.icon-button-arrow-left {
 	width: 20px;
-    margin: 10px 0px;
+	margin: 10px 0px;
 }
 
 .grid-area-c {
-    float: left;
-    margin-top: 8px;
-    margin-left: 10px;
+	float: left;
+	margin-top: 8px;
+	margin-left: 10px;
 }
 
 /* 
@@ -363,21 +365,21 @@ i.icon.icon-button-arrow-left {
 */
 .cbx-checked-d {
 	float: left;
-    margin: 0 0 12px -5px;
-    width: 100%;
+	margin: 0 0 12px -5px;
+	width: 100%;
 }
 
 .right-tbl-d {
-    float: left;
-    margin: 110px 24px;
-    height: 160px;
+	float: left;
+	margin: 110px 24px;
+	height: 160px;
 }
 
 .function-btns-d {
 	float: left;
-    width: 50px;
-    margin: 180px -28px;
-    height: 70px;
+	width: 50px;
+	margin: 180px -28px;
+	height: 70px;
 }
 
 .grid-area-d {
@@ -393,74 +395,74 @@ i.icon.icon-button-arrow-left {
 }
 
 .grid-area-e {
-    float: left;
-    margin: 0 20px;
+	float: left;
+	margin: 0 20px;
 }
 
 .cbx-checked-e {
-    float: left;
-    margin: 10px 0px 12px -5px;
-    width: 100%;
+	float: left;
+	margin: 10px 0px 12px -5px;
+	width: 100%;
 }
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
-    width: 230px !important;
+	width: 230px !important;
 }
 
 .function-btns-e {
-    float: left;
-    width: 50px;
-    margin: 240px -28px;
-    height: 0px;
+	float: left;
+	width: 50px;
+	margin: 240px -28px;
+	height: 0px;
 }
 
 .right-tbl-e {
-    float: left;
-    margin: 155px 24px;
-    height: 160px;
+	float: left;
+	margin: 155px 24px;
+	height: 160px;
 }
 
 .checked-a-method {
 	float: left;
-    margin: 0px 0px 12px -5px;
-    width: 100%;
+	margin: 0px 0px 12px -5px;
+	width: 100%;
 }
 
 .function-btns-a-method {
-    float: left;
-    width: 50px;
-    margin: 140px -28px;
-    height: 70px;
+	float: left;
+	width: 50px;
+	margin: 140px -28px;
+	height: 70px;
 }
 
 .right-tbl-a-method {
-    float: left;
-    margin: 110px 24px;
-    height: 160px;
-    display: inline-flex;
+	float: left;
+	margin: 110px 24px;
+	height: 160px;
+	display: inline-flex;
 }
 
 .time-item-title {
-    margin: 57px 433px;
-    position: absolute;
-    padding: 10px;
+	margin: 57px 433px;
+	position: absolute;
+	padding: 10px;
 	width: 320px;
 	border-bottom: 1px solid #CCC;
 	float: left;
 }
 
 .unit-price-title {
-    margin: 57px 804px;
-    width: 90px;
-    position: absolute;
-    padding: 10px;
+	margin: 57px 804px;
+	width: 90px;
+	position: absolute;
+	padding: 10px;
 	border-bottom: 1px solid #CCC;
 	float: right;
 }
 
 .unit-price-items {
-    min-width: 0 !important;
-    width: 100px;
+	min-width: 0 !important;
+	width: 100px;
 }
 
 .tbl-unit-price {
@@ -472,12 +474,12 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
 }
 
 .rounding-setting {
-	float:left;
+	float: left;
 	margin: -58px 12px;
 }
 
 table.tbl-rounding td {
-    padding: 12px;
+	padding: 12px;
 }
 
 /* 
@@ -485,15 +487,15 @@ table.tbl-rounding td {
 */
 .function-btns-f {
 	float: left;
-    width: 50px;
-    margin: 152px -28px;
-    height: 70px;
+	width: 50px;
+	margin: 152px -28px;
+	height: 70px;
 }
 
 .right-tbl-f {
-    float: left;
-    margin: 80px 24px;
-    height: 160px;
+	float: left;
+	margin: 80px 24px;
+	height: 160px;
 }
 
 /* 
@@ -508,27 +510,32 @@ table.unit-price-selection td {
 }
 
 .method-form-lbl {
-    margin: 5px 25px;
-    width: 375px;
+	margin: 5px 25px;
+	width: 375px;
 }
 
 .method-selection {
-    margin: 0px 46px !important;
-    width: 270px;
+	margin: 0px 46px !important;
+	width: 270px;
 }
 
 .method-selection label.ntsRadioBox {
-    padding: 5px;
+	padding: 5px;
 }
 
 /*
 Screen K
 */
-#combo-box1{
- min-width: 50px!important;
- width: 70px!important;
+#combo-box1 {
+	min-width: 50px !important;
+	width: 70px !important;
 }
-#combo-box2{
- min-width: 50px!important;
- width: 70px!important;
+
+#combo-box2 {
+	min-width: 50px !important;
+	width: 70px !important;
+}
+
+.nts-fixed-table{
+	margin-top: 20px!important;
 }

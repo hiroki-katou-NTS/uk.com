@@ -4,6 +4,7 @@ module ksu001.a {
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewO: new ksu001.o.viewmodel.ScreenModel(),
+            viewQ: new ksu001.q.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
         __viewContext.bind(__viewContext.viewModel);
@@ -93,6 +94,7 @@ module ksu001.a {
         $('.done').click(function() {
             $('#popup-area7').toggle();
         });
+
 
         //popup A3-24
         $('#popup-area9').ntsPopup({

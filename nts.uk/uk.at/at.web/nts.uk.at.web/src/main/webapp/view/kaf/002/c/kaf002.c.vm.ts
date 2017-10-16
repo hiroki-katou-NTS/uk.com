@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf002.c {
+    import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import service = nts.uk.at.view.kaf002.shr.service;
     import kaf000 = nts.uk.at.view.kaf000;
     import kaf002 = nts.uk.at.view.kaf002;
@@ -6,28 +7,30 @@ module nts.uk.at.view.kaf002.c {
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             cm: kaf002.cm.viewmodel.ScreenModel;
-            constructor(appType: number) {
-                super(appType);
+            constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+                super(listAppMetadata, currentApp);
                 var self = this;
-                self.cm = new kaf002.cm.viewmodel.ScreenModel(0,1);
-                self.startPage();
+                self.appID.subscribe(value=>{
+                    if(self.appType()==7){
+                        self.startPage(value);       
+                    }
+                });
+                self.startPage(self.appID());
             }
             
-            testAbstract() {
-                alert('aaaaaa');    
-            }
-            
-            startPage(): JQueryPromise<any> {
+            startPage(appID: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.newScreenFind()
-                    .done(function(data: vmbase.AppStampNewSetDto) {
-                        self.cm.start(data);
-                        dfd.resolve(); 
-                    })
-                    .fail(function(res) { 
-                        dfd.reject(res); 
-                    });
+                var dfdCommonSet = service.newScreenFind();
+                var dfdAppStamp = service.findByAppID(appID);
+                $.when(dfdCommonSet, dfdAppStamp).done((commonSetData, appStampData) => {
+                    self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
+                    self.cm.start(commonSetData, appStampData, self.approvalList);
+                    dfd.resolve(); 
+                })
+                .fail(function(res) { 
+                    dfd.reject(res); 
+                });
                 return dfd.promise();
             }
 
@@ -37,7 +40,8 @@ module nts.uk.at.view.kaf002.c {
             }
             
             update(){
-                
+                var self = this;
+                self.cm.register();
             }
         }
     }

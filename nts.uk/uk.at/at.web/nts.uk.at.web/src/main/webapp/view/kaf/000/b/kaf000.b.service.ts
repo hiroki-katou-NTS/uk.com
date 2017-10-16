@@ -14,36 +14,36 @@
      /**
       * approve application
       */
-     export function approveApp(appID) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.approveApp+"/"+appID);
+     export function approveApp(command) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.approveApp,command);
      }  
      
      /**
       * deny  application
       */
-     export function denyApp(appID) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.denyApp+"/"+appID);
+     export function denyApp(command) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.denyApp,command);
      }
      
       /**
       * release   application
       */
-     export function releaseApp(appID) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.releaseApp+"/"+appID);
+     export function releaseApp(command) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.releaseApp,command);
      }
      
       /**
       * cancel application
       */
-     export function cancelApp(appID) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.cancelApp+"/"+appID);
+     export function cancelApp(command) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.cancelApp,command);
      }
      
      /**
       * delete application
       */
-     export function deleteApp(appID) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.deleteApp+"/"+appID);
+     export function deleteApp(command) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.deleteApp,command);
      }
      
      
@@ -70,7 +70,7 @@
       /**
       * get getMessageDeadline
       */
-     export function getMessageDeadline(inputMessageDeadline ) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.getMessageDeadline,inputMessageDeadline);
+     export function getMessageDeadline(appType) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.getMessageDeadline+"/"+appType);
      }
  }

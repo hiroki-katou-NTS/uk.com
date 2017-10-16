@@ -24,8 +24,8 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	/** The operator. */
 	private int operator;
 
-	/** The lef item. */
-	private FormulaSettingItemDto lefItem;
+	/** The left item. */
+	private FormulaSettingItemDto leftItem;
 
 	/** The right item. */
 	private FormulaSettingItemDto rightItem;
@@ -66,7 +66,8 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setLeftItem(FormulaSettingItem item) {
-		item.saveToMemento(this.lefItem);
+		this.leftItem = new FormulaSettingItemDto();
+		item.saveToMemento(this.leftItem);
 	}
 
 	/*
@@ -79,6 +80,7 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setRightItem(FormulaSettingItem item) {
+		this.rightItem = new FormulaSettingItemDto();
 		item.saveToMemento(this.rightItem);
 	}
 

@@ -9,6 +9,6 @@ public class ApproverResult {
 	
 	private List<ApproverWhoApproved> approverWhoApproveds;
 	
-	private List<ApproverWhoApproved> approvers;
+	private List<String> approvers;
 	
 }

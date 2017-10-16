@@ -4,7 +4,7 @@ module nts.uk.at.view.ksc001.b {
            findPeriodById: "ctx/at/shared/workrule/closure/findPeriodById",
            checkThreeMonth: "ctx/at/shared/workrule/closure/checkThreeMonth",
            checkMonthMax: "ctx/at/shared/workrule/closure/checkMonthMax",
-           saveScheduleExecutionLog: "at/schedule/exelog/save" 
+           addScheduleExecutionLog: "at/schedule/exelog/add" 
             
         }
         
@@ -29,10 +29,10 @@ module nts.uk.at.view.ksc001.b {
             return nts.uk.request.ajax('at', paths.checkMonthMax, {baseDate: baseDate});
         }
         /**
-         * call service save ScheduleExecutionLog
+         * call service add ScheduleExecutionLog
          */
-        export function saveScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.saveScheduleExecutionLog, command);
+        export function addScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
+            return nts.uk.request.ajax('at', paths.addScheduleExecutionLog, command);
         }
         
         export module model {
@@ -67,6 +67,12 @@ module nts.uk.at.view.ksc001.b {
                 copyStartDate: Date;
                 employeeIds: string[];
             }
+            
+            export interface ScheduleExecutionLogSaveRespone{
+                employeeId: string;
+                executionId: string;    
+            }
+            
         }
 
     }

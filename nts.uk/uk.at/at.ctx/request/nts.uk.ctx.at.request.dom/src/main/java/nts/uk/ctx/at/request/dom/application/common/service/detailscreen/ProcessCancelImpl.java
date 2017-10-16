@@ -5,12 +5,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 
 /**
- * 12.詳細画面取消の処理
+ * 
  * @author tutk
  *
  */
@@ -22,12 +22,12 @@ public class ProcessCancelImpl implements ProcessCancel {
 	
 	@Override
 	public void detailScreenCancelProcess(String companyID, String appID) {
-		Optional<Application> app = appRepo.getAppById(companyID, appID);
-		if(app.isPresent()) {
-			appRepo.updateById(companyID,appID );
-		}else {
-			throw new BusinessException("K ton tai");
-		}
+		//get application by appID
+		Application app = appRepo.getAppById(companyID, appID).get();
+		//change ReflectPlanPerState = canceled
+		app.setReflectPerState(ReflectPlanPerState.CANCELED);
+		//update application
+		appRepo.updateApplication(app);
 	}
 
 }

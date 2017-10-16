@@ -4,14 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleDto;
+import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleFindDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,24 +19,26 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JobTitleFinder {
-
+	
 	/** The repository. */
 	@Inject
 	private JobTitleRepository repository;
-
+	
 	/**
-	 * Find all.
+	 * Find job history by job id.
 	 *
-	 * @return the list
+	 * @param jobTitleId the job title id
+	 * @return the job title find dto
 	 */
-	public List<JobTitleDto> findAll(GeneralDate baseDate) {
+	public JobTitleFindDto findJobHistoryByJobId(String jobTitleId) {
 		String companyId = AppContexts.user().companyId();
-		List<JobTitle> jobs = repository.findAll(companyId, baseDate);
-
-		return jobs.stream().map(job -> {
-			JobTitleDto memento = new JobTitleDto();
-			job.saveToMemento(memento);
-			return memento;
-		}).collect(Collectors.toList());
+		Optional<JobTitle> opJobTitle = this.repository.findByJobTitleId(companyId, jobTitleId);
+		
+		if (opJobTitle.isPresent()) {
+			JobTitleFindDto dto = new JobTitleFindDto();
+			opJobTitle.get().saveToMemento(dto);
+			return dto;
+		}		
+		return null;
 	}
 }

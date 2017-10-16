@@ -15,13 +15,18 @@
 			<com:scriptfile path="cmm018.a.start.js" />
 			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 		</ui:define>
 		<ui:define name="sidebar">
-			<ul class="navigator">
+			<ul class="navigator" data-bind="with: viewmodelA">
 				<!-- A1_2: Tab 会社 -->
-				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Company')}</a></li>
 				<!-- A1_3: Tab 職場 -->
-				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Workplace')}</a></li>
 				<!-- A1_4: Tab 個人 -->
 				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
@@ -32,12 +37,12 @@
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<!-- A1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
-					<!-- A1_6: Button 未登録社員リスト -->
-					<button>#{i18n.getText('CMM018_12')}</button>
-					<!-- A1_7: Button 承認者一覧 -->
-					<button data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_14')}</button>
+					<!-- A1_6: Button 未登録社員リスト - Dialog L -->
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<!-- A1_7: Button 承認者一覧 - Dialog N -->
+					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- A1_8: Button マスタリスト -->
-					<button data-bind="click: openDialogJ">#{i18n.getText('CMM018_13')}</button>
+					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
@@ -75,7 +80,7 @@
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<div style="margin: 20px">
 										<table tabindex="2" id="single-list-dataSource"
@@ -142,9 +147,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- A3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: common">
 													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -159,31 +164,31 @@
 											<!-- A3_16: -->
 											<td class="approver"><div>
 												<div data-bind="foreach: appPhase1.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+													data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
 												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
-											<td class="approver" data-bind="if: appPhase2 != null">
+											<td class="approver">
 												<div data-bind="foreach: appPhase2.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
 												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
 											<td class="approver">
 												<div data-bind="foreach: appPhase3.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
@@ -194,7 +199,7 @@
 											<!-- A3_25: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase4.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
@@ -206,7 +211,7 @@
 											<!-- A3_28: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase5.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -221,7 +226,7 @@
 							</div>
 						</div>
 						<!-- SCREEN B -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode">
+						<div class="mode_Private" style="display:none" data-bind="visible: selectedModeCode">
 							<!-- B2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
 								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
@@ -296,9 +301,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- B3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: common">
@@ -314,7 +319,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -326,7 +331,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -338,7 +343,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -349,7 +354,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -361,7 +366,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -378,18 +383,18 @@
 					<!-- C1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
-					<button>#{i18n.getText('CMM018_12')}</button>
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
 					<!-- c1_7: Button 承認者一覧 -->
-					<button>#{i18n.getText('CMM018_14')}</button>
+					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- c1_8: Button マスタリスト -->
-					<button>#{i18n.getText('CMM018_13')}</button>
+					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
 								<td style = "width: 880px">
-								<div>Hatake - Kakashi</div>
+								<button data-bind = "click: openDialogCDL008">職場選択 </button>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
@@ -412,350 +417,12 @@
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 290px; height: 350px;" class="caret-right caret-background bg-green">
-									<div style="margin: 10px 20px 20px 20px">
-										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
-									</div>
-									<div style="margin: 10px">
-										<table tabindex="2" id="single-list-dataSource"
-											data-bind="ntsGridList:{
-												width: 280,
-												height: 258,
-												options: listHistory,								
-												optionsValue: 'id',
-												columns: columns,
-												multiple: false,
-												value: currentCode,
-												enable: true}" >
-										</table>
-									</div>
-								</div>
-							</div>
-							<!-- A3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;">
-								<div>
-									<!-- A3_1: Label 有効期間 -->
-									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- A3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
-								</div>
-								<table class="contents-header">
-									<thead>
-										<tr>
-											<!-- A3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
-											<!-- A3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
-											<!-- A3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
-											<!-- A3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
-											<!-- A3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
-											<!-- A3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
-											<!-- A3_29: クリア（見出し） -->
-											<td rowspan="2" class="allow-pay">#{i18n.getText('CMM018_95')}</td>
-										</tr>
-										<tr>
-											<!-- A3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-										</tr>
-									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
-										<tr>
-											<!-- A3_12: App Name -->
-											<td class="name">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
-												<div style="display: inline-block;" data-bind="if: common">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- A3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- A3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</div></td>
-											<!-- A3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- A3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</td>
-											<!-- A3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- A3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div></td>
-											<!-- A3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- A3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</td>
-											<!-- A3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,5)}"></button>
-											<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- A3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</td>
-											<!-- A3_29: Button delete -->
-											<td class="allow-pay">
-												<div>
-													<button data-bind="click: function() {$parent.deleteRow(approvalId)}" style=" background-image: url(../images/cmm018_delete.png);width:17px; height:18px;"></button>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<!-- SCREEN D -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode">
-							<!-- B2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
-								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
-									<div style="margin: 10px 20px 20px 20px">
-										<!-- B2_2: -->
-										<button class="dateControlBtn" data-bind="click: openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<!-- B2_3 -->
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
-									</div>
-									<!-- Tree -->
-									<div>
-									<table id="treegrid2"
-											data-bind="ntsTreeGridView:{
-												width: 270,
-												dataSource: dataDisplay,
-												value: singleSelectedCode,
-												optionsValue: 'approvalId',
-												optionsChild: 'lstbyApp',
-												optionsText: 'nameAppType',
-												multiple: false,
-												enable: true,
-												rows: 15,
-												showCheckBox: false}"></table>
-									</div>
-								</div>
-							</div>
-							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;" data-bind="with: $parent.viewmodelB">
-								<div>
-									<!-- B3_1: Label 有効期間 -->
-									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- B3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
-								</div>
-								<table class="contents-header">
-									<thead>
-										<tr>
-											<!-- B3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
-											<!-- B3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
-											<!-- B3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
-											<!-- B3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
-											<!-- B3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
-											<!-- B3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
-										</tr>
-										<tr>
-											<!-- B3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-										</tr>
-									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr>
-											<!-- B3_12: App Name -->
-											<td class="name">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
-												<!-- B3_13: -->
-												<div style="display: inline-block;" data-bind="if: common">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- B3_14: -->
-											<td class="button_phase" data-bind="with: appPhase1">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
-												<div data-bind="text: appFormName"></div>
-											</td>
-											<!-- B3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</div></td>
-											<!-- B3_17: -->
-											<td class="button_phase" data-bind="with: appPhase2">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
-											</td>
-											<!-- B3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</td>
-											<!-- B3_20: -->
-											<td class="button_phase" data-bind="with: appPhase3">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
-											</td>
-											<!-- B3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div></td>
-											<!-- B3_23: -->
-											<td class="button_phase" data-bind="with: appPhase4">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
-											</td>
-											<!-- B3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</td>
-											<!-- B3_26: -->
-											<td class="button_phase" data-bind="with: appPhase5">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
-											</td>
-											<!-- B3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="tabpanel-3" role="tabpanel">
-				<div class="sidebar-content-header" data-bind="with: viewmodelA">
-					<span class="title">#{i18n.getText('Com_Person')}</span>
-					<!-- E1_5: Button 登録 -->
-					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
-					<!-- E1_6: Button 未登録社員リスト -->
-					<button>#{i18n.getText('CMM018_12')}</button>
-					<!-- E1_7: Button 承認者一覧 -->
-					<button >#{i18n.getText('CMM018_14')}</button>
-					<!-- E1_8: Button マスタリスト -->
-					<button>#{i18n.getText('CMM018_13')}</button>
-				</div>
-				<div class="contents-area">
-					<div class="contents-area" data-bind="with: viewmodelA">
-					<div style="margin-top: 10px;">
-						<table>
-							<tr>
-								<td style = "width: 880px">
-								<!-- KCP009 -->
-								<div id="emp-component"></div>
-								</td>
-								<td>
-									<!-- A1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
-								</td>
-								<td>
-									<!-- A1_12: SwitchButton モード切替 -->
-									<div data-bind="ntsSwitchButton: {
-											options: listMode,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedModeCode,
-											enable: true}"></div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div>
-						<!-- SCREEN E -->
-						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
-							<!-- A2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;">
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
 									</div>
-									<div style = "margin-left: 20px">
+									<div style="margin: 20px">
 										<table tabindex="2" id="single-list-dataSource"
 											data-bind="ntsGridList:{
 												width: 240,
@@ -783,9 +450,9 @@
 										<tr>
 											<!-- A3_4: 申請の種類（見出し） -->
 											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
-											<!-- A3_5: フェーズ1⇒（見出し） -->
+											<!-- C3_5: フェーズ1⇒（見出し） -->
 											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
-											<!-- A3_6: フェーズ2⇒（見出し） -->
+											<!-- C3_6: フェーズ2⇒（見出し） -->
 											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
 											<!-- A3_7: フェーズ3⇒（見出し） -->
 											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
@@ -799,7 +466,7 @@
 										<tr>
 											<!-- A3_10: 承認者指定（見出し） -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11: 承認者（見出し） -->
+											<!-- C3_11: 承認者（見出し） -->
 											<td class="approver">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
@@ -811,7 +478,7 @@
 											<td class="approver">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- A3_11 -->
+											<!-- C3_11 -->
 											<td class="approver">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
@@ -820,9 +487,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
-										<tr>
-											<!-- A3_12: App Name -->
-											<td class="name">
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
+											<!-- C3_12: App Name -->
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: common">
 													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -830,52 +497,61 @@
 											</td>
 											<!-- A3_14: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
 												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,4)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
 											<!-- A3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,5)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,5)}"></button>
+											<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
 											<!-- A3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -889,15 +565,15 @@
 								</table>
 							</div>
 						</div>
-						<!-- SCREEN F -->
+						<!-- SCREEN D -->
 						<div class="mode_Private" data-bind="visible: selectedModeCode">
-							<!-- F2: List gridList -->
+							<!-- B2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
 								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
-										<!-- F2_2: -->
+										<!-- D2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<!-- F2_3 -->
+										<!-- D2_3 -->
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<!-- Tree -->
@@ -917,12 +593,12 @@
 									</div>
 								</div>
 							</div>
-							<!-- F3: List -->
+							<!-- B3: List -->
 							<div id = "right-contents" style="float: right; margin-top: 10px;" data-bind="with: $parent.viewmodelB">
 								<div>
-									<!-- B3_1: Label 有効期間 -->
+									<!-- D3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- B3_2: 選択する期間 -->
+									<!-- D3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
 								<table class="contents-header">
@@ -934,25 +610,25 @@
 											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
 											<!-- B3_6: フェーズ2⇒（見出し） -->
 											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
-											<!-- B3_7: フェーズ3⇒（見出し） -->
+											<!-- D3_7: フェーズ3⇒（見出し） -->
 											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
 											<!-- B3_8: フェーズ4⇒（見出し） -->
 											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
-											<!-- B3_9: フェーズ5（見出し） -->
+											<!-- D3_9: フェーズ5（見出し） -->
 											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
 										</tr>
 										<tr>
-											<!-- B3_10: 承認者指定（見出し） -->
+											<!-- D3_10: 承認者指定（見出し） -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11: 承認者（見出し） -->
+											<!-- D3_11: 承認者（見出し） -->
 											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- B3_10 -->
+											<!-- D3_10 -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11 -->
+											<!-- D3_11 -->
 											<td class="approver">#{i18n.getText('CMM018_29')}</td>
-											<!-- B3_10 -->
+											<!-- D3_10 -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
-											<!-- B3_11 -->
+											<!-- D3_11 -->
 											<td class="approver">#{i18n.getText('CMM018_29')}</td>
 											<!-- B3_10 -->
 											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
@@ -965,9 +641,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- B3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: common">
@@ -975,57 +651,401 @@
 												</div>
 											</td>
 											<!-- B3_14: -->
-											<td class="button_phase" data-bind="with: appPhase1">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
-												<div data-bind="text: appFormName"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
-											<!-- B3_16: -->
+											<!-- D3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
-											<td class="button_phase" data-bind="with: appPhase2">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
-											<!-- B3_20: -->
-											<td class="button_phase" data-bind="with: appPhase3">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
+											<!-- D3_20: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
-											<td class="button_phase" data-bind="with: appPhase4">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
-											<!-- B3_25: -->
+											<!-- D3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
-											<!-- B3_26: -->
-											<td class="button_phase" data-bind="with: appPhase5">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: appFormName"></div>
+											<!-- D3_26: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase5,approvalId,appTypeValue,5)}"></button>
+												<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
-											<!-- B3_28: -->
+											<!-- D3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel" >
+				<div class="sidebar-content-header" data-bind="with: viewmodelA">
+					<span class="title">#{i18n.getText('Com_Person')}</span>
+					<!-- E1_5: Button 登録 -->
+					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
+					<!-- E1_6: Button 未登録社員リスト -->
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<!-- E1_7: Button 承認者一覧 -->
+					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
+					<!-- E1_8: Button マスタリスト -->
+					<button>#{i18n.getText('CMM018_13')}</button>
+				</div>
+				<div class="contents-area">
+					<div class="contents-area" data-bind="with: viewmodelA">
+					<div style="margin-top: 10px;">
+						<table>
+							<tr>
+								<td style = "width: 880px">
+								<!-- KCP009 -->
+								<div id="emp-component"></div>
+								</td>
+								<td>
+									<!-- E1_11: Label モード切替： -->
+									<div >#{i18n.getText('CMM018_8')}</div>
+								</td>
+								<td>
+									<!-- E1_12: SwitchButton モード切替 -->
+									<div data-bind="ntsSwitchButton: {
+											options: listMode,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedModeCode,
+											enable: true}"></div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div>
+						<!-- CCG001 -->
+						<div id="ccgcomponent"></div>
+						<!-- SCREEN E -->
+						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+							<!-- A2: List gridList -->
+							<div id = "left-contents" style="float: left;margin-left: 40px;">
+								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
+									<div style="margin: 10px 20px 20px 20px">
+										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+									</div>
+									<div style = "margin-left: 20px">
+										<table tabindex="2" id="single-list-dataSource"
+											data-bind="ntsGridList:{
+												width: 240,
+												height: 258,
+												options: listHistory,								
+												optionsValue: 'id',
+												columns: columns,
+												multiple: false,
+												value: currentCode,
+												enable: true}" >
+										</table>
+									</div>
+								</div>
+							</div>
+							<!-- E3: List -->
+							<div id = "right-contents" style="float: right; margin-top: 10px;margin-left: 30px; width: 890px !important">
+								<div>
+									<!-- E3_1: Label 有効期間 -->
+									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+									<!-- E3_2: 選択する期間 -->
+									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+								</div>
+								<table class="contents-header" style="width: 890px !important">
+									<thead>
+										<tr>
+											<!-- A3_4: 申請の種類（見出し） -->
+											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<!-- A3_5: フェーズ1⇒（見出し） -->
+											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<!-- A3_6: フェーズ2⇒（見出し） -->
+											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<!-- A3_7: フェーズ3⇒（見出し） -->
+											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<!-- A3_8: フェーズ4⇒（見出し） -->
+											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<!-- A3_9: フェーズ5（見出し） -->
+											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<!-- A3_29: クリア（見出し） -->
+											<td rowspan="2" class="allow-pay">#{i18n.getText('CMM018_95')}</td>
+										</tr>
+										<tr>
+											<!-- E3_10: 承認者指定（見出し） -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- A3_11: 承認者（見出し） -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- A3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- A3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- A3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- A3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- A3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- A3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- A3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- E3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+										</tr>
+									</thead>
+									<tbody style = "height: 200px;" data-bind = "foreach: cpA">
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
+											<!-- E3_12: App Name -->
+											<td class="name td-first-bg">
+												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+												<div style="display: inline-block;" data-bind="if: common">
+													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+												</div>
+											</td>
+											<!-- A3_14: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<div data-bind="text: appPhase1.appFormName"></div>
+											</td>
+											<!-- A3_16: -->
+											<td class="approver" data-bind="with: appPhase1"><div>
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</div></td>
+											<!-- E3_17: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
+											</td>
+											<!-- A3_19: -->
+											<td class="approver" data-bind="with: appPhase2">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</td>
+											<!-- A3_20: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
+											</td>
+											<!-- E3_22: -->										
+											<td class="approver" data-bind="with: appPhase3">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div></td>
+											<!-- E3_23: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
+											</td>
+											<!-- E3_25: -->
+											<td class="approver" data-bind="with: appPhase4">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</td>
+											<!-- E3_26: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,5)}"></button>
+												<div data-bind="text: appPhase5.appFormName"></div>
+											</td>
+											<!-- E3_28: -->
+											<td class="approver" data-bind="with: appPhase5">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</td>
+											<!-- E3_29: Button delete -->
+											<td class="allow-pay">
+												<div>
+													<button data-bind="click: function() {$parent.deleteRow(approvalId)}" style=" background-image: url(../images/cmm018_delete.png);width:17px; height:18px;"></button>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- SCREEN F -->
+						<div class="mode_Private" data-bind="visible: selectedModeCode">
+							<!-- F2: List gridList -->
+							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
+								<div style="width: 310px; height: 470px;" class="caret-right caret-background bg-green">
+									<div style="margin: 10px 20px 20px 20px">
+										<!-- F2_2: -->
+										<button class="dateControlBtn" data-bind="click: openDialogI">#{i18n.getText('CMM018_20')}</button>
+										<!-- F2_3 -->
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+									</div>
+									<!-- Tree -->
+									<div>
+									<table id="treegrid2"
+											data-bind="ntsTreeGridView:{
+												width: 300,
+												dataSource: dataDisplay,
+												value: singleSelectedCode,
+												optionsValue: 'approvalId',
+												optionsChild: 'lstbyApp',
+												optionsText: 'nameAppType',
+												multiple: false,
+												enable: true,
+												rows: 15,
+												showCheckBox: false}"></table>
+									</div>
+								</div>
+							</div>
+							<!-- F3: List -->
+							<div id = "right-contents" style="float: right; margin-top: 10px;margin-left: 30px; width: 890px !important" data-bind="with: $parent.viewmodelB">
+								<div>
+									<!-- F3_1: Label 有効期間 -->
+									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+									<!-- F3_2: 選択する期間 -->
+									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+								</div>
+								<table class="contents-header" style="width: 890px !important">
+									<thead>
+										<tr>
+											<!-- F3_4: 申請の種類（見出し） -->
+											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<!-- F3_5: フェーズ1⇒（見出し） -->
+											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<!-- F3_6: フェーズ2⇒（見出し） -->
+											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<!-- F3_7: フェーズ3⇒（見出し） -->
+											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<!-- F3_8: フェーズ4⇒（見出し） -->
+											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<!-- F3_9: フェーズ5（見出し） -->
+											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+										</tr>
+										<tr>
+											<!-- F3_10: 承認者指定（見出し） -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- F3_11: 承認者（見出し） -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- F3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- F3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- F3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- F3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- F3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- F3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<!-- F3_10 -->
+											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<!-- F3_11 -->
+											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+										</tr>
+									</thead>
+									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
+											<!-- F3_12: App Name -->
+											<td class="name td-first-bg">
+												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+												<!-- B3_13: -->
+												<div style="display: inline-block;" data-bind="if: common">
+													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+												</div>
+											</td>
+											<!-- F3_14: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<div data-bind="text: appPhase1.appFormName"></div>
+											</td>
+											<!-- F3_16: -->
+											<td class="approver" data-bind="with: appPhase1"><div>
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</div></td>
+											<!-- F3_17: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
+											</td>
+											<!-- F3_19: -->
+											<td class="approver" data-bind="with: appPhase2">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</td>
+											<!-- F3_20: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
+											</td>
+											<!-- F3_22: -->										
+											<td class="approver" data-bind="with: appPhase3">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div></td>
+											<!-- F3_23: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
+											</td>
+											<!-- F3_25: -->
+											<td class="approver" data-bind="with: appPhase4">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
+												</div>
+											</td>
+											<!-- F3_26: -->
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"
+														data-bind="click: function(){$parent.openDialogKB(appPhase5,approvalId,appTypeValue,5)}"></button>
+												<div data-bind="text: appPhase5.appFormName"></div>
+											</td>
+											<!-- F3_28: -->
+											<td class="approver" data-bind="with: appPhase5">
+												<div data-bind="foreach: approver">
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 										</tr>

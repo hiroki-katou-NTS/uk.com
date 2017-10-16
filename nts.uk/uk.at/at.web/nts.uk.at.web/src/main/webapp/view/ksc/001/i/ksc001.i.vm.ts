@@ -1,38 +1,78 @@
 module nts.uk.at.view.ksc001.i {
     export module viewmodel {
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             targetRange: KnockoutObservable<string>;
             executionNumber: KnockoutObservable<string>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
             items: KnockoutObservableArray<ItemModel>;
             currentCode: KnockoutObservable<string>;
+
             constructor() {
                 var self = this;
-                self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", ['2016/11/11', '2016/11/11']));
-                self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [33]));
+                self.targetRange = ko.observable('');
+                self.executionNumber = ko.observable('');
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 100 },
+                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_86"), key: 'status', width: 150 }
                 ]);
                 self.items = ko.observableArray([]);
-                for(var i=0;i<33;i++)
-                {
-                    self.items.push(new ItemModel("A0000000"+i,"日通システム"+i,"未作成"));    
-                }
                 self.currentCode = ko.observable('');
             }
+
             /**
              * get data on start page
              */
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                var data: any = nts.uk.ui.windows.getShared('dataFromDetailDialog');
+                let data: any = nts.uk.ui.windows.getShared('dataFromDetailDialog');
+                blockUI.invisible();
+                self.getDataBindScreen(data).done(function() {
+                    blockUI.clear();
+                    dfd.resolve();
+                });
                 $("#fixed-table").ntsFixedTable({ height: 230 });
-                dfd.resolve();
                 return dfd.promise();
             }
+
+            /**
+             * function to get data and bind to screen
+             */
+            private getDataBindScreen(parentData: any): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                self.items([]);
+                service.findAllCreator(parentData.executionId).done(function(data: Array<any>) {
+                    self.targetRange(nts.uk.resource.getText("KSC001_46", [parentData.startDate, parentData.endDate]));
+                    self.executionNumber(nts.uk.resource.getText("KSC001_47", [data.length]));
+                    if (data && data.length > 0) {
+                        data.forEach(function(item, index) {
+                            self.items.push(new ItemModel(item.employeeCode, item.employeeName, item.executionStatus));
+                        });
+                    }
+                    //sort by employ code
+                    self.items().sort(self.compare);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            //define sort function
+            private compare(a: any, b: any) {
+                let genreA: string = a.code.toUpperCase();
+                let genreB: string = b.code.toUpperCase();
+
+                let comparison = 0;
+                if (genreA > genreB) {
+                    comparison = 1;
+                } else if (genreA < genreB) {
+                    comparison = -1;
+                }
+                return comparison;
+            }
+
             /**
             * close dialog 
             */

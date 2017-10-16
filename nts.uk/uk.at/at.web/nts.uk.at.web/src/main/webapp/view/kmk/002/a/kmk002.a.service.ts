@@ -26,8 +26,8 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
         }
 
-        export function saveFormula(command: Array<model.FormulaDto>): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveFormula, { listCalcFormula: command });
+        export function saveFormula(command: model.FormulaCommand): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveFormula, command);
         }
 
         export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
@@ -88,7 +88,9 @@ module nts.uk.at.view.kmk002.a {
                 orderNo: number;
                 symbolValue: string;
                 formulaAtr: number;
-                calcFormulaSetting: CalcFormulaSettingDto;
+                calcAtr: number;
+                formulaSetting: FormulaSettingDto;
+                itemSelection: ItemSelectionDto;
                 monthlyRounding: RoundingDto;
                 dailyRounding: RoundingDto;
             }
@@ -102,14 +104,6 @@ module nts.uk.at.view.kmk002.a {
                 timeUnit: number;
                 amountRounding: number;
                 amountUnit: number;
-            }
-            /**
-             * CalcFormulaSettingDto
-             */
-            export interface CalcFormulaSettingDto {
-                calcAtr: number;
-                formulaSetting: FormulaSettingDto;
-                itemSelection: ItemSelectionDto;
             }
             /**
              * FormulaSettingDto
@@ -175,23 +169,39 @@ module nts.uk.at.view.kmk002.a {
                 fieldName: string;
                 localizedName: string;
             }
+            export interface FormulaCommand {
+                optItemNo: string;
+                calcFormulas: Array<FormulaDto>;
+            }
 
-//            export abstract class EnumAdaptor {
-//                public valueOf(fieldName: string, enumConstant: EnumConstantDto[]): number {
-//                    let result = _.find(enumConstant, item => item.fieldName == fieldName);
-//                    if (result) {
-//                        return result.value;
-//                    }
-//                    throw 'VALUE NOT FOUND';
-//                }
-//                public fieldNameOf(value: number, enumConstant: EnumConstantDto[]): string {
-//                    let result = _.find(enumConstant, item => item.value == value);
-//                    if (result) {
-//                        return result.fieldName;
-//                    }
-//                    throw 'FIELDNAME NOT FOUND';
-//                }
-//            }
+            export class EnumAdaptor {
+
+                /**
+                 * Get number value of fieldName.
+                 * @param: list enum
+                 */
+                public static valueOf(fieldName: string, enumConstant: EnumConstantDto[]): number {
+                    let result;
+                    let found = _.find(enumConstant, item => item.fieldName == fieldName);
+                    if (found) {
+                        result = found.value;
+                    }
+                    return result;
+                }
+
+                /**
+                 * Get localizedName of number value.
+                 * @param: list enum
+                 */
+                public static localizedNameOf(value: number, enumConstant: EnumConstantDto[]): string {
+                    let result;
+                    let found = _.find(enumConstant, item => item.value == value);
+                    if (found) {
+                        result = found.localizedName;
+                    }
+                    return result;
+                }
+            }
         }
 
     }

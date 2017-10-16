@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting;
 
 import lombok.AllArgsConstructor;
-
+/**
+ * 固定縦計設定
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 public enum VerticalDetailedSettings {
 	/** 0- 利用する **/

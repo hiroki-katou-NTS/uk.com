@@ -11,10 +11,13 @@ import nts.arc.layer.dom.DomainObject;
  * The Class ReCreateContent.
  */
 // 再作成内容
-
 @Getter
 public class ReCreateContent extends DomainObject{
 	
+	/** The re create atr. */
+	// 再作成区分
+	private ReCreateAtr reCreateAtr;
+
 	/** The process execution atr. */
 	// 処理実行区分
 	private ProcessExecutionAtr processExecutionAtr;
@@ -29,7 +32,8 @@ public class ReCreateContent extends DomainObject{
 	 * @param memento the memento
 	 * @return the re create content
 	 */
-	public ReCreateContent(ExecutionContentGetMemento memento) {
+	public ReCreateContent(ScheduleCreateContentGetMemento memento) {
+		this.reCreateAtr = memento.getReCreateAtr();
 		this.processExecutionAtr = memento.getProcessExecutionAtr();
 		this.resetAtr = new ResetAtr(memento);
 	}
@@ -39,7 +43,8 @@ public class ReCreateContent extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(ExecutionContentSetMemento memento) {
+	public void saveToMemento(ScheduleCreateContentSetMemento memento) {
+		memento.setReCreateAtr(this.reCreateAtr);
 		memento.setProcessExecutionAtr(this.processExecutionAtr);
 		this.resetAtr.saveToMemento(memento);
 	}

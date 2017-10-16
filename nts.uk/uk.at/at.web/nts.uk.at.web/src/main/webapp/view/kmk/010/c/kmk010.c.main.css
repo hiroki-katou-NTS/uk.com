@@ -11,7 +11,6 @@
 
 .overtime-border td {
 	border: solid grey 1px;
-	text-align: center;
 	padding-top: 3px;
 	padding-bottom: 3px;
 	padding-right: 5px;
@@ -19,15 +18,18 @@
 	min-width: 30px;
 	max-width: 350px;
 }
+.tdcenter {
+	text-align: center;
+}
 
+
+.selectProductNumber {
+	width: 60px;
+}
 .overtime-border input {
 	width: 150px;
 }
 
 .tbOvertime {
 	margin-top: 20px;
-}
-
-.selectProductNumber {
-	width: 60px;
 }

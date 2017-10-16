@@ -11,30 +11,21 @@ module nts.uk.at.view.kdw006 {
 
     export module viewmodel {
         export class TabScreenModel {
-            title: KnockoutObservable<string> = ko.observable('');
-            tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'B', name: getText('KDW006_20')}),
-                new TabModel({ id: 'C', name: getText('KDW006_21'), active: true }),
-                new TabModel({ id: 'D', name: getText('KDW006_22') }),
-                new TabModel({ id: 'E', name: getText('KDW006_23') }),
-                new TabModel({ id: 'G', name: getText('KDW006_58') }),
-            ]);
+            tabs: KnockoutObservableArray<TabModel>;
+            title: KnockoutObservable<string>;
+            enableCopyBtn : KnockoutObservable<boolean>; 
 
             constructor() {
-                let self = this,
-                    tabs = self.tabs();
-                
-                //Dung khi ghep vao server
-                //get use setting
-//                nts.uk.at.view.kmk005.g.service.getUseSetting()
-//                    .done(x => {
-//                        if (x) {
-//                            tabs[1].display(x.workplaceUseAtr);
-//                            tabs[2].display(x.personalUseAtr);
-//                            tabs[3].display(x.workingTimesheetUseAtr);
-//                        }
-//                    });
-
+                let self = this;
+                self.tabs = ko.observableArray([
+                    new TabModel({ id: 'B', name: getText('KDW006_20') }),
+                    new TabModel({ id: 'C', name: getText('KDW006_21'), active: true }),
+                    new TabModel({ id: 'D', name: getText('KDW006_22') }),
+                    new TabModel({ id: 'E', name: getText('KDW006_23') }),
+                    new TabModel({ id: 'G', name: getText('KDW006_58') })
+                ]);
+                self.title = ko.observable('');
+                self.enableCopyBtn = ko.observable(false);
                 self.tabs().map((t) => {
                     // set title for tab
                     if (t.active() == true) {
@@ -45,12 +36,12 @@ module nts.uk.at.view.kdw006 {
             }
 
             changeTab(tab: TabModel) {
-                let self = this,
-                    view: any = __viewContext.viewModel,
-                    oldtab: TabModel = _.find(self.tabs(), t => t.active());
+                let self = this;
+                let view = __viewContext.viewModel;
+                let oldTab = _.find(self.tabs(), t => t.active());
 
                 // cancel action if tab self click
-                if (oldtab.id == tab.id) {
+                if (oldTab.id == tab.id) {
                     return;
                 }
                 //set not display remove button first when change tab
@@ -64,35 +55,44 @@ module nts.uk.at.view.kdw006 {
                         if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
                             view.viewmodelB.start();
                         }
+                        self.enableCopyBtn(false);
                         break;
                     case 'C':
                         if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
                             view.viewmodelC.start();
                         }
+                        self.enableCopyBtn(false);
                         break;
                     case 'D':
                         if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
                             view.viewmodelD.start();
                         }
+                        self.enableCopyBtn(false);
                         break;
                     case 'E':
                         if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
                             view.viewmodelE.start();
                         }
+                        self.enableCopyBtn(true);
                         break;
                     case 'G':
                         if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {
                             view.viewmodelG.start();
                         }
-                        break;    
+                        self.enableCopyBtn(true);
+                        break;
                 }
             }
 
             navigateView() {
+                //
                 let self = this;
-
                 // check dirty before navigate to view a                
                 href("../a/index.xhtml");
+            }
+            
+            copyData() {
+                let self = this;
             }
 
             saveData() {
@@ -121,13 +121,13 @@ module nts.uk.at.view.kdw006 {
                         }
                         break;
                     case 'G':
-                        if (typeof view.viewmodelE.saveData == 'function') {
-                            view.viewmodelE.saveData();
+                        if (typeof view.viewmodelG.saveData == 'function') {
+                            view.viewmodelG.saveData();
                         }
-                        break;    
+                        break;
                 }
             }
-            
+
         }
 
 
@@ -158,95 +158,4 @@ module nts.uk.at.view.kdw006 {
         }
     }
 
-    export module b.viewmodel {
-        export class ScreenModel {
-            //Daily perform id from other screen
-            dailyPerformId = '';
-
-            //Define textbox
-            textAreaValue: KnockoutObservable<string> = ko.observable("123");
-            multilineeditor: any = {
-                value: this.textAreaValue,
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: true,
-                    placeholder: "",
-                    width: "380px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-
-            //Define switch button
-            selectedRuleCode: any = ko.observable(1);
-
-            constructor() {
-                var self = this;
-                
-                self.startPage();
-                
-                self.textAreaValue('afafad');
-            }
-
-            saveData() {
-                alert('screen b');
-                var self = this;
-                var perform = {
-                    settingUnit: self.selectedRuleCode(),
-                    comment: self.textAreaValue()
-                };
-
-                //Day len server tblUser
-                service.update(perform).done(function(data) {
-                    self.getDailyPerform();
-                });
-            };
-
-            getDailyPerform() {
-                let self = this;
-                var dfd = $.Deferred();
-                service.getDailyPerform().done(function(data) {
-
-                    let perform = new DailyPerform(data);
-
-                    self.selectedRuleCode(perform.settingUnit);
-                    self.textAreaValue(perform.comment);
-
-                    dfd.resolve();
-                });
-                return dfd.promise();
-
-            }
-
-            startPage(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-
-                dfd.resolve();
-
-                //                self.getDailyPerform().done(function() {
-                //                    dfd.res         //                });
-                
-                return dfd.promise();
-            }
-
-        }
-
-        export class DailyPerform {
-            settingUnit: number;
-            comment: string;
-            constructor(x: any) {
-                let self = this;
-                if (x) {
-                    self.settingUnit = x.settingUnit;
-                    self.comment = x.comment;
-                } else {
-                    self.settingUnit = 1;
-                    self.comment = '';
-                }
-            }
-        }
-    }
 }

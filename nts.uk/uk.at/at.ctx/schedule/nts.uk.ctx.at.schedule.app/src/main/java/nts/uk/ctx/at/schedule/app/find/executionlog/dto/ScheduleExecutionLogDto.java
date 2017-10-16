@@ -2,11 +2,10 @@ package nts.uk.ctx.at.schedule.app.find.executionlog.dto;
 
 import lombok.Getter;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleExecutionLogDto.
@@ -18,13 +17,10 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public String companyId;
 
 	/** The completion status. */
-	public Integer completionStatus;
+	public String completionStatus;
 
 	/** The execution id. */
 	public String executionId;
-
-	/** The execution content. */
-	public ExecutionContentDto executionContent;
 
 	/** The execution date time. */
 	public ExecutionDateTime executionDateTime;
@@ -33,7 +29,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public String executionEmployeeId;
 
 	/** The period. */
-	public Period period;
+	public DatePeriod period;
 	
 	//imported class
 	/** The employee code. */
@@ -55,7 +51,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	 */
 	@Override
 	public void setCompletionStatus(CompletionStatus completionStatus) {
-		this.completionStatus = completionStatus.value;
+		this.completionStatus = completionStatus.description;
 	}
 
 	/* (non-Javadoc)
@@ -65,15 +61,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public void setExecutionId(String executionId) {
 		this.executionId = executionId;
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#setExecutionContent(nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent)
-	 */
-	@Override
-	public void setExecutionContent(ExecutionContent executionContent) {
-		// TODO Auto-generated method stub
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#setExecutionDateTime(nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime)
 	 */
@@ -94,7 +82,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#setPeriod(nts.uk.ctx.at.shared.dom.workrule.closure.Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
+	public void setPeriod(DatePeriod period) {
 		this.period = period;
 	}
 	

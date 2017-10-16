@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf000.a.viewmodel{
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel{
         /**
          * List
@@ -16,12 +18,16 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         //obj 
         objApprovalRootInput : KnockoutObservable<model.ObjApprovalRootInput>;
         
-        //obj input
-        inputMessageDeadline : KnockoutObservable<model.InputMessageDeadline>;
         //obj output message deadline
         outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
+        
+        //
+        appType : KnockoutObservable<number>;
+        
+        approvalList: Array<model.AppApprovalPhase> = [];
         constructor(){
             let self = this;
+
             /**
              * List
              */
@@ -29,19 +35,32 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.listApprovalRoot = ko.observableArray([]);
             //item approval root
             self.approvalRoot = ko.observableArray([]);
-            //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
-            //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
+            //obj input approval root (new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'))
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput("", 1,1,new Date());
+            // app ID
+            self.appType = ko.observable(0);
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
         }
-        
-        start(): JQueryPromise<any> {
-            
+        /**
+         *
+           sid 社員ID（申請本人の社員ID）
+           employmentRootAtr 就業ルート区分
+           subjectRequest 対象申請
+           baseDate 基準日
+           workplaceID 
+         */
+        start( sid, employmentRootAtr,appType,standardDate): JQueryPromise<any> {
             let self = this;
+            self.objApprovalRootInput().sid=sid;
+            self.objApprovalRootInput().employmentRootAtr =employmentRootAtr;
+            self.objApprovalRootInput().appType = appType;
+            self.objApprovalRootInput().standardDate = standardDate;
+            
+            self.appType(appType);
+            
             let dfd = $.Deferred();
-            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllApprovalRoot = self.getAllApprovalRoot();
             $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
@@ -50,27 +69,63 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             return dfd.promise();
         }
         
+        
         //get all listApprovalRoot
         getAllApprovalRoot(){
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
-                if(self.listApprovalRoot().length>0){
+                if(self.listApprovalRoot !=null && self.listApprovalRoot().length>0 ){
                     self.approvalRoot(self.listApprovalRoot()[0]);
                 }
+                let listPhase = self.approvalRoot().beforeApprovers; 
+                let approvalList = [];
+                for(let x = 1; x <= listPhase.length; x++){
+                    let phaseLoop = listPhase[x-1];
+                    let appPhase = new model.AppApprovalPhase(
+                        "",
+                        "",
+                        phaseLoop.approvalForm,
+                        x,
+                        0,
+                        []); 
+                    for(let y = 1; y <= phaseLoop.approvers.length; y++){
+                        let frameLoop = phaseLoop.approvers[y-1];
+                        let appFrame = new model.ApprovalFrame(
+                            "",
+                            y,
+                            []);
+                        let appAccepted = new model.ApproveAccepted(
+                            "",
+                            frameLoop.sid,
+                            0,
+                            frameLoop.confirmPerson ? 1 : 0,
+                            "",
+                            "",
+                            frameLoop.sid);
+                        appFrame.listApproveAccepted.push(appAccepted);
+                        appPhase.listFrame.push(appFrame);   
+                    };
+                    approvalList.push(appPhase);    
+                };
+                self.approvalList = approvalList;
                 dfd.resolve(data);    
-            });
+            }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            }); 
             return dfd.promise();
             
         }
          // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline){
+        getMessageDeadline(appType){
             let self = this;
             let dfd = $.Deferred<any>();
-                nts.uk.at.view.kaf000.a.service.getMessageDeadline(inputMessageDeadline).done(function(data){
+                nts.uk.at.view.kaf000.a.service.getMessageDeadline(appType).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    
+                }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 }); 
             return dfd.promise();
         }
@@ -243,15 +298,13 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         //class ObjApprovalRootInput    
         export class ObjApprovalRootInput{
-            cid : String;
             sid : String;
             employmentRootAtr : number;
             appType : number;
-            standardDate :  Date;
-            constructor (cid : String,
+            standardDate :  String;
+            constructor (
                         sid : String,employmentRootAtr : number,
-                        appType : number,standardDate : Date){
-                this.cid  = cid;
+                        appType : number,standardDate : String){
                 this.sid = sid; 
                 this.employmentRootAtr =employmentRootAtr;
                 this.appType = appType;
@@ -259,20 +312,6 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             }
         }//end class ObjApprovalRootInput
         
-        //class InputMessageDeadline
-        export class InputMessageDeadline{
-            companyID : String;
-            workplaceID : String;
-            appType : number;
-            appDate : Date;
-            constructor(companyID : String,workplaceID : String,appType : number,appDate: Date){
-            this.companyID = companyID;
-            this.workplaceID = workplaceID;
-            this.appType = appType;
-            this.appDate = appDate;                
-            }
-            
-        }//end class InputMessageDeadline
         
         //class outputMessageDeadline
         export class OutputMessageDeadline{
@@ -283,6 +322,64 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 this.deadline = deadline;
             }
         }// end class outputMessageDeadline
+        
+        export class AppApprovalPhase {
+            appID: String;
+            phaseID: String;
+            approvalForm: number;
+            dispOrder: number;
+            approvalATR: number;
+            listFrame : Array<ApprovalFrame>;
+            constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number, 
+                    approvalATR: number,
+                    listFrame : Array<ApprovalFrame>) {
+                this.appID = appID;
+                this.phaseID = phaseID;
+                this.approvalForm = approvalForm;
+                this.dispOrder = dispOrder;
+                this.approvalATR = approvalATR;
+                this.listFrame = listFrame;
+            }
+        }
+
+        // class ApprovalFrame
+        export class ApprovalFrame {
+            frameID : String;
+            dispOrder:number;
+            listApproveAccepted: Array<ApproveAccepted>;
+            constructor(frameID : String, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
+                this.frameID = frameID;
+                this.dispOrder = dispOrder;
+                this.listApproveAccepted = listApproveAccepted;
+                
+            }
+        }//end class frame  
+
+        //class ApproveAccepted
+        export class ApproveAccepted {
+            appAccedtedID : String;
+            approverSID: String;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: String;
+            reason: String;
+            representerSID: String;
+            constructor(appAccedtedID : String,
+                    approverSID: String,
+                    approvalATR: number,
+                    confirmATR: number,
+                    approvalDate: String,
+                    reason: String,
+                    representerSID: String){
+                this.appAccedtedID = appAccedtedID;
+                this.approverSID = approverSID;
+                this.approvalATR = approvalATR;
+                this.confirmATR = confirmATR;
+                this.approvalDate = approvalDate;
+                this.reason = reason;
+                this.representerSID = representerSID;
+            }
+        }
         
     }
 }

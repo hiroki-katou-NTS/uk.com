@@ -3,12 +3,14 @@ module nts.uk.at.view.kaf002.b {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase; 
     export module viewmodel {
-        let __viewContext: any = window["__viewContext"] || {};
+        const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
+        const applicationType: number = 7; // Application Type: Stamp Application
         export class ScreenModel {
             cm: kaf002.cm.viewmodel.ScreenModel;
             kaf000_a2: kaf000.a.viewmodel.ScreenModel;
             stampRequestMode: number = 0;
             screenMode: number = 0;
+            employeeID: string = '';
             constructor() {
                 var self = this;
                 __viewContext.transferred.ifPresent(data => {
@@ -17,20 +19,32 @@ module nts.uk.at.view.kaf002.b {
                 });
                 self.cm = new kaf002.cm.viewmodel.ScreenModel(self.stampRequestMode, self.screenMode);
                 self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
-                self.kaf000_a2.start().done(()=>{
-                    self.startPage();    
-                });
+                self.startPage().done((commonSet: vmbase.AppStampNewSetDto)=>{
+                    self.employeeID = commonSet.employeeID;
+                    self.kaf000_a2.start(
+                        self.employeeID, 
+                        employmentRootAtr, 
+                        applicationType, 
+                        moment(new Date()).format("YYYY/MM/DD")).done(()=>{
+                        self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);    
+                    }).fail(function(res) { 
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                    });   
+                }).fail(function(res) { 
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                }); 
             }
             
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 service.newScreenFind()
-                    .done(function(data: vmbase.AppStampNewSetDto) {
-                        self.cm.start(data, self.kaf000_a2.approvalRoot().beforeApprovers);
-                        dfd.resolve(); 
+                    .done(function(commonSet: vmbase.AppStampNewSetDto) {
+                        
+                        dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                         dfd.reject(res); 
                     });
                 return dfd.promise();
@@ -41,12 +55,18 @@ module nts.uk.at.view.kaf002.b {
                 self.cm.register();
             }
             
+            update() {
+                var self = this;
+                self.cm.update();
+            }
+            
             performanceReference(){
                 alert('KDL004');   
             }
             
             changeAppDate(){
-                // CMM018    
+                var self = this;
+                nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID}); 
             }
             
         }

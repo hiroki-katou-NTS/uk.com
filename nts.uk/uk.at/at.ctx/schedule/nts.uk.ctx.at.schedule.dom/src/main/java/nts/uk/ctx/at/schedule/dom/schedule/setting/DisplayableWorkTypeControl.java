@@ -16,6 +16,5 @@ public class DisplayableWorkTypeControl extends AggregateRoot {
 	private String companyId;
 	private String workTypeCode;
 	// 制御使用区分
-	private int controlUseCls;
-
+	private ControlUseCls controlUseCls;
 }

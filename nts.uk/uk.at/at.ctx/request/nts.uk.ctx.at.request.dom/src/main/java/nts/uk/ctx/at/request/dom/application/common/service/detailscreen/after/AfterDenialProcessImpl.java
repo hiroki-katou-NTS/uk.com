@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,17 +14,25 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author ducpm
+ *
+ */
 @Stateless
 public class AfterDenialProcessImpl implements AfterDenialProcess {
 
@@ -41,143 +51,66 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	@Inject
 	private AppTypeDiscreteSettingRepository discreteRepo;
 
-	@Override
-	public boolean canDeniedCheck(String companyID, String appID, int startOrderNum, List<AppApprovalPhase> listPhase) {
-		if (startOrderNum > 0) {
-			// アルゴリズム「承認者一覧を取得する」を実行する
-			for (AppApprovalPhase phase : listPhase) {
-				List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID,
-						phase.getPhaseID(), ApprovalAtr.APPROVED);
-				// ループ中の承認フェーズに承認者がいる
-				if (phase.getApprovalATR() == ApprovalAtr.APPROVED) {
-					List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(),
-							phase.getPhaseID());
-					for (ApprovalFrame frame : listFrame) {
-						//2017.09.25
-						/*if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
-							// ログイン者が確定者として承認を行ったかチェックする
-							if (frame.getApproverSID().contains(AppContexts.user().employeeId())) {
-								canDeniedCheck = false;
-							} else {
-								canDeniedCheck = true;
-							}
-						} else {
-							// 承認を行ったのはログイン者かチェックする
-							// TODO: Check thang dai dien la thang Dang nhap
-							// CHECK DIEU KIEN : DAI DIEN LA NGUOI DANG NHAP
-							if (frame.getApproverSID().contains(AppContexts.user().employeeId())) {
-								canDeniedCheck = false;
-							} else {
-								canDeniedCheck = true;
-							}
-						}*/
-						for(ApproveAccepted x : frame.getListApproveAccepted()){
-							if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
-								// ログイン者が確定者として承認を行ったかチェックする
-								if (x.getApproverSID().contains(AppContexts.user().employeeId())) {
-									return false;
-								}
-							} else {
-								// 承認を行ったのはログイン者かチェックする
-								// TODO: Check thang dai dien la thang Dang nhap
-								// CHECK DIEU KIEN : DAI DIEN LA NGUOI DANG NHAP
-								if (x.getApproverSID().contains(AppContexts.user().employeeId())) {
-									return false;
-								}
-							}
-						}						
-						//2017.09.25
-					}
-				}
-			}
-		}
-		return true;
-	}
+	@Inject
+	private AgentAdapter approvalAgencyInformationService;
 
 	@Override
-	public void detailedScreenAfterDenialProcess(String companyID, String appID) {
+	public void detailedScreenAfterDenialProcess(Application application) {
 		// 否認できるフラグ
 		boolean canDeniedFlg = false;
-		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
+		String loginEmp = AppContexts.user().employeeId();
+		String companyID = AppContexts.user().companyId();
+		String appID = application.getApplicationID();
+		//ドメインモデル「申請」．「承認フェーズ」5～1の順でループする
+		List<AppApprovalPhase> listPhase = application.getListPhase().stream().sorted(Comparator.comparingInt(AppApprovalPhase::getDispOrder).reversed()).collect(Collectors.toList());
 		for (AppApprovalPhase phase : listPhase) {
-			// get list Approver
-			List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID, phase.getPhaseID(),
-					ApprovalAtr.APPROVED);
-			// Kiem tra theo tung Frame, xem Phase da duoc xu li chua
-			List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phase.getPhaseID());
-			for (ApprovalFrame frame : listFrame) {
-				int currentOrder = frame.getDispOrder();
-				//2017.09.25
-				/*if (frame.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
-					// アルゴリズム「否認できるかチェックする」を実行する
-					canDeniedFlg = this.canDeniedCheck(companyID, appID, currentOrder - 1, listPhase);
-				} else {
-					canDeniedFlg = true;
-				}*/
-				
-				for(ApproveAccepted x : frame.getListApproveAccepted()){
-					if (x.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
-						// ログイン者が確定者として承認を行ったかチェックする
-						if (x.getApproverSID().contains(AppContexts.user().employeeId())) {
-							canDeniedFlg = this.canDeniedCheck(companyID, appID, currentOrder - 1, listPhase);
-						}else{
-							canDeniedFlg = true;
-						}
-					}
-				}	
-				//2017.09.25
-				// ドメインモデル「承認フェーズ」．「承認枠」
-				if (canDeniedFlg) {
-					// Check nguoi login co phai nguoi xac nhan khong
-					//2017.09.25
-					/*if (!frame.getApproverSID().contains(AppContexts.user().employeeId())) {
-						// Thuc hien ham lay tu 3.1
-						// アルゴリズム「承認代行情報の取得処理」を実行する
-						List<String> listRepresenter = new ArrayList<>();
-						boolean allAprroval = true;
-						for (String representer : listRepresenter) {
-							if (representer.equals(AppContexts.user().employeeId())) {
-								// (ドメインモデル「承認枠」)承認区分=「否認」、承認者=空、代行者=ログイン者の社員ID
-								// update Domain ApprovalFrame voi cac dieu kien ben tren :
-								// 承認区分=「否認」
-								// 承認者=空
-								// 代行者=ログイン者の社員ID
+			//アルゴリズム「承認者一覧を取得する」を実行する
+			List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.APPROVED);
+			// Check All ApproveAtr is NOT Approve
+			if (this.isAllUnapproved(phase)) {
+				if(phase.getDispOrder() - 1 < 0) {
+					continue;
+				}
+				canDeniedFlg = this.canDeniedCheck(application,phase.getDispOrder() - 1);
+				if (!canDeniedFlg) {
+					continue;
+				}
+			} else {
+				List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(),
+						phase.getPhaseID());
+				for (ApprovalFrame frame : listFrame) {
+					List<String> approverIds = frame.getListApproveAccepted().stream().map(x -> x.getApproverSID())
+							.collect(Collectors.toList());
+					if (approverIds.contains(loginEmp)) {
+						for (ApproveAccepted appAccepted : frame.getListApproveAccepted()) {
+							if (appAccepted.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+								// (ループ中の「承認枠」)承認区分=「否認」、承認者=ログイン者の社員ID、代行者=空
+								appAccepted.changeApprovalATR(ApprovalAtr.DENIAL);
+								appAccepted.changeApproverSID(loginEmp);
+								appAccepted.changeRepresenterSID(null);
 							}
 						}
-					}*/
-					for(ApproveAccepted x : frame.getListApproveAccepted()){
-						if(x.getApproverSID().contains(AppContexts.user().employeeId())){
-							// Thuc hien ham lay tu 3.1
-							// アルゴリズム「承認代行情報の取得処理」を実行する
-							List<String> listRepresenter = new ArrayList<>();
-							boolean allAprroval = true;
-							for (String representer : listRepresenter) {
-								if (representer.equals(AppContexts.user().employeeId())) {
-									// (ドメインモデル「承認枠」)承認区分=「否認」、承認者=空、代行者=ログイン者の社員ID
-									// update Domain ApprovalFrame voi cac dieu kien ben tren :
-									// 承認区分=「否認」
-									// 承認者=空
-									// 代行者=ログイン者の社員ID
-								}
+					} else {
+						// 3-1.承認代行情報の取得処理
+						AgentPubImport agency = this.approvalAgencyInformationService
+								.getApprovalAgencyInformation(companyID, approverIds);
+						if (agency.getListApproverAndRepresenterSID().contains(loginEmp)) {
+							// (ドメインモデル「承認枠」)承認区分=「否認」、承認者=空、代行者=ログイン者の社員ID
+							for (ApproveAccepted appAccepted : frame.getListApproveAccepted()) {
+								appAccepted.changeApprovalATR(ApprovalAtr.DENIAL);
+								appAccepted.changeApproverSID(null);
+								appAccepted.changeRepresenterSID(loginEmp);
 							}
-						}			
+						}
 					}
-					
-					//2017.09.25
 				}
 			}
-
 		}
-		/// CHUYEN TRANG THAI
 		// 「反映情報」．実績反映状態を「否認」にする
-		Optional<Application> currentApplication = appRepo.getAppById(companyID, appID);
-		currentApplication.get().changeReflectState(ReflectPlanPerState.DENIAL.value);
-		// Update Domain Application
-		this.appRepo.updateApplication(currentApplication.get());
-		/// Thuc hien gui MAIL
-		// gửi mail
+		application.changeReflectState(ReflectPlanPerState.DENIAL.value);
+		//SEND mail
 		// lấy domain 申請種類別設定
-		ApplicationType appType = currentApplication.get().getApplicationType();
+		ApplicationType appType = application.getApplicationType();
 		// get DiscreteSetting
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID,
 				appType.value);
@@ -187,12 +120,92 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 		// check Continue
 		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
 			// 申請者本人にメール送信する ===>>>>Thuc hien gui mail cho nguoi viet don
-
 		}
 		// Hien thi Message
 		throw new BusinessException("Msg_222");
 		// 送信先リストに項目がいる
+	}
+	/**
+	 * 否認できるかチェックする true：否認できる false：否認できない
+	 */
+	@Override
+	public boolean canDeniedCheck(Application application, int startOrderNum) {
+		String appID = application.getApplicationID();
+		List<AppApprovalPhase> listPhase = application.getListPhase();
+		if (startOrderNum > 0) {
+			// アルゴリズム「承認者一覧を取得する」を実行する
+			for (AppApprovalPhase phase : listPhase) {
+				List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID,
+						phase.getPhaseID(), ApprovalAtr.APPROVED);
+				// ループ中の承認フェーズに承認者がいる
+				if (phase.getApprovalATR() == ApprovalAtr.APPROVED) {
+					List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(),
+							phase.getPhaseID());
+					boolean isAllFalse = this.isAllConfirm(phase);
+					if (isAllFalse) {
+						for (ApprovalFrame frame : listFrame) {
+							for (ApproveAccepted x : frame.getListApproveAccepted()) {
+								if (x.getApproverSID().contains(AppContexts.user().employeeId())
+										|| x.getRepresenterSID().contains(AppContexts.user().employeeId())) {
+									return false;
+								}
+							}
+						}
+					} else {
+						for (ApprovalFrame frame : listFrame) {
+							for (ApproveAccepted x : frame.getListApproveAccepted()) {
+								if (x.getConfirmATR() == ConfirmAtr.USEATR_USE) {
+									if (x.getApproverSID().contains(AppContexts.user().employeeId())
+											|| x.getRepresenterSID().contains(AppContexts.user().employeeId())) {
+										return false;
+									}
+								}
+							}
+						}
+					}
+					// 「承認フェーズ」．承認区分が承認済じゃない(「承認フェーズ」．承認区分 ≠ 承認済)
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Check list ApproveAccepted is Unapproved
+	 * 
+	 * @param listApprove
+	 * @return
+	 */
+	private boolean isAllUnapproved(AppApprovalPhase phase) {
+		boolean isAllUnapproved = true;
+		for (ApprovalFrame frame : phase.getListFrame()) {
+			for (ApproveAccepted x : frame.getListApproveAccepted()) {
+				if(x.getApprovalATR() ==ApprovalAtr.APPROVED) {
+					isAllUnapproved = false;
+				}
+			}
+		}
+		return isAllUnapproved;
+	}
 
+	/**
+	 * Check list ApproveAccepted is
+	 * 
+	 * @param phase
+	 * @return
+	 */
+	private boolean isAllConfirm(AppApprovalPhase phase) {
+		boolean isAllConfirm = false;
+		for (ApprovalFrame frame : phase.getListFrame()) {
+			for (ApproveAccepted x : frame.getListApproveAccepted()) {
+				if (x.getConfirmATR() == ConfirmAtr.USEATR_USE) {
+					isAllConfirm = true;
+				}
+			}
+		}
+		return isAllConfirm;
 	}
 
 }

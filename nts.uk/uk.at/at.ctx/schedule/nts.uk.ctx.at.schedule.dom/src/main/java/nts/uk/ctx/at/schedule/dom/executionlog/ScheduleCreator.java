@@ -44,8 +44,24 @@ public class ScheduleCreator extends AggregateRoot{
 	 */
 	public void saveToMemento(ScheduleCreatorSetMemento memento){
 		memento.setExecutionId(this.executionId);
-		memento.setExecutionStatus(this.executionStatus);
 		memento.setEmployeeId(this.employeeId);
+		memento.setExecutionStatus(this.executionStatus);
+	}
+	
+	/**
+	 * Update to created.
+	 */
+	public void updateToCreated(){
+		this.executionStatus = ExecutionStatus.CREATED;
+	}
+	
+	/**
+	 * Checks if is created.
+	 *
+	 * @return true, if is created
+	 */
+	public boolean isCreated(){
+		return this.executionStatus.equals(ExecutionStatus.CREATED);
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
@@ -18,5 +19,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 public class GoBackDirectBasicData {
 	Optional<GoBackDirectlyCommonSetting> goBackDirectSet;
 	String employeeName;
+	String sID;
 	List<ApplicationReason> listAppReason;
+	AppCommonSettingOutput appCommonSettingOutput;
 }

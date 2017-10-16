@@ -37,6 +37,12 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 		List<KrcmtWorktypeChangeable> entities = this.queryProxy()
 				.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", companyId.v())
 				.setParameter("employeeCode", empCode.v()).getList();
+		if ( entities.isEmpty()) {
+			// default company
+			entities = this.queryProxy()
+					.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", "000000000000-0000")
+					.setParameter("employeeCode", "0").getList();
+		}
 		Map<Integer, ChangeableWorktypeGroup> map = new HashMap<>();
 		entities.forEach(ent -> {
 			ChangeableWorktypeGroup group = null;
@@ -61,7 +67,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 				.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", cid)
 				.setParameter("employeeCode", empCode).getList();
 		this.commandProxy().removeAll(deleteEntities);
-		
+		this.getEntityManager().flush();
 		// create and insert new results
 		workingType.getChangeableWorkTypeGroups().forEach(group -> {
 			group.getWorkTypeList().forEach(workTypeCode -> {

@@ -21,7 +21,7 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 			+ " AND c.kafdtApproveAcceptedPK.dispOrder = :dispOrder"
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
 	
-	private ApproveAccepted toDomain(KafdtApproveAccepted entity) {
+	public static ApproveAccepted toDomain(KafdtApproveAccepted entity) {
 		return ApproveAccepted.createFromJavaType(
 				entity.kafdtApproveAcceptedPK.companyID, 
 				entity.kafdtApproveAcceptedPK.appAccedtedID, 
@@ -44,7 +44,7 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 				domain.getConfirmATR().value, 
 				domain.getApprovalDate(), 
 				domain.getReason().v(), 
-				domain.getRepresenterSID());
+				domain.getRepresenterSID(),null);
 	}
 	
 	/**

@@ -15,4 +15,5 @@ public class TotalEvalOrderDto {
 	private Integer totalItemNo;
 	/** 並び順 */
 	private Integer dispOrder;
+	private HoriCalDaySetDto horiCalDaySetDto;
 }

@@ -5,9 +5,10 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleExecutionLog.
@@ -22,18 +23,16 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The completion status. */
 	// 完了状態
+	@Setter
 	private CompletionStatus completionStatus;
 
 	/** The execution id. */
 	// 実行ID
 	private String executionId;
 
-	/** The execution content. */
-	// 実行内容
-	private ExecutionContent executionContent;
-
 	/** The execution date time. */
 	// 実行日時
+	@Setter
 	private ExecutionDateTime executionDateTime;
 
 	/** The execution employee id. */
@@ -42,7 +41,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The period. */
 	// 対象期間
-	private Period period;
+	private DatePeriod period;
 
 	/**
 	 * To domain.
@@ -54,7 +53,6 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.completionStatus = memento.getCompletionStatus();
 		this.executionId = memento.getExecutionId();
-		this.executionContent = memento.getExecutionContent();
 		this.executionDateTime = memento.getExecutionDateTime();
 		this.executionEmployeeId = memento.getExecutionEmployeeId();
 		this.period = memento.getPeriod();
@@ -69,9 +67,9 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setCompletionStatus(this.completionStatus);
 		memento.setExecutionId(this.executionId);
-		memento.setExecutionContent(this.executionContent);
 		memento.setExecutionDateTime(this.executionDateTime);
 		memento.setExecutionEmployeeId(this.executionEmployeeId);
 		memento.setPeriod(this.period);
 	}
+	
 }

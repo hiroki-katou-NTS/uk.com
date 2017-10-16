@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSCMT_SCHEDULE_EXC_LOG")
 public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
-    
+	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
@@ -36,83 +36,34 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     @EmbeddedId
     protected KscmtScheduleExcLogPK kscmtScheduleExcLogPK;
     
-    /** The exe str D. */
-    @Column(name = "EXE_STR_D")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-    private GeneralDateTime exeStrD;
-    
-    /** The exe end D. */
-    @Column(name = "EXE_END_D")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
-    private GeneralDateTime exeEndD;
-    
     /** The exe sid. */
     @Column(name = "EXE_SID")
     private String exeSid;
     
+    /** The exe str D. */
+    @Column(name = "EXE_STR_D")
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime exeStrD;
+
+    /** The exe end D. */
+    @Column(name = "EXE_END_D")
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime exeEndD;
+
     /** The start ymd. */
     @Column(name = "START_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate startYmd;
-    
+
     /** The end ymd. */
     @Column(name = "END_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endYmd;
-    
+
     /** The completion status. */
     @Column(name = "COMPLETION_STATUS")
-    private int completionStatus;
+    private Integer completionStatus;
     
-    /** The copy start ymd. */
-    @Column(name = "COPY_START_YMD")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate copyStartYmd;
-    
-    /** The create method atr. */
-    @Column(name = "CREATE_METHOD_ATR")
-    private int createMethodAtr;
-    
-    /** The confirm. */
-    @Column(name = "CONFIRM")
-    private int confirm;
-    
-    /** The implement atr. */
-    @Column(name = "IMPLEMENT_ATR")
-    private int implementAtr;
-    
-    /** The re create atr. */
-    @Column(name = "RE_CREATE_ATR")
-    private int reCreateAtr;
-    
-    /** The process exe atr. */
-    @Column(name = "PROCESS_EXE_ATR")
-    private int processExeAtr;
-    
-    /** The re master info. */
-    @Column(name = "RE_MASTER_INFO")
-    private int reMasterInfo;
-    
-    /** The re abst hd busines. */
-    @Column(name = "RE_ABST_HD_BUSINES")
-    private int reAbstHdBusines;
-    
-    /** The re working hours. */
-    @Column(name = "RE_WORKING_HOURS")
-    private int reWorkingHours;
-    
-    /** The re time assignment. */
-    @Column(name = "RE_TIME_ASSIGNMENT")
-    private int reTimeAssignment;
-    
-    /** The re dir line bounce. */
-    @Column(name = "RE_DIR_LINE_BOUNCE")
-    private int reDirLineBounce;
-    
-    /** The re time child care. */
-    @Column(name = "RE_TIME_CHILD_CARE")
-    private int reTimeChildCare;
-
     /**
      * Instantiates a new kscmt schedule exc log.
      */
@@ -128,38 +79,8 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
         this.kscmtScheduleExcLogPK = kscmtScheduleExcLogPK;
     }
 
-
-    /**
-     * Instantiates a new kscmt schedule exc log.
-     *
-     * @param cid the cid
-     * @param exeId the exe id
-     */
-    public KscmtScheduleExcLog(String cid, String exeId) {
-        this.kscmtScheduleExcLogPK = new KscmtScheduleExcLogPK(cid, exeId);
-    }
-
-    /**
-     * Gets the kscmt schedule exc log PK.
-     *
-     * @return the kscmt schedule exc log PK
-     */
-    public KscmtScheduleExcLogPK getKscmtScheduleExcLogPK() {
-        return kscmtScheduleExcLogPK;
-    }
-
-    /**
-     * Sets the kscmt schedule exc log PK.
-     *
-     * @param kscmtScheduleExcLogPK the new kscmt schedule exc log PK
-     */
-    public void setKscmtScheduleExcLogPK(KscmtScheduleExcLogPK kscmtScheduleExcLogPK) {
-        this.kscmtScheduleExcLogPK = kscmtScheduleExcLogPK;
-    }
-
-
     /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
      */
     @Override
     public int hashCode() {
@@ -169,22 +90,19 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     }
 
     /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
      */
     @Override
-	public boolean equals(Object object) {
-		// not set
-		if (!(object instanceof KscmtScheduleExcLog)) {
-			return false;
-		}
-		KscmtScheduleExcLog other = (KscmtScheduleExcLog) object;
-		if ((this.kscmtScheduleExcLogPK == null && other.kscmtScheduleExcLogPK != null)
-				|| (this.kscmtScheduleExcLogPK != null
-						&& !this.kscmtScheduleExcLogPK.equals(other.kscmtScheduleExcLogPK))) {
-			return false;
-		}
-		return true;
-	}
+    public boolean equals(Object object) {
+        if (!(object instanceof KscmtScheduleExcLog)) {
+            return false;
+        }
+        KscmtScheduleExcLog other = (KscmtScheduleExcLog) object;
+        if ((this.kscmtScheduleExcLogPK == null && other.kscmtScheduleExcLogPK != null) || (this.kscmtScheduleExcLogPK != null && !this.kscmtScheduleExcLogPK.equals(other.kscmtScheduleExcLogPK))) {
+            return false;
+        }
+        return true;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -194,15 +112,12 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
         return "entity.KscmtScheduleExcLog[ kscmtScheduleExcLogPK=" + kscmtScheduleExcLogPK + " ]";
     }
 
-	/**
-	 * Gets the key.
-	 *
-	 * @return the key
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtScheduleExcLogPK;
+		return this.getKscmtScheduleExcLogPK();
 	}
-    
     
 }

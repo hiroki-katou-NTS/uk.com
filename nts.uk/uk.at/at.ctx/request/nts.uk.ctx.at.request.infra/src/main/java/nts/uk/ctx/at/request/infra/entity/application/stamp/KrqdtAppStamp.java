@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrqdtAppStamp extends UkJpaEntity {
 	
 	@EmbeddedId
-	public KrqdpAppStamp krqdpAppStamp;
+	public KrqdpAppStamp krqdpAppStampPK;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
 	
 	@Column(name="COMBINATION_ATR")
 	public Integer combinationAtr;
@@ -50,7 +55,7 @@ public class KrqdtAppStamp extends UkJpaEntity {
 	
 	@Override
 	protected Object getKey() {
-		return krqdpAppStamp;
+		return krqdpAppStampPK;
 	}
 
 }

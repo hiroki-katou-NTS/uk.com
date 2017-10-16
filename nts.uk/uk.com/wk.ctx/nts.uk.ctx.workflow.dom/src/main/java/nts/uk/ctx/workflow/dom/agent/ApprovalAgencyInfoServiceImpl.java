@@ -46,7 +46,7 @@ public class ApprovalAgencyInfoServiceImpl implements ApprovalAgencyInfoService 
 					// ktra xem AgentAppType = No_Settings hay k
 					if (agentAdapterDto.getAgentSid1() == null
 							|| agentAdapterDto.getAgentAppType1() == AgentAppType.NO_SETTINGS) {
-						// if(agentAdapterDto.getAgentAppType1() ==
+						// if(agentAdapterDto.getAgentAppType1() == null
 						// AgentApplicationType.NO_SETTINGS ) {
 						outputFlag = false;
 						// add nguoi xac nhan vao
@@ -55,12 +55,16 @@ public class ApprovalAgencyInfoServiceImpl implements ApprovalAgencyInfoService 
 
 					}
 					// ktra xem AgentAppType = PATH hay k
-					if (agentAdapterDto.getAgentAppType1() == AgentAppType.PATH) {
+					//if(agentAdapterDto.getAgentAppType1() != null
+					if (agentAdapterDto.getAgentSid1() != null
+							|| agentAdapterDto.getAgentAppType1() == AgentAppType.PATH) {
 						ApproverRepresenterOutput obj = new ApproverRepresenterOutput(approveItem, "Pass");
 						outputListApproverAndRepresenterSID.add(obj);
 					}
 					// ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
-					if (agentAdapterDto.getAgentAppType1() == AgentAppType.SUBSTITUTE_DESIGNATION) {
+					//if(agentAdapterDto.getAgentAppType1() != null
+					if (agentAdapterDto.getAgentSid1() != null
+							||agentAdapterDto.getAgentAppType1() == AgentAppType.SUBSTITUTE_DESIGNATION) {
 						outputFlag = false;
 						ApproverRepresenterOutput obj = new ApproverRepresenterOutput(approveItem,
 								agentAdapterDto.getAgentSid1());

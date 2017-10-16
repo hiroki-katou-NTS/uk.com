@@ -5,9 +5,9 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceHistoryGetMemento.
@@ -18,7 +18,7 @@ public class JpaWorkplaceHistoryGetMemento implements WorkplaceHistoryGetMemento
 	private String historyId;
 
 	/** The period. */
-	private Period period;
+	private DatePeriod period;
 
 	/**
 	 * Instantiates a new jpa workplace history get memento.
@@ -28,7 +28,7 @@ public class JpaWorkplaceHistoryGetMemento implements WorkplaceHistoryGetMemento
 	 */
 	public JpaWorkplaceHistoryGetMemento(BsymtWorkplaceHist item) {
 		this.historyId = item.getBsymtWorkplaceHistPK().getHistoryId();
-		this.period = new Period(item.getStrD(), item.getEndD());
+		this.period = new DatePeriod(item.getStrD(), item.getEndD());
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaWorkplaceHistoryGetMemento implements WorkplaceHistoryGetMemento
 	 * ()
 	 */
 	@Override
-	public Period getPeriod() {
+	public DatePeriod getPeriod() {
 		return this.period;
 	}
 

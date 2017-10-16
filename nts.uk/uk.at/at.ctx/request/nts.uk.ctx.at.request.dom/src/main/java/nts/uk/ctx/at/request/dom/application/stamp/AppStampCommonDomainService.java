@@ -16,4 +16,6 @@ public interface AppStampCommonDomainService {
 	public void appReasonCheck(String titleReason, String detailReason, AppStamp appStamp);
 	
 	public void validateReason(AppStamp appStamp);
+	
+	public String getEmployeeName(String employeeID);
 }

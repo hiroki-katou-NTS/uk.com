@@ -9,15 +9,14 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
 /**
@@ -164,12 +163,6 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	@Override
 	public void setStartDate(YearMonth startDate) {
 		this.startDate = startDate.v();
-	}
-
-	@Override
-	public void setEmpCodes(List<EmploymentCode> empCodes) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

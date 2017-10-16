@@ -164,7 +164,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
 			WorkplaceImport wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate).get();			
 			// fix data
-			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpCode(), wpInfors.getWkpName());
+			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpId(),wpInfors.getWkpCode(), wpInfors.getWkpName());
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
 			
 			// fix data

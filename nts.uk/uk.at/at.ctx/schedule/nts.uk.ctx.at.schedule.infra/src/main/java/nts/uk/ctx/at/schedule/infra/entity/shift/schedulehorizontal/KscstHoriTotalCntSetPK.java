@@ -21,5 +21,8 @@ public class KscstHoriTotalCntSetPK implements Serializable{
 	public String categoryCode;
 	/** 集計項目NO */
 	@Column(name = "TOTAL_ITEM_NO")
-	public Integer totalItemNo;
+	public int totalItemNo;
+	/** 回数集計No */
+	@Column(name = "TOTAL_TIME_NO")
+	public int totalTimeNo;
 }

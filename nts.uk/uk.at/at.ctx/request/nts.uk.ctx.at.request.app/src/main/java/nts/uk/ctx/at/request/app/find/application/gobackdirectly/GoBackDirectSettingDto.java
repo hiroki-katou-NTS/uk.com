@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
@@ -19,9 +20,15 @@ public class GoBackDirectSettingDto {
 	 */
 	String employeeName;
 	/**
+	 * 社員.社員ID
+	 */
+	String sID;
+	/**
 	 * 申請定型理由
 	 */
 	List<ApplicationReasonDto> listReasonDto;
+
+	AppCommonSettingDto appCommonSettingDto;
 
 	/**
 	 * Convert Data Setting to DTO
@@ -31,9 +38,13 @@ public class GoBackDirectSettingDto {
 	 */
 	public static GoBackDirectSettingDto convertToDto(GoBackDirectBasicData domain) {
 		return new GoBackDirectSettingDto(
-				GoBackDirectlyCommonSettingDto.convertToDto(domain.getGoBackDirectSet().get()),
-				domain.getEmployeeName(), domain.getListAppReason().stream()
-						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
+				GoBackDirectlyCommonSettingDto.convertToDto(
+						domain.getGoBackDirectSet().get()),
+						domain.getEmployeeName(), 
+						domain.getSID(), 
+						domain.getListAppReason().stream()
+						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
+				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()));
 	}
 
 }

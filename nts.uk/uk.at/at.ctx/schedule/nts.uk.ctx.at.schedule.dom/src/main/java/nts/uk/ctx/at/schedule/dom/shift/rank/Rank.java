@@ -20,7 +20,7 @@ public class Rank extends AggregateRoot {
 	// ランクメモ
 	private RankMemo rankMemo;
 	// 並び順
-	private int orderBy;
+	private int displayOrder;
 
 	public static Rank convertFromJavaType(String companyId, String rankCode, String rankMemo, int orderBy) {
 		return new Rank(companyId, new RankCode(rankCode), new RankMemo(rankMemo), orderBy);

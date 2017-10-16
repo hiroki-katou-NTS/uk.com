@@ -5,7 +5,7 @@ module nts.uk.com.view.cdl004.a {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         $('#jobtitle').ntsListComponent(screenModel.jobtitles).done(function() {
-            $('#jobtitle').focus();
+            $('#jobtitle').focusComponent();
         });
 
     });

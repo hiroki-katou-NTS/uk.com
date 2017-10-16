@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FIXED_VERTICAL_SET")
+@Table(name = "KSCST_VERTICAL_TIME_SET")
 
 public class KscstVerticalTimeSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -27,9 +27,6 @@ public class KscstVerticalTimeSet extends UkJpaEntity implements Serializable {
 	@Column(name = "DISPLAY_ATR")
 	public int displayAtr;
 	
-	/* 時刻 */
-	@Column(name = "START_CLOCK")
-	public int startClock;
 	
 	@Override
 	protected Object getKey() {

@@ -6,12 +6,14 @@ package nts.uk.ctx.at.schedule.ac.budget.external.actualresult;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.WorkplaceDto;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
@@ -36,6 +38,25 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 	public List<String> findWpkIdList(String companyId, String wpkCode, Date baseDate) {
 		GeneralDate generalDate = GeneralDate.legacyDate(baseDate);
 		return this.workplacePub.findWpkIdsByWkpCode(companyId, wpkCode, generalDate);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter#findWorkplaceById(
+	 * java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<WorkplaceDto> findWorkplaceById(String employeeId, GeneralDate baseDate) {
+		return this.workplacePub.findBySid(employeeId, baseDate).map(workplace -> {
+			WorkplaceDto dto = new WorkplaceDto();
+			dto.setWorkplaceCode(workplace.getWorkplaceCode());
+			dto.setWorkplaceId(workplace.getWorkplaceId());
+			dto.setWorkplaceName(workplace.getWorkplaceName());
+			return dto;
+		});
+
 	}
 
 }

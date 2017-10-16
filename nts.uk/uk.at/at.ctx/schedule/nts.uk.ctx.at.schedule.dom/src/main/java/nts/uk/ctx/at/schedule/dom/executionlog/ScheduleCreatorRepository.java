@@ -12,11 +12,26 @@ import java.util.List;
 public interface ScheduleCreatorRepository {
 	
 	/**
-	 * Save.
+	 * Find all.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	public List<ScheduleCreator> findAll(String executionId);
+	
+	/**
+	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(ScheduleCreator domain);
+	public void add(ScheduleCreator domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(ScheduleCreator domain);
 	
 	/**
 	 * Save all.

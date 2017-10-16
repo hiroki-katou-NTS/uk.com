@@ -15,6 +15,7 @@
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksc001.f.main.css" />
+			<com:scriptfile path="../b/ksc001.b.service.js" />
 			<com:scriptfile path="ksc001.f.start.js" />
 			<com:scriptfile path="ksc001.f.service.js" />
 			<com:scriptfile path="ksc001.f.vm.js" />
@@ -27,19 +28,35 @@
 					<table class="tableSchedule" tabindex="-1">
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_49')}</td>
-							<td class="valueScheduleSetting">AAAAAAAAAAAAAAAAAAAAAAAAA</td>
+							<td class="valueScheduleSetting" data-bind="text: executionStartDate"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
-							<td class="valueScheduleSetting">BBBBBBBBBBBBBBBBBBBBBBBBB</td>
+							<td class="valueScheduleSetting" data-bind="text: executionTotal"></td>
+						</tr>
+						<tr tabindex="-1">
+							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
+							<td class="valueScheduleSetting" ><ul class="countdown">
+										<!-- <li><span class="days">00</span>
+											<p class="days_ref">days</p></li>
+										<li class="seperator">.</li> -->
+										<li><span class="hours">00</span>
+											<!-- <p class="hours_ref">hours</p> --></li>
+										<li class="seperator">:</li>
+										<li><span class="minutes">00</span>
+											<!-- <p class="minutes_ref">minutes</p> --></li>
+										<li class="seperator">:</li>
+										<li><span class="seconds">00</span>
+											<!-- <p class="seconds_ref">seconds</p> --></li>
+									</ul></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>
-							<td class="valueScheduleSetting">CCCCCCCCCCCCCCCCCCCCCCCCC</td>
+							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLogModel.completionStatus"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_52')}</td>
-							<td class="valueScheduleSetting">DDDDDDDDDDDDDDDDDDDDDDDD</td>
+							<td class="valueScheduleSetting" data-bind="text: executionError"></td>
 						</tr>
 					</table>
 					<div class="tableSchedule">
@@ -47,7 +64,7 @@
 						<table tabindex="-1">
 							<tr tabindex="-1">
 								<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_31')}</td>
-								<td class="valueScheduleSetting">EEEEEEEEEEEEEEEEEEEEEEEEE</td>
+								<td class="valueScheduleSetting" data-bind="text: periodInfo"></td>
 							</tr>
 						</table>
 					</div>
@@ -58,8 +75,8 @@
 					<div class="tableErrorLog cf">
 						<table id="tableShowError" data-bind="ntsGridList: {								
 							height: 350,
-							dataSource: items,
-							primaryKey: 'code',
+							dataSource: errorLogs,
+							primaryKey: 'employeeId',
 							columns: columns,
 							multiple: false,
 							value: currentCode,

@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerappr
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -14,7 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
-
+@Stateless
 public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	@Inject
 	private EmployeeAdapter empAdapter;
@@ -34,6 +35,10 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
+			
+			// ở đoạn này nếu trường getConfirmationRootType bằng null ở trong db thì ta sẽ trả về giá trị là 3
+			// tương tự như trường appType nếu bằng null thì ta sẽ trả về giá trị là 99
+			// hai giá trị này trả về để check trong lúc in có in ra cột notice hay ko?
 			List<ApprovalRootCommonOutput> rootOutputs = lstPsRoots
 					.stream()
 					.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
@@ -41,12 +46,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getEmployeeId(), 
 							"",
 							x.getHistoryId(),
-							x.getApplicationType().value, 
+							x.getApplicationType().value == null ? 99: x.getApplicationType().value, 
 							x.getPeriod().getStartDate(),
 							x.getPeriod().getEndDate(),
 							x.getBranchId(),
 							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+							x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
 							x.getEmploymentRootAtr().value))
 					.collect(Collectors.toList());
 			return rootOutputs;
@@ -59,8 +64,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
-					.filter(x -> x.getWorkplaceId().equals(wpId) 
-							&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON)
+					.filter(x -> (x.getWorkplaceId().equals(wpId) 
+							&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON))
 					.collect(Collectors.toList());
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
@@ -71,12 +76,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								"", 
 								x.getWorkplaceId(),
 								x.getHistoryId(),
-								x.getApplicationType() == null ? null: x.getApplicationType().value, 
+								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
 								x.getPeriod().getStartDate(),
 								x.getPeriod().getEndDate(),
 								x.getBranchId(),
 								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+								x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
 								x.getEmploymentRootAtr().value))
 						.collect(Collectors.toList());
 				return rootOutputs;
@@ -95,12 +100,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								"", 
 								"",
 								x.getHistoryId(),
-								x.getApplicationType() == null ? null: x.getApplicationType().value, 
+								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
 								x.getPeriod().getStartDate(),
 								x.getPeriod().getEndDate(),
 								x.getBranchId(),
 								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+								x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
 								x.getEmploymentRootAtr().value))
 						.collect(Collectors.toList());
 				return rootOutputs;
@@ -115,7 +120,6 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<PersonApprovalRoot> lstPersonRootInfor,
 			String companyID, 
 			String sId, 
-			ApplicationType appType,
 			GeneralDate baseDate) {
 		//ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ): 申請本人の社員ID, 就業ルート区分(共通)
 		List<PersonApprovalRoot> lstPsCommonRoots = lstPersonRootInfor
@@ -131,12 +135,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getEmployeeId(), 
 							"",
 							x.getHistoryId(),
-							x.getApplicationType() == null ? null: x.getApplicationType().value, 
+							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
 							x.getPeriod().getStartDate(),
 							x.getPeriod().getEndDate(),
 							x.getBranchId(),
 							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+							x.getConfirmationRootType() == null ? 0: x.getConfirmationRootType().value,
 							x.getEmploymentRootAtr().value))
 					.collect(Collectors.toList());
 			return rootOutputs;
