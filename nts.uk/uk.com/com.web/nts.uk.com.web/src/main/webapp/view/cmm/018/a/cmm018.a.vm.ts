@@ -148,7 +148,6 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: tab person
                     else{
-                        self.getDataPerson();
                         $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                     }
                 });
