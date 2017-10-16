@@ -425,6 +425,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         
                     });
                     dfd.resolve();
+               }).fail(function(res: any){
+                   nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                });
             });
                 
