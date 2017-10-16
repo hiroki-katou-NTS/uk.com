@@ -107,7 +107,7 @@ module nts.uk.at.view.kmk002.a {
                 this.performanceAtr = ko.observable(0);
                 this.calcResultRange = new CalculationResultRange();
                 this.calcFormulas = ko.observableArray<Formula>([]);
-                this.applyFormula = ko.observable('test');
+                this.applyFormula = ko.observable('');
                 this.hasChanged = false;
                 this.isUsed = ko.observable(false);
                 this.checkedAllFormula = ko.observable(false);
@@ -211,6 +211,9 @@ module nts.uk.at.view.kmk002.a {
                     if (nts.uk.util.isNullOrEmpty(vl)) {
                         this.checkedAllFormula(false);
                     }
+
+                    // set apply formula
+                    this.setApplyFormula();
                 });
 
                 // Event on performanceAtr value changed
@@ -302,6 +305,17 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Set last formula to apply formula
+             */
+            private setApplyFormula(): void {
+                let self = this
+                let lastFormula = _.last(this.calcFormulas());
+                if (lastFormula) {
+                    this.applyFormula(lastFormula.settingResult());
+                }
+            }
+
+            /**
              * add formula at order
              * @param order: number
              */
@@ -320,6 +334,7 @@ module nts.uk.at.view.kmk002.a {
                 // bind function
                 f.reCheckAll = self.reCheckAll.bind(self);
                 f.getSymbolById = self.getSymbolById.bind(self);
+                f.setApplyFormula = self.setApplyFormula.bind(self);
 
                 // Set order
                 f.orderNo = order;
@@ -576,6 +591,7 @@ module nts.uk.at.view.kmk002.a {
                             // bind function
                             formula.reCheckAll = self.reCheckAll.bind(self);
                             formula.getSymbolById = self.getSymbolById.bind(self);
+                            formula.setApplyFormula = self.setApplyFormula.bind(self);
 
                             // convert dto to viewmodel
                             formula.fromDto(item);
@@ -651,6 +667,9 @@ module nts.uk.at.view.kmk002.a {
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
                 self.calcResultRange.fromDto(dto.calcResultRange);
+
+                // reset apply formula
+                self.applyFormula('');
 
                 // set data source
                 self.atrDataSource = Enums.ENUM_OPT_ITEM.itemAtr;
@@ -1065,6 +1084,7 @@ module nts.uk.at.view.kmk002.a {
             // function
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
+            setApplyFormula: () => void;
 
             // Enums datasource
             formulaAtrDs: EnumConstantDto[];
@@ -1138,6 +1158,8 @@ module nts.uk.at.view.kmk002.a {
              * Initial subscribe
              */
             private initSubscribe(): void {
+
+                // Event on selected (checkbox)
                 this.selected.subscribe(vl => {
 
                     if (this.isCheckFromParent == false) {
@@ -1159,6 +1181,12 @@ module nts.uk.at.view.kmk002.a {
                     // reset flag
                     this.isCheckFromParent = false;
 
+                });
+
+                // event on set formula setting or item selection.
+                this.settingResult.subscribe(vl => {
+                    // set apply formula
+                    this.setApplyFormula();
                 });
 
                 // Event on formulaAtr value changed
@@ -1206,15 +1234,6 @@ module nts.uk.at.view.kmk002.a {
                         });
                     }
                 });
-            }
-
-            /**
-             * Set setting result
-             */
-            private setSettingResult(): void {
-                let self = this;
-                //TODO..
-                self.settingResult('has been set');
             }
 
             /**
