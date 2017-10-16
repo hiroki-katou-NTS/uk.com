@@ -14,10 +14,11 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk002.c.style.css" />
+			<com:scriptfile path="../a/kmk002.a.service.js" />
 			<com:scriptfile path="kmk002.c.start.js" />
 			<com:scriptfile path="kmk002.c.vm.js" />
 			<com:scriptfile path="kmk002.c.service.js" />
-			<com:stylefile path="kmk002.c.style.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -84,7 +85,7 @@
 					</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="8" data-bind="click: close" class="x-large proceed">#{i18n.getText('KMK002_60')}</button>
+				<button tabindex="8" data-bind="click: submit" class="x-large proceed">#{i18n.getText('KMK002_60')}</button>
 				<button tabindex="9" data-bind="click: close">#{i18n.getText('KMK002_61')}</button>
 			</div>
 		</ui:define>

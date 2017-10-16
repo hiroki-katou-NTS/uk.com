@@ -210,12 +210,14 @@ module nts.uk.at.view.kmk002.a {
                     // or new value == value in stash
                     // then do nothing
                     if (this.hasChanged || this.performanceAtr() == this.performanceAtrStash) {
+                        Formula.performanceAtr = value; // param for screen C
                         return;
                     }
 
                     // if has formulas
                     if (this.isFormulaSet()) {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_506')).ifYes(() => {
+                            Formula.performanceAtr = value; // param for screen C
 
                             // remove all formulas
                             this.calcFormulas([]);
@@ -975,6 +977,8 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                 Formula.performanceAtr = self.optionalItem.performanceAtr(); // param for c screen
+
                 // wait for selected event done then block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
@@ -1002,6 +1006,9 @@ module nts.uk.at.view.kmk002.a {
             symbolValue: string;
             orderNo: number;
             settingResult: KnockoutObservable<string>;
+
+            // param for c screen
+            static performanceAtr: number;
 
             // Calculation setting
             calcAtr: KnockoutObservable<number>;
@@ -1284,7 +1291,7 @@ module nts.uk.at.view.kmk002.a {
                 let dto = self.toDto();
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
-                param.performanceAtr = 1; //TODO ??
+                param.performanceAtr = Formula.performanceAtr;
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = self.itemSelection;
@@ -1292,9 +1299,18 @@ module nts.uk.at.view.kmk002.a {
 
                 // Open dialog.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared('returnFromC');
-                    //TODO: lay gia tri tra ve
-                    self.setSettingResult();
+                    let dto: ItemSelectionDto = nts.uk.ui.windows.getShared('returnFromC');
+                    if (dto) {
+                        // set formula setting
+                        self.itemSelection = dto;
+
+                        // set result display
+                        let result = '';
+                        dto.attendanceItems.forEach(item => {
+                            result += item.operatorText + ' ' + item.attendanceItemName + ' ';
+                        });
+                        self.settingResult(result);
+                    }
                 });
             }
 
@@ -1332,7 +1348,7 @@ module nts.uk.at.view.kmk002.a {
 
                         // set left item
                         if (dto.leftItem.settingMethod == itemSelectionMethod) {
-                            leftItem = dto.leftItem.formulaItemId;
+                            leftItem = dto.leftItem.formulaItemId; //TODO get symbol from id.
                         } else {
                             leftItem = dto.leftItem.inputValue;
                         }
@@ -1474,11 +1490,11 @@ module nts.uk.at.view.kmk002.a {
          * AttendanceItem
          */
         class AttendanceItem {
-            id: string;
+            id: number;
             operator: KnockoutObservable<number>;
 
             constructor() {
-                this.id = nts.uk.util.randomId();
+                this.id = 0;
                 this.operator = ko.observable(1);
             }
 
@@ -1486,7 +1502,7 @@ module nts.uk.at.view.kmk002.a {
              * Convert dto to view model
              */
             public fromDto(dto: AttendanceItemDto): void {
-                this.id = dto.id;
+                this.id = dto.attendanceItemId;
                 this.operator(dto.operator);
             }
 
@@ -1497,7 +1513,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dto: AttendanceItemDto = <AttendanceItemDto>{};
 
-                dto.id = this.id;
+                dto.attendanceItemId = this.id;
                 dto.operator = this.operator();
 
                 return dto;

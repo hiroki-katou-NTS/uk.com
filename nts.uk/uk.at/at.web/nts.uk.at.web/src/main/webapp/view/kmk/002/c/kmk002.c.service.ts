@@ -16,13 +16,6 @@ module nts.uk.at.view.kmk002.c {
                 attendanceItemId: number;
                 attendanceItemName: string;
             }
-            
-            export interface SelectDailyAttendanceItemDto {
-                operator: number;
-                operatorText:  string;
-                attendanceItemId: number;
-                attendanceItemName: string;
-            }
         }
     }
 }
