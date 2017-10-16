@@ -22,8 +22,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCH_MANA_CONTR")
-public class KscmtSchManaContr implements Serializable {
+@Table(name = "KSCMT_SCH_MANAGE_CTR")
+public class KscmtSchManageCtr implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -44,7 +44,7 @@ public class KscmtSchManaContr implements Serializable {
     /**
      * Instantiates a new kscmt sch mana contr.
      */
-    public KscmtSchManaContr() {
+    public KscmtSchManageCtr() {
     }
 
     /**
@@ -52,7 +52,7 @@ public class KscmtSchManaContr implements Serializable {
      *
      * @param sid the sid
      */
-    public KscmtSchManaContr(String sid) {
+    public KscmtSchManageCtr(String sid) {
         this.sid = sid;
     }
 
@@ -72,10 +72,10 @@ public class KscmtSchManaContr implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtSchManaContr)) {
+        if (!(object instanceof KscmtSchManageCtr)) {
             return false;
         }
-        KscmtSchManaContr other = (KscmtSchManaContr) object;
+        KscmtSchManageCtr other = (KscmtSchManageCtr) object;
         if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
             return false;
         }
