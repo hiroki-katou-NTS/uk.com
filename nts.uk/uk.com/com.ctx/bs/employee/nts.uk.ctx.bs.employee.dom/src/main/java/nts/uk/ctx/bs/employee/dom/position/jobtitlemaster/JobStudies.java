@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.employee.dom.position.jobtitlemaster;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +16,11 @@ public class JobStudies {
 
 	GeneralDate endDate;
 
-	public static JobStudies creatFromJavaType(String historyId, String startDate, String endDate) {
+	public static JobStudies creatFromJavaType(String historyId, GeneralDate startDate, GeneralDate endDate) {
 		return new JobStudies(
 				historyId, 
-				GeneralDate.legacyDate(new Date(startDate)),
-				GeneralDate.legacyDate(new Date(endDate)));
+				startDate,
+				endDate);
 
 	}
 

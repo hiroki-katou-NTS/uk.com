@@ -8,21 +8,35 @@ module cps001.e.vm {
 
     export class ViewModel {
 
-        constructor() {
-            let self = this,
-                dto: IModelDto = getShared('CPS001B_PARAM') || {};
-
+        imageId: KnockoutObservable<string> = ko.observable("");
+        
+        constructor(){  
+            let self = this;         
         }
-
-        pushData() {
+        start(){
             let self = this;
-
-            setShared('CPS001B_VALUE', {});
-            self.close();
+            self.imageId(getShared("imageId"));
+            if(self.imageId() != "" && self.imageId() != undefined){
+                self.getImage();
+            }
         }
-
-        close() {
-            close();
+        upload(){
+            let self = this;
+            nts.uk.ui.block.grayout();
+            $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
+                self.imageId(data.id);
+                nts.uk.ui.block.clear();
+                setShared("imageId", self.imageId());
+                self.close();
+            });
+        }
+        getImage(){
+            let self = this;
+            let id = self.imageId();
+            $("#test").ntsImageEditor("selectByFileId", id); 
+        }
+        close(){
+           close();
         }
     }
 

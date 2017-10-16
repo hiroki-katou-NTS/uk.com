@@ -30,7 +30,7 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div class="left-area">
-					<div class="bg-green caret-right caret-background">
+					<div class="bg-green caret-right caret-background" >
 						<div style="width: 700px"
 							data-bind="ntsSearchBox: {
 								targetKey: 'id', 
@@ -38,38 +38,36 @@
 								searchMode: 'filter',
 								comId:'list_employees', 
 								items: ko.observableArray([]),
-								selected: ko.observable(undefined),
-								selectedKey: 'id',
+								selected: 'code',
+								selectedKey: 'code',
 								fields: ['name', 'code']}"></div>
 						<table id="list_employees"
 							data-bind="ntsGridList: {								
 								rows: 20,
-								dataSource: ko.observableArray([]),
-								primaryKey: 'id',
+								dataSource: listEmpDelete ,
+								primaryKey: 'code',
 								columns: [
-					                { headerText: '名称', key: 'id', width: 0, hidden: true }, 
 					                { headerText: nts.uk.resource.getText('CPS001_52'), key: 'code', width: 140 }, 
 					                { headerText: nts.uk.resource.getText('CPS001_53'), key: 'name', width: 160 }, 
 								],
 								multiple: false,
-								value: ko.observable(undefined)
+								value: currentEmployee().code
 							}"></table>
 					</div>
 				</div>
-				<div class="right-area">
+				<div class="right-area" data-bind="with: detail">
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_54')}</div>
+						<span class="text-inform" data-bind="text: datedelete"></span>
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_55')}</div>
+						<span class="text-inform" data-bind="text: reason"></span>
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_56')}</div>
-					</div>
-					<div class="form-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_57')}</div>
 						<input data-bind="ntsTextEditor: {
-							value: ko.observable(''),
+							value: newCode,
 							/*constraint: constraint,
 							option: option,*/
 							required: false,
@@ -79,7 +77,7 @@
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_58')}</div>
 						<input data-bind="ntsTextEditor: {
-							value: ko.observable(''),
+							value: newName,
 							/*constraint: constraint,
 							option: option,*/
 							required: false,

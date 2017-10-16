@@ -10,9 +10,15 @@ public class EmpCopySettingItem extends AggregateRoot {
 
 	String categoryId;
 
-	public EmpCopySettingItem(String perInfoItemDefId, String categoryId) {
+	private EmpCopySettingItem(String perInfoItemDefId, String categoryId) {
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.categoryId = categoryId;
+	}
+
+	public static EmpCopySettingItem createFromJavaType(String perInfoItemDefId, String categoryId) {
+
+		return new EmpCopySettingItem(perInfoItemDefId, categoryId);
+
 	}
 
 }
