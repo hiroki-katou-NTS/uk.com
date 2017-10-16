@@ -8,7 +8,6 @@ module nts.uk.at.view.kmk002.a {
     import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
     import RoundingDto = nts.uk.at.view.kmk002.a.service.model.RoundingDto;
-    import TypeAtr = nts.uk.at.view.kmk002.a.service.model.TypeAtr;
     import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;
     import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk002.a.service.model.EnumConstantDto;
@@ -638,21 +637,21 @@ module nts.uk.at.view.kmk002.a {
 
             public isTimeSelected(): boolean {
                 let self = this;
-                if (self.optionalItemAtr() == TypeAtr.TIME) {
+                if (self.optionalItemAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.itemAtr)) {
                     return true;
                 }
                 return false;
             }
             public isNumberSelected(): boolean {
                 let self = this;
-                if (self.optionalItemAtr() == TypeAtr.NUMBER) {
+                if (self.optionalItemAtr() == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.itemAtr)) {
                     return true;
                 }
                 return false;
             }
             public isAmountSelected(): boolean {
                 let self = this;
-                if (self.optionalItemAtr() == TypeAtr.AMOUNT) {
+                if (self.optionalItemAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.itemAtr)) {
                     return true;
                 }
                 return false;
@@ -1261,21 +1260,21 @@ module nts.uk.at.view.kmk002.a {
 
             public isTimeSelected(): boolean {
                 let self = this;
-                if (self.formulaAtr() == TypeAtr.TIME) {
+                if (self.formulaAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_FORMULA.formulaAtr)) {
                     return true;
                 }
                 return false;
             }
             public isNumberSelected(): boolean {
                 let self = this;
-                if (self.formulaAtr() == TypeAtr.NUMBER) {
+                if (self.formulaAtr() == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_FORMULA.formulaAtr)) {
                     return true;
                 }
                 return false;
             }
             public isAmountSelected(): boolean {
                 let self = this;
-                if (self.formulaAtr() == TypeAtr.AMOUNT) {
+                if (self.formulaAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_FORMULA.formulaAtr)) {
                     return true;
                 }
                 return false;

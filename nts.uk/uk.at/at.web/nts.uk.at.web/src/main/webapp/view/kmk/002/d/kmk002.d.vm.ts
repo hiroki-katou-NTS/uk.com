@@ -48,9 +48,8 @@ module nts.uk.at.view.kmk002.d {
             }
         }
         class FormulaSetting {
-            formulaId: string; //TODO dung lam gi?
+            formulaId: string;
             formulaName: string;
-            performanceAtr: number; //TODO dung lam gi ?
             formulaAtr: string;
             selectableFormulas: KnockoutObservableArray<any>;
             selectedItemLeft: KnockoutObservable<any>;
@@ -61,6 +60,7 @@ module nts.uk.at.view.kmk002.d {
             leftItem: FormulaSettingItem;
             rightItem: FormulaSettingItem;
 
+            // datasource
             operatorDatasource: KnockoutObservableArray<any>;
 
             constructor() {
@@ -81,15 +81,12 @@ module nts.uk.at.view.kmk002.d {
                     { code: 2, name: '*' },
                     { code: 3, name: '/' }
                 ]);
-                
-                //abc
+
+                // default value
                 this.formulaName = '';
-                this.performanceAtr = 0;
                 this.selectedItemLeft = ko.observable();
                 this.selectedItemRight = ko.observable();
-                this.formulaAtr = nts.uk.resource.getText('KMK002_70'); // time
-                //self.formulaAtr = nts.uk.resource.getText('KMK002_71'); // number
-                //self.formulaAtr = nts.uk.resource.getText('KMK002_72'); // amount
+                this.formulaAtr = '';
 
                 this.selectableFormulas = ko.observableArray([
                     { code: '0', name: 'aaaaaaaaaaa', atr: 1 },
@@ -234,10 +231,10 @@ module nts.uk.at.view.kmk002.d {
             formulaItemId: KnockoutObservable<string>;
 
             constructor() {
-                this.settingMethod = ko.observable(1);
+                this.settingMethod = ko.observable(0);
                 this.dispOrder = 1;
-                this.inputValue = ko.observable(1);
-                this.formulaItemId = ko.observable(nts.uk.util.randomId());
+                this.inputValue = ko.observable(0);
+                this.formulaItemId = ko.observable('');
             }
 
             /**

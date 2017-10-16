@@ -139,11 +139,6 @@ module nts.uk.at.view.kmk002.a {
                 operatorText?: string;
                 attendanceItemName?: string;
             }
-            export enum TypeAtr {
-                NUMBER = 0,
-                AMOUNT = 1,
-                TIME = 2
-            }
             export interface FormulaEnumDto {
                 formulaAtr: EnumConstantDto[];
                 calcAtr: EnumConstantDto[];
