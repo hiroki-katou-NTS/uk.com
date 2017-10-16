@@ -39,12 +39,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		String memo = context.getCommand().getMemo();
 		ApplicationDto command = context.getCommand().getApplicationDto();
 		checkApprover.checkApprover(command,memo);
-		Application application =  ApplicationDto.toEntity(command);
-		
-		
-			
-		
-		
+		Application application =  ApplicationDto.toEntity(command);		
 		// 共通アルゴリズム「詳細画面登録前の処理」を実行する(thực hiện xử lý 「詳細画面登録前の処理」)
 		// TODO: cac ham trong 4-1.詳細画面登録前の処理 lan nay deu bi hoan lai
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, application.getApplicantSID(),
@@ -57,7 +52,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		//afterApprovalProcessRepo.invidialApplicationUpdate(application);
 		//共通アルゴリズム「詳細画面承認後の処理」を実行する(thực hiện xử lý 「詳細画面承認後の処理」)
 		//8-2.詳細画面承認後の処理
-		ListMailApproval listMailApproval = new ListMailApproval(afterApprovalProcessRepo.detailScreenAfterApprovalProcess(application)); 
+		ListMailApproval listMailApproval = new ListMailApproval(afterApprovalProcessRepo.detailScreenAfterApprovalProcess(application, memo)); 
 		return listMailApproval;
 
 	}

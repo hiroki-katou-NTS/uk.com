@@ -8,11 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.core.config.yaml.YamlConfiguration;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
@@ -24,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -52,9 +48,8 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application) {
-		String appID = application.getApplicationID();
 		// アルゴリズム「承認情報の整理」を実行する
-		this.organizationOfApprovalInfo(application);
+		this.organizationOfApprovalInfo(application, "");
 		// アルゴリズム「実績反映状態の判断」を実行する
 		this.performanceReflectedStateJudgment(application);
 	}
@@ -63,14 +58,12 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	 * 1.承認情報の整理
 	 */
 	@Override
-	public Application organizationOfApprovalInfo(Application application) {
+	public Application organizationOfApprovalInfo(Application application, String approverMemo) {
 		// ドメインモデル「申請」．「承認フェーズ」1～5の順でループする
-		ApprovalInfoOutput output = new ApprovalInfoOutput();
 		String companyID = AppContexts.user().companyId();
 		String loginEmp = AppContexts.user().employeeId();
 		List<AppApprovalPhase> listAppPhase = new ArrayList<AppApprovalPhase>();
 		List<AppApprovalPhase> listPhase = application.getListPhase();
-		List<Integer> listDispOrder = new ArrayList<Integer>();
 		// LOOP PHASE
 		for (AppApprovalPhase appPhase : listPhase) {
 			
@@ -126,7 +119,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 									ApprovalAtr.APPROVED.value, 
 									ConfirmAtr.USEATR_USE.value, //can xem lai
 									GeneralDate.today(),
-									"", //xem lai comment
+									approverMemo, 
 									loginEmp);
 							approveAcceptedRepo.createApproverAccepted(approveAccepted, frame.getFrameID());
 						});
@@ -246,20 +239,6 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 			}
 		}
 		return application;
-	}
-	/**
-	 * Check : has aprrover in a frame ? 
-	 * @param frame
-	 * @return
-	 */
-	private boolean isFrameApprove(ApprovalFrame frame) {
-		boolean allApprover = true;
-		for(ApproveAccepted accepted : frame.getListApproveAccepted()) {
-			if(accepted.getApprovalATR() != ApprovalAtr.APPROVED) {
-				allApprover = false;
-			}
-		}
-		return allApprover;
 	}
 
 	@Override
