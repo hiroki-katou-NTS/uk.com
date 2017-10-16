@@ -55,9 +55,8 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	public List<String> detailScreenAfterApprovalProcess(Application application) {
 		String companyID = AppContexts.user().companyId();
 		List<String> listMailReceived = new ArrayList<>();
-		//アルゴリズム「承認情報の整理」を実行する
-		
-		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(application);
+		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
+		application = reflectionInfoService.organizationOfApprovalInfo(application);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
