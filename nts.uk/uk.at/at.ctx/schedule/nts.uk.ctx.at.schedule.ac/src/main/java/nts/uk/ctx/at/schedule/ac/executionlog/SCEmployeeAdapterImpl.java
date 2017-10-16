@@ -16,7 +16,7 @@ public class SCEmployeeAdapterImpl implements SCEmployeeAdapter {
 
 	/** The pub. */
 	@Inject
-	IPersonInfoPub pub;
+	private IPersonInfoPub pub;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter#findByEmployeeId(java.lang.String)

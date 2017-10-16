@@ -16,54 +16,42 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
 public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento {
 
 	/** The execution id. */
-	// 実行ID
 	public String executionId;
 
 	/** The copy start date. */
-	// コピー開始日
 	public GeneralDate copyStartDate;
 
-	// 作成方法区分
+	/** The create method atr. */
 	public Integer createMethodAtr;
 
 	/** The confirm. */
-	// 作成時に確定済みにする
 	public Boolean confirm;
 
 	/** The implement atr. */
-	// 実施区分
 	public Integer implementAtr;
 
 	/** The process execution atr. */
-	// 処理実行区分
 	public Integer processExecutionAtr;
 
 	/** The re create atr. */
-	// 再作成区分
 	public Integer reCreateAtr;
 
 	/** The reset master info. */
-	// マスタ情報再設定
 	public Boolean resetMasterInfo;
 
 	/** The reset absent holiday business. */
-	// 休職休業再設定
 	public Boolean resetAbsentHolidayBusines;
 
 	/** The reset working hours. */
-	// 就業時間帯再設定
 	public Boolean resetWorkingHours;
 
 	/** The reset time assignment. */
-	// 申し送り時間再設定
 	public Boolean resetTimeAssignment;
 
 	/** The reset direct line bounce. */
-	// 直行直帰再設定
 	public Boolean resetDirectLineBounce;
 
 	/** The reset time child care. */
-	// 育児介護時間再設定
 	public Boolean resetTimeChildCare;
 	
 	/** The start date. */

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.executionlog;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class ScheduleErrorLogFinder {
 	public List<ScheduleErrorLogDto> findAllByExeId(String executionId) {
 		List<ScheduleErrorLog> lstError = this.scheduleErrorLogRepository.findByExecutionId(executionId);
 		if (lstError == null) {
-			return null;
+			return Collections.emptyList();
 		}
 		return lstError.stream().map(item -> {
 			ScheduleErrorLogDto dto = new ScheduleErrorLogDto();
