@@ -1,7 +1,7 @@
 /**
  * 2:32:21 PM Sep 5, 2017
  */
-package nts.uk.screen.at.app.dailyperformance.correction;
+package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.List;
 

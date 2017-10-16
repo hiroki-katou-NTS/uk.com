@@ -1,7 +1,7 @@
 /**
  * 1:59:07 PM Aug 21, 2017
  */
-package nts.uk.screen.at.app.dailyperformance.correction;
+package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.ArrayList;
 import java.util.List;

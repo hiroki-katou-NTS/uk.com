@@ -1,7 +1,7 @@
 /**
  * 5:29:20 PM Aug 23, 2017
  */
-package nts.uk.screen.at.app.dailyperformance.correction;
+package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
