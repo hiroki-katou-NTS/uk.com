@@ -1,6 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
+import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface JobTitleInfoRepository.
@@ -13,14 +20,14 @@ public interface JobTitleInfoRepository {
 	 * @param jobTitleInfo the job title info
 	 */
 	void add(JobTitleInfo jobTitleInfo);
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param jobTitleInfo the job title info
 	 */
 	void update(JobTitleInfo jobTitleInfo);
-	
+
 	/**
 	 * Removes the.
 	 *
@@ -39,7 +46,7 @@ public interface JobTitleInfoRepository {
 	 * @return the optional
 	 */
 	Optional<JobTitleInfo> find(String companyId, String jobTitleId, String historyId);
-	
+
 	/**
 	 * Checks if is sequence master used.
 	 *
@@ -48,4 +55,13 @@ public interface JobTitleInfoRepository {
 	 * @return true, if is sequence master used
 	 */
 	boolean isSequenceMasterUsed(String companyId, String sequenceCode);
+
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<JobTitleInfo> findAll(String companyId, GeneralDate baseDate);
 }
