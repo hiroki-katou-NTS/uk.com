@@ -252,6 +252,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
+            }).fail(function(res: any){
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             });
             return dfd.promise();
         }
@@ -319,6 +322,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.approvalList = approvalList;
                 dfd.resolve(data);
             }).fail(function(res: any) {
+                dfd.reject();
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             }); 
             return dfd.promise();
