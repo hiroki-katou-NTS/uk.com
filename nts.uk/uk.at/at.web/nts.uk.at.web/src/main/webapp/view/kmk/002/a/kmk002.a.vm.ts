@@ -975,8 +975,8 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                // block ui
-                nts.uk.ui.block.invisible();
+                // wait for selected event done then block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
 
                 // get optional item detail
                 service.findOptionalItemDetail(itemNo)
@@ -1317,9 +1317,37 @@ module nts.uk.at.view.kmk002.a {
 
                 // open dialog D.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared('returnFromD');
-                    //TODO: lay gia tri tra ve
-                    self.setSettingResult();
+                    let dto: FormulaSettingDto = nts.uk.ui.windows.getShared('returnFromD');
+                    if (dto) {
+                        let result;
+                        let leftItem;
+                        let rightItem;
+
+                        // set formula setting.
+                        self.formulaSetting = dto;
+
+                        // get item selection enum value.
+                        let itemSelectionMethod = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.settingMethod);
+                        let operator = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_FORMULA.operatorAtr);
+
+                        // set left item
+                        if (dto.leftItem.settingMethod == itemSelectionMethod) {
+                            leftItem = dto.leftItem.formulaItemId;
+                        } else {
+                            leftItem = dto.leftItem.inputValue;
+                        }
+
+                        // set right item
+                        if (dto.rightItem.settingMethod == itemSelectionMethod) {
+                            rightItem = dto.rightItem.formulaItemId;
+                        } else {
+                            rightItem = dto.rightItem.inputValue;
+                        }
+
+                        // set result
+                        result = leftItem + ' ' + operator + ' ' + rightItem;
+                        self.settingResult(result);
+                    }
                 });
             }
 

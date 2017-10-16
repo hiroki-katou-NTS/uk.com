@@ -217,8 +217,8 @@ module nts.uk.at.view.kmk002.d {
 
                 dto.minusSegment = self.minusSegment();
                 dto.operator = self.operator();
-                dto.leftItem = this.leftItem.toDto();
-                dto.rightItem = this.rightItem.toDto();
+                dto.leftItem = self.leftItem.toDto();
+                dto.rightItem = self.rightItem.toDto();
 
                 return dto;
             }
