@@ -9,8 +9,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ClockValue;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleRound;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSchedule;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSchedulePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSch;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSchPK;
 import nts.uk.shr.com.enumcommon.DayAttr;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -20,16 +20,16 @@ import nts.uk.shr.com.time.AttendanceClock;
 public class JpaChildCareScheduleGetMemento implements ChildCareScheduleGetMemento{
 
 	/** The entity. */
-	private KscmtChildCareSchedule entity;
+	private KscmtChildCareSch entity;
 	
 	/**
 	 * Instantiates a new jpa child care schedule get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaChildCareScheduleGetMemento(KscmtChildCareSchedule entity) {
-		if (entity.getKscmtChildCareSchedulePK() == null) {
-			entity.setKscmtChildCareSchedulePK(new KscmtChildCareSchedulePK());
+	public JpaChildCareScheduleGetMemento(KscmtChildCareSch entity) {
+		if (entity.getKscmtChildCareSchPK() == null) {
+			entity.setKscmtChildCareSchPK(new KscmtChildCareSchPK());
 		}
 		this.entity = entity;
 	}
@@ -42,7 +42,7 @@ public class JpaChildCareScheduleGetMemento implements ChildCareScheduleGetMemen
 	 */
 	@Override
 	public ChildCareScheduleRound getChildCareNumber() {
-		return ChildCareScheduleRound.valueOf(this.entity.getKscmtChildCareSchedulePK().getChildCareNumber());
+		return ChildCareScheduleRound.valueOf(this.entity.getKscmtChildCareSchPK().getChildCareNumber());
 	}
 
 	/*
@@ -53,8 +53,8 @@ public class JpaChildCareScheduleGetMemento implements ChildCareScheduleGetMemen
 	 */
 	@Override
 	public ClockValue getChildCareScheduleStart() {
-		return new ClockValue(new AttendanceClock(this.entity.getSchcareTimeStart()),
-				EnumAdaptor.valueOf(this.entity.getSchcareDayatrStart(), DayAttr.class));
+		return new ClockValue(new AttendanceClock(this.entity.getStrTime()),
+				EnumAdaptor.valueOf(this.entity.getStrDayAtr(), DayAttr.class));
 	}
 
 	/*
@@ -65,8 +65,8 @@ public class JpaChildCareScheduleGetMemento implements ChildCareScheduleGetMemen
 	 */
 	@Override
 	public ClockValue getChildCareScheduleEnd() {
-		return new ClockValue(new AttendanceClock(this.entity.getSchcareTimeEnd()),
-				EnumAdaptor.valueOf(this.entity.getSchcareDayatrEnd(), DayAttr.class));
+		return new ClockValue(new AttendanceClock(this.entity.getEndTime()),
+				EnumAdaptor.valueOf(this.entity.getEndDayAtr(), DayAttr.class));
 	}
 
 	/*

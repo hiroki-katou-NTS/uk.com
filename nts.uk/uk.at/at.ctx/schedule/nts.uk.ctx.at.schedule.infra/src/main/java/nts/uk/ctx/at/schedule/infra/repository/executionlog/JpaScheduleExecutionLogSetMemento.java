@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchExecutionLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchExecutionLogPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -18,16 +18,16 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSetMemento{
 	
 	/** The entity. */
-	private KscmtScheduleExcLog entity; 
+	private KscmtSchExecutionLog entity; 
 	
 	/**
 	 * Instantiates a new jpa schedule execution log get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaScheduleExecutionLogSetMemento(KscmtScheduleExcLog entity) {
-		if(entity.getKscmtScheduleExcLogPK() == null){
-			entity.setKscmtScheduleExcLogPK(new KscmtScheduleExcLogPK());
+	public JpaScheduleExecutionLogSetMemento(KscmtSchExecutionLog entity) {
+		if(entity.getKscmtSchExecutionLogPK() == null){
+			entity.setKscmtSchExecutionLogPK(new KscmtSchExecutionLogPK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKscmtScheduleExcLogPK().setCid(companyId.v());
+		this.entity.getKscmtSchExecutionLogPK().setCid(companyId.v());
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	 */
 	@Override
 	public void setExecutionId(String executionId) {
-		this.entity.getKscmtScheduleExcLogPK().setExeId(executionId);
+		this.entity.getKscmtSchExecutionLogPK().setExeId(executionId);
 	}
 	
 	/*

@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScCreateContent;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreateContent;
 
 /**
  * The Class JpaScheduleCreateContentRepository.
@@ -25,7 +25,7 @@ public class JpaScheduleCreateContentRepository extends JpaRepository implements
 	@Override
 	public Optional<ScheduleCreateContent> findByExecutionId(String executionId) {
 		return this.queryProxy()
-				.find(executionId, KscmtScCreateContent.class)
+				.find(executionId, KscmtSchCreateContent.class)
 				.map(entity -> this.toDomain(entity));
 	}
 
@@ -60,8 +60,8 @@ public class JpaScheduleCreateContentRepository extends JpaRepository implements
 	 * @param domain the domain
 	 * @return the kscmt sc create content
 	 */
-	private KscmtScCreateContent toEntity(ScheduleCreateContent domain){
-		KscmtScCreateContent entity = new KscmtScCreateContent();
+	private KscmtSchCreateContent toEntity(ScheduleCreateContent domain){
+		KscmtSchCreateContent entity = new KscmtSchCreateContent();
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
 		return entity;
 	}
@@ -71,10 +71,10 @@ public class JpaScheduleCreateContentRepository extends JpaRepository implements
 	 * @param domain the domain
 	 * @return the kscmt sc create content
 	 */
-	private KscmtScCreateContent toEntityUpdate(ScheduleCreateContent domain) {
-		Optional<KscmtScCreateContent> opEntity = this.queryProxy().find(domain.getExecutionId(),
-				KscmtScCreateContent.class);
-		KscmtScCreateContent entity = new KscmtScCreateContent();
+	private KscmtSchCreateContent toEntityUpdate(ScheduleCreateContent domain) {
+		Optional<KscmtSchCreateContent> opEntity = this.queryProxy().find(domain.getExecutionId(),
+				KscmtSchCreateContent.class);
+		KscmtSchCreateContent entity = new KscmtSchCreateContent();
 		if (opEntity.isPresent()) {
 			entity = opEntity.get();
 		}
@@ -87,7 +87,7 @@ public class JpaScheduleCreateContentRepository extends JpaRepository implements
 	 * @param entity the entity
 	 * @return the schedule create content
 	 */
-	private ScheduleCreateContent toDomain(KscmtScCreateContent entity) {
+	private ScheduleCreateContent toDomain(KscmtSchCreateContent entity) {
 		return new ScheduleCreateContent(new JpaScheduleCreateContentGetMemento(entity));
 	}
 	
