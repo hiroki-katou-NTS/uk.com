@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.jobtitle;
 
 import java.util.List;
@@ -9,7 +13,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.ws.company.organization.jobtitle.Kcp003Dto;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.RemoveJobTitleCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.RemoveJobTitleCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.history.RemoveJobTitleHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.history.RemoveJobTitleHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.SaveJobTitleHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.SaveJobTitleHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.JobTitleFinder;
@@ -27,6 +34,10 @@ public class JobTitleWebService extends WebService {
 	@Inject
 	private JobTitleFinder jobTitleFinder;
 	
+	/** The remove job title command handler. */
+	@Inject
+	private RemoveJobTitleCommandHandler removeJobTitleCommandHandler;
+	
 	/** The save job title history command handler. */
 	@Inject
 	private SaveJobTitleHistoryCommandHandler saveJobTitleHistoryCommandHandler;
@@ -37,11 +48,15 @@ public class JobTitleWebService extends WebService {
 		return this.jobTitleFinder.findAll(dto.getBaseDate());
 	}
 	
+	/** The remove job title history command handler. */
+	@Inject
+	private RemoveJobTitleHistoryCommandHandler removeJobTitleHistoryCommandHandler;
+	
 	/**
 	 * Find by job id.
 	 *
 	 * @param findObj the find obj
-	 * @return the list
+	 * @return the job title find dto
 	 */
 	@Path("history/findByJobId")
 	@POST
@@ -58,5 +73,31 @@ public class JobTitleWebService extends WebService {
 	@POST
 	public void saveHistory(SaveJobTitleHistoryCommand command) {
 		this.saveJobTitleHistoryCommandHandler.handle(command);
+	}
+	
+	/**
+	 * Removes the history.
+	 *
+	 * @param command the command
+	 */
+	@Path("history/remove")
+	@POST
+	public void removeHistory(RemoveJobTitleHistoryCommand command) {
+		this.removeJobTitleHistoryCommandHandler.handle(command);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Removes the job title.
+	 *
+	 * @param command the command
+	 */
+	@Path("remove")
+	@POST
+	public void removeJobTitle(RemoveJobTitleCommand command) {
+		this.removeJobTitleCommandHandler.handle(command);
 	}
 }

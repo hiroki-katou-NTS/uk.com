@@ -35,6 +35,13 @@ module nts.uk.com.view.cmm013.a {
             sequenceCode: KnockoutObservable<string>;
             sequenceName: KnockoutObservable<string>;
             
+            // UI binding
+            enable_A1_1: KnockoutObservable<boolean>;
+            enable_A1_3: KnockoutObservable<boolean>;
+            enable_A3_3: KnockoutObservable<boolean>;
+            enable_A3_4: KnockoutObservable<boolean>;
+            enable_A3_5: KnockoutObservable<boolean>;
+            
             constructor() {
                 let _self = this;               
                 
@@ -42,7 +49,7 @@ module nts.uk.com.view.cmm013.a {
     
                 _self.createMode = ko.observable(false);
                 _self.createMode.subscribe((newValue) => {
-                    _self.startCreate(newValue);
+                    _self.changeMode(newValue);
                 });
                 
                 // Init list JobTitle setting
@@ -50,6 +57,7 @@ module nts.uk.com.view.cmm013.a {
 
                 _self.selectedJobTitleId = ko.observable("");
                 _self.selectedJobTitleId.subscribe((newValue) => {
+                    _self.createMode(false);
                     _self.findJobHistoryById(newValue);
                 });        
                 _self.isShowAlreadySet = ko.observable(false);
@@ -87,12 +95,19 @@ module nts.uk.com.view.cmm013.a {
                 _self.jobTitleName = ko.observable("");          
                 _self.sequenceCode = ko.observable("");  
                 _self.sequenceName = ko.observable("");    
+                
+                // UI
+                _self.enable_A1_1 = ko.observable(null);
+                _self.enable_A1_3 = ko.observable(null);
+                _self.enable_A3_3 = ko.observable(null);
+                _self.enable_A3_4 = ko.observable(null);
+                _self.enable_A3_5 = ko.observable(null);
             }
     
             /**
              * Reload component
              */
-            private reloadComponent() {
+            private reloadComponent(): void {
                 let _self = this;
                 
                 _self.listJobTitleOption.isShowAlreadySet = _self.isShowAlreadySet();
@@ -105,7 +120,10 @@ module nts.uk.com.view.cmm013.a {
                 $('#job-title-items-list').ntsListComponent(_self.listJobTitleOption);
             }
             
-            startPage(): JQueryPromise<any> {
+            /**
+             * Start page
+             */
+            public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 
@@ -122,32 +140,19 @@ module nts.uk.com.view.cmm013.a {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-            startCreate(newValue: boolean) {
-                let _self = this;
-                
-                if (newValue === true) {
-                    _self.jobTitleHistoryModel().listJobTitleHistory.removeAll();
-                    //_self.jobTitleHistoryModel().listJobTitleHistory.push(new History());
-                    _self.jobTitleHistoryModel().selectFirst();
-                    _self.jobTitleCode = ko.observable("");
-                    _self.jobTitleName = ko.observable("");          
-                    _self.sequenceCode = ko.observable("");  
-                    _self.sequenceName = ko.observable("");
-                } else {
-                        
-                }               
-            }
-            
+
             /**
              * Find JobTitle history by id
              */
-            private findJobHistoryById(jobTitleId: string) {
+            private findJobHistoryById(jobTitleId: string): void {
                 let _self = this;    
                            
                 // Load JobTitle history info 
+                nts.uk.ui.block.grayout();
+                _self.jobTitleHistoryModel().clearData();
                 service.findJobHistoryList(jobTitleId)
                     .done((data: any) => {
+                        nts.uk.ui.block.clear();
                         if (data) {
                             // Load JobTitle History
                             let listHistory: History[] = _.map(data.jobTitleHistory, (item: any) => {
@@ -157,18 +162,19 @@ module nts.uk.com.view.cmm013.a {
                         }                                           
                     })
                     .fail((res: any) => {
-                        
+                        nts.uk.ui.block.clear();
                     }); 
             }          
             
             /**
              * Find JobTitle info by job title id and job history id
              */
-            public findJobInfo(jobTitleId: string, jobHistoryId: string) {
+            public findJobInfo(jobTitleId: string, jobHistoryId: string): void {
                 let _self = this;    
-                
+                //nts.uk.ui.block.grayout();    // Cause history list lost focus
                 service.findJobInfoByJobIdAndHistoryId(jobTitleId, jobHistoryId)
                     .done((data: any) => {
+                        //nts.uk.ui.block.clear();
                         if (data) {
                             _self.jobTitleCode(data.jobTitleCode);
                             _self.jobTitleName(data.jobTitleName);
@@ -177,8 +183,79 @@ module nts.uk.com.view.cmm013.a {
                         }
                     })
                     .fail((res: any) => {
-                        
+                        //nts.uk.ui.block.clear();
                     });                
+            }
+            
+            
+            
+            
+            
+            // Actions                      
+            /**
+             * Callback: change mode based on createMode value
+             */
+            public changeMode(newValue: boolean): void {
+                let _self = this;
+                
+                if (newValue === true) {
+                    _self.jobTitleHistoryModel().clearData();
+                    //TODO _self.jobTitleHistoryModel().listJobTitleHistory.push(new History());
+                    _self.jobTitleCode = ko.observable("");
+                    _self.jobTitleName = ko.observable("");          
+                    _self.sequenceCode = ko.observable("");  
+                    _self.sequenceName = ko.observable("");
+                    
+                    // UI
+                    _self.enable_A1_1(false);
+                    _self.enable_A1_3(false);
+                    _self.enable_A3_3(false);
+                    _self.enable_A3_4(false);
+                    _self.enable_A3_5(false);
+                } else {               
+                    // UI
+                    _self.enable_A1_1(true);
+                }               
+            }
+            
+            /**
+             * Save JobTitle
+             */
+            public saveJobTitle(): void {
+                
+            }           
+            
+            /**
+             * Remove history
+             */
+            public removeHistory(): void {
+                let _self = this;
+                if(_self.jobTitleHistoryModel().selectedHistoryId() !== "") {                 
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+                        .ifYes(() => {
+                            nts.uk.ui.block.grayout();
+                            let removeCommand: any = {};
+                            removeCommand.jobTitleId = _self.selectedJobTitleId();
+                            removeCommand.historyId = _self.jobTitleHistoryModel().selectedHistoryId();
+                                                       
+                            service.removeJobTitleHistory(removeCommand)
+                                .done(() => {
+                                    nts.uk.ui.block.clear();
+                                    // Show message
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });      
+                                    // Reload history
+                                    _self.findJobHistoryById(_self.selectedJobTitleId());
+                                })
+                                .fail((res: any) => {
+                                    nts.uk.ui.block.clear();
+                                    // Show error list
+                                    nts.uk.ui.dialog.bundledErrors(res); 
+                                });                          
+                        })
+                        .ifNo(() => {
+                            
+                        });
+                }
             }
             
             
@@ -191,7 +268,18 @@ module nts.uk.com.view.cmm013.a {
              */
             public openDeleteDialog() {
                 let _self = this;
-                nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml').onClosed(() => {});
+                let transferObj: any = {};
+                transferObj.jobTitleId = _self.selectedJobTitleId();
+                transferObj.jobTitleCode = _self.jobTitleCode();
+                transferObj.jobTitleName = _self.jobTitleName();
+                nts.uk.ui.windows.setShared(Constants.SHARE_IN_DIALOG_REMOVE_JOB, transferObj);
+                nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml').onClosed(() => {   
+                    let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_REMOVE_JOB);                 
+                    if (isSuccess) {
+                        // Reload history
+                        _self.findJobHistoryById(_self.selectedJobTitleId());
+                    }
+                });
             }
             
             /**
@@ -221,7 +309,6 @@ module nts.uk.com.view.cmm013.a {
                     let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_ADD_HISTORY);                 
                     if (isSuccess) {
                         // Reload history
-                        //TODO
                         _self.findJobHistoryById(_self.selectedJobTitleId());
                     }
                 });   
@@ -241,7 +328,6 @@ module nts.uk.com.view.cmm013.a {
                     let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_EDIT_HISTORY);                 
                     if (isSuccess) {
                         // Reload history
-                        //TODO
                         _self.findJobHistoryById(_self.selectedJobTitleId());
                     }    
                 });   
@@ -269,14 +355,20 @@ module nts.uk.com.view.cmm013.a {
                 _self.parentModel = parentModel;
                 _self.selectedHistoryId.subscribe((jobHistoryId: string) => {
                     _self.parentModel.findJobInfo(_self.parentModel.selectedJobTitleId(), jobHistoryId);
-                });
+                })
                 _self.init([]);
-            }
+            }                      
             
-            public init(data: History[]) {
+            public init(data: History[]): void {
                 let _self = this;
                 _self.listJobTitleHistory(data);
                 _self.selectFirst();
+            }
+            
+            public clearData() {
+                let _self = this;
+                _self.listJobTitleHistory([]);
+                _self.selectedHistoryId(null);
             }
         }
     }

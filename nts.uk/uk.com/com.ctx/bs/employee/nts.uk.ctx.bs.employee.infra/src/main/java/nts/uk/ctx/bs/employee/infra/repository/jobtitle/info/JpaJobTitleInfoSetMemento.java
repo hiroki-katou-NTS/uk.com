@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
@@ -42,8 +41,8 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.HistoryId)
 	 */
 	@Override
-	public void setJobTitleHistoryId(HistoryId jobTitleHistoryId) {
-		this.entity.getBsymtJobInfoPK().setHistId(jobTitleHistoryId.v());
+	public void setJobTitleHistoryId(String jobTitleHistoryId) {
+		this.entity.getBsymtJobInfoPK().setHistId(jobTitleHistoryId);
 	}
 
 	/* (non-Javadoc)

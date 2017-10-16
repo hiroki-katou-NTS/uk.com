@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 
 /**
  * The Interface JobTitleInfoGetMemento.
@@ -22,7 +21,7 @@ public interface JobTitleInfoGetMemento {
 	 *
 	 * @return the list job title history id
 	 */
-	public HistoryId getJobTitleHistoryId();
+	public String getJobTitleHistoryId();
 	
 	/**
 	 * Gets the job title id.

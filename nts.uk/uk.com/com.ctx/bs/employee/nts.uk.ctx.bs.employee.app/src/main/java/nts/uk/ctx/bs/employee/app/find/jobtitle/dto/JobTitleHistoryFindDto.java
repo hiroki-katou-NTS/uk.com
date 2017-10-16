@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
 
 import lombok.Data;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -25,8 +24,8 @@ public class JobTitleHistoryFindDto implements JobTitleHistorySetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento#setHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
 	 */
 	@Override
-	public void setHistoryId(HistoryId historyId) {
-		this.historyId = historyId.v();
+	public void setHistoryId(String historyId) {
+		this.historyId = historyId;
 	}
 
 	/* (non-Javadoc)

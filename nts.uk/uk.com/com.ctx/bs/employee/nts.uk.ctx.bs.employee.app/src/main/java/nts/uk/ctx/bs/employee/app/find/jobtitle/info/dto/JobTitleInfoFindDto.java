@@ -7,7 +7,6 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.info.dto;
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
@@ -57,8 +56,8 @@ public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMast
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
 	 */
 	@Override
-	public void setJobTitleHistoryId(HistoryId jobTitleHistoryId) {
-		this.jobTitleHistoryId = jobTitleHistoryId.v();
+	public void setJobTitleHistoryId(String jobTitleHistoryId) {
+		this.jobTitleHistoryId = jobTitleHistoryId;
 	}
 
 	/* (non-Javadoc)
