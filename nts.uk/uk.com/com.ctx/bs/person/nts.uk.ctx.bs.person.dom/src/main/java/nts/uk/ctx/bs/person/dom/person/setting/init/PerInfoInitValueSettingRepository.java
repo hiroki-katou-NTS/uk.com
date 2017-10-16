@@ -33,20 +33,34 @@ public interface PerInfoInitValueSettingRepository {
 
 	/**
 	 * update PerInfoInitValueSetting
+	 * 
 	 * @param domain
 	 */
 	void update(PerInfoInitValueSetting domain);
 
 	/**
 	 * insert PerInfoInitValueSetting
+	 * 
 	 * @param domain
 	 */
 	void insert(PerInfoInitValueSetting domain);
 
 	/**
 	 * delete initValueSettingId
+	 * 
 	 * @param initValueSettingId
 	 */
 	void delete(String initValueSettingId);
 
+	// sonnlb
+
+	/**
+	 * getAllInitValueSettingWithItem
+	 * 
+	 * @param companyId
+	 * @return List<PerInfoInitValueSetting>
+	 */
+	List<PerInfoInitValueSetting> getAllInitValueSettingHasChild(String companyId);
+
+	// sonnlb
 }

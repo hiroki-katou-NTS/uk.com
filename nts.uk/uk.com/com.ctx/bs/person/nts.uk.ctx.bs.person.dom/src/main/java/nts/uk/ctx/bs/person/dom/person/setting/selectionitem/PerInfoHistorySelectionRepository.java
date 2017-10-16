@@ -8,11 +8,15 @@ import nts.arc.time.GeneralDate;
 public interface PerInfoHistorySelectionRepository {
 	void add(PerInfoHistorySelection perInfoHistorySelection);
 
-	Optional<PerInfoHistorySelection> getHistorySelectionItem(String histId);
-
 	void remove(String selectionItemId);
+	
+	List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String companyId);
+	
+	Optional<PerInfoHistorySelection> getHistorySelectionItem(String histId);
 
 	List<PerInfoHistorySelection> historySelection(String selectionItemId);
 	
 	List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate);
+
+	List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String selectionItemId, String companyId);
 }

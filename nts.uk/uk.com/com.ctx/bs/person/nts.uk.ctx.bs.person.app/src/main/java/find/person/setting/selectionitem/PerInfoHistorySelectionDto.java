@@ -13,11 +13,8 @@ public class PerInfoHistorySelectionDto {
 	private GeneralDate endDate;
 
 	public static PerInfoHistorySelectionDto fromDomainHistorySelection(PerInfoHistorySelection domain) {
-		return new PerInfoHistorySelectionDto(
-				domain.getHistId(), 
-				domain.getSelectionItemId(), 
-				domain.getCompanyCode(),
-				domain.getStartDate(), 
-				domain.getEndDate());
+
+		return new PerInfoHistorySelectionDto(domain.getHistId(), domain.getSelectionItemId(), domain.getCompanyCode(),
+				domain.getPeriod().start(), domain.getPeriod().end());
 	}
 }

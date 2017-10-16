@@ -18,83 +18,85 @@
 			<div id="functions-area">
 				<button id="A1_001" tabindex="1" data-bind="click: openDDialog">#{i18n.getText('CPS009_3')}</button>
 				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS009_4')}</button>
-				<button id="A1_003" data-bind = "click: openCDialog" tabindex="3" >#{i18n.getText('CPS009_5')}</button>
+				<button id="A1_003" data-bind="click: openCDialog" tabindex="3">#{i18n.getText('CPS009_5')}</button>
 				<button id="A1_004" class="danger" tabindex="4">#{i18n.getText('CPS009_6')}</button>
 				<div class='float-right'>
 					<a class='goout' data-bind="ntsLinkButton: {}" tabindex="5">#{i18n.getText('CPS009_7')}</a>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="content-left"
-					data-bind="ntsPanel:{width: '260px', height: '500px',
+				<div id="content">
+					<div id="content-left"
+						data-bind="ntsPanel:{width: '260px', height: '500px',
 					direction: 'right', showIcon: false, visible: true}">
-					<table id="category_grid"
-						data-bind="ntsGridList: {	
-						dataSource: categoryList ,
-						primaryKey: 'id' ,
+						<table id="category_grid"
+							data-bind="ntsGridList: {	
+						dataSource: initValSettingLst ,
+						primaryKey: 'settingId' ,
 						columns: ctgColums ,
 						multiple: false,
-						value: categoryId,
+						value: initSettingId,
 						rows:15 }">
-					</table>
-				</div>
-				<div id="content-right">
-
-					<div>
-						<div data-bind="ntsFormLabel: {required: true}" class='distane'>
-							<label>#{i18n.getText('CPS009_12')}</label>
-						</div>
-						<input id="ctgCode"
-							data-bind="ntsTextEditor: {
-								value: currentCategory().categoryCode ,
-								enable: true,
-								immediate: false}"></input>
-						<input id="ctgName"
-							data-bind="ntsTextEditor: {
-								value: currentCategory().categoryName ,
-								enable: true,
-								immediate: false}"></input>
+						</table>
 					</div>
-					<div id='sub-content-right'>
-						<div id='sub-left'>
-							<div id="search" tabindex="6"
-								data-bind="ntsSearchBox: {
+					<div id="content-right">
+
+						<div>
+							<div data-bind="ntsFormLabel: {required: true}" class='distane'>
+								<label>#{i18n.getText('CPS009_12')}</label>
+							</div>
+							<input id="ctgCode"
+								data-bind="ntsTextEditor: {
+								value: currentCategory().settingCode ,
+								enable: true,
+								immediate: false}"></input>
+							<input id="ctgName"
+								data-bind="ntsTextEditor: {
+								value: currentCategory().settingName ,
+								enable: true,
+								immediate: false}"></input>
+						</div>
+						<div id='sub-content-right'>
+							<div id='sub-left'>
+								<div id="search" tabindex="6"
+									data-bind="ntsSearchBox: {
 						searchMode: 'filter',
-						targetKey: 'id',
+						targetKey: 'perInfoCtgId',
 						mode: 'igGrid', 
 						comId: 'item_grid',
 						items: currentCategory().itemList ,  
-						selectedKey: 'id',
+						selectedKey: 'perInfoCtgId',
 						fields: ['categoryName']}" />
-							<table id="item_grid"
-								data-bind="ntsGridList: {	
+								<table id="item_grid"
+									data-bind="ntsGridList: {	
 						dataSource: currentCategory().itemList ,
-						primaryKey: 'id' ,
+						primaryKey: 'perInfoCtgId' ,
 						columns: currentCategory().itemColums ,
 						multiple: false,
 						value: currentCategory().currentItemId ,
 						rows:10 }">
-							</table>
+								</table>
 
-						</div>
-						<div id='sub-right'>
-							<div id="history">
-								<label> #{i18n.getText('CPS009_19')}</label>
-								<button
-									data-bind="ntsHelpButton: {image: 'helpcps0091.png', 
+							</div>
+							<div id='sub-right'>
+								<div id="history">
+									<label> #{i18n.getText('CPS009_19')}</label>
+									<button
+										data-bind="ntsHelpButton: {image: 'helpcps0091.png', 
 									position: 'right top',
 									enable: true }">?</button>
-								<input id="date"
-									data-bind="ntsTextEditor: {
-								value: currentCategory().categoryCode ,
+									<input id="date"
+										data-bind="ntsTextEditor: {
+								value: currentCategory().settingCode ,
 								enable: true,
 								immediate: false}"></input>
+								</div>
+								<table id='grid2'>
+								</table>
 							</div>
-							<table id='grid2'>
-							</table>
 						</div>
-					</div>
 
+					</div>
 				</div>
 			</div>
 		</ui:define>
