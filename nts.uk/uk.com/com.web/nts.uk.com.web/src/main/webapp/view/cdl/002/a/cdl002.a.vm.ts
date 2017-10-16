@@ -52,7 +52,7 @@ module nts.uk.com.view.cdl002.a {
                 var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
                 if((self.isMultiSelect() && self.selectedCodes().length == 0) 
                     || (!self.selectedCodes()) && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
                         return;
                 }
                 setShared('CDL002Output', self.selectedCodes());

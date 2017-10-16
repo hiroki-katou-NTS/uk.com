@@ -13,6 +13,9 @@ import lombok.Data;
 @Data
 @Builder
 public class JobTitleItemDto {
+	
+	/** The id. */
+	private String id;
 
 	/** The code. */
 	private String code;
