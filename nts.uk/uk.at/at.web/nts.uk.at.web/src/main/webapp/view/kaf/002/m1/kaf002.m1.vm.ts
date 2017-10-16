@@ -14,27 +14,6 @@ module nts.uk.at.view.kaf002.m1 {
             displayAllLabel: KnockoutObservable<string> = ko.observable(''); 
             constructor(){
                 var self = this;
-                self.stampAtr.subscribe((value)=>{ 
-                    self.appStampList.removeAll();
-                    let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
-                    for(let i=1;i<=self.supFrameNo;i++) {
-                        self.appStampList.push(
-                            new vmbase.AppStampGoOutPermit(
-                                value,
-                                i,
-                                stampGoOutAtr,
-                                new vmbase.CheckBoxTime(0,true,false),
-                                new vmbase.CheckBoxLocation('','',true,false),
-                                new vmbase.CheckBoxTime(0,true,false),
-                                new vmbase.CheckBoxLocation('','',true,false)));    
-                    } 
-                    switch(value){
-                        case 1: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31')); break;
-                        case 2: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_32')); break;
-                        case 3: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_33')); break;
-                        default: break;    
-                    }
-                });
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
                         let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
@@ -94,9 +73,31 @@ module nts.uk.at.view.kaf002.m1 {
                                 new vmbase.CheckBoxLocation(item.startLocation,self.findWorkLocationName(item.startLocation),true,false),
                                 new vmbase.CheckBoxTime(item.endTime,true,false),
                                 new vmbase.CheckBoxLocation(item.endLocation,self.findWorkLocationName(item.endLocation),true,false) 
-                        ));        
+                        ));      
+                        self.stampAtr(item.stampAtr);  
                     });
                 }
+                self.stampAtr.subscribe((value)=>{ 
+                    self.appStampList.removeAll();
+                    let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
+                    for(let i=1;i<=self.supFrameNo;i++) {
+                        self.appStampList.push(
+                            new vmbase.AppStampGoOutPermit(
+                                value,
+                                i,
+                                stampGoOutAtr,
+                                new vmbase.CheckBoxTime(0,true,false),
+                                new vmbase.CheckBoxLocation('','',true,false),
+                                new vmbase.CheckBoxTime(0,true,false),
+                                new vmbase.CheckBoxLocation('','',true,false)));    
+                    } 
+                    switch(value){
+                        case 1: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31')); break;
+                        case 2: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_32')); break;
+                        case 3: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_33')); break;
+                        default: break;    
+                    }
+                });
             }
             
             extendsModeEvent(){

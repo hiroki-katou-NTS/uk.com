@@ -55,7 +55,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(application.getCompanyID(), application.getApplicationType().value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getApplicationType().value);
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
@@ -70,12 +70,12 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 			// sendMail(obj);
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
 			System.out.println("Send Mail to "+destinationList);
-			try {
+			/*try {
 				mailSender.send("NSVC", destination, new MailContents("nts","approvalChange"));
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 	

@@ -44,9 +44,13 @@ module nts.uk.at.view.kaf002.m5 {
                                 new vmbase.CheckBoxLocation(item.startLocation,self.findWorkLocationName(item.startLocation),true,false),
                                 new vmbase.CheckBoxTime(item.endTime,true,false),
                                 new vmbase.CheckBoxLocation(item.endLocation,self.findWorkLocationName(item.endLocation),true,false) 
-                        ));        
+                        ));  
+                        self.stampAtr(item.stampAtr);      
                     });
                 }
+                self.stampAtr.subscribe((value)=>{ 
+                    self.refreshData();
+                });
             }
             
             refreshData(){
@@ -57,9 +61,9 @@ module nts.uk.at.view.kaf002.m5 {
                 for(let i=1;i<=self.supFrameNo;i++){
                     a.push(
                         new vmbase.AppStampWork(
-                            0,
+                            self.stampAtr(),
                             i,
-                            0,
+                            stampGoOutAtr,
                             new vmbase.CheckBoxLocation('','',true,false),
                             new vmbase.CheckBoxLocation('','',true,false),
                             new vmbase.CheckBoxTime(0,true,false),
@@ -91,7 +95,7 @@ module nts.uk.at.view.kaf002.m5 {
                     titleReason: application.titleReason(), 
                     detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
-                    stampRequestMode: 1,
+                    stampRequestMode: 4,
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
                     appStampCancelCmds: null,
@@ -121,7 +125,7 @@ module nts.uk.at.view.kaf002.m5 {
                     titleReason: application.titleReason(), 
                     detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
-                    stampRequestMode: 1,
+                    stampRequestMode: 4,
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
                     appStampCancelCmds: null,
@@ -171,7 +175,7 @@ module nts.uk.at.view.kaf002.m5 {
             }
             
             openSelectCardDialog(frameNo: number){
-                alert('KDL018');
+                // alert('KDL018');
             }
         }
     }
