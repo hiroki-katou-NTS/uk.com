@@ -18,6 +18,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteToRestoreCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.RestoreDataEmpCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
@@ -36,6 +38,9 @@ public class EmployeeWebService extends WebService {
 
 	@Inject
 	private EmployeeFinder employeeFinder;
+	
+	@Inject
+	private RestoreDataEmpCommandHandler restoreEmpHandler;
 	
 	@Inject
 	private EmployeeDeleteCommandHandler empDeleteHandler;
@@ -231,6 +236,6 @@ public class EmployeeWebService extends WebService {
 	
 	@POST
 	@Path("restoredata")
-	public void restoreData() {
+	public void restoreData(EmployeeDeleteToRestoreCommand command) {
 	}
 }

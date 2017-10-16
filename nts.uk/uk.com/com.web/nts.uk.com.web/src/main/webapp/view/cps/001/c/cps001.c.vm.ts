@@ -49,10 +49,17 @@ module cps001.c.vm {
         }
 
         reStoreData() {
-            let self = this;
+            let self = this,
+            currentItem : IEmployees = ko.toJS(self.currentEmployee()),
+            detail : IEmployeeInfo =  ko.toJS(self.detail());
+            
             nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => { 
             let itemListLength = self.listEmpDelete().length;
+                let objToRestore ={sid: currentItem.id ,code : currentItem.code ,newCode: detail.newCode , newName : detail.newName};
+                service.restoreData(objToRestore).done(() => {
+                    
                 
+                });
             
             }).ifCancel(() => {
 
