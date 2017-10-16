@@ -192,6 +192,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
         newBtn() {
             var self = this;
             
+            self.singleSelectedCode("");
+            self.code("");
+            self.name("");
+            self.unitSelected(0);
+            self.useClsSelected(0);
+            self.workScheduleSelected(0);
         }
         
         registrationBtn() {
