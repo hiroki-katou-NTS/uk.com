@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,26 +34,6 @@ public class HoriTotalCategoryFinder {
 	}
 	
 	/**
-	 * convert from domain to dto
-	 * @param horiCalDaysSet
-	 * @return
-	 * author: HoangYen
-	 */
-	private HoriCalDaySetDto fromDomainCalSet(HoriCalDaysSet horiCalDaysSet){
-			HoriCalDaySetDto horiCalDaySetDto = new HoriCalDaySetDto();
-			if(horiCalDaysSet == null){
-				horiCalDaySetDto = null;
-				return horiCalDaySetDto;
-			}
-			horiCalDaySetDto.setCategoryCode(horiCalDaysSet.getCategoryCode().v());
-			horiCalDaySetDto.setHalfDay(horiCalDaysSet.getHalfDay().value);
-			horiCalDaySetDto.setYearHd(horiCalDaysSet.getYearHd().value);
-			horiCalDaySetDto.setSpecialHoliday(horiCalDaysSet.getSpecialHoliday().value);
-			horiCalDaySetDto.setHeavyHd(horiCalDaysSet.getHeavyHd().value);
-		return horiCalDaySetDto;
-	}
-	
-	/**
 	 * find all hori total category
 	 * @return
 	 */
@@ -67,7 +46,6 @@ public class HoriTotalCategoryFinder {
 																x.getCategoryCode().v(),
 																x.getCategoryName().v(),
 																x.getMemo().v(),
-																fromDomainCalSet(x.getHoriCalDaysSet()),
 																x.getTotalEvalOrders().stream().map(c -> fromDomain(c)).collect(Collectors.toList()));
 							}).collect(Collectors.toList());
 	}

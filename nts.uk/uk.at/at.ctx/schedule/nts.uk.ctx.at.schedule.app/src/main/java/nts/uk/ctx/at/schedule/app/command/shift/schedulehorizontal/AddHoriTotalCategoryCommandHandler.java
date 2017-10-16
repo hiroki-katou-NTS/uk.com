@@ -11,8 +11,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCNTSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
@@ -27,8 +25,7 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 		AddHoriTotalCategoryCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
-		List<HoriTotalCNTSet> horiCntSets = new ArrayList<>();
-		HoriCalDaysSet horiCalDaysSet =null;
+//		List<HoriTotalCNTSet> horiCntSets = new ArrayList<>();
 		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, data.getCategoryCode());
 		// check duplicate code
 		if(horiOld.isPresent()){
@@ -40,30 +37,28 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 		}
 		// get total eval order list
 		if(data.getTotalEvalOrders() != null){
-			totalEvalOrders = data.getTotalEvalOrders()
-								.stream()
-								.map(x -> x.toDomainOrder(companyId, data.getCategoryCode()))
-								.collect(Collectors.toList());
+			totalEvalOrders = data.getTotalEvalOrders().stream()
+					.map(x -> x.toDomainOrder(companyId))
+					.collect(Collectors.toList());
 		}
-		// get hori cal day set item
-		if(data.getHoriCalDaysSet() != null){
-			horiCalDaysSet = context.getCommand().getHoriCalDaysSet()
-								.toDomainCalSet(companyId, data.getCategoryCode());
-		}
-		// get hori total cnt set list
-		if(data.getCntSetls() != null){
-			horiCntSets = data.getCntSetls().stream()
-											.map(x -> x.toDomainCNTSet(companyId, data.getCategoryCode(), 
-																		x.getTotalItemNo(), x.getTotalTimeNo()))
-											.collect(Collectors.toList());
-		}
+//		// get hori cal day set item
+//		if(data.getHoriCalDaysSet() != null){
+//			horiCalDaysSet = context.getCommand().getHoriCalDaysSet()
+//								.toDomainCalSet(companyId, data.getCategoryCode());
+//		}
+		
+//		// get hori total cnt set list
+//		if(data.getCntSetls() != null){
+//			horiCntSets = data.getCntSetls().stream()
+//											.map(x -> x.toDomainCNTSet(companyId, data.getCategoryCode(), 
+//																		x.getTotalItemNo(), x.getTotalTimeNo()))
+//											.collect(Collectors.toList());
+//		}
 		HoriTotalCategory hori = HoriTotalCategory.createFromJavaType(companyId, 
 																	data.getCategoryCode(), 
 																	data.getCategoryName(), 
 																	data.getMemo(), 
-																	horiCalDaysSet,
-																	totalEvalOrders,
-																	horiCntSets);
+																	totalEvalOrders);
 		hori.validate();
 		horiRep.insertCate(hori);
 	}

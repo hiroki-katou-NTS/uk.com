@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -31,12 +30,6 @@ public class KscmtHoriTotalCategoryItem extends UkJpaEntity implements Serializa
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory", orphanRemoval = true)
 	public List<KscmtTotalEvalOrderItem> listTotalEvalOrder;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory2", orphanRemoval = true)
-	public List<KscstHoriTotalCntSetItem> listHoriCNTSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory1", orphanRemoval = true)
-	public KscstHoriCalDaysSetItem horiCalDaysSet;
 	
 	@Override
 	protected Object getKey() {

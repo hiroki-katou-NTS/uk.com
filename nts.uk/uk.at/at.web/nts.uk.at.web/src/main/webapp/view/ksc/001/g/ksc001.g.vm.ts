@@ -85,7 +85,7 @@ module nts.uk.at.view.ksc001.g {
                 var self = this;
                 $("#gridTable").ntsGrid({
                     width: null,
-                    height: '400px',
+                    height: '380px',
                     dataSource: screenModel.items(),
                     primaryKey: 'id',
                     virtualization: true,
@@ -97,7 +97,7 @@ module nts.uk.at.view.ksc001.g {
                         { headerText: nts.uk.resource.getText('KSC001_68'), key: 'exeEmployeeName', dataType: 'string', width: '200px' },
                         { headerText: nts.uk.resource.getText('KSC001_31'), key: 'targetPeriod', dataType: 'string', width: '220px' },
                         { headerText: nts.uk.resource.getText('KSC001_69'), key: 'status', dataType: 'string', width: '150px' },
-                        { headerText: nts.uk.resource.getText('KSC001_70'), key: 'exeId', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' }
+                        { headerText: nts.uk.resource.getText('KSC001_70'), key: 'exeId', dataType: 'string', width: '100px', columnCssClass: 'align_detail_btn', unbound: true, ntsControl: 'Button' }
                     ],
                     features: [],
                     ntsFeatures: [{ name: 'CopyPaste' }],

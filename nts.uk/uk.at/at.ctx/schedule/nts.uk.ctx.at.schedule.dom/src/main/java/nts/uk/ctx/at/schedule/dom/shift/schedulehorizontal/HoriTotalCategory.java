@@ -24,21 +24,15 @@ public class HoriTotalCategory extends AggregateRoot{
 	private CategoryName categoryName;
 	/** メモ */
 	private Memo memo; 
-	private HoriCalDaysSet horiCalDaysSet;
 	private List<TotalEvalOrder> totalEvalOrders;
-	private List<HoriTotalCNTSet> cntSetls;
 	
 	public static HoriTotalCategory createFromJavaType(String companyId, String categoryCode, 
 														String categoryName, String memo,
-														HoriCalDaysSet horiCalDaysSet,
-														List<TotalEvalOrder> totalEvalOrders,
-														List<HoriTotalCNTSet> cntSetls){
+														List<TotalEvalOrder> totalEvalOrders){
 		return new HoriTotalCategory(companyId, new CategoryCode(categoryCode), 
 									new CategoryName(categoryName), 
 									new Memo(memo),
-									horiCalDaysSet,
-									totalEvalOrders,
-									cntSetls);
+									totalEvalOrders);
 	} 
 	
 	@Override

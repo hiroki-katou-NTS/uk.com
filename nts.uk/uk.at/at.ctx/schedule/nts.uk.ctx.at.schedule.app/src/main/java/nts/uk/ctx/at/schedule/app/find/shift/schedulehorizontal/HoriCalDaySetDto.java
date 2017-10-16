@@ -17,6 +17,8 @@ public class HoriCalDaySetDto {
 	private String companyId;
 	/** カテゴリコード */
 	private String categoryCode;
+	/** 集計項目NO */
+	private int totalItemNo; 
 	/** 半日カウント区分 */
 	private int halfDay;
 	/** 年休カウント区分*/
