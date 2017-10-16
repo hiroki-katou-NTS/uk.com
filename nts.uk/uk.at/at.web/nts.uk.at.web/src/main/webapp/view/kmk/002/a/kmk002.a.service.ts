@@ -134,8 +134,10 @@ module nts.uk.at.view.kmk002.a {
              * SelectedAttendanceItemDto
              */
             export interface AttendanceItemDto {
-                id: string;
+                attendanceItemId: number;
                 operator: number;
+                operatorText?: string;
+                attendanceItemName?: string;
             }
             export enum TypeAtr {
                 NUMBER = 0,
