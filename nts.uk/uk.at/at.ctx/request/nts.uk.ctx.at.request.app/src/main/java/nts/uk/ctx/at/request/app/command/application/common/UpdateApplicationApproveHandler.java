@@ -8,6 +8,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.CheckApprover;
+import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
@@ -16,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<ApplicationDto,ListMailApproval> {
+public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<InputCommonData,ListMailApproval> {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -27,14 +29,22 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<Ap
 	// 8-2.詳細画面承認後の処理
 	@Inject
 	private AfterApprovalProcess afterApprovalProcessRepo;
-
+	
+	@Inject
+	private CheckApprover checkApprover;
 
 	@Override
-	protected ListMailApproval handle(CommandHandlerContext<ApplicationDto> context) {
+	protected ListMailApproval handle(CommandHandlerContext<InputCommonData> context) {
 		String companyID = AppContexts.user().companyId();
-		ApplicationDto command = context.getCommand();
-		
+		String memo = context.getCommand().getMemo();
+		ApplicationDto command = context.getCommand().getApplicationDto();
+		checkApprover.checkApprover(command,memo);
 		Application application =  ApplicationDto.toEntity(command);
+		
+		
+			
+		
+		
 		// 共通アルゴリズム「詳細画面登録前の処理」を実行する(thực hiện xử lý 「詳細画面登録前の処理」)
 		// TODO: cac ham trong 4-1.詳細画面登録前の処理 lan nay deu bi hoan lai
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, application.getApplicantSID(),

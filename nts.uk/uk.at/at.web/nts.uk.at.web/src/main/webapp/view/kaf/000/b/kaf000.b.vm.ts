@@ -16,11 +16,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //list appID 
         listReasonByAppID: KnockoutObservableArray<String>;
 
-        /**
+        /**InputCommonData
          * value obj 
          */
-        listReasonToApprover: KnockoutObservable<String>;
+        reasonToApprover: KnockoutObservable<String>;
         reasonApp: KnockoutObservable<String>;
+        inputCommonData : KnockoutObservable<model.InputCommonData>;
 
         dataApplication: KnockoutObservable<model.ApplicationDto>;
 
@@ -92,9 +93,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             /**
              * value obj
              */
-            self.listReasonToApprover = ko.observable('');
+            self.reasonToApprover = ko.observable('');
             self.reasonApp = ko.observable('');
             self.dataApplication = ko.observable(null);
+            self.inputCommonData = ko.observable(null);
             //application
             self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
             self.outputDetailCheck = ko.observable(null);
@@ -335,15 +337,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.listReasonByAppID(data);
                 if (self.listReasonByAppID().length > 0) {
                     self.reasonApp(self.listReasonByAppID()[0].toString());
-                    self.listReasonToApprover('');
-                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
-                        self.listReasonToApprover(
-                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
-                        );
-                    }
+                    self.reasonToApprover(self.listReasonByAppID()[1].toString());
+//                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
+//                        self.listReasonToApprover(
+//                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
+//                        );
+//                    }
                 }
                 dfd.resolve(data);
-            });
+            }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+            }); ;
             return dfd.promise();
         }
         //get detail check 
@@ -355,6 +360,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.outputDetailCheck(data);
                 dfd.resolve(data);
             }).fail(function(res: any) {
+                dfd.reject();
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             });
             return dfd.promise();
@@ -404,8 +410,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnApprove() {
             let self = this;
+            self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             let dfd = $.Deferred<any>();
-            service.approveApp(self.dataApplication()).done(function(data) {
+            service.approveApp(self.inputCommonData()).done(function(data) {
                 self.getAllDataByAppID(self.appID()).done(function(value){
                     nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
                         if (!data) {
@@ -414,6 +421,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     });
                 });
                 dfd.resolve();
+            }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             });
             return dfd.promise();
         }
@@ -423,15 +433,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnDeny() {
             let self = this;
             let dfd = $.Deferred<any>();
+            self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_222' }).ifYes(function() {
-                service.denyApp(self.dataApplication()).done(function(data) {
+                service.denyApp(self.inputCommonData()).done(function(data) {
                     self.getAllDataByAppID(self.appID()).done(function(value){
                         if (!data) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
                         }
                     });
                     dfd.resolve();
-               });
+               }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
                 
             return dfd.promise();
@@ -442,14 +456,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         */
         btnRelease() {
             let self = this;
+            self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function() {
-                service.releaseApp(self.dataApplication()).done(function() {
+                service.releaseApp(self.inputCommonData()).done(function() {
                     self.getAllDataByAppID(self.appID()).done(function(value){
                         
                     });
                     dfd.resolve();
-                });
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
             return dfd.promise();
         }
@@ -517,7 +535,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     
             
                     dfd.resolve();
-                });
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
             return dfd.promise();
         }
@@ -532,7 +553,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 service.cancelApp(self.inputCommandEvent()).done(function() {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_224" })
                     dfd.resolve();
-                });
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
             return dfd.promise();
         }
@@ -742,6 +766,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.deadline = deadline;
             }
         }// end class outputMessageDeadline
+        
+        //class InputApprove
+        export class InputCommonData {
+            applicationDto: ApplicationDto;
+            memo: String;
+            constructor(applicationDto : ApplicationDto, memo : String) {
+                this.applicationDto = applicationDto;
+                this.memo = memo;
+            }
+        }
 
         //class InputCommandEvent
         export class InputCommandEvent {
