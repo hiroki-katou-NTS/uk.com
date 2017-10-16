@@ -133,9 +133,39 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
-            self.bindCalculatorItems();
+            $.when(self.getData()).done(function() {
+                                
+                if (self.settingItems().length > 0) {
+                    self.singleSelectedCode(self.settingItems()[0].code);
+                }
+                
+                self.bindCalculatorItems();
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
             
             dfd.resolve();
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data from db.
+         */
+        getData(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.settingItems([]);
+            service.findAllVerticalCalSet().done(function(data) {
+                _.forEach(data, function(item) {
+                    self.settingItems.push(new SettingItemModel(item.verticalCalCd, item.verticalCalName));
+                });
+                
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
             return dfd.promise();
         }
         
@@ -167,6 +197,34 @@ module nts.uk.at.view.kml002.a.viewmodel {
         registrationBtn() {
             var self = this;
             
+            // clear all error
+            nts.uk.ui.errors.clearAll();
+            
+            // validate
+            $(".input-code").trigger("validate");
+            $(".input-name").trigger("validate");
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+            
+            var code = self.code();
+            var name = self.name();
+            var unit = self.unitSelected();
+            var useAtr = self.useClsSelected();
+            var assistanceTabulationAtr = self.workScheduleSelected();
+            
+            var data = new VerticalSettingDto(code, name, unit, useAtr, assistanceTabulationAtr);
+            
+            service.addVerticalCalSet(data).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.getData();
+                self.singleSelectedCode(data.verticalCalCd);
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();      
+            });
         }
         
         settingBtn() {
@@ -275,6 +333,22 @@ module nts.uk.at.view.kml002.a.viewmodel {
             this.name = name;       
         }
     } 
+    
+    class VerticalSettingDto {
+        verticalCalCd: string;
+        verticalCalName: string;
+        unit: number;
+        useAtr: number;
+        assistanceTabulationAtr: number; 
+        
+        constructor(verticalCalCd: string, verticalCalName: string, unit: number, useAtr: number, assistanceTabulationAtr: number) {
+            this.verticalCalCd = verticalCalCd;
+            this.verticalCalName = verticalCalName;     
+            this.unit = unit;
+            this.useAtr = useAtr; 
+            this.assistanceTabulationAtr = assistanceTabulationAtr;  
+        }
+    }
     
     export class CalculatorItem {
         itemCd: KnockoutObservable<string>;
