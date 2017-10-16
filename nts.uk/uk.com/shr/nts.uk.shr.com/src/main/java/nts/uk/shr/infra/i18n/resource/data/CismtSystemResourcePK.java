@@ -2,23 +2,32 @@ package nts.uk.shr.infra.i18n.resource.data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Embeddable
-@Setter
-@Getter
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class CismtSystemResourcePK {
-	@Column(name = "CODE")
-	private String code;
-	@Column(name = "LANGUAGE_CODE")
-	private String languageCode;
+
 	/**
 	 * @see: SystemProperties ,if is used for all program it will be "SYSTEM"
 	 */
-	@NotNull
+	public static final String PROGRAM_ID_FOR_ALL = "SYSTEM";
+	
+	@Column(name = "CODE")
+	public String code;
+	
+	@Column(name = "LANGUAGE_CODE")
+	public String languageId;
+	
 	@Column(name = "PROGRAM_ID")
-	private String programId;
+	public String programId;
+	
+	public static CismtSystemResourcePK createForAllPrograms(String code, String languageId) {
+		return new CismtSystemResourcePK(code, languageId, PROGRAM_ID_FOR_ALL);
+	}
 }
