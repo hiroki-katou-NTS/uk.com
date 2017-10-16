@@ -170,9 +170,10 @@ module nts.uk.ui.koExtentions {
                 buttonWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
                     if(component.length === 0){
-                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");     
                     }
                     let srh: SearchPub= $container.data("searchObject");
+                    $input.val("");
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
