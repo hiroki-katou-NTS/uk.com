@@ -11,8 +11,10 @@ public class VerticalTimeSettingDto {
 	/** 会社ID **/
 	private String companyId;
 	
-	/****/
+	/** 固定項目区分 **/
 	private int fixedItemAtr;
+	
+	private int verticalTimeNo;
 	
 	/** 表示区分 **/
 	private int displayAtr;

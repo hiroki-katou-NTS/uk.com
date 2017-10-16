@@ -41,6 +41,7 @@ public class VerticalTimeSettingFinder {
 		VerticalTimeSettingDto verticalSettingDto = new VerticalTimeSettingDto();
 		verticalSettingDto.setCompanyId(verticalTime.getCompanyId());
 		verticalSettingDto.setFixedItemAtr(verticalTime.getFixedItemAtr().value);
+		verticalSettingDto.setVerticalTimeNo(verticalTime.getVerticalTimeNo());
 		verticalSettingDto.setDisplayAtr(verticalTime.getDisplayAtr().value);
 		verticalSettingDto.setStartClock(verticalTime.getStartClock().v());
 

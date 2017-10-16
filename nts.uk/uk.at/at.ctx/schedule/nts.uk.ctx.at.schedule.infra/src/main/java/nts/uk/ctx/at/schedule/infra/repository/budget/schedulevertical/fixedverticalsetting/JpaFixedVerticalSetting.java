@@ -81,8 +81,9 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	private VerticalTime convertToDomainTime(KscstVerticalTimeSet kVerticalTimeSet) {
 		VerticalTime verticalTime = VerticalTime.createFromJavaType(kVerticalTimeSet.kscstVerticalTimeSetPK.companyId,
 				kVerticalTimeSet.kscstVerticalTimeSetPK.fixedItemAtr,
+				kVerticalTimeSet.kscstVerticalTimeSetPK.verticalTimeNo,
 				kVerticalTimeSet.displayAtr,
-				kVerticalTimeSet.kscstVerticalTimeSetPK.startClock);
+				kVerticalTimeSet.startClock);
 		return verticalTime;
 	}
 
@@ -165,8 +166,9 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(
 				verticalTime.getCompanyId(),
 				verticalTime.getFixedItemAtr().value,
-				verticalTime.getStartClock().v());
+				verticalTime.getVerticalTimeNo());
 				kTimeSet.displayAtr = verticalTime.getDisplayAtr().value;
+				kTimeSet.startClock = verticalTime.getStartClock().v();
 				kTimeSet.kscstVerticalTimeSetPK = kVerticalSetPK;
 		return kTimeSet;
 	}
@@ -184,7 +186,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	@Override
 	public void updateVerticalTime(VerticalTime verticalTime) {
-		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(verticalTime.getCompanyId(), verticalTime.getFixedItemAtr().value,verticalTime.getStartClock().v());
+		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(verticalTime.getCompanyId(), verticalTime.getFixedItemAtr().value,verticalTime.getVerticalTimeNo());
 		KscstVerticalTimeSet kTimeSet = this.queryProxy().find(kVerticalSetPK, KscstVerticalTimeSet.class).get();
 		kTimeSet.displayAtr = verticalTime.getDisplayAtr().value;
 		this.commandProxy().update(kTimeSet);	

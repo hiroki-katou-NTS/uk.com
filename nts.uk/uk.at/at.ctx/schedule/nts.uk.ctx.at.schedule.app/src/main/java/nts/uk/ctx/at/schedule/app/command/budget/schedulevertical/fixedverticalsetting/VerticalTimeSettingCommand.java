@@ -17,11 +17,13 @@ public class VerticalTimeSettingCommand {
 	
 	/* 表示区分 */
 	public int displayAtr;
+
+	public int verticalTimeNo;
 	
 	/* 時刻 */
 	public int startClock;
 	
 	public VerticalTime toDomain(String companyId, int fixedItemAtr){
-		return VerticalTime.createFromJavaType(companyId, fixedItemAtr, this.displayAtr, this.startClock);
+		return VerticalTime.createFromJavaType(companyId, fixedItemAtr, verticalTimeNo, this.displayAtr, this.startClock);
 	}
 }
