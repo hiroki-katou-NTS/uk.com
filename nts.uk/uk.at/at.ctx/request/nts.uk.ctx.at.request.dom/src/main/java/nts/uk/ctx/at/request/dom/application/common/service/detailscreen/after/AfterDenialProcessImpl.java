@@ -124,9 +124,9 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 			}
 			
 		}
-		// 「反映情報」．実績反映状態を「否認」にする
-		application.changeReflectState(ReflectPlanPerState.DENIAL.value);
-		
+		//「反映情報」．実績反映状態を「否認」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「否認」)
+		application.setReflectPerState(ReflectPlanPerState.DENIAL);
+		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする(update domain 「申請」 và 「承認情報」「反映情報」 tương ứng)
 		appRepo.updateApplication(application);
 		//SEND mail
 		// lấy domain 申請種類別設定
