@@ -52,11 +52,11 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
 	@Override
-	public List<String> detailScreenAfterApprovalProcess(Application application) {
+	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
 		String companyID = AppContexts.user().companyId();
 		List<String> listMailReceived = new ArrayList<>();
 		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
-		application = reflectionInfoService.organizationOfApprovalInfo(application);
+		application = reflectionInfoService.organizationOfApprovalInfo(application, approverMemo);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
