@@ -4,18 +4,19 @@ module cps001.c.service {
 
     let paths: any = {
         'getListTemporaryEmpDelete': 'basic/organization/employee/getallemployeetodelete',
-        'getDetail': 'basic/organization/employee/getdetailemployeetodelete/{0}'
+        'getDetail': 'basic/organization/employee/getdetailemployeetodelete/{0}',
+        'restoreData': 'basic/organization/employee/restoredata'
     };
 
     export function getData() {
         return ajax(paths.getListTemporaryEmpDelete);
     }
-    
-     export function getDetail(code : any) {
-        return ajax(format(paths.getData,code));
+
+    export function getDetail(employeeId: any) {
+        return ajax(format(paths.getDetail, employeeId));
     }
 
-    export function saveData(command) {
-        return ajax(paths.saveData, command);
+    export function restoreData(command : any) {
+        return ajax(paths.restoreData, command);
     }
 }

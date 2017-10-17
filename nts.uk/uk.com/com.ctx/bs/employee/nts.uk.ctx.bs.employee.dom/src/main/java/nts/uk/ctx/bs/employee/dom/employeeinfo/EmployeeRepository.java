@@ -90,6 +90,8 @@ public interface EmployeeRepository {
 	
 	//laitv
 	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
+	
+	Optional<Object[]> getEmployeeDetailToDelete(String employeeId);
 
 	List<Object[]> getAllEmployeeInfoToDelete();
 	/**
