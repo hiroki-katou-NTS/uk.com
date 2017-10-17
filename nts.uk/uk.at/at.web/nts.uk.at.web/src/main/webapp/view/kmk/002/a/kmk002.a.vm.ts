@@ -636,9 +636,6 @@ module nts.uk.at.view.kmk002.a {
                         // sort list formula by orderNo
                         self.sortListFormula();
 
-                        // force to check enable/disable condition for nts grid.
-                        self.usageAtr.valueHasMutated(); //TODO?
-
                         dfd.resolve();
                     })
                     .always(() => nts.uk.ui.block.clear()); // clear block ui.
@@ -1102,7 +1099,6 @@ module nts.uk.at.view.kmk002.a {
 
             // flags
             selected: KnockoutObservable<boolean>;
-            isUsed = true;
             isCheckFromParent = false;
 
             // function

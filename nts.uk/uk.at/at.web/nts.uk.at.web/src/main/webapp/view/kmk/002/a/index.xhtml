@@ -256,7 +256,7 @@
                                     <td>
                                        <div data-bind="ntsCheckBox: {
                                           checked: selected,
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           text: '' }"></div>
                                     </td>
                                     <td data-bind="text: symbolValue"></td>
@@ -266,7 +266,7 @@
                                           optionsValue: 'value',
                                           value: formulaAtr,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -276,7 +276,7 @@
                                     ntsTextEditor: {
                                        name: '#[KMK002_40]',
                                        value: formulaName,
-                                       enable: true, 
+                                       enable: $parent.isUsed, 
                                        required: true}"/>
                                     </td>
                                     <td>
@@ -285,14 +285,16 @@
                                           optionsValue: 'value',
                                           optionsText: 'localizedName',
                                           value: calcAtr,
-                                          enable: true }"></div>
+                                          enable: $parent.isUsed }"></div>
                                     </td>
                                     <td>
                                        <com:ko tag="if" bind="!isFormulaSettingSelected()">
-                                          <button class="btn-calc-set" data-bind="click: openDialogC"></button>
+                                          <button class="btn-calc-set"
+                                          data-bind="click: openDialogC, enable: $parent.isUsed"></button>
                                        </com:ko>
                                        <com:ko tag="if" bind="isFormulaSettingSelected()">
-                                          <button class="btn-calc-set" data-bind="click: openDialogD"></button>
+                                          <button class="btn-calc-set"
+                                          data-bind="click: openDialogD, enable: $parent.isUsed"></button>
                                        </com:ko>
                                     </td>
                                     <td>
@@ -300,7 +302,7 @@
                                        ntsTextEditor: {
                                           value: settingResult,
                                           readonly: true,
-                                          enable: true, 
+                                          enable: $parent.isUsed, 
                                           required: true}"/>
                                     </td>
                                     <td>
@@ -310,7 +312,7 @@
                                           optionsValue: 'value',
                                           value: timeDailyUnit,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -322,7 +324,7 @@
                                           optionsValue: 'value',
                                           value: amountDailyUnit,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -334,7 +336,7 @@
                                           optionsValue: 'value',
                                           value: numberDailyUnit,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -348,7 +350,7 @@
                                           optionsValue: 'value',
                                           value: timeDailyRounding,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -360,7 +362,7 @@
                                           optionsValue: 'value',
                                           value: numberDailyRounding,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -372,7 +374,7 @@
                                           optionsValue: 'value',
                                           value: amountDailyRounding,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -386,7 +388,7 @@
                                           optionsValue: 'value',
                                           value: timeMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -398,7 +400,7 @@
                                           optionsValue: 'value',
                                           value: numberMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -410,7 +412,7 @@
                                           optionsValue: 'value',
                                           value: amountMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -424,7 +426,7 @@
                                           optionsValue: 'value',
                                           value: timeMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -436,7 +438,7 @@
                                           optionsValue: 'value',
                                           value: numberMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
@@ -448,7 +450,7 @@
                                           optionsValue: 'value',
                                           value: amountMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: isUsed,
+                                          enable: $parent.isUsed,
                                           columns: [
                                           { prop: 'localizedName', length: 10 },
                                           ]}">
