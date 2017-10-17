@@ -1,6 +1,16 @@
-module nts.uk.at.view.kaf000.shr.viewmodel{
+module nts.uk.at.view.kaf000.shr{
+    
     export module model {
-        
+        export class ApplicationMetadata {
+                appID: string;
+                appType: number;
+                appDate: Date;
+                constructor(appID: string, appType: number, appDate: Date) {
+                    this.appID = appID;
+                    this.appType = appType;
+                    this.appDate = appDate;
+                }
+            } 
         export class ApprovalRootOutput{
             workplaceId : KnockoutObservable<string>;
             approvalId : KnockoutObservable<string>;

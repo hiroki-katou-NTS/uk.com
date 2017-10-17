@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf000.a.viewmodel{
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import shrvm = nts.uk.at.view.kaf000.shr.viewmodel;
+    import shrvm = nts.uk.at.view.kaf000.shr;
     export class ScreenModel{
         /**
          * List
@@ -50,7 +50,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             
             self.appType(appType);
             
-            let dfd = $.Deferred();
+            let dfd = $.Deferred();            
             let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllApprovalRoot = self.getAllApprovalRoot();
             $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
@@ -113,8 +113,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let self = this;
             let dfd = $.Deferred<any>();
             let baseDate = new Date();
-            let data = new model.ApplicationMetadata("", self.appType(), baseDate);
-            nts.uk.at.view.kaf000.a.service.getMessageDeadline(appType).done(function(data){
+            let data = new shrvm.model.ApplicationMetadata("", self.appType(), baseDate);
+            nts.uk.at.view.kaf000.a.service.getMessageDeadline(data).done(function(data){
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);    
             }).fail(function (res: any){

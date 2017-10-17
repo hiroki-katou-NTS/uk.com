@@ -70,7 +70,7 @@ public class GetDataAppCfDetailFinder {
 		*/
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
 		if(!closureEmployment.isPresent()){
-			throw new RuntimeException("khong co closure employement");
+			throw new RuntimeException("締めがない。");
 		}
 		
 		//closureEmployment.get().getClosureId()

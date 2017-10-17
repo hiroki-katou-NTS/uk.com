@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf000.b.viewmodel {
     import vmbase =  nts.uk.at.view.kaf002.shr.vmbase;
-    import shrvm = nts.uk.at.view.kaf000.shr.viewmodel;
+    import shrvm = nts.uk.at.view.kaf000.shr;
     export abstract class ScreenModel {
 
         // Metadata
@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         
         approvalList: Array<vmbase.AppApprovalPhase> = [];
 
-        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+        constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
             self.appReasonEvent = ko.observable('');
@@ -149,7 +149,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
                 // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
-                let data = new model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
+                let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
                 self.getMessageDeadline(data);
                 
                 dfd.resolve();
@@ -353,11 +353,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': prevAppInfo });
         }
         
-        private getPrevAppInfo(): model.ApplicationMetadata {
+        private getPrevAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index > 0) {
-                return new model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
             }
             return null;
         }
@@ -371,11 +371,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': nextAppInfo });
         }
         
-        private getNextAppInfo(): model.ApplicationMetadata {
+        private getNextAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index < self.listAppMeta.length - 1) {
-                return new model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
             }
             return null;
         }
@@ -551,18 +551,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }//end class OutputGetAllDataApp
 
-        export class ApplicationMetadata {
-            appID: string;
-            appType: number;
-            appDate: Date;
-            constructor(appID: string, appType: number, appDate: Date) {
-                this.appID = appID;
-                this.appType = appType;
-                this.appDate = appDate;
-            }
-        }
-        
-        
 
         //class Application 
         export class ApplicationDto {

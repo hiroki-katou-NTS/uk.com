@@ -75,14 +75,10 @@ public class LateOrLeaveEarlyFinder {
 		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
 																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp()))
 																.collect(Collectors.toList());
-		Optional<LateOrLeaveEarly> lateOrLeaveEarly = Optional.empty();
 
-		LateOrLeaveEarly result = lateOrLeaveEarly.get();
-		LateOrLeaveEarlyDto lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(result);
-		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto,
-				listApplicationReasonDto,
-				employeeID, applicantName,
-				AppCommonSettingDto.convertToDto(appCommonSettingOutput),
+		return new ScreenLateOrLeaveEarlyDto(null, listApplicationReasonDto, 
+				employeeID, 
+				applicantName,AppCommonSettingDto.convertToDto(appCommonSettingOutput),
 				workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
 		
 	}
