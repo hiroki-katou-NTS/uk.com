@@ -20,7 +20,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         comboItems: any;
         comboColumns: any;
         isUpdate: boolean = false;
-        items = _(new Array(10)).map((x, i) => new GridItem(i + 1)).value();
         constructor() {
 
             let self = this;
@@ -29,19 +28,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start();
 
             self.initSettingId.subscribe(function(value: string) {
-                service.getAllCtg().done((data: Array<any>) => {
+                service.getAllCtg(value).done((data: any) => {
                     self.currentCategory().setData({
-                        settingCode: value,
-                        settingName: value,
-                        itemList: data
+                        settingCode: data.settingCode,
+                        settingName: data.settingName,
+                        ctgList: data.ctgList
                     });
-                    if (data.length > 0) {
-                        service.getAllItemByCtgId(data[0].perInfoCtgId).done((item: Array<any>) => {
-                            console.log(item);
-
-                        })
-                    }
-
                     self.currentCategory.valueHasMutated();
                 });
             });
@@ -97,7 +89,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 { prop: 'itemName', length: 8 }];
 
             self.currentCategory = ko.observable(new InitValueSettingDetail({
-                settingCode: '', settingName: '', itemList: []
+                settingCode: '', settingName: '', ctgList: [], itemList: []
             }));
 
             self.comboItems = [new ItemModel('1', '基本給'),
@@ -161,25 +153,59 @@ module nts.uk.com.view.cps009.a.viewmodel {
     export class InitValueSettingDetail {
         settingCode: KnockoutObservable<string>;
         settingName: KnockoutObservable<string>;
-        itemList: KnockoutObservableArray<any>;
+        ctgList: KnockoutObservableArray<any>;
         currentItemId: KnockoutObservable<string> = ko.observable('');
-        itemColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'perInfoCtgId', width: 100, hidden: true },
+        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: '', key: 'perInfoCtgId', width: 100, hidden: true },
             { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
             { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
         ]);
+        itemList: Array<any>;
         constructor(params: IInitValueSettingDetail) {
             this.settingCode = ko.observable(params.settingCode);
             this.settingName = ko.observable(params.settingName);
-            this.itemList = ko.observableArray(params.itemList);
+            this.ctgList = ko.observableArray(params.ctgList);
+            this.itemList = params.itemList || [];
+
+            this.currentItemId.subscribe(function(value: string) {
+                if (value) {
+                    service.getAllItemByCtgId(value).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
+                        if (item.length > 0) {
+                            let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
+                                if (obj.refMethodType === 2) {
+                                    if (obj.saveDataType === 1) {
+                                        obj.value = obj.stringValue;
+                                    }
+                                    else if (obj.saveDataType === 2) {
+                                        obj.value = obj.intValue;
+                                    }
+                                    else if (obj.saveDataType === 3) {
+                                        obj.value = obj.dateValue;
+                                    }
+                                } else {
+                                    obj.value = "";
+
+                                }
+                                return obj;
+
+                            })
+                            $("#grid2").igGrid("option", "dataSource", itemConvert);
+                        }
+                    })
+                }
+
+
+
+
+            });
         }
 
         setData(params: IInitValueSettingDetail) {
             this.settingCode(params.settingCode);
             this.settingName(params.settingName);
-            this.itemList(params.itemList);
-            if (this.itemList().length > 0) {
-                this.currentItemId(params.itemList[0].perInfoCtgId);
+            this.ctgList(params.ctgList);
+            if (this.ctgList().length > 0) {
+                this.currentItemId(params.ctgList[0].perInfoCtgId);
             } else {
                 this.currentItemId('');
             }
@@ -248,23 +274,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
     export interface IInitValueSettingDetail {
         settingCode: string;
         settingName: string;
+        ctgList?: Array<any>;
         itemList?: Array<any>;
-    }
-
-
-    class GridItem {
-        id: number;
-        flag: boolean;
-        ruleCode: string;
-        combo: string;
-        text1: string;
-        constructor(index: number) {
-            this.id = index;
-            this.flag = index % 2 == 0;
-            this.ruleCode = String(index % 3 + 1);
-            this.combo = String(index % 3 + 1);
-            this.text1 = "TEXT";
-        }
     }
 
     function makeIcon(value, row) {
@@ -280,6 +291,54 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    export interface IPerInfoInitValueSettingItemDto {
+        perInfoItemDefId: string;
+        settingId?: string;
+        perInfoCtgId: string;
+        itemName: string;
+        isRequired: number;
+        refMethodType: number;
+        saveDataType: number;
+        stringValue?: string;
+        intValue?: number;
+        dateValue?: Date;
+        value? any;
+    }
+
+    export class PerInfoInitValueSettingItemDto {
+        perInfoItemDefId: string;
+        settingId: string;
+        perInfoCtgId: string;
+        itemName: string;
+        isRequired: number;
+        refMethodType: number;
+        saveDataType: number;
+        stringValue: string;
+        intValue: number;
+        dateValue: Date;
+        value: any = "";
+        constructor(params: IPerInfoInitValueSettingItemDto) {
+            let self = this;
+            self.perInfoItemDefId = params.perInfoItemDefId || "";
+            self.settingId = params.settingId || "";
+            self.perInfoCtgId = params.perInfoCtgId || "";
+            self.itemName = params.itemName || "";
+            self.isRequired = params.isRequired || 0;
+            self.refMethodType = params.refMethodType || 0;
+            self.saveDataType = params.saveDataType || 0;
+            self.stringValue = params.stringValue || "";
+            self.intValue = params.intValue || 0;
+            self.dateValue = params.dateValue || new Date("9999-12-21");
+            if (params.refMethodType === 1) {
+                self.value = params.stringValue;
+            } else if (params.refMethodType === 2) {
+                self.value = params.intValue;
+            } else if (params.refMethodType === 3) {
+                self.value = params.dateValue;
+            }
         }
     }
 

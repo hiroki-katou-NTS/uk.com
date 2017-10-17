@@ -17,10 +17,10 @@ public interface PerInfoInitValSetCtgRepository {
 	 * getAllCategory isAbortlition: false employeeType = 2 categoryType # 2 vs
 	 * #5 category_parent_cd: not set
 	 * 
-	 * @param initValueSettingId
+	 * @param initValueSettingId, String settingId
 	 * @return
 	 */
-	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId);
+	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId);
 
 	/**
 	 * getDetailInitValSetCtg

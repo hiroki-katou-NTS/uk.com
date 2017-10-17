@@ -40,31 +40,39 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setItemName(entity[2] == null ? "" : entity[2].toString());
 		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class));
 		domain.setSettingId(entity[4] == null ? "" : entity[4].toString());
-		
+
 		String refMethod;
+		
 		if (entity[5].toString().equals("0")) {
-			
-			refMethod = "8";
+			// return No setting type
+			refMethod = "1";
 
 		} else {
+			
 			refMethod = entity[5].toString();
 
 		}
+		
 		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
 
 		String saveDataType;
+		
 		if (entity[6].toString().equals("0")) {
+			// return defaul value
 			saveDataType = "1";
 
 		} else {
+			
 			saveDataType = entity[6].toString();
 
 		}
 		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
+		
 		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "" : entity[8].toString())));
 
 		String dateValue;
+		
 		if (entity[6].toString().equals("0")) {
 			dateValue = "9999-12-21";
 
@@ -74,6 +82,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
+		
 		return domain;
 
 	}

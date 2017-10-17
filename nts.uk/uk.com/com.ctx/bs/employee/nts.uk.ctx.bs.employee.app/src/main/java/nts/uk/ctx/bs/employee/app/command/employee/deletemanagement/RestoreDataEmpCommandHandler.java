@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.employee;
+package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

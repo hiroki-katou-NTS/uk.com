@@ -64,14 +64,14 @@
 						targetKey: 'perInfoCtgId',
 						mode: 'igGrid', 
 						comId: 'item_grid',
-						items: currentCategory().itemList ,  
+						items: currentCategory().ctgList ,  
 						selectedKey: 'perInfoCtgId',
 						fields: ['categoryName']}" />
 								<table id="item_grid"
 									data-bind="ntsGridList: {	
-						dataSource: currentCategory().itemList ,
+						dataSource: currentCategory().ctgList ,
 						primaryKey: 'perInfoCtgId' ,
-						columns: currentCategory().itemColums ,
+						columns: currentCategory().ctgColums ,
 						multiple: false,
 						value: currentCategory().currentItemId ,
 						rows:10 }">
