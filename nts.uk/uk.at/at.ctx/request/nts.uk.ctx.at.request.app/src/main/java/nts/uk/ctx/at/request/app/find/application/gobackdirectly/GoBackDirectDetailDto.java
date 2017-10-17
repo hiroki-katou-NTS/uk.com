@@ -34,8 +34,6 @@ public class GoBackDirectDetailDto {
 	DetailedScreenPreBootModeDto detailedScreenPreBootModeDto;
 	
 	PrelaunchAppSettingDto prelaunchAppSettingDto;
-
-	ApplicationDto appDto;
 	
 	int OutMode;
 	
@@ -59,7 +57,6 @@ public class GoBackDirectDetailDto {
 				domain.getAppDate(), 
 				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
 				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
-				ApplicationDto.fromDomain(domain.getApplication()),
 				domain.getDetailScreenInitModeOutput().getOutputMode().value
 				);
 	}

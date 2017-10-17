@@ -74,43 +74,44 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		String companyID = AppContexts.user().companyId();
 		GoBackDirectAppSet data = new GoBackDirectAppSet();
 		Optional<Application> application = appRepo.getAppById(companyID, appID);
-		if(application.isPresent()) {
-			data.application = application.get();
-		}
+
 		//14-2.詳細画面起動前モードの判断
 		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(application.get(), application.get().getApplicationDate());
 		data.detailedScreenPreBootModeOutput = preBootOuput;
 		//14-1.詳細画面起動前申請共通設定を取得する
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);
 		data.prelaunchAppSetting = prelaunchAppSetting;
-		//アルゴリズム「直行直帰基本データ」を実行する
-		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
-		data.goBackDirectly = goBackDirect;
+		
 		if (application.isPresent()) {
 			data.prePostAtr = application.get().getPrePostAtr().value;
-			if (!application.get().getApplicationReason().v().equals(":")) {
+			if (application.get().getApplicationReason().v().equals(":")) {
 				data.appReasonId = application.get().getApplicationReason().v().split(":")[0];
 				data.appReason = application.get().getApplicationReason().v().split(":")[1];
 			}
 			data.appDate = application.get().getApplicationDate().toString("yyyy/MM/dd");
 		}
-		if (goBackDirect != null) {
+		//アルゴリズム「直行直帰基本データ」を実行する
+		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
+		data.goBackDirectly = goBackDirect;
+		if(!goBackDirect.getWorkLocationCD1().isEmpty()) {
 			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())
 					.getWorkLocationName();
+			
+		}
+		if(!goBackDirect.getWorkLocationCD2().isEmpty()) {
 			data.workLocationName2 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD2())
 					.getWorkLocationName();
-
-			if (!StringUtils.isEmpty(goBackDirect.getWorkTypeCD().v())) {
-				Optional<WorkType> workType = workTypeRepo.findByPK(companyID, goBackDirect.getWorkTypeCD().v());
-				if(workType.isPresent()) {
-					data.workTypeName = workType.get().getName().v();
-				}
+		}
+		if (!StringUtils.isEmpty(goBackDirect.getWorkTypeCD().v())) {
+			Optional<WorkType> workType = workTypeRepo.findByPK(companyID, goBackDirect.getWorkTypeCD().v());
+			if(workType.isPresent()) {
+				data.workTypeName = workType.get().getName().v();
 			}
-			if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
-				Optional<WorkTime> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
-				if(workTime.isPresent()) {
-					data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
-				}
+		}
+		if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
+			Optional<WorkTime> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
+			if(workTime.isPresent()) {
+				data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}
 		}
 		//アルゴリズム「直行直帰画面初期モード」を実行する
