@@ -141,15 +141,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred();
-            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
+            //let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
              let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
-
-//                self.checkDisplayStart();
-//                self.checkDisplayAction();
+                self.getMessageDeadline(self.dataApplication());
+                
                 dfd.resolve();
             });
             return dfd.promise();
@@ -359,8 +358,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getDetailCheck(inputGetDetail).done(function(data) {
-                //
                 self.outputDetailCheck(data);
+                self.checkDisplayStart();
+                self.checkDisplayAction();
                 dfd.resolve(data);
             }).fail(function(res: any) {
                 dfd.reject();

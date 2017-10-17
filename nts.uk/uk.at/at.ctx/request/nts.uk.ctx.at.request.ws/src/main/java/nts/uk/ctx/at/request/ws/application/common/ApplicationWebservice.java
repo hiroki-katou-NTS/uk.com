@@ -203,9 +203,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getmessagedeadline/{applicationID}")
-	public OutputMessageDeadline getDataConfigDetail(@PathParam("applicationID") int appType) {
-		return this.getDataAppCfDetailFinder.getDataConfigDetail(appType);
+	@Path("getmessagedeadline")
+	public OutputMessageDeadline getDataConfigDetail(ApplicationDto application) {
+		return this.getDataAppCfDetailFinder.getDataConfigDetail(application);
 	}
 	//new InputMessageDeadline("000000000000-0005",null,1,null)
 	
