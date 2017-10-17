@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.employee;
+package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

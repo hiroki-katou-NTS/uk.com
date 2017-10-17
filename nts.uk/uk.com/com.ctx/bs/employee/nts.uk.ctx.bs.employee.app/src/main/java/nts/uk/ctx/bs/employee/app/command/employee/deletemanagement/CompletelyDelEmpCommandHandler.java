@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.employee;
+package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,7 +27,6 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 		domain.setDeleted(1);
 		//update entity
 		deleteEmpRepo.update(domain);
-		
 	}
 
 }
