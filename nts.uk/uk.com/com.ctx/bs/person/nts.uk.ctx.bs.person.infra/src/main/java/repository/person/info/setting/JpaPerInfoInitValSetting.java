@@ -21,15 +21,11 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" + " ON ic.settingId = iv.initValueSettingPk.settingId"
 			+ " LEFT JOIN PpemtPerInfoCtg pc" + " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND pc.abolitionAtr=0"
-			+ " LEFT JOIN PpemtPersonInitValueSettingItem ii"
-			+ " ON ii.settingItemPk.perInfoCtgId= ic.settingCtgPk.perInfoCtgId "
-			+ " AND ii.settingItemPk.settingId = iv.initValueSettingPk.settingId"
-			+ " LEFT JOIN PpemtPerInfoItem pi ON"
-			+ " pi.ppemtPerInfoItemPK.perInfoItemDefId= ii.settingItemPk.perInfoItemDefId"
+			+ " LEFT JOIN PpemtPerInfoItem pi"
+			+ " ON pi.perInfoCtgId= ic.settingCtgPk.perInfoCtgId"
 			+ " AND pi.abolitionAtr = 0"
 			+ " WHERE iv.companyId = :companyId"
-			+ " AND ii.settingItemPk.perInfoItemDefId != NULL"
-			+ " ORDER BY iv.settingCode";
+			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId != NULL";
 
 	private final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";
