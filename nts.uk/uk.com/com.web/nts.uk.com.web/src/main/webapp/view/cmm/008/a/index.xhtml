@@ -36,26 +36,37 @@
 							<div id="emp-component" tabindex="-1"></div>
 						</td>
 						<td id="right-contents" data-bind="with: employmentModel">
-						
-							<div class="td-width" data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}"><label>#{i18n.getText('CMM008_6')}</label></div>
-							<div style="display: inline-block; padding-left: 10px">
-								<input id="empCode" data-bind="ntsTextEditor: {
+							<table>
+								<tr>
+									<td>
+										<div class="td-width" data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}"><label>#{i18n.getText('CMM008_6')}</label></div>
+									</td>
+									<td>
+										<div
+											style="display: inline-block; padding-left: 10px; padding-bottom: 10px">
+											<input id="empCode"
+												data-bind="ntsTextEditor: {
 														name: '#[CMM008_7]',
 														value: employmentCode, 
 														constraint: 'EmploymentCode', 
 														option: { width: '35px' },
 														required: true, 
 														enable: isEnableCode()}"
-									tabindex="7" /> 
-								<input id="empName" data-bind="ntsTextEditor: {
+												tabindex="7" /> <input id="empName"
+												data-bind="ntsTextEditor: {
 														name: '#[CMM008_8]',
 														value: employmentName, 
 														constraint: 'EmploymentName',
 														option: { width: '150px' },
 														required: true,
 														enable: true}"
-									tabindex="8" />
-							</div>
+												tabindex="8" />
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+							
 							<hr id="ruled-line"></hr>
 							<div>
 								<table>
