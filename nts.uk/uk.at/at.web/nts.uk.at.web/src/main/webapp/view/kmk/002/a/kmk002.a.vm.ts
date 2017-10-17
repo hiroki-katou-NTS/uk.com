@@ -1457,7 +1457,7 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Display the setting of formula setting
              */
-            public setItemSelectionResult(dto: any): void {
+            public setItemSelectionResult(dto: ItemSelectionDto): void {
                 let self = this;
                 // set formula setting
                 self.itemSelection = dto;
@@ -1555,74 +1555,6 @@ module nts.uk.at.view.kmk002.a {
                 self.amountDailyRounding(dto.dailyRounding.amountRounding);
                 self.amountDailyUnit(dto.dailyRounding.amountUnit);
 
-            }
-        }
-
-        /**
-         * ItemSelection
-         */
-        class ItemSelection {
-            minusSegment: KnockoutObservable<number>;
-            attendanceItems: Array<AttendanceItem>;
-
-            constructor() {
-                this.minusSegment = ko.observable(1);
-                this.attendanceItems = []; //TODO
-            }
-
-            /**
-             * convert dto to viewmodel
-             */
-            public fromDto(dto: ItemSelectionDto): void {
-                this.minusSegment(dto.minusSegment);
-                this.attendanceItems = []; //TODO
-            }
-
-            /**
-             * convert viewmodel to dto
-             */
-            public toDto(): ItemSelectionDto {
-                let self = this;
-                let dto: ItemSelectionDto = <ItemSelectionDto>{};
-
-                dto.minusSegment = this.minusSegment();
-                dto.attendanceItems = []; //TODO
-
-                return dto;
-            }
-        }
-
-        /**
-         * AttendanceItem
-         */
-        class AttendanceItem {
-            id: number;
-            operator: KnockoutObservable<number>;
-
-            constructor() {
-                this.id = 0;
-                this.operator = ko.observable(1);
-            }
-
-            /**
-             * Convert dto to view model
-             */
-            public fromDto(dto: AttendanceItemDto): void {
-                this.id = dto.attendanceItemId;
-                this.operator(dto.operator);
-            }
-
-            /**
-             * Convert viewmodel to dto
-             */
-            public toDto(): AttendanceItemDto {
-                let self = this;
-                let dto: AttendanceItemDto = <AttendanceItemDto>{};
-
-                dto.attendanceItemId = this.id;
-                dto.operator = this.operator();
-
-                return dto;
             }
         }
 
