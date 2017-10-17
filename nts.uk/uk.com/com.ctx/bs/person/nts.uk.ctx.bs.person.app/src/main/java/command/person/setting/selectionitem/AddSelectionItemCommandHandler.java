@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelec
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<AddSelectionItemCommand, String> {
@@ -61,11 +62,12 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 		boolean itemClassification = command.isSelectionItemClassification();
 		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
+		DatePeriod period = new DatePeriod(startDate, endDate);
 
 		// 画面項目「グループ会社で共有する：選択項目区分をチェックする」
 		if (itemClassification == true) {// TRUE → 0会社の場合
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
-					rootCID, endDate, startDate);
+					rootCID, period);
 
 			// 0会社の場合:「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);
@@ -74,7 +76,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 			for (String cid : companyIdList) {
 				newHistId = IdentifierUtil.randomUniqueId();
 				PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
-						cid, endDate, startDate);
+						cid, period);
 
 				// 全会社 の場合:「選択肢履歴」を登録する
 				this.historySelectionRepository.add(domainHist);
@@ -82,7 +84,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 
 			newHistId = IdentifierUtil.randomUniqueId();
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
-					rootCID, endDate, startDate);
+					rootCID, period);
 
 			// 0会社の場合: 「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);

@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthorityRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAutPk;
 
@@ -22,12 +22,12 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPer
  */
 @Stateless
 public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
-		implements DailyPerformanceAuthorityRepoInterface {
+		implements DailyPerformAuthorRepo {
 
 	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
 
 	@Override
-	public List<DailyPerformanceAuthority> getDailyPerformanceAuthorities(String roleId) {
+	public List<DailyPerformanceAuthority> get(String roleId) {
 		List<KrcmtDaiPerformanceAut> entities = this.queryProxy()
 				.query(GET_DAI_PER_AUTH_WITH_ROLE, KrcmtDaiPerformanceAut.class)
 				.setParameter("roleId", roleId).getList();
@@ -44,7 +44,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 	}
 
 	@Override
-	public void saveDailyPerformanceAuthority(DailyPerformanceAuthority daiPerAuthority) {
+	public void save(DailyPerformanceAuthority daiPerAuthority) {
 		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getRoleID(),
 				daiPerAuthority.getFunctionNo().v());
 		Optional<KrcmtDaiPerformanceAut> daiPerAthrOptional = this.queryProxy().find(primaryKey,

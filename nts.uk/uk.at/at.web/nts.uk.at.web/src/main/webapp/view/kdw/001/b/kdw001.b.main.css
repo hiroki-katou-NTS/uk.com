@@ -1,0 +1,27 @@
+#helpButton{
+	margin-left: 21px;
+}
+
+#checkBox1 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+
+#label1 {
+	margin-left: 19px;
+}
+
+.nts-wizard.vertical>.content {
+	height: 800px;
+	margin: 0 0 0 0;
+	background: none;
+}
+
+.nts-wizard.vertical>.steps {
+	width: 24%;
+	height: 800px;
+}
+
+#linkButton1 {
+	margin-left: 19px;
+}
