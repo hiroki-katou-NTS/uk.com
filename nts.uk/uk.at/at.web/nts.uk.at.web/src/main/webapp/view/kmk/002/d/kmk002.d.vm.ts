@@ -54,8 +54,6 @@ module nts.uk.at.view.kmk002.d {
             formulaName: string;
             formulaAtr: string;
             selectableFormulas: KnockoutObservableArray<FormulaDto>;
-            selectedItemLeft: KnockoutObservable<string>;
-            selectedItemRight: KnockoutObservable<string>;
 
             minusSegment: KnockoutObservable<number>;
             operator: KnockoutObservable<number>;
@@ -109,8 +107,6 @@ module nts.uk.at.view.kmk002.d {
 
                 // default value
                 this.formulaName = '';
-                this.selectedItemLeft = ko.observable('');
-                this.selectedItemRight = ko.observable('');
                 this.formulaAtr = '';
 
             }
@@ -169,8 +165,8 @@ module nts.uk.at.view.kmk002.d {
              */
             private isDifferentAtr(): boolean {
                 let self = this;
-                let leftItem: FormulaDto = self.findFormulaById(self.selectedItemLeft());
-                let rightItem: FormulaDto = self.findFormulaById(self.selectedItemRight());
+                let leftItem: FormulaDto = self.findFormulaById(self.leftItem.formulaItemId());
+                let rightItem: FormulaDto = self.findFormulaById(self.rightItem.formulaItemId());
 
                 if (leftItem.formulaAtr != rightItem.formulaAtr) {
                     return true;
