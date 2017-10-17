@@ -24,8 +24,8 @@ public class ProcessCancelImpl implements ProcessCancel {
 	public void detailScreenCancelProcess(String companyID, String appID) {
 		//get application by appID
 		Application app = appRepo.getAppById(companyID, appID).get();
-		//change ReflectPlanPerState = canceled
-		app.setReflectPerState(ReflectPlanPerState.CANCELED);
+		//change ReflectPlanPerState = WAITCANCEL
+		app.setReflectPerState(ReflectPlanPerState.WAITCANCEL);
 		//update application
 		appRepo.updateApplication(app);
 	}

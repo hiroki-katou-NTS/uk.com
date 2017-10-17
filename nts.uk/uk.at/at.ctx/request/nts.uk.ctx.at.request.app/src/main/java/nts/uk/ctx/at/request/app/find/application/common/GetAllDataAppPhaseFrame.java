@@ -83,6 +83,20 @@ public class GetAllDataAppPhaseFrame {
 						String reasonAll = "";
 						//duyet list approveaccepted to frame
 						for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAccepted() ) {
+							switch(approveAcceptedDto.getApprovalATR()) {
+								case 0:
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.UNAPPROVED.nameId);break;
+								case 1:
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.APPROVED.nameId);break;
+								case 2 : 
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.DENIAL.nameId);break;
+								default :
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.UNAPPROVED.nameId);break;
+							}
+							if(approveAcceptedDto.getApprovalATR() == ApprovalAtr.UNAPPROVED.value) {
+								approveAcceptedDto.setNameApprovalATR(ApprovalAtr.UNAPPROVED.nameId);
+							}
+								
 							String str ="";
 							String str1 ="";
 							String str2 ="";
@@ -97,7 +111,7 @@ public class GetAllDataAppPhaseFrame {
 							if( approveAcceptedDto.getReason().isEmpty() == false  && reasonAll != "" ) {
 								str2 = ",";
 							}
-							approveAll += str1 + EnumAdaptor.valueOf(approveAcceptedDto.getApprovalATR(), ApprovalAtr.class);
+							approveAll += str1 + approveAcceptedDto.getNameApprovalATR();
 							reasonAll += str2 + approveAcceptedDto.getReason() ;
 							nameAll += str + name;
 							

@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf009.a.service {
         getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
         insertGoBackDirectly: "/at/request/application/gobackdirectly/insertGoBackDirectly",
+        checkInsertGoBackDirectly: "/at/request/application/gobackdirectly/checkBeforeChangeGoBackDirectly",
         updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
     /**
@@ -35,6 +36,13 @@ module nts.uk.at.view.kaf009.a.service {
      */
     export function insertGoBackDirect(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
         return ajax("at", paths.insertGoBackDirectly, currentGoBack);
+    }
+    
+    /**
+     * 
+     */
+    export function checkInsertGoBackDirect(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
+        return ajax("at", paths.checkInsertGoBackDirectly, currentGoBack);
     }
     /**
      * 

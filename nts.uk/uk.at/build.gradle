@@ -54,6 +54,11 @@ subprojects {
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
@@ -108,7 +113,7 @@ subprojects {
         compile group: 'nts.gul', name: 'nts.gul', version: '0.37'
         compile group: 'nts.arc', name: 'nts.arc', version: '0.47.2'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.6'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.7'
 	}
 }
 
@@ -302,7 +307,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.10.1')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.10.2')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.8.5')
 	}
 }
@@ -420,7 +425,7 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.6'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.7'
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
@@ -480,12 +485,12 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.file:nts.uk.file.at.app')
 		runtime project (':at.file:nts.uk.file.at.infra')
 		
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.10.1')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.10.1')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.10.1')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.10')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.10.2')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.10.2')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.10.1')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.10.1')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.10.2')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.10.1')
 		
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.8.2')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.3')

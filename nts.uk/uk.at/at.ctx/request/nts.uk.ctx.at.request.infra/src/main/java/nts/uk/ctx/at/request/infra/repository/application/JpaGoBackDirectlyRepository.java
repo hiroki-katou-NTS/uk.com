@@ -85,24 +85,28 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	@Override
 	public void update(GoBackDirectly goBackDirectly) {
 		//get current Entity
-		KrqdtGoBackDirectly currentEntity = this.queryProxy()
-				.find(new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()), KrqdtGoBackDirectly.class)
-				.get(); 
-		currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
-		currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
-		currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().v());
-		currentEntity.setWorkTimeEnd1(goBackDirectly.getWorkTimeEnd1().v());
-		currentEntity.setGoWorkAtr2(goBackDirectly.getGoWorkAtr2().value);
-		currentEntity.setBackHomeAtr2(goBackDirectly.getBackHomeAtr2().value);
-		currentEntity.setWorkChangeAtr(goBackDirectly.getWorkChangeAtr().value);
-		currentEntity.setWorkTimeStart2(goBackDirectly.getWorkTimeStart2().v());
-		currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().v());
-		
-		if(goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
-			currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
-			currentEntity.setSiftCD(goBackDirectly.getSiftCD().v());
+		Optional<KrqdtGoBackDirectly> goBack = this.queryProxy().find(new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()), KrqdtGoBackDirectly.class);
+		if(goBack.isPresent()) {
+			KrqdtGoBackDirectly currentEntity = goBack.get();
+			//currentEntity.setVersion(goBackDirectly.getVersion());
+			currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
+			currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
+			currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().v());
+			currentEntity.setWorkTimeEnd1(goBackDirectly.getWorkTimeEnd1().v());
+			currentEntity.setGoWorkAtr2(goBackDirectly.getGoWorkAtr2().value);
+			currentEntity.setBackHomeAtr2(goBackDirectly.getBackHomeAtr2().value);
+			currentEntity.setWorkChangeAtr(goBackDirectly.getWorkChangeAtr().value);
+			currentEntity.setWorkTimeStart2(goBackDirectly.getWorkTimeStart2().v());
+			currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().v());
+			
+			if(goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
+				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
+				currentEntity.setSiftCD(goBackDirectly.getSiftCD().v());
+			}
+			this.commandProxy().update(toEntity(goBackDirectly));
+			
 		}
-		this.commandProxy().update(toEntity(goBackDirectly));
+		
 	}
 	/**
 	 * 

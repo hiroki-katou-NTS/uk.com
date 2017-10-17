@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,9 +30,6 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 	
-	@Inject 
-	private NewAfterRegister newAfterRegister;
-
 	@Override
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -41,18 +39,18 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyId, 
 						"", 
-						"", 
+						UUID.randomUUID().toString(), 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
 						//Frame
 						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyId, 
-								"", 
+								UUID.randomUUID().toString(), 
 								approvalFrame.dispOrder, 
 								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyId, 
-										"", 
+										UUID.randomUUID().toString(), 
 										approveAccepted.approverSID,
 										ApprovalAtr.UNAPPROVED.value,
 										approveAccepted.confirmATR,
@@ -103,9 +101,9 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.goBackCommand.workTimeStart2,
 				command.goBackCommand.workTimeEnd2, 
 				command.goBackCommand.workLocationCD2);
+		//勤務を変更する
+		
 		//登録ボタンをクリックする
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
-		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		//newAfterRegister.processAfterRegister(newApp);
 	}
 }

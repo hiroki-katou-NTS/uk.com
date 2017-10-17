@@ -12,10 +12,12 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
@@ -42,16 +44,47 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 	@Inject
 	AppApprovalPhaseRepository appApprovalPhaseRepository;
+	@Inject 
+	NewAfterRegister newAfterRegister;
 
 	/**
 	 * 
 	 */
 	@Override
 	public void register(GoBackDirectly goBackDirectly, Application application,List<AppApprovalPhase> appApprovalPhases) {
-		String companyID = AppContexts.user().companyId();
 		String employeeID = application.getEnteredPersonSID();
-		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
+		//アルゴリズム「直行直帰登録」を実行する
+		//2-2.新規画面登録時承認反映情報の整理 
+		Application newApp = registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		goBackDirectRepo.insert(goBackDirectly);
+		approvalRegistration(appApprovalPhases,newApp.getApplicationID());
+		appRepo.addApplication(newApp);
+		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
+		newAfterRegister.processAfterRegister(newApp);
 		
+	}
+	
+	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
+		appApprovalPhases.forEach(appApprovalPhase -> {
+			appApprovalPhase.setAppID(appID);
+			String phaseID = appApprovalPhase.getPhaseID();
+			appApprovalPhase.setPhaseID(phaseID);
+			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
+				String frameID = approvalFrame.getFrameID();
+				approvalFrame.setFrameID(frameID);
+				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
+					String appAcceptedID = appAccepted.getAppAcceptedID();
+					appAccepted.setAppAcceptedID(appAcceptedID);
+				});
+			});
+		});
+	}
+	
+	@Override
+	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application application,
+			List<AppApprovalPhase> appApprovalPhases) {
+		String companyID = AppContexts.user().companyId();
+		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		//TODO : TAM THOI BO QUA 
 //		processBeforeRegister.processBeforeRegister(
@@ -62,6 +95,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //				1, 
 //				application.getApplicationType().value);
 		
+		 if(true) throw new BusinessException("Msg_297");	
 		// アルゴリズム「直行直帰するチェック」を実行する
 		if (this.goBackDirectCheck(goBackDirectly) == GoBackDirectAtr.IS) {
 			// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
@@ -74,36 +108,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				}else {
 					throw new BusinessException("Msg_298");	
 				}
-			}else {
-				//アルゴリズム「直行直帰登録」を実行する
-				//2-2.新規画面登録時承認反映情報の整理 
-				registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 			}
-		} else {
-			// メッセージ（Msg_338）を表示する
-			throw new BusinessException("Msg_338");
 		}
-		//insert application, goBackDirect, approval phase
-		goBackDirectRepo.insert(goBackDirectly);
-		appRepo.addApplication(application);
-		this.approvalRegistration(appApprovalPhases, application.getApplicationID());
-	}
-	
-	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
-		appApprovalPhases.forEach(appApprovalPhase -> {
-			appApprovalPhase.setAppID(appID);
-			String phaseID = UUID.randomUUID().toString();
-			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
-				String frameID = UUID.randomUUID().toString();
-				approvalFrame.setFrameID(frameID);
-				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					String appAcceptedID = UUID.randomUUID().toString();
-					appAccepted.setAppAcceptedID(appAcceptedID);
-				});
-			});
-			appApprovalPhaseRepository.create(appApprovalPhase);
-		});
 	}
 	
 	/**
@@ -125,10 +131,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 */
 	@Override
 	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly goBackDirectly) {
-		// ドメインモデル「直行直帰申請共通設定」を取得する
+		
 		String companyID = AppContexts.user().companyId();
+		// ドメインモデル「直行直帰申請共通設定」を取得する
 		GoBackDirectLateEarlyOuput output = new GoBackDirectLateEarlyOuput();
 		output.isError = false;
+		//ドメインモデル「直行直帰申請共通設定」を取得する 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// 設定：直行直帰申請共通設定.早退遅刻設定
 		if (goBackCommonSet.getLateLeaveEarlySettingAtr() != CheckAtr.NOTCHECK) {
@@ -141,13 +149,16 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			if (validOut1.isCheckValid || validOut2.isCheckValid) {
 				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 				//Mac Dinh tra ve 0
-				int attendanceTime = 0;
-				if (attendanceTime < 0) {
+				int earlyTime = 0;
+				//日別実績の勤怠時間.実働時間.総労働時間.早退時間.時間
+				// So sách tới 日別実績 để biết đi sớm về muộn, nếu  
+				if (earlyTime < 0) {
 					output.isError = true;
 					throw new BusinessException("Msg_296");
 				} else {
+					int lateTime = 0;
 					// Merge Node 1
-					if (attendanceTime < 0) {
+					if (lateTime < 0) {
 						output.isError = true;
 						throw new BusinessException("Msg_295");
 					}
@@ -165,18 +176,18 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Override
 	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,
 			GoBackDirectlyCommonSetting goBackCommonSet, int line) {
-
 		CheckValidOutput result = new CheckValidOutput();
 		result.isCheckValid = false;
 		// 変更する
-		if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.CHANGE
-				&& goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDECHANGE) {
+		// if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.CHANGE
+		// || goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDECHANGE) {
+		if (goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
 			// 勤務種類及び銃所時間帯はチェック対象
 			result.setSiftCd(goBackDirectly.getSiftCD());
 			result.setWorkTypeCD(goBackDirectly.getWorkTypeCD());
-
-		} else if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.NOTCHANGE
-				&& goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDENOTCHANGE) {
+			// } else if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.NOTCHANGE
+			// || goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDENOTCHANGE) {
+		} else {
 			// ・出張申請.勤務種類 ＝空白
 			// ・出張申請.就業時間帯 ＝空白
 			// 勤務種類及び銃所時間帯はチェック対象外
@@ -216,5 +227,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 		return result;
 	}
+
+	
 
 }

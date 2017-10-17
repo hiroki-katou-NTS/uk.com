@@ -91,7 +91,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 		// [逕ｻ髱｢B縺ｮ縺ｿ]驕�蛻ｻ縲∵掠騾�縲�驕�蛻ｻ2縲∵掠騾�2縺ｮ繝√ぉ繝�繧ｯ縺後≠繧矩≦蛻ｻ譎ょ綾縲∵掠騾�譎ょ綾縺ｯ蜈･蜉帛ｿ�鬆�(#Msg_470#)
 		int checkInputTime = lateTime1 + lateTime2 + earlyTime1 + earlyTime2;
-		if (checkInputTime <= 0 && prePost == 0) {
+		if (checkInputTime <= 0 && prePost == 0 ) {
 			throw new BusinessException("Msg_470");
 		}
 		// Add LateOrLeaveEarly

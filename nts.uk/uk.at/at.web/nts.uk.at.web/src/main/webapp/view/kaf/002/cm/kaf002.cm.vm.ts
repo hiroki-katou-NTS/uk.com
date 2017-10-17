@@ -37,6 +37,32 @@ module nts.uk.at.view.kaf002.cm {
             }
             start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
+                self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
+                self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
+                self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);
+                self.inputReasons.removeAll();
+                let inputReasonParams = [];
+                _.forEach(commonSet.appStampSetDto.applicationReasonDtos, o => {
+                    inputReasonParams.push(new vmbase.InputReason(o.reasonID, o.reasonTemp));           
+                });
+                self.inputReasons(inputReasonParams);
+                self.topComment().text(commonSet.appStampSetDto.stampRequestSettingDto.topComment);
+                self.topComment().color(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontColor);
+                self.topComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontWeight);
+                self.botComment().text(commonSet.appStampSetDto.stampRequestSettingDto.bottomComment);
+                self.botComment().color(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontColor);
+                self.botComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontWeight);
+                service.findAllWorkLocation().done((listWorkLocation: Array<vmbase.IWorkLocation>)=>{
+                    $('.cm-memo').focus();
+                    switch(self.stampRequestMode()){
+                        case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;    
+                        case 1: self.m2.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;  
+                        case 2: self.m3.start(appStampData.appStampCancelCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
+                        case 3: self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
+                        case 4: self.m5.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
+                        default: break;
+                    }     
+                });
                 if(self.screenMode()==0){
                     if(!nts.uk.util.isNullOrUndefined(appStampData)) {
                         self.application(new vmbase.Application(
@@ -52,36 +78,12 @@ module nts.uk.at.view.kaf002.cm {
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
                     self.employeeName(appStampData.employeeName);
+                    self.currentReason(self.application().titleReason());
                 } else {
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
+                    self.currentReason(_.first(self.inputReasons()).id);
                 }
-                self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
-                self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
-                self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);
-                self.inputReasons.removeAll();
-                let inputReasonParams = [];
-                _.forEach(commonSet.appStampSetDto.applicationReasonDtos, o => {
-                    inputReasonParams.push(new vmbase.InputReason(o.reasonID, o.reasonTemp));           
-                });
-                self.inputReasons(inputReasonParams);
-                self.currentReason(_.first(self.inputReasons()).id);
-                self.topComment().text(commonSet.appStampSetDto.stampRequestSettingDto.topComment);
-                self.topComment().color(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontColor);
-                self.topComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontWeight);
-                self.botComment().text(commonSet.appStampSetDto.stampRequestSettingDto.bottomComment);
-                self.botComment().color(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontColor);
-                self.botComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontWeight);
-                service.findAllWorkLocation().done((listWorkLocation: Array<vmbase.IWorkLocation>)=>{
-                    switch(self.stampRequestMode()){
-                        case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;    
-                        case 1: self.m2.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;  
-                        case 2: self.m3.start(appStampData.appStampCancelCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
-                        case 3: self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
-                        case 4: self.m5.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
-                        default: break;
-                    }     
-                });
                 _.forEach(approvalList, appPhase => {
                     _.forEach(appPhase.approverDtos, appFrame => {
                         _.forEach(appFrame.approveAcceptedCmds, appAccepted => {
@@ -90,7 +92,6 @@ module nts.uk.at.view.kaf002.cm {
                     }); 
                 });
                 self.approvalList = approvalList;
-                $('.cm-memo').focus();
             }
             
             register(){
@@ -108,17 +109,19 @@ module nts.uk.at.view.kaf002.cm {
                 }    
             }
             
-            update(){
+            update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                let inputReason = self.inputReasonsDisp() == 0 ? '' : _.find(self.inputReasons(), o => o.id = self.currentReason()).id;
-                let detailReason =  self.detailReasonDisp() == 0 ? '' : 
-                self.application().titleReason();
+                if(self.inputReasonsDisp()==1) {
+                    self.application().titleReason(self.currentReason());
+                } else {
+                    self.application().titleReason('');    
+                }
                 switch(self.stampRequestMode()){
-                    case 0: self.m1.update(self.application(), self.approvalList);break;    
-                    case 1: self.m2.update(self.application());break;  
-                    case 2: self.m3.update(self.application());break; 
-                    case 3: self.m4.update(self.application());break; 
-                    case 4: self.m5.update(self.application());break;  
+                    case 0: self.m1.update(self.application(), approvalList);break;    
+                    case 1: self.m2.update(self.application(), approvalList);break;  
+                    case 2: self.m3.update(self.application(), approvalList);break; 
+                    case 3: self.m4.update(self.application(), approvalList);break; 
+                    case 4: self.m5.update(self.application(), approvalList);break;  
                     default: break;
                 }    
             }

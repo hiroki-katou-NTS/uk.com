@@ -14,7 +14,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -48,7 +48,7 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private PersonAdapter adapterPerson;
 	@Inject
-	private WorkplaceAdapter adapterWp;
+	private WorkplaceApproverAdapter adapterWp;
 	@Inject
 	private SyJobTitleAdapter adapterJobtitle;
 	private final int COMPANY = 0;
