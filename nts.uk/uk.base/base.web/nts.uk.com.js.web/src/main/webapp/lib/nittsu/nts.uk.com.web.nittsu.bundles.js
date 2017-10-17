@@ -8684,7 +8684,8 @@ var nts;
                                 }
                                 else {
                                     if (ko.isObservable(data.value)) {
-                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
+                                        data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
+                                        data.value.valueHasMutated();
                                     }
                                 }
                             }
@@ -21701,4 +21702,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
