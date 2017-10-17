@@ -32,9 +32,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class LateOrLeaveEarlyFinder {
 	
 	@Inject
-	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
-	
-	@Inject
 	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject 
@@ -56,7 +53,7 @@ public class LateOrLeaveEarlyFinder {
 	@Inject
 	private WorkManagementMultipleRepository workManagementMultipleRepository ;
 
-	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
+	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly() {
 		String companyID = AppContexts.user().companyId();
 		String employeeID =  AppContexts.user().employeeId();
 		String applicantName = employeeAdapter.getEmployeeName(employeeID);
@@ -79,24 +76,14 @@ public class LateOrLeaveEarlyFinder {
 																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp()))
 																.collect(Collectors.toList());
 		Optional<LateOrLeaveEarly> lateOrLeaveEarly = Optional.empty();
-		if (!StringUtil.isNullOrEmpty(appID, true)) {
-			lateOrLeaveEarly = this.lateOrLeaveEarlyRepository.findByCode(companyID, appID);
-		}
+
+		LateOrLeaveEarly result = lateOrLeaveEarly.get();
+		LateOrLeaveEarlyDto lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(result);
+		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto,
+				listApplicationReasonDto,
+				employeeID, applicantName,
+				AppCommonSettingDto.convertToDto(appCommonSettingOutput),
+				workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
 		
-		if (!lateOrLeaveEarly.isPresent()) {
-			return new ScreenLateOrLeaveEarlyDto(null, listApplicationReasonDto, 
-					employeeID, 
-					applicantName,AppCommonSettingDto.convertToDto(appCommonSettingOutput),
-					workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
-		}
-		else {
-			LateOrLeaveEarly result = lateOrLeaveEarly.get();
-			LateOrLeaveEarlyDto lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(result);
-			return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto,
-					listApplicationReasonDto,
-					employeeID, applicantName,
-					AppCommonSettingDto.convertToDto(appCommonSettingOutput),
-					workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
-		}
 	}
 }

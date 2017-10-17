@@ -8,7 +8,7 @@ module nts.uk.at.view.kaf004.b.service {
 
     /** Get TitleMenu */
     export function getByCode(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getByCode, "");
+        return nts.uk.request.ajax("at", paths.getByCode);
     }
       export function createLateOrLeaveEarly(lateOrLeaveEarly: any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.createLateOrLeaveEarly,lateOrLeaveEarly);
