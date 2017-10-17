@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw001.f.main.css" />
+			<com:scriptfile path="kdw001.f.start.js" />
+			<com:scriptfile path="kdw001.f.vm.js" />
+			<com:scriptfile path="kdw001.f.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area ">
+				<!-- F1_1 -->
+				<a id="linkButton" class="goback" data-bind="ntsLinkButton: {}">#{i18n.getText('KDW001_5')}</a> 
+					
+			</div>
+			
+			<div id="contents-area">
+				<!-- F1_3 -->
+				<div style="margin-left: 40px;" class="panel">#{i18n.getText('KDW001_40')}</div>
+				<div id="pannel-top" data-bind="ntsPanel:{width: '915px', height: '60px', direction: '', showIcon: true, visible: true}">
+					<!-- F2_1 -->
+					<div>
+						<!-- F2_2 -->
+						<div style=" float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_41')}</div>
+						<!-- F2_5 F2_6 -->
+						<div style="margin-top: 4px; float: left;" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+									required: required, 
+									enable: enable, 
+									showNextPrevious: false, 
+									value: dateValue, 
+									maxRange: 'oneMonth'}"/>
+						<!-- F2_7 -->
+						<button id="button-search" class="large">#{i18n.getText('KDW001_43')}</button>
+					</div>
+					<!-- F2_3 -->
+					<div  class="panel">#{i18n.getText('KDW001_42')}</div>
+				</div>
+				<!-- F3_1 -->
+				<div style="margin-top: 7px;margin-left: 50px;">
+					<table>
+						<thead>
+							<tr class="bg-green">
+								<!-- F3_2 3 4 5 6 7 8 -->
+								<th class="text" style="width: 100px;">#{i18n.getText('KDW001_73')}</th>
+								<th class="text" style="width: 130px;">#{i18n.getText('KDW001_74')}</th>
+								<th class="text" style="width: 120px;">#{i18n.getText('KDW001_75')}</th>
+								<th class="text" style="width: 160px;">#{i18n.getText('KDW001_76')}</th>
+								<th class="text" style="width: 230px;">#{i18n.getText('KDW001_77')}</th>
+								<th class="text" style="width: 110px;">#{i18n.getText('KDW001_78')}</th>
+								<th class="text" style="width: 100px;">#{i18n.getText('KDW001_79')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<com:ko-foreach bind="itemList">
+								<tr>
+									<td><span data-bind="text: $data.column1"></span></td>
+									<td><span data-bind="text: $data.column2"></span></td>
+									<td><span data-bind="text: $data.column3"></span></td>
+									<td><span data-bind="text: $data.column4"></span></td>
+									<td><span data-bind="text: $data.column5"></span></td>
+									<td><span data-bind="text: $data.column6"></span></td>
+									<td style="text-align: center;"><button class="button-reference">参照</button></td>
+								</tr>
+							</com:ko-foreach>
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+
+
+	</ui:composition>
+</body>
+</html>
