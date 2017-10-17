@@ -406,4 +406,6 @@ public class ProgramIdConsts {
 	
 	public static final String CDL004 = "CDL004";
 
+	public static final String KDW003B = "KDW003B";
+	
 }
