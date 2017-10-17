@@ -48,7 +48,7 @@ public class GetDataAppCfDetailFinder {
 	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
 	
 
-	public OutputMessageDeadline getDataConfigDetail(ApplicationDto   applicationDto) {
+	public OutputMessageDeadline getDataConfigDetail(ApplicationDto applicationDto) {
 		String message = "";
 		String deadline = "";
 		GeneralDate date1 = GeneralDate.today();
