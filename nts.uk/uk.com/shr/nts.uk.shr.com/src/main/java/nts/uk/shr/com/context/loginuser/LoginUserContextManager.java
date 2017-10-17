@@ -46,9 +46,12 @@ public interface LoginUserContextManager {
 	
 	public static interface RoleIdSetter {
 
-		RoleIdSetter forAttendance(String forPersonInCharge, String forGeneral);
-		RoleIdSetter forPayroll(String forPersonInCharge, String forGeneral);
-		RoleIdSetter forPersonnel(String forPersonInCharge, String forGeneral);
-		RoleIdSetter forPersonalInfo(String forPersonInCharge, String forGeneral);
+		RoleIdSetter forAttendance(String roleId);
+		RoleIdSetter forPayroll(String roleId);
+		RoleIdSetter forPersonnel(String roleId);
+		RoleIdSetter forPersonalInfo(String roleId);
+		RoleIdSetter forOfficeHelper(String roleId);
+		RoleIdSetter forSystemAdmin(String roleId);
+		RoleIdSetter forCompanyAdmin(String roleId);
 	}
 }
