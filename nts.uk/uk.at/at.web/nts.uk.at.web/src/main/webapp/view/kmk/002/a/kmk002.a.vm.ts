@@ -203,6 +203,7 @@ module nts.uk.at.view.kmk002.a {
                 this.calcFormulas.subscribe(vl => {
                     if (nts.uk.util.isNullOrEmpty(vl)) {
                         this.checkedAllFormula(false);
+                        this.applyFormula('');
                     }
 
                     // set apply formula
@@ -1284,13 +1285,13 @@ module nts.uk.at.view.kmk002.a {
                     settingMethod: 0,
                     dispOrder: 1,
                     inputValue: 0,
-                    formulaItemId: self.formulaId
+                    formulaItemId: ''
                 }
                 data.rightItem = {
                     settingMethod: 0,
                     dispOrder: 2,
                     inputValue: 0,
-                    formulaItemId: self.formulaId
+                    formulaItemId: ''
                 }
                 return data;
             }
