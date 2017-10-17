@@ -93,7 +93,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		GoBackDirectly updateGoBack = new GoBackDirectly(companyId, 
 				command.goBackCommand.getAppID(),
 				command.goBackCommand.getWorkTypeCD(),
-				command.goBackCommand.getSiftCd(), 
+				command.goBackCommand.getSiftCD(), 
 				command.goBackCommand.getWorkChangeAtr(), 
 				command.goBackCommand.getGoWorkAtr1(), 
 				command.goBackCommand.getBackHomeAtr1(),

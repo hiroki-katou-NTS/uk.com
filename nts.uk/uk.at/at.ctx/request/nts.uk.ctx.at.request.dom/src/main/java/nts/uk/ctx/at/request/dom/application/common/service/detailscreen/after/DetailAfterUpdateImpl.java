@@ -132,12 +132,12 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」を取得する ???
 			System.out.println("Send mail to: "+destinationList);
-			try {
+			/*try {
 				mailSender.send("NSVC", "", new MailContents("nts","approvalChange"));
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 

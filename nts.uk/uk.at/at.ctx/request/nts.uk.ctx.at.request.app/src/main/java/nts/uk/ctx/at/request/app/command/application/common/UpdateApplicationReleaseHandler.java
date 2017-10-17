@@ -30,6 +30,8 @@ public class UpdateApplicationReleaseHandler extends CommandHandler<InputCommonD
 	
 	@Inject
 	private CheckApprover checkApprover;
+	
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<InputCommonData> context) {

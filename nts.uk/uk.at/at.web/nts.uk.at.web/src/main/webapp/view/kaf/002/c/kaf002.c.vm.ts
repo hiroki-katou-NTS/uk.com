@@ -29,14 +29,13 @@ module nts.uk.at.view.kaf002.c {
                     dfd.resolve(); 
                 })
                 .fail(function(res) { 
-                    dfd.reject(res); 
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); T
+                        nts.uk.ui.block.clear();
+                    });
+                    dfd.reject(res);  
                 });
                 return dfd.promise();
-            }
-
-            register() {
-                var self = this;
-                self.cm.register();
             }
             
             update(){

@@ -178,8 +178,10 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 		String appReasonID = "";
 		String appReason = "";
 		if (applicationReason.indexOf(SEPERATE_REASON_STRING) != -1) {
-			appReasonID = applicationReason.split(SEPERATE_REASON_STRING)[0];
-			appReason = applicationReason.substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
+			if(!applicationReason.equals(":")) {
+				appReasonID = applicationReason.split(SEPERATE_REASON_STRING)[0];
+				appReason = applicationReason.substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
+			}
 		}
 		return new KafdtApplication(
 			new KafdtApplicationPK(

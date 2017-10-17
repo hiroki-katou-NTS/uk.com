@@ -111,8 +111,8 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	@Override
 	public List<String> actualReflectionStateDecision(String appID, String phaseID, ApprovalAtr approvalAtr) {
 		// 承認者一覧
-		List<String> lstApprover = new ArrayList<>();
-		List<String> lstNotApprover = new ArrayList<>();
+		List<String> lstApproved = new ArrayList<>();
+		List<String> lstNotApproved = new ArrayList<>();
 		List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phaseID);
 		for(ApprovalFrame approvalFrame : listFrame ) {
 			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository.getAllApproverAccepted(approvalFrame.getCompanyID(), approvalFrame.getFrameID());
@@ -122,21 +122,21 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 			if(frame.getListApproveAccepted() !=null) {
 				for(ApproveAccepted x : frame.getListApproveAccepted()){
 					if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
-						lstApprover.add(x.getApproverSID());
+						lstApproved.add(x.getApproverSID());
 					};
 					if (x.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
-						lstNotApprover.add(x.getApproverSID());
+						lstNotApproved.add(x.getApproverSID());
 					};	
 				}
 			}
 		}
 		// Get distinct List Approver
-		lstApprover.stream().distinct().collect(Collectors.toList());
-		lstNotApprover.stream().distinct().collect(Collectors.toList());
+		lstApproved.stream().distinct().collect(Collectors.toList());
+		lstNotApproved.stream().distinct().collect(Collectors.toList());
 		if (approvalAtr == ApprovalAtr.APPROVED) {
-			return lstApprover;
+			return lstApproved;
 		} else {
-			return lstNotApprover;
+			return lstNotApproved;
 		}
 	}
 	/**
@@ -194,6 +194,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					if(!lstApprover.isEmpty()) {
 						// 承認者の代行情報リスト
 						AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApprover);
+						//返す結果の全承認者パス設定フラグがtrue(全承認者パス設定フラグ = true)
 						if(agency.isFlag()) {
 							allApprovedFlg = true;
 						// 返す結果の全承認者パス設定フラグがfalse(全承認者パス設定フラグ=false)
@@ -209,11 +210,12 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					return;
 				}
 				// 「反映情報」．実績反映状態を「反映待ち」にする
-				if (allApprovedFlg) {
+				//TODO: can xem lai xu ly nay
+				/*if (allApprovedFlg) {
 					phase.changeApprovalATR(ApprovalAtr.APPROVED);
 				}else {
 					phase.changeApprovalATR(ApprovalAtr.UNAPPROVED);
-				}
+				}*/
 				
 			}
 		}

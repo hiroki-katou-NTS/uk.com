@@ -79,11 +79,11 @@ public class GoBackDirectlyService extends WebService {
 	}
 	
 	/**
-	 * check before insert
+	 * check before insert OR update
 	 * @param command
 	 */
 	@POST
-	@Path("checkBeforeInsertGoBackDirectly")
+	@Path("checkBeforeChangeGoBackDirectly")
 	public void checkBeforeInsertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
 		this.checkInsertGoBackHandler.handle(command);
 	}

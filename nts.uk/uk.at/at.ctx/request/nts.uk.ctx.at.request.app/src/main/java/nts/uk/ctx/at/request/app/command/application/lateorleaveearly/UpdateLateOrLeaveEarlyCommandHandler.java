@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
@@ -34,7 +35,10 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 	@Override
 	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
+		String appID = IdentifierUtil.randomUniqueId();
+
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
+				appID,
         		command.getApplicationDate(),
         		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
         		null,

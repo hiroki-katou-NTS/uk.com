@@ -156,6 +156,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					).collect(Collectors.toList()),
 					null,
 					null);
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_CANCEL: 
@@ -191,6 +192,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ONLINE_RECORD: 
@@ -223,6 +225,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case OTHER:
@@ -264,6 +267,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					).collect(Collectors.toList()),
 					null,
 					null);
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			default:

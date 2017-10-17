@@ -20,20 +20,28 @@ module nts.uk.at.view.kaf002.b {
                 });
                 self.cm = new kaf002.cm.viewmodel.ScreenModel(self.stampRequestMode, self.screenMode);
                 self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
-                self.startPage().done((commonSet: vmbase.AppStampNewSetDto)=>{
+                self.startPage()
+                .done((commonSet: vmbase.AppStampNewSetDto)=>{
                     self.autoSendMail(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true : false);
                     self.employeeID = commonSet.employeeID;
                     self.kaf000_a2.start(
                         self.employeeID, 
                         employmentRootAtr, 
                         applicationType, 
-                        moment(new Date()).format("YYYY/MM/DD")).done(()=>{
+                        moment(new Date()).format("YYYY/MM/DD"))
+                    .done(()=>{
                         self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);    
                     }).fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                            nts.uk.ui.block.clear();
+                        });
                     });   
                 }).fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                        nts.uk.ui.block.clear();
+                    });
                 }); 
             }
             
@@ -46,7 +54,10 @@ module nts.uk.at.view.kaf002.b {
                         dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                            nts.uk.ui.block.clear();
+                        });
                         dfd.reject(res); 
                     });
                 return dfd.promise();
@@ -55,11 +66,6 @@ module nts.uk.at.view.kaf002.b {
             register() {
                 var self = this;
                 self.cm.register();
-            }
-            
-            update() {
-                var self = this;
-                self.cm.update();
             }
             
             performanceReference(){

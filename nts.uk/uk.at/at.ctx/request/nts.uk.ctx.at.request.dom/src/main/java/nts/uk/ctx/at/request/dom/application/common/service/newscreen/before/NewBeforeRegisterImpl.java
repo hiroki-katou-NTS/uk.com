@@ -81,7 +81,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		String employmentCD = employeeAdaptor.getEmploymentCode(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(application.getCompanyID(), employmentCD);
 		if(!closureEmployment.isPresent()){
-			throw new RuntimeException("khong co closure employement");
+			throw new RuntimeException("Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
 		}
 		deadlineApplicationCheck(application.getCompanyID(), closureEmployment.get().getClosureId(), application.getStartDate(), application.getEndDate(), periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate());
 		
@@ -100,7 +100,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		
 		// lấy lịch sử làm việc mới nhất
 		if(pesionInforImport.getListJobEntryHist().isEmpty()){
-			throw new RuntimeException("Khong ton tai lich su cua nhan vien");
+			throw new RuntimeException("Not found PersionInforImport in table BSYMT_JOB_ENTRY_HISTORY, employeeID =" + employeeID);
 		}
 		JobEntryHistoryImport jobEntryHistoryImport = pesionInforImport.getListJobEntryHist().get(0);
 		
@@ -125,7 +125,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
 		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, closureID);
 		if(!appDeadlineOp.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
 		}
 		ApplicationDeadline appDeadline = appDeadlineOp.get();
 		
@@ -162,7 +162,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		// キャッシュから取得(lấy từ cache) (Obtained from cache )
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		

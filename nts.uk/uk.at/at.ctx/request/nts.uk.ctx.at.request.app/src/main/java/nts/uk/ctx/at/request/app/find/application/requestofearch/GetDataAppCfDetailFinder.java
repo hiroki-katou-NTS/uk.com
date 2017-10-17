@@ -7,14 +7,23 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
+import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,9 +37,18 @@ public class GetDataAppCfDetailFinder {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm; 
+	//closure ID
+	@Inject
+	private EmployeeAdapter employeeAdaptor;
+	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	@Inject
+	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
 	
 
-	public OutputMessageDeadline getDataConfigDetail(int  appType) {
+	public OutputMessageDeadline getDataConfigDetail(ApplicationDto   applicationDto) {
 		String message = "";
 		String deadline = "";
 		GeneralDate date1 = GeneralDate.today();
@@ -38,9 +56,38 @@ public class GetDataAppCfDetailFinder {
 		GeneralDate date3 = GeneralDate.today();
 		String companyID = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
+		GeneralDate generalDate = GeneralDate.fromString(applicationDto.getApplicationDate(), "yyyy/MM/dd");
+
+		GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, generalDate).getEndDate();
+		
+		String employmentCD = employeeAdaptor.getEmploymentCode(companyID, sid, generalDate);
+		
+		
+		
+		/*
+		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
+		Object<String: tightenID, String: currentMonth> obj1 = Tighten.find(companyID, employeeCD); // obj1 <=> (締めID,当月)
+		*/
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new RuntimeException("khong co closure employement");
+		}
+		
+		//closureEmployment.get().getClosureId()
+		Optional<ApplicationDeadline> applicationDeadline = applicationDeadlineRepository.getDeadlineByClosureId(companyID, closureEmployment.get().getClosureId());
+		
+		if(applicationDeadline.get().getDeadlineCriteria() == DeadlineCriteria.CALENDAR_DAY) {
+			endDate.addDays(applicationDeadline.get().getDeadline().v());
+		}
+		
+		if(applicationDeadline.get().getDeadlineCriteria() == DeadlineCriteria.WORKING_DAY) {
+			endDate.addDays(applicationDeadline.get().getDeadline().v());
+		}
+		
+		
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepo
 				.getAppTypeDiscreteSettingByAppType(companyID,
-						appType);
+						applicationDto.getApplicationType());
 		// 事後申請の受付は7月27日分まで。
 		// 「事後の受付制限」．未来日許可しないがtrue、その他は利用しない
 		// if : RetrictPostAllowFutureFlg = true(allow)s và RetrictPreUseFlg = false(not
@@ -60,7 +107,7 @@ public class GetDataAppCfDetailFinder {
 		//rootAtr = 1
 		RequestOfEachCommon RequestOfEachCommon = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 				companyID, sid, 1,
-				EnumAdaptor.valueOf(appType, ApplicationType.class),
+				EnumAdaptor.valueOf(applicationDto.getApplicationType(), ApplicationType.class),
 				GeneralDate.today()).requestOfEachCommon;
 		
 		AppConfigDetailDto appConfigDetail = AppConfigDetailDto
@@ -94,15 +141,15 @@ public class GetDataAppCfDetailFinder {
 				int minuteData = Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreTimeDay().v().toString());
 
 				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日 " +formatTime(minuteData) +" 分から。"
-						+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日 分まで。 当月の申請は" + date3.month() + "月"
-						+ date3.day() + "日 まで";
+						+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日 分まで。 当月の申請は" + endDate.month() + "月"
+						+ endDate.day() + "日 まで";
 			}
 			// if retrictPreMethodFlg is daycheck
 			if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
 				date1 = date1.addDays(appTypeDiscreteSetting.get().getRetrictPreDay().value);
 
 				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。 事後申請の受付は" + date2.month() + "月"
-						+ date2.day() + "日 分まで。 当月の申請は" + date3.month() + "月" + date3.day() + "日 まで";
+						+ date2.day() + "日 分まで。 当月の申請は" + endDate.month() + "月" + endDate.day() + "日 まで";
 			}
 
 		}

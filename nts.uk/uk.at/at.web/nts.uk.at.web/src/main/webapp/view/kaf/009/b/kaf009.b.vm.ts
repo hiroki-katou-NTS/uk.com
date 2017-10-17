@@ -145,14 +145,65 @@ module nts.uk.at.view.kaf009.b {
              */
             update() {
                 let self = this;
-                nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
-                    service.updateGoBackDirect(self.getCommand(self.appID())).done(function() {
-                        alert("Update Done");
+                var promiseResult = self.checkBeforeUpdate();
+                promiseResult.done((result) => {
+                    if (result) {
+                        service.updateGoBackDirect(self.getCommand()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                        })
+                    }
+                });
+            }
+            
+            
+            checkBeforeUpdate(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred();
+                //check before Insert 
+                if (self.checkUse()) {
+                    service.checkBeforeChangeGoBackDirect(self.getCommand()).done(function() {
+                        dfd.resolve(true);
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        if (res.messageId == "Msg_297") {
+                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
+                                dfd.resolve(true);
+                            }).ifNo(function() {
+                                nts.uk.ui.block.clear();
+                                dfd.resolve(false);
+                            });
+                        } else if (res.messageId == "Msg_298") {
+                            dfd.reject();
+                            //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
+                            $('#inpStartTime1').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpStartTime2').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpEndTime1').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpEndTime2').ntsError('set', { messageId: "Msg_298" });
+                        } else{
+                           nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });     
+                        }
                     })
                 }
-            };
+                return dfd;
+            }
+            
+            /**
+             * アルゴリズム「直行直帰するチェック」を実行する
+             */
+            checkUse(){
+                let self = this;
+                if (self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0) {
+                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
+                        return true;
+                    }).ifNo(function() {
+                        nts.uk.ui.block.clear();
+                        return false;
+                    });
+                } else {
+                    return true;
+                }
+            }
 
 
             /**
@@ -186,11 +237,11 @@ module nts.uk.at.view.kaf009.b {
             /**
              * 2: update 
              */
-            getCommand(appId :string) {
+            getCommand() {
             let self = this; 
             let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
             //goBackCommand.version = self.version;
-            goBackCommand.appID = appId;
+            goBackCommand.appID = self.appID();
             goBackCommand.workTypeCD = self.workTypeCd();
             goBackCommand.siftCD = self.siftCD();
             goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
