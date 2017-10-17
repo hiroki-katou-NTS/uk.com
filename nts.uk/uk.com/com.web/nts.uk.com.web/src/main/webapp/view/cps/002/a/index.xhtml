@@ -231,7 +231,16 @@
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_46')}</div>
 											</com:ko-if>
 										</div>
-										<div class="step2_col2"></div>
+										<div class="step2_col2">
+											<com:ko-if bind="selectedId()===1">
+												<label></label>
+											</com:ko-if>
+											<com:ko-if bind="selectedId()===2">
+												<div data-bind="with:currentInitValueItem">
+													<label data-bind="text:settingCode + '' + settingName"></label>
+												</div>
+											</com:ko-if>
+										</div>
 									</div>
 
 									<div class="div_line">

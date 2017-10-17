@@ -42,6 +42,8 @@ module cps002.a.vm {
 
         initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
 
+        currentInitValueItem: KnockoutObservable<InitValueSetting> = ko.observable(new InitValueSetting(null));;
+
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
             isQuickSearchTab: ko.observable(true),
@@ -79,36 +81,47 @@ module cps002.a.vm {
 
             self.initValueSelectedCode.subscribe((newValue) => {
 
-                if (self.isUseInitValue()) {
 
-                    service.getAllInitValueCtgSetting(newValue).done((result: Array<IInitValueCtgSetting>) => {
-                        self.categoryList.removeAll();
-                        if (result.length) {
-                            self.categoryList(_.map(result, item => {
-                                return new CategoryItem(item);
-                            }));
-                            self.categorySelectedId(result[0].perInfoCtgId);
 
-                        }
+                service.getAllInitValueCtgSetting(newValue).done((result: Array<IInitValueCtgSetting>) => {
+                    self.categoryList.removeAll();
+                    if (result.length) {
+                        self.categoryList(_.map(result, item => {
+                            return new CategoryItem(item);
+                        }));
+                        self.categorySelectedId(result[0].perInfoCtgId);
 
-                    });
-                }
+                    }
+
+                });
+
+                self.currentInitValueItem(_.find(self.initValueList(), item => {
+                    return item.settingCode = newValue;
+                }));
 
             });
 
             self.categorySelectedId.subscribe((newValue) => {
 
-                service.getAllInitValueItemSetting(newValue).done((result: Array<Item>) => {
-                    self.itemList.removeAll();
-                    if (result.length) {
-                        self.itemList(_.map(result, item => {
-                            return new Item(item);
-                        }));
-                    }
+                if (self.isUseInitValue()) {
+                    service.getAllInitValueItemSetting(newValue).done((result: Array<Item>) => {
+                        self.itemList.removeAll();
+                        if (result.length) {
+                            self.itemList(_.map(result, item => {
+                                return new Item(item);
+                            }));
+                        }
+                    });
+                } else {
 
+                }
+            });
 
+            self.currentEmployee().avatarId.subscribe((newValue) => {
 
-                });
+                //set avatar
+                //  $("#employeeAvatar").ntsImageEditor("selectByFileId", newValue);
+
             });
 
             self.start();
@@ -260,6 +273,13 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(2);
+            service.getSelfRoleAuth().done((result: IRoleAuth) => {
+
+                if (result.allowAvatarUpload) {
+                    //if allowAvatarUpload
+                }
+
+            });
 
 
         }
@@ -267,13 +287,13 @@ module cps002.a.vm {
 
         completeStep2() {
             let self = this;
-            if (self.currentEmployee().employeeId) {
+            if (!self.currentEmployee().employeeId && !self.isUseInitValue()) {
 
-                dialog({ messageId: "Msg_344" });
+                dialog({ messageId: "Msg_349" });
 
             } else {
 
-                self.currentStep(2);
+                self.gotoStep3();
 
             }
         }
@@ -289,19 +309,22 @@ module cps002.a.vm {
 
             self.currentStep(1);
 
-            //start Screen B
-            if (!self.isUseInitValue()) {
 
-                $('#search_panel').hide();
+            if (self.isUseInitValue()) {
 
-                self.loadCopySettingData();
-
-            } else {
                 //start Screen C
 
                 $('#search_panel').show();
 
                 self.loadInitValueData();
+
+            } else {
+
+                //start Screen B
+
+                $('#search_panel').hide();
+
+                self.loadCopySettingData();
 
             }
 
@@ -326,7 +349,7 @@ module cps002.a.vm {
 
                 dialog({ messageId: error.message }).then(() => {
 
-                    self.gotoStep1();
+                    // self.gotoStep1();
 
                 });
 
@@ -355,7 +378,7 @@ module cps002.a.vm {
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
-                    self.gotoStep1();
+                    //   self.gotoStep1();
                 });
 
             });
@@ -377,7 +400,7 @@ module cps002.a.vm {
 
             let self = this;
 
-            nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
             });
         }
@@ -386,7 +409,7 @@ module cps002.a.vm {
 
             let self = __viewContext['viewModel'];
             setShared("cardNoMode", param === 'true' ? true : false);
-            subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(function(): any {
+            subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
                     currentEmp = self.currentEmployee();
@@ -399,10 +422,7 @@ module cps002.a.vm {
 
             let self = this;
 
-            subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(function(): any {
-
-
-
+            subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(() => {
 
             });
         }
@@ -411,7 +431,7 @@ module cps002.a.vm {
 
             let self = this;
 
-            subModal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(function(): any {
+            subModal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(() => {
 
                 if (true) {
                     service.getUserSetting().done((result: IUserSetting) => {
@@ -423,6 +443,34 @@ module cps002.a.vm {
                 }
 
             });
+        }
+
+        OpenIModal() {
+            let self = this;
+            setShared("imageId", self.currentEmployee().avatarId());
+
+            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+
+                let imageResult = getShared("imageId");
+
+                if (imageResult) {
+                    self.currentEmployee().avatarId(imageResult);
+                }
+
+            });
+
+        }
+
+        openHModal() {
+            let self = this;
+
+            subModal('/view/cps/002/i/index.xhtml', { dialogClass: "no-close" }).onClosed(() => {
+
+
+            });
+
+
+
         }
 
 
@@ -452,6 +500,7 @@ module cps002.a.vm {
         cardNo: KnockoutObservable<string> = ko.observable("");
         employeeId: string;
         initvalueCode: string;
+        avatarId: KnockoutObservable<string> = ko.observable("");
 
         constructor(param?) {
         }
@@ -484,9 +533,9 @@ module cps002.a.vm {
 
     class InitValueSetting {
 
-        settingId: string;
-        settingCode: string;
-        settingName: string;
+        settingId: string = '';
+        settingCode: string = '';
+        settingName: string = '';
 
         constructor(param?: IInitValueSetting) {
 
@@ -496,6 +545,9 @@ module cps002.a.vm {
         }
 
     }
+
+
+
 
     interface IInitValueCtgSetting {
 
@@ -544,6 +596,16 @@ module cps002.a.vm {
             this.lastRegEmployeeID = param ? param.lastRegEmployeeID : '';
 
         }
+    }
+
+    interface IRoleAuth {
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
+
     }
 
 
