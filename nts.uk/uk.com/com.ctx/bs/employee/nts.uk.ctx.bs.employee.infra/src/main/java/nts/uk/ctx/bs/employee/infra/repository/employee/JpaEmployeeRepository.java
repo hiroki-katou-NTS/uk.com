@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import entity.employeeinfo.BsymtEmployee;
+import entity.employeeinfo.BsymtEmployeePk;
 import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
+import entity.layout.PpemtMaintenanceLayout;
+import entity.layout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -116,19 +119,20 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				entity.hiringType, entity.retireDate, entity.bsymtJobEntryHistoryPk.entryDate, entity.adoptDate);
 		return domain;
 	}
-
-	private BsymtDeleteEmpManagement toEntityDeleteEmpManagent(DeleteEmpManagement domain) {
-		BsymtDeleteEmpManagementPK pk = new BsymtDeleteEmpManagementPK(domain.getSid());
-		BsymtDeleteEmpManagement entity = new BsymtDeleteEmpManagement();
-		entity.setBsymtDeleteEmpManagementPK(pk);
-		entity.setReason(domain.getReasonRemoveEmp().toString());
-		entity.setIsDeleted(0); // 0 : false
-		entity.setDeleteDate(domain.getDeleteDate());
-		
+	
+	private BsymtEmployee toEntityEmployee(Employee domain) {
+		BsymtEmployee entity = new BsymtEmployee();
+		entity.bsymtEmployeePk = new BsymtEmployeePk(domain.getSId().toString());
+		entity.companyId = domain.getCompanyId();
+		entity.companyMail = domain.getCompanyMail().v();
+		entity.companyMobile = domain.getCompanyMobile().v();
+		entity.employeeCode = domain.getSCd().v();
+		entity.personId = domain.getPId();
+		entity.companyMobileMail = domain.getMobileMail().v();
 		return entity;
-		
-		
 	}
+
+
 	@Override
 	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
 		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployee.class)
@@ -306,11 +310,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	}
 
 	@Override
-	public void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement) {
-		this.commandProxy().insert(toEntityDeleteEmpManagent(deleteEmpManagement));
-	}
-
-	@Override
 	public List<Object[]> getAllEmployeeInfoToDelete() {
 		List<Object[]> lst = this.queryProxy().query(GET_ALL_EMPLOYEE_INFO_TO_DELETE).getList();
 		return lst;
@@ -322,6 +321,11 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		Optional<Object[]> empDetailInfo = this.queryProxy().query(GET_EMPLOYEE_DETAIL_INFO_TO_DELETE)
 				.setParameter("sid", employeeId).getSingle();
 		return empDetailInfo;
+	}
+
+	@Override
+	public void updateEmployee(Employee domain) {
+		this.commandProxy().update(toEntityEmployee(domain));
 	}
 
 }

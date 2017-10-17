@@ -3,6 +3,8 @@ module cps001.c.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
     import clearError = nts.uk.ui.errors.clearAll;
+    import showDialog = nts.uk.ui.dialog;
+    import close = nts.uk.ui.windows.close;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -29,6 +31,7 @@ module cps001.c.vm {
                     let emp: IEmployees = self.findByCode(x, self.listEmpDelete());
                     service.getDetail(emp.id).done((data: IEmployeeInfo) => {
                         if (data) {
+                            self.currentEmployee(new Employee(emp));
                             self.detail(new EmployeeInfo(data));
                         }
                     });
@@ -36,34 +39,100 @@ module cps001.c.vm {
             });
         }
 
-        start() {
+        start(sid?: string): JQueryPromise<any> {
             let self = this,
-                currentEmployee = self.currentEmployee();
+                currentEmployee = self.currentEmployee(),
+                dfd = $.Deferred();
             self.listEmpDelete.removeAll();
             service.getData().done((data: Array<IEmployees>) => {
                 if (data && data.length) {
                     self.listEmpDelete(data);
-                    currentEmployee.code(data[0].code);
+
+                    if (!sid) {
+                        self.currentEmployee(new Employee(data[0]));
+                        currentEmployee.code(data[0].code);
+                    } else {
+                        let _item: IEmployees = _.find(ko.toJS(self.listEmpDelete()), function(item: IEmployees) { return item.id == sid; });
+                        if (_item) {
+                            self.currentEmployee(new Employee(_item));
+                            currentEmployee.code(_item.code);
+                        } else {
+                            self.currentEmployee(new Employee(data[0]));
+                            currentEmployee.code(data[0].code);
+                        }
+                    }
+                } else {
+                    // list null
+                    self.newMode();
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         reStoreData() {
             let self = this,
-            currentItem : IEmployees = ko.toJS(self.currentEmployee()),
-            detail : IEmployeeInfo =  ko.toJS(self.detail());
-            
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => { 
-            let itemListLength = self.listEmpDelete().length;
-                let objToRestore ={sid: currentItem.id ,code : currentItem.code ,newCode: detail.newCode , newName : detail.newName};
+                currentItem: IEmployees = ko.toJS(self.currentEmployee()),
+                listItem: Array<IEmployees> = ko.toJS(self.listEmpDelete()),
+                detail: IEmployeeInfo = ko.toJS(self.detail());
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => {
+                let itemListLength = self.listEmpDelete().length;
+                let indexItemDelete = _.findIndex(ko.toJS(self.listEmpDelete), function(item: any) { return item.id == currentItem.id; });
+                let objToRestore = { sid: currentItem.id, code: currentItem.code, newCode: detail.newCode, newName: detail.newName };
                 service.restoreData(objToRestore).done(() => {
-                    
-                
+                    if (itemListLength === 1) {
+                        self.start();
+                    } else if (itemListLength - 1 === indexItemDelete) {
+                        self.start(listItem[indexItemDelete - 1].id).done(() => {
+                        });
+                    } else if (itemListLength - 1 > indexItemDelete) {
+                        self.start(listItem[indexItemDelete + 1].id).done(() => {
+                        });
+                    }
+
                 });
-            
+
             }).ifCancel(() => {
 
             });
+        }
+
+        deleteData() {
+            let self = this,
+                currentItem: IEmployees = ko.toJS(self.currentEmployee()),
+                listItem: Array<IEmployees> = ko.toJS(self.listEmpDelete()),
+                detail: IEmployeeInfo = ko.toJS(self.detail());
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let sid = currentItem.id;
+                service.removedata(sid).done(() => {
+                    showDialog.info({ messageId: "Msg_464" }).then(function() {
+                        self.start(sid).done(() => {
+
+                        });
+                    });
+
+
+                });
+            }).ifCancel(() => {
+
+            });
+
+        }
+
+        closeUp() { 
+                close();
+        }
+
+        newMode() {
+            let self = this,
+                listItem: Array<IEmployees> = self.listEmpDelete(),
+                detail: EmployeeInfo = self.detail();
+
+            detail.datedelete('');
+            detail.reason('');
+            detail.newCode('');
+            detail.newName('');
         }
 
         private findByCode(code: string, sources: any) {

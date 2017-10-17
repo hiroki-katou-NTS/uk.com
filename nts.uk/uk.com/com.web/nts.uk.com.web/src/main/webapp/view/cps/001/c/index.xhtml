@@ -25,8 +25,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button type="button" class="proceed" data-bind="click: reStoreData">#{i18n.getText('CPS001_49')}</button>
-				<button type="button" class="danger">#{i18n.getText('CPS001_50')}</button>
-				<button type="button">#{i18n.getText('CPS001_51')}</button>
+				<button type="button" class="danger" data-bind="click: deleteData">#{i18n.getText('CPS001_50')}</button>
+				<button type="button" data-bind="click : closeUp">#{i18n.getText('CPS001_51')}</button>
 			</div>
 			<div id="contents-area" class="cf">
 				<div class="left-area">

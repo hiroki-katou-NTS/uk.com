@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.command.employee.CompletelyDelEmpCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteToRestoreCommand;
@@ -38,12 +39,15 @@ public class EmployeeWebService extends WebService {
 
 	@Inject
 	private EmployeeFinder employeeFinder;
-	
+
 	@Inject
 	private RestoreDataEmpCommandHandler restoreEmpHandler;
-	
+
 	@Inject
 	private EmployeeDeleteCommandHandler empDeleteHandler;
+	
+	@Inject
+	private CompletelyDelEmpCommandHandler completelyDelEmpHandler;
 
 	/** The employee query processor. */
 	@Inject
@@ -204,9 +208,10 @@ public class EmployeeWebService extends WebService {
 	public List<EmployeeSearchListData> searchListData(EmployeeSearchListQuery input) {
 		return this.employeeQueryProcessor.searchEmployees(input);
 	}
-	
+
 	/**
 	 * Get Employee Info to Display Screen Delete Emp
+	 * 
 	 * @param employeeId
 	 * @return
 	 */
@@ -215,27 +220,34 @@ public class EmployeeWebService extends WebService {
 	public EmployeeToDeleteDto getEmployee(@PathParam("employeeId") String employeeId) {
 		return employeeFinder.getEmployeeInfoToDelete(employeeId);
 	}
-	
+
 	@POST
 	@Path("deleteemployee")
 	public void delereEmployee(EmployeeDeleteCommand command) {
 		this.empDeleteHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("getallemployeetodelete")
 	public List<EmployeeToDeleteDto> getAllEmployeeDelete() {
 		return employeeFinder.getAllEmployeeInfoToDelete();
 	}
-	
+
 	@POST
 	@Path("getdetailemployeetodelete/{employeeId}")
 	public EmployeeToDeleteDetailDto getDetailEmpDelete(@PathParam("employeeId") String employeeId) {
 		return employeeFinder.getEmployeeDetailInfoToDelete(employeeId);
 	}
-	
+
 	@POST
 	@Path("restoredata")
 	public void restoreData(EmployeeDeleteToRestoreCommand command) {
+		this.restoreEmpHandler.handle(command);
+	}
+	
+	@POST
+	@Path("deleteemp/{employeeId}")
+	public void deleteEmp(@PathParam("employeeId") String employeeId) {
+		this.completelyDelEmpHandler.handle(employeeId);
 	}
 }
