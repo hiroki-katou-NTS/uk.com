@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.employee;
+package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,8 +12,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpRepository;
 import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.ReasonRemoveEmp;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 
 @Stateless
 @Transactional
@@ -21,7 +21,7 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 
 	/** The repository. */
 	@Inject
-	private EmployeeRepository empRepo;
+	private DeleteEmpRepository deleteEmpRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<EmployeeDeleteCommand> context) {
@@ -35,9 +35,10 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 		
 
 		if (command != null) {
+			// 0 : deleted = false , 1 : deleted = true;
 			DeleteEmpManagement domain = new DeleteEmpManagement(0, command.getSId(),
 					GeneralDate.fromString(df.format(dateobj), "yyyy-MM-dd HH:mm:ss"), new ReasonRemoveEmp(command.getReason()));
-			empRepo.insertToDeleteEmpManagemrnt(domain);
+			deleteEmpRepo.insertToDeleteEmpManagemrnt(domain);
 		}
 
 	}

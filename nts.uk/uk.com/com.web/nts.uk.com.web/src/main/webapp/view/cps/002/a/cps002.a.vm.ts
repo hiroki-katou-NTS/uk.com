@@ -12,7 +12,7 @@ module cps002.a.vm {
 
         date: KnockoutObservable<Date> = ko.observable(new Date());
 
-        itemList: KnockoutObservableArray<any> = ko.observableArray([
+        createTypeList: KnockoutObservableArray<any> = ko.observableArray([
             new BoxModel(1, text('CPS002_26')),
             new BoxModel(2, text('CPS002_27')),
             new BoxModel(3, text('CPS002_28'))
@@ -21,6 +21,8 @@ module cps002.a.vm {
         categoryList: KnockoutObservableArray<CategoryItem> = ko.observableArray([]);
 
         initValueList: KnockoutObservableArray<InitValueSetting> = ko.observableArray([]);
+
+        itemList: KnockoutObservableArray<Item> = ko.observableArray([]);
 
         selectedId: KnockoutObservable<number> = ko.observable(1);
 
@@ -38,7 +40,7 @@ module cps002.a.vm {
 
         currentStep: KnockoutObservable<number> = ko.observable(0);
 
-        initValueSelectedId: KnockoutObservable<string> = ko.observable('');
+        initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
@@ -75,11 +77,11 @@ module cps002.a.vm {
 
             });
 
-            self.initValueSelectedId.subscribe((newValue) => {
+            self.initValueSelectedCode.subscribe((newValue) => {
 
                 if (self.isUseInitValue()) {
 
-                    service.getAllInitValueCtgSetting(self.initValueSelectedId()).done((result: Array<IInitValueCtgSetting>) => {
+                    service.getAllInitValueCtgSetting(newValue).done((result: Array<IInitValueCtgSetting>) => {
                         self.categoryList.removeAll();
                         if (result.length) {
                             self.categoryList(_.map(result, item => {
@@ -87,15 +89,26 @@ module cps002.a.vm {
                             }));
                             self.categorySelectedId(result[0].perInfoCtgId);
 
-                        } else {
-
-
-
                         }
 
                     });
                 }
 
+            });
+
+            self.categorySelectedId.subscribe((newValue) => {
+
+                service.getAllInitValueItemSetting(newValue).done((result: Array<Item>) => {
+                    self.itemList.removeAll();
+                    if (result.length) {
+                        self.itemList(_.map(result, item => {
+                            return new Item(item);
+                        }));
+                    }
+
+
+
+                });
             });
 
             self.start();
@@ -220,6 +233,7 @@ module cps002.a.vm {
                     } else {
 
                         if (self.selectedId() === 3) {
+
                             self.gotoStep3();
                             return;
                         }
@@ -236,11 +250,16 @@ module cps002.a.vm {
 
         gotoStep1() {
 
-            $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+            let self = this;
+
+            self.currentStep(0);
         }
 
         gotoStep3() {
-            $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+
+            let self = this;
+
+            self.currentStep(2);
 
 
         }
@@ -254,7 +273,7 @@ module cps002.a.vm {
 
             } else {
 
-                $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+                self.currentStep(2);
 
             }
         }
@@ -267,54 +286,79 @@ module cps002.a.vm {
 
         gotoStep2() {
             let self = this;
-            $('#emp_reg_info_wizard').ntsWizard("goto", 1);
+
+            self.currentStep(1);
 
             //start Screen B
             if (!self.isUseInitValue()) {
 
                 $('#search_panel').hide();
 
-
-                service.getCopySetting().done((result: Array<ICopySetting>) => {
-                    self.categoryList.removeAll();
-                    if (result.length) {
-                        self.categoryList(_.map(result, item => {
-                            return new CategoryItem(item);
-                        }));
-
-                        self.categorySelectedId(result[0].id);
-                    }
-                    $('#emp_reg_info_wizard').ntsWizard("goto", 1);
-                }).fail((error) => {
-
-                    dialog({ messageId: error.message });
-
-                });
+                self.loadCopySettingData();
 
             } else {
                 //start Screen C
 
                 $('#search_panel').show();
 
-                service.getAllInitValueSetting().done((result: Array<IInitValueSetting>) => {
-                    if (result.length) {
-                        self.initValueList(_.map(result, item => {
-                            return new InitValueSetting(item);
-                        }));
-
-                        self.initValueSelectedId(result[0].settingId);
-                    }
-                }).fail((error) => {
-                    dialog({ messageId: error.message }).then(() => {
-                        self.gotoStep1()
-                    });
-
-                });
-
-
+                self.loadInitValueData();
 
             }
 
+
+        }
+
+        loadCopySettingData() {
+
+            let self = this;
+
+            service.getCopySetting().done((result: Array<ICopySetting>) => {
+                self.categoryList.removeAll();
+                if (result.length) {
+                    self.categoryList(_.map(result, item => {
+                        return new CategoryItem(item);
+                    }));
+
+                    self.categorySelectedId(result[0].id);
+                }
+
+            }).fail((error) => {
+
+                dialog({ messageId: error.message }).then(() => {
+
+                    self.gotoStep1();
+
+                });
+
+            });
+
+        }
+
+        loadInitValueData() {
+
+            let self = this;
+            service.getAllInitValueSetting().done((result: Array<IInitValueSetting>) => {
+                if (result.length) {
+                    self.initValueList(_.map(result, item => {
+                        return new InitValueSetting(item);
+                    }));
+
+                    let lastValueItem = _.find(result, (item) => {
+
+                        return item.settingCode == self.currentEmployee().initvalueCode;
+                    });
+
+
+                    self.initValueSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
+
+
+                }
+            }).fail((error) => {
+                dialog({ messageId: error.message }).then(() => {
+                    self.gotoStep1();
+                });
+
+            });
 
         }
 
@@ -407,6 +451,7 @@ module cps002.a.vm {
         hireDate: KnockoutObservable<Date> = ko.observable(new Date());
         cardNo: KnockoutObservable<string> = ko.observable("");
         employeeId: string;
+        initvalueCode: string;
 
         constructor(param?) {
         }
@@ -467,6 +512,16 @@ module cps002.a.vm {
     }
 
     class CategoryItem {
+        id: string;
+        name: string;
+        constructor(param?: any) {
+            this.id = param ? param.perInfoCtgId ? param.perInfoCtgId : param.id : '';
+            this.name = param ? param.categoryName ? param.categoryName : param.name : '';
+
+        }
+    }
+
+    class Item {
         id: string;
         name: string;
         constructor(param?: any) {

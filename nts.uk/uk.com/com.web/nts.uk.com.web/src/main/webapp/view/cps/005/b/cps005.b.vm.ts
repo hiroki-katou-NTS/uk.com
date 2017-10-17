@@ -209,9 +209,13 @@ module nts.uk.com.view.cps005.b {
                     }
                 }
             }
-            
+
             genTextTime(time) {
                 return nts.uk.time.parseTime(time(), true).format();
+            }
+
+            isNotsetOrnull(value) {
+                return value() == 0 || !value();
             }
         }
     }

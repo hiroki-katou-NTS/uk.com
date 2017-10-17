@@ -126,19 +126,18 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 service.saveDataSelectionItem(command).done(function(selectId) {
                     self.listItems.removeAll();
                     //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
-                    confirm({ messageId: "Msg_456" }).ifYes(() => {
-                        service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                            if (itemList && itemList.length) {
-                                itemList.forEach(x => self.listItems.push(x));
-                            }
-                        });
-                        self.listItems.valueHasMutated();
-                        self.perInfoSelectionItem().selectionItemId(selectId);
+                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listItems.push(x));
+                        }
+                    });
+                    self.listItems.valueHasMutated();
+                    self.perInfoSelectionItem().selectionItemId(selectId);
 
-                        //Todo: 「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                    //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                    confirm({ messageId: "Msg_456" }).ifYes(() => {
                         modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
                         });
-
                     }).ifNo(() => {
                         self.listItems.valueHasMutated();
                         return;

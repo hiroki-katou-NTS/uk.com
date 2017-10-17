@@ -2,9 +2,11 @@ package nts.uk.ctx.bs.person.dom.person.info.personnamegroup;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class PersonNameGroup {
 

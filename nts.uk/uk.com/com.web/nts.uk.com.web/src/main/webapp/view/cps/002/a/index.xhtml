@@ -141,7 +141,7 @@
 									<div class="step1_bot_col1">
 										<div id="init_select"
 											data-bind="ntsRadioBoxGroup: {
-														options: itemList ,
+														options: createTypeList ,
 														optionsValue: 'id' ,
 														optionsText: 'name' ,
 														value: selectedId ,
@@ -195,7 +195,7 @@
 															mode:'igGrid', 
 															comId:'init_list', 
 															items: initValueList , 
-															selected: initValueSelectedId , 
+															selected: initValueSelectedCode , 
 															selectedKey: 'settingId', 
 															fields: ['settingName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
@@ -213,7 +213,7 @@
 																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'settingCode', width: 40},
 															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'settingName', width: 130 } ]  ,
 															multiple: false,
-															value: initValueSelectedId ,
+															value: initValueSelectedCode ,
 															rows:15
 														}">
 											</table>
