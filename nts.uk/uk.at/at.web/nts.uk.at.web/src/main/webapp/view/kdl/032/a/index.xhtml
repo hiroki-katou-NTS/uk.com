@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 600, height: 800 };</script>
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+				<com:stylefile path="kdl032.a.style.css" />
+				<com:scriptfile path="kdl032.a.service.js" />
+				<com:scriptfile path="kdl032.a.start.js" />
+				<com:scriptfile path="kdl032.a.vm.js" />
+				<com:scriptfile set="IGNITE" />
+			</ui:define>
+			
+			<ui:define name="content">
+				
+				<div id="contents-area">
+				<label> #{i18n.getText('KDL032_2')}</label>
+
+				<table id="single-list"
+					data-bind="ntsGridList: {								
+					height: 350,
+					dataSource: deviationTimeList,
+					primaryKey: 'code',
+					columns: columns,
+					value: currentCode
+					}"></table>	
+			</div>
+			<div id= "functions-area-bottom">
+					<button class="proceed x-large" id="save" >#{i18n.getText('KDL032_5')}</button>
+					<button id="cancel">#{i18n.getText('KDL032_6')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
