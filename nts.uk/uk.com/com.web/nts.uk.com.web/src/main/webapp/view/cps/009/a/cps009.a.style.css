@@ -1,6 +1,7 @@
 #content {
-/* 	width: 1200px;
+	/* 	width: 1200px;
 	margin-bottom: 20px; */
+	
 }
 
 .float-right {
@@ -11,6 +12,14 @@
 	width: 260px;
 	height: 590px;
 	float: left;
+}
+
+.requiredCell {
+	background-color: #FAEC82;
+}
+
+.notrequiredCell {
+	background-color: #CFF1A5;
 }
 
 #content-right {
