@@ -54,6 +54,11 @@ subprojects {
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'

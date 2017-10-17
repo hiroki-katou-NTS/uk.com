@@ -8684,7 +8684,8 @@ var nts;
                                 }
                                 else {
                                     if (ko.isObservable(data.value)) {
-                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
+                                        data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
+                                        data.value.valueHasMutated();
                                     }
                                 }
                             }
