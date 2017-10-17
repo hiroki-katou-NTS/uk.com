@@ -128,9 +128,7 @@ module nts.uk.at.view.kmk002.a {
              */
             public getSymbolById(id: string): string {
                 let self = this;
-                let rs = _.find(self.calcFormulas(), item => {
-                    item.formulaId == id;
-                });
+                let rs = _.find(self.calcFormulas(), item => item.formulaId == id);
                 return rs ? rs.symbolValue : 'formula not found';
             }
 
@@ -195,11 +193,6 @@ module nts.uk.at.view.kmk002.a {
                 OptionalItem.selectedFormulas.subscribe(vl => {
                     // set selected formula below and above.
                     this.setSelectedFormulaBelowAndAbove(vl);
-
-                    console.log(vl);
-                    console.log('above='+this.selectedFormulaAbove);
-                    console.log('below='+this.selectedFormulaBelow);
-                    console.log('\n');
                 });
 
                 this.optionalItemNo.subscribe(v => {
@@ -316,6 +309,14 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Get selectable formulas for screen D.
+             */
+            private getSelectableFormulas(): Array<FormulaDto> {
+                let self = this;
+                return _.map(self.calcFormulas(), item => item.toDto());
+            }
+
+            /**
              * add formula at order
              * @param order: number
              */
@@ -335,6 +336,7 @@ module nts.uk.at.view.kmk002.a {
                 f.reCheckAll = self.reCheckAll.bind(self);
                 f.getSymbolById = self.getSymbolById.bind(self);
                 f.setApplyFormula = self.setApplyFormula.bind(self);
+                f.getSelectableFormulas = self.getSelectableFormulas.bind(self);
 
                 // Set order
                 f.orderNo = order;
@@ -506,8 +508,29 @@ module nts.uk.at.view.kmk002.a {
              * Check whether the symbol of the line to be deleted is included in the settings of other lines
              */
             private isInUse(): boolean {
-                //TODO
+                let self = this;
+                let found = _.find(OptionalItem.selectedFormulas(), selectedOrder => {
+                    let id = self.getFormulaIdOf(selectedOrder);
+                    let found = _.find(self.calcFormulas(), formula => formula.hasUsed(id));
+                    if (found) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (found) {
+                    return true;
+                }
                 return false;
+            }
+
+            /**
+             * Get formula id by order number
+             * @param orderNo: the order number
+             */
+            private getFormulaIdOf(orderNo: number): string {
+                let self = this;
+                let found = _.find(self.calcFormulas(), formula => formula.orderNo === orderNo);
+                return found.formulaId;
             }
 
             /**
@@ -592,27 +615,26 @@ module nts.uk.at.view.kmk002.a {
                             formula.reCheckAll = self.reCheckAll.bind(self);
                             formula.getSymbolById = self.getSymbolById.bind(self);
                             formula.setApplyFormula = self.setApplyFormula.bind(self);
+                            formula.getSelectableFormulas = self.getSelectableFormulas.bind(self);
 
                             // convert dto to viewmodel
                             formula.fromDto(item);
 
-                            // set formula setting result
+                            return formula;
+                        });
+                        self.calcFormulas(list);
+
+                        // set formula setting result
+                        _.each(self.calcFormulas(), formula => {
                             if (formula.calcAtr() == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.calcAtr)) {
                                 formula.setItemSelectionResult(formula.itemSelection);
                             } else {
                                 formula.setFormulaSettingResult(formula.formulaSetting);
                             }
-
-                            return formula;
                         });
 
-                        self.calcFormulas(list);
-
-                        // sort.
+                        // sort list formula by orderNo
                         self.sortListFormula();
-
-                        // force to check enable/disable condition for nts grid.
-                        self.usageAtr.valueHasMutated();
 
                         dfd.resolve();
                     })
@@ -949,7 +971,6 @@ module nts.uk.at.view.kmk002.a {
                 if ($('.nts-editor').ntsError('hasError')) {
                     return false;
                 }
-                //TODO: check xem co formula nao chua co setting ko?
                 return true;;
             }
 
@@ -1078,13 +1099,13 @@ module nts.uk.at.view.kmk002.a {
 
             // flags
             selected: KnockoutObservable<boolean>;
-            isUsed = true;
             isCheckFromParent = false;
 
             // function
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
+            getSelectableFormulas: () => Array<FormulaDto>;
 
             // Enums datasource
             formulaAtrDs: EnumConstantDto[];
@@ -1237,6 +1258,19 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Check whether the the formula of the @orderNo has been used in this formula
+             * @param formulaId: the formula id
+             */
+            public hasUsed(formulaId: string): boolean {
+                let self = this;
+                if (self.formulaSetting.leftItem.formulaItemId == formulaId
+                    || self.formulaSetting.rightItem.formulaItemId == formulaId) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
              * get default formula setting.
              */
             private getDefaultFormulaSetting(): FormulaSettingDto {
@@ -1368,6 +1402,7 @@ module nts.uk.at.view.kmk002.a {
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = self.formulaSetting;
+                param.selectableFormulas = self.getSelectableFormulas();
 
                 nts.uk.ui.windows.setShared('paramToD', param);
 
@@ -1664,6 +1699,7 @@ module nts.uk.at.view.kmk002.a {
             formulaAtr: string;
             performanceAtr: number;
             formulaSetting: FormulaSettingDto;
+            selectableFormulas: Array<FormulaDto>;
         }
     }
 }

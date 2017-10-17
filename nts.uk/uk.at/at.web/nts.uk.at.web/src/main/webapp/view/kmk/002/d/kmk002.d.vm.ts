@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk002.d {
 
         import FormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.FormulaSettingDto;
         import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;
+        import FormulaDto = nts.uk.at.view.kmk002.a.service.model.FormulaDto;
         import ParamToD = nts.uk.at.view.kmk002.a.viewmodel.ParamToD;
 
         export class ScreenModel {
@@ -51,9 +52,9 @@ module nts.uk.at.view.kmk002.d {
             formulaId: string;
             formulaName: string;
             formulaAtr: string;
-            selectableFormulas: KnockoutObservableArray<any>;
-            selectedItemLeft: KnockoutObservable<any>;
-            selectedItemRight: KnockoutObservable<any>;
+            selectableFormulas: KnockoutObservableArray<FormulaDto>;
+            selectedItemLeft: KnockoutObservable<string>;
+            selectedItemRight: KnockoutObservable<string>;
 
             minusSegment: KnockoutObservable<number>;
             operator: KnockoutObservable<number>;
@@ -84,16 +85,11 @@ module nts.uk.at.view.kmk002.d {
 
                 // default value
                 this.formulaName = '';
-                this.selectedItemLeft = ko.observable();
-                this.selectedItemRight = ko.observable();
+                this.selectedItemLeft = ko.observable('');
+                this.selectedItemRight = ko.observable('');
                 this.formulaAtr = '';
 
-                this.selectableFormulas = ko.observableArray([
-                    { code: '0', name: 'aaaaaaaaaaa', atr: 1 },
-                    { code: '1', name: 'bbbbbbbbb', atr: 1 },
-                    { code: '2', name: 'cccccccc', atr: 2 },
-                    { code: '3', name: 'ddddddddd', atr: 2 }
-                ]);
+                this.selectableFormulas = ko.observableArray([]);
             }
 
             /**
@@ -150,10 +146,10 @@ module nts.uk.at.view.kmk002.d {
              */
             private isDifferentAtr(): boolean {
                 let self = this;
-                let leftItem = self.findFormulaById(self.selectedItemLeft());
-                let rightItem = self.findFormulaById(self.selectedItemRight());
+                let leftItem: FormulaDto = self.findFormulaById(self.selectedItemLeft());
+                let rightItem: FormulaDto = self.findFormulaById(self.selectedItemRight());
 
-                if (leftItem.atr != rightItem.atr) {
+                if (leftItem.formulaAtr != rightItem.formulaAtr) {
                     return true;
                 }
 
@@ -187,7 +183,7 @@ module nts.uk.at.view.kmk002.d {
              */
             private findFormulaById(id: string): any {
                 let self = this;
-                let f = _.find(self.selectableFormulas(), item => item.code == id);
+                let f = _.find(self.selectableFormulas(), item => item.formulaId == id);
                 return f;
             }
 
@@ -203,6 +199,7 @@ module nts.uk.at.view.kmk002.d {
                 self.operator(dto.formulaSetting.operator);
                 self.leftItem.fromDto(dto.formulaSetting.leftItem);
                 self.rightItem.fromDto(dto.formulaSetting.rightItem);
+                self.selectableFormulas(dto.selectableFormulas);
             }
 
             /**
