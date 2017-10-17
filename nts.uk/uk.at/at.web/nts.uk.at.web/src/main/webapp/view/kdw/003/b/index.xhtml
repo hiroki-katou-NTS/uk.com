@@ -6,12 +6,12 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 860,
-					height : 630
+					width : 950,
+					height : 530
 				};
 			</script>
 
@@ -23,12 +23,8 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-			</div>
 			<div id="contents-area">
-			
 				<table id="grid"></table>
-
 			</div>
 			<div id="functions-area-bottom">
 				<button 

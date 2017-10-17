@@ -12,6 +12,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPBusinessTypeControl;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,65 +37,6 @@ public class DailyPerformanceCorrectionProcessor {
 
 	@Inject
 	private DailyPerformanceScreenRepo repo;
-
-	public DailyPerformanceCorrectionDto generateData(DateRange dateRange, List<DailyPerformanceEmployeeDto> lstEmployee)
-			throws InterruptedException {
-		String sId = AppContexts.user().employeeId();
-		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-		/*
-		 * アルゴリズム「休暇の管理状況をチェックする」を実行する Get holiday setting data
-		 */
-		screenDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
-		screenDto.setSubstVacationDto(this.repo.getSubstVacationDto());
-		screenDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
-		screenDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
-		screenDto.setDateRange(dateRange);
-		if (lstEmployee.size() > 0) {
-			screenDto.setLstEmployee(lstEmployee);
-		} else {
-			screenDto.setLstEmployee(this.getListEmployee(sId, screenDto.getDateRange()));
-		}
-		// create lst data
-		if (screenDto.getLstEmployee().size() > 0) {
-			List<GeneralDate> lstDate = dateRange.toListDate();
-			List<DPDataDto> lstData = new ArrayList<>();
-			int id = 0;
-			for (int j = 0; j < screenDto.getLstEmployee().size(); j++) {
-				for (int i = 0; i < lstDate.size(); i++) {
-					lstData.add(
-							new DPDataDto(id, "", "", lstDate.get(i), false, screenDto.getLstEmployee().get(j).getId(),
-									screenDto.getLstEmployee().get(j).getCode(), screenDto.getLstEmployee().get(j).getBusinessName()));
-					id += 1;
-				}
-			}
-			screenDto.setLstData(lstData);
-		}
-		// アルゴリズム「表示項目を制御する」を実行する
-		// Get display item control
-		if (screenDto.getLstEmployee().size() > 0) {
-			screenDto.setLstControlDisplayItem(this.getControlDisplayItems(
-					screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList()),
-					screenDto.getDateRange()));
-		}
-		/*
-		 * アルゴリズム「期間に対応する実績エラーを取得する」を実行する Get list daily performance error
-		 */
-		if (screenDto.getLstEmployee().size() > 0) {
-			List<DPErrorDto> lstError = this.getDPErrorList(
-					screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList()),
-					screenDto.getDateRange());
-			if (lstError.size() > 0) {
-				// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
-				// Get list error setting
-				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
-			}
-		}
-		screenDto.markLoginUser();
-		screenDto.createAccessModifierCellState();
-		return screenDto;
-	}
 
 	private List<DailyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
 		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
@@ -128,7 +83,105 @@ public class DailyPerformanceCorrectionProcessor {
 		return result;
 	}
 
-	private List<DPErrorDto> getDPErrorList(List<String> lstEmployee, DateRange dateRange) {
-		return this.repo.getListDPError(dateRange, lstEmployee);
+	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
+			List<DailyPerformanceEmployeeDto> lstEmployee) throws InterruptedException {
+		String sId = AppContexts.user().employeeId();
+		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
+		/*
+		 * アルゴリズム「休暇の管理状況をチェックする」を実行する Get holiday setting data
+		 */
+		screenDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
+		screenDto.setSubstVacationDto(this.repo.getSubstVacationDto());
+		screenDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
+		screenDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
+		screenDto.setDateRange(dateRange);
+		if (lstEmployee.size() > 0) {
+			screenDto.setLstEmployee(lstEmployee);
+		} else {
+			screenDto.setLstEmployee(this.getListEmployee(sId, screenDto.getDateRange()));
+		}
+		// create lst data
+		if (screenDto.getLstEmployee().size() > 0) {
+			List<GeneralDate> lstDate = dateRange.toListDate();
+			List<DPDataDto> lstData = new ArrayList<>();
+			int id = 0;
+			for (int j = 0; j < screenDto.getLstEmployee().size(); j++) {
+				for (int i = 0; i < lstDate.size(); i++) {
+					lstData.add(new DPDataDto(id, "", "", lstDate.get(i), false,
+							screenDto.getLstEmployee().get(j).getId(), screenDto.getLstEmployee().get(j).getCode(),
+							screenDto.getLstEmployee().get(j).getBusinessName()));
+					id += 1;
+				}
+			}
+			screenDto.setLstData(lstData);
+		}
+		// アルゴリズム「表示項目を制御する」を実行する
+		// Get display item control
+		if (screenDto.getLstEmployee().size() > 0) {
+			screenDto.setLstControlDisplayItem(this.getControlDisplayItems(
+					screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList()),
+					screenDto.getDateRange()));
+		}
+		/*
+		 * アルゴリズム「期間に対応する実績エラーを取得する」を実行する Get list daily performance error
+		 */
+		if (screenDto.getLstEmployee().size() > 0) {
+			List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(),
+					screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList()));
+			if (lstError.size() > 0) {
+				// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
+				// Get list error setting
+				List<DPErrorSettingDto> lstErrorSetting = this.repo
+						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
+			}
+		}
+		screenDto.markLoginUser();
+		screenDto.createAccessModifierCellState();
+		return screenDto;
+	}
+
+	public List<ErrorReferenceDto> getListErrorRefer(DateRange dateRange,
+			List<DailyPerformanceEmployeeDto> lstEmployee) {
+		List<ErrorReferenceDto> lstErrorRefer = new ArrayList<>();
+		List<DPErrorDto> lstError = this.repo.getListDPError(dateRange,
+				lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList()));
+		if (lstError.size() > 0) {
+			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
+			// Get list error setting
+			List<DPErrorSettingDto> lstErrorSetting = this.repo
+					.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+			// convert to list error reference
+			for (int id = 0; id < lstError.size(); id++) {
+				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
+					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
+						lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(id), lstError.get(id).getEmployeeId(),
+								"", "", lstError.get(id).getProcessingDate(), lstError.get(id).getErrorCode(),
+								errorSetting.getMessageDisplay(), lstError.get(id).getAttendanceItemId(), "",
+								errorSetting.isBoldAtr(), errorSetting.getMessageColor()));
+					}
+				}
+			}
+			// get list item to add item name
+			List<DPAttendanceItem> lstAttendanceItem = this.repo.getListAttendanceItem(
+					lstError.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
+			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
+				for (DPAttendanceItem atdItem : lstAttendanceItem) {
+					if (errorRefer.getItemId().equals(atdItem.getId())) {
+						errorRefer.setItemName(atdItem.getName());
+					}
+				}
+			}
+			// add employee code & name
+			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
+				for (DailyPerformanceEmployeeDto employee : lstEmployee) {
+					if (errorRefer.getEmployeeId().equals(employee.getId())) {
+						errorRefer.setEmployeeCode(employee.getCode());
+						errorRefer.setEmployeeName(employee.getBusinessName());
+					}
+				}
+			}
+		}
+		return lstErrorRefer;
 	}
 }

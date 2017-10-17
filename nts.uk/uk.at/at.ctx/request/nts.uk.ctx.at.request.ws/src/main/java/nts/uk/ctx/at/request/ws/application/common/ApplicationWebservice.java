@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
@@ -31,10 +32,12 @@ import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetadata;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 
 @Path("at/request/application")
@@ -88,7 +91,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("approveapp")
-	public ListMailApproval approveApp(ApplicationDto command){
+	public ListMailApproval approveApp(InputCommonData command){
 		 return this.approveApp.handle(command);
 	}
 	
@@ -98,7 +101,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("denyapp")
-	public void denyApp(ApplicationDto command){
+	public void denyApp(InputCommonData command){
 		 this.denyApp.handle(command);
 	}
 	
@@ -108,7 +111,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("releaseapp")
-	public void releaseApp(ApplicationDto command){
+	public void releaseApp(InputCommonData command){
 		 this.releaseApp.handle(command);
 	}
 	
@@ -200,9 +203,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getmessagedeadline/{applicationID}")
-	public OutputMessageDeadline getDataConfigDetail(@PathParam("applicationID") int appType) {
-		return this.getDataAppCfDetailFinder.getDataConfigDetail(appType);
+	@Path("getmessagedeadline")
+	public OutputMessageDeadline getDataConfigDetail(ApplicationDto application) {
+		return this.getDataAppCfDetailFinder.getDataConfigDetail(application);
 	}
 	//new InputMessageDeadline("000000000000-0005",null,1,null)
 	
