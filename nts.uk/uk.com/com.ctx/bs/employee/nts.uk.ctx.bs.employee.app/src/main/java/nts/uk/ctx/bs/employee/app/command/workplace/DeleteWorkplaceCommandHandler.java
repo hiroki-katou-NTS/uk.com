@@ -16,7 +16,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
@@ -59,8 +58,7 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
             throw new RuntimeException(String.format("Workplace %s not existed.", command.getWkpIdSelected()));
         }
         Workplace workplace = optionalWkp.get();
-        WorkplaceHistory wkpHistoryLatest = workplace.getWkpHistoryLatest();
-        GeneralDate startDWkpHistLatest = wkpHistoryLatest.getPeriod().start();
+        GeneralDate startDWkpHistLatest = workplace.getWkpHistoryLatest().getPeriod().start();
         
         if (command.getStartDWkpConfigInfo().equals(startDWkpHistLatest)) {
             // delete workplace infor
