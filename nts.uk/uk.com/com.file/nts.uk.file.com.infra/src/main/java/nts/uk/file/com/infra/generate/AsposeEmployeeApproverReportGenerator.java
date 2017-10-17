@@ -123,7 +123,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 		Cells cells = worksheet.getCells();
 		Map<String, WpApproverAsAppOutput> lstWorkplace = dataSource.getWpApprover();
 		if (lstWorkplace.size() == 0) {
-			throw new BusinessException(new RawErrorMessage("Workplace list is empty"));
+			throw new BusinessException("Msg_7");
 
 		}
 

@@ -48,7 +48,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		// ドメインモデル「申請承認設定」を取得する ( Acquire the domain model "application approval setting" )
 		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
 		if(!applicationSettingOp.isPresent()){
-			throw new RuntimeException("khong co application setting");
+			throw new RuntimeException("Not found ApplicationSetting in table KRQST_APPLICATION_SETTING, companyID =" + companyID);
 		}
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		

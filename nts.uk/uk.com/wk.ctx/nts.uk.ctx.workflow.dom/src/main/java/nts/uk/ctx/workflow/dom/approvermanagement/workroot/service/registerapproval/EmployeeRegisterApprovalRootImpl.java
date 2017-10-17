@@ -168,7 +168,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			phaseInfors.add(phase);
 		}
 		PersonImport ps = psAdapter.getPersonInfo(empId);
-		EmployeeApproverOutput empInfor = new EmployeeApproverOutput(ps.getSID(), ps.getEmployeeName());
+		EmployeeApproverOutput empInfor = new EmployeeApproverOutput(ps.getEmployeeCode(), ps.getEmployeeName());
 		EmployeeApproverAsApplicationOutput infor = new EmployeeApproverAsApplicationOutput(empInfor, mapAppType);
 		infor.getMapAppTypeAsApprover().put(apptyle, phaseInfors);
 

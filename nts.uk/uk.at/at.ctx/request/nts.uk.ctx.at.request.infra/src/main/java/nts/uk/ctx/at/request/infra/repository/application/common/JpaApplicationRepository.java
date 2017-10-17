@@ -109,7 +109,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		updateEntity.startDate = newEntity.startDate;
 		updateEntity.endDate = newEntity.endDate;
 		updateEntity.appApprovalPhases = newEntity.appApprovalPhases;
-		this.commandProxy().update(updateEntity);
+		this.commandProxy().update(updateEntity) ;
 	}
 
 	/**

@@ -148,7 +148,6 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: tab person
                     else{
-                        self.getDataPerson();
                         $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                     }
                 });
@@ -1183,7 +1182,7 @@ module nts.uk.com.view.cmm018.a {
             checklistRoot(root: Array<vmbase.DataRootCheck>): Array<vmbase.CompanyAppRootADto>{
                  let self = this;
                 let lstbyApp: Array<vmbase.CompanyAppRootADto> = [];
-                let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'abc','123',0, '',0,0);
+                let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'','',0, '',0,0);
                 let color: boolean;
                 //Them common type
                 _.each(root, function(itemRoot){
@@ -2240,6 +2239,9 @@ module nts.uk.com.view.cmm018.a {
                             let codeSelected = self.findRootByEndDate('9999/12/31', appType, 0);
                             if(codeSelected != undefined){
                                 self.singleSelectedCode(codeSelected.company.approvalId);
+                            }else{
+                                let code = self.findAppbyValue(appType);
+                                self.singleSelectedCode(code.localizedName);
                             }
                         });
                     }else if(self.tabSelectedB()==1){
@@ -2247,6 +2249,9 @@ module nts.uk.com.view.cmm018.a {
                             let codeSelected = self.findRootByEndDate('9999/12/31', appType, 1);
                             if(codeSelected != undefined){
                                 self.singleSelectedCode(codeSelected.workplace.approvalId);
+                            }else{
+                                let code = self.findAppbyValue(appType);
+                                self.singleSelectedCode(code.localizedName);
                             }
                         });
                     }else{
@@ -2254,6 +2259,9 @@ module nts.uk.com.view.cmm018.a {
                             let codeSelected = self.findRootByEndDate('9999/12/31', appType, 2);
                             if(codeSelected != undefined){
                                 self.singleSelectedCode(codeSelected.person.approvalId);
+                            }else{
+                                let code = self.findAppbyValue(appType);
+                                self.singleSelectedCode(code.localizedName);
                             }
                         });
                     }

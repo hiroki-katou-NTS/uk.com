@@ -52,12 +52,11 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
 	@Override
-	public List<String> detailScreenAfterApprovalProcess(Application application) {
+	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
 		String companyID = AppContexts.user().companyId();
 		List<String> listMailReceived = new ArrayList<>();
-		//アルゴリズム「承認情報の整理」を実行する
-		
-		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(application);
+		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
+		application = reflectionInfoService.organizationOfApprovalInfo(application, approverMemo);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
@@ -195,6 +194,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					if(!lstApprover.isEmpty()) {
 						// 承認者の代行情報リスト
 						AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApprover);
+						//返す結果の全承認者パス設定フラグがtrue(全承認者パス設定フラグ = true)
 						if(agency.isFlag()) {
 							allApprovedFlg = true;
 						// 返す結果の全承認者パス設定フラグがfalse(全承認者パス設定フラグ=false)
@@ -210,11 +210,12 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					return;
 				}
 				// 「反映情報」．実績反映状態を「反映待ち」にする
-				if (allApprovedFlg) {
+				//TODO: can xem lai xu ly nay
+				/*if (allApprovedFlg) {
 					phase.changeApprovalATR(ApprovalAtr.APPROVED);
 				}else {
 					phase.changeApprovalATR(ApprovalAtr.UNAPPROVED);
-				}
+				}*/
 				
 			}
 		}

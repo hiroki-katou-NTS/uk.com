@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
@@ -58,17 +59,17 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
-
+		String appID = IdentifierUtil.randomUniqueId();
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds().stream()
-				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, "", "",
+				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, appID, IdentifierUtil.randomUniqueId(),
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class),
 						appApprovalPhaseCmd.dispOrder,
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class),
 						appApprovalPhaseCmd.getListFrame().stream()
-								.map(approvalFrame -> new ApprovalFrame(companyId, "", approvalFrame.dispOrder,
+								.map(approvalFrame -> new ApprovalFrame(companyId, IdentifierUtil.randomUniqueId(), approvalFrame.dispOrder,
 										approvalFrame.listApproveAccepted.stream()
 												.map(approveAccepted -> ApproveAccepted.createFromJavaType(companyId,
-														"", approveAccepted.approverSID, ApprovalAtr.UNAPPROVED.value,
+														IdentifierUtil.randomUniqueId(), approveAccepted.approverSID, ApprovalAtr.UNAPPROVED.value,
 														approveAccepted.confirmATR, null, approveAccepted.reason,
 														approveAccepted.representerSID))
 												.collect(Collectors.toList())))
@@ -76,7 +77,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 				.collect(Collectors.toList());
 
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
-		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
+		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(appID,
 				command.getApplicationDate(), command.getReasonTemp() + ":" + command.getAppReason(), appApprovalPhases,
 				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
 				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
