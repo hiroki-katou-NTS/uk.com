@@ -25,13 +25,13 @@
 		<ui:define name="content">
 
 			<div id="functions-area" class="divHeader">
-				<button id="A_BTN_001" data-bind="click: clearData"
+				<button id="A_BTN_001" data-bind="click: clearData" tabindex="1"
 					class="btnStyle">#{i18n.getText('CMM014_1')}</button>
-				<button id="A_BTN_002"
+				<button id="A_BTN_002" tabindex="2"
 					data-bind="click: createClassification , enable: true"
 					class="proceed btnStyle">#{i18n.getText('CMM014_2')}</button>
-				<button id="A_BTN_003">#{i18n.getText('CMM014_3')}</button>
-				<button id="A_BTN_004"
+				<button id="A_BTN_003" tabindex="3">#{i18n.getText('CMM014_3')}</button>
+				<button id="A_BTN_004" tabindex="4"
 					data-bind="click: deleteClassification , enable: enableDelete"
 					class="danger btnStyle">#{i18n.getText('CMM014_4')}</button>
 
@@ -39,7 +39,7 @@
 
 			<div id="contents-area">
 				<div id="left-content">
-					<div id="clf-component" tabindex="6"></div>
+					<div id="clf-component" tabindex="5"></div>
 				</div>
 
 				<div id="right-content">
@@ -60,7 +60,7 @@
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input id= "clfCode"
+										<input id= "clfCode" tabindex="6"
 											data-bind="ntsTextEditor: {
                                             value: classificationCode,
                                             constraint: 'ClassificationCode',
@@ -69,7 +69,7 @@
 									</div>
 
 									<div class="input_002">
-										<input id= "clfName"
+										<input id= "clfName" tabindex="7"
 											data-bind="ntsTextEditor: {
 	                                            value: classificationName,
 	                                            required: true,
@@ -88,7 +88,7 @@
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea id="memo" style="margin-top: 20px; width: 446px; height: 180px"
+									<textarea id="memo" tabindex="8" style="margin-top: 20px; width: 446px; height: 180px"
 										data-bind="ntsMultilineEditor: {
 											value: memo,
 											constraint: 'Memo'

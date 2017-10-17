@@ -101,8 +101,8 @@
 								<tr class="bg-dark-green">
 									<com:ko tag="if" bind="$parent.isManage()">
 										<com:ko tag="foreach" bind="overtimes">
-											<td>
-												<div tabindex="10" data-bind="ntsCheckBox: { checked: superHoliday60HOccurs,name: '#[KMK010_20]' }">#{i18n.getText('KMK010_20')}</div>
+											<td class="selectionVaction">
+												<div tabindex="10" data-bind="ntsCheckBox: { checked: superHoliday60HOccurs,name: '#[KMK010_20]' }"><label>#{i18n.getText('KMK010_20')}</label></div>
 											</td>
 										</com:ko>
 									</com:ko>

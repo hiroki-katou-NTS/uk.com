@@ -155,7 +155,7 @@
 	margin-top: 20px;
 }
 
-.labelFiveRate{
+.labelFiveRate {
 	margin-top: 10px;
 	margin-left: 80px;
 }
@@ -164,4 +164,8 @@
 	float: right;
 	margin-top: 3px;
 	margin-right: 43%;
+}
+
+.selectionVaction{
+	width: 96px;
 }
