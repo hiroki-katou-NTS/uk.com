@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk002.d {
 
         import FormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.FormulaSettingDto;
         import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;
+        import EnumConstantDto = nts.uk.at.view.kmk002.a.service.model.EnumConstantDto;
         import FormulaDto = nts.uk.at.view.kmk002.a.service.model.FormulaDto;
         import ParamToD = nts.uk.at.view.kmk002.a.viewmodel.ParamToD;
 
@@ -61,14 +62,42 @@ module nts.uk.at.view.kmk002.d {
             leftItem: FormulaSettingItem;
             rightItem: FormulaSettingItem;
 
+            // enable / disable flag
+            isLeftCbbEnable: KnockoutComputed<boolean>;
+            isRightCbbEnable: KnockoutComputed<boolean>;
+            isFormulasEmpty: KnockoutComputed<boolean>;
+
             // datasource
-            operatorDatasource: KnockoutObservableArray<any>;
+            operatorDatasource: KnockoutObservableArray<EnumConstantDto>;
 
             constructor() {
                 this.minusSegment = ko.observable(0);
                 this.operator = ko.observable(0);
                 this.leftItem = new FormulaSettingItem();
                 this.rightItem = new FormulaSettingItem();
+                this.selectableFormulas = ko.observableArray([]);
+
+                // enable / disable flag
+                this.isFormulasEmpty = ko.computed(() => {
+                    if (nts.uk.util.isNullOrEmpty(this.selectableFormulas())) {
+                        this.leftItem.settingMethod(1);
+                        this.rightItem.settingMethod(1);
+                        return true;
+                    }
+                    return false;
+                });
+                this.isLeftCbbEnable = ko.computed(() => {
+                    if (this.isFormulasEmpty() || this.leftItem.isInputValue()) {
+                        return false;
+                    }
+                    return true;
+                });
+                this.isRightCbbEnable = ko.computed(() => {
+                    if (this.isFormulasEmpty() || this.rightItem.isInputValue()) {
+                        return false;
+                    }
+                    return true;
+                });
 
                 // fixed 
                 this.leftItem.dispOrder = 1;
@@ -76,12 +105,7 @@ module nts.uk.at.view.kmk002.d {
                 this.rightItem.dispOrder = 2;
                 this.rightItem.settingMethod(1);
 
-                this.operatorDatasource = ko.observableArray([
-                    { code: 0, name: '+' },
-                    { code: 1, name: '-' },
-                    { code: 2, name: '*' },
-                    { code: 3, name: '/' }
-                ]);
+                this.operatorDatasource = ko.observableArray([]);
 
                 // default value
                 this.formulaName = '';
@@ -89,7 +113,6 @@ module nts.uk.at.view.kmk002.d {
                 this.selectedItemRight = ko.observable('');
                 this.formulaAtr = '';
 
-                this.selectableFormulas = ko.observableArray([]);
             }
 
             /**
@@ -200,6 +223,7 @@ module nts.uk.at.view.kmk002.d {
                 self.leftItem.fromDto(dto.formulaSetting.leftItem);
                 self.rightItem.fromDto(dto.formulaSetting.rightItem);
                 self.selectableFormulas(dto.selectableFormulas);
+                self.operatorDatasource(dto.operatorDatasource);
             }
 
             /**

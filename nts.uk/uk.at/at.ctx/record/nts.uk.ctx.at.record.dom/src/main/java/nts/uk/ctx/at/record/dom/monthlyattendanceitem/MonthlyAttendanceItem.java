@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceNam
  * The Class MonthlyAttendanceItem.
  */
 @Getter
+// 月次の勤怠項目
 public class MonthlyAttendanceItem extends AggregateRoot {
 
 	/** The company id. */

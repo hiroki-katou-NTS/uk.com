@@ -309,11 +309,13 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Get selectable formulas for screen D.
+             * Get selectable formulas for selected formula for screen D
+             * @param orderNo: the order of selected formula
              */
-            private getSelectableFormulas(): Array<FormulaDto> {
+            private getSelectableFormulas(orderNo: number): Array<FormulaDto> {
                 let self = this;
-                return _.map(self.calcFormulas(), item => item.toDto());
+                let filtered = _.filter(self.calcFormulas(), item => item.orderNo < orderNo);
+                return _.map(filtered, item => item.toDto());
             }
 
             /**
@@ -1105,7 +1107,7 @@ module nts.uk.at.view.kmk002.a {
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
-            getSelectableFormulas: () => Array<FormulaDto>;
+            getSelectableFormulas: (orderNo: number) => Array<FormulaDto>;
 
             // Enums datasource
             formulaAtrDs: EnumConstantDto[];
@@ -1402,7 +1404,8 @@ module nts.uk.at.view.kmk002.a {
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = self.formulaSetting;
-                param.selectableFormulas = self.getSelectableFormulas();
+                param.selectableFormulas = self.getSelectableFormulas(self.orderNo);
+                param.operatorDatasource = Enums.ENUM_FORMULA.operatorAtr;
 
                 nts.uk.ui.windows.setShared('paramToD', param);
 
@@ -1699,6 +1702,7 @@ module nts.uk.at.view.kmk002.a {
             formulaAtr: string;
             performanceAtr: number;
             formulaSetting: FormulaSettingDto;
+            operatorDatasource: Array<EnumConstantDto>;
             selectableFormulas: Array<FormulaDto>;
         }
     }
