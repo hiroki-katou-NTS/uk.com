@@ -22,6 +22,12 @@ public class SelectedAttendanceItemDto implements SelectedAttendanceItemSetMemen
 	/** The operator. */
 	private int operator;
 
+	/** The attendance item name. */
+	private String attendanceItemName;
+
+	/** The operator text. */
+	private String operatorText;
+
 	/*
 	 * (non-Javadoc)
 	 * 

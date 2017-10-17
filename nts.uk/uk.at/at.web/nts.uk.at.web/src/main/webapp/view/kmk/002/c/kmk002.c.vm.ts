@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk002.c {
     import DailyAttendanceItemDto = service.model.DailyAttendanceItemDto;
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
     import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
+    import ParamToC = nts.uk.at.view.kmk002.a.viewmodel.ParamToC;
 
     export module viewmodel {
         export class ScreenModel {
@@ -18,9 +19,6 @@ module nts.uk.at.view.kmk002.c {
 
             constructor() {
                 var self = this;
-                let param = nts.uk.ui.windows.getShared('paramToC');
-                self.formulaAtr = param.formulaAtr;
-                self.formulaName = param.formulaName;
                 self.checkSelectDailyAttendanceItem = ko.observable(0);
                 self.lstDailyAttendanceItem = ko.observableArray([]);
                 self.selectCodeDailyAttendanceItem = ko.observableArray([]);
@@ -37,6 +35,12 @@ module nts.uk.at.view.kmk002.c {
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
+
+                // Get param from parent screen
+                let param = nts.uk.ui.windows.getShared('paramToC');
+
+                // Set param to view model.
+                self.fromDto(param);
             }
 
             /**
@@ -137,6 +141,16 @@ module nts.uk.at.view.kmk002.c {
                 self.lstDailyAttendanceItem(updateData);
                 self.selectCodeDailyAttendanceItem([]);
                 self.lstSelectDailyAttendanceItem(selectData);
+            }
+
+            /**
+             * Convert dto to view model.
+             */
+            private fromDto(dto: ParamToC): void {
+                let self = this;
+                self.formulaAtr = dto.formulaAtr;
+                self.formulaName = dto.formulaName;
+                self.lstSelectDailyAttendanceItem(dto.itemSelection.attendanceItems);
             }
 
             /**

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
@@ -54,9 +55,20 @@ public class FormulaFinder {
 			return dto;
 		}).collect(Collectors.toList());
 
-		// Set order
 		listDto.forEach(item -> {
+			// Set order
 			item.setOrderNo(orders.get(new FormulaId(item.getFormulaId())));
+
+			// set attendance item name if calculationAtr == item selection.
+			if (item.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
+				item.getItemSelection().getAttendanceItems().forEach(attendanceItem -> {
+					attendanceItem.getAttendanceItemId(); //TODO set name & operator
+					attendanceItem.getOperator();
+					attendanceItem.setAttendanceItemName("name");
+					attendanceItem.setOperatorText("+");
+				});
+				
+			}
 		});
 
 		return listDto;
