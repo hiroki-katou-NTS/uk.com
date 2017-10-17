@@ -2,8 +2,6 @@ package entity.person.info.setting.innitvalue;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -21,10 +19,6 @@ public class PpemtPersonInitValueSettingCtg extends UkJpaEntity implements Seria
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public PpemtPersonInitValueSettingCtgPk settingCtgPk;
-
-	@Basic(optional = false)
-	@Column(name = "PER_INIT_SET_ID")
-	public String settingId;
 
 	@Override
 	protected Object getKey() {
