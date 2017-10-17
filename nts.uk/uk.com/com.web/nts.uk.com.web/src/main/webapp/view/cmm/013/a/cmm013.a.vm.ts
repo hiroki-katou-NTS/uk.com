@@ -16,13 +16,9 @@ module nts.uk.com.view.cmm013.a {
                      
             baseDate: KnockoutObservable<Date>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-            isMultiSelect: KnockoutObservable<boolean>;
             selectedJobTitleId: KnockoutObservable<string>;
-            multiselectedJobTitleId: KnockoutObservableArray<string>;
-            isShowNoSelectRow: KnockoutObservable<boolean>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;           
-                        
-            jobTitleList: KnockoutObservableArray<UnitModel>;
+            selectedJobTitle: KnockoutObservable<any>;
+            isShowNoSelectRow: KnockoutObservable<boolean>;        
             
             
             
@@ -55,40 +51,32 @@ module nts.uk.com.view.cmm013.a {
                 // Init list JobTitle setting
                 _self.baseDate = ko.observable(new Date()); 
 
-                _self.selectedJobTitleId = ko.observable("");
-                _self.selectedJobTitleId.subscribe((newValue) => {
+                _self.selectedJobTitleId = ko.observable(null);
+                _self.selectedJobTitleId.subscribe((newValue: any) => {
                     _self.createMode(false);
                     _self.findJobHistoryById(newValue);
                 });        
+                
                 _self.isShowAlreadySet = ko.observable(false);
                 _self.isShowAlreadySet.subscribe(() => {
                     _self.reloadComponent();
                 });           
-                _self.isMultiSelect = ko.observable(false);
-                _self.isMultiSelect.subscribe(() => {
-                    _self.reloadComponent();
-                });
                 _self.isShowNoSelectRow = ko.observable(false);
                 _self.isShowNoSelectRow.subscribe(() => {
                     _self.reloadComponent();
-                });
-                _self.multiselectedJobTitleId = ko.observableArray([]);                       
-                _self.alreadySettingList = ko.observableArray([]);           
+                });                          
                 
                 _self.listJobTitleOption = {
                     baseDate: _self.baseDate,
                     isShowAlreadySet: _self.isShowAlreadySet(),
-                    isMultiSelect: _self.isMultiSelect(),
+                    isMultiSelect: false,
                     listType: 3,
                     selectType: 1,
                     selectedCode: _self.selectedJobTitleId,
                     isDialog: false,
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
-                    alreadySettingList: _self.alreadySettingList,
                     maxRows: 12
-                };
-                
-                _self.jobTitleList = ko.observableArray<UnitModel>([]);
+                };                
                 
                 // Init JobTitle form
                 _self.jobTitleCode = ko.observable("");
@@ -102,6 +90,8 @@ module nts.uk.com.view.cmm013.a {
                 _self.enable_A3_3 = ko.observable(null);
                 _self.enable_A3_4 = ko.observable(null);
                 _self.enable_A3_5 = ko.observable(null);
+                
+                $('#job-title-items-list').ntsListComponent(_self.listJobTitleOption);
             }
     
             /**
@@ -111,11 +101,7 @@ module nts.uk.com.view.cmm013.a {
                 let _self = this;
                 
                 _self.listJobTitleOption.isShowAlreadySet = _self.isShowAlreadySet();
-                _self.listJobTitleOption.isMultiSelect = _self.isMultiSelect();
                 _self.listJobTitleOption.isShowNoSelectRow = _self.isShowNoSelectRow();
-                _self.listJobTitleOption.alreadySettingList = _self.alreadySettingList;
-                
-                _self.listJobTitleOption.selectedCode = _self.isMultiSelect() ? _self.multiselectedJobTitleId : _self.selectedJobTitleId;
                 
                 $('#job-title-items-list').ntsListComponent(_self.listJobTitleOption);
             }
@@ -125,17 +111,12 @@ module nts.uk.com.view.cmm013.a {
              */
             public startPage(): JQueryPromise<any> {
                 let _self = this;
-                let dfd = $.Deferred<any>();
-                
-                //TODO: Switch mode
-                _self.isMultiSelect(false);
-                _self.reloadComponent();
+                let dfd = $.Deferred<any>();          
                 
                 //TODO: Get JobTitle data by date                                
                 //TODO: mocked JobTitle
-                _self.selectedJobTitleId("000000000000000000000000000000000001");
-                
-                //TODO: Apply data to list JobTitle                
+                //_self.selectedJobTitleId("000000000000000000000000000000000001");
+                _self.historyChangeMode(true);            
                 
                 dfd.resolve();
                 return dfd.promise();
@@ -146,13 +127,12 @@ module nts.uk.com.view.cmm013.a {
              */
             private findJobHistoryById(jobTitleId: string): void {
                 let _self = this;    
-                           
                 // Load JobTitle history info 
-                nts.uk.ui.block.grayout();
+                //nts.uk.ui.block.grayout();
                 _self.jobTitleHistoryModel().clearData();
                 service.findJobHistoryList(jobTitleId)
                     .done((data: any) => {
-                        nts.uk.ui.block.clear();
+                        //nts.uk.ui.block.clear();
                         if (data) {
                             // Load JobTitle History
                             let listHistory: History[] = _.map(data.jobTitleHistory, (item: any) => {
@@ -162,7 +142,7 @@ module nts.uk.com.view.cmm013.a {
                         }                                           
                     })
                     .fail((res: any) => {
-                        nts.uk.ui.block.clear();
+                        //nts.uk.ui.block.clear();
                     }); 
             }          
             
@@ -198,7 +178,7 @@ module nts.uk.com.view.cmm013.a {
             public changeMode(newValue: boolean): void {
                 let _self = this;
                 
-                if (newValue === true) {
+                if (newValue) {
                     _self.jobTitleHistoryModel().clearData();
                     //TODO _self.jobTitleHistoryModel().listJobTitleHistory.push(new History());
                     _self.jobTitleCode = ko.observable("");
@@ -216,6 +196,18 @@ module nts.uk.com.view.cmm013.a {
                     // UI
                     _self.enable_A1_1(true);
                 }               
+            }
+            
+            /**
+             * Callback: change history mode based on A3_2 value
+             */
+            public historyChangeMode(newValue: boolean): void {
+                let _self = this;
+                
+                _self.enable_A1_3(newValue);
+                _self.enable_A3_3(newValue);
+                _self.enable_A3_4(newValue);
+                _self.enable_A3_5(newValue);
             }
             
             /**

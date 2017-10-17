@@ -9,18 +9,23 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 @Setter
+// SMTP情報
 public class SmtpInfo extends DomainObject {
 	
 	/** The ip version. */
+	// IPバージョン
 	private IpVersion ipVersion;
 	
 	/** The server. */
+	// サーバ
 	private Server server;
 	
 	/** The time out. */
+	// タイムアウト時間
 	private TimeOut timeOut;
 	
 	/** The port. */
+	// ポート
 	private Port port;
 	
 	/**

@@ -121,6 +121,14 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		// Get new history
 		JobTitle updateEntity = command.toDomain(companyId);
 		updateEntity.getLastestHistory().updateEndDate(GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
+		
+		// If only 1 history available
+		if (jobTitle.getJobTitleHistory().size() == LIST_HISTORY_MIN_SIZE) {
+			// Update history
+			this.jobTitleRepository.update(updateEntity);
+            return;
+        }
+		
 		int indexPreviousHistory = 1;
 		JobTitleHistory previousHistory = jobTitle.getJobTitleHistory().get(indexPreviousHistory);
 
