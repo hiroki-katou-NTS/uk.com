@@ -118,7 +118,7 @@ module nts.uk.at.view.kmk002.d {
                 let self = this;
 
                 // Check divide by zero
-                if (self.operator() == 3 && self.rightItem.inputValue() == 0) {
+                if (self.rightItem.settingMethod() == 1 && self.operator() == 3 && self.rightItem.inputValue() == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_638" });
                     return false;
                 }
