@@ -7,9 +7,14 @@ package nts.uk.ctx.bs.employee.infra.entity.jobtitle;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -45,6 +50,11 @@ public class BsymtJobInfo extends UkJpaEntity implements Serializable {
     /** The sequence cd. */
     @Column(name = "SEQUENCE_CD")
     private String sequenceCd;
+    
+	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({
+			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
+	public BsymtJobHist bsymtJobHist;
 
     /**
      * Instantiates a new bsymt job info.

@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
@@ -42,8 +41,8 @@ public class JpaJobTitleInfoGetMemento implements JobTitleInfoGetMemento {
 	 * @return the job title history id
 	 */
 	@Override
-	public HistoryId getJobTitleHistoryId() {
-		return new HistoryId(this.bsymtJobInfo.getBsymtJobInfoPK().getHistId());
+	public String getJobTitleHistoryId() {
+		return this.bsymtJobInfo.getBsymtJobInfoPK().getHistId();
 	}
 
 	/**

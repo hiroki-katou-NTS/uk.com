@@ -5,5 +5,6 @@ module cps002.i {
         __viewContext['viewModel'] = new vm.ViewModel();
         __viewContext.bind(__viewContext['viewModel']);
          $("#multiList_headers th:first-child").append(nts.uk.resource.getText("CPS002_74"));
+        __viewContext['viewModel'].start();
     });
 }

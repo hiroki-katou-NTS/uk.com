@@ -8,7 +8,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 
 /**
  * The Class JobTitleInfo.
@@ -29,7 +28,7 @@ public class JobTitleInfo extends AggregateRoot {
 
 	/** The job title history id. */
 	// 職位履歴ID
-	private HistoryId jobTitleHistoryId;
+	private String jobTitleHistoryId;
 
 	/** The job title id. */
 	// 職位ID
@@ -91,7 +90,7 @@ public class JobTitleInfo extends AggregateRoot {
 	public JobTitleInfo clone(String historyId) {
 		JobTitleInfo newEntity = new JobTitleInfo();
 		newEntity.companyId = this.companyId;
-		newEntity.jobTitleHistoryId = new HistoryId(historyId);
+		newEntity.jobTitleHistoryId = historyId;
 		newEntity.jobTitleId = this.jobTitleId;
 		newEntity.jobTitleCode = this.jobTitleCode;
 		newEntity.jobTitleName = this.jobTitleName;

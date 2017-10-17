@@ -62,7 +62,7 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 		// convert list workplace history to map by key historyId
         Map<String, DatePeriod> mapJobHist = jobTitleHistory.stream()
         		.collect(Collectors.toMap(
-        				item -> ((JobTitleHistory) item).getHistoryId().v(), 
+        				item -> ((JobTitleHistory) item).getHistoryId(), 
         				item -> ((JobTitleHistory) item).getPeriod()));
 
         // set period

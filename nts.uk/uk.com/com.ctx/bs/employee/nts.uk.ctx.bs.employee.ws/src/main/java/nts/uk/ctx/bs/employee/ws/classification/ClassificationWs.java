@@ -24,7 +24,7 @@ import nts.uk.ctx.bs.employee.app.find.classification.dto.ClassificationFindDto;
 /**
  * The Class ManagementCategoryWs.
  */
-@Path("basic/employee/classification")
+@Path("bs/employee/classification")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClassificationWs extends WebService{
 

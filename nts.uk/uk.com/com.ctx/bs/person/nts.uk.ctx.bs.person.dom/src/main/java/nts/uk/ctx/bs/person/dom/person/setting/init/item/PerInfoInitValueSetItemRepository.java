@@ -4,9 +4,27 @@ import java.util.List;
 
 public interface PerInfoInitValueSetItemRepository {
 	
-	List<PerInfoInitValueSetItem> getAllItem(String initValueSettingCtgId);
+	/**
+	 * get all init value item
+	 * @param perInfoCtgId
+	 * @return
+	 */
+	List<PerInfoInitValueSetItem> getAllItem(String perInfoCtgId);
 	
+	/**
+	 * get detail item
+	 * @param perInfoCtgId
+	 * @param perInfoItemDefId
+	 * @return
+	 */
+	PerInfoInitValueSetItem getDetailItem(String perInfoCtgId, String perInfoItemDefId);
 	
-	PerInfoInitValueSetItem getDetailItem(String initValueSettingCtgId, String perInfoItemDefId);
+	/**
+	 * check category have item list ? 
+	 * @param perInfoCtgId
+	 * @return
+	 */
+	boolean isExist(String perInfoCtgId);
+
 
 }

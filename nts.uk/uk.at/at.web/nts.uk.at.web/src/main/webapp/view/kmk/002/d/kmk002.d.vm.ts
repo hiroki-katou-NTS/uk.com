@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk002.d {
 
         import FormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.FormulaSettingDto;
         import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;
+        import FormulaDto = nts.uk.at.view.kmk002.a.service.model.FormulaDto;
         import ParamToD = nts.uk.at.view.kmk002.a.viewmodel.ParamToD;
 
         export class ScreenModel {
@@ -48,19 +49,19 @@ module nts.uk.at.view.kmk002.d {
             }
         }
         class FormulaSetting {
-            formulaId: string; //TODO dung lam gi?
+            formulaId: string;
             formulaName: string;
-            performanceAtr: number; //TODO dung lam gi ?
             formulaAtr: string;
-            selectableFormulas: KnockoutObservableArray<any>;
-            selectedItemLeft: KnockoutObservable<any>;
-            selectedItemRight: KnockoutObservable<any>;
+            selectableFormulas: KnockoutObservableArray<FormulaDto>;
+            selectedItemLeft: KnockoutObservable<string>;
+            selectedItemRight: KnockoutObservable<string>;
 
             minusSegment: KnockoutObservable<number>;
             operator: KnockoutObservable<number>;
             leftItem: FormulaSettingItem;
             rightItem: FormulaSettingItem;
 
+            // datasource
             operatorDatasource: KnockoutObservableArray<any>;
 
             constructor() {
@@ -81,22 +82,14 @@ module nts.uk.at.view.kmk002.d {
                     { code: 2, name: '*' },
                     { code: 3, name: '/' }
                 ]);
-                
-                //abc
-                this.formulaName = '';
-                this.performanceAtr = 0;
-                this.selectedItemLeft = ko.observable();
-                this.selectedItemRight = ko.observable();
-                this.formulaAtr = nts.uk.resource.getText('KMK002_70'); // time
-                //self.formulaAtr = nts.uk.resource.getText('KMK002_71'); // number
-                //self.formulaAtr = nts.uk.resource.getText('KMK002_72'); // amount
 
-                this.selectableFormulas = ko.observableArray([
-                    { code: '0', name: 'aaaaaaaaaaa', atr: 1 },
-                    { code: '1', name: 'bbbbbbbbb', atr: 1 },
-                    { code: '2', name: 'cccccccc', atr: 2 },
-                    { code: '3', name: 'ddddddddd', atr: 2 }
-                ]);
+                // default value
+                this.formulaName = '';
+                this.selectedItemLeft = ko.observable('');
+                this.selectedItemRight = ko.observable('');
+                this.formulaAtr = '';
+
+                this.selectableFormulas = ko.observableArray([]);
             }
 
             /**
@@ -153,10 +146,10 @@ module nts.uk.at.view.kmk002.d {
              */
             private isDifferentAtr(): boolean {
                 let self = this;
-                let leftItem = self.findFormulaById(self.selectedItemLeft());
-                let rightItem = self.findFormulaById(self.selectedItemRight());
+                let leftItem: FormulaDto = self.findFormulaById(self.selectedItemLeft());
+                let rightItem: FormulaDto = self.findFormulaById(self.selectedItemRight());
 
-                if (leftItem.atr != rightItem.atr) {
+                if (leftItem.formulaAtr != rightItem.formulaAtr) {
                     return true;
                 }
 
@@ -190,7 +183,7 @@ module nts.uk.at.view.kmk002.d {
              */
             private findFormulaById(id: string): any {
                 let self = this;
-                let f = _.find(self.selectableFormulas(), item => item.code == id);
+                let f = _.find(self.selectableFormulas(), item => item.formulaId == id);
                 return f;
             }
 
@@ -206,6 +199,7 @@ module nts.uk.at.view.kmk002.d {
                 self.operator(dto.formulaSetting.operator);
                 self.leftItem.fromDto(dto.formulaSetting.leftItem);
                 self.rightItem.fromDto(dto.formulaSetting.rightItem);
+                self.selectableFormulas(dto.selectableFormulas);
             }
 
             /**
@@ -217,8 +211,8 @@ module nts.uk.at.view.kmk002.d {
 
                 dto.minusSegment = self.minusSegment();
                 dto.operator = self.operator();
-                dto.leftItem = this.leftItem.toDto();
-                dto.rightItem = this.rightItem.toDto();
+                dto.leftItem = self.leftItem.toDto();
+                dto.rightItem = self.rightItem.toDto();
 
                 return dto;
             }
@@ -234,10 +228,10 @@ module nts.uk.at.view.kmk002.d {
             formulaItemId: KnockoutObservable<string>;
 
             constructor() {
-                this.settingMethod = ko.observable(1);
+                this.settingMethod = ko.observable(0);
                 this.dispOrder = 1;
-                this.inputValue = ko.observable(1);
-                this.formulaItemId = ko.observable(nts.uk.util.randomId());
+                this.inputValue = ko.observable(0);
+                this.formulaItemId = ko.observable('');
             }
 
             /**

@@ -62,6 +62,13 @@ module nts.uk.com.view.cdl004.a {
                 var self = this;
                 var selectedCode: any = null;
                 if(self.isMultiple){
+                    var dataSelected: string[] = [];
+                    for(var code of self.selectedMulJobtitle()){
+                        if(self.checkExistJobtile(code, $("#jobtitle").getDataList())){
+                           dataSelected.push(code);     
+                        }    
+                    }
+                    self.selectedMulJobtitle(dataSelected);
                     selectedCode = self.selectedMulJobtitle();
                     if(!selectedCode || selectedCode.length == 0){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
@@ -69,16 +76,30 @@ module nts.uk.com.view.cdl004.a {
                     }    
                 } else {
                     selectedCode = self.selectedSelJobtitle();
-                    var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
-                    if (!selectedCode && !isNoSelectRowSelected) {
+                    if (!self.checkExistJobtile(selectedCode, $("#jobtitle").getDataList())) {
+                        selectedCode = '';
+                    }
+                    if (!selectedCode) {
                         // Check if selected No select Row.
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }
                 }
 
                 nts.uk.ui.windows.setShared('outputCDL004', { selectedCode: selectedCode });
                 nts.uk.ui.windows.close();    
+            }
+            
+            /**
+             * function check job title
+             */
+            private checkExistJobtile(code: string, data: UnitModel[]): boolean {
+                for (var item of data) {
+                    if (code === item.id) {
+                        return true;
+                    }
+                }
+                return false;
             }
             /**
              * close windows

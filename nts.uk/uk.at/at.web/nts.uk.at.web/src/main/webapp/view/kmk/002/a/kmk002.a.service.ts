@@ -134,13 +134,10 @@ module nts.uk.at.view.kmk002.a {
              * SelectedAttendanceItemDto
              */
             export interface AttendanceItemDto {
-                id: string;
+                attendanceItemId: number;
                 operator: number;
-            }
-            export enum TypeAtr {
-                NUMBER = 0,
-                AMOUNT = 1,
-                TIME = 2
+                operatorText?: string;
+                attendanceItemName?: string;
             }
             export interface FormulaEnumDto {
                 formulaAtr: EnumConstantDto[];

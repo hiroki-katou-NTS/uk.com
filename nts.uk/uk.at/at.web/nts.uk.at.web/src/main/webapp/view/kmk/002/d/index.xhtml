@@ -60,14 +60,14 @@
 										data-bind="ntsComboBox: {
 										name: '#[KMK002_66]',
 										options: selectableFormulas,
-										optionsValue: 'code',
+										optionsValue: 'formulaId',
 										value: selectedItemLeft,
-										optionsText: 'name',
+										optionsText: 'formulaName',
 										editable: false,
 										enable: !leftItem.isInputValue(),
 										columns: [
-											{ prop: 'code', length: 1 },
-											{ prop: 'name', length: 10 },
+											{ prop: 'symbolValue', length: 1 },
+											{ prop: 'formulaName', length: 10 },
 										]}">
 									</div>
 								</div>
@@ -95,14 +95,14 @@
 								<div tabindex="6" id="cbb-right-item" class="width-200"
 									data-bind="ntsComboBox: {
 									options: selectableFormulas,
-									optionsValue: 'code',
+									optionsValue: 'formulaId',
 									value: selectedItemRight,
-									optionsText: 'name',
+									optionsText: 'formulaName',
 									editable: false,
 									enable: !rightItem.isInputValue(),
 									columns: [
-										{ prop: 'code', length: 1 },
-										{ prop: 'name', length: 10 },
+										{ prop: 'symbolValue', length: 1 },
+										{ prop: 'formulaName', length: 10 },
 									]}">
 								</div>
 							</td>

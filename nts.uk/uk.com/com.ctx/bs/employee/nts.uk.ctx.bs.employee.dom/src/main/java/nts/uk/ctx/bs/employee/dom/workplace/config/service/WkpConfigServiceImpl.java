@@ -93,9 +93,10 @@ public class WkpConfigServiceImpl implements WkpConfigService {
 
         // check date of workplace
         List<Workplace> lstWorkplace = this.workplaceRepo.findByWkpIds(lstWkpId);
-        for (Workplace workplace : lstWorkplace) {
+        
+        lstWorkplace.forEach(workplace -> {
             this.progress(workplace, latestWkpConfigHist.getPeriod().start(), newHistStartDate);
-        }
+        });
     }
 
     /**

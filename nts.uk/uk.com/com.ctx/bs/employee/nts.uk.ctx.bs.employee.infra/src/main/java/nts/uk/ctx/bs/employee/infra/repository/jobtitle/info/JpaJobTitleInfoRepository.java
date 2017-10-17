@@ -1,8 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -12,8 +17,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK_;
@@ -28,14 +35,13 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	/**
 	 * To entity.
 	 *
-	 * @param jobTitleInfo
-	 *            the job title info
+	 * @param jobTitleInfo the job title info
 	 * @return the bsymt job info
 	 */
 	private BsymtJobInfo toEntity(JobTitleInfo jobTitleInfo) {
 
 		Optional<BsymtJobInfo> optional = this.queryProxy().find(new BsymtJobInfoPK(jobTitleInfo.getCompanyId().v(),
-				jobTitleInfo.getJobTitleHistoryId().v(), jobTitleInfo.getJobTitleId().v()), BsymtJobInfo.class);
+				jobTitleInfo.getJobTitleHistoryId(), jobTitleInfo.getJobTitleId().v()), BsymtJobInfo.class);
 		BsymtJobInfo entity = new BsymtJobInfo();
 		if (optional.isPresent()) {
 			entity = optional.get();
@@ -102,14 +108,14 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		cq.select(root);
 
 		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(
+		List<Predicate> listPredicate = new ArrayList<>();
+		listPredicate.add(
 				criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
-		lstpredicateWhere.add(
+		listPredicate.add(
 				criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId), jobTitleId));
-		lstpredicateWhere.add(
+		listPredicate.add(
 				criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.histId), historyId));
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(listPredicate.toArray(new Predicate[] {}));
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
 
@@ -132,17 +138,50 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
 		
+		// Build query
+		cq.select(root);
+		
 		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(
+		List<Predicate> listPredicate = new ArrayList<>();
+		listPredicate.add(
 				criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
-		lstpredicateWhere.add(
+		listPredicate.add(
 				criteriaBuilder.equal(root.get(BsymtJobInfo_.sequenceCd), sequenceCode));
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(listPredicate.toArray(new Predicate[] {}));
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
 		
 		return !result.isEmpty();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#findAll(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<JobTitleInfo> findAll(String companyId, GeneralDate baseDate) {
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
+		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		
+		// Build query
+		cq.select(root);
+		
+		// add where
+        List<Predicate> listPredicate = new ArrayList<>();
+        listPredicate.add(
+        		criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+        listPredicate.add(
+        		criteriaBuilder.lessThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.startDate), baseDate));
+        listPredicate.add(
+        		criteriaBuilder.greaterThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
+
+        cq.where(listPredicate.toArray(new Predicate[] {}));
+        
+        return em.createQuery(cq).getResultList().stream()
+                .map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
+                .collect(Collectors.toList());
+	}
 }

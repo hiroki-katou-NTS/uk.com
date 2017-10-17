@@ -4,9 +4,9 @@ module nts.uk.com.view.cmm014.a.service {
      *  Service paths
      */
     var servicePath: any = {
-        findClassification: "basic/employee/classification/find",
-        saveClassification: "basic/employee/classification/save",
-        removeClassification: "basic/employee/classification/remove"
+        findClassification: "bs/employee/classification/find",
+        saveClassification: "bs/employee/classification/save",
+        removeClassification: "bs/employee/classification/remove"
     }
 
     /**

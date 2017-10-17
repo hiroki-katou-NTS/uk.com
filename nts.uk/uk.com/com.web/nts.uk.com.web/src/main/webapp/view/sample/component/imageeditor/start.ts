@@ -28,6 +28,10 @@ __viewContext.ready(function () {
         clear(){
             $("#test").ntsImageEditor("clear");
         }
+        
+        dialog() {
+            nts.uk.ui.windows.sub.modal("/view/sample/component/imageeditor/imageeditor.xhtml");    
+        }
     }
 
     

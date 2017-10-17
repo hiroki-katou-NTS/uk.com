@@ -445,7 +445,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 case 1: return getText('Enum_CategoryType_SINGLE_INFO');
                 case 2: return getText('Enum_CategoryType_MULTI_INFO');
                 case 3: return getText('Enum_CategoryType_CONTINUOUS_HISTORY');
-                case 4: return getText('Enum_CategoryType_NODUPLICATE_HISTOR');
+                case 4: return getText('Enum_CategoryType_NODUPLICATE_HISTORY');
                 case 5: return getText('Enum_CategoryType_DUPLICATE_HISTORY');
                 case 6: return getText('Enum_CategoryType_CONTINUOUS_HISTORY');
                 default: return '';
