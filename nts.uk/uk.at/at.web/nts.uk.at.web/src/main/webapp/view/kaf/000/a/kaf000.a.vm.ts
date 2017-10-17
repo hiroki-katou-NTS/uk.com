@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 let approvalList = [];
                 for(let x = 1; x <= listPhase.length; x++){
                     let phaseLoop = listPhase[x-1];
-                    let appPhase = new model.AppApprovalPhase(
+                    let appPhase = new shrvm.model.AppApprovalPhase(
                         "",
                         "",
                         phaseLoop.approvalForm,
@@ -83,11 +83,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                         []); 
                     for(let y = 1; y <= phaseLoop.approvers.length; y++){
                         let frameLoop = phaseLoop.approvers[y-1];
-                        let appFrame = new model.ApprovalFrame(
+                        let appFrame = new shrvm.model.ApprovalFrame(
                             "",
                             y,
                             []);
-                        let appAccepted = new model.ApproveAccepted(
+                        let appAccepted = new shrvm.model.ApproveAccepted(
                             "",
                             frameLoop.sid,
                             0,
