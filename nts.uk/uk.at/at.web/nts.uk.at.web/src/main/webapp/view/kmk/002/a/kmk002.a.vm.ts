@@ -9,7 +9,6 @@ module nts.uk.at.view.kmk002.a {
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
     import RoundingDto = nts.uk.at.view.kmk002.a.service.model.RoundingDto;
     import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;
-    import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk002.a.service.model.EnumConstantDto;
     import EnumAdaptor = nts.uk.at.view.kmk002.a.service.model.EnumAdaptor;
 
@@ -48,11 +47,9 @@ module nts.uk.at.view.kmk002.a {
             private loadEnum(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                $.when(service.getFormulaEnum(), service.getOptItemEnum())
-                    .done((formulaEnum: FormulaEnumDto, optItemEnum: OptItemEnumDto) => {
+                service.getOptItemEnum().done(optItemEnum => {
                         Enums.ENUM_OPT_ITEM = optItemEnum;
-                        Enums.ENUM_FORMULA = formulaEnum;
-                        Enums.ENUM_FORMULA.calcAtr.reverse(); // reverse to correct order.
+                        Enums.ENUM_OPT_ITEM.calcAtr.reverse(); // reverse to correct order.
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -600,56 +597,6 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Load formula
-             */
-            public loadFormulas(itemNo: string): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-
-                // get formula from webservice
-                service.findFormulas(itemNo)
-                    .done(res => {
-
-                        // clear selected formula
-                        OptionalItem.selectedFormulas([]);
-
-                        // map dto to view model
-                        let list: Array<Formula> = res.map(item => {
-                            let formula = new Formula();
-
-                            // bind function
-                            formula.reCheckAll = self.reCheckAll.bind(self);
-                            formula.getSymbolById = self.getSymbolById.bind(self);
-                            formula.setApplyFormula = self.setApplyFormula.bind(self);
-                            formula.getSelectableFormulas = self.getSelectableFormulas.bind(self);
-
-                            // convert dto to viewmodel
-                            formula.fromDto(item);
-
-                            return formula;
-                        });
-                        self.calcFormulas(list);
-
-                        // set formula setting result
-                        _.each(self.calcFormulas(), formula => {
-                            if (formula.calcAtr() == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.calcAtr)) {
-                                formula.setItemSelectionResult(formula.itemSelection);
-                            } else {
-                                formula.setFormulaSettingResult(formula.formulaSetting);
-                            }
-                        });
-
-                        // sort list formula by orderNo
-                        self.sortListFormula();
-
-                        dfd.resolve();
-                    })
-                    .always(() => nts.uk.ui.block.clear()); // clear block ui.
-                return dfd.promise();
-
-            }
-
-            /**
              * check if at least one formula exist 
              */
             public isFormulaSet(): boolean {
@@ -679,6 +626,9 @@ module nts.uk.at.view.kmk002.a {
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
                 dto.calcResultRange = self.calcResultRange.toDto();
+                dto.formulas = self.calcFormulas().map(item => {
+                    return item.toDto();
+                });
 
                 return dto;
             }
@@ -699,6 +649,9 @@ module nts.uk.at.view.kmk002.a {
                 // reset apply formula
                 self.applyFormula('');
 
+                // set list formula
+                self.convertToListFormulaModel(dto.formulas);
+
                 // set data source
                 self.atrDataSource = Enums.ENUM_OPT_ITEM.itemAtr;
 
@@ -708,6 +661,44 @@ module nts.uk.at.view.kmk002.a {
 
                 // reset flag.
                 self.hasChanged = false;
+            }
+
+            /**
+             * Convert list formula dto to view model
+             */
+            private convertToListFormulaModel(list: Array<FormulaDto>): void {
+                let self = this;
+
+                let mapped: Array<Formula> = list.map(item => {
+                    let formula = new Formula();
+
+                    // bind function
+                    formula.reCheckAll = self.reCheckAll.bind(self);
+                    formula.getSymbolById = self.getSymbolById.bind(self);
+                    formula.setApplyFormula = self.setApplyFormula.bind(self);
+                    formula.getSelectableFormulas = self.getSelectableFormulas.bind(self);
+
+                    // convert dto to viewmodel
+                    formula.fromDto(item);
+
+                    return formula;
+                });
+
+                // set list formula.
+                self.calcFormulas(mapped);
+
+                // set formula setting result
+                _.each(self.calcFormulas(), formula => {
+                    if (formula.calcAtr() == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.calcAtr)) {
+                        formula.setItemSelectionResult(formula.itemSelection);
+                    } else {
+                        formula.setFormulaSettingResult(formula.formulaSetting);
+                    }
+                });
+
+                // sort list formula by orderNo
+                self.sortListFormula();
+
             }
 
             public isTimeSelected(): boolean {
@@ -945,7 +936,7 @@ module nts.uk.at.view.kmk002.a {
                 let command = self.optionalItem.toDto();
 
                 // call webservice to save optional item
-                $.when(service.saveOptionalItem(command), self.saveFormulas())
+                service.saveOptionalItem(command)
                     .done(() => {
                         // reload optional item list.
                         self.loadOptionalItemHeaders();
@@ -977,38 +968,14 @@ module nts.uk.at.view.kmk002.a {
                 if ($('.nts-editor').ntsError('hasError')) {
                     return false;
                 }
-                return true;;
-            }
 
-            /**
-             * Save formulas.
-             */
-            private saveFormulas(): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-
-                // Validate
+                // validate list formula
                 if (!self.isListFormulaValid()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_111' });
+                    return false;
                 };
 
-                // convert to dtos.
-                let formulas: Array<FormulaDto> = self.optionalItem.calcFormulas().map(item => {
-                    return item.toDto();
-                });
-
-                // set command.
-                let command = <service.model.FormulaCommand>{};
-                command.optItemNo = self.optionalItem.optionalItemNo();
-                command.calcFormulas = formulas;
-
-                // call saveFormula service.
-                service.saveFormula(command)
-                    .done(() => dfd.resolve())
-                    .fail(res => nts.uk.ui.dialog.alertError(res))
-                    .always(() => nts.uk.ui.block.clear()); // clear block ui.;
-
-                return dfd.promise();
+                return true;
             }
 
             /**
@@ -1059,11 +1026,13 @@ module nts.uk.at.view.kmk002.a {
                 // get optional item detail
                 service.findOptionalItemDetail(itemNo)
                     .done(res => {
+                        // clear selected formula
+                        OptionalItem.selectedFormulas([]);
 
+                        // convert dto to view model.
                         self.optionalItem.fromDto(res);
-                        self.optionalItem.loadFormulas(itemNo)
-                            .done(() => dfd.resolve());
-                    });
+                        dfd.resolve();
+                    }).always(() => nts.uk.ui.block.clear()); // clear block ui.
 
                 return dfd.promise();
             }
@@ -1171,14 +1140,14 @@ module nts.uk.at.view.kmk002.a {
              * Initial data source
              */
             private initDatasource(): void {
-                this.formulaAtrDs = Enums.ENUM_FORMULA.formulaAtr;
-                this.calcAtrDs = Enums.ENUM_FORMULA.calcAtr;
-                this.timeUnitDs = Enums.ENUM_FORMULA.timeRounding.unit;
-                this.timeRoundingDs = Enums.ENUM_FORMULA.timeRounding.rounding;
-                this.amountUnitDs = Enums.ENUM_FORMULA.amountRounding.unit;
-                this.amountRoundingDs = Enums.ENUM_FORMULA.amountRounding.rounding;
-                this.numberUnitDs = Enums.ENUM_FORMULA.numberRounding.unit;
-                this.numberRoundingDs = Enums.ENUM_FORMULA.numberRounding.rounding;
+                this.formulaAtrDs = Enums.ENUM_OPT_ITEM.formulaAtr;
+                this.calcAtrDs = Enums.ENUM_OPT_ITEM.calcAtr;
+                this.timeUnitDs = Enums.ENUM_OPT_ITEM.timeRounding.unit;
+                this.timeRoundingDs = Enums.ENUM_OPT_ITEM.timeRounding.rounding;
+                this.amountUnitDs = Enums.ENUM_OPT_ITEM.amountRounding.unit;
+                this.amountRoundingDs = Enums.ENUM_OPT_ITEM.amountRounding.rounding;
+                this.numberUnitDs = Enums.ENUM_OPT_ITEM.numberRounding.unit;
+                this.numberRoundingDs = Enums.ENUM_OPT_ITEM.numberRounding.rounding;
             }
 
             /**
@@ -1349,21 +1318,21 @@ module nts.uk.at.view.kmk002.a {
 
             public isTimeSelected(): boolean {
                 let self = this;
-                if (self.formulaAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_FORMULA.formulaAtr)) {
+                if (self.formulaAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr)) {
                     return true;
                 }
                 return false;
             }
             public isNumberSelected(): boolean {
                 let self = this;
-                if (self.formulaAtr() == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_FORMULA.formulaAtr)) {
+                if (self.formulaAtr() == EnumAdaptor.valueOf('NUMBER', Enums.ENUM_OPT_ITEM.formulaAtr)) {
                     return true;
                 }
                 return false;
             }
             public isAmountSelected(): boolean {
                 let self = this;
-                if (self.formulaAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_FORMULA.formulaAtr)) {
+                if (self.formulaAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr)) {
                     return true;
                 }
                 return false;
@@ -1380,7 +1349,7 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
                 param.performanceAtr = Formula.performanceAtr;
-                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
+                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = self.itemSelection;
                 nts.uk.ui.windows.setShared('paramToC', param);
@@ -1405,11 +1374,11 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToD>{};
                 param.formulaId = dto.formulaId;
                 param.performanceAtr = 1; //TODO ??
-                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
+                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = self.formulaSetting;
                 param.selectableFormulas = self.getSelectableFormulas(self.orderNo);
-                param.operatorDatasource = Enums.ENUM_FORMULA.operatorAtr;
+                param.operatorDatasource = Enums.ENUM_OPT_ITEM.operatorAtr;
 
                 nts.uk.ui.windows.setShared('paramToD', param);
 
@@ -1435,8 +1404,8 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaSetting = dto;
 
                 // get item selection enum value.
-                let itemSelectionMethod = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_FORMULA.settingMethod);
-                let operator = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_FORMULA.operatorAtr);
+                let itemSelectionMethod = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.settingMethod);
+                let operator = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_OPT_ITEM.operatorAtr);
 
                 // set left item
                 if (dto.leftItem.settingMethod == itemSelectionMethod) {
@@ -1508,7 +1477,7 @@ module nts.uk.at.view.kmk002.a {
                 daily.timeRounding = self.timeDailyRounding();
                 daily.timeUnit = self.timeDailyUnit();
                 daily.amountRounding = self.amountDailyRounding();
-                daily.amountUnit = self.amountDailyUnit();;
+                daily.amountUnit = self.amountDailyUnit();
 
                 dto.monthlyRounding = monthly;
                 dto.dailyRounding = daily;
@@ -1563,7 +1532,6 @@ module nts.uk.at.view.kmk002.a {
 
         class Enums {
             static ENUM_OPT_ITEM: OptItemEnumDto;
-            static ENUM_FORMULA: FormulaEnumDto;
         }
 
         class FormulaSorter {

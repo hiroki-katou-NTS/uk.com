@@ -7,16 +7,9 @@ module nts.uk.at.view.kmk002.a {
         let servicePath: any = {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
-            findFormulas: 'ctx/at/record/optionalitem/formula/findbyitemno',
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
-            saveFormula: 'ctx/at/record/optionalitem/formula/save',
-            getFormulaEnum: 'ctx/at/record/optionalitem/formula/getenum',
             getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
-
-        export function getFormulaEnum(): JQueryPromise<model.FormulaEnumDto> {
-            return nts.uk.request.ajax(servicePath.getFormulaEnum);
-        }
 
         export function getOptItemEnum(): JQueryPromise<model.OptItemEnumDto> {
             return nts.uk.request.ajax(servicePath.getOptItemEnum);
@@ -26,20 +19,12 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
         }
 
-        export function saveFormula(command: model.FormulaCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveFormula, command);
-        }
-
         export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
             return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo);
         }
 
         export function findOptionalItemHeaders(): JQueryPromise<Array<model.OptionalItemHeader>> {
             return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
-        }
-
-        export function findFormulas(itemNo: string): JQueryPromise<Array<model.FormulaDto>> {
-            return nts.uk.request.ajax(servicePath.findFormulas + '/' + itemNo);
         }
 
         /**
@@ -64,6 +49,7 @@ module nts.uk.at.view.kmk002.a {
                 empConditionAtr: number;
                 performanceAtr: number;
                 calcResultRange: CalcResultRangeDto;
+                formulas: Array<FormulaDto>;
             }
             /**
              * CalcResultRangeDto
@@ -139,7 +125,15 @@ module nts.uk.at.view.kmk002.a {
                 operatorText?: string;
                 attendanceItemName?: string;
             }
-            export interface FormulaEnumDto {
+            export interface RoundingDto {
+                unit: EnumConstantDto[];
+                rounding: EnumConstantDto[];
+            }
+            export interface OptItemEnumDto {
+                itemAtr: EnumConstantDto[];
+                useAtr: EnumConstantDto[];
+                empConditionAtr: EnumConstantDto[];
+                performanceAtr: EnumConstantDto[];
                 formulaAtr: EnumConstantDto[];
                 calcAtr: EnumConstantDto[];
                 minusSegment: EnumConstantDto[];
@@ -151,24 +145,10 @@ module nts.uk.at.view.kmk002.a {
                 timeRounding: RoundingDto;
                 numberRounding: RoundingDto;
             }
-            export interface RoundingDto {
-                unit: EnumConstantDto[];
-                rounding: EnumConstantDto[];
-            }
-            export interface OptItemEnumDto {
-                itemAtr: EnumConstantDto[];
-                useAtr: EnumConstantDto[];
-                empConditionAtr: EnumConstantDto[];
-                performanceAtr: EnumConstantDto[];
-            }
             export interface EnumConstantDto {
                 value: number;
                 fieldName: string;
                 localizedName: string;
-            }
-            export interface FormulaCommand {
-                optItemNo: string;
-                calcFormulas: Array<FormulaDto>;
             }
 
             export class EnumAdaptor {
