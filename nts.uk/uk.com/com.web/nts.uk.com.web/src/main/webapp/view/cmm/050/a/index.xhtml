@@ -46,6 +46,7 @@
 										data-bind="ntsTextEditor: {
 											value: emailAuth,
 											required: true,
+											option: {width: '230px'},
                                            	constraint: 'EmailAuthentication'}" />
 								</div>
 								<button id="test_send_mail" data-bind="click: showDialogTest"
@@ -125,9 +126,10 @@
 								<td>
 									<div>
 										<input id="smtp_port"
-											data-bind="ntsTextEditor: {
+											data-bind="ntsNumberEditor: {
 												value: smtpPort,
 												required: true,
+												option: {width: '230px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
 									</div>
 								</td>
@@ -146,6 +148,7 @@
 											data-bind="ntsTextEditor: {
 												value: smtpServer,
 												required: true,
+												option: {width: '230px'},
 	                                           	constraint: 'Server'}" />
 									</div>
 								</td>
@@ -167,9 +170,10 @@
 								<td class="valign-center">
 									<div class="port_input">
 										<input id="imap_port"
-											data-bind="ntsTextEditor: {
+											data-bind="ntsNumberEditor: {
 												value: imapPort,
 												required: true,
+												option: {width: '230px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
 									</div>
 								</td>
@@ -202,6 +206,7 @@
 											data-bind="ntsTextEditor: {
 												value: imapServer,
 												enable: imapServerEnable,
+												option: {width: '230px'},
 												required: true,
 	                                           	constraint: 'Server'}" />
 									</div>
@@ -223,9 +228,10 @@
 								<td class="valign-center">
 									<div>
 										<input id="pop_port"
-											data-bind="ntsTextEditor: {
+											data-bind="ntsNumberEditor: {
 												value: popPort,
 												required: true,
+												option: {width: '230px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
 									</div>
 								</td>
@@ -257,6 +263,7 @@
 												value: popServer,
 												enable: popServerEnable,
 												required: true,
+												option: {width: '230px'},
 	                                           	constraint: 'Server'}" />
 									</div>
 								</td>
