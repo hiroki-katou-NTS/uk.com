@@ -96,14 +96,17 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 		JobTitleImport jobOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
 		// 承認者の
 		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
-		// 申請の
-		JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(),
-				baseDate);
-		if (jobOfApprover == null || jobOfRequest == null) {
-			return false;
-		}
-		if (jobOfRequest.getSequenceCode().compareTo(jobOfApprover.getSequenceCode()) < 0) {
-			return true;
+		if (jobOfEmp != null) {
+			// 申請の
+			JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(),
+					baseDate);
+			if (jobOfApprover == null || jobOfRequest == null) {
+				return false;
+			}
+			if (jobOfRequest.getSequenceCode().compareTo(jobOfApprover.getSequenceCode()) < 0) {
+				return true;
+			}
+
 		}
 
 		return false;
@@ -133,12 +136,13 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}).collect(Collectors.toList());
 			employeeList.removeAll(concurrentList);
 		}
-		
+
 		for (ConcurrentEmployeeImport emp : employeeList) {
 			String wkpIdOfEmp = this.wkApproverAdapter.getWorkplaceId(cid, emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp)) {
-				//truyền tạm approvalAtr = 1 
-				approvers.add(new ApproverInfo(emp.getJobId(), emp.getEmployeeId(), null, null, null, emp.getPersonName(),1));
+				// truyền tạm approvalAtr = 1
+				approvers.add(new ApproverInfo(emp.getJobId(), emp.getEmployeeId(), null, null, null,
+						emp.getPersonName(), 1));
 			}
 		}
 		return approvers;

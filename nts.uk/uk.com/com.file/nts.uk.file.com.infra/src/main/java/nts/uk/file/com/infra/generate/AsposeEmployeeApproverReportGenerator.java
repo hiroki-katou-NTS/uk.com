@@ -200,7 +200,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 			// if (rowMergered > 0) {
 			//
-			// firstRow = printEmployee(worksheets, rowMergered, cells, firstRow, output,
+			// firstRow = printEmployee(worksheets, rowMergered, cells,
+			// firstRow, output,
 			// true, pages);
 			//
 			// HorizontalPageBreakCollection hPageBreaks =
@@ -210,12 +211,14 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			// worksheets.get(0).getVerticalPageBreaks();
 			// vPageBreaks.add("P" + firstRow);
 			//
-			// firstRow = printEmployee(worksheets, totalMerger - rowMergered, cells,
+			// firstRow = printEmployee(worksheets, totalMerger - rowMergered,
+			// cells,
 			// firstRow, output, false, pages);
 			//
 			// } else {
 			//
-			// firstRow = printEmployee(worksheets, totalMerger, cells, firstRow, output,
+			// firstRow = printEmployee(worksheets, totalMerger, cells,
+			// firstRow, output,
 			// false, pages);
 			//
 			// }
@@ -348,7 +351,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			if (m1.getKey().toString().equals("99")) {
 				em_Form.setValue("共通");
 			} else {
-				em_Form.setValue(EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId);
+				em_Form.setValue(
+						EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId);
 			}
 
 			// SET STYLE CHO CỘT THỨ 3
@@ -496,8 +500,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 						}
 
 					}
-					
-					for(int k = appLst.size() ; k < maxOfPhrase;  k++) {
+
+					for (int k = appLst.size(); k < maxOfPhrase; k++) {
 						// SET STYLE
 						for (int i = 0; i < max; i++) {
 							Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
@@ -507,7 +511,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 								setTitleStyleMerge(style_Form);
 							}
 						}
-						
+
 						for (int a = 0; a < 5; a++) {
 							Cell em_name = cells.get(firstRow + a, COLUMN_INDEX[j + 1]);
 							setTitleStyle(em_name);
@@ -515,9 +519,11 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 						}
 						
+						if(j <= 12){
+							j = j + 2;
+						}
+
 					}
-					
-					
 
 					if (max > 1) {
 						cells.merge(firstRow, 14, max, 1);
@@ -548,7 +554,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			if (m1.getKey().toString().equals("99")) {
 				em_Form.setValue("共通");
 			} else {
-				em_Form.setValue(EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId);
+				em_Form.setValue(
+						EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId);
 			}
 
 			// SET STYLE CHO CỘT THỨ 3
