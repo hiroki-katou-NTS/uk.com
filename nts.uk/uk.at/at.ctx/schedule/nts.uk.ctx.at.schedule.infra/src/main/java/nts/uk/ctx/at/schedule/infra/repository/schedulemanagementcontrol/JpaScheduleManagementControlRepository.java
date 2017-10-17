@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControlRepository;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
-import nts.uk.ctx.at.schedule.infra.entity.schedulemanagementcontrol.KscmtSchManageCtr;
+import nts.uk.ctx.at.schedule.infra.entity.schedulemanagementcontrol.KscmtSchManaageCtr;
 
 /**
  * The Class JpaScheduleManagementControlRepository.
@@ -29,7 +29,7 @@ public class JpaScheduleManagementControlRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<ScheduleManagementControl> findById(String employeeId) {
-		return this.queryProxy().find(employeeId, KscmtSchManageCtr.class)
+		return this.queryProxy().find(employeeId, KscmtSchManaageCtr.class)
 				.map(entity -> this.toDomain(entity));
 	}
 	
@@ -39,7 +39,7 @@ public class JpaScheduleManagementControlRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the schedule management control
 	 */
-	private ScheduleManagementControl toDomain(KscmtSchManageCtr entity) {
+	private ScheduleManagementControl toDomain(KscmtSchManaageCtr entity) {
 		return new ScheduleManagementControl(entity.getSid(),
 				UseAtr.valueOf(entity.getSchManageAtr()));
 	}
