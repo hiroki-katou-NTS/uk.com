@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.schedule.app.command.shift.rank.ranksetting;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,6 +13,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSet;
 import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSetRepository;
 
+/**
+ * 
+ * @author Trung Tran
+ *
+ */
 @Stateless
 public class RankSetAddCommandHandler extends CommandHandler<RankSetAddCommand> {
 
@@ -22,31 +29,31 @@ public class RankSetAddCommandHandler extends CommandHandler<RankSetAddCommand> 
 		RankSetAddCommand rankSetAddCommand = context.getCommand();
 		List<RankSetCommand> rankSetCommands = rankSetAddCommand.getRankSetCommands();
 		List<String> employeeIds = rankSetCommands.stream().map(RankSetCommand::getSId).collect(Collectors.toList());
-		if (employeeIds.size() > 0) {
-			List<RankSet> rankSets = rankSetRepo.getListRankSet(employeeIds);
-			rankSetCommands.stream().forEach((rankSet) -> {
-				// if exist
-				if (rankSets.stream().map(RankSet::getSId).filter(rankSet.getSId()::equals).findFirst().isPresent()) {
-					// update
-					if (rankSet.getRankCode() != null) {
-						rankSetRepo.removeRankSet(rankSet.getSId());
-						rankSetRepo.insetRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
-						// rankSetRepo.updateRankSet(RankSet.createFromJavaType(rankSet.getRankCode(),
-						// rankSet.getSId()));
-					}
-					// remove
-					else {
-						rankSetRepo.removeRankSet(rankSet.getSId());
-					}
-					// if non set
-				} else {
-					// insert
-					if (rankSet.getRankCode() != null) {
-						rankSetRepo.insetRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
-					}
-				}
-			});
+		if (employeeIds.size() == 0) {
+			return;
 		}
+		List<RankSet> rankSets = rankSetRepo.getListRankSet(employeeIds);
+		Map<String, RankSet> mapRankSet = rankSets.stream()
+				.collect(Collectors.toMap(RankSet::getSId, Function.identity()));
+		rankSetCommands.stream().forEach((rankSet) -> {
+			// if exist
+			if (mapRankSet.containsKey(rankSet.getSId())) {
+				// update
+				if (rankSet.getRankCode() != null) {
+					rankSetRepo.removeRankSet(rankSet.getSId());
+					rankSetRepo.insetRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
+				}
+				// remove
+				else {
+					rankSetRepo.removeRankSet(rankSet.getSId());
+				}
+			} else {
+				// insert
+				if (rankSet.getRankCode() != null) {
+					rankSetRepo.insetRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
+				}
+			}
+		});
 
 	}
 
