@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
@@ -19,6 +22,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Approv
 public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	@Inject
 	private EmployeeAdapter empAdapter;
+	@Inject
+	private ApprovalPhaseRepository phaseRespoitory;
 	@Override
 	public List<ApprovalRootCommonOutput> appOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
@@ -31,30 +36,37 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
 				.stream()
 				.filter(x -> x.getEmployeeId().equals(sId) 
-						&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON)
+						&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON
+						&& x.getApplicationType().equals(appType))
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
+			List<ApprovalPhase> lstPhase = new ArrayList<>();
+			lstPsRoots.stream().forEach(y -> {
+				phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+					lstPhase.add(z);
+				});
+				
+			});
 			
-			// ở đoạn này nếu trường getConfirmationRootType bằng null ở trong db thì ta sẽ trả về giá trị là 3
-			// tương tự như trường appType nếu bằng null thì ta sẽ trả về giá trị là 99
-			// hai giá trị này trả về để check trong lúc in có in ra cột notice hay ko?
-			List<ApprovalRootCommonOutput> rootOutputs = lstPsRoots
-					.stream()
-					.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-							x.getApprovalId(), 
-							x.getEmployeeId(), 
-							"",
-							x.getHistoryId(),
-							x.getApplicationType().value == null ? 99: x.getApplicationType().value, 
-							x.getPeriod().getStartDate(),
-							x.getPeriod().getEndDate(),
-							x.getBranchId(),
-							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
-							x.getEmploymentRootAtr().value))
-					.collect(Collectors.toList());
-			return rootOutputs;
+			if(!CollectionUtil.isEmpty(lstPhase)) {
+				List<ApprovalRootCommonOutput> rootOutputs = lstPsRoots
+						.stream()
+						.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
+								x.getApprovalId(), 
+								x.getEmployeeId(), 
+								"",
+								x.getHistoryId(),
+								x.getApplicationType().value == null ? 99: x.getApplicationType().value, 
+								x.getPeriod().getStartDate(),
+								x.getPeriod().getEndDate(),
+								x.getBranchId(),
+								x.getAnyItemApplicationId(),
+								x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
+								x.getEmploymentRootAtr().value))
+						.collect(Collectors.toList());
+				return rootOutputs;
+			}			
 		}
 		
 		//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
@@ -65,52 +77,73 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
 					.filter(x -> (x.getWorkplaceId().equals(wpId) 
-							&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON))
+							&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON)
+							&& x.getApplicationType().equals(appType))
 					.collect(Collectors.toList());
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
-				List<ApprovalRootCommonOutput> rootOutputs = lstWpRoots
-						.stream()
-						.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-								x.getApprovalId(), 
-								"", 
-								x.getWorkplaceId(),
-								x.getHistoryId(),
-								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-								x.getPeriod().getStartDate(),
-								x.getPeriod().getEndDate(),
-								x.getBranchId(),
-								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
-								x.getEmploymentRootAtr().value))
-						.collect(Collectors.toList());
-				return rootOutputs;
+				List<ApprovalPhase> lstPhase = new ArrayList<>();
+				lstWpRoots.stream().forEach(y -> {
+					phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+						lstPhase.add(z);
+					});
+					
+				});
+				if(!CollectionUtil.isEmpty(lstPhase)) {
+					List<ApprovalRootCommonOutput> rootOutputs = lstWpRoots
+							.stream()
+							.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
+									x.getApprovalId(), 
+									"", 
+									x.getWorkplaceId(),
+									x.getHistoryId(),
+									x.getApplicationType() == null ? 99: x.getApplicationType().value, 
+									x.getPeriod().getStartDate(),
+									x.getPeriod().getEndDate(),
+									x.getBranchId(),
+									x.getAnyItemApplicationId(),
+									x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
+									x.getEmploymentRootAtr().value))
+							.collect(Collectors.toList());
+					return rootOutputs;
+				}				
+				
 			}
 			
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」): 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<CompanyApprovalRoot> lstRoots = lstCompanyRootInfor.stream()
-					.filter(x -> x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON && x.getCompanyId().equals(companyID))
+					.filter(x -> x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON 
+								&& x.getCompanyId().equals(companyID)
+								&& x.getApplicationType().equals(appType))
 					.collect(Collectors.toList());
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstRoots)) {
-				List<ApprovalRootCommonOutput> rootOutputs = lstRoots
-						.stream()
-						.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-								x.getApprovalId(), 
-								"", 
-								"",
-								x.getHistoryId(),
-								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-								x.getPeriod().getStartDate(),
-								x.getPeriod().getEndDate(),
-								x.getBranchId(),
-								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
-								x.getEmploymentRootAtr().value))
-						.collect(Collectors.toList());
-				return rootOutputs;
+				List<ApprovalPhase> lstPhase = new ArrayList<>();
+				lstRoots.stream().forEach(y -> {
+					phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+						lstPhase.add(z);
+					});
+					
+				});
+				if(!CollectionUtil.isEmpty(lstPhase)) {
+					List<ApprovalRootCommonOutput> rootOutputs = lstRoots
+							.stream()
+							.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
+									x.getApprovalId(), 
+									"", 
+									"",
+									x.getHistoryId(),
+									x.getApplicationType() == null ? 99: x.getApplicationType().value, 
+									x.getPeriod().getStartDate(),
+									x.getPeriod().getEndDate(),
+									x.getBranchId(),
+									x.getAnyItemApplicationId(),
+									x.getConfirmationRootType() == null ? 3: x.getConfirmationRootType().value,
+									x.getEmploymentRootAtr().value))
+							.collect(Collectors.toList());
+					return rootOutputs;
+				}
 			}
-			
 		}
 		return null;
 	}

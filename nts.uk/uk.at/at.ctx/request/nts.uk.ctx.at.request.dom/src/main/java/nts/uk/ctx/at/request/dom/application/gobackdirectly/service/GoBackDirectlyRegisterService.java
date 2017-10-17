@@ -16,6 +16,14 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 */
 	public void register(GoBackDirectly goBackDirectly, Application application,List<AppApprovalPhase> appApprovalPhases);
+	
+	/**
+	 * 
+	 * @param goBackDirectly
+	 * @param application
+	 * @param appApprovalPhases
+	 */
+	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application application,List<AppApprovalPhase> appApprovalPhases);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する

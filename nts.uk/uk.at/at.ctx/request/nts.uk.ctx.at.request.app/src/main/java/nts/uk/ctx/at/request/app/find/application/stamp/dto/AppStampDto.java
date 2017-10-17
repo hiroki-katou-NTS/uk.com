@@ -14,6 +14,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 @Data
 @AllArgsConstructor
 public class AppStampDto {
+	
+	private Long version;
     
 	private String appID;
     
@@ -44,12 +46,13 @@ public class AppStampDto {
 	public static AppStampDto convertToDto(AppStamp appStamp, String employeeName){
 		if(appStamp == null) return null;
 		return new AppStampDto(
+				appStamp.getVersion(),
 				appStamp.getApplicationID(), 
 				appStamp.getInputDate().toString("yyyy/MM/dd"), 
 				appStamp.getEnteredPersonSID(), 
 				appStamp.getApplicationDate().toString("yyyy/MM/dd"), 
-				"", 
-				"", 
+				appStamp.getApplicationReason().v().split(":")[0], 
+				appStamp.getApplicationReason().v().split(":")[1].substring(1), 
 				appStamp.getApplicantSID(), 
 				appStamp.getStampRequestMode().value, 
 				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 

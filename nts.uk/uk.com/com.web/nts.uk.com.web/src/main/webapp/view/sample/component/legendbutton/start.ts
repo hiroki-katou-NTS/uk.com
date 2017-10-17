@@ -10,9 +10,9 @@ __viewContext.ready(function () {
             
             this.legendOptions = {
                 items: [
-                    { colorCode: '#ff0000', labelText: 'RED' },
-                    { colorCode: '#00AA00', labelText: 'GREEN' },
-                    { colorCode: '#0000FF', labelText: 'BLUE' }
+                    { cssClass: { className: 'bg-red', colorPropertyName: 'background-color' }, labelText: 'RED' },
+                    { cssClass: { className: 'bg-green', colorPropertyName: 'background-color' }, labelText: 'GREEN' },
+                    { cssClass: { className: 'bg-blue', colorPropertyName: 'background-color' }, labelText: 'BLUE' }
                 ]
             };
             this.legendWithTemplateOptions = {

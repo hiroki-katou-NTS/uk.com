@@ -8,7 +8,7 @@
 	<ui:composition>
 		<div class="valign-center control-group">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_11')}</div>
-			<label style="margin-left: 70px;" class="applicant"  data-bind="text: applicant">11111</label>
+			<label style="margin-left: 70px;" class="applicant"  data-bind="text: applicantName"></label>
 		</div>
 		<div class="valign-center control-group">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_29')}</div>
@@ -34,11 +34,11 @@
 			</div>
 		</com:ko-if>
 			<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
-			<input
+			<input style = "margin-left: 35px;"
 				data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />
 			<!-- <div data-bind="text: ko.toJSON(lateTime1)	"></div> -->
 			<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
-			<input
+			<input style = "margin-left: 35px;"
 				data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
 			<br />
 			<div class="valign-center control-group row4"

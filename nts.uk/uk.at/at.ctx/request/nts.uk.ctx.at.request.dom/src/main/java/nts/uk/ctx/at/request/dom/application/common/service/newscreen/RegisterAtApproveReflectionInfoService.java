@@ -12,19 +12,19 @@ public interface RegisterAtApproveReflectionInfoService {
 	 * @param empID
 	 * @param application
 	 */
-	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application);
+	public Application newScreenRegisterAtApproveInfoReflect(String SID, Application application);
 
 	/**
 	 * 承認情報の整理
 	 * 
 	 * @param appID
 	 */
-	public ApprovalInfoOutput organizationOfApprovalInfo(Application application);
+	public Application organizationOfApprovalInfo(Application application, String approverMemo);
 	
 	/**
 	 *実績反映状態の判断 
 	 * @param appID
 	 */
-	public void performanceReflectedStateJudgment (Application application);
+	public Application performanceReflectedStateJudgment (Application application);
 
 }

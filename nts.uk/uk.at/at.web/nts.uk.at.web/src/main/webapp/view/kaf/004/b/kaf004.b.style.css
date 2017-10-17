@@ -1,5 +1,5 @@
 .control-group.valign-center > * { vertical-align: middle; }
-.valign-center.control-group {margin:20px 0px 0px 80px; }
+.valign-center.control-group {margin:15px 0px 0px 20px; }
 .valign-center.control-group.row4 {margin-left : 90px; }
 .block{display: block ; margin : 30px 0px 50px 30px;}
 .header{border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-left: 40px; margin-right: 300px;}

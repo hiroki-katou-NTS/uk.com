@@ -17,7 +17,7 @@ module nts.uk.com.view.cmm018.m {
                 var self = this;
                 //会社別、職場別、個人別のチェック状態をチェックする(kiểm tra trạng thái check của 会社別、職場別、個人別)
                 //１件もチェック入れていない場合(không check cái nào)
-                if(!self.isCompany && !self.isWorkplace && !self.isPerson){
+                if(!self.isCompany() && !self.isWorkplace() && !self.isPerson()){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
                     return;    
                 }
