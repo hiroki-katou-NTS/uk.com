@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.app.find.application.common.GetAllNameByAppID;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetadata;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
@@ -204,7 +204,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getmessagedeadline")
-	public OutputMessageDeadline getDataConfigDetail(ApplicationDto application) {
+	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto application) {
 		return this.getDataAppCfDetailFinder.getDataConfigDetail(application);
 	}
 	//new InputMessageDeadline("000000000000-0005",null,1,null)
@@ -264,7 +264,7 @@ public class ApplicationWebservice extends WebService {
 	}
 	@POST
 	@Path("getApplicationInfo")
-	public List<ApplicationMetadata> getAppInfo(ApplicationPeriodDto periodDate){
+	public List<ApplicationMetaDto> getAppInfo(ApplicationPeriodDto periodDate){
 		return this.finderApp.getAppbyDate(periodDate);
 	}
 }

@@ -1,5 +1,6 @@
 module nts.uk.at.view.kaf000.b.viewmodel {
     import vmbase =  nts.uk.at.view.kaf002.shr.vmbase;
+    import shrvm = nts.uk.at.view.kaf000.shr.viewmodel;
     export abstract class ScreenModel {
 
         // Metadata
@@ -10,17 +11,17 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          * List
          */
         //listPhase
-        listPhase: KnockoutObservableArray<model.AppApprovalPhase>;
+        listPhase: KnockoutObservableArray<shrvm.model.AppApprovalPhase>;
         //listPhaseID
-        listPhaseID: Array<String>;
+        listPhaseID: Array<string>;
         //list appID 
-        listReasonByAppID: KnockoutObservableArray<String>;
+        listReasonByAppID: KnockoutObservableArray<string>;
 
         /**InputCommonData
          * value obj 
          */
-        reasonToApprover: KnockoutObservable<String>;
-        reasonApp: KnockoutObservable<String>;
+        reasonToApprover: KnockoutObservable<string>;
+        reasonApp: KnockoutObservable<string>;
         inputCommonData : KnockoutObservable<model.InputCommonData>;
 
         dataApplication: KnockoutObservable<model.ApplicationDto>;
@@ -30,7 +31,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //obj input
         //obj output message deadline
-        outputMessageDeadline: KnockoutObservable<model.OutputMessageDeadline>;
+        outputMessageDeadline: KnockoutObservable<shrvm.model.OutputMessageDeadline>;
         //obj DetailedScreenPreBootModeOutput
         outputDetailCheck: KnockoutObservable<model.DetailedScreenPreBootModeOutput>;
         //obj InputCommandEvent
@@ -70,7 +71,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
 
         //item InputCommandEvent
-        appReasonEvent: KnockoutObservable<String>;
+        appReasonEvent: KnockoutObservable<string>;
         
         approvalList: Array<vmbase.AppApprovalPhase> = [];
 
@@ -136,7 +137,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         abstract update(): any;
 
-        start(baseDate): JQueryPromise<any> {
+        start(baseDate: any): JQueryPromise<any> {
             let self = this;
             
             self.inputDetail().baseDate = baseDate;
@@ -147,7 +148,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
              let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
-                self.getMessageDeadline(self.dataApplication());
+                // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
+                let data = new model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
+                self.getMessageDeadline(data);
                 
                 dfd.resolve();
             });
@@ -247,7 +250,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline) {
+        getMessageDeadline(inputMessageDeadline: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
@@ -261,31 +264,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         //getAll data by App ID
-        getAllDataByAppID(appID) {
+        getAllDataByAppID(appID: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
-                //                let temp = data.listOutputPhaseAndFrame;
-                //                _.forEach(temp, function(phase) {
-                //                    let listApproveAcceptedForView = [];
-                //                    //con cai clone la de clone ra 1 array moi, tranh bi anh huong array goc(tạo ra 1 bản sao)
-                //                    // _.sortBy sắp xếp theo dispOrder,
-                //                    let frameTemp = _.sortBy(_.clone(phase.listApprovalFrameDto), ['dispOrder']);
-                //                    for (var i = 0; i < frameTemp.length; i++) {
-                //                        let frame = frameTemp[i];
-                //                        let sameOrder = _.filter(phase.listApproveAcceptedDto, function(f) {
-                //                            return frame["dispOrder"] === f["dispOrder"];
-                //                        });
-                //                        let approverSID = "";
-                //                        _.forEach(sameOrder, function(so) {
-                //                            approverSID += (nts.uk.util.isNullOrEmpty(approverSID) ? "" : ", ") + so["approverSID"];
-                //                        });
-                //                        frame["approverSID2"] = approverSID;
-                //                        listApproveAcceptedForView.push(frame);
-                //                    }
-                //                    phase["listApproveAcceptedForView"] = listApproveAcceptedForView;
-                //                });
-                //                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 self.appType(data.applicationType);
                 let listPhase = self.dataApplication().listPhase; 
@@ -329,7 +311,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         //get all reason by app ID
-        getAllReasonByAppID(appID) {
+        getAllReasonByAppID(appID: string) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllReasonByAppID(appID).done(function(data) {
@@ -338,13 +320,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     self.reasonApp(self.listReasonByAppID()[0].toString());
                     if(self.listReasonByAppID().length > 1){
                         self.reasonToApprover(self.listReasonByAppID()[1].toString());    
-                    }
-                    
-//                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
-//                        self.listReasonToApprover(
-//                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
-//                        );
-//                    }
+                    }                    
                 }
                 dfd.resolve(data);
             }).fail(function(res: any) {
@@ -354,7 +330,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         //get detail check 
-        getDetailCheck(inputGetDetail) {
+        getDetailCheck(inputGetDetail: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getDetailCheck(inputGetDetail).done(function(data) {
@@ -374,17 +350,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnBefore() {
             let self = this;
             var prevAppInfo = self.getPrevAppInfo();
-            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml",
-            { 'listAppMeta': self.listAppMeta,
-              'currentApp': prevAppInfo
-            });
+            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': prevAppInfo });
         }
         
         private getPrevAppInfo(): model.ApplicationMetadata {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index > 0) {
-                return new model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType);
+                return new model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
             }
             return null;
         }
@@ -395,15 +368,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnAfter() {
             let self = this;
             var nextAppInfo = self.getNextAppInfo();
-            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta,
-                'currentApp': nextAppInfo });
+            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': nextAppInfo });
         }
         
         private getNextAppInfo(): model.ApplicationMetadata {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index < self.listAppMeta.length - 1) {
-                return new model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType);
+                return new model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
             }
             return null;
         }
@@ -582,55 +554,59 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         export class ApplicationMetadata {
             appID: string;
             appType: number;
-            constructor(appID: string, appType: number) {
+            appDate: Date;
+            constructor(appID: string, appType: number, appDate: Date) {
                 this.appID = appID;
                 this.appType = appType;
+                this.appDate = appDate;
             }
         }
+        
+        
 
         //class Application 
         export class ApplicationDto {
-            applicationID: String;
+            applicationID: string;
             prePostAtr: number;
-            inputDate: String;
-            enteredPersonSID: String;
-            reversionReason: String;
-            applicationDate: String;
-            applicationReason: String;
+            inputDate: string;
+            enteredPersonSID: string;
+            reversionReason: string;
+            applicationDate: string;
+            applicationReason: string;
             applicationType: number;
-            applicantSID: String;
+            applicantSID: string;
             reflectPlanScheReason: number;
-            reflectPlanTime: String;
+            reflectPlanTime: string;
             reflectPlanState: number;
             reflectPlanEnforce: number;
             reflectPerScheReason: number;
-            reflectPerTime: String;
+            reflectPerTime: string;
             reflectPerState: number;
             reflectPerEnforce: number;
-            startDate: String;
-            endDate: String;
-            listPhase: Array<AppApprovalPhase>;
+            startDate: string;
+            endDate: string;
+            listPhase: Array<shrvm.model.AppApprovalPhase>;
             constructor(
-                applicationID: String,
+                applicationID: string,
                 prePostAtr: number,
-                inputDate: String,
-                enteredPersonSID: String,
-                reversionReason: String,
-                applicationDate: String,
-                applicationReason: String,
+                inputDate: string,
+                enteredPersonSID: string,
+                reversionReason: string,
+                applicationDate: string,
+                applicationReason: string,
                 applicationType: number,
-                applicantSID: String,
+                applicantSID: string,
                 reflectPlanScheReason: number,
-                reflectPlanTime: String,
+                reflectPlanTime: string,
                 reflectPlanState: number,
                 reflectPlanEnforce: number,
                 reflectPerScheReason: number,
-                reflectPerTime: String,
+                reflectPerTime: string,
                 reflectPerState: number,
                 reflectPerEnforce: number,
-                startDate: String,
-                endDate: String,
-                listPhase: Array<AppApprovalPhase>) {
+                startDate: string,
+                endDate: string,
+                listPhase: Array<shrvm.model.AppApprovalPhase>) {
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr;
                 this.inputDate = inputDate;
@@ -657,82 +633,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class OutputPhaseAndFrame 
         export class OutputPhaseAndFrame {
-            appApprovalPhase: AppApprovalPhase;
-            listApprovalFrame: Array<ApprovalFrame>;
+            appApprovalPhase: shrvm.model.AppApprovalPhase;
+            listApprovalFrame: Array<shrvm.model.ApprovalFrame>;
             constructor(
-                appApprovalPhase: AppApprovalPhase,
-                listApprovalFrame: Array<ApprovalFrame>) {
+                appApprovalPhase: shrvm.model.AppApprovalPhase,
+                listApprovalFrame: Array<shrvm.model.ApprovalFrame>) {
                 this.appApprovalPhase = appApprovalPhase;
                 this.listApprovalFrame = listApprovalFrame;
             }
         }//end class OutputPhaseAndFrame
 
-
-        // class AppApprovalPhase
-        export class AppApprovalPhase {
-            appID: String;
-            phaseID: String;
-            approvalForm: number;
-            dispOrder: number;
-            approvalATR: number;
-            listFrame: Array<ApprovalFrame>;
-            constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number,
-                approvalATR: number,
-                listFrame: Array<ApprovalFrame>) {
-                this.appID = appID;
-                this.phaseID = phaseID;
-                this.approvalForm = approvalForm;
-                this.dispOrder = dispOrder;
-                this.approvalATR = approvalATR;
-                this.listFrame = listFrame;
-            }
-        }
-
-        // class ApprovalFrame
-        export class ApprovalFrame {
-            frameID: String;
-            dispOrder: number;
-            listApproveAccepted: Array<ApproveAccepted>;
-            constructor(frameID: String, dispOrder: number, listApproveAccepted: Array<ApproveAccepted>) {
-                this.frameID = frameID;
-                this.dispOrder = dispOrder;
-                this.listApproveAccepted = listApproveAccepted;
-
-            }
-        }//end class frame  
-
-        //class ApproveAccepted
-        export class ApproveAccepted {
-            appAccedtedID: String;
-            approverSID: String;
-            approvalATR: number;
-            confirmATR: number;
-            approvalDate: String;
-            reason: String;
-            representerSID: String;
-            constructor(appAccedtedID: String,
-                approverSID: String,
-                approvalATR: number,
-                confirmATR: number,
-                approvalDate: String,
-                reason: String,
-                representerSID: String) {
-                this.appAccedtedID = appAccedtedID;
-                this.approverSID = approverSID;
-                this.approvalATR = approvalATR;
-                this.confirmATR = confirmATR;
-                this.approvalDate = approvalDate;
-                this.reason = reason;
-                this.representerSID = representerSID;
-            }
-        }//end class ApproveAccepted
-
         //class InputGetDetailCheck 
         export class InputGetDetailCheck {
-            applicationID: String;
-            baseDate: String;
-            constructor(applicationID: String,
-                baseDate: String) {
+            applicationID: string;
+            baseDate: string;
+            constructor(applicationID: string,
+                baseDate: string) {
                 this.applicationID = applicationID;
                 this.baseDate = baseDate;
 
@@ -760,21 +676,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }//end class DetailedScreenPreBootModeOutput
 
-        //class outputMessageDeadline
-        export class OutputMessageDeadline {
-            message: String;
-            deadline: String;
-            constructor(message: String, deadline: String) {
-                this.message = message;
-                this.deadline = deadline;
-            }
-        }// end class outputMessageDeadline
+        
         
         //class InputApprove
         export class InputCommonData {
             applicationDto: ApplicationDto;
-            memo: String;
-            constructor(applicationDto : ApplicationDto, memo : String) {
+            memo: string;
+            constructor(applicationDto : ApplicationDto, memo : string) {
                 this.applicationDto = applicationDto;
                 this.memo = memo;
             }
@@ -782,9 +690,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class InputCommandEvent
         export class InputCommandEvent {
-            appId: String;
-            applicationReason: String;
-            constructor(appId: String, applicationReason: String) {
+            appId: string;
+            applicationReason: string;
+            constructor(appId: string, applicationReason: string) {
                 this.appId = appId;
                 this.applicationReason = applicationReason;
             }
