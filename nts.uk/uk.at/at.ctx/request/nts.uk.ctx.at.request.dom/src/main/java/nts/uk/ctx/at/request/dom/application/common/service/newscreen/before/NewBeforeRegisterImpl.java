@@ -60,22 +60,38 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
 		
 		// 登録する期間のチェック(Check thời gian đăng ký)
-		if(application.getApplicationDate().after(periodCurrentMonth.getStartDate().addDays(31))) throw new BusinessException("Msg_277");
+		if(application.getApplicationDate().after(periodCurrentMonth.getStartDate().addDays(31))) {
+			throw new BusinessException("Msg_277");
+		}
 		
 		// 登録可能期間のチェック(１年以内)(check thời gian có thế đăng ký (trong vong 1 năm)
-		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getApplicationDate())) throw new BusinessException("Msg_276");
+		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getApplicationDate())) {
+			throw new BusinessException("Msg_276");			
+		}
 		
 		// 過去月のチェック(check tháng quá khứ)
-		if(application.getApplicationDate().before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
+		if(application.getApplicationDate().before(periodCurrentMonth.getStartDate())) {
+			throw new BusinessException("Msg_236");			
+		}
 		
 		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)
 		
-		// ErrorFlag = null ?
-		/*List<ApprovalRootImport> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, routeAtr, appType, date);
+		List<ApprovalRootImport> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(
+				application.getCompanyID(), 
+				application.getApplicantSID(), 
+				1, 
+				application.getApplicationType().value, 
+				application.getApplicationDate());
 		ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) throw new BusinessException("Msg_238");
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) throw new BusinessException("Msg_237");
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) throw new BusinessException("Msg_324");*/
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
+			throw new BusinessException("Msg_238");
+		} 
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
+			throw new BusinessException("Msg_238");
+		}
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
+			throw new BusinessException("Msg_324");
+		}
 		
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する(Check thời gian hết hạn xin)
 		String employmentCD = employeeAdaptor.getEmploymentCode(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
