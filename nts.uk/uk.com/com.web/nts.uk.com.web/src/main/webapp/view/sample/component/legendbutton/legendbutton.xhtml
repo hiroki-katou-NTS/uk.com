@@ -13,6 +13,17 @@
 				<com:stylefile path="../../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../../catalog/catalog.js" />
+				<style>
+					.bg-red {
+						background-color: #ff0000;
+					}
+					.bg-green {
+						background-color: #00aa00;
+					}
+					.font-blue {
+						color: #0000ff;
+					}
+				</style>
             </ui:define>
             
             <ui:define name="content">
@@ -34,7 +45,20 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<button data-bind="ntsLegendButton: legendOptions"></button>
+<pre><![CDATA[<style>
+	.bg-red {
+		background-color: #ff0000;
+	}
+	.bg-green {
+		background-color: #00aa00;
+	}
+	.font-blue {
+		color: #0000ff;
+	}
+</style>
+
+
+<button data-bind="ntsLegendButton: legendOptions"></button>
 
 <button id="with-template" data-bind="ntsLegendButton: legendWithTemplateOptions"></button>]]></pre>
 								</div>
@@ -49,13 +73,16 @@
     constructor() {
         var self = this;
         
+        // use CSS class
         this.legendOptions = {
             items: [
-                { colorCode: '#ff0000', labelText: 'RED' },
-                { colorCode: '#00AA00', labelText: 'GREEN' },
-                { colorCode: '#0000FF', labelText: 'BLUE' }
+                { cssClass: { className: 'bg-red', colorPropertyName: 'background-color' }, labelText: 'RED' },
+                { cssClass: { className: 'bg-green', colorPropertyName: 'background-color' }, labelText: 'GREEN' },
+                { cssClass: { className: 'font-blue', colorPropertyName: 'color' }, labelText: 'BLUE' }
             ]
         };
+        
+        // use color code
         this.legendWithTemplateOptions = {
             items: [
                 { colorCode: '#ff0000', labelText: 'RED' },

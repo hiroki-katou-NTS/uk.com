@@ -611,12 +611,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
-                    header.headerText = header.headerText + " " + header.key;
+                    if (header.headerText) {
+                        header.headerText = header.headerText + " " + header.key;
+                    }
                     return header;
                 });
             } else {
                 self.optionalHeader.map((header) => {
-                    header.headerText = header.headerText.split(" ")[0];
+                    if (header.headerText) {
+                        header.headerText = header.headerText.split(" ")[0];
+                    }
                     return header;
                 });
             }

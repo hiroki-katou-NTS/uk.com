@@ -16,6 +16,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(2)
 @ZeroPaddedCode
+// 序列コード
 public class SequenceCode extends CodePrimitiveValue<SequenceCode> {
 
 	/** The Constant serialVersionUID. */

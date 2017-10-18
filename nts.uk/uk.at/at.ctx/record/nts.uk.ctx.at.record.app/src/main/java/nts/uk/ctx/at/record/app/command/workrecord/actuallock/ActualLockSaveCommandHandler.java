@@ -25,12 +25,6 @@ public class ActualLockSaveCommandHandler extends CommandHandler<ActualLockSaveC
 	@Inject
 	private ActualLockRepository repository;
 	
-//	/** The Constant ADD. */
-// 	public static final int ADD = 1;
-//	 
-// 	/** The Constant UPDATE. */
-// 	public static final int UPDATE = 2;
-
 	/* (non-Javadoc)
  * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
  */
@@ -53,6 +47,7 @@ public class ActualLockSaveCommandHandler extends CommandHandler<ActualLockSaveC
 			this.repository.update(actualLock);
 			return;
 		}
+		
 		// Create
 		this.repository.add(actualLock);
 	}

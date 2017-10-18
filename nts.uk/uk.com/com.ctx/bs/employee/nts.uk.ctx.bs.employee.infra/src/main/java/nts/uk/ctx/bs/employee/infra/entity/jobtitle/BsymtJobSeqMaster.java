@@ -40,7 +40,7 @@ public class BsymtJobSeqMaster extends UkJpaEntity implements Serializable {
    
     /** The disporder. */
     @Column(name = "DISPORDER")
-    private short disporder;
+    private int disporder;
 
     /**
      * Instantiates a new bsymt job seq master.

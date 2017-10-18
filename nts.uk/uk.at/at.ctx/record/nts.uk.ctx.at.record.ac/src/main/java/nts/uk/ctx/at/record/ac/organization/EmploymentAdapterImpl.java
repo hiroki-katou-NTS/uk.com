@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.record.dom.organization.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.organization.EmploymentImported;
+import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 
 /**
  * The Class EmploymentAdapterImpl.

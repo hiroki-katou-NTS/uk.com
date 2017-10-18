@@ -11,6 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class SequenceName.
  */
 @StringMaxLength(20)
+// 序列名称
 public class SequenceName extends StringPrimitiveValue<SequenceName> {
 
 	/** The Constant serialVersionUID. */
