@@ -20,8 +20,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " INNER JOIN PpemtPerInfoCtgCm cm " + " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
-			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId"
-			+ " ORDER BY e.disporder ";
+			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
 	private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
@@ -29,12 +28,16 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtPerInfoCtgOrder e "
 			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId " + " AND b.cid = e.cid "
 			+ " LEFT JOIN PpemtPersonInitValueSettingCtg c "
-			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId " 
-			+ " AND c.settingCtgPk.settingId = :settingId "
-			+ " WHERE ( b.abolitionAtr = 0 "
+			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId "
+			+ " AND c.settingCtgPk.settingId = :settingId " + " WHERE ( b.abolitionAtr = 0 "
 			+ " AND cm.personEmployeeType = 2 " + " AND ( cm.categoryType <> 2 " + " AND cm.categoryType <> 5 )"
-			+ " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId )"
-			+ " ORDER BY e.disporder ";
+			+ " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId )" + " ORDER BY e.disporder ";
+
+	private final String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
+			+ " WHERE  c.settingCtgPk.settingId =:settingId";
+
+	private final String DELETE_BY_SETTING_ID = " DELETE FROM PpemtPersonInitValueSettingCtg c"
+			+ " WHERE c.settingCtgPk.settingId =:settingId";
 
 	private static PerInfoInitValSetCtg toDomain(PpemtPersonInitValueSettingCtg entity) {
 		PerInfoInitValSetCtg domain = PerInfoInitValSetCtg.createFromJavaType(entity.settingCtgPk.settingId,
@@ -50,10 +53,11 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 		return domain;
 
 	}
-	
+
 	private static PpemtPersonInitValueSettingCtg toEntity(PerInfoInitValSetCtg domain) {
 		PpemtPersonInitValueSettingCtg entity = new PpemtPersonInitValueSettingCtg();
-		entity.settingCtgPk = new PpemtPersonInitValueSettingCtgPk(domain.getPerInfoCtgId(), domain.getInitValueSettingId());
+		entity.settingCtgPk = new PpemtPersonInitValueSettingCtgPk(domain.getPerInfoCtgId(),
+				domain.getInitValueSettingId());
 		return entity;
 
 	}
@@ -93,16 +97,29 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	}
 
 	@Override
-	public void delete(String initValueSettingCtgId) {
-		this.commandProxy().remove(PpemtPersonInitValueSettingCtg.class,initValueSettingCtgId);
+	public List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId) {
+		return this.queryProxy().query(SEL_ALL_CTG, Object[].class).setParameter("companyId", companyId)
+				.setParameter("settingId", settingId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void delete(String perInfoCtgId, String settingId) {
+		this.commandProxy().remove(PpemtPersonInitValueSettingCtg.class,
+				new PpemtPersonInitValueSettingCtgPk(perInfoCtgId, settingId));
 
 	}
 
 	@Override
-	public List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId) {
-		return this.queryProxy().query(SEL_ALL_CTG, Object[].class).setParameter("companyId", companyId)
-				.setParameter("settingId", settingId)
-				.getList(c -> toDomain(c));
+	public List<PerInfoInitValSetCtg> getAllInitValueCtg(String settingId) {
+		return this.queryProxy().query(SEL_ALL_CTG_BY_SET_ID_1, PpemtPersonInitValueSettingCtg.class)
+				.setParameter("settingId", settingId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void delete(String settingId) {
+		this.getEntityManager().createQuery(DELETE_BY_SETTING_ID).setParameter("settingId", settingId).executeUpdate();
+		this.getEntityManager().flush();
+
 	}
 
 }
