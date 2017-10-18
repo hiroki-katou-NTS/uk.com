@@ -27,12 +27,12 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdpBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSch;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSchPK_;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSch_;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFee;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFeePK_;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFee_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCarePK_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee_;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
 
@@ -126,10 +126,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KSCMT_CHILD_CARE_SCH (KscmtChildCareSch SQL)
-		CriteriaQuery<KscmtChildCareSch> cq = criteriaBuilder.createQuery(KscmtChildCareSch.class);
+		CriteriaQuery<KscdtScheChildCare> cq = criteriaBuilder.createQuery(KscdtScheChildCare.class);
 
 		// root data
-		Root<KscmtChildCareSch> root = cq.from(KscmtChildCareSch.class);
+		Root<KscdtScheChildCare> root = cq.from(KscdtScheChildCare.class);
 
 		// select root
 		cq.select(root);
@@ -139,23 +139,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 		// equal employee id
 		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KscmtChildCareSch_.kscmtChildCareSchPK)
-						.get(KscmtChildCareSchPK_.sid), employeeId));
+				criteriaBuilder.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
+						.get(KscdtScheChildCarePK_.sid), employeeId));
 		
 		// equal year month date base date
 		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KscmtChildCareSch_.kscmtChildCareSchPK)
-						.get(KscmtChildCareSchPK_.ymd), baseDate));
+				criteriaBuilder.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
+						.get(KscdtScheChildCarePK_.ymd), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by child care number asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KscmtChildCareSch_.kscmtChildCareSchPK)
-				.get(KscmtChildCareSchPK_.childCareNumber)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
+				.get(KscdtScheChildCarePK_.childCareNumber)));
 
 		// create query
-		TypedQuery<KscmtChildCareSch> query = em.createQuery(cq);
+		TypedQuery<KscdtScheChildCare> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomainChildCare(entity))
@@ -176,11 +176,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KSCMT_WS_PERSON_FEE (KscmtWsPersonFee SQL)
-		CriteriaQuery<KscmtWsPersonFee> cq = criteriaBuilder
-				.createQuery(KscmtWsPersonFee.class);
+		CriteriaQuery<KscdtScheFee> cq = criteriaBuilder.createQuery(KscdtScheFee.class);
 
 		// root data
-		Root<KscmtWsPersonFee> root = cq.from(KscmtWsPersonFee.class);
+		Root<KscdtScheFee> root = cq.from(KscdtScheFee.class);
 
 		// select root
 		cq.select(root);
@@ -189,37 +188,34 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtWsPersonFee_.kscmtWsPersonFeePK).get(KscmtWsPersonFeePK_.sid),
-				employeeId));
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.sid), employeeId));
 
 		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtWsPersonFee_.kscmtWsPersonFeePK).get(KscmtWsPersonFeePK_.ymd),
-				baseDate));
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.ymd), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by no id asc
-		cq.orderBy(criteriaBuilder
-				.asc(root.get(KscmtWsPersonFee_.kscmtWsPersonFeePK).get(KscmtWsPersonFeePK_.no)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.no)));
 
 		// create query
-		TypedQuery<KscmtWsPersonFee> query = em.createQuery(cq);
+		TypedQuery<KscdtScheFee> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomainPersonFee(entity))
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * To domain child care.
 	 *
 	 * @param entity the entity
 	 * @return the child care schedule
 	 */
-	private ChildCareSchedule toDomainChildCare(KscmtChildCareSch entity){
+	private ChildCareSchedule toDomainChildCare(KscdtScheChildCare entity){
 		return new ChildCareSchedule(new JpaChildCareScheduleGetMemento(entity));
 	}
 	
@@ -229,7 +225,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param entity the entity
 	 * @return the work schedule person fee
 	 */
-	private WorkSchedulePersonFee toDomainPersonFee(KscmtWsPersonFee entity) {
+	private WorkSchedulePersonFee toDomainPersonFee(KscdtScheFee entity) {
 		return new WorkSchedulePersonFee(new JpaWorkSchedulePersonFeeGetMemento(entity));
 	}
 

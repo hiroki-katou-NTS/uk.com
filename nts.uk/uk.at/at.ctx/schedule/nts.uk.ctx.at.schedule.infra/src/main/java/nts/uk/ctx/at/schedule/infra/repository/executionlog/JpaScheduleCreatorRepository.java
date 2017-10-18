@@ -20,10 +20,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreator;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreatorPK;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreatorPK_;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreator_;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTarget;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTargetPK;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTargetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTarget_;
 
 /**
  * The Class JpaScheduleCreatorRepository.
@@ -45,8 +45,8 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscmtSchCreator> cq = criteriaBuilder.createQuery(KscmtSchCreator.class);
-		Root<KscmtSchCreator> root = cq.from(KscmtSchCreator.class);
+		CriteriaQuery<KscdtScheExeTarget> cq = criteriaBuilder.createQuery(KscdtScheExeTarget.class);
+		Root<KscdtScheExeTarget> root = cq.from(KscdtScheExeTarget.class);
 
 		// select root
 		cq.select(root);
@@ -54,14 +54,14 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscmtSchCreator_.kscmtSchCreatorPK).get(KscmtSchCreatorPK_.exeId), executionId));
+				.equal(root.get(KscdtScheExeTarget_.kscmtSchCreatorPK).get(KscdtScheExeTargetPK_.exeId), executionId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		cq.orderBy(criteriaBuilder.desc(root.get(KscmtSchCreator_.kscmtSchCreatorPK).get(KscmtSchCreatorPK_.sid)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KscdtScheExeTarget_.kscmtSchCreatorPK).get(KscdtScheExeTargetPK_.sid)));
 
 		// create query
-		TypedQuery<KscmtSchCreator> query = em.createQuery(cq);
+		TypedQuery<KscdtScheExeTarget> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))		.collect(Collectors.toList());
@@ -74,9 +74,9 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 * @param employeeId the employee id
 	 * @return the optional
 	 */
-	public Optional<KscmtSchCreator> findById(String executionId, String employeeId) {
-		return this.queryProxy().find(new KscmtSchCreatorPK(executionId, employeeId),
-				KscmtSchCreator.class);
+	public Optional<KscdtScheExeTarget> findById(String executionId, String employeeId) {
+		return this.queryProxy().find(new KscdtScheExeTargetPK(executionId, employeeId),
+				KscdtScheExeTarget.class);
 	}
 	
 
@@ -123,8 +123,8 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kscmt schedule creator
 	 */
-	private KscmtSchCreator toEntity(ScheduleCreator domain){
-		KscmtSchCreator entity = new KscmtSchCreator();
+	private KscdtScheExeTarget toEntity(ScheduleCreator domain){
+		KscdtScheExeTarget entity = new KscdtScheExeTarget();
 		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
 		return entity;
 	}
@@ -135,9 +135,9 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kscmt schedule creator
 	 */
-	private KscmtSchCreator toEntityUpdate(ScheduleCreator domain){
-		Optional<KscmtSchCreator> opEntity = this.findById(domain.getExecutionId(), domain.getEmployeeId());
-		KscmtSchCreator entity = new KscmtSchCreator();
+	private KscdtScheExeTarget toEntityUpdate(ScheduleCreator domain){
+		Optional<KscdtScheExeTarget> opEntity = this.findById(domain.getExecutionId(), domain.getEmployeeId());
+		KscdtScheExeTarget entity = new KscdtScheExeTarget();
 		
 		if(opEntity.isPresent()){
 			entity = opEntity.get();
@@ -153,7 +153,7 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the schedule creator
 	 */
-	private ScheduleCreator toDomain(KscmtSchCreator entity){
+	private ScheduleCreator toDomain(KscdtScheExeTarget entity){
 		return new ScheduleCreator(new JpaScheduleCreatorGetMemento(entity));
 	}
 

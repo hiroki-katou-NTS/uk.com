@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule;
 
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ClockValue;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Interface ChildCareScheduleGetMemento.
@@ -24,7 +24,7 @@ public interface ChildCareScheduleGetMemento {
 	 *
 	 * @return the child care schedule start
 	 */
-	public ClockValue getChildCareScheduleStart();
+	public TimeWithDayAttr getChildCareScheduleStart();
 	
 	
 	/**
@@ -32,7 +32,7 @@ public interface ChildCareScheduleGetMemento {
 	 *
 	 * @return the child care schedule end
 	 */
-	public ClockValue getChildCareScheduleEnd();
+	public TimeWithDayAttr getChildCareScheduleEnd();
 	
 	
 	/**

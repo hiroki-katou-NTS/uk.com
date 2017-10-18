@@ -8,8 +8,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.PersonalFeeAmount;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFeeSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFee;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFeePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK;
 
 /**
  * The Class JpaWorkSchedulePersonFeeSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.Ks
 public class JpaWorkSchedulePersonFeeSetMemento implements WorkSchedulePersonFeeSetMemento {
 
 	/** The entity. */
-	private KscmtWsPersonFee entity;
+	private KscdtScheFee entity;
 	
 	
 	/**
@@ -27,14 +27,14 @@ public class JpaWorkSchedulePersonFeeSetMemento implements WorkSchedulePersonFee
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
 	 */
-	public JpaWorkSchedulePersonFeeSetMemento(KscmtWsPersonFee entity, String employeeId,
+	public JpaWorkSchedulePersonFeeSetMemento(KscdtScheFee entity, String employeeId,
 			GeneralDate baseDate) {
-		if (entity.getKscmtWsPersonFeePK() == null) {
-			entity.setKscmtWsPersonFeePK(new KscmtWsPersonFeePK());
+		if (entity.getKscdtScheFeePK() == null) {
+			entity.setKscdtScheFeePK(new KscdtScheFeePK());
 		}
 		this.entity = entity;
-		this.entity.getKscmtWsPersonFeePK().setSid(employeeId);
-		this.entity.getKscmtWsPersonFeePK().setYmd(baseDate);
+		this.entity.getKscdtScheFeePK().setSid(employeeId);
+		this.entity.getKscdtScheFeePK().setYmd(baseDate);
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class JpaWorkSchedulePersonFeeSetMemento implements WorkSchedulePersonFee
 	 */
 	@Override
 	public void setNo(ExtraTimeItemNo no) {
-		this.entity.getKscmtWsPersonFeePK().setNo(no.value);
+		this.entity.getKscdtScheFeePK().setNo(no.value);
 	}
 
 	/*
