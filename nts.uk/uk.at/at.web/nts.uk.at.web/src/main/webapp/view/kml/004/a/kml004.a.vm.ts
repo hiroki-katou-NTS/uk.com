@@ -43,6 +43,12 @@ module nts.uk.at.view.kml004.a.viewmodel {
         calSetReceive: KnockoutObservable<CalDaySet>;
         // cnt set received from dialog D
         cntSetls: KnockoutObservableArray<any>;
+        // list D screen send to A screen
+        cntReceived: KnockoutObservableArray<any>;
+        // list cnt set 
+        cntSetAll: KnockoutObservableArray<any>;
+        // list id 21: 回数集計1 & id 22: 回数集計2
+        id2122: KnockoutObservableArray<any>;
         
         constructor() {
             let self = this;
@@ -60,14 +66,19 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 70 },
                 { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 150},
                 { headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 70, unbound: true, dataType: "string", 
-//                    template: "<input type='button' onclick='openDialog(${totalItemNo})' value='Set' class='delete-button'/>"
-                     template : '{{if ${totalItemName} == "月間勤務日数" || ${totalItemName} == "回数集計１" || ${totalItemName} == "回数集計２"}} <button class="setting" onclick="openDlg(this)" data-code="${totalItemNo}" data-name="${totalItemName}" style="margin-left: 7px;">設定</button> {{/if}}',    
+                     template : '{{if ${totalItemNo} == "3" || ${totalItemNo} == "21" || ${totalItemNo} == "22"}} <button class="setting" onclick="openDlg(this)" data-code="${totalItemNo}" data-name="${totalItemName}" style="margin-left: 7px;">設定</button> {{/if}}',    
                 }
             ]);   
             
             self.lstCate = ko.observableArray([]);
             self.selectedCode = ko.observable("");
-            self.selectedOption = ko.observable(null);
+            let param = {
+                categoryCode: "",
+                categoryName: "",
+                memo: "",
+                totalEvalOrders: [],
+            }
+            self.selectedOption = ko.observable(new TotalCategory(param));
             self.check = ko.observable(false);
             self.checkUpdate = ko.observable(true);
             self.checkDelete = ko.observable(true);
@@ -82,10 +93,14 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.calDaySetList = ko.observableArray([]);
             self.calSetReceive = ko.observable(null);
             self.cntSetls = ko.observableArray(null);
+            self.cntReceived = ko.observableArray([]);
+            self.cntSetAll = ko.observableArray([]);
+            self.id2122 = ko.observableArray([]);
             
             self.selectedCode.subscribe((value) => {
                 self.list([]);
                 self.items([]);
+                let lstTemp = [];
                 if (value) {
                     let foundItem = _.find(self.lstCate(), (item: ITotalCategory) => {
                         return item.categoryCode == value;
@@ -96,10 +111,12 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     self.selectedOption(new TotalCategory(foundItem));
                     self.newItems(self.selectedOption().totalEvalOrders());
                     for(let k = 0; k<self.newItems().length; k++){
-                        for(let i = 0; i<self.listEval().length; i++){
-                            if(self.listEval()[i].totalItemNo == self.newItems()[k].totalItemNo){
-                                self.list().push(self.listEval()[i]);    
-                            }    
+                        if(self.newItems()[k] != undefined){
+                            for(let i = 0; i<self.listEval().length; i++){
+                                if(self.newItems()[k].totalItemNo == self.listEval()[i].totalItemNo){
+                                    self.list().push(self.listEval()[i]);    
+                                }  
+                            }
                         }
                     }
                     self.newItems(self.list());
@@ -107,16 +124,30 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     self.items(_.filter(self.evalItems(), function(item) {
                        return _.indexOf(totalItemNoList, item.totalItemNo) < 0;   
                     }));
-//                    _.forEach(self.calDaySetList(), function(a){
-//                        if(a.categoryCode == value){
-//                            self.calSetObject(a);    
-//                        }
-//                    })
-                    //++++++++
-                    
-                    //+++++++++
-                    
                     self.check(false);
+                    self.calSetObject(_.find(self.calDaySetList(), function(a){
+                        return (a.categoryCode == self.selectedOption().categoryCode() && a.totalItemNo == 3);
+                    }));
+                    
+                    self.id2122(_.filter(self.cntSetAll(), function(obj){
+                        return (obj.categoryCode == self.selectedOption().categoryCode() && (obj.totalItemNo == 21 || obj.totalItemNo == 22));
+                    }))
+                    
+                    _.map(foundItem.totalEvalOrders, function(item){
+                         if(item != undefined){
+                            lstTemp.push({
+                                categoryCode: item.categoryCode,
+                                totalItemNo: item.totalItemNo,
+                                categoryName: item.totalItemName,
+                                dispOrder: item.dispOrder,
+                                horiCalDaysSet: self.calSetObject(),                            
+                                cntSetls: self.id2122(), 
+                            }) 
+                         } 
+                    })
+                    foundItem.totalEvalOrders = lstTemp;
+                    self.selectedOption(new TotalCategory(foundItem));
+//                    foundItem.totalEvalOrders.horiCalDaysSet = self.calSetObject();
                 }
             });
         }
@@ -169,22 +200,41 @@ module nts.uk.at.view.kml004.a.viewmodel {
             return dfd.promise();
         }
         
+        /** get all cnt set */
+        getCNT():JQueryPromise<any>{
+            let self = this;
+            let dfd = $.Deferred();
+            service.getCNT().done((lstCnt) => {
+                self.cntSetAll(lstCnt); 
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+        
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             let array=[];
-            let list=[];
-            $.when(self.getCal(), self.getEvalItem(), self.getData()).done(function(){
+            $.when(self.getCal(), self.getCNT(), self.getEvalItem(), self.getData()).done(function(){
                 if(self.checkUpdate() == true){
                     
                 }
                 if(self.lstCate().length == 0){
-                    self.clearForm();
+//                    self.clearForm();
                     self.checkDelete(false);  
-                }
-                else{
+                }else{
                     self.selectedCode(self.lstCate()[0].categoryCode);
+                    _.map(self.lstCate(), function(item) {
+                        array.push({
+                            categoryCode: item.categoryCode,
+                            categoryName: item.categoryName,
+                            memo: item.memo,
+                            totalEvalOrders: item.totalEvalOrders
+                        });
+                    }); 
+                    
+                    self.lstCate(array); 
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -244,33 +294,68 @@ module nts.uk.at.view.kml004.a.viewmodel {
         register() {
             let self = this;
             let code = "";  
+            let temp = [];
+            let array = [];
+            let part = [];
+            let pic = null;
             $("#code-text").trigger("validate");
-            $("#name-text").trigger("validate");
+            $("#nameCtg").trigger("validate");
+            
             for(let i = 0; i < self.newItems().length; i++){
-                self.newItems()[i].dispOrder = i; 
-                if(self.newItems()[i].horiCalDaysSet != null && self.calSetReceive() != null){
-                    if(self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo){
-                        self.newItems()[i].horiCalDaysSet(self.calSetReceive());
+                self.newItems()[i].dispOrder = i;
+                let tam = self.selectedOption().totalEvalOrders();
+                if(self.cntSetls().length > 0){
+                    for(let k = 0; k < self.cntSetls().length; k ++){
+                        if(self.cntSetls()[k].totalItemNo == self.newItems()[i].totalItemNo){
+                            array.push(self.cntSetls()[k]);
+                        }    
                     }
-                }  
-                if(self.newItems()[i].cntSetls != null && self.cntSetls() != null){
-                    if(self.newItems()[i].totalItemNo){
-                        self.newItems()[i].cntSetls(self.cntSetls());
+                    self.newItems()[i].cntSetls = array;
+                    if(tam != null && tam.length > 0){
+                        tam[i].cntcntSetls = array;
+                        self.newItems(tam);
                     }
-                }  
-                
-//                if(self.newItems()[i].cntSetls)
-//                let object: IEvalOrder ={
-//                    categoryCode: self.newItems()[i].categoryCode,
-//                    totalItemNo: self.newItems()[i].totalItemNo,
-//                    totalItemName: self.calSetReceive().categoryName(),
-//                    dispOrder: self.newItems()[i].dispOrder,
-//                    horiCalDaysSet: self.calSetReceive(),
-//                    cntSetls: self.cntSetls(), 
-//                }
-//                lst.push(object);
+                    array =[];
+                    if(self.calSetReceive() != null && (self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo)){
+                        self.newItems()[i].horiCalDaysSet = self.calSetReceive();   
+                    } 
+                }
+                else if(self.calSetReceive() != null && (self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo)){
+                    self.newItems()[i].horiCalDaysSet = self.calSetReceive();   
+                    if(self.cntSetls().length > 0){
+                        for(let k = 0; k < self.cntSetls().length; k ++){
+                            if(self.cntSetls()[k].totalItemNo == self.newItems()[i].totalItemNo){
+                                array.push(self.cntSetls()[k]);
+                            }    
+                        }
+                        self.newItems()[i].cntSetls = array;
+                        if(tam != null && tam.length > 0){
+                            tam[i].cntcntSetls = array;
+                            self.newItems(tam);
+                        }
+                        array =[];
+                        if(self.calSetReceive() != null && (self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo)){
+                            self.newItems()[i].horiCalDaysSet = self.calSetReceive();   
+                        } 
+                    }
+                } 
+                else{
+                    self.newItems(tam); 
+                }
             }
             
+            _.map(self.newItems(), function(item) {
+                part.push({
+                    categoryCode: item.categoryCode,
+                    totalItemNo: item.totalItemNo,
+                    totalItemName: item.totalItemName,
+                    dispOrder: item.dispOrder,
+                    horiCalDaysSet: item.horiCalDaysSet,
+                    cntSetls: item.cntSetls,   
+                });
+            });
+            self.newItems(part);
+           
             let param: ITotalCategory ={
                 categoryCode: self.selectedOption().categoryCode(),
                 categoryName: self.selectedOption().categoryName(),
@@ -284,26 +369,24 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         service.update(ko.toJS(param)).done(function(){
                             self.lstCate([]);
                             self.getData().done(function(){
+                                self.selectedCode(null);
                                 self.selectedCode(param.categoryCode);
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
+                                 $("#nameCtg").focus();
                             });
                         }).fail(function(res){
                             nts.uk.ui.dialog.alertError(res.message);
                         });
                     }
                     else{
-                        let obj: ITotalCategory ={   
-                            categoryCode: self.selectedOption().categoryCode(),
-                            categoryName: self.selectedOption().categoryName(),
-                            memo: self.selectedOption().memo(),
-                            totalEvalOrders: self.newItems(),
-                        }
                         // insert item to list
                         service.add(ko.toJS(param)).done(function(){
                             self.lstCate([]);
                             self.getData().done(function(){
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                                self.selectedCode(param.categoryCode);  
+                                self.selectedCode(null);
+                                self.selectedCode(param.categoryCode); 
+                                 $("#nameCtg").focus(); 
                             });
                         }).fail(function(res){
                             $('#code-text').ntsError('set', res);
@@ -311,8 +394,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     }
                 }
             });    
-//            self.checkUpdate(true);
-            $("#name-text").focus();        
+            self.cntReceived([]);     
         } 
         //  new mode  
         newMode(){               
@@ -413,31 +495,43 @@ module nts.uk.at.view.kml004.a.viewmodel {
         /** click 設定 button **/
         openDDialog() {
             let self = this;
-            setSharedA('KML004A_CNT_SET', self.selectedCode());
+            setSharedA('KML004A_CNT_SET_CD', self.selectedOption().categoryCode());
             nts.uk.ui.windows.sub.modal('/view/kml/004/d/index.xhtml').onClosed(function(): any {
                 var sets = getSharedA("KML004D_CNT_SET");
-                self.cntSetls(_.map(sets, function(item) {
-                    return {
+                for (let k = 0; k< self.cntReceived().length; k++){
+                    for(let a = 0; a < sets.length; a++){
+                        _.remove(self.cntReceived(), function(n){
+                            return (n.categoryCode == sets[a].categoryCode && n.totalItemNo == sets[a].totalItemNo); 
+                        });     
+                    }
+                }
+                for(let i = 0; i < sets.length; i ++){
+                    self.cntReceived().push(sets[i]);    
+                }
+                self.cntSetls([]);
+                _.map(self.cntReceived(), function(item) {
+                    self.cntSetls.push({
                         categoryCode: item.categoryCode,
                         totalItemNo: item.totalItemNo,
                         totalTimeNo: item.totalTimeNo     
-                    };    
-                }));
+                    });
+                });    
             });
         }    
         
         openDialog(id, name) {
             var self = this;
-            if ("月間勤務日数" == name) {
+            if ("3" == id) {
                 self.calSetObject(_.find(self.calDaySetList(), function(a){
-                            return (a.categoryCode == self.selectedOption().categoryCode() && a.totalItemNo == id);
-                    }));
+                    return (a.categoryCode == self.selectedOption().categoryCode() && a.totalItemNo == id);
+                }));
                 if(self.calSetObject() == undefined || self.checkUpdate()==false || self.calSetObject() == null){
                     self.calSetObject(new CalDaySet(self.selectedOption().categoryCode(), id, 0, 0, 0, 0));
                 }
                 setSharedA('KML004A_DAY_SET', self.calSetObject());   
                 self.openBDialog();
-            } else if("回数集計１" == name || "回数集計２" == name) {
+            } else if("21" == id || "22" == id) {
+                setSharedA('KML004A_CNT_SET_ID', id);
                 self.openDDialog();
             }
         }

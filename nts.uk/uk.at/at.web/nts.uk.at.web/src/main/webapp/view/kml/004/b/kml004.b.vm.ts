@@ -8,13 +8,13 @@ module nts.uk.at.view.kmk004.b.viewmodel {
             // check checkbox hidden
             check: KnockoutObservable<boolean>;
             // check_1
-            yearHd: KnockoutObservable<boolean>;
+            yearHd: KnockoutObservable<any>;
             // check 2
-            heavyHd: KnockoutObservable<boolean>;
+            heavyHd: KnockoutObservable<any>;
             // check 3 
-            specialHoliday: KnockoutObservable<boolean>;
+            specialHoliday: KnockoutObservable<any>;
             // check 4
-            halfDay: KnockoutObservable<boolean>;
+            halfDay: KnockoutObservable<any>;
             share: KnockoutObservable<any>;
             constructor() {
                 let self = this;
@@ -80,7 +80,7 @@ module nts.uk.at.view.kmk004.b.viewmodel {
              */
             public cancel(): void {
                 let self = this;
-                setShared('KML004B_DAY_SET', null);
+                setShared('KML004B_DAY_SET', self.calDaySet());
                 nts.uk.ui.windows.close();
             }
         }

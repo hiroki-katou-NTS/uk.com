@@ -10,10 +10,13 @@ module nts.uk.at.view.kml004.d.viewmodel {
         currentCodeListSwap: KnockoutObservableArray<TotalSet>;
         // cate code received from screen A
         cateCode: KnockoutObservable<string>;
+        // item No from screen A
+        itemNo: KnockoutObservable<number>;
         constructor() {
             let self = this;
             self.itemsSwap = ko.observableArray([]);
-            self.cateCode= ko.observable(getSharedD("KML004A_CNT_SET"));
+            self.itemNo = ko.observable(getSharedD("KML004A_CNT_SET_ID"));
+            self.cateCode= ko.observable(getSharedD("KML004A_CNT_SET_CD"));
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML004_40"), key: 'totalTimeNo', width: 70 },
                 { headerText: nts.uk.resource.getText("KML004_41"), key: 'totalTimeName', width: 250, formatter: _.escape }
@@ -27,7 +30,7 @@ module nts.uk.at.view.kml004.d.viewmodel {
             let dfd = $.Deferred();
             service.getAll().done((lstSet) => {
                 _.forEach(lstSet, function(item) {
-                    var param = new TotalSet('01', 1, item.totalCountNo, item.totalTimesName);
+                    var param = new TotalSet(self.cateCode(), self.itemNo(), item.totalCountNo, item.totalTimesName);
                     self.itemsSwap().push(param);
                 });
                 dfd.resolve();
@@ -41,7 +44,7 @@ module nts.uk.at.view.kml004.d.viewmodel {
             let dfd = $.Deferred();
             let param = {
                 categoryCode: self.cateCode(),
-                totalItemNo: 1,
+                totalItemNo: self.itemNo(),
             }
             service.getCNT(param).done((data) => {
                 var totalItemNoList = _.map(data, function(item) { return item.totalTimeNo; });
@@ -49,7 +52,6 @@ module nts.uk.at.view.kml004.d.viewmodel {
                     return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
                 });
                 self.currentCodeListSwap(itemSelected);
-                console.log(self.currentCodeListSwap());
                 dfd.resolve();
             });
             return dfd.promise();
