@@ -78,8 +78,6 @@ module nts.uk.at.view.kmk002.d {
                 // enable / disable flag
                 this.isFormulasEmpty = ko.computed(() => {
                     if (nts.uk.util.isNullOrEmpty(this.selectableFormulas())) {
-                        this.leftItem.settingMethod(1);
-                        this.rightItem.settingMethod(1);
                         return true;
                     }
                     return false;
