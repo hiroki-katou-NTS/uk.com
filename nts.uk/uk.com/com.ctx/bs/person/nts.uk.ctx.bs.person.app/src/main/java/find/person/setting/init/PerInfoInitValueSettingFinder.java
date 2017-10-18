@@ -42,13 +42,14 @@ public class PerInfoInitValueSettingFinder {
 
 	/**
 	 * getAllInitValueSetting
+	 * 
 	 * @param settingId
 	 * @return PerInitValueSettingDto
 	 */
 	public PerInitValueSettingDto getAllInitValueSetting(String settingId) {
 		PerInfoInitValueSettingDto settingDto = this.getDetailInitValSetting(settingId);
 		List<PerInfoInitValueSettingCtg> ctgLst = this.cgtFinder.getAllCategory(settingId);
-		if(settingDto != null && !CollectionUtil.isEmpty(ctgLst)) {
+		if (settingDto != null && !CollectionUtil.isEmpty(ctgLst)) {
 			return PerInitValueSettingDto.fromDomain(settingDto, ctgLst);
 		}
 		return new PerInitValueSettingDto();
@@ -66,7 +67,24 @@ public class PerInfoInitValueSettingFinder {
 			return PerInfoInitValueSettingDto.fromDomain(setting.get());
 		}
 
-		return new PerInfoInitValueSettingDto();
+		return null;
+	}
+
+	/**
+	 * getDetailInitValSetting
+	 * 
+	 * @param settingId
+	 * @param settingCode
+	 * @return PerInfoInitValueSettingDto
+	 */
+	public PerInfoInitValueSettingDto getDetailInitValSetting(String settingCode, String settingId) {
+		String companyId = AppContexts.user().companyId();
+		Optional<PerInfoInitValueSetting> setting = this.settingRepo.getDetailInitValSetting(companyId, settingCode, settingId);
+		if (setting.isPresent()) {
+			return PerInfoInitValueSettingDto.fromDomain(setting.get());
+		}
+
+		return null;
 	}
 
 	/**
