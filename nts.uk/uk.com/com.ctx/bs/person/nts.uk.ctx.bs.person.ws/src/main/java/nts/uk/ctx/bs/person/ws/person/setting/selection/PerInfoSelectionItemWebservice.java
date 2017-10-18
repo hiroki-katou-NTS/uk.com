@@ -18,6 +18,10 @@ import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
+import find.person.setting.selectionitem.selection.SelectionDto;
+import find.person.setting.selectionitem.selection.SelectionFinder;
+import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
+import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
@@ -39,6 +43,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// history:
 	@Inject
 	private PerInfoHistorySelectionFinder hisFinder;
+	
+	@Inject
+	private SelectionFinder selecFider;
+	
+	@Inject
+	private SelectionItemOrderFinder selecItemOrderFider;
 
 	@POST
 	@Path("findAll")
@@ -77,4 +87,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 		return this.hisFinder.historySelection(selectedId);
 	}
 
+	@POST
+	@Path("findAllSelection/{histId}")
+	public List<SelectionItemOrderDto> getAllItemOrderSelection(@PathParam("histId") String histId) {
+		return this.selecFider.getHistIdSelection(histId);
+	}
 }

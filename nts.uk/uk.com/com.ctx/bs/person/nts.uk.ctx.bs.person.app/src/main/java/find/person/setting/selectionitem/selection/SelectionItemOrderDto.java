@@ -1,6 +1,7 @@
 package find.person.setting.selectionitem.selection;
 
 import lombok.Value;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 
 /**
@@ -16,9 +17,13 @@ public class SelectionItemOrderDto {
 	private String histId;
 	private int disporder;
 	private int initSelection;
+	private String selectionName;
+	private String selectionCode;
 
-	public static SelectionItemOrderDto fromSelectionOrder(SelectionItemOrder domain) {
+	public static SelectionItemOrderDto fromSelectionOrder(SelectionItemOrder domain, Selection selectionDomain) {
 		return new SelectionItemOrderDto(domain.getSelectionID(), domain.getHistId(), domain.getDisporder().v(),
-				domain.getInitSelection().value);
+				domain.getInitSelection().value,
+				selectionDomain != null ? selectionDomain.getSelectionName().v() : null,
+				selectionDomain != null ? selectionDomain.getSelectionCD().v() : null);
 	}
 }
