@@ -157,8 +157,6 @@ module nts.uk.com.view.cmm013.a {
                                 return new History(data.jobTitleId, item.historyId, item.period);
                             });
                             _self.jobTitleHistoryModel().init(listHistory);   
-                            // Set focus
-                            $('#job-title-name').focus();
                         }                                           
                     })
                     .fail((res: any) => {
@@ -199,11 +197,7 @@ module nts.uk.com.view.cmm013.a {
              */
             public changeMode(newValue: boolean): void {
                 let _self = this;
-                
-                // Clear error
-                $('#job-title-code').ntsError('clear');
-                $('#job-title-name').ntsError('clear');
-                
+                            
                 if (newValue) {
                     let defaultHistory: History[] = [];
                     defaultHistory.push(_self.createHistory());
@@ -227,8 +221,15 @@ module nts.uk.com.view.cmm013.a {
                     $('#job-title-code').focus();
                 } else {               
                     // UI
-                    _self.enable_A1_1(true);            
+                    _self.enable_A1_1(true);           
+                    
+                    // Set focus
+                    $('#job-title-name').focus();
                 }               
+                
+                // Clear error
+                $('#job-title-code').ntsError('clear');
+                $('#job-title-name').ntsError('clear');
             }
             
             /**
