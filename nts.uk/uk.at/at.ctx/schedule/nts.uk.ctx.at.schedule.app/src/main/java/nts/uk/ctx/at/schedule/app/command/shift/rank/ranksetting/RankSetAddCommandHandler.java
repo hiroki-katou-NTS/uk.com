@@ -14,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSet;
 import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSetRepository;
 
 /**
+ * command handler add rank setting
  * 
  * @author Trung Tran
  *
@@ -22,7 +23,7 @@ import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSetRepository;
 public class RankSetAddCommandHandler extends CommandHandler<RankSetAddCommand> {
 
 	@Inject
-	RankSetRepository rankSetRepo;
+	private RankSetRepository rankSetRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RankSetAddCommand> context) {
@@ -40,8 +41,11 @@ public class RankSetAddCommandHandler extends CommandHandler<RankSetAddCommand> 
 			if (mapRankSet.containsKey(rankSet.getSId())) {
 				// update
 				if (rankSet.getRankCode() != null) {
+
 					rankSetRepo.removeRankSet(rankSet.getSId());
-					rankSetRepo.insetRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
+					RankSet domain = RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId());
+					domain.validate();
+					rankSetRepo.addRankSet(domain);
 				}
 				// remove
 				else {
@@ -50,7 +54,7 @@ public class RankSetAddCommandHandler extends CommandHandler<RankSetAddCommand> 
 			} else {
 				// insert
 				if (rankSet.getRankCode() != null) {
-					rankSetRepo.insetRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
+					rankSetRepo.addRankSet(RankSet.createFromJavaType(rankSet.getRankCode(), rankSet.getSId()));
 				}
 			}
 		});

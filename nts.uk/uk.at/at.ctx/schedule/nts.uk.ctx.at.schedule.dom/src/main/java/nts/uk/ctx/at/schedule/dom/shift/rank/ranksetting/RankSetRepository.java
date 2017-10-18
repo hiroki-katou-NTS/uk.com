@@ -34,6 +34,6 @@ public interface RankSetRepository {
 	 * 
 	 * @param rankSet
 	 */
-	void insetRankSet(RankSet rankSet);
+	void addRankSet(RankSet rankSet);
 
 }

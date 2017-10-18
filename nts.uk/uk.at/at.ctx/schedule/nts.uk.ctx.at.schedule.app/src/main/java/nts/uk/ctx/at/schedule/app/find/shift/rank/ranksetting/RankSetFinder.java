@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSetRepository;
 
 /**
@@ -16,10 +17,16 @@ import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSetRepository;
 @Stateless
 public class RankSetFinder {
 	@Inject
-	RankSetRepository rankSetRepository;
+	private RankSetRepository rankSetRepository;
+
+	/**
+	 * get all rank setting
+	 * @param employeeIds
+	 * @return list rank setting
+	 */
 
 	public List<RankSetDto> findAllRankSet(List<String> employeeIds) {
-		if (employeeIds.size() > 0) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
 			return rankSetRepository.getListRankSet(employeeIds).stream().map((x) -> RankSetDto.fromDomain(x))
 					.collect(Collectors.toList());
 		}
