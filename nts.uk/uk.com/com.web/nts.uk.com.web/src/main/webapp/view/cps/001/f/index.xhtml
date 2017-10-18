@@ -7,11 +7,10 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS001_2')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 570,
-					height : 540
+					width : 920,
+					height : 700
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,7 +21,13 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area">
+				<button type="button">#{i18n.getText('CPS001_51')}</button>
+			</div>
 			<div id="contents-area">
+				<div>#{i18n.getText('CPS001_80')}</div>
+				<button type="button">#{i18n.getText('CPS001_71')}</button>
+				<table id="grid2"></table>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CPS001_1')}</button>

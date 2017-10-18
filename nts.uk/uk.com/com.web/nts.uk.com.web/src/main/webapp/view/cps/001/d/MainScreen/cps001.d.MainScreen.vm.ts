@@ -20,7 +20,7 @@ module cps001.d.MainScreen.vm {
         OpenFModal() {
 
             let self = this;
-            setShared("imageId", self.imageId());
+            setShared("employeeId", self.imageId());
             subModal('/view/cps/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
                  self.imageId(getShared("imageId"));
             });
