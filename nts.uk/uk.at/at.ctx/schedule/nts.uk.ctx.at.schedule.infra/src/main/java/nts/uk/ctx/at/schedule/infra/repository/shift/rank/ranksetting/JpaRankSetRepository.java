@@ -42,7 +42,7 @@ public class JpaRankSetRepository extends JpaRepository implements RankSetReposi
 	}
 
 	@Override
-	public void insetRankSet(RankSet rankSet) {
+	public void addRankSet(RankSet rankSet) {
 		this.commandProxy().insert(toEntity(rankSet));
 	}
 

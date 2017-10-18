@@ -18,8 +18,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class RankFinder {
 
 	@Inject
-	RankRepository rankRepository;
-
+	private RankRepository rankRepository;
+	/**
+	 * get all rank 
+	 * @return list rankDto
+	 */
 	public List<RankDto> getAllListRank() {
 		String companyId = AppContexts.user().companyId();
 		return rankRepository.getListRank(companyId).stream().map((x) -> RankDto.fromDomain(x))

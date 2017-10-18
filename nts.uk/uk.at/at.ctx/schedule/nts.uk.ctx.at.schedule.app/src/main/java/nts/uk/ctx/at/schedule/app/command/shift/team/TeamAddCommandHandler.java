@@ -40,7 +40,7 @@ public class TeamAddCommandHandler extends CommandHandler<TeamCommand> {
 		}
 		Team domain = Team.createFromJavaType(command.getWorkPlaceId(), command.getTeamCode(), command.getTeamName());
 		// call repository add domain
-		this.teamRespository.insertTeam(domain);
+		this.teamRespository.addTeam(domain);
 	}
 
 }

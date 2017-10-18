@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSet;
 import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSetRepository;
 
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSetRepository;
 public class TeamSetAddCommandHandler extends CommandHandler<TeamSetAddCommand> {
 
 	@Inject
-	TeamSetRepository teamSetRepos;
+	private TeamSetRepository teamSetRepos;
 
 	@Override
 	@Transactional
@@ -25,21 +26,21 @@ public class TeamSetAddCommandHandler extends CommandHandler<TeamSetAddCommand> 
 		List<String> employeeCodes = command.getEmployeeCodes();
 		String teamCode = command.getTeamCode();
 		String workPlaceId = command.getWorkPlaceId();
+		// add
+		if (CollectionUtil.isEmpty(employeeCodes)) {
+			throw new BusinessException("Msg_341");
+		}
 		// remove list team want added to team code
 		teamSetRepos.removeListTeamSet(employeeCodes, workPlaceId);
-		
-		//add 
-		if (employeeCodes.isEmpty()) {
-			throw new BusinessException("Msg_341");
-		} else {
-			// remove list team by teamCode
-			teamSetRepos.removeTeamSetByTeamCode(workPlaceId, teamCode);
-			employeeCodes.stream().forEach(employeeCode -> {
-				// add teamSet
-				TeamSet domain = TeamSet.createFromJavaType(teamCode, employeeCode, workPlaceId);
-				teamSetRepos.addTeamSet(domain);
-			});
-		}
+
+		// remove list team by teamCode
+		teamSetRepos.removeTeamSetByTeamCode(workPlaceId, teamCode);
+		employeeCodes.stream().forEach(employeeCode -> {
+			// add teamSet
+			TeamSet domain = TeamSet.createFromJavaType(teamCode, employeeCode, workPlaceId);
+			domain.validate();
+			teamSetRepos.addTeamSet(domain);
+		});
 
 	}
 

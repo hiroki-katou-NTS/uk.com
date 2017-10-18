@@ -15,11 +15,16 @@ import nts.uk.ctx.at.schedule.app.find.shift.rank.RankFinder;
 @Produces(MediaType.APPLICATION_JSON)
 public class RankWS {
 	@Inject
-	RankFinder rankFinder;
+	private RankFinder rankFinder;
 
+	/**
+	 * Get all team setting
+	 * 
+	 * @return list
+	 */
 	@POST
 	@Path("findAll")
-	public List<RankDto> getAllTeamSet() {
+	public List<RankDto> getAllTRank() {
 		return this.rankFinder.getAllListRank();
 	}
 }

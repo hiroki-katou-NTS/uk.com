@@ -20,7 +20,7 @@ public interface TeamRepository {
 	/**
 	 * insert team
 	 */
-	void insertTeam(Team team);
+	void addTeam(Team team);
 
 	/**
 	 * find team by teamCode

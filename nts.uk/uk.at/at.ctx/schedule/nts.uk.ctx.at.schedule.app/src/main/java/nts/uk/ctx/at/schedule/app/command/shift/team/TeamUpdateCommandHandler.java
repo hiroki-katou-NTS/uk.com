@@ -28,6 +28,7 @@ public class TeamUpdateCommandHandler extends CommandHandler<TeamCommand> {
 		if (team.isPresent()) {
 			Team domain = Team.createFromJavaType(command.getWorkPlaceId(), command.getTeamCode(),
 					command.getTeamName());
+			domain.validate();
 			teamRespository.updateTeam(domain);
 		}
 	}
