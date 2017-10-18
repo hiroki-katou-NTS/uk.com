@@ -57,7 +57,7 @@
 							<input
 								data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time' ,required: early1 }" />
 							<br />
-							<com:ko-if bind="displayOrder == 0">
+							<com:ko-if bind="displayOrder() != 0">
 							<div class="valign-center control-group row4">
 								<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 								<input class="col1"
