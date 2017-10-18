@@ -91,7 +91,78 @@
 								enable: true,
 								immediate: false}"></input>
 								</div>
-								<table id='grid2'>
+
+								<table id="grid">
+									<thead>
+										<tr>
+											<td colspan="2">#{i18n.getText('CPS009_21')}</td>
+
+											<td colspan="2">
+												<button id="A2_012" style='margin-left: 20px;'
+													data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')}
+												</button>
+												<button style='margin-left: 10px;'
+													data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }">?</button>
+											</td>
+
+											<td class="input-units">#{i18n.getText('CPS009_23')}</td>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: currentCategory().itemList()">
+										<td colspan="2" class="input-units"><input
+											class="months-input"
+											data-bind="ntsTextEditor: {value: perInfoItemDefId}" /></td>
+
+										<td  class="input-units">
+											<div id="combo-box"
+												data-bind="ntsComboBox: {
+												options: listComboItem,
+												optionsValue: 'code',
+												value: selectedRuleCode,
+												optionsText: 'name',
+												editable: false,
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 10 },
+												]}"></div>
+
+										</td>
+
+										<td colspan="2" class="input-units">
+										
+											<!-- String  -->
+											<com:ko-if bind="(dataType() === 1)">
+													<input
+													class="months-input"
+													data-bind="ntsTextEditor: {value: perInfoItemDefId}" />
+											</com:ko-if>	
+											
+											<!-- number  -->
+											<com:ko-if bind="(dataType() === 2)">
+													<input data-bind="ntsNumberEditor: {
+															value: stringValue}" />
+											</com:ko-if>	
+											
+											<!-- date  -->
+											<com:ko-if bind="(dataType() === 3)">
+													<div data-bind="ntsDatePicker: {value: dateValue, dateFormat: 'YYYY/MM/DD'}"></div>
+											</com:ko-if>	
+											
+											<!-- timepoint  -->
+											<com:ko-if bind="(dataType() === 4)">
+													<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
+													 value: dateValue, enable: true, readonly: true, required: true }" />	
+											</com:ko-if>	
+											
+											<!-- timepoint  -->
+											<com:ko-if bind="(dataType() === 5)">
+													<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
+													 value: dateValue, enable: true, readonly: true, required: true }" />	
+											</com:ko-if>																																
+																																	
+											</td>
+
+									</tbody>
 								</table>
 							</div>
 						</div>

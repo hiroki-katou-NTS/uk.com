@@ -82,7 +82,44 @@ input.ntsSearchBox {
 	margin-left: 220px;
 }
 
-#grid2__container {
+/* .item td {
+    border: 1px solid #CCC;
+    text-align: center;
+    height: 20px;
+}
+.item{
+	
+	margin-top: 10px;
+}
+ */
+#grid {
+	margin-top: 20px !important;
+}
+
+#grid td {
+	border: 1px solid #CCC;
+	text-align: center;
+	height: 20px;
+}
+
+thead {
+	background-color: #c7f391;
+}
+
+tr {
+	height: 10px;
+}
+
+#combo-box{
+	width: 100px;
+}
+
+.input-units{
+	
+	width: 200px;
+}
+
+/* #grid2__container {
 	margin-left: 20px !important;
 	margin-top: 20px !important;
 }
@@ -91,15 +128,15 @@ input.ntsSearchBox {
 	margin-top: 16px !important;
 }
 
-/* #grid2_displayContainer {
+#grid2_displayContainer {
 	max-width: 600px !important;
 	width: 600px !important;
 }
- */
+
 #grid2_headers_v, #grid2_virtualContainer td:FIRST-CHILD, #grid2_combo {
 	overflow: visible !important;
 }
 
 #grid2_displayContainer_a {
 	position: fixed !important;
-}
+} */
