@@ -28,7 +28,7 @@ public class ApprovalFrameDto {
 	private String frameID ;
 	private int dispOrder;
 	
-	private List<ApproveAcceptedDto> listApproveAcceptedDto;
+	private List<ApproveAcceptedDto> listApproveAccepted;
 	
 	private String nameAll;
 	
@@ -43,6 +43,15 @@ public class ApprovalFrameDto {
 				domain.getCompanyID(),
 				domain.getFrameID(),
 				domain.getDispOrder(),
-				null,null,null,null);
+				domain.getListApproveAccepted() == null ? null :domain.getListApproveAccepted().stream().map(x->ApproveAcceptedDto.fromDomain(x))
+				.collect(Collectors.toList())
+				,null,null,null);
 	}
+	public static ApprovalFrame toEntity(ApprovalFrameDto entity){
+		return new ApprovalFrame(entity.getCompanyID(), 
+				entity.getFrameID(), 
+				entity.getDispOrder(), 
+				entity.getListApproveAccepted() == null?null:entity.getListApproveAccepted().stream().map(x ->ApproveAcceptedDto.toEntity(x)).collect(Collectors.toList()));
+	}
+	
 }

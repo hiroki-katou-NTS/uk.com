@@ -13,7 +13,7 @@ module nts.uk.at.view.ksc001.i {
                 self.targetRange = ko.observable('');
                 self.executionNumber = ko.observable('');
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 100 },
+                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_86"), key: 'status', width: 150 }
                 ]);
@@ -47,12 +47,30 @@ module nts.uk.at.view.ksc001.i {
                 service.findAllCreator(parentData.executionId).done(function(data: Array<any>) {
                     self.targetRange(nts.uk.resource.getText("KSC001_46", [parentData.startDate, parentData.endDate]));
                     self.executionNumber(nts.uk.resource.getText("KSC001_47", [data.length]));
-                    data.forEach(function(item, index) {
-                        self.items.push(new ItemModel(item.employeeCode, item.employeeName, item.executionStatus));
-                    });
+                    if (data && data.length > 0) {
+                        data.forEach(function(item, index) {
+                            self.items.push(new ItemModel(item.employeeCode, item.employeeName, item.executionStatus));
+                        });
+                    }
+                    //sort by employ code
+                    self.items().sort(self.compare);
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+
+            //define sort function
+            private compare(a: any, b: any) {
+                let genreA: string = a.code.toUpperCase();
+                let genreB: string = b.code.toUpperCase();
+
+                let comparison = 0;
+                if (genreA > genreB) {
+                    comparison = 1;
+                } else if (genreA < genreB) {
+                    comparison = -1;
+                }
+                return comparison;
             }
 
             /**

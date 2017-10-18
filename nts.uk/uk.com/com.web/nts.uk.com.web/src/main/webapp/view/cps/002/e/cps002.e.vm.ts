@@ -8,8 +8,8 @@ module cps002.e.vm {
 
     export class ViewModel {
         cardNoMode: KnockoutObservable<boolean> = ko.observable(false);
-        txtEmployeeCode: KnockoutObservable<string> = ko.observable("").extend({maxLength: 12});
-        txtCardNo: KnockoutObservable<string> = ko.observable("").extend({maxLength: 20});
+        txtEmployeeCode: KnockoutObservable<string> = ko.observable("");
+        txtCardNo: KnockoutObservable<string> = ko.observable("");
         generateEmCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
@@ -43,14 +43,13 @@ module cps002.e.vm {
         
         returnEmCode(){
             let self = this;
-            if(self.generateEmCode() != ""){
-                setShared("CPS002_PARAM", self.generateEmCode());
-                close();
-            }
+            setShared("CPS002_PARAM", self.generateEmCode());
+            close();
         }
         
         close(){
-            setShared("CPS002_PARAM", self.generateEmCode());
+      
+            setShared("CPS002_PARAM", "");
             close();
         }
     }

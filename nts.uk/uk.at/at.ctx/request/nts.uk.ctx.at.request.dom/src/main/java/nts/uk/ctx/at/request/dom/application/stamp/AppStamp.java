@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.logging.log4j.util.Strings;
@@ -87,8 +88,8 @@ public class AppStamp extends Application {
 				null, 
 				ReflectPlanPerState.NOTREFLECTED, 
 				ReflectPlanPerEnforce.NOTTODO, 
-				null,
-				null,
+				GeneralDate.today(),
+				GeneralDate.today(),
 				null,
 				stampRequestMode, 
 				appStampGoOutPermits, 
@@ -97,7 +98,7 @@ public class AppStamp extends Application {
 				appStampOnlineRecords);
 	}
 	
-	public void validate(){
+	public void customValidate(){
 		switch(this.stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: {
 				for(AppStampGoOutPermit appStampGoOutPermit : this.appStampGoOutPermits){
@@ -110,7 +111,7 @@ public class AppStamp extends Application {
 					- 開始時刻
 					- 開始場所
 					- 終了時刻*/
-					if(appStampGoOutPermit.getStampAtr().equals(StampAtr.GO_OUT)&&
+					if(appStampGoOutPermit.getStampAtr().equals(AppStampAtr.GO_OUT)&&
 							(appStampGoOutPermit.getStartTime() == null ||
 							Strings.isEmpty(appStampGoOutPermit.getStartLocation()) || 
 							appStampGoOutPermit.getEndTime() == null )){
@@ -120,7 +121,7 @@ public class AppStamp extends Application {
 					/*打刻申請詳細.打刻分類＝育児 または 介護のとき、すべての外出許可申請が以下のいずれも設定されていない (#Msg_308#)
 					- 開始時刻
 					- 終了時刻*/
-					if((appStampGoOutPermit.getStampAtr().equals(StampAtr.CHILDCARE))&&
+					if((appStampGoOutPermit.getStampAtr().equals(AppStampAtr.CHILDCARE))&&
 							(appStampGoOutPermit.getStartTime() == null ||
 							appStampGoOutPermit.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
@@ -140,7 +141,7 @@ public class AppStamp extends Application {
 					- 開始時刻
 					- 開始場所
 					- 終了時刻*/
-					if(appStampWork.getStampAtr().equals(StampAtr.ATTENDANCE)&&
+					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
 							(appStampWork.getStartTime() == null ||
 							Strings.isEmpty(appStampWork.getStartLocation()) || 
 							appStampWork.getEndTime() == null )){
@@ -152,20 +153,73 @@ public class AppStamp extends Application {
 			
 			case STAMP_CANCEL: {
 				// すべての打刻取消申請が実績取消＝するしない区分.しない (#Msg_321#)
-				for(AppStampCancel appStampCancel : this.appStampCancels) {
-					if(appStampCancel.getCancelAtr()==0){
-						throw new BusinessException("Msg_321");
-					}
+				Boolean allFalse = this.appStampCancels.stream().allMatch(item -> item.getCancelAtr()==0);
+				if(allFalse){
+					throw new BusinessException("Msg_321");
 				}
 				break;
 			}
 			
 			case STAMP_ONLINE_RECORD: {
-				
+				// do nothing
+				break;
+			}
+			
+			case OTHER: {
+				for(AppStampWork appStampWork : this.appStampWorks) {
+					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
+					if(appStampWork.getStartTime()>=appStampWork.getEndTime()){
+						throw new BusinessException("Msg_307");
+					}
+					
+					/*打刻申請詳細.打刻分類＝外出のとき、すべての外出許可申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 開始場所
+					- 終了時刻*/
+					if(appStampWork.getStampAtr().equals(AppStampAtr.GO_OUT)&&
+							(appStampWork.getStartTime() == null ||
+							Strings.isEmpty(appStampWork.getStartLocation()) || 
+							appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
+	
+					/*打刻申請詳細.打刻分類＝育児 または 介護のとき、すべての外出許可申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 終了時刻*/
+					if((appStampWork.getStampAtr().equals(AppStampAtr.CHILDCARE))&&
+							(appStampWork.getStartTime() == null ||
+									appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
+					
+					/*打刻申請詳細.打刻分類＝出勤／退勤 または 臨時のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 開始場所
+					- 終了時刻*/
+					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
+							(appStampWork.getStartTime() == null ||
+							Strings.isEmpty(appStampWork.getStartLocation()) || 
+							appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
+					
+					/*打刻申請詳細.打刻分類＝応援のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 終了時刻
+					- 応援カード*/
+					if(appStampWork.getStampAtr().equals(AppStampAtr.SUPPORT)&&
+							(appStampWork.getStartTime() == null ||
+							Strings.isBlank(appStampWork.getSupportCard()) || 
+							appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
+				}
+				break;
 			}
 			
 			default: {
-				
+				// do nothing
+				break;
 			}
 		
 		}

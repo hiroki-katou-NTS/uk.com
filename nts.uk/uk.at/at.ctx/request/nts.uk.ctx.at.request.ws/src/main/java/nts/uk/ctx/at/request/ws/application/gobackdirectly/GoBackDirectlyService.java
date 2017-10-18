@@ -6,9 +6,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.ws.WebService;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckInsertGoBackCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
@@ -25,6 +31,9 @@ public class GoBackDirectlyService extends WebService {
 	
 	@Inject 
 	private InsertGoBackDirectlyCommandHandler insertGoBackHandler;
+	
+	@Inject 
+	private CheckInsertGoBackCommandHandler checkInsertGoBackHandler;
 
 	@Inject 
 	private UpdateGoBackDirectlyCommandHandler updateGoBackHandler;
@@ -38,7 +47,7 @@ public class GoBackDirectlyService extends WebService {
 	public GoBackDirectlyDto getGoBackDirectlyByAppID(String appID) {
 		return this.goBackDirectlyFinder.getGoBackDirectlyByAppID(appID);
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -47,7 +56,7 @@ public class GoBackDirectlyService extends WebService {
 	@Path("getGoBackCommonSetting")
 	public GoBackDirectSettingDto getGoBackCommonSetting() {
 		String SID = AppContexts.user().employeeId();
-		return this.goBackDirectlyFinder.getGoBackDirectSettingBySID(SID);
+		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(SID);
 	}
 
 	/**
@@ -65,16 +74,28 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("insertGoBackDirectly")
-	public void insertGoBackData (InsertGoBackDirectlyCommand command) {
+	public void insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
 		this.insertGoBackHandler.handle(command);
 	}
+	
+	/**
+	 * check before insert OR update
+	 * @param command
+	 */
+	@POST
+	@Path("checkBeforeChangeGoBackDirectly")
+	public void checkBeforeInsertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+		this.checkInsertGoBackHandler.handle(command);
+	}
+	
+	
 	/**
 	 * update command
 	 * @param command
 	 */
 	@POST
 	@Path("updateGoBackDirectly")
-	public void updateGoBackData (UpdateGoBackDirectlyCommand command) {
+	public void updateGoBackData (UpdateApplicationGoBackDirectlyCommand command) {
 		this.updateGoBackHandler.handle(command);
 	}
 		

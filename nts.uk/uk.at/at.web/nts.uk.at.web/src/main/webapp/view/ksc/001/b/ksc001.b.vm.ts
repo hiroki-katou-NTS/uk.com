@@ -54,6 +54,13 @@ module nts.uk.at.view.ksc001.b {
             employeeList: KnockoutObservableArray<UnitModel>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
+            
+            //for control field
+            isReCreate: KnockoutObservable<boolean>;
+            isReSetting: KnockoutObservable<boolean>;
+//            isReCreate: KnockoutObservable<boolean>;
+//            isReCreate: KnockoutObservable<boolean>;
+//            isReCreate: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
@@ -170,6 +177,15 @@ module nts.uk.at.view.ksc001.b {
                 self.infoCreateMethod = ko.observable('');
                 self.infoPeriodDate = ko.observable('');
                 self.lengthEmployeeSelected = ko.observable('');
+                
+                //for control field
+                self.isReCreate = ko.computed(function() {
+                    return self.selectedImplementAtrCode() == ImplementAtr.RECREATE;
+                });
+
+                self.isReSetting = ko.computed(function() {
+                    return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
+                });
             }
             /**
              * get user login
@@ -297,7 +313,7 @@ module nts.uk.at.view.ksc001.b {
                 if (self.checkCreateMethodAtrPatternSchedule()) {
                     data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
                 }
-                if (self.checkCreateMethodAtrCopyPastSchedule) {
+                if (self.checkCreateMethodAtrCopyPastSchedule()) {
                     data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
                 }
                 data.confirm = self.confirm();
@@ -424,6 +440,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
+                console.log(self.periodStartDate());
                 service.checkThreeMonth(self.periodStartDate()).done(function(check) {
                     if (check) {
                         // show message confirm 567

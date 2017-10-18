@@ -5,6 +5,7 @@ module nts.uk.at.view.ksc001.g {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             screenModel.loadGridTable(screenModel);
+            $('#daterangepicker').find('input')[0].focus();
         });
     });
 }

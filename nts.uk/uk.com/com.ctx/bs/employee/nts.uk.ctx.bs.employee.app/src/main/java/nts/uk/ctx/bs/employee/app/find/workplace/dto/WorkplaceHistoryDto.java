@@ -5,8 +5,8 @@
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceHistoryDto.
@@ -19,7 +19,7 @@ public class WorkplaceHistoryDto implements WorkplaceHistorySetMemento {
 
     /** The period. */
     // 期間
-    public Period period;
+    public DatePeriod period;
 
     /*
      * (non-Javadoc)
@@ -40,7 +40,7 @@ public class WorkplaceHistoryDto implements WorkplaceHistorySetMemento {
      * (nts.uk.ctx.bs.employee.dom.workplace.Period)
      */
     @Override
-    public void setPeriod(Period period) {
+    public void setPeriod(DatePeriod period) {
         this.period = period;
     }
 

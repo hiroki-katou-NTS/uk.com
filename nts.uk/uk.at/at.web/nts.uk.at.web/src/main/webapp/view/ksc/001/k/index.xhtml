@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 800,
-					height : 700
+					width : 850,
+					height : 650
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -39,15 +39,16 @@
 						data-bind="ntsGridList: {								
 					height: 400,
 					dataSource: items,
-					primaryKey: 'executionId',
+					primaryKey: 'id',
 					columns: columns,
 					multiple: false,
-					value: currentCode}">
+					value: currentCode,
+					rows: 10}">
 					</table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="2" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
+				<button id="btn-close" tabindex="2" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

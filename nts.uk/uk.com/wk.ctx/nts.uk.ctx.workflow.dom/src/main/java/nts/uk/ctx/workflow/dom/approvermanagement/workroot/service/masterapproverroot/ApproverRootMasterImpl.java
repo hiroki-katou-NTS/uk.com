@@ -15,10 +15,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -50,12 +52,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
 	private CompanyAdapter comAdapter;
 	@Inject
-	private WorkplaceAdapter wpAdapter;
+	private WorkplaceApproverAdapter wpAdapter;
 	@Inject
 	private ApprovalPhaseRepository phaseRepository;
 	@Inject
 	private PersonAdapter psInfor;
-	
+	@Inject
+	private SyJobTitleAdapter jobTitle;
 	private final String rootCommon = "共通ルート";
 	@Override
 	public MasterApproverRootOutput masterInfors(String companyID,
@@ -164,7 +167,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
 			WorkplaceImport wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate).get();			
 			// fix data
-			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpCode(), wpInfors.getWkpName());
+			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpId(),wpInfors.getWkpCode(), wpInfors.getWkpName());
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
 			
 			// fix data
@@ -188,7 +191,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		}
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
-		lstAppInfo = getPhaseApprover(companyID, root.getBranchId());
+		lstAppInfo = getPhaseApprover(companyID, root.getBranchId(), root.getStartDate());
 		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
 		if(!CollectionUtil.isEmpty(wpRootInfor)) {
@@ -213,22 +216,29 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
-		lstMatter = getPhaseApprover(companyID, comRoot.getBranchId());		
+		lstMatter = getPhaseApprover(companyID, comRoot.getBranchId(), comRoot.getPeriod().getStartDate());		
 		approvalForApplication.setLstApproval(lstMatter);
 		return approvalForApplication;
 	}
 	
 	
-	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String branchId){
+	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String branchId, GeneralDate baseDate){
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
 		List<ApprovalPhase> getAllIncludeApprovers = phaseRepository.getAllIncludeApprovers(companyID, branchId);
+		if(CollectionUtil.isEmpty(getAllIncludeApprovers)){
+			return lstMatter;
+		}
 		for(ApprovalPhase phase: getAllIncludeApprovers) {
 			List<String> lstApprovers = new ArrayList<>();
 			for(Approver approver: phase.getApprovers()) {
 				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
+				if(approver.getApprovalAtr() == ApprovalAtr.PERSON){
+					lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
+				}else{
+					lstApprovers.add(jobTitle.findJobTitleByPositionId(companyID, approver.getJobTitleId(), baseDate).getPositionName());
+				}
 				
-				lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);

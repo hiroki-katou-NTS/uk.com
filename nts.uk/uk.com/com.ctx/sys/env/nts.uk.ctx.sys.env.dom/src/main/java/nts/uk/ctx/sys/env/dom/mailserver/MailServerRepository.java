@@ -18,4 +18,18 @@ public interface MailServerRepository {
 	 * @return the optional
 	 */
 	Optional<MailServer> findBy(String companyId);
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param mailSetting
+	 */
+	void add(MailServer mailSetting);
+	
+	/**
+	 * Update.
+	 *
+	 * @param mailSetting
+	 */
+	void update(MailServer mailSetting);
 }

@@ -23,32 +23,32 @@
 			</div>
 			<div class="selectionCase">
 				<div class="radioboxCase">
-					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrAllCase, enable: true, optionText: '#{i18n.getText('KSC001_4')}' }" />
+					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrAllCase, enable: isReCreate, optionText: '#{i18n.getText('KSC001_4')}' }" />
 				</div>
 				<div class="radioboxCase">
-					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrOnlyUnConfirm, enable: true, optionText: '#{i18n.getText('KSC001_5')}' }" />
+					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrOnlyUnConfirm, enable: isReCreate, optionText: '#{i18n.getText('KSC001_5')}' }" />
 				</div>	
 					<div class="radioboxCase">
 					<label>#{i18n.getText('KSC001_6')}</label>
 				</div>
 				<div class="radioboxProcessExecutionAtr">
-					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrRebuild, enable: true, optionText: '#{i18n.getText('KSC001_7')}' }" />
+					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrRebuild, enable: isReCreate, optionText: '#{i18n.getText('KSC001_7')}' }" />
 				</div>
 				<div class="radioboxProcessExecutionAtr">
-					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrReconfig, enable: true, optionText: '#{i18n.getText('KSC001_8')}' }" />
+					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrReconfig, enable: isReCreate, optionText: '#{i18n.getText('KSC001_8')}' }" />
 				</div>	
 				
 				<div class="checkboxSetting">
-					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetWorkingHours }">#{i18n.getText('KSC001_15')}</div>
-					<div data-bind="ntsCheckBox: { checked: resetTimeChildCare }">#{i18n.getText('KSC001_13')}</div>
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetWorkingHours,enable: isReSetting }">#{i18n.getText('KSC001_15')}</div>
+					<div data-bind="ntsCheckBox: { checked: resetTimeChildCare,enable: isReSetting }">#{i18n.getText('KSC001_13')}</div>
 				</div>
 				<div class="checkboxSetting">
-					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetDirectLineBounce }">#{i18n.getText('KSC001_11')}</div>
-					<div data-bind="ntsCheckBox: { checked: resetAbsentHolidayBusines }">#{i18n.getText('KSC001_14')}</div>
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetDirectLineBounce,enable: isReSetting }">#{i18n.getText('KSC001_11')}</div>
+					<div data-bind="ntsCheckBox: { checked: resetAbsentHolidayBusines,enable: isReSetting }">#{i18n.getText('KSC001_14')}</div>
 				</div>
 				<div class="checkboxSetting">
-					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetMasterInfo }">#{i18n.getText('KSC001_12')}</div>
-					<div data-bind="ntsCheckBox: { checked: resetTimeAssignment }">#{i18n.getText('KSC001_16')}</div>
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetMasterInfo,enable: isReSetting }">#{i18n.getText('KSC001_12')}</div>
+					<div data-bind="ntsCheckBox: { checked: resetTimeAssignment,enable: isReSetting }">#{i18n.getText('KSC001_16')}</div>
 				</div>
 			</div>
 			<div class="checkboxSettingEnd">

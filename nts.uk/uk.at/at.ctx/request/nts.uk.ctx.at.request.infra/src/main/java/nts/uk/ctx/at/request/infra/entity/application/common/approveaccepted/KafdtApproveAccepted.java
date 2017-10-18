@@ -5,12 +5,16 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -44,10 +48,42 @@ public class KafdtApproveAccepted extends UkJpaEntity implements Serializable {
 	@Column(name="REPRESENTER_SID")
 	public String representerSID; 
 	
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+        @JoinColumn(name="FRAME_ID", referencedColumnName="FRAME_ID", insertable = false, updatable = false)
+    })
+	public KrqdtApprovalFrame approvalFrame;
+		
 	@Override
 	protected Object getKey() {
 		return kafdtApproveAcceptedPK;
 	}
 	
+	public static KafdtApproveAccepted toEntity(ApproveAccepted domain, String frameID) {
+		return new KafdtApproveAccepted(
+				new KafdtApproveAcceptedPK(
+						domain.getCompanyID(), 
+						domain.getAppAcceptedID()), 
+				frameID, 
+				domain.getApproverSID(), 
+				domain.getApprovalATR().value, 
+				domain.getConfirmATR().value, 
+				domain.getApprovalDate(), 
+				domain.getReason().v(), 
+				domain.getRepresenterSID(),null);
+	}
+	
+	public ApproveAccepted toDomain() {
+		return ApproveAccepted.createFromJavaType(
+				this.kafdtApproveAcceptedPK.companyID, 
+				this.kafdtApproveAcceptedPK.appAccedtedID, 
+				this.approverSID, 
+				this.approvalATR, 
+				this.confirmATR, 
+				this.approvalDate, 
+				this.reason, 
+				this.representerSID);
+	}
 
 }

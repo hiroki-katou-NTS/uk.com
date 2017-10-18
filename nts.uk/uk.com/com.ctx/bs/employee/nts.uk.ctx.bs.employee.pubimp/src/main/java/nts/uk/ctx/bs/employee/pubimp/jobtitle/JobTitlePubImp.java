@@ -20,8 +20,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitle;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleRepository;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 
@@ -63,8 +63,8 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return jobTitleDtos.stream().map(item -> JobTitleExport.builder()
 				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
 				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
-				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
-				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().start())
+				.endDate(item.getPeriod().end()).build()).collect(Collectors.toList());
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 * lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<JobTitleExport> findJobTitleBySid(String employeeId, GeneralDate baseDate) {
+	public Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
 		Optional<AffJobTitleHistory> optHistory = this.jobTitleHistoryRepository
 				.findBySid(employeeId, baseDate);
@@ -99,7 +99,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId().v())
 				.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
 				.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
-				.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+				.startDate(item.getPeriod().start()).endDate(item.getPeriod().end())
 				.build());
 	}
 
@@ -111,7 +111,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId,
+	public Optional<JobTitleExport> findByJobId(String companyId, String positionId,
 			GeneralDate baseDate) {
 		// Query
 		List<JobTitle> jobTitleImports = this.jobTitleRepository.findByJobIds(companyId,
@@ -127,7 +127,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId().v())
 				.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
 				.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
-				.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+				.startDate(item.getPeriod().start()).endDate(item.getPeriod().end())
 				.build());
 	}
 
@@ -147,8 +147,8 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return jobTitleDtos.stream().map(item -> JobTitleExport.builder()
 				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
 				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
-				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
-				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().start())
+				.endDate(item.getPeriod().end()).build()).collect(Collectors.toList());
 	}
 
 }

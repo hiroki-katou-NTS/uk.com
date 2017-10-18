@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode
 				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName
-				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.Memo
+				nts.uk.shr.com.primitive.Memo
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kml004.a.main.css" />
@@ -32,7 +32,10 @@
 						data-bind="click: remove, enable: lstCate().length >0 &amp; checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
 					<button tabindex="4" id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
+					<!-- B dialog -->
 					<button id="Close_BTN" data-bind="click: openBDialog">#{i18n.getText('KML004_4')}</button>
+					<!-- D dialog -->
+					<button id="Close_BTN" data-bind="click: openDDialog">#{i18n.getText('KML004_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -63,7 +66,7 @@
 							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.check, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
 						<!-- A3_3 -->
 						<span><input tabindex="7" id="name-text" style="width: 180px"
-							data-bind="ntsTextEditor: {value: categoryName, required: true, name: '#[KML004_10]'}" /></span>
+							data-bind="ntsTextEditor: {value: categoryName, constraint:'CategoryName' , required: true, name: '#[KML004_10]'}" /></span>
 						<div id="memo">
 							<!-- A4_1 -->
 							<div id="lbl-memo"
@@ -135,6 +138,25 @@
 						</div>
 						
 					</div>
+					
+<!-- 					<table style="border: 1px red;"> -->
+<!-- 						<tr> -->
+<!-- 							<td>A</td> -->
+<!-- 							<td><button data-bind="click: openDialog.bind(1, 'A')">set</button></td> -->
+<!-- 						</tr> -->
+<!-- 						<tr> -->
+<!-- 							<td>B</td> -->
+<!-- 							<td></td> -->
+<!-- 						</tr> -->
+<!-- 						<tr> -->
+<!-- 							<td>C</td> -->
+<!-- 							<td><button  data-bind="click: openDialog.bind(3, 'C')">set</button></td> -->
+<!-- 						</tr> -->
+<!-- 						<tr> -->
+<!-- 							<td>D</td> -->
+<!-- 							<td></td> -->
+<!-- 						</tr> -->
+<!-- 					</table> -->
 				</div>
 			</div>
 		</ui:define>

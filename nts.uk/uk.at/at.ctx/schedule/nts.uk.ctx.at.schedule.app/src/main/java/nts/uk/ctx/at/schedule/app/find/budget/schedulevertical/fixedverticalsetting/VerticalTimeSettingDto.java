@@ -8,16 +8,18 @@ import lombok.NoArgsConstructor;
 @Data
 public class VerticalTimeSettingDto {
 
-	/*会社ID*/
+	/** 会社ID **/
 	private String companyId;
 	
-	/**/
-	private int fixedVerticalNo;
+	/** 固定項目区分 **/
+	private int fixedItemAtr;
 	
-	/*表示区分*/
+	private int verticalTimeNo;
+	
+	/** 表示区分 **/
 	private int displayAtr;
 	
-	/*時刻*/
+	/** 時刻 **/
 	private int startClock;
 
 }

@@ -33,8 +33,8 @@
 							<col width="70px" />
 							<col width="250px" />
 							<col width="350px" />
-							<col width="70px" />
-							<col width="70px" />
+							<col width="80px" />
+							<col width="80px" />
 						</colgroup>
 						<thead>
 							<tr>
@@ -58,11 +58,11 @@
 								<td><div data-bind="foreach: detailContentMethod">
 										<p data-bind="text: $data" />
 									</div></td>
-								<td><a tabindex="1" class="nounderline"
+								<td><a id="execution-number" tabindex="1" class="nounderline"
 									href="javascript:void(0);"
 									data-bind="text: executionNumber(),click: openEmployeeTargetListDialog">
 								</a></td>
-								<td><a tabindex="2" class="nounderline"
+								<td><a id="error-number" tabindex="2" class="nounderline"
 									href="javascript:void(0);"
 									data-bind="text:errorNumber(),click : openErrorContentDialog">
 								</a></td>
@@ -72,7 +72,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
+				<button id="btn-close" tabindex="3" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

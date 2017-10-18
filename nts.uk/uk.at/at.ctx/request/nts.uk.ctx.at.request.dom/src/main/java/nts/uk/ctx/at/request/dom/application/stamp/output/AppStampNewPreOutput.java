@@ -13,4 +13,6 @@ public class AppStampNewPreOutput {
 	public AppCommonSettingOutput appCommonSettingOutput;
 	
 	public AppStampSetOutput appStampSetOutput;
+	
+	public String employeeName;
 }

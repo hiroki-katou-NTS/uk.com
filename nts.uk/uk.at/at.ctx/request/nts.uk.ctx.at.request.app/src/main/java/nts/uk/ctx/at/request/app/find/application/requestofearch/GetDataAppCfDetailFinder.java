@@ -5,143 +5,159 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
+import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetDataAppCfDetailFinder {
-	@Inject
-	private RequestOfEachCompanyRepository detailCompanyRepo;
-
-	@Inject
-	private RequestOfEachWorkplaceRepository detailWorkplaceRepo;
 
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 
-	public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline) {
+	@Inject
+	private nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
+	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm; 
+	//closure ID
+	@Inject
+	private EmployeeAdapter employeeAdaptor;
+	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	@Inject
+	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
+	
+
+	public OutputMessageDeadline getDataConfigDetail(ApplicationDto applicationDto) {
 		String message = "";
 		String deadline = "";
 		GeneralDate date1 = GeneralDate.today();
 		GeneralDate date2 = GeneralDate.today();
 		GeneralDate date3 = GeneralDate.today();
+		String companyID = AppContexts.user().companyId();
+		String sid = AppContexts.user().employeeId();
+		GeneralDate generalDate = GeneralDate.fromString(applicationDto.getApplicationDate(), "yyyy/MM/dd");
 
+		GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, generalDate).getEndDate();
+		
+		String employmentCD = employeeAdaptor.getEmploymentCode(companyID, sid, generalDate);
+		
+		
+		
+		/*
+		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
+		Object<String: tightenID, String: currentMonth> obj1 = Tighten.find(companyID, employeeCD); // obj1 <=> (締めID,当月)
+		*/
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new RuntimeException("khong co closure employement");
+		}
+		
+		//closureEmployment.get().getClosureId()
+		Optional<ApplicationDeadline> applicationDeadline = applicationDeadlineRepository.getDeadlineByClosureId(companyID, closureEmployment.get().getClosureId());
+		
+		if(applicationDeadline.get().getDeadlineCriteria() == DeadlineCriteria.CALENDAR_DAY) {
+			endDate.addDays(applicationDeadline.get().getDeadline().v());
+		}
+		
+		if(applicationDeadline.get().getDeadlineCriteria() == DeadlineCriteria.WORKING_DAY) {
+			endDate.addDays(applicationDeadline.get().getDeadline().v());
+		}
+		
+		
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepo
-				.getAppTypeDiscreteSettingByAppType(inputMessageDeadline.getCompanyID(),
-						inputMessageDeadline.getAppType());
+				.getAppTypeDiscreteSettingByAppType(companyID,
+						applicationDto.getApplicationType());
 		// 事後申請の受付は7月27日分まで。
 		// 「事後の受付制限」．未来日許可しないがtrue、その他は利用しない
 		// if : RetrictPostAllowFutureFlg = true(allow)s và RetrictPreUseFlg = false(not
 		// use)
-		if(!appTypeDiscreteSetting.isPresent()) {
-			return new  OutputMessageDeadline("","");
+		if (!appTypeDiscreteSetting.isPresent()) {
+			return new OutputMessageDeadline("", "");
 		}
-		if (appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value == 1
-				&& appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 0) {
+
+		if (appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg() == AllowAtr.ALLOW
+				&& appTypeDiscreteSetting.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
 			deadline = "事後申請の受付は" + date2 + "分まで";
 			// deadline ="事前申請の受付は"+date+"分から。事後申請の受付は"+date+"分まで。当月の申請は"+date+"まで";
 		}
 
-		if (inputMessageDeadline.getWorkplaceID()==null) {
-			// this is company
-			Optional<AppConfigDetailDto> appConfigDetailCom = detailCompanyRepo
-					.getRequestDetail(inputMessageDeadline.getCompanyID(), inputMessageDeadline.getAppType())
-					.map(c -> AppConfigDetailDto.fromDomain(c));
-			if (appConfigDetailCom.isPresent()) { // ton tai
-				if (!appConfigDetailCom.get().getMemo().isEmpty()) {
-					message = appConfigDetailCom.get().getMemo();
-				}
+		// 1.1(Hung)
+		//GeneralDate generalDate = GeneralDate.fromString(inputMessageDeadline.getAppDate(), "yyyy/MM/dd");
+		//rootAtr = 1
+		RequestOfEachCommon RequestOfEachCommon = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+				companyID, sid, 1,
+				EnumAdaptor.valueOf(applicationDto.getApplicationType(), ApplicationType.class),
+				GeneralDate.today()).requestOfEachCommon;
+		
+		AppConfigDetailDto appConfigDetail = AppConfigDetailDto
+				.fromDomain(RequestOfEachCommon.getRequestAppDetailSettings().get(0));
+
+		// this is company
+//		Optional<AppConfigDetailDto> appConfigDetailCom = detailCompanyRepo
+//				.getRequestDetail(inputMessageDeadline.getCompanyID(), inputMessageDeadline.getAppType())
+//				.map(c -> AppConfigDetailDto.fromDomain(c));
+		if (appConfigDetail != null) { // ton tai
+			if (!appConfigDetail.getMemo().isEmpty()) {
+				message = appConfigDetail.getMemo();
 			}
-			// 条件：「申請利用設定」．備考に内容なし && 「申請締切設定」．利用区分が利用しない && 「事前の受付制限」．利用区分が利用しない
-			// && 「事後の受付制限」．未来日許可しないがfalse
-			if (appConfigDetailCom.get().getMemo().isEmpty() == true
-					// && appConfigDetailCom.get().getUserAtr() ==0 // use Atr = 0
-					&& appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 0
-					&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value == 0) {
-				message = "";
-				deadline = "";
+		}
+		// 条件：「申請利用設定」．備考に内容なし && 「申請締切設定」．利用区分が利用しない && 「事前の受付制限」．利用区分が利用しない
+		// && 「事後の受付制限」．未来日許可しないがfalse
+		if (appConfigDetail.getMemo().isEmpty() == true
+				// && appConfigDetailCom.get().getUserAtr() ==0 // use Atr = 0
+				&& appTypeDiscreteSetting.get().getRetrictPreUseFlg() == UseAtr.NOTUSE
+				&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg() == AllowAtr.ALLOW) {
+			message = "";
+			deadline = "";
+		}
+
+		if (appConfigDetail.getMemo().isEmpty() == false
+				// && appConfigDetailCom.get().getUserAtr() ==0 // use Atr = 1
+				&& appTypeDiscreteSetting.get().getRetrictPreUseFlg() == UseAtr.USE
+				&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg() == AllowAtr.ALLOW) {
+			// if retrictPreMethodFlg is timecheck
+			if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {
+				int minuteData = Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreTimeDay().v().toString());
+
+				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日 " +formatTime(minuteData) +" 分から。"
+						+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日 分まで。 当月の申請は" + endDate.month() + "月"
+						+ endDate.day() + "日 まで";
 			}
+			// if retrictPreMethodFlg is daycheck
+			if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
+				date1 = date1.addDays(appTypeDiscreteSetting.get().getRetrictPreDay().value);
 
-			if (appConfigDetailCom.get().getMemo().isEmpty() == false
-					// && appConfigDetailCom.get().getUserAtr() ==0 // use Atr = 1
-					&& appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 1
-					&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value == 1) {
-				// if retrictPreMethodFlg is timecheck
-				if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg().value == 0) {
-					int a = Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreTimeDay().v().toString());
-					int minute = a % 60;
-					int hours = a % (60 * 24);
-					int date = hours / 24;
-					date1.addDays(date);
-
-					deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日 " + hours + ":" + minute + " 分から。"
-							+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日" + "分まで。" + "当月の申請は" + date3.month()
-							+ "月" + date3.day() + "日" + "まで";
-				}
-				// if retrictPreMethodFlg is daycheck
-				if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg().value == 1) {
-					date1 = date1.addDays(appTypeDiscreteSetting.get().getRetrictPreDay().value);
-
-					deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。" + "事後申請の受付は" + date2.month()
-							+ "月" + date2.day() + "日" + "分まで。" + "当月の申請は" + date3.month() + "月" + date3.day() + "日"
-							+ "まで";
-				}
-
-			}
-
-		} else {
-			// this is workplace
-			Optional<AppConfigDetailDto> appConfigDetailWP = detailWorkplaceRepo
-					.getRequestDetail(inputMessageDeadline.getCompanyID(), inputMessageDeadline.getWorkplaceID(),
-							inputMessageDeadline.getAppType())
-					.map(c -> AppConfigDetailDto.fromDomain(c));
-			if (appConfigDetailWP.isPresent()) { // ton tai
-				if (!appConfigDetailWP.get().getMemo().isEmpty()) {
-					message = appConfigDetailWP.get().getMemo();
-				}
+				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。 事後申請の受付は" + date2.month() + "月"
+						+ date2.day() + "日 分まで。 当月の申請は" + endDate.month() + "月" + endDate.day() + "日 まで";
 			}
 
-			// 条件：「申請利用設定」．備考に内容なし && 「申請締切設定」．利用区分が利用しない && 「事前の受付制限」．利用区分が利用しない
-			// && 「事後の受付制限」．未来日許可しないがfalse
-			if (appConfigDetailWP.get().getMemo().isEmpty() == true
-					// && appConfigDetailCom.get().getUserAtr() ==0 // use Atr = 0
-					&& appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 0
-					&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value == 0) {
-				message = "";
-				deadline = "";
-			}
-
-			if (appConfigDetailWP.get().getMemo().isEmpty() == false
-					// && appConfigDetailCom.get().getUserAtr() ==0 // use Atr = 1
-					&& appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 1
-					&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value == 1) {
-				// if retrictPreMethodFlg is timecheck
-				if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg().value == 0) {
-					int a = Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreTimeDay().v().toString());
-					int minute = a % 60;
-					int hours = a % (60 * 24);
-					int date = hours / 24;
-					date1.addDays(date);
-
-					deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日 " + hours + ":" + minute + " 分から。"
-							+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日" + "分まで。" 
-							+ "当月の申請は" + date3.month() + "月" + date3.day() + "日" + "まで";
-				}
-				// if retrictPreMethodFlg is daycheck
-				if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg().value == 1) {
-					date1.addDays(Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreDay().toString()));
-
-					deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。" 
-							+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日" + "分まで。"
-							+ "当月の申請は" + date3.month() + "月" + date3.day() + "日"+ "まで";
-				}
-
-			}
 		}
 
 		return new OutputMessageDeadline(message, deadline);
 	}
+	
+	private String formatTime(int time) {
+		  return String.format("%02d:%02d", time / 60, time % 60);
+		 }
 }

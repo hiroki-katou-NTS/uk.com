@@ -129,6 +129,7 @@ module nts.uk.ui.koExtentions {
                     dataSource: options,
                     valueKey: data.optionsValue,
                     visibleItemsCount: visibleItemsCount,
+                    dropDownAttachedToBody : false,
                     textKey: 'nts-combo-label',
                     mode: comboMode,
                     disabled: !enable,

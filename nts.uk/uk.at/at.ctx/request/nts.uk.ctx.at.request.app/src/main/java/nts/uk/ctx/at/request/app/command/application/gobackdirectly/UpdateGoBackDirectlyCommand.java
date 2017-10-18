@@ -1,21 +1,26 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommand;
+import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateGoBackDirectlyCommand {
+	
 	/**
-	 * 会社ID
+	 * version
 	 */
-	String companyID;
+	Long version;
 	/**
-	 * 申請ID
+	 * application ID
 	 */
 	String appID;
 	/**
@@ -25,7 +30,7 @@ public class UpdateGoBackDirectlyCommand {
 	/**
 	 * 就業時間帯
 	 */
-	String siftCd;
+	String siftCD;
 	/**
 	 * 勤務を変更する
 	 */
@@ -70,5 +75,17 @@ public class UpdateGoBackDirectlyCommand {
 	 * 勤務場所選択２
 	 */
 	String workLocationCD2;
-
+	
+	String employeeID;
+	
+	int prePostAtr;
+	
+	String appDate;
+	
+	int employeeRouteAtr;
+	
+	UpdateApplicationCommand appCommand;
+	
+	List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
+	
 }

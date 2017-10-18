@@ -9,8 +9,9 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import writeConstraint = nts.uk.ui.validation.writeConstraint;
-    
+    import parseTime = nts.uk.time.parseTime;
+
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraints'];
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -114,12 +115,13 @@ module nts.custombinding {
                     .layout-control .item-classification div.item-control>*,
                     .layout-control .item-classification div.item-controls>* {
                         overflow: hidden;
+                        vertical-align: top;
                         display: inline-block;
-                        vertical-align: middle;
                     }
 
-                    .layout-control .item-classification div.item-controls>* {
-                        vertical-align: top;
+                    .layout-control .item-classification div.item-control>.set-items,
+                    .layout-control .item-classification div.item-control>.single-items {
+                        margin-top: 3px;
                     }
 
                     .layout-control .item-classification div.set-item-list,
@@ -131,28 +133,123 @@ module nts.custombinding {
                         display: inline-block;
                     }
 
-                    .layout-control .item-classification div.item-controls table {
-                        max-width: 600px;
+                    .layout-control .item-classification .table-container {
+                        width: calc(100% - 225px);
+                        color: #000;
+                        padding-top: 35px;
+                        position: relative;
+                        border: 1px solid #aaa;
+                        background-color: #CFF1A5;
+                        background: -webkit-repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                        background: -o-repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                        background: -moz-repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
+                        background: repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
                     }
 
-                    .layout-control .item-classification div.item-controls table,
-                    .layout-control .item-classification div.item-controls table th,
-                    .layout-control .item-classification div.item-controls table td {
-                        border: 1px solid #ccc;
+                    .layout-control.editable .item-classification .table-container {
+                        width: calc(100% - 240px);
+                    }
+                
+                    .layout-control .item-classification .table-container.header-2rows {
+                        padding-top: 70px;
+                    }
+                
+                    .layout-control .item-classification .table-container.header-3rows {
+                        padding-top: 105px;
+                    }
+                
+                    .layout-control .item-classification .table-container>div {
+                        overflow-y: auto;
+                        max-height: 200px;
+                        border-top: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification .table-container>div table {
+                        border-collapse: collapse;
+                    }
+                
+                    .layout-control .item-classification td {
+                        background-color: #fff;
+                        border-left: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification td,
+                    .layout-control .item-classification th {
+                        padding: 0px;
+                        border: 1px solid #aaa;
                     }
 
-                    .layout-control .item-classification div.item-controls table th {
-                        padding: 3px;
-                        line-height: 24px;
-                        background-color: #E0F59E;
+                    .layout-control .item-classification td {
+                        position: relative;
+                    }
+                
+                    .layout-control .item-classification td:first-child {
+                        border-left: none;
+                    }
+                
+                    .layout-control .item-classification td:last-child {
+                        border-right: none;
+                    }
+                
+                    .layout-control .item-classification th {
+                      height: 0;
+                      line-height: 0;
+                      border: none;
+                      color: transparent;
+                      white-space: nowrap;
+                    }
+                
+                    .layout-control .item-classification th div {
+                      top: 0;
+                      padding: 3px;
+                      color: #000;
+                      line-height: 32px;
+                      position: absolute;
+                      box-sizing: border-box;
+                      background: transparent;
+                      border-left: 1px solid #aaa;
+                    }
+                
+                    .layout-control .item-classification thead>tr:first-child div {
+                      top: 0;
+                    }
+                
+                    .layout-control .item-classification thead>tr:nth-child(2) div {
+                      top: 35px;
+                    }
+                
+                    .layout-control .item-classification thead>tr:nth-child(3) div {
+                      top: 70px;
                     }
 
-                    .layout-control .item-classification div.item-controls table td {
-                        line-height: 24px;
+                    .layout-control .item-classification th.index,
+                    .layout-control .item-classification td.index {
+                        min-width: 30px;
+                        text-align: center;
                     }
 
-                    .layout-control .item-classification div.item-controls table .nts-editor.nts-input{
-                        max-width: 73px !important;
+                    .layout-control .item-classification td input,
+                    .layout-control .item-classification td textarea {
+                        border: 1px solid transparent;
+                        border-radius: 0;
+                    }
+
+                    .layout-control .item-classification td input:focus,
+                    .layout-control .item-classification td textarea:focus {
+                        border: 1px dashed #0096f2;
+                        box-shadow: none;
+                    }
+                
+                    .layout-control .item-classification th:first-child div {
+                      border: none;
+                    }
+                
+                    .layout-control .item-classification tbody tr:first-child td {
+                      border-top: none;
+                    }
+                
+                    .layout-control .item-classification tbody tr:last-child td {
+                      border-bottom: none;
                     }
 
                     .layout-control .item-classification div.item-sperator>hr {
@@ -182,8 +279,7 @@ module nts.custombinding {
                     }
 
                     .layout-control .item-classification .form-label {
-                        width: 125px;
-                        line-height: 37px;
+                        width: 210px;
                         white-space: nowrap;
                     }
 
@@ -202,6 +298,50 @@ module nts.custombinding {
                     .layout-control.editable .item-classification:hover>.close-btn {
                         display: block;
                     }
+
+                    .layout-control.readonly [disabled],
+                    .layout-control.editable [disabled] {
+                        background-color: #fff;
+                    }
+
+                    .layout-control .index .remove-btn,
+                    .layout-control.editable .index:hover .remove-btn {
+                        display: none;
+                    }
+
+                    .layout-control.inputable tr:hover .number,
+                    .layout-control.inputable .index:hover .number {
+                        display: none;
+                    }
+
+                    .layout-control.inputable tr:hover .remove-btn,
+                    .layout-control.inputable .index:hover .remove-btn {
+                        display: block;
+                    }
+
+                    .layout-control.inputable .remove-btn:hover {
+                        color: #f00;
+                        cursor: pointer;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                    }
+
+                    .layout-control.inputable .item-classification div.item-sperator>hr {
+                        margin: 6px 0;
+                    }
+
+                    .layout-control .add-rows {
+                        text-align: right;
+                    }
+
+                    .layout-control.editable .add-rows {
+                        display: none;
+                    }
+
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -227,138 +367,169 @@ module nts.custombinding {
                     </div>
                     <div class="drag-panel">
                         <div id="cps007_srt_control">
-                            <div class="form-group item-classification">
-                               <div data-bind="if: $data.layoutItemType == 0">
-                                    <div data-bind="let: { item: $data.listItemDf[0] || {}, listItemDf: $data.listItemDf}" class="item-control">
-                                        <div data-bind="ntsFormLabel: { /*constraint: item.itemCode,*/ required: !!_.find(listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
-                                        <div data-bind="if: (item.itemTypeState || {}).itemType == 1" class="set-items">
-                                            <div data-bind="foreach: _.filter(listItemDf, function(x, i) { return i != 0; })" class="set-item-list">
-                                                <div data-bind="template: { 
-                                                        name: 'itemtemplate', 
-                                                        data: { 
-                                                            itemCode: $data.itemCode, 
-                                                            itemName: $data.itemName, 
-                                                            info: $data.itemTypeState.dataTypeState
-                                                        } 
+                            <div class="form-group item-classification"
+                                    data-bind="let: { 
+                                        cls: $data, 
+                                        _item: items && items()[0], 
+                                        _items: items && _.filter(items(), function(x, i) { return i != 0}),
+                                        __items: items && _.filter(items(), function(x, i) { return i >= 0}) }">
+                               <div data-bind="if: layoutItemType == 0">
+                                    <div class="item-control">
+                                        <div data-bind="ntsFormLabel: { 
+                                            text: className || '', 
+                                            required: !!_.find(_items, function(x) { return x.required }),
+                                            constraint: _items.length > 1 ? _.map(_items, function(x) { return x.code }) : _item.code}"></div>
+                                        <div data-bind="if: (_item || {}).type == 1" class="set-items">
+                                            <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
+                                                <div data-bind="template: {
+                                                        data: set,
+                                                        name: 'itemtemplate'
                                                     }" class="set-item"></div>
+                                            </div>
+                                        </div>
+                                        <div data-bind="if: (_item || {}).type == 2" class="single-items">
+                                            <div data-bind="foreach: {data: __items, as: 'single'}" class="single-item-list">
+                                                <div data-bind="template: { 
+                                                        data: single,
+                                                        name: 'itemtemplate'
+                                                    }" class="single-item"></div>
                                             </div>            
                                         </div>
-                                        <div data-bind="if: (item.itemTypeState || {}).itemType == 2" class="single-items">
-                                            <div class="single-item-list">
-                                                <div data-bind="template: { name: 'itemtemplate', data: { itemCode: item.itemCode, itemName: item.itemName, info: item.itemTypeState.dataTypeState } }" class="single-item"></div>
+                                    </div>
+                                </div>
+                                <div data-bind="if: layoutItemType == 1">            
+                                    <div class="item-controls">
+                                        <div data-bind="ntsFormLabel: { required: !!_.find(cls.items(), function(x) { return !!x.required }), text: className || '' }"></div>
+                                        <div class="multiple-items table-container header-1rows">
+                                            <div data-bind="event: { scroll: function(viewModel, event) { $(event.target).find('table th div').css('margin-left', $(event.target).find('table th:first').offset().left - $(event.target).offset().left + 'px') } }">
+                                                <table>
+                                                    <thead>
+                                                        <tr data-bind="foreach: cls.listItemDf">
+                                                            <!-- ko if: $index() == 0 -->
+                                                            <th class="index"></th>
+                                                            <!-- /ko -->
+                                                            <th><div data-bind="text: itemName"></div></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-bind="foreach:  { data: cls.items(), as: '_row' }">
+                                                        <tr data-bind="foreach: { data: _row, as: '_column' }">
+                                                            <!-- ko if: $index() == 0 -->
+                                                            <td class="index">
+                                                                <div class="number" data-bind="text: ($parentContext.$index() + 1)"></div>
+                                                                <div class="remove-btn" data-bind="click: function(viewModel, event) { if(cls.items().length > 1) { cls.items.remove(function(x) { return _row == x; }) }}">✖</div>
+                                                            </td>
+                                                            <!-- /ko -->
+                                                            <td data-bind="template: { 
+                                                                    data: _column,
+                                                                    name: 'itemtemplate'
+                                                                }, attr: {row: _column.row, column: _column.col }">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
-                                    <div data-bind="ntsFormLabel: { /*constraint: item.itemCode,*/ required: !!_.find($data.listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
-                                    <div data-bind="let: { items: listItemDf }" class="multiple-items">
-                                        <table>
-                                            <thead>
-                                                <tr data-bind="foreach: items">
-                                                    <th data-bind="text: itemName"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody data-bind="foreach:  { data: listItemDfValues, as: 'row' }">
-                                                <tr data-bind="foreach: { data: row, as: 'column' }">
-                                                    <td data-bind="template: { 
-                                                            name: 'itemtemplate', 
-                                                            data: {
-                                                                itemCode: column.item.itemCode,
-                                                                itemName: column.item.itemName, 
-                                                                info: column.item.itemTypeState.dataTypeState,
-                                                                value: column.item.value,
-                                                            }
-                                                        }, attr: {row: column.row, column: col }">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div data-bind="if: $data.layoutItemType == 2" class="item-sperator">
+                                <div data-bind="if: layoutItemType == 2" class="item-sperator">
                                     <hr />
                                 </div>
-                                <span class="close-btn" data-bind="click: function(item, event) { ko.bindingHandlers['ntsLayoutControl'].remove(item, event); }">✖</span>
+                                <span class="close-btn" data-bind="click: function($data, event) { debugger; ko.bindingHandlers['ntsLayoutControl'].remove(cls, event); }">✖</span>
                             </div>
                         </div>
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
                 <script type="text/html" id="itemtemplate">
-                    <div data-bind="if: $data.info.dataTypeValue == 1" class="string">
-                        <div data-bind="if: $data.info.stringItemLength < 40">
+                    <div data-bind="if: item.dataTypeValue == 1" class="string">
+                        <div data-bind="if: item.stringItemLength < 40">
                             <input data-bind="ntsTextEditor: {
-                                    value: $data.info.value,
-                                    /*constraint: $data.itemCode,*/
+                                    value: value,
+                                    constraint: code,
                                     required: false, 
                                     option: {
                                         textmode: 'text',
-                                        placeholder: $data.itemName
+                                        placeholder: name
                                     },
-                                    enable: true,
-                                    readonly: $data.info.readonly,
+                                    enable: editable,
+                                    readonly: readonly,
                                     immediate: false
                                 }, 
-                                attr: { title: $data.itemName }" />
+                                attr: { title: name, id: code }" />
                         </div>
-                        <div data-bind="if: $data.info.stringItemLength >= 40">
+                        <div data-bind="if: item.stringItemLength >= 40">
                             <textarea data-bind="ntsMultilineEditor: {
-                                value: $data.info.value,
-                                /*constraint: $data.itemCode,*/
+                                value: value,
+                                constraint: code,
                                 option: {
                                     textmode: 'text',
-                                    placeholder: $data.itemName
+                                    placeholder: name
                                 },
-                                enable: true,
-                                readonly: $data.info.readonly,
-                                immediate: false}" />
+                                enable: editable,
+                                readonly: readonly,
+                                immediate: false}, attr: {id: code}" />
                         </div>
                     </div>
-                    <div data-bind="if: $data.info.dataTypeValue == 2" class="numeric">
+                    <div data-bind="if: item.dataTypeValue == 2" class="numeric">
                         <input data-bind="ntsNumberEditor: { 
-                                    value: $data.info.value,
-                                    /*constraint: $data.itemCode,*/
-                                    enable: true,
-                                    readonly: $data.info.readonly }, attr: { title: $data.itemName }" />
+                                    value: value,
+                                    constraint: code,
+                                    option: {
+                                        grouplength: 3,
+                                        decimallength: 2,
+                                        placeholder: name,
+                                        width: '',
+                                        textalign: 'left'
+                                    },
+                                    enable: editable,
+                                    readonly: readonly }, attr: {id: code}" />
                     </div>
-                    <div data-bind="if: $data.info.dataTypeValue == 3" class="date">
+                    <div data-bind="if: item.dataTypeValue == 3" class="date">
                         <div data-bind="ntsDatePicker: {
-                                    value: $data.info.value,
-                                    /*constraint: $data.itemCode,*/
+                                    value: value,
+                                    constraint: code,
                                     dateFormat: 'YYYY/MM/DD',
-                                    enable: $data.info.editable,
-                                    readonly: $data.info.readonly
-                                }, attr: { title: $data.itemName }"></div>
+                                    enable: editable,
+                                    readonly: readonly
+                                }"></div>
                     </div>
-                    <div data-bind="if: $data.info.dataTypeValue == 4" class="time">
+                    <div data-bind="if: item.dataTypeValue == 4" class="time">
                         <input data-bind="ntsTimeEditor: {
-                            value: $data.info.value,
-                            /*constraint: $data.itemCode,*/
+                            value: value,
+                            constraint: code,
                             inputFormat: 'HH:mm',
-                            enable: true,
-                            readonly: $data.info.readonly }, attr: { placeholder: $data.itemName }" />
+                            enable: editable,
+                            readonly: item.readonly }, attr: { placeholder: name, id: code }" />
                     </div>
-                    <div data-bind="if: $data.info.dataTypeValue == 5" class="timepoint">
+                    <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
                         <input data-bind="ntsTimeEditor: {
-                            value: $data.info.value, 
-                            /*constraint: $data.itemCode,*/
+                            value: value, 
+                            constraint: code,
                             inputFormat: 'HH:mm',
-                            enable: true,
-                            readonly:  $data.info.readonly
-                        }, attr: { placeholder: $data.itemName }" />
+                            enable: editable,
+                            readonly:  readonly
+                        }, attr: { placeholder: name, id: code }" />
                     </div>
-                    <div data-bind="if: $data.info.dataTypeValue == 6" class="selection">
-                        <div id="combo-box" data-bind="ntsComboBox: {
-                            options: [],
+                    <div data-bind="if: item.dataTypeValue == 6" class="selection">
+                        <div data-bind="ntsComboBox: {
+                            options: [{
+                                code: 1,
+                                name: '等級区分 1'
+                            },{
+                                code: 2,
+                                name: '等級区分 2'
+                            },{
+                                code: 3,
+                                name: '等級区分 3'
+                            }],
                             optionsValue: 'code',
                             visibleItemsCount: 5,
-                            value: $data.info.value,
-                            /*constraint: $data.itemCode,*/
+                            value: value,
+                            constraint: code,
                             optionsText: 'name',
-                            editable: $data.info.editable,
-                            enable: true,
-                        columns: [{ prop: 'name', length: 10 }]}"></div>
+                            /*editable: !editable,*/
+                            enable: editable,
+                            columns: [{ prop: 'name', length: 10 }]}, attr: {id: code}"></div>
                     </div>
                 </script>`;
 
@@ -704,6 +875,10 @@ module nts.custombinding {
                         } else {
                             opts.sortable.isEnabled(false);
                         }
+
+                        if (x == 2) {
+                            $element.addClass("inputable");
+                        }
                     } else {
                         opts.sortable.isEditable(0);
 
@@ -716,15 +891,125 @@ module nts.custombinding {
                 },
                 // render primative value to viewContext
                 primitiveConst = () => {
-                     //xx
+                    //xx
+                    /*
+                    ConstraintDescriptor{
+                        itemCode: string;
+                        required?: boolean;
+                    }
+                    
+                    StringConstraintDescriptor extends ConstraintDescriptor{
+                        maxLength: number;
+                        charType: string;
+                        paddingCharacter: string;
+                        isPaddingLeft: boolean;
+                        isPadding: boolean;
+                        stringExpression: string;
+                    }
+                    
+                    NumericConstraintDescriptor extends ConstraintDescriptor{
+                        min: number;
+                        max: number;
+                        valueType: string;
+                        mantissaMaxLength: number; 
+                    }
+                    
+                    TimeConstraintDescriptor extends ConstraintDescriptor{
+                        min: string;
+                        max: string;
+                        valueType: string;
+                    }*/
+
+                    let constraints = _(ko.unwrap(opts.sortable.data))
+                        .map((x: IItemClassification) => x.listItemDf)
+                        .flatten()
+                        .filter(x => !!x)
+                        .map((x: IItemDefinition) => {
+                            let dts = (x.itemTypeState || <IItemTypeState>{}).dataTypeState,
+                                constraint: any = {
+                                    itemName: x.itemName,
+                                    itemCode: x.itemCode,
+                                    required: !!x.isRequired
+                                };
+
+                            if (dts) {
+                                switch (dts.dataTypeValue) {
+                                    default:
+                                    case ITEM_SINGLE_TYPE.STRING:
+                                        constraint.valueType = "String";
+                                        constraint.maxLength = dts.stringItemLength || 0;
+                                        constraint.stringExpression = '';
+
+                                        switch (dts.stringItemType) {
+                                            default:
+                                            case ITEM_STRING_TYPE.ANY:
+                                                constraint.charType = 'Alphabet';
+                                                break;
+                                            case ITEM_STRING_TYPE.ANYHALFWIDTH:
+                                                constraint.charType = 'AnyHalfWidth';
+                                                break;
+                                            case ITEM_STRING_TYPE.ALPHANUMERIC:
+                                                constraint.charType = 'AlphaNumeric';
+                                                break;
+                                            case ITEM_STRING_TYPE.NUMERIC:
+                                                constraint.charType = 'Numeric';
+                                                if (dts.decimalPart == 0) {
+                                                    constraint.valueType = "Integer";
+                                                } else {
+                                                    constraint.valueType = "Decimal";
+                                                    constraint.mantissaMaxLength = dts.decimalPart;
+                                                }
+                                                constraint.max = dts.numericItemMax || '0';
+                                                constraint.min = dts.numericItemMin || '0';
+                                                break;
+                                            case ITEM_STRING_TYPE.KANA:
+                                                constraint.charType = 'Kana';
+                                                break;
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.NUMERIC:
+                                        if (dts.decimalPart == 0) {
+                                            constraint.valueType = "Integer";
+                                        } else {
+                                            constraint.valueType = "Decimal";
+                                            constraint.mantissaMaxLength = dts.decimalPart;
+                                        }
+                                        constraint.charType = 'Numeric';
+                                        constraint.max = dts.numericItemMax;
+                                        constraint.min = dts.numericItemMin;
+                                        break;
+                                    case ITEM_SINGLE_TYPE.DATE:
+                                        constraint.valueType = "Date";
+                                        constraint.max = parseTime(dts.max, true).format() || "2999/31/12";
+                                        constraint.min = parseTime(dts.min, true).format() || "1990/01/01";
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIME:
+                                        constraint.valueType = "Time";
+                                        constraint.max = parseTime(dts.max, true).format();
+                                        constraint.min = parseTime(dts.min, true).format();
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                        constraint.valueType = "Clock";
+                                        constraint.max = parseTime(dts.timePointItemMax, true).format();
+                                        constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                        break;
+                                    case ITEM_SINGLE_TYPE.SELECTION:
+                                        constraint.valueType = "Selection";
+                                        break;
+                                }
+                            }
+
+                            return constraint;
+                        }).value();
+
+                    if (constraints && constraints.length) {
+                        writeConstraint(constraints);
+                    }
                 };
 
-            $(() => {
-                if (!$('#layout_style').length) {
-                    $('head').append(self.style);
-                }
-            });
-
+            if (!$('#layout_style').length) {
+                $('head').append(self.style);
+            }
 
             $element
                 .append(self.tmp)
@@ -732,14 +1017,12 @@ module nts.custombinding {
 
             // bindding callback function to control
             if (access.callback) {
-                $.extend(opts, {
-                    callback: access.callback
-                });
+                $.extend(opts, { callback: access.callback });
             }
 
             // validate editAble
             if (ko.unwrap(access.editAble) != undefined) {
-                if (typeof access.editAble == 'function') {
+                if (ko.isObservable(access.editAble)) {
                     access.editAble.subscribe(editable);
                     access.editAble.valueHasMutated();
                 } else {
@@ -750,10 +1033,11 @@ module nts.custombinding {
             // sortable
             opts.sortable.isEnabled.subscribe(x => {
                 if (!x) {
-                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
                     $element
                         .addClass('readonly')
                         .removeClass('editable');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
                 } else {
                     $element
                         .addClass('editable')
@@ -772,30 +1056,31 @@ module nts.custombinding {
                         if (e.itemTypeState && e.itemTypeState.dataTypeState) {
                             let state = e.itemTypeState.dataTypeState;
                             if (x == 2) {
-                                if (state.editable && typeof state.editable == 'function') {
+                                if (state.editable && ko.isObservable(state.editable)) {
                                     state.editable(true);
                                 } else {
                                     state.editable = ko.observable(true);
                                 }
 
-                                if (state.readonly && typeof state.readonly == 'function') {
+                                if (state.readonly && ko.isObservable(state.readonly)) {
                                     state.readonly(false);
                                 } else {
                                     state.readonly = ko.observable(false);
                                 }
                             } else {
-                                if (state.editable && typeof state.editable == 'function') {
+                                if (state.editable && ko.isObservable(state.editable)) {
                                     state.editable(false);
                                 } else {
                                     state.editable = ko.observable(false);
                                 }
 
-                                if (state.readonly && typeof state.readonly == 'function') {
+                                if (state.readonly && ko.isObservable(state.readonly)) {
                                     state.readonly(true);
                                 } else {
                                     state.readonly = ko.observable(true);
                                 }
                             }
+                            state.editable.valueHasMutated();
                         }
                     });
                 });
@@ -803,9 +1088,7 @@ module nts.custombinding {
             opts.sortable.isEditable.valueHasMutated();
 
             // extend option
-            $.extend(opts.comboxbox, {
-                enable: ko.computed(() => !opts.radios.value())
-            });
+            $.extend(opts.comboxbox, { enable: ko.computed(() => !opts.radios.value()) });
 
             $.extend(opts.searchbox, {
                 items: ko.computed(opts.listbox.options),
@@ -818,20 +1101,7 @@ module nts.custombinding {
                 // remove all sibling sperators
                 let maps: Array<number> = _(data)
                     .map((x, i) => (x.layoutItemType == 2) ? i : -1)
-                    .filter(x => x != -1).value(),
-                    icls: Array<IItemClassification> = ko.unwrap(opts.sortable.data),
-                    idfcs: Array<string> = _(icls)
-                        .map(x => x.listItemDf)
-                        .flatten()
-                        .filter(x => !!x)
-                        .map((x: IItemDefinition) => x.id)
-                        .uniq()
-                        .value();
-
-                // write constraint to viewContext
-                if (idfcs && idfcs.length) {
-                    //writeConstraint(idfcs);
-                }
+                    .filter(x => x != -1).value();
 
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
@@ -841,57 +1111,111 @@ module nts.custombinding {
                         });
                     }
                 });
+
+                opts.sortable.isEditable.valueHasMutated();
+
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
 
-                    // observable value for edit mode
-                    _.each(x.listItemDf, e => {
-                        if (e.itemTypeState && e.itemTypeState.dataTypeState) {
-                            if (!e.itemTypeState.dataTypeState.value) {
-                                e.itemTypeState.dataTypeState.value = ko.observable('');
-                            }
-                        }
-                    });
+                    // define common function for init new item value
+                    let noitem = (item: any) => {
+                        let def = {
+                            code: item.itemCode,
+                            name: item.itemName,
+                            required: !!item.isRequired,
+                            value: ko.observable(undefined),
+                            readonly: !!opts.sortable.isEnabled(),
+                            editable: !!opts.sortable.isEditable(),
+                            'type': (item.itemTypeState || <any>{}).itemType,
+                            item: $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {})
+                        };
+                        x.items = ko.observableArray([def]);
+                    }, hasitem = (def: any, item: any) => {
+                        def.code = item.itemCode;
+                        def.name = item.itemName;
+                        def.required = !!item.isRequired;
+                        def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
+                        def.readonly = !!opts.sortable.isEnabled();
+                        def.editable = !!opts.sortable.isEditable();
+                        def.type = (item.itemTypeState || <any>{}).itemType;
+                        def.item = $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+                    };
 
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             let item = x.listItemDf && x.listItemDf[0];
                             if (item.itemTypeState.itemType == ITEM_TYPE.SINGLE) {
-                                x.listItemDfValues = ko.observableArray([{
-                                    item: $.extend({}, item),
-                                    value: ko.observable(undefined)
-                                }]);
+                                if (x.items) {
+                                    if (ko.isObservable(x.items)) {
+                                        let def = _.find(x.items(), (m: any) => m.code == item.itemCode);
+                                        if (def) {
+                                            hasitem(def, item);
+                                        } else {
+                                            noitem(item);
+                                        }
+                                    } else {
+                                        let def = _.find(x.items, (m: any) => m.code == item.itemCode);
+                                        if (def) {
+                                            hasitem(def, item);
+                                        } else {
+                                            noitem(item);
+                                        }
+                                    }
+                                } else {
+                                    noitem(item);
+                                }
                             } else {
-                                x.listItemDfValues = ko.observableArray(_.map(Array((x.listItemDf || []).length), (_x, i) => {
-                                    return {
-                                        col: i,
-                                        item: $.extend({}, x.listItemDf[i]),
-                                        value: ko.observable(undefined)
-                                    };
-                                }));
+                                if (x.items) {
+                                    // continue
+                                    _.each(Array((x.listItemDf || []).length), (_x, i) => {
+                                        let item = x.listItemDf[i];
+                                        let def = {
+                                            col: i,
+                                            code: item.itemCode,
+                                            name: item.itemName,
+                                            required: !!item.isRequired,
+                                            value: ko.observable(undefined),
+                                            readonly: !!opts.sortable.isEnabled(),
+                                            editable: !!opts.sortable.isEditable(),
+                                            'type': (item.itemTypeState || <any>{}).itemType,
+                                            item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
+                                        };
+
+                                        return def;
+                                    });
+                                }
                             }
                             break;
                         case IT_CLA_TYPE.LIST:
-                            x.listItemDfValues = ko.observableArray(
-                                _.map(Array(3), (_x, i) => {
-                                    return _.map(Array((x.listItemDf || []).length), (__x, j) => {
-                                        return {
+                            x.items = ko.observableArray(_.map(Array(3), (_x, i) => {
+                                return _.map(Array((x.listItemDf || []).length), (__x, j) => {
+                                    let item = $.extend({}, x.listItemDf[j]),
+                                        def = {
                                             row: i,
                                             col: j,
-                                            item: $.extend({}, x.listItemDf[j]),
-                                            value: ko.observable(undefined)
+                                            code: item.itemCode,
+                                            name: item.itemName,
+                                            required: !!item.isRequired,
+                                            value: ko.observable(undefined),
+                                            readonly: !!opts.sortable.isEnabled(),
+                                            editable: !!opts.sortable.isEditable(),
+                                            'type': (item.itemTypeState || <any>{}).itemType,
+                                            item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
                                         };
-                                    });
-                                }));
+
+                                    return def;
+                                });
+                            }));
                             break;
                         case IT_CLA_TYPE.SPER:
-                            x.listItemDfValues = undefined;
+                            x.items = undefined;
                             break;
                     }
                 });
 
-                opts.sortable.isEditable.valueHasMutated();
+                // write primitive constraints to viewContext
+                primitiveConst();
             });
             opts.sortable.data.valueHasMutated();
 
@@ -932,7 +1256,6 @@ module nts.custombinding {
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     opts.comboxbox.options.removeAll();
                     services.getCats().done((data: any) => {
-                        console.log(data);
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
                             if (cats && cats.length) {
@@ -1294,7 +1617,8 @@ module nts.custombinding {
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>; // layoutItemType == 0 ? [1] : layoutItemType == 1 ? [A, B, C] : undefined;
-        listItemDfValues?: any; // {value: } || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
+        items?: any; // [{value: }] || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
+        values?: any;
     }
 
     interface IItemDefinition {
@@ -1311,6 +1635,15 @@ module nts.custombinding {
         itemTypeState: IItemTypeState;
     }
 
+    interface IItemDefinitionValue {
+        id: string;
+        row?: number;
+        col?: number;
+        itemCode?: string;
+        itemName?: string;
+        itemValue: any;
+    }
+
     interface IItemTypeState extends ISetItem, ISingleItem {
         itemType: ITEM_TYPE; // Set || Single
     }
@@ -1324,7 +1657,6 @@ module nts.custombinding {
     }
 
     interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric {
-        value: KnockoutObservable<any>;
         dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
         editable?: KnockoutObservable<boolean>;
         readonly?: KnockoutObservable<boolean>;
@@ -1355,8 +1687,8 @@ module nts.custombinding {
         numericItemAmount?: number;
         integerPart?: number;
         decimalPart?: number;
-        NumericItemMin?: number;
-        NumericItemMax?: number;
+        numericItemMin?: number;
+        numericItemMax?: number;
     }
 
     interface IItemSelection extends IItemMasterSelection, IItemEnumSelection, IItemCodeNameSelection {

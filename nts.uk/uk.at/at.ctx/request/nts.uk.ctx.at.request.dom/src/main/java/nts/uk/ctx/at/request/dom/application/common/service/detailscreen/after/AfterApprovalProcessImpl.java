@@ -8,21 +8,27 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -35,185 +41,174 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private AppApprovalPhaseRepository approvalPhaseRepo;
 	@Inject
 	private AppTypeDiscreteSettingRepository discreteRepo;
-
+	@Inject
+	private RegisterAtApproveReflectionInfoService reflectionInfoService;
+	@Inject
+	private AgentAdapter approvalAgencyInformationService;
+	@Inject
+	private DestinationJudgmentProcess destinationJudgmentProcessService;
+	
+	@Inject
+	private ApproveAcceptedRepository approveAcceptedRepository;
+	
 	@Override
-	public void detailScreenAfterApprovalProcess(String companyID, String appID, Application application) {
-		List<String> listMailReceived = new ArrayList<String>();
-		// Goi thằng 2.2
-		// 承認情報の整理 ＝＝＞ OutPut ・申請データの内容（承認情報をメンテナンス後） 承認フェーズ枠番
-		// Trong điều kiện có chuyển trạng thái thì mới update
-		if (application.getReflectPerState() == ReflectPlanPerState.WAITREFLECTION) {
-			// Thuc hien update Domain 申請」と紐付き「承認情報」
-			application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
-			appRepo.updateApplication(application);
-		}
-		// gửi mail
-		// lấy domain 申請種類別設定
-		ApplicationType appType = application.getApplicationType();
-		// get DiscreteSetting
-		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID,
-				appType.value);
-		// get flag check auto send mail
+	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
+		String companyID = AppContexts.user().companyId();
+		List<String> listMailReceived = new ArrayList<>();
+		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
+		application = reflectionInfoService.organizationOfApprovalInfo(application, approverMemo);
+		//共通アルゴリズム「実績反映状態の判断」を実行する
+		this.judgmentActualReflection(application);
+		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
+		appRepo.updateApplication(application);
+		// get domain 申請種類別設定
+		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
 		// 承認処理時に自動でメールを送信するが trueの場合
-		AppCanAtr sendMailWhenApprovalFlg = discreteSetting.get().getSendMailWhenApprovalFlg();
-		// check Continue
-		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
-			// check Phan anh
-			// trong truong hop chua phan anh
-			if (application.getReflectPerState() == ReflectPlanPerState.WAITREFLECTION) {
-				// Thuc hien gui mail cho nguoi viet don
-				// 申請者本人にメール送信する =>>> Dung ham chung SEND MAIL
+		if(discreteSetting.isPresent()) {
+			if (discreteSetting.get().getSendMailWhenApprovalFlg() == AppCanAtr.CAN) {
+				//反映情報」．実績反映状態をチェックする
+				if (application.getReflectPerState() == ReflectPlanPerState.WAITREFLECTION) {
+					// 申請者本人にメール送信する =>>> SEND MAIL
+				}
+			}
+			// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
+			if (discreteSetting.get().getSendMailWhenRegisterFlg() == AppCanAtr.CAN) {
+				// 「反映情報」．実績反映状態が「反映待ち」じゃない場合
+				if (application.getReflectPerState() != ReflectPlanPerState.WAITREFLECTION) {
+					// 申請者本人にメール送信する 
+					listMailReceived = this.MailDestination(application).getDestinationMail();
+					if(!listMailReceived.isEmpty()) {
+						//TODO:
+						//メール送信先リストにメール送信する
+					}
+				}
 			}
 		}
-		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
-		AppCanAtr sendMailWhenRegisterFlg = discreteSetting.get().getSendMailWhenRegisterFlg();
-		if (sendMailWhenRegisterFlg == AppCanAtr.CAN) {
-			// 「反映情報」．実績反映状態が「反映待ち」じゃない場合
-			if (application.getReflectPerState() != ReflectPlanPerState.WAITREFLECTION) {
-				// Thuc hien gui mail cho nguoi viet don
-				// 申請者本人にメール送信する =>>> Dung ham chung SEND MAIL
-				//2017.01.2017 DuDT: commit tam vi loi
-				//listMailReceived = this.MailDestination(application).destinationMail;
-				// thuc hien gui Mail
-				// TODO
-			}
-		}
-		// Hien thi Message
-		throw new BusinessException("Msg_220");
-
+		
+		//情報メッセージ（)
+		//throw new BusinessException("Msg_220");
+		//TODO: TRA VE MOT LIST GUI MAIL
+		return listMailReceived;
 	}
-
+	/**
+	 * 1.申請個別のエラーチェック
+	 */
 	@Override
 	public void invidialApplicationErrorCheck(String appID) {
 		// TODO Auto-generated method stub
 		// EA chưa viết xong
 	}
-
+	/**
+	 * 2.申請個別の更新
+	 */
 	@Override
-	public void invidialApplicationUpdate(String appID) {
-		Optional<Application> currentApplication = appRepo.getAppById(AppContexts.user().companyId(), appID);
-		int appType = currentApplication.get().getApplicationType().value;
-		switch (appType) {
-		case 1:
-			// Update domain 打刻申請」
-			break;
-		case 2:
-			// Update domain 残業申請」
-			break;
-		case 3:
-			// Update domain 休日出勤申請」
-			break;
-		case 4:
-			// Update domain 休暇申請」
-			break;
-		case 5:
-			// update domain 出張申請」
-			break;
-		case 6:
-			// update domain 勤務変更申請」
-			break;
-		case 7:
-			// update domain 「直行直帰申請」
-			break;
-		default:
-			// update domain 「振休振出申請」
-			break;
-		}
-
+	public void invidialApplicationUpdate(Application application) {
+		appRepo.updateApplication(application);
 	}
-
+	/**
+	 * 
+	 */
 	@Override
 	public List<String> actualReflectionStateDecision(String appID, String phaseID, ApprovalAtr approvalAtr) {
 		// 承認者一覧
-		List<String> lstApprover = new ArrayList<>();
-		List<String> lstNotApprover = new ArrayList<>();
+		List<String> lstApproved = new ArrayList<>();
+		List<String> lstNotApproved = new ArrayList<>();
 		List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phaseID);
+		for(ApprovalFrame approvalFrame : listFrame ) {
+			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository.getAllApproverAccepted(approvalFrame.getCompanyID(), approvalFrame.getFrameID());
+			approvalFrame.setListApproveAccepted(listApproveAccepted);
+		}
 		for (ApprovalFrame frame : listFrame) {
-			//2017.09.25
-			/*if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
-				lstApprover.add(frame.getApproverSID());
-			} else {
-				lstNotApprover.add(frame.getApproverSID());
-			}*/
-			//2017.09.25
-			for(ApproveAccepted x : frame.getListApproveAccepted()){
-				if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
-					lstApprover.add(x.getApproverSID());
-				} else {
-					lstNotApprover.add(x.getApproverSID());
-				}	
+			if(frame.getListApproveAccepted() !=null) {
+				for(ApproveAccepted x : frame.getListApproveAccepted()){
+					if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
+						lstApproved.add(x.getApproverSID());
+					};
+					if (x.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+						lstNotApproved.add(x.getApproverSID());
+					};	
+				}
 			}
-			
 		}
 		// Get distinct List Approver
-		lstApprover.stream().distinct().collect(Collectors.toList());
-		lstNotApprover.stream().distinct().collect(Collectors.toList());
+		lstApproved.stream().distinct().collect(Collectors.toList());
+		lstNotApproved.stream().distinct().collect(Collectors.toList());
 		if (approvalAtr == ApprovalAtr.APPROVED) {
-			return lstApprover;
+			return lstApproved;
 		} else {
-			return lstNotApprover;
+			return lstNotApproved;
 		}
 	}
-
+	/**
+	 * 
+	 */
 	@Override
 	public DestinationMailListOuput MailDestination(Application application) {
 		DestinationMailListOuput output = new DestinationMailListOuput();
 		String appID = application.getApplicationID();
-		List<String> listMailReceived = new ArrayList<>();
+		List<String> listMailReceived = new ArrayList<String>();
+		List<Integer> listPhaseFrame = new ArrayList<Integer>();
 		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(AppContexts.user().companyId(), appID);
 		for (AppApprovalPhase phase : listPhase) {
 			List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phase.getPhaseID());
 			for (ApprovalFrame frame : listFrame) {
-				if (frame.getDispOrder() >= 1 && frame.getDispOrder() <= 4) {
-					// get list nguoi xac nhan
-					List<String> listApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),
-							ApprovalAtr.APPROVED);
-					List<String> listNotApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),
-							ApprovalAtr.UNAPPROVED);
+				if (frame.getDispOrder() >= 1 && frame.getDispOrder() <= 5) {
+					//アルゴリズム「承認者一覧を取得する」を実行する
+					List<String> listApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.APPROVED);
+					if(!listApprover.isEmpty()) {
+						//未承認の承認者一覧(output)に承認者がいるかチェックする
+						List<String> listNotApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.UNAPPROVED);
+						if(!listNotApprover.isEmpty()) {
+							//アルゴリズム「承認代行情報の取得処理」を実行する
+							AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(AppContexts.user().companyId(), listNotApprover);
+							//アルゴリズム「送信先の判断処理」を実行する
+							List<String> listDestination  = destinationJudgmentProcessService.getDestinationJudgmentProcessService(agency.getListApproverAndRepresenterSID());
+							if(!listDestination.isEmpty()) {
+								//送信先リスト(output)を送信者リストに追加する
+								listMailReceived.addAll(listDestination);
+							}
+						}
+					}
 				}
-				// Su dung thang 3.2
-				// truyen vao mot list dai dien nguoi xac nhan, lay ra list nguoi xac nhan
-
 			}
 		}
-		//2017.01.09 dudt: commit tam vi loi
-		//output.destinationMail = listMailReceived;
+		output.setDestinationMail(listMailReceived);
 		//output.phaseFrameNumber = 1;
 		return output;
 	}
-
-	public Application isWaitingReflectionAtr(Application application) {
-		// FLAG Đã xác nhận hết
-		boolean allApprovedFlg = false;
+	/**
+	 * 3.実績反映状態の判断 
+	 * @param application
+	 * @return
+	 */
+	@Override
+	public void  judgmentActualReflection(Application application) {
 		String companyID = AppContexts.user().companyId();
 		String appID = application.getApplicationID();
-		// get List 5 承認 Phase
-		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
-		for (AppApprovalPhase phase : listPhase) {
-			// 承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済
-			if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
-				// Tìm trong những phase chưa được approved, lấy ra những Frame đã dc approved
-				List<String> lstApproved = this.actualReflectionStateDecision(appID, phase.getPhaseID(),
-						ApprovalAtr.APPROVED);
-				// GỌI THẰNG 3.1 : Truyền vào lstApproved vừa nhận được companyID,trả ra 2 list,
-				// OUTPUT
-				// 承認者の代行情報リスト
-				List<String> lstInfoRepresenter = new ArrayList<>();
-				// 承認代行者リスト
-				List<String> lstRepresenter = new ArrayList<>();
-				// 全承認者パス設定フラグ(true, false)
-				allApprovedFlg = true;// gia su la true
-			} else {
-				allApprovedFlg = false;
+		if(application.getListPhase() != null) {
+			for (AppApprovalPhase phase : application.getListPhase()) {
+				// 承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済
+				if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
+					List<String> lstApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),ApprovalAtr.APPROVED);
+					if(!lstApprover.isEmpty()) {
+						// 承認者の代行情報リスト
+						AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApprover);
+						//返す結果の全承認者パス設定フラグがtrue(全承認者パス設定フラグ = true)
+						if(!agency.isFlag()) {
+							return;
+						}
+					}
+				//「承認フェーズ」．承認区分が承認済の場合(「承認フェーズ」．承認区分 = 承認済)
+				} else {
+					// 「反映情報」．実績反映状態を「反映待ち」にする
+					application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
+					return;
+				}
+				
 			}
 		}
-		// Loop tra va FLAG allAprroved
-		// Tra ve trang thai Phan ANH hay cho Phan ANH
-		// 「反映情報」．実績反映状態を「反映待ち」にする
-		if (allApprovedFlg) {
-			application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
-		}
-		return application;
+		
+		
 	}
 
 }

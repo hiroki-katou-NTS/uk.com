@@ -2,8 +2,8 @@ module kml002.k.viewmodel {
     export class ScreenModel {
         enable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
-        time: KnockoutObservable<number>;
-        time2: KnockoutObservable<number>;
+        startTime: KnockoutObservable<number>;
+        endTime: KnockoutObservable<number>;
 
 
         constructor() {
@@ -11,8 +11,8 @@ module kml002.k.viewmodel {
 
             self.enable = ko.observable(true);
             self.readonly = ko.observable(false);
-            self.time = ko.observable(1200);
-            self.time2 = ko.observable(1200);
+            self.startTime = ko.observable(0);
+            self.endTime = ko.observable(0);
 
         }
         start() {
@@ -25,5 +25,15 @@ module kml002.k.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+        submitTime() {
+            var self = this;
+            var dataTime = {
+                startTime: self.startTime(),
+                endTime: self.endTime()
+            }
+            nts.uk.ui.windows.setShared('KML002K_TIME', dataTime);
+            nts.uk.ui.windows.close();
+        }
+        
     }
 }

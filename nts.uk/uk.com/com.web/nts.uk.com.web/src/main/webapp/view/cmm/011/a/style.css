@@ -1,34 +1,31 @@
 @CHARSET "UTF-8";
 
-#content-area {
-	min-width: 1900px;
-}
 #left-content {
-	width: 450px;
+	width: 360px;
 	float: left;
-	margin: 20px 30px;
+	margin: 10px 30px;
 }
 #left-content-top {
-	width: 95%;
-	padding: 15px 20px;
-	margin-bottom: 50px;
+	width: 100%;
+	padding: 10px 15px;
+	margin-bottom: 45px;
 }
 .caret-background.caret-bottom:after {
-	left: 110px !important;
+	left: 160px !important;
 }
 #left-content-bottom {
-	width: 95%;
+	width: 100%;
 	height: 570px;
-	padding: 20px;
+	padding: 15px;
 	border-radius: 5px;
 }
 #right-content {
 	float: left;
-	margin: 10px 30px;
+	margin: 10px 40px;
 }
-#table-detail-setting {
+/* #table-detail-setting {
 	margin-top: -10px;
-}
+} */
 .td-detail {
 	padding-top: 20px;
 }

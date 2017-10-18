@@ -1,48 +1,43 @@
 module nts.uk.at.view.kmk006.a {
     export module service {
         var paths = {
-
-            findEnumUnitAutoCal: "ctx/at/schedule/shift/autocalunit/find/autocalunit",
-            findEnumAutoCalAtrOvertime: "ctx/at/schedule/shift/autocal/find/autocalatrovertime",
-            findEnumUseClassification: "ctx/at/schedule/shift/autocal/find/autocaluseclassification",
-            findEnumTimeLimitUpperLimitSetting: "ctx/at/schedule/shift/autocal/find/autocaltimelimitsetting",
-            findEnumUseUnitOvertimeSetting: "ctx/at/schedule/shift/autocal/find/autocaluseunitovertimesetting",
-            getComAutoCal: "ctx/at/schedule/shift/autocalcom/getautocalcom",
-            saveComAutoCal: "ctx/at/schedule/shift/autocalcom/save",
-            saveJobAutoCal: "ctx/at/schedule/shift/autocaljob/save",
-            saveWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/save",
-            saveWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/save",
-            getJobAutoCal: "ctx/at/schedule/shift/autocaljob/getautocaljob",
-            getWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/getautocalwkp",
-            getWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/getautocalwkpjob",
-            deleteJobAutoCal: "ctx/at/schedule/shift/autocaljob/delete",
-            deleteWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/delete",
-            deleteWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/delete"
+           
+            findEnumAutoCalAtrOvertime: "ctx/at/shared/ot/autocal/find/autocalatrovertime",
+            findEnumUseClassification: "ctx/at/shared/ot/autocal/find/autocaluseclassification",
+            findEnumTimeLimitUpperLimitSetting: "ctx/at/shared/ot/autocal/find/autocaltimelimitsetting",
+            getComAutoCal: "ctx/at/shared/ot/autocal/com/getautocalcom",
+            saveComAutoCal: "ctx/at/shared/ot/autocal/com/save",
+            saveJobAutoCal: "ctx/at/shared/ot/autocal/job/save",
+            saveWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/save",
+            saveWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/save",
+            getJobAutoCal: "ctx/at/shared/ot/autocal/job/getautocaljob",
+            getWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/getautocalwkp",
+            getWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/getautocalwkpjob",
+            deleteJobAutoCal: "ctx/at/shared/ot/autocal/job/delete",
+            deleteWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/delete",
+            deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete",
         }
 
         /**
-        * delete divergence reason
-       */
+         * delete divergence reason
+        */
         export function deleteJobAutoCal(jobId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.deleteJobAutoCal + '/' + jobId);
+            return nts.uk.request.ajax("at", paths.deleteJobAutoCal, { 'jobId': jobId });
         }
-
 
         /**
         * delete divergence reason
        */
         export function deleteWkpAutoCal(wkpId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.deleteWkpAutoCal + '/' + wkpId);
+            return nts.uk.request.ajax("at", paths.deleteWkpAutoCal, { 'wkpId': wkpId });
         }
-
 
         /**
         * delete divergence reason
        */
         export function deleteWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal + '/' + wkpId + '/' + jobId);
+            return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal, { 'wkpId': wkpId, 'jobId': jobId });
         }
-
 
         export function findEnumAutoCalAtrOvertime(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.findEnumAutoCalAtrOvertime);
@@ -54,10 +49,6 @@ module nts.uk.at.view.kmk006.a {
 
         export function findEnumTimeLimitUpperLimitSetting(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.findEnumTimeLimitUpperLimitSetting);
-        }
-
-        export function findEnumUseUnitOvertimeSetting(): JQueryPromise<Array<model.Enum>> {
-            return nts.uk.request.ajax(paths.findEnumUseUnitOvertimeSetting);
         }
 
         /**
@@ -99,12 +90,6 @@ module nts.uk.at.view.kmk006.a {
         export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
         }
-        export function getEnumUnitAutoCal(): JQueryPromise<model.UnitAutoCalSettingDto> {
-            return nts.uk.request.ajax("at", paths.findEnumUnitAutoCal);
-        }
-
-
-
 
         export module model {
             //modelauto
@@ -159,11 +144,7 @@ module nts.uk.at.view.kmk006.a {
                 calAtr: number;
             }
 
-            export interface UnitAutoCalSettingDto {
-                useJobSet: boolean;
-                useWkpSet: boolean;
-                useJobwkpSet: boolean;
-            }
+            
 
             export class Enum {
                 value: number;
@@ -178,7 +159,4 @@ module nts.uk.at.view.kmk006.a {
             }
         }
     }
-
-
-
 }

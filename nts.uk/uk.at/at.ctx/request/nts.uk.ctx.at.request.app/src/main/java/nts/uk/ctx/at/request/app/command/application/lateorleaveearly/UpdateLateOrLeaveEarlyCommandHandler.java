@@ -5,8 +5,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDetail;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeProcessRegister;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
@@ -27,17 +28,20 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 	
 	@Inject
-	private DetailBeforeProcessRegister detailBeforeProcessRegisterService;
+	private DetailBeforeUpdate detailBeforeProcessRegisterService;
 	
-	@Inject AfterProcessDetail afterProcessDetailSerivce;
+	@Inject DetailAfterUpdate afterProcessDetailSerivce;
 	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
+		String appID = IdentifierUtil.randomUniqueId();
+
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
+				appID,
         		command.getApplicationDate(),
         		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
-     //   		command.getActualCancelAtr(),
+        		null,
         		command.getEarly1(),
         		command.getEarlyTime1(),
         		command.getLate1(),
@@ -62,7 +66,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
 		
 		//「4-2.詳細画面登録後の処理」を実行する
-		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getCompanyID(), domainLateOrLeaveEarly.getAppID());
+		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly);
 		
 	}
 	

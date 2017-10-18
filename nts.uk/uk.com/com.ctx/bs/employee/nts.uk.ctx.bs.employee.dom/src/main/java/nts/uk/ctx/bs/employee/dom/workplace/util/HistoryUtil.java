@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.util;
 
+import java.util.List;
+
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class HistoryUtil.
@@ -15,6 +18,9 @@ public class HistoryUtil {
 
     /** The Constant NUMBER_ELEMENT_MIN. */
     private static final Integer NUMBER_ELEMENT_MIN = 1;
+    
+    /** The Constant ELEMENT_FIRST. */
+    private static final Integer ELEMENT_FIRST = 0;
     
     /**
      * Valid start date.
@@ -33,14 +39,33 @@ public class HistoryUtil {
         }
     }
     
-    public static void validStartDate(GeneralDate startDate, GeneralDate endDateMySelf, GeneralDate endDateLatest) {
-        // TODO: throw error list
-//        if (startDate.afterOrEquals(endDateMySelf)) {
-//            throw new BusinessException("Msg_667");
-//        }
-//        if (startDate.afterOrEquals(endDateMySelf)) {
-//            throw new BusinessException("Msg_666");
-//        }
+    /**
+     * Valid start date.
+     *
+     * @param latestPeriod the latest period
+     * @param prevPeriod the prev period
+     * @param newStartDate the new start date
+     */
+    public static void validStartDate(DatePeriod latestPeriod, DatePeriod prevPeriod, GeneralDate newStartDate) {
+        boolean isHasError = false;
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
+        
+        if (newStartDate.beforeOrEquals(prevPeriod.start())) {
+            exceptions.addMessage("Msg_127");
+            isHasError = true;
+        }
+        if (latestPeriod.end().beforeOrEquals(newStartDate)) {
+            exceptions.addMessage("Msg_667");
+            isHasError = true;
+        }
+        if (latestPeriod.end().beforeOrEquals(prevPeriod.end())) {
+            exceptions.addMessage("Msg_666");
+            isHasError = true;
+        }
+        // has error, throws message
+        if (isHasError) {
+            exceptions.throwExceptions();
+        }
     }
     
     /**
@@ -49,14 +74,23 @@ public class HistoryUtil {
      * @param wkpConfig the wkp config
      * @param historyIdDeletion the history id deletion
      */
-    public static void validHistoryLatest(WorkplaceConfig wkpConfig, String historyIdDeletion) {
+    public static void validHistoryLatest(List<String> lstHistoryId, String historyIdDeletion) {
+        boolean isHasError = false;
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
+        
         // Don't remove when only has 1 history
-        if (wkpConfig.getWkpConfigHistory().size() == NUMBER_ELEMENT_MIN) {
-            throw new BusinessException("Msg_57");
+        if (lstHistoryId.size() == NUMBER_ELEMENT_MIN) {
+            exceptions.addMessage("Msg_57");
+            isHasError = true;
         }
         // check history remove latest ?
-        if (!historyIdDeletion.equals(wkpConfig.getWkpConfigHistoryLatest().getHistoryId())) {
-            throw new BusinessException("Msg_55");
+        if (!historyIdDeletion.equals(lstHistoryId.get(ELEMENT_FIRST))) {
+            exceptions.addMessage("Msg_55");
+            isHasError = true;
+        }
+        // has error, throws message
+        if (isHasError) {
+            exceptions.throwExceptions();
         }
     }
 }

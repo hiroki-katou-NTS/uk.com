@@ -1,0 +1,72 @@
+package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
+/**
+ * The Class JobTitleHistoryDto.
+ */
+@Getter
+@Setter
+public class JobTitleHistoryDto {
+
+	/** The history id. */
+	public String historyId;
+
+	/** The period. */
+	public PeriodDto period;
+
+	/**
+	 * To domain.
+	 *
+	 * @return the job title history
+	 */
+	public JobTitleHistory toDomain() {
+		return new JobTitleHistory(new JobTitleHistoryGetMementoImpl(this));
+	}
+
+	/**
+	 * The Class JobTitleHistoryGetMementoImpl.
+	 */
+	public class JobTitleHistoryGetMementoImpl implements JobTitleHistoryGetMemento {
+
+		/** The job title history dto. */
+		private JobTitleHistoryDto dto;
+
+		/**
+		 * Instantiates a new job title history get memento impl.
+		 *
+		 * @param jobTitleHistoryDto the job title history dto
+		 */
+		public JobTitleHistoryGetMementoImpl(JobTitleHistoryDto dto) {
+			this.dto = dto;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento#getHistoryId()
+		 */
+		@Override
+		public HistoryId getHistoryId() {
+			String historyId = this.dto.getHistoryId();
+			if (StringUtil.isNullOrEmpty(historyId, true)) {
+				historyId = IdentifierUtil.randomUniqueId();
+			}
+			return new HistoryId(historyId);
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento#getPeriod()
+		 */
+		@Override
+		public DatePeriod getPeriod() {
+			return new DatePeriod(this.dto.getPeriod().getStartDate(),
+					this.dto.getPeriod().getEndDate());
+		}
+	}
+}

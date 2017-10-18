@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
- * 
+ * find hori total category data
  * @author yennth
  *
  */

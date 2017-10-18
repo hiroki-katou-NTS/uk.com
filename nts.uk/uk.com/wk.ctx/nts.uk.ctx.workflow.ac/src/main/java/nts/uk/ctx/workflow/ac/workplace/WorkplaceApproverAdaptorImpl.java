@@ -12,14 +12,15 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 
 /**
  * The Class WorkplaceApproverAdaptorImpl.
  */
 @Stateless
-public class WorkplaceApproverAdaptorImpl implements WorkplaceAdapter {
+public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 
 	/** The wp pub. */
 	@Inject
@@ -44,7 +45,32 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceAdapter {
 
 		// Return
 		WkpCdNameExport x = optWkpCdNameExport.get();
-		return Optional.of(new WorkplaceImport(x.getWkpCode(), x.getWkpName()));
+		return Optional.of(new WorkplaceImport("", x.getWkpCode(), x.getWkpName()));
 	}
 
+	/**
+	 * Find by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	// RequestList #30
+	@Override
+	public WorkplaceImport findBySid(String employeeId, GeneralDate baseDate) {
+		SWkpHistExport data = wpPub.findBySid(employeeId, baseDate).get();
+		WorkplaceImport result = new WorkplaceImport(data.getWorkplaceId(), data.getWorkplaceCode(), data.getWorkplaceName());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
+	 * EmployeeApproveAdapter#getWorkplaceId(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
+		return wpPub.getWorkplaceId(companyId, employeeId, baseDate);
+	}
 }

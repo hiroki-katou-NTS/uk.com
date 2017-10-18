@@ -1,10 +1,10 @@
-module cmm018.n.viewmodel {
+module nts.uk.com.view.cmm018.n {
+export module viewmodel {
     export class ScreenModel {
         //Right table's properties.
         applicationType: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentAppType: KnockoutObservableArray<any>;
-        count: number = 100;
 
         //Left filter area
         ccgcomponent: GroupOption;
@@ -74,10 +74,14 @@ module cmm018.n.viewmodel {
         getRightList() {
             let self = this;
             var dfd = $.Deferred();
+            self.applicationType.removeAll();
             service.getRightList().done(function(data: any) {
-                let items = _.map(data, item => {
-                    return new ItemModel(item);
-                });
+                let items : ItemModel[] = [];
+                items.push( new ItemModel("",  "共通ルート"));
+                _.forEach(data, function(value: any){
+                    items.push(new ItemModel(value.value, value.localizedName));
+                })
+                
                 self.applicationType(items);
 
                 dfd.resolve();
@@ -100,6 +104,8 @@ module cmm018.n.viewmodel {
         //Exceｌ出力
         printExcel(){
             var self = this;
+            
+            
             //対象社員を選択したかをチェックする(kiểm tra đã chọn nhân viên chưa?)
             //対象者未選択(chưa chọn nhân viên)
             if(self.selectedEmployee().length <= 0){
@@ -112,22 +118,47 @@ module cmm018.n.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
                 return;    
             }
+            //xuat file
+            var data = new service.model.appInfor();
+//            data.baseDate = self.baseDate();
+            data.baseDate = self.baseDate();
+            
+            //fix tam du lieu
+            //data.lstEmpIds = self.selectedEmployee();
+            var lstEmpIds : string[] = [];
+            data.lstEmpIds = self.selectedEmployee();
+            data.lstApps = self.currentAppType();
+            var isCommon = _.find(self.currentAppType(), function(value){
+                return value  === "";    
+            })
+            if(!nts.uk.util.isNullOrUndefined(isCommon)){
+                data.rootAtr = 0;
+                data.lstApps.removeItem("");
+            }else{
+                data.rootAtr = 1;
+            }
+            
+            service.saveAsExcel(data).done(()=>{
+                console.log(data);    
+            }).fail(function(res: any){
+                nts.uk.ui.dialog.alertError(res.messageId);
+            });
         }
     }
 
     export class ItemModel {
         code: string;
         name: string;
-        constructor(x: IItemModel) {
-            this.code = x.value;
-            this.name = x.localizedName;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
     
-    export interface IItemModel {
-        value: string;
-        localizedName: string;
-    }
+//    export interface IItemModel {
+//        value: string;
+//        localizedName: string;
+//    }
     
     export interface EmployeeSearchDto {
         employeeId: string;
@@ -176,3 +207,4 @@ module cmm018.n.viewmodel {
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
     }
 }
+    }

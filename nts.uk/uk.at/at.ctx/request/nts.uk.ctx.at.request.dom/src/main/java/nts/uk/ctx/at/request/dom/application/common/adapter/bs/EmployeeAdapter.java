@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.bs;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 
 public interface EmployeeAdapter {
 	/**
@@ -41,5 +42,11 @@ public interface EmployeeAdapter {
 	 * @return
 	 */
 	String getEmployeeName(String sID);
+	
+	
+	PesionInforImport getEmployeeInfor(String sID);
+	
+	
+	String empEmail(String sID);
 	
 }

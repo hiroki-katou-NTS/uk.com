@@ -13,7 +13,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_8')}</div>
 						</div>
 						<div class="cell cm-column2">
-							<span class="label">............</span>
+							<span class="label" data-bind="text: employeeName"></span>
 						</div>
 					</div>
 					<div class="table cm-table" data-bind="style: { display: screenMode() === 1 ? '' : 'none' }">
@@ -22,6 +22,7 @@
 						</div>
 						<div class="cell cm-column2">
 							<input class="cm-time-editor" data-bind="ntsTimeEditor: {
+									name: '#[KAF002_9]',
 									value: application().appDate, 
 									inputFormat: 'date',
 									required: true }" />
@@ -72,12 +73,13 @@
 															color: botComment().color,
 															'font-weight': botComment().fontWeight() === 1 ? 'bold' : 'normal' 
 														}"></div>
-					<div class="table cm-table">
+					<div class="table cm-table" data-bind="if: inputReasonsDisp() != 0">
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_10')}</div>	
 						</div>
 						<div class="cell cm-column2">
 							<span class="cm-combo-box" data-bind="ntsComboBox: {
+									name: '#[KAF002_10]',
 									options: inputReasons,
 									optionsValue: 'id',
 									value: currentReason,
@@ -88,13 +90,15 @@
 									]}"></span>	
 						</div>
 					</div>
-					<div class="table cm-table">
+					<div class="table cm-table" data-bind="if: detailReasonDisp() != 0">
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_11')}</div>	
 						</div>
 						<div class="cell cm-column2">
 							<span>
-								<textarea class="cm-memo" data-bind="ntsMultilineEditor: { value: application().contentReason }" />
+								<textarea class="cm-memo" data-bind="ntsMultilineEditor: { 
+									name: '#[KAF002_11]',
+									value: application().contentReason }" />
 							</span>
 						</div>
 					</div>

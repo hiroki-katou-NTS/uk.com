@@ -41,6 +41,7 @@
 				<div id="content">
 					<div id="content-left"
 						class="bg-green caret-right caret-background">
+						<i class="icon icon-searchbox"></i>
 						<div style="margin-left: 15px;">
 							<table id="A2_001"
 								data-bind="ntsGridList: {
@@ -245,23 +246,15 @@
 															</tr>
 															<tr>
 																<th>#{i18n.getText('CAS001_30')}</th>
-																<td><div id="A4_033" class="cf"
+																<td>
+																	<div id="A4_036" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selfAllowDelMulti ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-																<td><div id="A4_034" class="cf"
-																		data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowAddMulti ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															</tr>
-															<tr>
-																<th>#{i18n.getText('CAS001_31')}</th>
+													value: otherAllowAddMulti ,
+													enable: $parents[1].allowOtherRef()===1 }"></div>
+																</td>
 																<td><div id="A4_035" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
@@ -269,13 +262,25 @@
 													optionsText: 'name',
 													value: otherAllowDelMulti ,
 													enable: $parents[1].allowOtherRef()===1 }"></div></td>
-																<td><div id="A4_036" class="cf"
+
+															</tr>
+															<tr>
+																<th>#{i18n.getText('CAS001_31')}</th>
+																<td><div id="A4_034" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: otherAllowAddMulti ,
-													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+													value: selfAllowAddMulti ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+																<td><div id="A4_033" class="cf"
+																		data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowDelMulti ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+
 															</tr>
 														</table>
 													</com:ko-if>

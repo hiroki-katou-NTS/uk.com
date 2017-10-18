@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.employment;
@@ -25,42 +25,42 @@ public class EmpSaveCommandHandler extends CommandHandler<EmpSaveCommand> {
 	/** The repository. */
 	@Inject
 	private EmploymentRepository repository;
-	
-	 /** The Constant ADD. */
- 	public static final int ADD = 1;
-	 
- 	/** The Constant UPDATE. */
- 	public static final int UPDATE = 2;
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<EmpSaveCommand> context) {
-		
+
 		// Get Company Id
 		String companyId = AppContexts.user().companyId();
+
 		// Get Command
 		EmpSaveCommand command = context.getCommand();
-		
+
 		Employment employment = new Employment(command);
-		
+
 		// Find exist Employment
-		Optional<Employment> empOptional = this.repository.findEmployment(companyId, command.getEmploymentCode().v());
-		
+		Optional<Employment> empOptional = this.repository.findEmployment(companyId,
+				command.getEmploymentCode().v());
+
 		// Update
 		if (empOptional.isPresent()) {
 			// Check ADD mode
-			if (command.getMode() == ADD) {
+			if (!command.getIsUpdateMode()) {
 				throw new BusinessException("Msg_3");
 			} else {
 				this.repository.update(employment);
 			}
 			return;
 		}
+
 		// Create
 		this.repository.insert(employment);
 	}
 
-	
 }

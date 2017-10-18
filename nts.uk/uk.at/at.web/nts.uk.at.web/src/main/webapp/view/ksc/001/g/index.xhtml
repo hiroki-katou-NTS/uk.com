@@ -31,7 +31,7 @@
 				<label class="navigation-label">#{i18n.getText('KSC001_62')}</label>
 				<div class="ksc001-panel"
 					data-bind="ntsPanel:{
-									width: '915px',
+									width: '935px',
 					 				height: '480px',
 					   	 			visible: true,
 					   	 			padding: '0' }">
@@ -51,13 +51,14 @@
 									 }" />
 					<button data-bind="click: search"
 						class=" search-btn-ksc001 search-btn ntsSearchBox_Component"
-						tabindex="2">#{i18n.getText('KSC001_64')}</button>
+						tabindex="3">#{i18n.getText('KSC001_64')}</button>
 					<div style="clear: both;"></div>
 					<div>
-
 						<label class="explanation-lb">#{i18n.getText('KSC001_65')}</label>
 					</div>
-					<table id="gridTable"></table>
+					<div>
+						<table tabindex="-1" id="gridTable"></table>
+					</div>
 				</div>
 			</div>
 		</ui:define>

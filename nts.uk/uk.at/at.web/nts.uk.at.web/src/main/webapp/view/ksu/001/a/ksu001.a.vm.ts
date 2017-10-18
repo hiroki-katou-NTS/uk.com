@@ -808,7 +808,11 @@ module ksu001.a.viewmodel {
          * open dialog L
          */
         openDialogL(): void {
+            let self = this;
             $('#popup-area5').ntsPopup('hide');
+            //hiện giờ fix cứng workplaceId và truyền sang tất cả emmployee . Sau này sửa truyền list employee theo workplace id
+            nts.uk.ui.windows.setShared("workPlaceId", "000000000000000000000000000000000002");
+            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
 
@@ -816,7 +820,9 @@ module ksu001.a.viewmodel {
          * open dialog N
          */
         openDialogN(): void {
+            let self = this;
             $('#popup-area5').ntsPopup('hide');
+            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
         }
 

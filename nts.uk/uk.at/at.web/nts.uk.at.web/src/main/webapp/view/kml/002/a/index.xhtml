@@ -1,6 +1,6 @@
 <div class="contents-area-a cf">
 	<div class="left-contents">
-		<div class="grid-area" data-bind="ntsPanel:{width: '250px', height: '435px', direction: 'right', showIcon: false, visible: true}">
+		<div class="grid-area" data-bind="ntsPanel:{width: '250px', height: '370px', direction: 'right', showIcon: false, visible: true}">
 			<table id="treegridItems"
 				data-bind="ntsGridList: {
 					width: 250,
@@ -36,7 +36,7 @@
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_83')}</div></td>
 				<td>
-					<div class="cf"
+					<div class="cf useCls"
 						data-bind="ntsSwitchButton: {
 						options: $parent.viewmodelA.useCls,
 						optionsValue: 'code',
@@ -49,7 +49,7 @@
 						data-bind="ntsHelpButton: {image: '../a/KML002_2.png', position: 'left top', enable: true }">?</button>
 				</td>
 				<td class="switch-box">
-					<div class="cf"
+					<div class="cf workSchedule"
 						data-bind="ntsSwitchButton: {
 						options: $parent.viewmodelA.workSchedule,
 						optionsValue: 'code',
@@ -61,7 +61,7 @@
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_9')}</div></td>
 				<td>
-					<div class="cf"
+					<div class="cf units"
 						data-bind="ntsSwitchButton: {
 						options: $parent.viewmodelA.units,
 						optionsValue: 'code',
@@ -96,7 +96,7 @@
 		<table class="calculator-items">
 			<thead>
 				<tr>
-					<td class="cbx-list-header"><div data-bind="ntsCheckBox: { checked: false }"></div></td>
+					<td class="cbx-list-header"><div data-bind="ntsCheckBox: { checked: allSelectedItems }"></div></td>
 					<td class="number-header">#{i18n.getText('KML002_17')}</td>
 					<td class="attribute-header">#{i18n.getText('KML002_18')}</td>
 					<td class="name-header">#{i18n.getText('KML002_19')}</td>
@@ -110,7 +110,7 @@
 			
 			<tbody data-bind="foreach: calculatorItems">
 				<tr>
-					<td class="cbx-list-item"><div data-bind="ntsCheckBox: { checked: false }"></div></td>
+					<td class="cbx-list-item"><div data-bind="ntsCheckBox: { checked: $parent.selectedItem }"></div></td>
 					<td class="number-item" data-bind="text: $index() + 1"></td>
 					<td class="attribute-item">
 						<div class="attributes" data-bind="ntsComboBox: {
@@ -134,7 +134,7 @@
 							enable: true }"></div>
 					</td>
 					<td class="help-btn-item">
-						<button class="formula-setting-btn" data-bind="click: $parent.formulaSettingDialog.bind($parent.viewmodelA)"></button>
+						<button class="formula-setting-btn" data-bind="click: $parent.openDialog.bind($data, 1)"></button>
 					</td>
 					<td class="formula-item"><div data-bind="ntsText: { value: formula }"></div></td>
 					<td class="display-atr-item">

@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.workplace_old;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkHistorySetMemento.
@@ -33,7 +33,7 @@ public interface WorkPlaceHistorySetMemento {
 	 *
 	 * @param period the new period
 	 */
-	void setPeriod(Period period);
+	void setPeriod(DatePeriod period);
 
 	/**
 	 * Sets the lst work hierarchy.

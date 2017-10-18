@@ -1,12 +1,20 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.List;
+import java.util.UUID;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDetail;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -28,73 +36,36 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	private PreLaunchScreenSetting preLaunchScreenSetting;*/
 	
 	@Inject
-	private DetailBeforeProcessRegister detailBeforeProcessRegister;
+	private DetailBeforeUpdate detailBeforeProcessRegister;
 	
 	@Inject
-	private AfterProcessDetail afterProcessDetail;
+	private DetailAfterUpdate afterProcessDetail;
 	
 	@Override
 	public void appStampPreProcess(AppStamp appStamp) {
-		this.beforePreBootMode.getDetailedScreenPreBootMode(appStamp, appStamp.getApplicationDate());
+		beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
 		// this.preLaunchScreenSetting
-		this.appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
+		appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
 		// 13.実績を取得する
 	}
 
 	@Override
-	public void appStampGoOutPermitUpdate(String titleReason, String detailReason, AppStamp appStamp) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampUpdate(appStamp);
-		
-	}
-
-	@Override
-	public void appStampWorkUpdate(String titleReason, String detailReason, AppStamp appStamp) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampUpdate(appStamp);
-		
-	}
-
-	@Override
-	public void appStampCancelUpdate(String titleReason, String detailReason, AppStamp appStamp) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampUpdate(appStamp);
-		
-	}
-
-	@Override
-	public void appStampOnlineRecordUpdate(String titleReason, String detailReason, AppStamp appStamp) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampUpdate(appStamp);
-		
-	}
-
-	@Override
-	public void appStampOtherUpdate(String titleReason, String detailReason, AppStamp appStamp) {
-		// TODO Auto-generated method stub
-		
+	public void appStampUpdate(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+		appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
+		appStampCommonDomainService.validateReason(appStamp);
+		appStampUpdateProcess(appStamp, appApprovalPhases);
 	}
 	
-	private void appStampUpdate(AppStamp appStamp) {
-		StampRequestMode StampRequestMode = appStamp.getStampRequestMode();
-		this.detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
+	private void appStampUpdateProcess(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+		appStamp.setListPhase(appApprovalPhases);
+		detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
 				appStamp.getCompanyID(), 
 				appStamp.getApplicantSID(), 
 				appStamp.getApplicationDate(), 
 				1, 
 				appStamp.getApplicationID(), 
 				PrePostAtr.PREDICT);
-		switch(StampRequestMode){
-			case STAMP_GO_OUT_PERMIT: appStampRepository.updateStampGoOutPermit(appStamp);break;
-			case STAMP_ADDITIONAL: appStampRepository.updateStampWork(appStamp);break;
-			case STAMP_CANCEL: appStampRepository.updateStampCancel(appStamp);break;
-			case STAMP_ONLINE_RECORD: appStampRepository.updateStampOnlineRecord(appStamp);break;
-			default: break;
-		}
-		this.afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getCompanyID(), appStamp.getApplicationID());
+		appStampRepository.updateStamp(appStamp);
+		afterProcessDetail.processAfterDetailScreenRegistration(appStamp);
 	}
 }

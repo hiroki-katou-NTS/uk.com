@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -24,10 +22,13 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
@@ -43,8 +44,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
 	
+		@Inject
+		private ClosureRepository closureRepository;
+	
 	@Inject
-	private ClosureRepository closureRepository;
+	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	@Inject
+	private ClosureService closureService;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -57,13 +64,20 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
 		Object<String: tightenID, String: currentMonth> obj1 = Tighten.find(companyID, employeeCD); // obj1 <=> (締めID,当月)
 		*/
-		Optional<Closure> closure = closureRepository.findById(companyID, Integer.parseInt(employmentCD));
-		
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new RuntimeException("khong co closure employement");
+		}
+		Optional<Closure> closure = closureRepository.findById(companyID, closureEmployment.get().getClosureId());
+		if(!closure.isPresent()){
+			throw new RuntimeException("khong co closure");
+		}
 		/*
 		当月の期間を算出する(tính period của tháng hiện tại)
 		Object<String: startDate, String: endDate> obj2 = Period.find(obj1.tightenID, obj1.currentMonth); // obj2 <=> 締め期間(開始年月日,終了年月日) 
 		*/
-		return new PeriodCurrentMonth(GeneralDate.today(), GeneralDate.today());
+		DatePeriod datePeriod = closureService.getClosurePeriod(closure.get().getClosureId(), closure.get().getClosureMonth().getProcessingYm());
+		return new PeriodCurrentMonth(datePeriod.start(), datePeriod.end());
 	}
 	/**
 	 * 1.職場別就業時間帯を取得

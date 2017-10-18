@@ -45,13 +45,13 @@ public class AppApprovalPhase extends DomainObject {
 	/**
 	 * list Frame
 	 */
-	
+	@Setter
 	private List<ApprovalFrame> listFrame;
 	
 
 	public static AppApprovalPhase createFromJavaType(
 			String companyID , String appID , String phaseID ,
-			int approvalForm , int dispOrder , int approvalATR,List<ApprovalFrame> listFrame ){
+			int approvalForm , int dispOrder , int approvalATR, List<ApprovalFrame> listFrame ){
 		return new AppApprovalPhase (
 				companyID , appID , phaseID ,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),

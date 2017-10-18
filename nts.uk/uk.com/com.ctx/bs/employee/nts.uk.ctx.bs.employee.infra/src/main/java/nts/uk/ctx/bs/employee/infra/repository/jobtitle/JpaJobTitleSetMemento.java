@@ -1,118 +1,76 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceCode;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitlePK;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleSetMemento.
  */
 public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 
-	/** The type value. */
-	private CjtmtJobTitle typeValue;
-
-	/**
-	 * Instantiates a new jpa job title set memento.
-	 *
-	 * @param typeValue the type value
-	 */
-	public JpaJobTitleSetMemento(CjtmtJobTitle typeValue) {
-		this.typeValue = typeValue;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento#
-	 * setPositionId(nts.uk.ctx.basic.dom.company.organization.jobtitle.
-	 * PositionId)
-	 */
-	@Override
-	public void setPositionId(PositionId positionId) {
-		CjtmtJobTitlePK pk = this.typeValue.getCjtmtJobTitlePK();
-		pk.setJobId(positionId.v());
-		this.typeValue.setCjtmtJobTitlePK(pk);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento#
-	 * setCompanyId(nts.uk.ctx.basic.dom.company.organization.jobtitle.
-	 * CompanyId)
+	 /** The list entity. */
+    private List<BsymtJobHist> listEntity;
+    
+    /**
+     * Instantiates a new jpa job title set memento.
+     *
+     * @param listEntity the list entity
+     */
+    public JpaJobTitleSetMemento(List<BsymtJobHist> listEntity) {
+    	listEntity.forEach(entity -> {
+            if (entity != null && entity.getBsymtJobHistPK() == null) {
+                entity.setBsymtJobHistPK(new BsymtJobHistPK());
+            }
+        });
+        this.listEntity = listEntity;
+    }
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		CjtmtJobTitlePK pk = new CjtmtJobTitlePK();
-		pk.setCompanyId(companyId.v());
-		this.typeValue.setCjtmtJobTitlePK(pk);
+		this.listEntity.forEach(entity -> {
+            entity.getBsymtJobHistPK().setCid(companyId.v());
+        });
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento#
-	 * setSequenceCode(nts.uk.ctx.basic.dom.company.organization.jobtitle.
-	 * SequenceCode)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
-	public void setSequenceCode(SequenceCode sequenceCode) {
-		this.typeValue.setSequenceCode(sequenceCode.v());
+	public void setJobTitleId(JobTitleId jobTitleId) {
+		this.listEntity.forEach(entity -> {
+            entity.getBsymtJobHistPK().setJobId(jobTitleId.v());
+        });
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento#
-	 * setPeriod(nts.uk.ctx.basic.dom.common.history.Period)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleHistory(java.util.List)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.typeValue.setStartDate(period.getStartDate());
-		this.typeValue.setEndDate(period.getEndDate());
-	}
+	public void setJobTitleHistory(List<JobTitleHistory> jobTitleHistory) {
+		// convert list workplace history to map by key historyId
+        Map<String, DatePeriod> mapJobHist = jobTitleHistory.stream()
+        		.collect(Collectors.toMap(
+        				item -> ((JobTitleHistory) item).getHistoryId().v(), 
+        				item -> ((JobTitleHistory) item).getPeriod()));
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento#
-	 * setPositionCode(nts.uk.ctx.basic.dom.company.organization.jobtitle.
-	 * PositionCode)
-	 */
-	@Override
-	public void setPositionCode(PositionCode positionCode) {
-		CjtmtJobTitlePK pk = this.typeValue.getCjtmtJobTitlePK();
-		pk.setJobCode(positionCode.v());
-		this.typeValue.setCjtmtJobTitlePK(pk);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento#
-	 * setPositionName(nts.uk.ctx.basic.dom.company.organization.jobtitle.
-	 * PositionName)
-	 */
-	@Override
-	public void setPositionName(PositionName positionName) {
-		this.typeValue.setJobName(positionName.v());
+        // set period
+        this.listEntity.forEach(entity -> {
+            DatePeriod period = mapJobHist.get(entity.getBsymtJobHistPK().getHistId());
+            entity.setStartDate(period.start());
+            entity.setEndDate(period.end());
+        });
 	}
 
 }

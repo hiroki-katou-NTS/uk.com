@@ -7,35 +7,39 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 500 };</script>
+			<script>var dialogSize = { width: 700, height: 520 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.n.main.css" />
+			<com:scriptfile path="ksu001.n.service.js" />
 			<com:scriptfile path="ksu001.n.vm.js" />
 			<com:scriptfile path="ksu001.n.start.js" />
+
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1301')}</button>
+				<button class="proceed" data-bind="click: addRankSetting , enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1301')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_1302')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="content-top">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1303')}</div>
-					<span class="code">000000001</span> <span>avacasda</span>
+					<span class="workPlaceCode" data-bind="text :(listEmployee[0])?(listEmployee[0].wokplaceCd) : ''"></span>  
+					<span class="workPlaceName" data-bind="text:(listEmployee[0])? listEmployee[0].workplaceName: ''"></span>
 					<hr />
 				</div>
 				<div id="content-bot">
-				 	 <div style="width: 300px"
+					<div style="width: 300px"
 						data-bind="ntsSearchBox: {
-							targetKey: 'rankCode',
-						 	mode:'igTree', 
+							targetKey: 'employeeCode',
+						 	mode:'igGrid', 
 						 	comId:'grid2', 
 						 	items: listRank, 
 						    selected: singleSelectedCode, 
-						    selectedKey: 'rankCode', 
-						    childField: 'childs', 
-						    fields: ['rankName', 'rankCode']}" />
+						    selectedKey: 'employeeCode', 
+						    childField: 'childs',
+						    searchMode: 'filter', 
+						    fields: ['rankName', 'employeeCode']}" />
 					<table id="grid2"></table>
 				</div>
 			</div>

@@ -7,7 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.shift.team.TeamRepository;
-
+/**
+ * 
+ * @author Trung Tran
+ *
+ */
 @Stateless
 public class TeamFinder {
 	@Inject

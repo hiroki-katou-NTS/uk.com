@@ -9,7 +9,11 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.F
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.shr.com.context.AppContexts;
 
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class VerticalTimeSettingFinder {
 	@Inject
@@ -20,9 +24,9 @@ public class VerticalTimeSettingFinder {
 	 * 
 	 * @return
 	 */
-	public List<VerticalTimeSettingDto> findAll(int fixedVerticalNo) {
+	public List<VerticalTimeSettingDto> findAll(int fixedItemAtr) {
 		String companyId = AppContexts.user().companyId();
-		return repository.findAllVerticalTime(companyId, fixedVerticalNo).stream().map(e -> {
+		return repository.findAllVerticalTime(companyId, fixedItemAtr).stream().map(e -> {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
@@ -36,7 +40,8 @@ public class VerticalTimeSettingFinder {
 	private VerticalTimeSettingDto convertToDbType(VerticalTime verticalTime) {
 		VerticalTimeSettingDto verticalSettingDto = new VerticalTimeSettingDto();
 		verticalSettingDto.setCompanyId(verticalTime.getCompanyId());
-		verticalSettingDto.setFixedVerticalNo(verticalTime.getFixedVerticalNo());
+		verticalSettingDto.setFixedItemAtr(verticalTime.getFixedItemAtr().value);
+		verticalSettingDto.setVerticalTimeNo(verticalTime.getVerticalTimeNo());
 		verticalSettingDto.setDisplayAtr(verticalTime.getDisplayAtr().value);
 		verticalSettingDto.setStartClock(verticalTime.getStartClock().v());
 

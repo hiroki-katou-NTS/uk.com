@@ -5,7 +5,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleExecutionLogDto.
@@ -29,7 +29,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public String executionEmployeeId;
 
 	/** The period. */
-	public Period period;
+	public PeriodDto period;
 	
 	//imported class
 	/** The employee code. */
@@ -82,8 +82,8 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#setPeriod(nts.uk.ctx.at.shared.dom.workrule.closure.Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.period = period;
+	public void setPeriod(DatePeriod period) {
+		this.period = new PeriodDto(period.start(),period.end());
 	}
 	
 	/**

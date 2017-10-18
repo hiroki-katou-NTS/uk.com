@@ -100,8 +100,8 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
                     self.selectedTeam(teamCode);
                 });
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+            }).fail(function(res) {
+                 nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
             }).then(function() {
                 nts.uk.ui.block.clear();
             });
@@ -135,9 +135,9 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.message);
-                }).then(function() {
-                    nts.uk.ui.block.clear();
                 });
+            }).then(function() {
+                nts.uk.ui.block.clear();
             });
 
         }

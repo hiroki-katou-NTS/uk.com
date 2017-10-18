@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.worktype.WorkTypeEmploymentCo
 import nts.uk.ctx.at.record.app.command.workrecord.worktype.WorkTypeEmploymentCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.worktype.WorkTypeGroupDto;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
-import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmploymentRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,17 +30,17 @@ import nts.uk.shr.com.context.AppContexts;
 public class WorkingTypeChangedByEmploymentWebService {
 
 	@Inject
-	private WorkingTypeChangedByEmploymentRepoInterface worktypeRepo;
+	private WorkingTypeChangedByEmpRepo worktypeRepo;
 
 	@Inject
 	private WorkTypeEmploymentCommandHandler handler;
 	
-	@GET
+	@POST
 	@Path("get/{empCode}")
 	public List<WorkTypeGroupDto> findWorkTypeGroups(@PathParam("empCode") String empCode) {
 		String companyId = AppContexts.user().companyId();
 		WorkingTypeChangedByEmployment workTypeChanged = worktypeRepo
-				.getWorkingTypeChangedByEmployment(new CompanyId(companyId), new EmploymentCode(empCode));
+				.get(new CompanyId(companyId), new EmploymentCode(empCode));
 		List<WorkTypeGroupDto> groupDtos = new ArrayList<>();
 		workTypeChanged.getChangeableWorkTypeGroups().forEach(group -> 
 			groupDtos.add(new WorkTypeGroupDto(group.getNo(), group.getName().v(), group.getWorkTypeList()))
@@ -54,5 +53,7 @@ public class WorkingTypeChangedByEmploymentWebService {
 	public void registerWorkType(WorkTypeEmploymentCommand command) {
 		handler.handle(command);
 	}
+	
+	
 
 }

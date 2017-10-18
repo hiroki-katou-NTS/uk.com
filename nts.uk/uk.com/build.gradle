@@ -54,6 +54,11 @@ subprojects {
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
@@ -105,8 +110,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.33'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.43.2'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.37'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.47.2'
 	}
 }
 //=============com.file↓===========================================

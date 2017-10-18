@@ -6,24 +6,24 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitlePK_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMaster_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
 
 /**
  * The Class JpaJobTitleRepository.
@@ -31,132 +31,134 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMaster_;
 @Stateless
 public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepository {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#
-	 * findAll(java.lang.String, nts.arc.time.GeneralDate)
+	/**
+	 * To entity.
+	 *
+	 * @param jobTitle the job title
+	 * @return the list
 	 */
-	@Override
-	public List<JobTitle> findAll(String companyId, GeneralDate referenceDate) {
-
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<CjtmtJobTitle> cq = cb.createQuery(CjtmtJobTitle.class);
-		Root<CjtmtJobTitle> root = cq.from(CjtmtJobTitle.class);
-
-		// Constructing list of parameters
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(
-				cb.equal(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.companyId),
-						companyId));
-		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.startDate), referenceDate));
-		predicateList.add(cb.greaterThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), referenceDate));
-
-		List<Order> orderList = new ArrayList<Order>();
-		// Sort by sequence master.
-		orderList.add(cb
-				.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
-		// Sort by job code.
-		orderList.add(
-				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(orderList);
-
-		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+	private List<BsymtJobHist> toEntity(JobTitle jobTitle) {
+		
+		List<BsymtJobHist> listEntity = jobTitle.getJobTitleHistory().stream()
+				.map(jobTitleHistory -> {
+					BsymtJobHistPK pk = new BsymtJobHistPK(
+							jobTitle.getCompanyId().v(), 
+							jobTitleHistory.getHistoryId().v(),
+							jobTitle.getJobTitleId().v());
+					BsymtJobHist entity = this.queryProxy()
+							.find(pk, BsymtJobHist.class)
+							.orElse(new BsymtJobHist());
+					entity.setBsymtJobHistPK(pk);
+					entity.setStartDate(jobTitleHistory.getPeriod().start());
+					entity.setEndDate(jobTitleHistory.getPeriod().end());
+					return entity;
+				})
+				.collect(Collectors.toList());	
+		
+		JpaJobTitleSetMemento memento = new JpaJobTitleSetMemento(listEntity);
+		jobTitle.saveToMemento(memento);
+		
+		return listEntity;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#
-	 * findByJobIds(java.util.List)
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#add(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle)
 	 */
 	@Override
-	public List<JobTitle> findByJobIds(List<String> jobIds) {
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<CjtmtJobTitle> cq = cb.createQuery(CjtmtJobTitle.class);
-		Root<CjtmtJobTitle> root = cq.from(CjtmtJobTitle.class);
-
-		// Constructing list of parameters
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(
-				root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobId).in(jobIds));
-
-		List<Order> orderList = new ArrayList<Order>();
-		// Sort by sequence master.
-		orderList.add(cb
-				.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
-		// Sort by job code.
-		orderList.add(
-				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(orderList);
-
-		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+	public void add(JobTitle jobTitle) {
+		this.commandProxy().insertAll(this.toEntity(jobTitle));
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#findByJobIds(java.lang.String, java.util.List, nts.arc.time.GeneralDate)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#update(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle)
 	 */
 	@Override
-	public List<JobTitle> findByJobIds(String companyId, List<String> jobIds,
-			GeneralDate baseDate) {
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<CjtmtJobTitle> cq = cb.createQuery(CjtmtJobTitle.class);
-		Root<CjtmtJobTitle> root = cq.from(CjtmtJobTitle.class);
-
-		// Constructing list of parameters
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(
-				cb.equal(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.companyId),
-						companyId));
-
-		predicateList.add(
-				root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobId).in(jobIds));
-
-		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.startDate), baseDate));
-
-		predicateList.add(cb.greaterThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), baseDate));
-
-		List<Order> orderList = new ArrayList<Order>();
-		// Sort by sequence master.
-		orderList.add(cb
-				.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
-		// Sort by job code.
-		orderList.add(
-				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		
-		cq.orderBy(orderList);
-
-		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+	public void update(JobTitle jobTitle) {
+		this.commandProxy().updateAll(this.toEntity(jobTitle));
 	}
 
-	/**
-	 * To domain.
-	 *
-	 * @param entity
-	 *            the entity
-	 * @return the job title
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#remove(java.lang.String, java.lang.String)
 	 */
-	private JobTitle toDomain(CjtmtJobTitle entity) {
-		return new JobTitle(new JpaJobTitleGetMemento(entity));
+	@Override
+	public void remove(String companyId, String jobTitleId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#removeHistory(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void removeHistory(String companyId, String jobTitleId, String historyId) {
+		this.commandProxy().remove(BsymtJobHist.class, new BsymtJobHistPK(companyId, historyId, jobTitleId));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#findByJobTitleId(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<JobTitle> findByJobTitleId(String companyId, String jobTitleId) {
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobHist> cq = criteriaBuilder.createQuery(BsymtJobHist.class);
+		Root<BsymtJobHist> root = cq.from(BsymtJobHist.class);
+		
+		// Build query
+		cq.select(root);
+
+		// Add where conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.cid),
+				companyId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.jobId),
+				jobTitleId));
+		
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.desc(root.get(BsymtJobHist_.startDate)));
+
+		List<BsymtJobHist> listBsymtJobHist = em.createQuery(cq).getResultList();
+		if (CollectionUtil.isEmpty(listBsymtJobHist)) {
+			return Optional.empty();
+		}
+		return Optional.of(new JobTitle(new JpaJobTitleGetMemento(listBsymtJobHist)));		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#findByHistoryId(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<JobTitle> findByHistoryId(String companyId, String historyId) {
+		
+		// Get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<BsymtJobHist> cq = criteriaBuilder.createQuery(BsymtJobHist.class);
+		Root<BsymtJobHist> root = cq.from(BsymtJobHist.class);
+
+        // select root
+        cq.select(root);
+
+        // add where
+        List<Predicate> lstpredicateWhere = new ArrayList<>();
+        lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.cid),
+				companyId));
+        lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.histId),
+				historyId));
+
+        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtJobHist_.startDate)));
+
+        List<BsymtJobHist> listBsymtJobHist = em.createQuery(cq).getResultList();
+		if (CollectionUtil.isEmpty(listBsymtJobHist)) {
+			return Optional.empty();
+		}
+		return Optional.of(new JobTitle(new JpaJobTitleGetMemento(listBsymtJobHist)));		
 	}
 }

@@ -8,14 +8,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import command.person.setting.selection.AddSelectionItemCommand;
-import command.person.setting.selection.AddSelectionItemCommandHandler;
-import command.person.setting.selection.RemoveSelectionItemCommand;
-import command.person.setting.selection.RemoveSelectionItemCommandHandler;
-import command.person.setting.selection.UpdateSelectionItemCommand;
-import command.person.setting.selection.UpdateSelectionItemCommandHandler;
-import find.person.setting.selection.PerInfoSelectionItemDto;
-import find.person.setting.selection.PerInfoSelectionItemFinder;
+import command.person.setting.selectionitem.AddSelectionItemCommand;
+import command.person.setting.selectionitem.AddSelectionItemCommandHandler;
+import command.person.setting.selectionitem.RemoveSelectionItemCommand;
+import command.person.setting.selectionitem.RemoveSelectionItemCommandHandler;
+import command.person.setting.selectionitem.UpdateSelectionItemCommand;
+import command.person.setting.selectionitem.UpdateSelectionItemCommandHandler;
+import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
+import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
+import find.person.setting.selectionitem.PerInfoSelectionItemDto;
+import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
@@ -34,6 +36,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Inject
 	private RemoveSelectionItemCommandHandler removeCommandHandler;
 
+	//history:
+	@Inject
+	private PerInfoHistorySelectionFinder hisFinder;
+	
 	@POST
 	@Path("findAll")
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
@@ -62,6 +68,13 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("removeSelectionItem")
 	public void removeSelectionItem(RemoveSelectionItemCommand command) {
 		this.removeCommandHandler.handle(command);
+	}
+	
+	//history:
+	@POST
+	@Path("findAllHistSelection")
+	public List<PerInfoHistorySelectionDto> getAllPerInfoHistorySelection() {
+		return this.hisFinder.historySelection();
 	}
 
 }

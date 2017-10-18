@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,11 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
+import nts.uk.ctx.at.request.app.command.application.common.ListMailApproval;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
@@ -28,11 +30,14 @@ import nts.uk.ctx.at.request.app.find.application.common.GetAllNameByAppID;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetadata;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
-import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 
 @Path("at/request/application")
@@ -42,7 +47,7 @@ public class ApplicationWebservice extends WebService {
 	private ApplicationFinder finderApp;
 	
 	@Inject 
-	private CheckDisplayMessage getDataBeforePreBootMode; 
+	private CheckDisplayMessage checkDisplayMessage; 
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
@@ -85,9 +90,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("approveapp/{applicationID}")
-	public void approveApp(@PathParam("applicationID") String applicationID){
-		 this.approveApp.approveApp(applicationID);
+	@Path("approveapp")
+	public ListMailApproval approveApp(InputCommonData command){
+		 return this.approveApp.handle(command);
 	}
 	
 	/**
@@ -95,9 +100,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("denyapp/{applicationID}")
-	public void denyApp(@PathParam("applicationID") String applicationID){
-		 this.denyApp.denyApp(applicationID);
+	@Path("denyapp")
+	public void denyApp(InputCommonData command){
+		 this.denyApp.handle(command);
 	}
 	
 	/**
@@ -105,9 +110,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("releaseapp/{applicationID}")
-	public void releaseApp(@PathParam("applicationID") String applicationID){
-		 this.releaseApp.releaseApp(applicationID);
+	@Path("releaseapp")
+	public void releaseApp(InputCommonData command){
+		 this.releaseApp.handle(command);
 	}
 	
 	/**
@@ -115,19 +120,19 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("cancelapp/{applicationID}")
-	public void cancelApp(@PathParam("applicationID") String applicationID){
-		 this.cancelApp.cancelApp(applicationID);
+	@Path("cancelapp")
+	public void cancelApp(UpdateApplicationCommonCmd command){
+		 this.cancelApp.handle(command);
 	}
 	
 	/**
-	 * cancel application
+	 * delete application
 	 * @return
 	 */
 	@POST
-	@Path("deleteapp/{applicationID}")
-	public void deleteApp(@PathParam("applicationID") String applicationID){
-		 this.deleteApp.deleteApp(applicationID);
+	@Path("deleteapp")
+	public ListMailApproval deleteApp(UpdateApplicationCommonCmd command){
+		 return this.deleteApp.handle(command);
 	}
 	
 	/**
@@ -166,7 +171,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getappbyid/{applicationID}")
-	public Optional<ApplicationDto> getAppById(@PathParam("applicationID") String applicationID){
+	public ApplicationDto getAppById(@PathParam("applicationID") String applicationID){
 		return this.finderApp.getAppById(applicationID);
 	}
 	
@@ -178,7 +183,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("checkdisplayreason")
 	public boolean checkDisplayReason( Application application,GeneralDate datebase) {
-		return this.getDataBeforePreBootMode.checkDisplayReasonApp(application, datebase);
+		return this.checkDisplayMessage.checkDisplayReasonApp(application, datebase);
 	}
 	
 	/**
@@ -188,7 +193,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("checkdisplayauthorizationcomment")
 	public boolean checkAuthorizationComment( Application application,GeneralDate datebase) {
-		return this.getDataBeforePreBootMode.checkDisplayAuthorizationComment(application, datebase);
+		return this.checkDisplayMessage.checkDisplayAuthorizationComment(application, datebase);
 	}
 	
 	
@@ -199,8 +204,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getmessagedeadline")
-	public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline) {
-		return this.getDataAppCfDetailFinder.getDataConfigDetail(inputMessageDeadline);
+	public OutputMessageDeadline getDataConfigDetail(ApplicationDto application) {
+		return this.getDataAppCfDetailFinder.getDataConfigDetail(application);
 	}
 	//new InputMessageDeadline("000000000000-0005",null,1,null)
 	
@@ -231,7 +236,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getalldatabyappid/{applicationID}")
-	public OutputGetAllDataApp getAllDataAppPhaseFrame(@PathParam("applicationID") String applicationID){
+	public ApplicationDto getAllDataAppPhaseFrame(@PathParam("applicationID") String applicationID){
 		return this.getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(applicationID);
 	}
 	
@@ -256,5 +261,10 @@ public class ApplicationWebservice extends WebService {
 	public List<String> getAllNameByAppID(){
 		
 		return this.getAllNameByAppID.getAllNameByAppID("000");
+	}
+	@POST
+	@Path("getApplicationInfo")
+	public List<ApplicationMetadata> getAppInfo(ApplicationPeriodDto periodDate){
+		return this.finderApp.getAppbyDate(periodDate);
 	}
 }

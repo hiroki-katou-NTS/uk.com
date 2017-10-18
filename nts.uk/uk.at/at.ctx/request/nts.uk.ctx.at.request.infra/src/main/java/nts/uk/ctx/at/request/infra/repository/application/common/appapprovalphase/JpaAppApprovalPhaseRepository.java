@@ -2,14 +2,21 @@ package nts.uk.ctx.at.request.infra.repository.application.common.appapprovalpha
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhasePK;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
+import nts.uk.ctx.at.request.infra.repository.application.common.approvalframe.JpaApprovalFrameRepository;
 
 
 
@@ -34,65 +41,36 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.setParameter("phaseID", phaseID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 	
-
-
 	@Override
 	public void create(AppApprovalPhase appApprovalPhase) {
-		this.commandProxy().insert(toEntity(appApprovalPhase));
-		
+		this.commandProxy().insert(KrqdtAppApprovalPhase.toEntity(appApprovalPhase));
 	}
+	
 	@Override
 	public void update(AppApprovalPhase appApprovalPhase) {
-		KrqdtAppApprovalPhase newEntity = toEntity(appApprovalPhase);
+		KrqdtAppApprovalPhase newEntity = KrqdtAppApprovalPhase.toEntity(appApprovalPhase);
 		KrqdtAppApprovalPhase updateEntity = this.queryProxy().find(newEntity.krqdtAppApprovalPhasePK, KrqdtAppApprovalPhase.class).get();
 		updateEntity.approvalForm  = newEntity.approvalForm;
 		updateEntity.dispOrder = newEntity.dispOrder;
 		updateEntity.approvalATR = newEntity.approvalATR;
 		this.commandProxy().update(updateEntity);
-		
 	}
+	
 	@Override
 	public void delete(AppApprovalPhase appAprovalPhase) {
 		this.commandProxy().remove(KrqdtAppApprovalPhase.class, new KrqdtAppApprovalPhasePK(appAprovalPhase.getCompanyID(), appAprovalPhase.getPhaseID()));
 		this.getEntityManager().flush();
-		
 	}
-	private AppApprovalPhase toDomain(KrqdtAppApprovalPhase entity) {
-		return AppApprovalPhase.createFromJavaType(
-				entity.krqdtAppApprovalPhasePK.companyID,
-				entity.appID,
-				entity.krqdtAppApprovalPhasePK.phaseID,
-				Integer.valueOf(entity.approvalForm).intValue(),
-				Integer.valueOf(entity.dispOrder).intValue(),
-				Integer.valueOf(entity.approvalATR).intValue(),
-				null);
-	}
-	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
-		return new KrqdtAppApprovalPhase (
-					new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getPhaseID()),
-					domain.getAppID(),
-					domain.getApprovalForm().value,
-					domain.getDispOrder(),
-					domain.getApprovalATR().value
-					);
-	}
-
 
 	//get List Phase by AppID
-	
 	public List<AppApprovalPhase> findPhaseByAppID(String companyID, String appID) {
 		return this.queryProxy()
 				.query(SELECT_BY_APP_ID, KrqdtAppApprovalPhase.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 	}
-
-
-
-
-
 }

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface ScheduleExecutionLogGetMemento.
@@ -48,5 +48,5 @@ public interface ScheduleExecutionLogGetMemento {
      *
      * @return the period
      */
-    public Period getPeriod();
+    public DatePeriod getPeriod();
 }

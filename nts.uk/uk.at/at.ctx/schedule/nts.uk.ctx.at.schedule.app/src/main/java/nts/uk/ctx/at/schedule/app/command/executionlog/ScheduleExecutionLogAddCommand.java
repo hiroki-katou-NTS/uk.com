@@ -25,24 +25,12 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleExecutionLogAddCommand.
  */
-
-/**
- * Gets the employee ids.
- *
- * @return the employee ids
- */
 @Getter
-
-/**
- * Sets the employee ids.
- *
- * @param employeeIds the new employee ids
- */
 @Setter
 public class ScheduleExecutionLogAddCommand {
 	
@@ -243,8 +231,8 @@ public class ScheduleExecutionLogAddCommand {
 		 * ScheduleExecutionLogGetMemento#getPeriod()
 		 */
 		@Override
-		public Period getPeriod() {
-			return new Period(periodStartDate, periodEndDate);
+		public DatePeriod getPeriod() {
+			return new DatePeriod(periodStartDate, periodEndDate);
 		}
 		
 	}

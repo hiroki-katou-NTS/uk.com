@@ -6,4 +6,7 @@ public interface LoginUserRoles {
 	String forPayroll();
 	String forPersonnel();
 	String forPersonalInfo();
+	String forOfficeHelper();
+	String forSystemAdmin();
+	String forCompanyAdmin();
 }

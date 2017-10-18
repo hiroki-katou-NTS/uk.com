@@ -47,7 +47,7 @@ public class GrantHolidayTbl {
 	 * Convert to domain object
 	 * @return
 	 */
-	public GrantHdTbl toDomain(String companyId) {		
+	public GrantHdTbl toDomain(String companyId) {
 		return  GrantHdTbl.createFromJavaType(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode, grantDays,
 				limitedTimeHdDays, limitedHalfHdCnt, lengthOfServiceMonths, lengthOfServiceYears, grantReferenceDate, grantSimultaneity ? GrantSimultaneity.USE.value : GrantSimultaneity.NOT_USE.value);
 	}

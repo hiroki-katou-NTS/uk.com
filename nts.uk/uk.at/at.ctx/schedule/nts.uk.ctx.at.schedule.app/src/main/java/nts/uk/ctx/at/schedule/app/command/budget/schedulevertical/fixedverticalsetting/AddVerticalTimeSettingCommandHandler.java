@@ -1,37 +1,42 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Transactional
 @Stateless
-public class AddVerticalTimeSettingCommandHandler extends CommandHandlerWithResult<AddVerticalTimeSettingCommand, List<String>> {
+public class AddVerticalTimeSettingCommandHandler extends CommandHandler<AddVerticalTimeSettingCommand> {
 	
 	@Inject
 	private FixedVerticalSettingRepository repository;
 
 	@Override
-	protected List<String> handle(CommandHandlerContext<AddVerticalTimeSettingCommand> context) {
-		List<String> errList = new ArrayList<String>();
-		AddVerticalTimeSettingCommand addVerticalTimeSettingCommand = context.getCommand();
+	protected void handle(CommandHandlerContext<AddVerticalTimeSettingCommand> context) {
+		AddVerticalTimeSettingCommand command = context.getCommand();
+		List<VerticalTimeSettingCommand> verticalTimeList = command.getVerticalTimes();
 		String companyId = AppContexts.user().companyId();
 		
-		VerticalTime verticalTime = addVerticalTimeSettingCommand.toDomain(companyId);
-
-		repository.addVerticalTime(verticalTime);
-		return errList;
+		repository.deleteVerticalTime(companyId, command.getFixedItemAtr());
 		
-		
+		for (VerticalTimeSettingCommand item : verticalTimeList) {
+			VerticalTime verticalTime = item.toDomain(companyId, command.getFixedItemAtr());
+			verticalTime.validate();
+			//Add Vertical Time
+			repository.addVerticalTime(verticalTime);
+		}
 	}
 
 }

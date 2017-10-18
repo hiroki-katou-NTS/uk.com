@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.OperationSettin
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DisplayRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformanceRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class OperationSettingWebservice extends WebService {
 
 	@Inject
-	private OperationOfDailyPerformanceRepoInterface operationSettingReop;
+	private OpOfDailyPerformance operationSettingReop;
 
 	@Inject
 	private OperationSettingCommandHandler opstCommandHandler;
@@ -46,20 +46,20 @@ public class OperationSettingWebservice extends WebService {
 	@Inject
 	private FunctionalRestrictionCommandHandler funcRestCommandHandler;
 
-	@GET
+	@POST
 	@Path("find")
 	public OperationSettingDto findOperationSetting() {
 		String companyId = AppContexts.user().companyId();
 		OperationOfDailyPerformance domain = operationSettingReop
-				.findOperationOfDailyPerformance(new CompanyId(companyId));
+				.find(new CompanyId(companyId));
 		return new OperationSettingDto(companyId, domain.getSettingUnit().value, domain.getComment().toString());
 	}
 
-	@GET
+	@POST
 	@Path("disp-rest")
 	public DisplayRestrictionDto findDisplayRestriction() {
 		String companyId = AppContexts.user().companyId();
-		DisplayRestriction dom = operationSettingReop.findOperationOfDailyPerformance(new CompanyId(companyId))
+		DisplayRestriction dom = operationSettingReop.find(new CompanyId(companyId))
 				.getDisplayRestriction();
 		if (dom == null) {
 			return null;
@@ -71,11 +71,11 @@ public class OperationSettingWebservice extends WebService {
 				dom.getSubstitution().isRemainingNumberCheck());
 	}
 
-	@GET
+	@POST
 	@Path("func-rest")
 	public FunctionalRestrictionDto findFunctionalRestriction() {
 		String companyId = AppContexts.user().companyId();
-		FunctionalRestriction d = operationSettingReop.findOperationOfDailyPerformance(new CompanyId(companyId))
+		FunctionalRestriction d = operationSettingReop.find(new CompanyId(companyId))
 				.getFunctionalRestriction();
 		if (d == null) {
 			return null;

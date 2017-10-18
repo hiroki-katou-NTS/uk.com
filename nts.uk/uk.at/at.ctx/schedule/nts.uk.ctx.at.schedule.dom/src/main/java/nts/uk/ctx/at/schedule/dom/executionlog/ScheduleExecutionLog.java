@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleExecutionLog.
@@ -41,7 +41,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The period. */
 	// 対象期間
-	private Period period;
+	private DatePeriod period;
 
 	/**
 	 * To domain.

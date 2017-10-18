@@ -2,7 +2,11 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OutputAllDataApp;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 
 @Getter
@@ -17,5 +21,13 @@ public class GoBackDirectAppSet {
 	String appReasonId;
 	String appReason;
 	String appDate;
-	AppCommonSettingOutput appCommonSetOut;
+
+	DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput;
+
+	PrelaunchAppSetting prelaunchAppSetting;
+
+	Application application;
+
+	DetailScreenInitModeOutput detailScreenInitModeOutput;
+	
 }

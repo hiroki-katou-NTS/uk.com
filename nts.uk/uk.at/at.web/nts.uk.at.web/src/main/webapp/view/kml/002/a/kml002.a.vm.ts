@@ -20,9 +20,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
         cbxTotal: KnockoutObservableArray<any>;
         cbxRounding: KnockoutObservableArray<any>;
         cbxFraction: KnockoutObservableArray<any>;
+        allSelectedItems: KnockoutObservable<boolean>;
+        selectedItem: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
+            
+            self.allSelectedItems = ko.observable(false);
+            self.selectedItem = ko.observable(false);
             
             self.settingItems = ko.observableArray([]);
             
@@ -37,20 +42,23 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.editMode = ko.observable(true);  
             self.name = ko.observable(""); 
             
+            //A6_3 + A6_4
             self.useCls = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_TimeZoneArt_Daily") },
-                { code: '1', name: nts.uk.resource.getText("Enum_TimeZoneArt_Hourly") }
+                { code: '0', name: "利用する" },
+                { code: '1', name: "利用しない" }
             ]);
             
             self.useClsSelected = ko.observable(0); 
             
+            //A3_10 + A3_11
             self.workSchedule = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_TimeZoneArt_Daily") },
-                { code: '1', name: nts.uk.resource.getText("Enum_TimeZoneArt_Hourly") }
+                { code: '0', name: "含める" },
+                { code: '1', name: "含めない" }
             ]);
             
             self.workScheduleSelected = ko.observable(0); 
             
+            //A3_6 + A3_7
             self.units = ko.observableArray([
                 { code: '0', name: "日別" },
                 { code: '1', name: "時間帯別" }
@@ -61,9 +69,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.calculatorItems = ko.observableArray([]);
             
             self.cbxAttribute = ko.observableArray([
-                { attrCode: 0, attrName: nts.uk.resource.getText("KML002_18") },
-                { attrCode: 1, attrName: nts.uk.resource.getText("KML002_18") },
-                { attrCode: 2, attrName: nts.uk.resource.getText("KML002_18") }
+                { attrCode: 0, attrName: "金額" },
+                { attrCode: 1, attrName: "時間" },
+                { attrCode: 2, attrName: "人数" },
+                { attrCode: 3, attrName: "数値" },
+                { attrCode: 4, attrName: "平均単価" }
             ]);
             
             self.itemName = ko.observable("");
@@ -106,6 +116,14 @@ module nts.uk.at.view.kml002.a.viewmodel {
             $('#toggle-popup').click(function () {
                 $(this).siblings('#popup-area').ntsPopup('toggle');              
             });
+            
+            self.allSelectedItems.subscribe(function(value) {
+                if(value == true) {
+                    self.selectedItem(true);
+                } else {
+                    self.selectedItem(false);
+                }
+            });  
         }
 
         /**
@@ -115,18 +133,48 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
-            self.bindCalculatorItems();
+            $.when(self.getData()).done(function() {
+                                
+                if (self.settingItems().length > 0) {
+                    self.singleSelectedCode(self.settingItems()[0].code);
+                }
+                
+                self.bindCalculatorItems();
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
             
             dfd.resolve();
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data from db.
+         */
+        getData(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.settingItems([]);
+            service.findAllVerticalCalSet().done(function(data) {
+                _.forEach(data, function(item) {
+                    self.settingItems.push(new SettingItemModel(item.verticalCalCd, item.verticalCalName));
+                });
+                
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
             return dfd.promise();
         }
         
         bindCalculatorItems() {
             var self = this;
             
-            for(var i = 0; i < 2; i++) {
+            for(var i = 0; i < 1; i++) {
                 var item : ICalculatorItem = {
-                    itemCd: '000-01',
+                    itemCd: i,
                     attribute: 0,
                     itemName: 'test 0' + i,
                     settingMethod: 0,
@@ -144,11 +192,45 @@ module nts.uk.at.view.kml002.a.viewmodel {
         newBtn() {
             var self = this;
             
+            self.singleSelectedCode("");
+            self.code("");
+            self.name("");
+            self.unitSelected(0);
+            self.useClsSelected(0);
+            self.workScheduleSelected(0);
         }
         
         registrationBtn() {
             var self = this;
             
+            // clear all error
+            nts.uk.ui.errors.clearAll();
+            
+            // validate
+            $(".input-code").trigger("validate");
+            $(".input-name").trigger("validate");
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+            
+            var code = self.code();
+            var name = self.name();
+            var unit = self.unitSelected();
+            var useAtr = self.useClsSelected();
+            var assistanceTabulationAtr = self.workScheduleSelected();
+            
+            var data = new VerticalSettingDto(code, name, unit, useAtr, assistanceTabulationAtr);
+            
+            service.addVerticalCalSet(data).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.getData();
+                self.singleSelectedCode(data.verticalCalCd);
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();      
+            });
         }
         
         settingBtn() {
@@ -164,6 +246,19 @@ module nts.uk.at.view.kml002.a.viewmodel {
         addLineBtn() {
             var self = this;
             
+            var item : ICalculatorItem = {
+                itemCd: self.calculatorItems().count() + 1,
+                attribute: 0,
+                itemName: 'test 0' + self.calculatorItems().count() + 1,
+                settingMethod: 0,
+                formula: '{0} + {1} + {2}',
+                displayAtr: 0,
+                total: 0,
+                rounding: 0,
+                fraction: 0,
+            };
+            
+            self.calculatorItems.push(new CalculatorItem(item));
         }
         
         deleteLineBtn() {
@@ -186,42 +281,53 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
         }
         
+        passDataToDialogs() {
+            var self = this;
+            
+            var data = {
+                verticalCalCd: self.code(),
+                itemId: "01",
+                attribute: "1",
+                itemName: "Test 01"
+            };
+            
+            nts.uk.ui.windows.setShared("KML002_A_DATA", data);
+        }
+        
         openDialog(conditionNo: number) {
             var self = this;
 
             if(conditionNo == 1) {
+                self.passDataToDialogs;            
                 nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
-                    var dialogBData = {
-                        verticalCalCd: self.code(),
-                        itemId: "01",
-                        attribute: "1",
-                        itemName: "Test 01"
-                    };
                     
-                    nts.uk.ui.windows.setShared("KML002_DIALOG_B_DATA", dialogBData);
                 }); 
             } else if(conditionNo == 2) {
+                self.passDataToDialogs();
                 nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
                 
                 }); 
             } else if(conditionNo == 3) {
+                self.passDataToDialogs();
                 nts.uk.ui.windows.sub.modal("/view/kml/002/d/index.xhtml").onClosed(() => {
                 
                 }); 
             } else if(conditionNo == 4) {
+                self.passDataToDialogs();
                 nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
                 
                 }); 
             } else if(conditionNo == 5) {
+                self.passDataToDialogs();
                 nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
                 
                 }); 
             } else if(conditionNo == 6) {
+                self.passDataToDialogs();
                 nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                 
                 }); 
             }
-             
         }
     }
     
@@ -233,6 +339,22 @@ module nts.uk.at.view.kml002.a.viewmodel {
             this.name = name;       
         }
     } 
+    
+    class VerticalSettingDto {
+        verticalCalCd: string;
+        verticalCalName: string;
+        unit: number;
+        useAtr: number;
+        assistanceTabulationAtr: number; 
+        
+        constructor(verticalCalCd: string, verticalCalName: string, unit: number, useAtr: number, assistanceTabulationAtr: number) {
+            this.verticalCalCd = verticalCalCd;
+            this.verticalCalName = verticalCalName;     
+            this.unit = unit;
+            this.useAtr = useAtr; 
+            this.assistanceTabulationAtr = assistanceTabulationAtr;  
+        }
+    }
     
     export class CalculatorItem {
         itemCd: KnockoutObservable<string>;

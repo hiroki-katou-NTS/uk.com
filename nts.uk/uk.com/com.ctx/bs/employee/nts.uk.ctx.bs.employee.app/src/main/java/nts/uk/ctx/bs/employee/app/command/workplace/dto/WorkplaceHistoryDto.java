@@ -10,9 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceHistoryDto.
@@ -22,11 +22,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
 public class WorkplaceHistoryDto {
 
     /** The history id. */
-    // 履歴ID
     private String historyId;
 
     /** The period. */
-    // 期間
     private PeriodDto period;
 
     /**
@@ -60,18 +58,19 @@ public class WorkplaceHistoryDto {
          */
         @Override
         public HistoryId getHistoryId() {
+            String historyId = this.workplaceHistoryDto.getHistoryId();
             if (StringUtil.isNullOrEmpty(this.workplaceHistoryDto.historyId, true)) {
-                return new HistoryId(UUID.randomUUID().toString());
+                historyId = UUID.randomUUID().toString();
             }
-            return new HistoryId(this.workplaceHistoryDto.getHistoryId());
+            return new HistoryId(historyId);
         }
 
         /* (non-Javadoc)
          * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento#getPeriod()
          */
         @Override
-        public Period getPeriod() {
-            return new Period(this.workplaceHistoryDto.getPeriod().getStartDate(),
+        public DatePeriod getPeriod() {
+            return new DatePeriod(this.workplaceHistoryDto.getPeriod().getStartDate(),
                     this.workplaceHistoryDto.getPeriod().getEndDate());
         }
     }

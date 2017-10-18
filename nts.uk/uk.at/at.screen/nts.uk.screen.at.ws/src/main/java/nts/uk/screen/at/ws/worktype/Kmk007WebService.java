@@ -33,5 +33,16 @@ public class Kmk007WebService {
 	public List<WorkTypeDto> findAll(){
 		return workTypeProcessor.findWorkTypeAll();
 	}
+	
+	/**
+	 * Find work type by 分類.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("find/dailyworktype")
+	public List<WorkTypeDto> findByDailyWorkType(DailyWorkTypeAtrParam param){
+		return workTypeProcessor.findWorkTypeByDailyWorkType(param.getDailyWorkTypeAtr());
+	}
 
 }

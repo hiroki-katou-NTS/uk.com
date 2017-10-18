@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -10,8 +11,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
+import nts.uk.ctx.at.request.infra.repository.application.common.approveaccepted.JpaApproveAcceptedRepository;
 /**
  * 
  * @author hieult
@@ -39,18 +44,18 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 				.setParameter("phaseID", phaseID)
 				.setParameter("dispOrder", dispOrder)
 				.setParameter("approverSID", approverSID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void create(ApprovalFrame approvalFrame, String phaseID) {
-		this.commandProxy().insert(toEntity(approvalFrame, phaseID));
+		this.commandProxy().insert(KrqdtApprovalFrame.toEntity(approvalFrame, phaseID));
 
 	}
 
 	@Override
 	public void update(ApprovalFrame approvalFrame, String phaseID) {
-		KrqdtApprovalFrame newEntity = toEntity(approvalFrame, phaseID);
+		KrqdtApprovalFrame newEntity = KrqdtApprovalFrame.toEntity(approvalFrame, phaseID);
 		KrqdtApprovalFrame updateEntity = this.queryProxy()
 				.find(newEntity.krqdtApprovalFramePK, KrqdtApprovalFrame.class).get();
 		this.commandProxy().update(updateEntity);
@@ -68,29 +73,10 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 		List<ApprovalFrame> list  =  this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
 				.setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
-				.getList(c -> toDomain(c));
-		List<KrqdtApprovalFrame> list1 = this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
-				.setParameter("companyID", companyID)
-				.setParameter("phaseID", phaseID)
-				.getList();
+				.getList(c -> c.toDomain());
 		return list;
 	}
 
-	private ApprovalFrame toDomain(KrqdtApprovalFrame entity) {
-		return ApprovalFrame.createFromJavaType(
-				entity.krqdtApprovalFramePK.companyID,
-				entity.krqdtApprovalFramePK.frameID, 
-				entity.dispOrder, 
-				null);
-	}
-
-	private KrqdtApprovalFrame toEntity(ApprovalFrame domain, String phaseID) {
-		return new KrqdtApprovalFrame(
-				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getFrameID()),
-				phaseID,
-				domain.getDispOrder());
-	}
-	
 	/**
 	 * get List Frame By Phase ID
 	 */
@@ -99,7 +85,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 		return this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
 				.setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -117,19 +103,4 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 		}
 		return listFrame;
 	}
-
-	@Override
-	public List<List<ApprovalFrame>> getListFrameByListPhase1(String companyID, List<String> listPhaseID) {
-		List<List<ApprovalFrame>> listListFrame = new ArrayList<>();
-		for(String phaseID :listPhaseID) {
-			List<ApprovalFrame> listFrame = new ArrayList<>();
-			List<ApprovalFrame> approvalFrame = findByPhaseID( companyID,phaseID);
-			listFrame.addAll(approvalFrame);
-			listListFrame.add(listFrame);
-		}
-		return listListFrame;
-	}
-
-
-
 }

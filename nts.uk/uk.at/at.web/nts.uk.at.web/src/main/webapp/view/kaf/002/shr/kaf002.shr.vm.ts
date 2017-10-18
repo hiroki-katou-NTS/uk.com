@@ -2,7 +2,10 @@ module nts.uk.at.view.kaf002.shr {
     export module vmbase {
         export interface AppStampNewSetDto {
             appCommonSettingDto: AppCommonSettingDto;
-            appStampSetDto: AppStampSetDto;        
+            appStampSetDto: AppStampSetDto;     
+            companyID: string;
+            employeeID: string;
+            employeeName: string;
         }
         
         export interface AppCommonSettingDto {
@@ -48,6 +51,11 @@ module nts.uk.at.view.kaf002.shr {
             stampGoOutAtr_Union_Disp: number;
         }
         
+        export interface IWorkLocation {
+            workLocationCD: string;
+            workLocationName: string;  
+        } 
+        
         export class Application {
             applicationID: KnockoutObservable<string>; // 申請ID
             inputDate: KnockoutObservable<string>; // 入力日
@@ -56,6 +64,7 @@ module nts.uk.at.view.kaf002.shr {
             titleReason: KnockoutObservable<string>; 
             contentReason: KnockoutObservable<string>;
             employeeID: KnockoutObservable<string>; // 申請者
+            version: number;
             constructor( 
                 applicationID: string,
                 inputDate: string,
@@ -63,7 +72,8 @@ module nts.uk.at.view.kaf002.shr {
                 appDate: string,
                 titleReason: string,
                 contentReason: string,
-                employeeID: string){
+                employeeID: string,
+                version: number){
                     this.applicationID = ko.observable(applicationID);  
                     this.inputDate = ko.observable(inputDate);
                     this.enteredPerson = ko.observable(enteredPerson);
@@ -71,6 +81,7 @@ module nts.uk.at.view.kaf002.shr {
                     this.titleReason = ko.observable(titleReason);
                     this.contentReason = ko.observable(contentReason);
                     this.employeeID = ko.observable(employeeID);
+                    this.version = version;
             }
         }
         
@@ -78,26 +89,18 @@ module nts.uk.at.view.kaf002.shr {
             stampAtr: KnockoutObservable<number>;
             stampFrameNo: KnockoutObservable<number>;
             stampGoOutAtr: KnockoutObservable<number>;
-            startTime: KnockoutObservable<number>;
-            startLocation: KnockoutObservable<string>;
-            endTime: KnockoutObservable<number>;
-            endLocation: KnockoutObservable<string>;  
-            startTimeDisp: KnockoutObservable<boolean>; 
-            startLocationDisp: KnockoutObservable<boolean>; 
-            endTimeDisp: KnockoutObservable<boolean>; 
-            endLocationDisp: KnockoutObservable<boolean>;    
+            startTime: KnockoutObservable<CheckBoxTime>;
+            startLocation: KnockoutObservable<CheckBoxLocation>;
+            endTime: KnockoutObservable<CheckBoxTime>;
+            endLocation: KnockoutObservable<CheckBoxLocation>;  
             constructor(
                 stampAtr: number,
                 stampFrameNo: number,
                 stampGoOutAtr: number,
-                startTime: number,
-                startLocation: string,
-                endTime: number,
-                endLocation: string,
-                startTimeDisp: boolean, 
-                startLocationDisp: boolean,
-                endTimeDisp: boolean, 
-                endLocationDisp: boolean){
+                startTime: CheckBoxTime,
+                startLocation: CheckBoxLocation,
+                endTime: CheckBoxTime,
+                endLocation: CheckBoxLocation){
                     this.stampAtr = ko.observable(stampAtr);
                     this.stampFrameNo = ko.observable(stampFrameNo);
                     this.stampGoOutAtr = ko.observable(stampGoOutAtr);
@@ -105,10 +108,6 @@ module nts.uk.at.view.kaf002.shr {
                     this.startLocation = ko.observable(startLocation);
                     this.endTime = ko.observable(endTime);
                     this.endLocation = ko.observable(endLocation);
-                    this.startTimeDisp = ko.observable(startTimeDisp);
-                    this.startLocationDisp = ko.observable(startLocationDisp);
-                    this.endTimeDisp = ko.observable(endTimeDisp);
-                    this.endLocationDisp = ko.observable(endLocationDisp);
             }
         }
         
@@ -116,49 +115,31 @@ module nts.uk.at.view.kaf002.shr {
             stampAtr: KnockoutObservable<number>;
             stampFrameNo: KnockoutObservable<number>;
             stampGoOutAtr: KnockoutObservable<number>;
-            supportCard: KnockoutObservable<string>;
-            supportLocation: KnockoutObservable<string>;
-            supportCardDisp: KnockoutObservable<boolean>;  
-            supportLocationDisp: KnockoutObservable<boolean>; 
-            startTime: KnockoutObservable<number>;
-            startLocation: KnockoutObservable<string>;
-            endTime: KnockoutObservable<number>;
-            endLocation: KnockoutObservable<string>;   
-            startTimeDisp: KnockoutObservable<boolean>; 
-            startLocationDisp: KnockoutObservable<boolean>; 
-            endTimeDisp: KnockoutObservable<boolean>; 
-            endLocationDisp: KnockoutObservable<boolean>; 
+            supportCard: KnockoutObservable<CheckBoxLocation>;
+            supportLocation: KnockoutObservable<CheckBoxLocation>;
+            startTime: KnockoutObservable<CheckBoxTime>;
+            startLocation: KnockoutObservable<CheckBoxLocation>;
+            endTime: KnockoutObservable<CheckBoxTime>;
+            endLocation: KnockoutObservable<CheckBoxLocation>;   
             constructor(
                 stampAtr: number,
                 stampFrameNo: number,
                 stampGoOutAtr: number,
-                supportCard: string,
-                supportLocation: string,
-                supportCardDisp: boolean,
-                supportLocationDisp: boolean,
-                startTime: number,
-                startLocation: string,
-                endTime: number,
-                endLocation: string,
-                startTimeDisp: boolean, 
-                startLocationDisp: boolean,
-                endTimeDisp: boolean,
-                endLocationDisp: boolean){
+                supportCard: CheckBoxLocation,
+                supportLocation: CheckBoxLocation,
+                startTime: CheckBoxTime,
+                startLocation: CheckBoxLocation,
+                endTime: CheckBoxTime,
+                endLocation: CheckBoxLocation){
                     this.stampAtr = ko.observable(stampAtr);
                     this.stampFrameNo = ko.observable(stampFrameNo);
                     this.stampGoOutAtr = ko.observable(stampGoOutAtr);
                     this.supportCard = ko.observable(supportCard);
                     this.supportLocation = ko.observable(supportLocation);
-                    this.supportCardDisp = ko.observable(supportCardDisp);
-                    this.supportLocationDisp = ko.observable(supportLocationDisp);
                     this.startTime = ko.observable(startTime);
                     this.startLocation = ko.observable(startLocation);
                     this.endTime = ko.observable(endTime);
                     this.endLocation = ko.observable(endLocation);
-                    this.startTimeDisp = ko.observable(startTimeDisp);
-                    this.startLocationDisp = ko.observable(startLocationDisp);
-                    this.endTimeDisp = ko.observable(endTimeDisp);
-                    this.endLocationDisp = ko.observable(endLocationDisp);
             }
         }
         
@@ -187,48 +168,44 @@ module nts.uk.at.view.kaf002.shr {
             approvalForm: number;
             dispOrder: number;
             approvalATR: number;
-            approvalFrameCmds: Array<ApprovalFrame>;   
-            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>){
+            listFrame: Array<ApprovalFrame>;   
+            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, listFrame: Array<ApprovalFrame>){
                 this.phaseID = phaseID;
                 this.approvalForm = approvalForm;
                 this.dispOrder = dispOrder;
                 this.approvalATR = approvalATR;
-                this.approvalFrameCmds = approvalFrameCmds;     
+                this.listFrame = listFrame;     
             }
         }
         
         export class ApprovalFrame {
-            phaseID: string;
+            frameID: string;
             dispOrder: number;
+            listApproveAccepted: Array<ApproveAccepted>;
+            constructor(frameID: string, dispOrder: number, listApproveAccepted: Array<ApproveAccepted>){
+                this.frameID = frameID;
+                this.dispOrder = dispOrder; 
+                this.listApproveAccepted = listApproveAccepted;   
+            }     
+        }
+        
+        export class ApproveAccepted {
+            appAcceptedID: string;
             approverSID: string;
             approvalATR: number;
             confirmATR: number;
             approvalDate: string;
             reason: string;
-            representerSID: string;
-            approveAcceptedCmds: Array<ApproveAccepted>;
-            constructor(phaseID: string, dispOrder: number, approverSID: string, approvalATR: number, confirmATR: number,
-                approvalDate: string, reason: string, representerSID: string, approveAcceptedCmds: Array<ApproveAccepted>){
-                this.phaseID = phaseID;
-                this.dispOrder = dispOrder; 
+            representerSID: string; 
+            constructor(appAcceptedID: string, approverSID: string, approvalATR: number, 
+                confirmATR: number, approvalDate: string, reason: string, representerSID: string){
+                this.appAcceptedID = appAcceptedID;
                 this.approverSID = approverSID;
                 this.approvalATR = approvalATR;
                 this.confirmATR = confirmATR;
                 this.approvalDate = approvalDate;
                 this.reason = reason;
-                this.representerSID = representerSID;
-                this.approveAcceptedCmds = approveAcceptedCmds;   
-            }     
-        }
-        
-        export class ApproveAccepted {
-            phaseID: string;
-            dispOrder: number;
-            approverSID: string;   
-            constructor(phaseID: string, dispOrder: number, approverSID: string){
-                this.phaseID = phaseID;
-                this.dispOrder = dispOrder;
-                this.approverSID = approverSID;     
+                this.representerSID = representerSID;    
             }
         }
         
@@ -252,6 +229,30 @@ module nts.uk.at.view.kaf002.shr {
             }
         }
         
+        export class CheckBoxTime {
+            value: KnockoutObservable<number>; 
+            checked: KnockoutObservable<boolean>; 
+            enable: KnockoutObservable<boolean>;     
+            constructor(value: number, checked: boolean, enable: boolean){
+                this.value = ko.observable(value);
+                this.checked = ko.observable(checked);
+                this.enable = ko.observable(enable);       
+            }   
+        }  
+        
+        export class CheckBoxLocation {
+            code: KnockoutObservable<string>; 
+            name: KnockoutObservable<string>;
+            checked: KnockoutObservable<boolean>; 
+            enable: KnockoutObservable<boolean>;     
+            constructor(code: string, name: string, checked: boolean, enable: boolean){
+                this.code = ko.observable(code);
+                this.name = ko.observable(name);
+                this.checked = ko.observable(checked);
+                this.enable = ko.observable(enable);       
+            }     
+        }
+        
         export class StampCombination {
             value: number;
             name: string;
@@ -259,6 +260,11 @@ module nts.uk.at.view.kaf002.shr {
                 this.value = value;
                 this.name = name;    
             }    
+        }
+        
+        export interface SimpleObject {
+            code: number;
+            name: string;        
         }
         
         export enum Enum {

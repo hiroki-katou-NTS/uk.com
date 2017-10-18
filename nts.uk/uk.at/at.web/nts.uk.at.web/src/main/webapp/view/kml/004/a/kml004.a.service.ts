@@ -20,8 +20,8 @@ module nts.uk.at.view.kml004.a.service {
         return nts.uk.request.ajax(paths.findAllSet);
     }
     
-    export function update(command: viewmodel.TotalCategory): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.update, command);    
+    export function update(aa: viewmodel.TotalCategory): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.update, aa);    
     }
     
     export function add(command: viewmodel.TotalCategory): JQueryPromise<void>{

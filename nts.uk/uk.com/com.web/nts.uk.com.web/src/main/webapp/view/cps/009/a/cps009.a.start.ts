@@ -33,12 +33,13 @@ function init() {
         virtualization: true,
         virtualizationMode: 'continuous',
         columns: [
-            { headerText: 'ID', key: 'id', dataType: 'number', width: '200px', ntsControl: 'Label' },
-            { headerText: '', key: 'combo', dataType: 'string', width: '80px', ntsControl: 'Combobox' },
-            { headerText: nts.uk.resource.getText('CPS009_23'), key: 'id', dataType: 'number', width: '320px', ntsControl: 'Label' },
+            { headerText: 'ID', key: 'id', dataType: 'number', width: '100px', ntsControl: 'Label' },
+            { headerText: '', key: 'combo', dataType: 'string', width: '300px', ntsControl: 'Combobox' },
+            { headerText: nts.uk.resource.getText('CPS009_23'), key: 'id', dataType: 'number', width: '200px' },
         ],
-        features: [{ name: 'Resizing' }],
-        ntsFeatures: [{ name: 'CopyPaste' }],
+        features: [],
+        ntsFeatures: [{ name: 'CopyPaste' },
+         { name: 'CellEdit' }],
         ntsControls: [
             { name: 'Combobox', options: __viewContext["viewModel"].comboItems, optionsValue: 'code', optionsText: 'name', columns: __viewContext["viewModel"].comboColumns, controlType: 'ComboBox', enable: true }
         ]

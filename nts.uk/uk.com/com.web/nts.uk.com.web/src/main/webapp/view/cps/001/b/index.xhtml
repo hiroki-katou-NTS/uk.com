@@ -10,7 +10,7 @@
 			<title>#{i18n.getText('CPS001_2')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 470,
+					width : 520,
 					height : 440
 				};
 			</script>
@@ -22,15 +22,16 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" data-bind="with: empDelete">
 				<div class="form-group">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_45')}</div>
-					<span class="text-inform">#{i18n.getText('CPS001_47')}</span>
+					<span class="text-inform" data-bind="text: code"></span>
+					<span class="text-inform" data-bind="text: name"></span>
 				</div>
 				<div class="form-group">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_46')}</div>
 					<textarea data-bind="ntsMultilineEditor: {
-						value: ko.observable(''),
+						value: reason,
 						/*constraint: '',*/
 						option: {},
 						enable: true,

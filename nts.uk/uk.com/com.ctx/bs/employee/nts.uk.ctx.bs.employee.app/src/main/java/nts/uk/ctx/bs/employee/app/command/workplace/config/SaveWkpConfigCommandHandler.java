@@ -59,7 +59,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
             workplaceConfigRepository.add(command.toDomain(companyId));
             return;
         }
-        // add mode
+        // add mode or update mode
         if (command.getIsAddMode()) {
             this.addHistory(companyId, command, optional.get());
         } else {
@@ -84,7 +84,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
 
         WorkplaceConfigHistory latestWkpConfigHist = wkpConfig.getWkpConfigHistoryLatest();
         // validate add hist and return first histId
-        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpConfigHist.getPeriod().getStartDate(), newStartDateHist);
+        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpConfigHist.getPeriod().start(), newStartDateHist);
 
         String latestHistIdCurrent = latestWkpConfigHist.getHistoryId();
 
@@ -121,7 +121,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
         WorkplaceConfigHistory prevHistLatest = wkpConfigDatabase.getWkpConfigHistory().get(idxPrevLatestHist);
 
         // validate new start date with previous of latest history.
-        HistoryUtil.validStartDate(Boolean.FALSE, prevHistLatest.getPeriod().getStartDate(), newStartDateHist);
+        HistoryUtil.validStartDate(Boolean.FALSE, prevHistLatest.getPeriod().start(), newStartDateHist);
 
         // update workplace by new start date history if need
         this.wkpConfigService.updateWkpHistoryIfNeed(companyId, wkpConfigDatabase.getWkpConfigHistoryLatest(),

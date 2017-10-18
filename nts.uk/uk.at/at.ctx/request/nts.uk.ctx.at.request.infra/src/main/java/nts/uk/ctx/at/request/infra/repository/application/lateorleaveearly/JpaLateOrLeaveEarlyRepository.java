@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
@@ -57,7 +58,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		updateEntity.early2 = newEntity.early2;
 		updateEntity.earlyTime2 = newEntity.earlyTime2;
 		updateEntity.late2 = newEntity.late2;
-		updateEntity.lateTime2 = newEntity.early2;
+		updateEntity.lateTime2 = newEntity.lateTime2;
 		this.commandProxy().update(updateEntity);
 		
 	}
@@ -106,7 +107,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				 appLateOrLeaveEntity.lateTime2);
 	}
 	
-	private KrqdtAppLateOrLeave toEntity (LateOrLeaveEarly domain){
+	private KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
 		return new KrqdtAppLateOrLeave (
 					new KrqdtAppLateOrLeavePK(domain.getCompanyID(), domain.getAppID()),
 					domain.getActualCancelAtr(),
@@ -117,7 +118,8 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getEarly2().value,
 					domain.getEarlyTime2().v(),
 					domain.getLate2().value,
-					domain.getLateTime2().v());
+					domain.getLateTime2().v(),
+					KafdtApplication.toEntity(domain));
 	}
 	@Override
 	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {

@@ -34,6 +34,12 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The Constant ITEM_SELECTION. */
+	public static final int ITEM_SELECTION = 0;
+
+	/** The Constant FORMULA_SETTING. */
+	public static final int FORMULA_SETTING = 1;
+
 	/** The krcmt opt item formula PK. */
 	@EmbeddedId
 	protected KrcmtOptItemFormulaPK krcmtOptItemFormulaPK;
@@ -53,23 +59,13 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	/** The calc atr. */
 	@Column(name = "CALC_ATR")
 	private int calcAtr;
-	
+
 	/** The krcmt formula roundings. */
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
-			@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
-			})
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtOptItemFormula", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KrcmtFormulaRounding> krcmtFormulaRoundings;
 
 	/** The krcmt calc item selections. */
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
-		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
-	})
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtOptItemFormula", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KrcmtCalcItemSelection> krcmtCalcItemSelections;
 
 	/** The krcmt formula setting. */
@@ -78,7 +74,7 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
 		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
 	})
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private KrcmtFormulaSetting krcmtFormulaSetting;
 
 

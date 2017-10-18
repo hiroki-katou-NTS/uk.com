@@ -12,15 +12,17 @@ module nts.uk.com.view.cps016.a.viewmodel {
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
         rulesFirst: KnockoutObservableArray<IRule>;
         checkCreate: KnockoutObservable<boolean>;
+        closeUp: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = perInfoSelectionItem.formatSelection();
             self.checkCreate = ko.observable(true);
+            self.closeUp = ko.observable(false);
             self.rulesFirst = ko.observableArray([
-                { id: 0, name: "数値型" },
-                { id: 1, name: "英数型" }
+                { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
+                { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
             ]);
 
             //selectionItemIdのsubscribe
@@ -53,13 +55,16 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             nts.uk.ui.errors.clearAll();
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                if (itemList && itemList.length) {
+                if (itemList && itemList.length > 0) {
                     itemList.forEach(x => self.listItems.push(x));
                     self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
-                } else {
+                } else {//0件の場合: エラーメッセージの表示(#Msg_455)
+                    alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
                 }
                 dfd.resolve();
+            }).fail(error => {//0件の場合: エラーメッセージの表示(#Msg_455)
+                alertError({ messageId: "Msg_455" });
             });
 
             return dfd.promise();
@@ -83,6 +88,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.checkCreate(true);
         }
 
+        //検証チェック
         validate() {
             $(".nts-editor").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -109,23 +115,36 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let self = this,
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 listItems: Array<SelectionItem> = self.listItems(),
+                _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName()),
                 formatSelection = currentItem.formatSelection(),
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を登録する
-            service.saveDataSelectionItem(command).done(function(selectId) {
-                self.listItems.removeAll();
-                //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
-                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                    if (itemList && itemList.length) {
-                        itemList.forEach(x => self.listItems.push(x));
-                    }
-                });
-                self.listItems.valueHasMutated();
-                self.perInfoSelectionItem().selectionItemId(selectId);
-            }).fail(error => {//情報メッセージ「#Msg_513」を表示する
+            if (_selectionItemName) {
                 alertError({ messageId: "Msg_513" });
-            });
+            } else {
+                service.saveDataSelectionItem(command).done(function(selectId) {
+                    self.listItems.removeAll();
+                    //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
+                    confirm({ messageId: "Msg_456" }).ifYes(() => {
+                        service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                            if (itemList && itemList.length) {
+                                itemList.forEach(x => self.listItems.push(x));
+                            }
+                        });
+                        self.listItems.valueHasMutated();
+                        self.perInfoSelectionItem().selectionItemId(selectId);
+
+                        //Todo: 「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+                        });
+
+                    }).ifNo(() => {
+                        self.listItems.valueHasMutated();
+                        return;
+                    })
+                });
+            }
         }
 
         //更新モード
@@ -133,28 +152,25 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let self = this,
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = currentItem.formatSelection(),
-                oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),
+                listItems: Array<SelectionItem> = self.listItems(),
+                oldIndex = _.findIndex(listItems, x => x.selectionItemId == currentItem.selectionItemId()),
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を更新する
             service.updateDataSelectionItem(command).done(function() {
                 self.listItems.removeAll();
+                //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
+                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listItems.push(x));
+                    }
 
-                //情報メッセージ「#Msg_15」を表示する
-                confirm({ messageId: "Msg_15" }).ifYes(() => {
-                    //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
-                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                        if (itemList && itemList.length) {
-                            itemList.forEach(x => self.listItems.push(x));
-                        }
+                    let newItem = itemList[oldIndex];
+                    currentItem.selectionItemId(newItem.selectionItemId);
+                });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                self.listItems.valueHasMutated();
 
-                        let newItem = itemList[oldIndex];
-                        currentItem.selectionItemId(newItem.selectionItemId);
-                    });
-                    self.listItems.valueHasMutated();
-                }).ifNo(() => {
-                    return;
-                })
             });
         }
 
@@ -164,7 +180,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 items = ko.unwrap(self.listItems),
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = currentItem.formatSelection(),
-                oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),
+                listItems: Array<SelectionItem> = self.listItems(),
+                oldIndex = _.findIndex(listItems, x => x.selectionItemId == currentItem.selectionItemId()),
                 command = ko.toJS(currentItem),
                 lastIndex = items.length - 1;
 
@@ -185,15 +202,26 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             }
                         });
                         self.listItems.valueHasMutated();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
                 }).ifNo(() => {
+                    self.listItems.valueHasMutated();
                     return;
                 })
             } else {
-                alert('Not data!!');
+                alertError({ messageId: "Msg_521" });
                 self.registerDataSelectioItem();
             }
         }
+
+        // 選択肢の登録ボタン
+        OpenCPS017() {
+            let self = this;
+
+            modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+            });
+        }
+
     }
 
     interface ISelectionItem {

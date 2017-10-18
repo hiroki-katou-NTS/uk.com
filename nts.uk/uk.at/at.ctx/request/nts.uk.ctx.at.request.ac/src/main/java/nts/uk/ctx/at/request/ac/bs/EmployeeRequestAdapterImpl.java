@@ -5,15 +5,19 @@
 package nts.uk.ctx.at.request.ac.bs;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
@@ -82,7 +86,28 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 	 */
 	@Override
 	public String getEmployeeName(String sID) {
-		String test = this.personPub.getPersonInfo(sID).getEmployeeName();
-		return test;
+		return this.personPub.getPersonInfo(sID).getEmployeeName();
+	}
+
+	@Override
+	public PesionInforImport getEmployeeInfor(String sID) {
+		PersonInfoExport personIn = this.personPub.getPersonInfo(sID);
+		PesionInforImport person = new PesionInforImport(personIn.getEmployeeCode(),
+				personIn.getEmployeeId(),
+				personIn.getEmployeeName(),
+				personIn.getCompanyMail(), 
+				personIn.getListJobEntryHist().stream().map(x -> new JobEntryHistoryImport(
+						x.getCompanyId(), 
+						x.getSId(), 
+						x.getHiringType(), 
+						x.getRetirementDate(), 
+						x.getJoinDate(), 
+						x.getAdoptDate())).collect(Collectors.toList()));
+		return person;
+	}
+
+	@Override
+	public String empEmail(String sID) {
+		return this.personPub.getPersonInfo(sID).getCompanyMail();
 	}
 }
