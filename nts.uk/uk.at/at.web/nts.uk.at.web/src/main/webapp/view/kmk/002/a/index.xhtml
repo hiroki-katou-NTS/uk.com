@@ -218,7 +218,7 @@
                            </tr>
                         </table>
                         <!-- Optional Item formula view model -->
-                        <table id="tbl-calc-formula">
+                        <table id="tbl-calc-formula" data-bind="name: '#[KMK002_32]'">
                            <colgroup>
                               <col width="50px"/>
                               <col width="50px"/>
@@ -262,6 +262,7 @@
                                     <td data-bind="text: symbolValue"></td>
                                     <td>
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_24]',
                                           options: formulaAtrDs,
                                           optionsValue: 'value',
                                           value: formulaAtr,
@@ -281,6 +282,7 @@
                                     </td>
                                     <td>
                                        <div data-bind="ntsSwitchButton: {
+                                          name: '#[KMK002_41]',
                                           options: calcAtrDs,
                                           optionsValue: 'value',
                                           optionsText: 'localizedName',
@@ -300,6 +302,7 @@
                                     <td>
                                        <input data-bind="attr: {'id': 'settingResult' + $index()},
                                        ntsTextEditor: {
+                                          name: '#[KMK002_35]',
                                           value: settingResult,
                                           readonly: true,
                                           enable: $parent.isUsed, 
@@ -308,6 +311,7 @@
                                     <td>
                                     	<com:ko tag="if" bind="isTimeSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_36]',
                                           options: timeUnitDs,
                                           optionsValue: 'value',
                                           value: timeDailyUnit,
@@ -320,6 +324,7 @@
                                        </com:ko>
                                        <com:ko tag="if" bind="isAmountSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_36]',
                                           options: amountUnitDs,
                                           optionsValue: 'value',
                                           value: amountDailyUnit,
@@ -332,6 +337,7 @@
                                        </com:ko>
                                        <com:ko tag="if" bind="isNumberSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_36]',
                                           options: numberUnitDs,
                                           optionsValue: 'value',
                                           value: numberDailyUnit,
@@ -346,6 +352,7 @@
                                     <td>
                                     	<com:ko tag="if" bind="isTimeSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_37]',
                                           options: timeRoundingDs,
                                           optionsValue: 'value',
                                           value: timeDailyRounding,
@@ -358,6 +365,7 @@
                                        </com:ko>
                                     	<com:ko tag="if" bind="isNumberSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_37]',
                                           options: numberRoundingDs,
                                           optionsValue: 'value',
                                           value: numberDailyRounding,
@@ -370,6 +378,7 @@
                                        </com:ko>
                                     	<com:ko tag="if" bind="isAmountSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_37]',
                                           options: amountRoundingDs,
                                           optionsValue: 'value',
                                           value: amountDailyRounding,
@@ -384,6 +393,7 @@
                                     <td>
                                     <com:ko tag="if" bind="isTimeSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_38]',
                                           options: timeUnitDs,
                                           optionsValue: 'value',
                                           value: timeMonthlyUnit,
@@ -396,6 +406,7 @@
                                        </com:ko>
                                     <com:ko tag="if" bind="isNumberSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_38]',
                                           options: numberUnitDs,
                                           optionsValue: 'value',
                                           value: numberMonthlyUnit,
@@ -408,6 +419,7 @@
                                        </com:ko>
                                     <com:ko tag="if" bind="isAmountSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_38]',
                                           options: amountUnitDs,
                                           optionsValue: 'value',
                                           value: amountMonthlyUnit,
@@ -422,6 +434,7 @@
                                     <td>
                                     <com:ko tag="if" bind="isTimeSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_39]',
                                           options: timeRoundingDs,
                                           optionsValue: 'value',
                                           value: timeMonthlyRounding,
@@ -434,6 +447,7 @@
                                        </com:ko>
                                     <com:ko tag="if" bind="isNumberSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_39]',
                                           options: numberRoundingDs,
                                           optionsValue: 'value',
                                           value: numberMonthlyRounding,
@@ -446,6 +460,7 @@
                                        </com:ko>
                                     <com:ko tag="if" bind="isAmountSelected()">
                                        <div data-bind="ntsComboBox: {
+                                          name: '#[KMK002_39]',
                                           options: amountRoundingDs,
                                           optionsValue: 'value',
                                           value: amountMonthlyRounding,
