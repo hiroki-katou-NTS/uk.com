@@ -3,8 +3,7 @@ module cps001.d.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getCat': '',
-        'getItemDs': ''
+        'getEmpFileMn': ''
     };
 
     export function getCategory(cid) {
