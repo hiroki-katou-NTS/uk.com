@@ -10,19 +10,20 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.env.dom.mailserver.Password
 					nts.uk.ctx.sys.env.dom.mailserver.EmailAuthentication
-					nts.uk.ctx.sys.env.dom.mailserver.TimeOut
 					nts.uk.ctx.sys.env.dom.mailserver.Port
 					nts.uk.ctx.sys.env.dom.mailserver.Server
 			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+			
 			<com:stylefile path="cmm050.a.main.css" />
+			<com:scriptfile set="IGNITE" />
+			
 			<com:scriptfile path="cmm050.a.service.js" />
 			<com:scriptfile path="cmm050.a.vm.js" />
 			<com:scriptfile path="cmm050.a.start.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="mail_setting_register" class="proceed" tabindex="2"
+				<button id="mail_setting_register" class="proceed" tabindex="2" style="margin-left: 45px"
 					data-bind="click: registerMailSetting">#{i18n.getText('CMM050_3')}</button>
 			</div>
 			<div id="contents-area">
@@ -85,7 +86,7 @@
 										enable: authMethodEnable,
 										editable: false,
 										columns: [
-											{ prop: 'text', length: 25 }
+											{ prop: 'text', length: 15 }
 										]}"></div> 
 							</td>
 						</tr>
@@ -137,7 +138,7 @@
 						
 							<tr>
 								<td>
-									<div style="margin-bottom: 50px"
+									<div
 										data-bind="ntsFormLabel: { 
 											constraint: ['Server'], 
 											required: true }">#{i18n.getText('CMM050_14')}</div>
@@ -289,7 +290,7 @@
 												optionsText: 'text',
 												enable: true,
 												columns: [
-													{ prop: 'text', length: 10 },
+													{ prop: 'text', length: 5 },
 												]}"></div>
 									</div>
 								</td>
