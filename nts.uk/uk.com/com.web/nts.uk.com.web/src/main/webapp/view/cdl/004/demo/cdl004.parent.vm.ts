@@ -33,9 +33,7 @@ module nts.uk.com.view.cdl004.parent.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                 //view all code of selected item 
                 var output = nts.uk.ui.windows.getShared('outputCDL004');
-                if (output) {
-                    self.selectJobtitleCodes(output.selectedCode);
-                }
+                self.selectJobtitleCodes(output);
             })
         }
     }
