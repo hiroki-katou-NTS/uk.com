@@ -2,9 +2,9 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.List;
 
+import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ApproverResult;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ApproverWhoApproved;
 /**
  * 
  * 4-2.詳細画面登録後の処理
@@ -16,7 +16,7 @@ public interface DetailAfterUpdate {
 	 * @param companyID 会社ID
 	 * @param appID 申請ID
 	 */
-	public void processAfterDetailScreenRegistration(String companyID, String appID);
+	public void processAfterDetailScreenRegistration(Application application);
 	
 	/**
 	 * 1.承認を行った承認者を取得する

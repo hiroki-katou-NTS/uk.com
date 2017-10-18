@@ -14,12 +14,13 @@ import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.App
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateGoBackDirectlyCommand {
+	
 	/**
-	 * 会社ID
+	 * version
 	 */
-	String companyID;
+	Long version;
 	/**
-	 * 申請ID
+	 * application ID
 	 */
 	String appID;
 	/**
@@ -29,7 +30,7 @@ public class UpdateGoBackDirectlyCommand {
 	/**
 	 * 就業時間帯
 	 */
-	String siftCd;
+	String siftCD;
 	/**
 	 * 勤務を変更する
 	 */

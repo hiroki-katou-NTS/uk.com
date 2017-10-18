@@ -10,7 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformanceRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class FunctionalRestrictionCommandHandler extends CommandHandler<FunctionalRestrictionCommand> {
 
 	@Inject
-	private OperationOfDailyPerformanceRepoInterface operationSettingRepo;
+	private OpOfDailyPerformance operationSettingRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<FunctionalRestrictionCommand> context) {
@@ -31,7 +31,7 @@ public class FunctionalRestrictionCommandHandler extends CommandHandler<Function
 		
 		// find from database
 		OperationOfDailyPerformance opSetting = operationSettingRepo
-				.findOperationOfDailyPerformance(new CompanyId(companyId));
+				.find(new CompanyId(companyId));
 
 		// update functional restriction
 		FunctionalRestriction functionalRestriction = new FunctionalRestriction(c.isRegisteredTotalTimeCheer(),
@@ -39,7 +39,7 @@ public class FunctionalRestrictionCommandHandler extends CommandHandler<Function
 				c.isUseInitialValueSet(), c.isStartAppScreen(), c.isDisplayConfirmMessage(), c.isUseSupervisorConfirm(),
 				c.getSupervisorConfirmError(), c.isUseConfirmByYourself(), c.getYourselfConfirmError());
 		opSetting.updateFunctionalRestriction(functionalRestriction);
-		operationSettingRepo.registerOperationOfDailyPerformance(opSetting);
+		operationSettingRepo.register(opSetting);
 	}
 
 }

@@ -36,7 +36,7 @@
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<!-- A1_5: Button 登録 -->
-					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
+					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- A1_6: Button 未登録社員リスト - Dialog L -->
 					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
 					<!-- A1_7: Button 承認者一覧 - Dialog N -->
@@ -98,7 +98,7 @@
 								</div>
 							</div>
 							<!-- A3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;">
 								<div>
 									<!-- A3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -254,7 +254,7 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;" data-bind="with: $parent.viewmodelB">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelB">
 								<div>
 									<!-- B3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -381,7 +381,7 @@
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
 					<!-- C1_5: Button 登録 -->
-					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
+					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
 					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
 					<!-- c1_7: Button 承認者一覧 -->
@@ -393,8 +393,8 @@
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
-								<td style = "width: 880px">
-								<button data-bind = "click: openDialogCDL008">職場選択 </button>
+								<td style = "width: 880px;">
+								<button style = "margin-left: 20px" data-bind = "click: openDialogCDL008">職場選択 </button>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
@@ -438,7 +438,7 @@
 								</div>
 							</div>
 							<!-- A3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;">
 								<div>
 									<!-- A3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -594,7 +594,7 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;" data-bind="with: $parent.viewmodelB">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelB">
 								<div>
 									<!-- D3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -721,13 +721,13 @@
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Person')}</span>
 					<!-- E1_5: Button 登録 -->
-					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
+					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- E1_6: Button 未登録社員リスト -->
 					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
 					<!-- E1_7: Button 承認者一覧 -->
 					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- E1_8: Button マスタリスト -->
-					<button>#{i18n.getText('CMM018_13')}</button>
+					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="contents-area" data-bind="with: viewmodelA">
@@ -782,7 +782,7 @@
 								</div>
 							</div>
 							<!-- E3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;margin-left: 30px; width: 890px !important">
+							<div id = "right-contents" style="float: right; margin-top: 10px;margin-left: 30px; width: 890px !important; margin-bottom: 20px;">
 								<div>
 									<!-- E3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -852,7 +852,7 @@
 											</div></td>
 											<!-- E3_17: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
 												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
@@ -863,7 +863,7 @@
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
 												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- E3_22: -->										
@@ -873,7 +873,7 @@
 												</div></td>
 											<!-- E3_23: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,4)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,4)}"></button>
 												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
 											<!-- E3_25: -->
@@ -884,7 +884,7 @@
 											</td>
 											<!-- E3_26: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,5)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,5)}"></button>
 												<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
 											<!-- E3_28: -->
@@ -933,7 +933,7 @@
 								</div>
 							</div>
 							<!-- F3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;margin-left: 30px; width: 890px !important" data-bind="with: $parent.viewmodelB">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px; margin-left: 30px; width: 890px !important" data-bind="with: $parent.viewmodelB">
 								<div>
 									<!-- F3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>

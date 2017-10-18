@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
@@ -21,7 +21,7 @@ public class IncomeTax extends AggregateRoot {
 	/** 社員ID */
 	private String sid;
 	/** 期間 */
-	private Period period;
+	private DatePeriod period;
 	/** 扶養者区分 */
 	private boolean supporter;
 	/** 障害区分*/
@@ -32,7 +32,7 @@ public class IncomeTax extends AggregateRoot {
 	public static IncomeTax createFromJavaType(String IncomeTaxID, String familyMemberId, String sid,
 			GeneralDate startDate, GeneralDate endDate, boolean supporter, int disabilityType,
 			int deductionTargetType) {
-		return new IncomeTax(IncomeTaxID, familyMemberId, sid, new Period(startDate, endDate), supporter,
+		return new IncomeTax(IncomeTaxID, familyMemberId, sid, new DatePeriod(startDate, endDate), supporter,
 				EnumAdaptor.valueOf(disabilityType, DisabilityType.class),
 				EnumAdaptor.valueOf(deductionTargetType, DeductionTargetType.class));
 

@@ -29,9 +29,12 @@ module nts.uk.com.view.cps009.d.viewmodel {
                     itemCode: self.currentInitVal().itemCode(),
                     itemName: self.currentInitVal().itemName()
                 }
+            service.add(copyObj).done(function(data) {
+                  close();
+            }).fail(functions(res: any){
+                alert(res.message);
 
-            close();
-
+            });
         }
 
         cancelNewInitValue() {

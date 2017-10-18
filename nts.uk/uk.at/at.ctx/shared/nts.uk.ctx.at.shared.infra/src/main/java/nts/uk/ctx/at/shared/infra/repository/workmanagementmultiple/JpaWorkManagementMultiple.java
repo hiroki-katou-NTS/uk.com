@@ -12,11 +12,12 @@ import nts.uk.ctx.at.shared.infra.entity.workmanagementmultiple.KshstWorkManagem
 @Stateless
 public class JpaWorkManagementMultiple extends JpaRepository implements WorkManagementMultipleRepository {
 
-	private final String SELECT_SINGLE = "SELECT c FROM KshstWorkManagement c WHERE c.KshstWorkManagementPK.companyID = :companyID";
+	private final String SELECT_SINGLE = "SELECT c FROM KshstWorkManagementMultiple c"
+			+ " WHERE c.companyID = :companyID";
+	
 	
 	@Override
 	public Optional<WorkManagementMultiple> findByCode(String companyID) {
-		
 		return this.queryProxy()
 				.query(SELECT_SINGLE, KshstWorkManagementMultiple.class)
 				.setParameter("companyID", companyID)
@@ -26,7 +27,7 @@ public class JpaWorkManagementMultiple extends JpaRepository implements WorkMana
 	private WorkManagementMultiple toDomain(KshstWorkManagementMultiple entity) {
 		
 		return WorkManagementMultiple.createFromJavaType(
-				entity.kshstWorkManagementPK.companyID,
+				entity.companyID,
 				entity.useATR);
 	}
 

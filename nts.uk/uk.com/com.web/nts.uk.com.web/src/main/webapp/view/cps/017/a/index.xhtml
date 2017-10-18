@@ -77,22 +77,23 @@
 
 					</div>
 
+
 					<!-- khu vực history list -->
-					<!-- 
 					<div id="history_lst"
 						data-bind="ntsListBox: {
-						options: currentItemSel().history_lst,
-						optionsValue: 'history_id',
-						optionsText: 'period',
-						value: currentItemSel().currentId,
+						height: 267,
+						options: listHistorySelection,
+						optionsValue: 'selectionItemId',
+						optionsText: 'selectionItemName',
+						value: perInfoSelectionItem().selectionItemId,
 						enable: true,
-						rows: 6,
+						rows: 9,
 						columns: [
-							{ key: 'history_id', length: 4 },
-							{ key: 'period', length: 15 }
+							{ key: 'startDate', length: 7 },
+							{ key: 'endDate', length: 7, width: 200}
 						]}">
 					</div>
- -->
+
 				</div>
 
 
@@ -112,13 +113,14 @@
 						<span> #{i18n.getText('CPS017_14')}</span>
 					</div>
 
-					<!-- 
+					
+					<!-- S -->
 					<div id="itemRegisterLst" class="caret-right caret-background">
 						
 						<table id="item_register_grid">
 						</table>
 					</div>
-					 -->
+					 
 				</div>
 
 

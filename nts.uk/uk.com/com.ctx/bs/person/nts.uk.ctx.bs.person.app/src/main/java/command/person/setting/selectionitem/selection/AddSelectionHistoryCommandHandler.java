@@ -14,6 +14,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<AddSelectionHistoryCommand, String> {
@@ -38,20 +39,20 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String newId = IdentifierUtil.randomUniqueId();
 		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
-		boolean userLogin;
-		if (userLogin = true) {
+		DatePeriod period = new DatePeriod(startDate, endDate);
+		
+		boolean userLogin = false;
+		if (userLogin == true) {
 			String cid0 = PersonInfoCategory.ROOT_COMPANY_ID;
 
 			// ドメインモデル「選択肢履歴」を登録する
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid0,
-					endDate, startDate);
+			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid0, period);
 			this.historySelectionRepository.add(domainHist);
 		} else {
 			String cid_login = PersonInfoCategory.ROOT_COMPANY_ID;
 
 			// ドメインモデル「選択肢履歴」を登録する
-			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid_login,
-					endDate, startDate);
+			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid_login, period);
 			this.historySelectionRepository.add(domainHist1);
 		}
 

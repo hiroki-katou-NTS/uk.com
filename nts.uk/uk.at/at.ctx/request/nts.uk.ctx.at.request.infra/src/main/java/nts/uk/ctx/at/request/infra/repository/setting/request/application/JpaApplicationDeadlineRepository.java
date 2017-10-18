@@ -13,11 +13,11 @@ import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDe
 @Stateless
 public class JpaApplicationDeadlineRepository extends JpaRepository implements ApplicationDeadlineRepository{
 	private static final String FINDBYCLOSURE = "SELECT c "
-			+ "FROM KrqstAppDeadline "
-			+ "WHERE c.krqstAppDeadlinePK.companyId = :company "
+			+ "FROM KrqstAppDeadline c "
+			+ "WHERE c.krqstAppDeadlinePK.companyId = :companyId "
 			+ "AND c.krqstAppDeadlinePK.closureId = :closureId";
 	private static final String FINDBYCOMPANY = "SELECT c "
-			+ "FROM KrqstAppDeadline "
+			+ "FROM KrqstAppDeadline c "
 			+ "WHERE c.krqstAppDeadlinePK.companyId = :company ";
 
 	/**
