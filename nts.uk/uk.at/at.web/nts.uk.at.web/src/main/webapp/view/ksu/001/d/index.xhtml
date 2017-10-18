@@ -7,21 +7,37 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 670 };</script>
+			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.d.main.css" />
 			<com:scriptfile path="ksu001.d.vm.js" />
 			<com:scriptfile path="ksu001.d.start.js" />
 			<!-- KCP005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<!-- ExCalendar -->
+			<com:stylefile path="/view/ksu/001/ntsExCalendar/nts-exCalendar.css"
+				of="/nts.uk.at.web" />
+			<com:stylefile
+				path="/view/ksu/001/ntsExCalendar/fullcalendar.min.css"
+				of="/nts.uk.at.web" />
+			<com:scriptfile
+				path="/view/ksu/001/ntsExCalendar/fullcalendar.min.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/ksu/001/ntsExCalendar/locale-all.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile
+				path="/view/ksu/001/ntsExCalendar/exCalendar-ko-ext.js"
+				of="/nts.uk.at.web" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="component-items-list"></div>
 				<div style="float: left; width: 49%">
-					<div
-						style="float: left; width: 100%; height: 350px; background-color: #ccc"></div>
+					<div style="float: left; width: 100%; height: 428px;">
+						<div id="calendar"
+							data-bind="ntsExCalendar:{startDate: startDate, endDate: endDate, value: selectedIds}"></div>
+					</div>
 					<div>
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_78')}</div>
 						<br />

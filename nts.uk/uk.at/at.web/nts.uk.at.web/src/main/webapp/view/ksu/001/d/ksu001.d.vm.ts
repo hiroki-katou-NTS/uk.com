@@ -1,4 +1,6 @@
 module ksu001.d.viewmodel {
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<any> = ko.observableArray([
@@ -22,9 +24,14 @@ module ksu001.d.viewmodel {
         isShowSelectAllButton: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel>;
 
+        //ExCalendar
+        startDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").startDate);
+        endDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").endDate);
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
+
         constructor() {
             let self = this;
-            self.baseDate = ko.observable(new Date());
+
             self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);

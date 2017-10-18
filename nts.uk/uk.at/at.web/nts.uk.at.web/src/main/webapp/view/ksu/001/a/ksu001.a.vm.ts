@@ -3,6 +3,8 @@ module ksu001.a.viewmodel {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
 
@@ -47,7 +49,6 @@ module ksu001.a.viewmodel {
         dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/01/31'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
-
 
         //Switch
         timePeriod: KnockoutObservableArray<any> = ko.observableArray([
@@ -789,6 +790,17 @@ module ksu001.a.viewmodel {
          * open dialog D
          */
         openDialogD(): void {
+            let self = this;
+            if(self.empItems().length != 0){
+                _.each(self.empItems(), (x) =>{
+                    
+                });    
+            }
+            setShared('dataForScreenD', {
+                empItems: self.empItems(),
+                startDate: self.dtPrev(),
+                endDate: self.dtAft()
+            });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml");
         }
 
@@ -814,14 +826,14 @@ module ksu001.a.viewmodel {
         gotoKml004(): void {
             nts.uk.request.jump("/view/kml/004/a/index.xhtml");
         }
-        
-         /**
-         * go to screen KML002
-         */
+
+        /**
+        * go to screen KML002
+        */
         gotoKml002(): void {
             nts.uk.request.jump("/view/kml/002/a/index.xhtml");
         }
-        
+
     }
 
     class BoxModel {
