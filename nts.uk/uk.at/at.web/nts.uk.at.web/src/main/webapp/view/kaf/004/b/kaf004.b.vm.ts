@@ -50,8 +50,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             //date editor
             self.date = ko.observable("");
             //time editor
-            self.lateTime1 = ko.observable(0);
-            self.lateTime2 = ko.observable(0);
+            self.lateTime1 = ko.observable(null);
+            self.lateTime2 = ko.observable(null);
             //check late
             self.late1 = ko.observable(false);
             self.late2 = ko.observable(false);
@@ -59,8 +59,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             self.early1 = ko.observable(false);
             self.early2 = ko.observable(false);
             //labor time 
-            self.earlyTime1 = ko.observable(0);
-            self.earlyTime2 = ko.observable(0);
+            self.earlyTime1 = ko.observable(null);
+            self.earlyTime2 = ko.observable(null);
             //combobox
             self.ListTypeReason = ko.observableArray([]);
             self.itemName = ko.observable('');
