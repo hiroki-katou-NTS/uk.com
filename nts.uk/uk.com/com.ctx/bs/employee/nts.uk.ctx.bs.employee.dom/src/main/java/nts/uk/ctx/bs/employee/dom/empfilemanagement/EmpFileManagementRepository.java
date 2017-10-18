@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface EmpFileManagementRepository {
 	
-	List<EmployeeFileManagement> getAllBySid(String sid);
-	
 	void insert(EmployeeFileManagement domain);
 	
 	void remove(EmployeeFileManagement domain);

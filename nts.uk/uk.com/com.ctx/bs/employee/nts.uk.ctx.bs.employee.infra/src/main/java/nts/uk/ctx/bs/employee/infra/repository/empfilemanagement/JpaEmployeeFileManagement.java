@@ -20,7 +20,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	
 	private static final String GET_DATA_BY_SID_AND_TYPE_FILE= "";
 	
-	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid";
+	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND c.filetype = :filetype";
 
 	private EmployeeFileManagement toDomainEmpFileManagement(BsymtEmpFileManagement entity) {
 		val domain = EmployeeFileManagement.createFromJavaType(entity.sid,
@@ -77,9 +77,13 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	}
 
 	@Override
-	public List<EmployeeFileManagement> getDataByParams(String employeeId, int fileType) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<EmployeeFileManagement> getDataByParams(String employeeId, int filetype) {
+		List<BsymtEmpFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_SID, BsymtEmpFileManagement.class)
+				.setParameter("sid", employeeId)
+				.setParameter("filetype", filetype)
+				.getList();
+
+		return toListEmpFileManagement(listFile);
 	}
 
 
