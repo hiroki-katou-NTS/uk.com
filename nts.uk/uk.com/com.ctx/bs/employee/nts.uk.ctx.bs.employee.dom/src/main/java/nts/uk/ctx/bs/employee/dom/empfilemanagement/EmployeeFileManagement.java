@@ -30,7 +30,5 @@ public class EmployeeFileManagement extends AggregateRoot{
 	public static EmployeeFileManagement createFromJavaType(String sId, String avatarFileID,String mapFileID ) {
 		return new EmployeeFileManagement(sId, avatarFileID, mapFileID, null);
 	}
-	
-	
 
 }
