@@ -51,11 +51,6 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Inject
-	private NewAfterRegister newAfterRegister;
-
-	@Inject
-	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
-	@Inject
 	private NewBeforeRegister processBeforeRegister;
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
