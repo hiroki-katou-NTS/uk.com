@@ -215,7 +215,7 @@ module nts.uk.at.view.kaf009.b {
                 service.getAllLocation().done(function(data: any) {
                     _.forEach(data, function(value) {
                         if(!nts.uk.util.isNullOrUndefined(value)){
-                            arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                            arrTemp.push({ workLocationCode: value.workLocationCD == null ? '': value.workLocationCD, workLocationName: value.workLocationName == null ? '' : value.workLocationName});
                         }
                     });
                     self.locationData = arrTemp;
@@ -322,9 +322,9 @@ module nts.uk.at.view.kaf009.b {
                     self.timeEnd1(data.workTimeEnd1);
                     self.selectedGo(data.goWorkAtr1);
                     self.selectedBack(data.backHomeAtr1);
-                    self.workLocationCD(data.workLocationCD1);
+                    self.workLocationCD(data.workLocationCD1 == null ? '' : data.workLocationCD1);
                     //Line 2
-                    self.timeStart2(data.workTimeStart2);
+                    self.timeStart2(data.workTimeStart2  == null ? '' : data.workTimeStart2);
                     self.timeEnd2(data.workTimeEnd2);
                     self.selectedGo2(data.goWorkAtr2);
                     self.selectedBack2(data.backHomeAtr2);

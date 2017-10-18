@@ -55,7 +55,8 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 
 	@Inject
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
-
+	@Inject
+	private NewBeforeRegister processBeforeRegister;
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -82,8 +83,8 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
 				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
 
-		// 2-1.譁ｰ隕冗判髱｢逋ｻ骭ｲ蜑阪蜃ｦ逅縲
-		// TODO: Change GeneralDate.today() to StartDate and EndDate
+		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する (Thực thi 共通アルゴリズム「2-1.新規画面登録前の処理」)
+		//processBeforeRegister.processBeforeRegister(application);
 
 		// newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
 		// AppContexts.user().employeeId(), GeneralDate.today(),
