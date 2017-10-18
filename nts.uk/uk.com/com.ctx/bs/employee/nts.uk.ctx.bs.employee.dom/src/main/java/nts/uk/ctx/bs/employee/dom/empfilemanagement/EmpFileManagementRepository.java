@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface EmpFileManagementRepository {
 	
-	List<EmployeeFileManagement> getAll();
+	List<EmployeeFileManagement> getAllBySid(String sid);
 	
 	void insert(EmployeeFileManagement domain);
 	

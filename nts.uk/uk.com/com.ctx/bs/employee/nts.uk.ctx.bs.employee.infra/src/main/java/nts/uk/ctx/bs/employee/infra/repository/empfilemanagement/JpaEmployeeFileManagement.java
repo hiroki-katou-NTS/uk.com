@@ -20,7 +20,7 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	
 	private static final String GET_DATA_BY_SID_AND_TYPE_FILE= "";
 	
-	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmpFileManagement c";
+	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid";
 
 	private EmployeeFileManagement toDomainEmpFileManagement(BsymtEmpFileManagement entity) {
 		val domain = EmployeeFileManagement.createFromJavaType(entity.sid,
@@ -55,10 +55,10 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		}
 		return lstEmpFileManagement;
 	}
-
+	
 	@Override
-	public List<EmployeeFileManagement> getAll() {
-		List<BsymtEmpFileManagement> listFile = this.queryProxy().query(SELECT_NO_WHERE, BsymtEmpFileManagement.class)
+	public List<EmployeeFileManagement> getAllBySid(String sid) {
+		List<BsymtEmpFileManagement> listFile = this.queryProxy().query(GET_ALL_BY_SID, BsymtEmpFileManagement.class).setParameter("sid", sid)
 				.getList();
 
 		return toListEmpFileManagement(listFile);
@@ -82,4 +82,6 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		return null;
 	}
 
+
+	
 }
