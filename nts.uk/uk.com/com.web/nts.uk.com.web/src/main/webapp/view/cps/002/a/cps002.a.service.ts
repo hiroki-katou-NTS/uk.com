@@ -13,7 +13,8 @@ module cps002.a.service {
         'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
         'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
-        'getAllInitValueItemSetting': 'ctx/bs/person/info/setting/init/item/find/{0}'
+        'getAllInitValueItemSetting': 'ctx/bs/person/info/setting/init/item/find/{0}',
+        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
 
     };
 
@@ -60,6 +61,10 @@ module cps002.a.service {
 
     export function getAllInitValueItemSetting(ctgId) {
         return ajax(format(paths.getAllInitValueItemSetting, ctgId));
+    }
+
+    export function getSelfRoleAuth() {
+        return ajax(paths.getSelfRoleAuth);
     }
 
 }

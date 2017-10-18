@@ -8,13 +8,16 @@ module cps001.d.vm {
 
     export class ViewModel {
         imageId: KnockoutObservable<string> = ko.observable("");
+        empFileMn: KnockoutObservable<EmpFileMn> = ko.observable(new EmpFileMn({employeeId: "", fileId: "", fileType: -1}));
         
         constructor(){  
             let self = this;         
         }
         start(){
             let self = this;
-            self.imageId(getShared("imageId"));
+            self.empFileMn().employeeId(getShared("employeeId"));
+            //get employee file management domain by employeeId
+            
             if(self.imageId() != "" && self.imageId() != undefined){
                 self.getImage();
             }
@@ -39,7 +42,20 @@ module cps001.d.vm {
         }
     }
 
-    interface IModelDto {
-        
+    interface IEmpFileMn {
+        employeeId: string;
+        fileId?: string;
+        fileType?: number;
+    }
+    class EmpFileMn{
+        employeeId: KnockoutObservable<string>;
+        fileId: KnockoutObservable<string>;
+        fileType: KnockoutObservable<number>;
+        constructor(data: IEmpFileMn){
+            let self = this;
+            self.employeeId(data.employeeId);
+            self.fileId(data.fileId);
+            self.fileType(data.fileType);
+        }
     }
 }

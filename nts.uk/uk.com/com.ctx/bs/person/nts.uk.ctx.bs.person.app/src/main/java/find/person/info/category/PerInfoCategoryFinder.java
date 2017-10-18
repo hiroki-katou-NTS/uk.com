@@ -76,6 +76,28 @@ public class PerInfoCategoryFinder {
 			throw new BusinessException("Msg_352");
 		return lstReturn;
 	}
+	
+	// get per info ctg list: contains ctg and children
+	// isParent, 1 - parent; 0 - is not
+	public List<PerInfoCtgWithParentMapDto> getPerInfoCtgWithParent(String parentCd){
+		List<PerInfoCtgWithParentMapDto> lstResult = new ArrayList<>();
+		lstResult = perInfoCtgRepositoty.getPerInfoCtgByParentId(parentCd, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.stream().map(
+						p -> {
+					return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+							p.getCategoryType().value, p.getIsFixed().value, 0);
+				}).collect(Collectors.toList());
+		lstResult.add(perInfoCtgRepositoty.getPerInfoCategory(parentCd, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.map(p -> {
+					return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+							p.getCategoryType().value, p.getIsFixed().value, 1);
+				}).orElse(null));
+		return lstResult;
+	}
+	 
+	 
 	//vinhpx: end
 
 	public PerInfoCtgFullDto getPerInfoCtg(String perInfoCtgId) {
