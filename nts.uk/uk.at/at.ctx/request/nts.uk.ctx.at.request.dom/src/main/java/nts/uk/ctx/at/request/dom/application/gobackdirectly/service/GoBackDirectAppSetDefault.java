@@ -93,12 +93,12 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		//アルゴリズム「直行直帰基本データ」を実行する
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
-		if(!goBackDirect.getWorkLocationCD1().isEmpty()) {
+		if(goBackDirect.getWorkLocationCD1() != null) {
 			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())
 					.getWorkLocationName();
 			
 		}
-		if(!goBackDirect.getWorkLocationCD2().isEmpty()) {
+		if(goBackDirect.getWorkLocationCD2() != null) {
 			data.workLocationName2 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD2())
 					.getWorkLocationName();
 		}

@@ -94,8 +94,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //				application.getPrePostAtr(), 
 //				1, 
 //				application.getApplicationType().value);
-		
-		 if(true) throw new BusinessException("Msg_297");	
 		// アルゴリズム「直行直帰するチェック」を実行する
 		if (this.goBackDirectCheck(goBackDirectly) == GoBackDirectAtr.IS) {
 			// アルゴリズム「直行直帰遅刻早退のチェック」を実行する

@@ -125,7 +125,7 @@ module nts.uk.at.view.kaf009.b {
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
                         self.workLocationName(detailData.workLocationName1);
-                        self.workLocationName2(detailData.workLocationName2);
+                        self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
                         self.selectedReason(detailData.appReasonId);
@@ -150,7 +150,7 @@ module nts.uk.at.view.kaf009.b {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        }).fail(function(res) {
+                        }).fail(function(res: any) {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                         })
                     }
@@ -238,45 +238,45 @@ module nts.uk.at.view.kaf009.b {
              * 2: update 
              */
             getCommand() {
-            let self = this; 
-            let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
-            //goBackCommand.version = self.version;
-            goBackCommand.appID = self.appID();
-            goBackCommand.workTypeCD = self.workTypeCd();
-            goBackCommand.siftCD = self.siftCD();
-            goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
-            goBackCommand.goWorkAtr1 = self.selectedGo();
-            goBackCommand.backHomeAtr1 = self.selectedBack();
-            goBackCommand.workTimeStart1 = self.timeStart1();
-            goBackCommand.workTimeEnd1 = self.timeEnd1();
-            goBackCommand.goWorkAtr2 = self.selectedGo2();
-            goBackCommand.backHomeAtr2 = self.selectedBack2();
-            goBackCommand.workTimeStart2 = self.timeStart2();
-            goBackCommand.workTimeEnd2 = self.timeEnd2();
-            goBackCommand.workLocationCD1 = self.workLocationCD();
-            goBackCommand.workLocationCD2 = self.workLocationCD2();
-            
-            
-            let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                self.selectedReason(),
-                self.prePostSelected(),
-                self.appDate(),
-                self.employeeID,
-                self.multilContent(),
-                self.appDate(),
-                self.multilContent(),
-                self.employeeID,
-                self.appDate(),
-                self.appDate(),
-                self.appDate(),
-                self.appDate());
-            
-            let commandTotal = {
-                goBackCommand : goBackCommand,
-                appCommand : appCommand,
-                appApprovalPhaseCmds : self.approvalList
-                }
-            return commandTotal;
+                let self = this; 
+                let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
+                //goBackCommand.version = self.version;
+                goBackCommand.appID = self.appID();
+                goBackCommand.workTypeCD = self.workTypeCd();
+                goBackCommand.siftCD = self.siftCD();
+                goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+                goBackCommand.goWorkAtr1 = self.selectedGo();
+                goBackCommand.backHomeAtr1 = self.selectedBack();
+                goBackCommand.workTimeStart1 = self.timeStart1();
+                goBackCommand.workTimeEnd1 = self.timeEnd1();
+                goBackCommand.goWorkAtr2 = self.selectedGo2();
+                goBackCommand.backHomeAtr2 = self.selectedBack2();
+                goBackCommand.workTimeStart2 = self.timeStart2();
+                goBackCommand.workTimeEnd2 = self.timeEnd2();
+                goBackCommand.workLocationCD1 = self.workLocationCD();
+                goBackCommand.workLocationCD2 = self.workLocationCD2();
+                
+                
+                let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
+                    self.selectedReason(),
+                    self.prePostSelected(),
+                    self.appDate(),
+                    self.employeeID,
+                    self.multilContent(),
+                    self.appDate(),
+                    self.multilContent(),
+                    self.employeeID,
+                    self.appDate(),
+                    self.appDate(),
+                    self.appDate(),
+                    self.appDate());
+                
+                let commandTotal = {
+                    goBackCommand : goBackCommand,
+                    appCommand : appCommand,
+                    appApprovalPhaseCmds : self.approvalList
+                    }
+                return commandTotal;
             }
 
             /**
@@ -328,7 +328,7 @@ module nts.uk.at.view.kaf009.b {
                     self.timeEnd2(data.workTimeEnd2);
                     self.selectedGo2(data.goWorkAtr2);
                     self.selectedBack2(data.backHomeAtr2);
-                    self.workLocationCD2(data.workLocationCD2);
+                    self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);
                     //workType, Sift
                     self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
                     self.workTypeCd(data.workTypeCD);
