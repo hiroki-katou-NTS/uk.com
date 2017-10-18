@@ -14,8 +14,8 @@ public class EmployeeFileManagementFinder {
 	@Inject
 	private EmpFileManagementRepository empFileManagementRepository;
 	
-	public EmployeeFileManagementSimpleDto getAvaOrMap(String employeeId, int fileType){
-		return empFileManagementRepository.getDataByParams(employeeId, fileType).stream()
+	public EmployeeFileManagementSimpleDto getAvaOrMap(String employeeId){
+		return empFileManagementRepository.getDataByParams(employeeId, -1).stream()
 				.map(x -> new EmployeeFileManagementSimpleDto(x.getSId(), x.getFileID(), x.getTypeFile()))
 				.collect(Collectors.toList()).get(0);
 	}
