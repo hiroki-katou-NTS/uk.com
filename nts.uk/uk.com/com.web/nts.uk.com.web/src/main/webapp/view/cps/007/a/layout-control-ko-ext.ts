@@ -119,6 +119,11 @@ module nts.custombinding {
                         display: inline-block;
                     }
 
+                    .layout-control .item-classification div.item-control>.set-items,
+                    .layout-control .item-classification div.item-control>.single-items {
+                        margin-top: 3px;
+                    }
+
                     .layout-control .item-classification div.set-item-list,
                     .layout-control .item-classification div.multiple-items {
                         margin-left: 5px;
@@ -294,8 +299,39 @@ module nts.custombinding {
                         display: block;
                     }
 
+                    .layout-control.readonly [disabled],
                     .layout-control.editable [disabled] {
                         background-color: #fff;
+                    }
+
+                    .layout-control .index .remove-btn,
+                    .layout-control.editable .index:hover .remove-btn {
+                        display: none;
+                    }
+
+                    .layout-control.inputable tr:hover .number,
+                    .layout-control.inputable .index:hover .number {
+                        display: none;
+                    }
+
+                    .layout-control.inputable tr:hover .remove-btn,
+                    .layout-control.inputable .index:hover .remove-btn {
+                        display: block;
+                    }
+
+                    .layout-control.inputable .remove-btn:hover {
+                        color: #f00;
+                        cursor: pointer;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                    }
+
+                    .layout-control.inputable .item-classification div.item-sperator>hr {
+                        margin: 6px 0;
                     }
 
                     .layout-control .add-rows {
@@ -331,20 +367,28 @@ module nts.custombinding {
                     </div>
                     <div class="drag-panel">
                         <div id="cps007_srt_control">
-                            <div class="form-group item-classification">
+                            <div class="form-group item-classification"
+                                    data-bind="let: { 
+                                        cls: $data, 
+                                        _item: items && items()[0], 
+                                        _items: items && _.filter(items(), function(x, i) { return i != 0}),
+                                        __items: items && _.filter(items(), function(x, i) { return i >= 0}) }">
                                <div data-bind="if: layoutItemType == 0">
-                                    <div data-bind="let: { items: listItemDfValues, item: listItemDfValues[0] }" class="item-control">
-                                        <div data-bind="ntsFormLabel: {constraint: items.length != 1 ? _.map(_.filter(items, function(x, i) {return i != 0}), function(x) { return x.code }) : item.code, required: !!_.find(items, function(x) { return !!x.required }), text: className || '' }"></div>
-                                        <div data-bind="if: (item || {}).type == 1" class="set-items">
-                                            <div data-bind="foreach: {data: items.filter(function(x, i){return i != 0}), as: 'set'}" class="set-item-list">
-                                                <div data-bind="template: { 
+                                    <div class="item-control">
+                                        <div data-bind="ntsFormLabel: { 
+                                            text: className || '', 
+                                            required: !!_.find(_items, function(x) { return x.required }),
+                                            constraint: _items.length > 1 ? _.map(_items, function(x) { return x.code }) : _item.code}"></div>
+                                        <div data-bind="if: (_item || {}).type == 1" class="set-items">
+                                            <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
+                                                <div data-bind="template: {
                                                         data: set,
                                                         name: 'itemtemplate'
                                                     }" class="set-item"></div>
-                                            </div>            
+                                            </div>
                                         </div>
-                                        <div data-bind="if: (item || {}).type == 2" class="single-items">
-                                            <div data-bind="foreach: {data: items, as: 'single'}" class="single-item-list">
+                                        <div data-bind="if: (_item || {}).type == 2" class="single-items">
+                                            <div data-bind="foreach: {data: __items, as: 'single'}" class="single-item-list">
                                                 <div data-bind="template: { 
                                                         data: single,
                                                         name: 'itemtemplate'
@@ -354,28 +398,31 @@ module nts.custombinding {
                                     </div>
                                 </div>
                                 <div data-bind="if: layoutItemType == 1">            
-                                    <div  data-bind="let: { items: listItemDfValues }" class="item-controls">
-                                        <div data-bind="ntsFormLabel: { required: !!_.find(items, function(x) { return !!x.required }), text: className || '' }"></div>
+                                    <div class="item-controls">
+                                        <div data-bind="ntsFormLabel: { required: !!_.find(cls.items(), function(x) { return !!x.required }), text: className || '' }"></div>
                                         <div class="multiple-items table-container header-1rows">
                                             <div data-bind="event: { scroll: function(viewModel, event) { $(event.target).find('table th div').css('margin-left', $(event.target).find('table th:first').offset().left - $(event.target).offset().left + 'px') } }">
                                                 <table>
                                                     <thead>
-                                                        <tr data-bind="foreach: listItemDf">
+                                                        <tr data-bind="foreach: cls.listItemDf">
                                                             <!-- ko if: $index() == 0 -->
                                                             <th class="index"></th>
                                                             <!-- /ko -->
                                                             <th><div data-bind="text: itemName"></div></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody data-bind="foreach:  { data: listItemDfValues, as: 'row' }">
-                                                        <tr data-bind="foreach: { data: row, as: 'column' }">
+                                                    <tbody data-bind="foreach:  { data: cls.items(), as: '_row' }">
+                                                        <tr data-bind="foreach: { data: _row, as: '_column' }">
                                                             <!-- ko if: $index() == 0 -->
-                                                            <td class="index"><div data-bind="text: $parentContext.$index()"></div></td>
+                                                            <td class="index">
+                                                                <div class="number" data-bind="text: ($parentContext.$index() + 1)"></div>
+                                                                <div class="remove-btn" data-bind="click: function(viewModel, event) { if(cls.items().length > 1) { cls.items.remove(function(x) { return _row == x; }) }}">✖</div>
+                                                            </td>
                                                             <!-- /ko -->
                                                             <td data-bind="template: { 
-                                                                    data: column,
+                                                                    data: _column,
                                                                     name: 'itemtemplate'
-                                                                }, attr: {row: column.row, column: col }">
+                                                                }, attr: {row: _column.row, column: _column.col }">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -387,7 +434,7 @@ module nts.custombinding {
                                 <div data-bind="if: layoutItemType == 2" class="item-sperator">
                                     <hr />
                                 </div>
-                                <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove($data, event); }">✖</span>
+                                <span class="close-btn" data-bind="click: function($data, event) { debugger; ko.bindingHandlers['ntsLayoutControl'].remove(cls, event); }">✖</span>
                             </div>
                         </div>
                         <button id="cps007_btn_line"></button>
@@ -828,6 +875,10 @@ module nts.custombinding {
                         } else {
                             opts.sortable.isEnabled(false);
                         }
+
+                        if (x == 2) {
+                            $element.addClass("inputable");
+                        }
                     } else {
                         opts.sortable.isEditable(0);
 
@@ -1067,118 +1118,98 @@ module nts.custombinding {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
 
+                    // define common function for init new item value
+                    let noitem = (item: any) => {
+                        let def = {
+                            code: item.itemCode,
+                            name: item.itemName,
+                            required: !!item.isRequired,
+                            value: ko.observable(undefined),
+                            readonly: !!opts.sortable.isEnabled(),
+                            editable: !!opts.sortable.isEditable(),
+                            'type': (item.itemTypeState || <any>{}).itemType,
+                            item: $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {})
+                        };
+                        x.items = ko.observableArray([def]);
+                    }, hasitem = (def: any, item: any) => {
+                        def.code = item.itemCode;
+                        def.name = item.itemName;
+                        def.required = !!item.isRequired;
+                        def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
+                        def.readonly = !!opts.sortable.isEnabled();
+                        def.editable = !!opts.sortable.isEditable();
+                        def.type = (item.itemTypeState || <any>{}).itemType;
+                        def.item = $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+                    };
+
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             let item = x.listItemDf && x.listItemDf[0];
-                            if (!x.singleValues) {
-                                x.singleValues = [];
-                            }
-
                             if (item.itemTypeState.itemType == ITEM_TYPE.SINGLE) {
-                                if (!x.singleValues[0]) {
-                                    x.singleValues[0] = {
-                                        id: item.id,
-                                        itemValue: undefined
-                                    };
-                                }
-
-                                let value = x.singleValues[0],
-                                    def = {
-                                        code: item.itemCode,
-                                        name: item.itemName,
-                                        required: !!item.isRequired,
-                                        value: ko.isObservable(value.itemValue) ? value.itemValue : ko.observable(value.itemValue),
-                                        readonly: !!opts.sortable.isEnabled(),
-                                        editable: !!opts.sortable.isEditable(),
-                                        'type': (item.itemTypeState || <any>{}).itemType,
-                                        item: $.extend({}, ((item || <any>{}).itemTypeState || {}).dataTypeState || {})
-                                    };
-
-                                if (!ko.isObservable(value.itemValue)) {
-                                    def.value.subscribe(x => { value.itemValue = x });
-                                }
-
-                                x.listItemDfValues = [def];
-                            } else {
-                                x.listItemDfValues = _.map(Array((x.listItemDf || []).length), (_x, i) => {
-                                    let item = x.listItemDf[i];
-                                    if (!x.singleValues[i]) {
-                                        x.singleValues[i] = {
-                                            id: item.id,
-                                            itemValue: undefined
+                                if (x.items) {
+                                    if (ko.isObservable(x.items)) {
+                                        let def = _.find(x.items(), (m: any) => m.code == item.itemCode);
+                                        if (def) {
+                                            hasitem(def, item);
+                                        } else {
+                                            noitem(item);
+                                        }
+                                    } else {
+                                        let def = _.find(x.items, (m: any) => m.code == item.itemCode);
+                                        if (def) {
+                                            hasitem(def, item);
+                                        } else {
+                                            noitem(item);
                                         }
                                     }
-
-                                    let value: IItemDefinitionValue = x.singleValues[i],
-                                        def = {
+                                } else {
+                                    noitem(item);
+                                }
+                            } else {
+                                if (x.items) {
+                                    // continue
+                                    _.each(Array((x.listItemDf || []).length), (_x, i) => {
+                                        let item = x.listItemDf[i];
+                                        let def = {
                                             col: i,
                                             code: item.itemCode,
                                             name: item.itemName,
                                             required: !!item.isRequired,
-                                            value: ko.isObservable(value.itemValue) ? value.itemValue : ko.observable(value.itemValue),
+                                            value: ko.observable(undefined),
                                             readonly: !!opts.sortable.isEnabled(),
                                             editable: !!opts.sortable.isEditable(),
                                             'type': (item.itemTypeState || <any>{}).itemType,
                                             item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
                                         };
 
-                                    if (!ko.isObservable(value.itemValue)) {
-                                        def.value.subscribe(x => { value.itemValue = x });
-                                    }
-
-                                    return def;
-                                });
+                                        return def;
+                                    });
+                                }
                             }
                             break;
                         case IT_CLA_TYPE.LIST:
-                            if (!x.multipleValues) {
-                                x.multipleValues = [];
-                            }
-
-                            x.listItemDfValues = _.map(Array(3), (_x, i) => {
-                                if (!x.multipleValues[i]) {
-                                    x.multipleValues[i] = [];
-                                }
-
+                            x.items = ko.observableArray(_.map(Array(3), (_x, i) => {
                                 return _.map(Array((x.listItemDf || []).length), (__x, j) => {
-                                    if (!x.multipleValues[i][j]) {
-                                        x.multipleValues[i][j] = {
-                                            id: x.listItemDf[j].id,
-                                            row: i,
-                                            col: j,
-                                            itemValue: undefined
-                                        };
-                                    }
-
                                     let item = $.extend({}, x.listItemDf[j]),
-                                        value: IItemDefinitionValue = x.multipleValues[i][j],
                                         def = {
                                             row: i,
                                             col: j,
                                             code: item.itemCode,
                                             name: item.itemName,
                                             required: !!item.isRequired,
-                                            value: ko.isObservable(value.itemValue) ? value.itemValue : ko.observable(value.itemValue),
+                                            value: ko.observable(undefined),
                                             readonly: !!opts.sortable.isEnabled(),
                                             editable: !!opts.sortable.isEditable(),
                                             'type': (item.itemTypeState || <any>{}).itemType,
                                             item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
                                         };
 
-                                    if (!ko.isObservable(value.itemValue)) {
-                                        def.value.subscribe(x => {
-                                            value.itemValue = x;
-                                            // add new line ?
-                                            //x.listItemDfValues
-                                        });
-                                    }
-
                                     return def;
                                 });
-                            });
+                            }));
                             break;
                         case IT_CLA_TYPE.SPER:
-                            x.listItemDfValues = undefined;
+                            x.items = undefined;
                             break;
                     }
                 });
@@ -1586,9 +1617,8 @@ module nts.custombinding {
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>; // layoutItemType == 0 ? [1] : layoutItemType == 1 ? [A, B, C] : undefined;
-        listItemDfValues?: any; // [{value: }] || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
-        singleValues?: Array<IItemDefinitionValue>;
-        multipleValues?: Array<Array<IItemDefinitionValue>>
+        items?: any; // [{value: }] || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
+        values?: any;
     }
 
     interface IItemDefinition {

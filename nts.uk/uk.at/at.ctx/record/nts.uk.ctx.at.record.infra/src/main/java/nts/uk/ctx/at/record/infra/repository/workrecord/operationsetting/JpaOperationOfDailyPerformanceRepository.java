@@ -13,7 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DisplayRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformanceRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpeDisp;
@@ -26,10 +26,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 @Stateless
 public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
-		implements OperationOfDailyPerformanceRepoInterface {
+		implements OpOfDailyPerformance {
 
 	@Override
-	public OperationOfDailyPerformance findOperationOfDailyPerformance(CompanyId companyId) {
+	public OperationOfDailyPerformance find(CompanyId companyId) {
 		Optional<KrcstDailyRecOpeDisp> krcstDailyRecOpeDispOpt = this.queryProxy().find(companyId.toString(),
 				KrcstDailyRecOpeDisp.class);
 		Optional<KrcstDailyRecOpeFun> krcstDailyRecOpeFunOpt = this.queryProxy().find(companyId.toString(),
@@ -67,7 +67,7 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
-	public void registerOperationOfDailyPerformance(OperationOfDailyPerformance domain) {
+	public void register(OperationOfDailyPerformance domain) {
 		Optional<KrcstDailyRecOpe> krcstDailyRecOpeOpt = this.queryProxy().find(domain.getCompanyId().toString(),
 				KrcstDailyRecOpe.class);
 		Optional<KrcstDailyRecOpeDisp> krcstDailyRecOpeDispOpt = this.queryProxy()

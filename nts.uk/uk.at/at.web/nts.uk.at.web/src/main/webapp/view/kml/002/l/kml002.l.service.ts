@@ -4,8 +4,8 @@ module kml002.l.service {
      */
     var paths: any = {
         findAll: "ctx/at/schedule/shift/totaltimes/getallitem",
-        addTotalTimes: "ctx/at/schedule/shift/totaltimes/save",
-        updateTotalTimes: "ctx/at/schedule/shift/totaltimes/save"
+        addTotalTimes: "ctx/at/schedule/budget/fixedverticalsetting/addVerticalCnt",
+        findAllCountNo:  "ctx/at/schedule/budget/fixedverticalsetting/findCnt"
     }
     
     export function findAll(): JQueryPromise<Array<viewmodel.ItemModel>> {
@@ -14,8 +14,7 @@ module kml002.l.service {
     export function addTotalTimes(totaltimes: any) {
         return nts.uk.request.ajax("at", paths.addTotalTimes, totaltimes);
     }
-
-    export function updateTotalTimes(totaltimes: any) {
-        return nts.uk.request.ajax("at",paths.updateTotalTimes, totaltimes);
+    export function findAllCountNo(fixedItemAtr) {
+        return nts.uk.request.ajax("at",paths.findAllCountNo + "/" +fixedItemAtr);
     }
 }

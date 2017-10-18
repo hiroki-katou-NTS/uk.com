@@ -9,9 +9,15 @@ public class EmpCopySetting extends AggregateRoot {
 	String categoryId;
 	String companyId;
 
-	public EmpCopySetting(String categoryId, String companyId) {
+	private EmpCopySetting(String categoryId, String companyId) {
 		this.categoryId = categoryId;
 		this.companyId = companyId;
+	}
+
+	public static EmpCopySetting createFromJavaType(String categoryId, String companyId) {
+
+		return new EmpCopySetting(categoryId, companyId);
+
 	}
 
 }

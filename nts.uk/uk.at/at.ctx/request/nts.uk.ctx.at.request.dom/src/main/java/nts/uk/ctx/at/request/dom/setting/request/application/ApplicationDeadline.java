@@ -29,7 +29,7 @@ public class ApplicationDeadline extends AggregateRoot {
 	 */
 	private UseAtr userAtr;
 	/**
-	 * 月間日数
+	 * 締切日数
 	 */
 	private Deadline deadline;
 	/**

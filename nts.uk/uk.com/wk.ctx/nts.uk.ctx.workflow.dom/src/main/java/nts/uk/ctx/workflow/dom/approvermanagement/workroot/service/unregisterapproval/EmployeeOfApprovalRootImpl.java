@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
@@ -18,6 +21,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot
 public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	@Inject
 	private EmployeeAdapter employeeApproveAdapter;
+	@Inject
+	private ApprovalPhaseRepository approvalPhase;
 	@Override
 	public boolean lstEmpApprovalRoot(String companyId,
 			List<CompanyApprovalRoot> lstCompanyRootInfor,
@@ -34,16 +39,35 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 						|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
 				.filter(x -> x.getApplicationType() == appType)
 				.collect(Collectors.toList());
-				
+		//co truong hop co root nhung khong co phase
+		List<ApprovalPhase> approvalPhases = new ArrayList<>();
+		if(!CollectionUtil.isEmpty(personRootAll)) {
+			personRootAll.stream().forEach(x -> {
+				approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+				.forEach(y -> {
+					approvalPhases.add(y);
+				});
+			});
+		}
 		//データが０件(data = 0)
-		if(CollectionUtil.isEmpty(personRootAll)) {
+		if(CollectionUtil.isEmpty(personRootAll)
+				|| CollectionUtil.isEmpty(approvalPhases)) {
 			//check ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ) ※・就業ルート区分(共通)			
 			List<PersonApprovalRoot> psRootCommonAtr = lstPersonRootInfor.stream()
 					.filter(x -> x.getEmployeeId().equals(empInfor.getSId()))
 					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.collect(Collectors.toList());
+			if(!CollectionUtil.isEmpty(psRootCommonAtr)) {
+				psRootCommonAtr.stream().forEach(x -> {
+					approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+					.forEach(y -> {
+						approvalPhases.add(y);
+					});
+				});
+			}
 			//データが０件(data = 0)
-			if(CollectionUtil.isEmpty(psRootCommonAtr)) {
+			if(CollectionUtil.isEmpty(psRootCommonAtr)
+					|| CollectionUtil.isEmpty(approvalPhases)) {
 				//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
 				List<String> lstWpIds = employeeApproveAdapter.findWpkIdsBySid(companyId, empInfor.getSId(), baseDate);
 				if(!CollectionUtil.isEmpty(lstWpIds)) {
@@ -56,9 +80,19 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 								.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
 										||x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
 										|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
+								.filter(x -> x.getApplicationType() == appType)
 								.collect(Collectors.toList());
+						if(!CollectionUtil.isEmpty(wpRootAllAtr)) {
+							wpRootAllAtr.stream().forEach(x -> {
+								approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+								.forEach(y -> {
+									approvalPhases.add(y);
+								});
+							});
+						}
 						//データが０件(data = 0)
-						if(CollectionUtil.isEmpty(wpRootAllAtr)) {
+						if(CollectionUtil.isEmpty(wpRootAllAtr)
+								|| CollectionUtil.isEmpty(approvalPhases)) {
 							//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain 「職場別就業承認ルート」)  ※・就業ルート区分(共通)
 							List<WorkplaceApprovalRoot> wpRootAppAtr = lstWorkpalceRootInfor
 									.stream()
@@ -84,6 +118,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				return true;
 			}
 		}else {
+			//co du lieu nhung ko co phase
 			//終了状態：承認ルートあり＋承認ルートのデータ(trang thai ket thuc: co approval route + du lieu approval route)
 			return true;
 		}
@@ -94,14 +129,33 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
 						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION 
 						|| x.getEmploymentRootAtr() ==EmploymentRootAtr.ANYITEM)
+				.filter(x -> x.getApplicationType() == appType)
 				.collect(Collectors.toList());
+		if(!CollectionUtil.isEmpty(companyRootAll)) {
+			companyRootAll.stream().forEach(x -> {
+				approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+				.forEach(y -> {
+					approvalPhases.add(y);
+				});
+			});
+		}
 		//データが０件(data = 0)
-		if(CollectionUtil.isEmpty(companyRootAll)) {
+		if(CollectionUtil.isEmpty(companyRootAll)
+				||CollectionUtil.isEmpty(approvalPhases)) {
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain「会社別就業承認ルート」)  ※・就業ルート区分(共通)
 			List<CompanyApprovalRoot> companyRootCommonAtr = lstCompanyRootInfor.stream()
 					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.collect(Collectors.toList());
-			if(companyRootCommonAtr.isEmpty()) {
+			if(!CollectionUtil.isEmpty(companyRootCommonAtr)) {
+				companyRootCommonAtr.stream().forEach(x -> {
+					approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+					.forEach(y -> {
+						approvalPhases.add(y);
+					});
+				});
+			}
+			if(CollectionUtil.isEmpty(companyRootCommonAtr)
+					||CollectionUtil.isEmpty(approvalPhases)) {
 				//終了状態：承認ルートなし(trang thai ket thuc : khong co approval route)
 				return false;
 			}else {

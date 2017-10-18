@@ -5,8 +5,8 @@ module kml002.i.service {
         deleteVerticalTime: "ctx/at/schedule/budget/fixedverticalsetting/deleteVerticalTime",
         findVerticalSet: "ctx/at/schedule/budget/fixedverticalsetting/find/"
     }
-    export function findVerticalSet(fixedVerticalNo): JQueryPromise<Array<viewmodel.IVerticalTime>> {
-        return nts.uk.request.ajax("at",paths.findVerticalSet + 1);
+    export function findVerticalSet(fixedItemAtr): JQueryPromise<Array<viewmodel.IVerticalTime>> {
+        return nts.uk.request.ajax("at",paths.findVerticalSet + fixedItemAtr);
     }
     export function addVerticalTime(vertical: any) {
         return nts.uk.request.ajax("at", paths.addVerticalTime, vertical);

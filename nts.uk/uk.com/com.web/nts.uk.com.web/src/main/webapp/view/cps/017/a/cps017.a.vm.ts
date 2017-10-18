@@ -8,8 +8,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     export class ScreenModel {
+        //listSelectionItem
         listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
+
+        // history:
+        listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
 
         constructor() {
             let self = this,
@@ -37,9 +41,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                //取得した選択項目を画面項目「A2_3：選択項目名称一覧」に表示する
+                //項目がある場合
                 if (itemList && itemList.length > 0) {
+
+                    //取得した選択項目を画面項目「A2_3：選択項目名称一覧」に表示する
                     itemList.forEach(x => self.listItems.push(x));
+
+                    //画面項目「A2_3：選択項目リスト」の先頭を選択状態にする
                     self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
 
                 } else {
@@ -53,6 +61,24 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 //0件の場合: エラーメッセージの表示(#Msg_455)
                 alertError({ messageId: "Msg_455" });
             });
+
+
+            //Histor:
+            service.getAllPerInfoHistorySelection().done((listHistorySelection: Array<IHistorySelection>) => {
+                //項目がある場合
+                if (listHistorySelection && listHistorySelection.length > 0) {
+                    listHistorySelection.forEach(x => self.listHistorySelection.push(x));
+                    //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    //debugger;
+
+                } else {
+                    alertError({ messageId: "Msg_455" });
+                }
+                dfd.resolve();
+            }).fail(error => {
+                alertError({ messageId: "Msg_455" });
+            });
+
             return dfd.promise();
         }
 
@@ -93,6 +119,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         }
     }
 
+    //SelectionItem
     interface ISelectionItem {
         selectionItemId: string;
         selectionItemName: string;
@@ -109,7 +136,38 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         }
     }
+
+    //history:
+    interface IHistorySelection {
+        histId: string;
+        selectionItemId: string;
+        companyCode: string;
+        startDate: string;
+        endDate: string;
+    }
+
+    class HistorySelection {
+        histId: KnockoutObservable<string> = ko.observable('');
+        selectionItemId: KnockoutObservable<string> = ko.observable('');
+        companyCode: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<string> = ko.observable('');
+        endDate: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IHistorySelection) {
+            let self = this;
+            self.histId(param.histId || '');
+            self.selectionItemId(param.selectionItemId || '');
+            self.companyCode(param.companyCode || '');
+            self.startDate(param.startDate || '');
+            self.endDate(param.endDate || '');
+        }
+    }
+
+
 }
+
+
+
 
 
 

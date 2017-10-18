@@ -37,9 +37,8 @@ public class GoBackDirectDetailDto {
 
 	ApplicationDto appDto;
 	
-	//OutputAllDataApp outputAllDataApp;
-
 	int OutMode;
+	
 	/**
 	 * get Data of GoBackDirect with Application Setting
 	 * 

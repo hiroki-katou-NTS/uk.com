@@ -7,6 +7,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
+ * 個人情報初期値設定コード
  * @author lanlt
  *
  */

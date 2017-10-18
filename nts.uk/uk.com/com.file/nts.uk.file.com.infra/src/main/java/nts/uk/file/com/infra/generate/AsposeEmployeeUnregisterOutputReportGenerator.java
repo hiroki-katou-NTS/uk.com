@@ -34,6 +34,8 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	private static final String REPORT_FILE_NAME = "承認ルート未登録の社員.xlsx";
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6 };
+	
+	private static String  HEADER ="HEADER";
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {
@@ -45,7 +47,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 			// set up page prepare print
-			this.printPage(worksheet);
+			this.printPage(worksheet, dataSource);
 			this.printEmployee(worksheets, dataSource);
 
 			designer.getDesigner().setWorkbook(workbook);
@@ -65,11 +67,13 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	 * @param worksheet
 	 * @param lstDeparmentInf
 	 */
-	private void printPage(Worksheet worksheet) {
+	private void printPage(Worksheet worksheet,  EmployeeUnregisterOutputDataSoure dataSource) {
 		// Set print page
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:G");
+		pageSetup.setHeader(0, "【会社】 " + dataSource.getHeaderEmployee().getNameCompany());
+
 	}
 
 	/**
@@ -81,6 +85,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	private void printEmployee(WorksheetCollection worksheets, EmployeeUnregisterOutputDataSoure employee) {
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
+
 		List<EmployeeUnregisterOutput> employeeUnregisLst = employee.getEmployeeUnregisterOutputLst();
 		int x = 3;
 		for (int j = 0; j < employeeUnregisLst.size(); j++) {

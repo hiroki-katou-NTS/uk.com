@@ -27,6 +27,9 @@ public class KscstVerticalTimeSet extends UkJpaEntity implements Serializable {
 	@Column(name = "DISPLAY_ATR")
 	public int displayAtr;
 	
+	/* 時刻 */
+	@Column(name = "START_CLOCK")
+	public int startClock;
 	
 	@Override
 	protected Object getKey() {

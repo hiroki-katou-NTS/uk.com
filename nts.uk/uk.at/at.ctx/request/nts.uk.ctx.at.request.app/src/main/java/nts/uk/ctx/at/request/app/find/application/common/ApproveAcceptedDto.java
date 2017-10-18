@@ -17,6 +17,7 @@ public class ApproveAcceptedDto {
 	private String appAcceptedID ;
 	private String approverSID ;
 	private int approvalATR;
+	private String nameApprovalATR;
 	private int confirmATR;
 	private String approvalDate;
 	private String reason;
@@ -27,7 +28,8 @@ public class ApproveAcceptedDto {
 				domain.getCompanyID(), 
 				domain.getAppAcceptedID(), 
 				domain.getApproverSID(), 
-				domain.getApprovalATR().value, 
+				domain.getApprovalATR().value,
+				null,
 				domain.getConfirmATR().value, 
 				domain.getApprovalDate() ==null?null : domain.getApprovalDate().toString(), 
 				domain.getReason().v(), 

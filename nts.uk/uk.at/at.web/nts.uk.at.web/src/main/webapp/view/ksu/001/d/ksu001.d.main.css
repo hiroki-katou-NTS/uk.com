@@ -1,9 +1,5 @@
-#group-radio {
-	margin: 15px 0 15px 20px
-}
-
-#check-box {
-	margin: 15px 0 0 20px
+#group-radio, #check-box {
+	margin-left: 20px
 }
 
 #component-items-list {

@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorktypeGroup;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
-import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmploymentRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeablePk;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -26,13 +26,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  */
 @Stateless
 public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
-		implements WorkingTypeChangedByEmploymentRepoInterface {
+		implements WorkingTypeChangedByEmpRepo {
 
 	private final String GET_ALL_OF_EMPLOYEE = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
 			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
 
 	@Override
-	public WorkingTypeChangedByEmployment getWorkingTypeChangedByEmployment(CompanyId companyId,
+	public WorkingTypeChangedByEmployment get(CompanyId companyId,
 			EmploymentCode empCode) {
 		List<KrcmtWorktypeChangeable> entities = this.queryProxy()
 				.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", companyId.v())
@@ -58,7 +58,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 	}
 
 	@Override
-	public void saveWorkingTypeChangedByEmployment(WorkingTypeChangedByEmployment workingType) {
+	public void save(WorkingTypeChangedByEmployment workingType) {
 		String cid = workingType.getCompanyId().v();
 		String empCode = workingType.getEmpCode().v();
 		

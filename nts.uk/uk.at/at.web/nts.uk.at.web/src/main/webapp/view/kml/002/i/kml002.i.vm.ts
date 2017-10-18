@@ -8,7 +8,7 @@ module kml002.i.viewmodel {
         startClock: KnockoutObservable<number>;
         items: KnockoutObservableArray<any>;
         currentItem: KnockoutObservable<VerticalTime>
-        fixVerticalId: any;
+        fixVerticalId: KnockoutObservable<number>;
         constructor() {
             var self = this;
             self.useCls = ko.observableArray([
@@ -18,11 +18,10 @@ module kml002.i.viewmodel {
             
 
             self.displayAtr = ko.observable(0);
-            self.startClock = ko.observable(null);
 
             self.items = ko.observableArray([]);
             self.currentItem = ko.observable(new VerticalTime({}));
-            self.fixVerticalId = (getShared("KML002K_TIME"));
+            self.fixVerticalId = ko.observable(getShared("KML002H_VERTICAL_ID"))();
         }
         start() {
             var self = this,
@@ -45,12 +44,14 @@ module kml002.i.viewmodel {
                 if (!dataTime) {
                     return;    
                 }
+
                 var endTimeM = dataTime.endTime / 60;
                 var startTimeM = dataTime.startTime / 60;
                 var index = self.items().length;
-                for (var i = startTimeM; i < endTimeM; i++) {
+                   
+                for (var i = startTimeM; i <= endTimeM; i++) {
                     var verticalTime: IVerticalTime = {
-                        verticalId: index,
+                        verticalTimeNo: index,
                         displayAtr: 0,
                         startClock: i*60
                     };
@@ -66,6 +67,7 @@ module kml002.i.viewmodel {
             service.findVerticalSet(self.fixVerticalId).done(function(verticalTimeArr: Array<IVerticalTime>) {
                 _.forEach(verticalTimeArr, function(res: IVerticalTime) {
                     var verticalTime: IVerticalTime = {
+                        verticalTimeNo: res.verticalTimeNo,
                         displayAtr: res.displayAtr,
                         startClock: res.startClock
                     };
@@ -80,38 +82,39 @@ module kml002.i.viewmodel {
             var dfd = $.Deferred();
             var data = {
                 fixedItemAtr: self.fixVerticalId,
-                verticalTimes: ko.toJS(self.items())
+                verticalTimes: ko.toJS(self.items()
+                )
             }
             service.addVerticalTime(data).done(function(any) {
-            
+            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
             });
             return dfd.promise();
         }
-        deleteVerticalTime(verticalId : number){
+        deleteVerticalTime(verticalTimeNo : number){
             var self = this;
             var items = self.items();
             _.remove(self.items(), function(item: IVerticalTime) {
-                return verticalId == item.verticalId();
+                return verticalTimeNo == item.verticalTimeNo();
             });
             self.items(items);
         }
     }
     export interface IVerticalTime {
         fixedItemAtr?: number;
-        verticalId?: number;
+        verticalTimeNo?: number;
         displayAtr?: number;
         startClock?: number;
     }
     class VerticalTime {
         fixedItemAtr: KnockoutObservable<number>;
-        verticalId: KnockoutObservable<number>;
+        verticalTimeNo: KnockoutObservable<number>;
         displayAtr: KnockoutObservable<number>;
         startClock: KnockoutObservable<number>;
         constructor(param: IVerticalTime) {
             this.fixedItemAtr = ko.observable(param.fixedItemAtr || 0);
-            this.verticalId = ko.observable(param.verticalId || 0);
+            this.verticalTimeNo = ko.observable(param.verticalTimeNo || 0);
             this.displayAtr = ko.observable(param.displayAtr || 0);
-            this.startClock = ko.observable(param.startClock || null);
+            this.startClock = ko.observable(param.startClock || 0);
         }
     }
 
