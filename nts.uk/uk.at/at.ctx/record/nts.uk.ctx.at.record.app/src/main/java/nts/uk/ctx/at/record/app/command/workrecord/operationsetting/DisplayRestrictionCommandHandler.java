@@ -10,7 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DisplayRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformanceRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DisplayRestrictionCommandHandler extends CommandHandler<DisplayRestrictionCommand> {
 
 	@Inject
-	private OperationOfDailyPerformanceRepoInterface operationSettingRepo;
+	private OpOfDailyPerformance operationSettingRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<DisplayRestrictionCommand> context) {
@@ -31,7 +31,7 @@ public class DisplayRestrictionCommandHandler extends CommandHandler<DisplayRest
 		
 		// find from database
 		OperationOfDailyPerformance opSetting = operationSettingRepo
-				.findOperationOfDailyPerformance(new CompanyId(companyId));
+				.find(new CompanyId(companyId));
 		
 		// update display restriction
 		DisplayRestriction displayRestriction = new DisplayRestriction(command.getYearDisplayAtr(),
@@ -40,7 +40,7 @@ public class DisplayRestrictionCommandHandler extends CommandHandler<DisplayRest
 				command.getCompensatoryRemainingNumberCheck(), command.getSubstitutionDisplayAtr(),
 				command.getSubstitutionRemainingNumberCheck());
 		opSetting.updateDisplayRestriction(displayRestriction);
-		operationSettingRepo.registerOperationOfDailyPerformance(opSetting);
+		operationSettingRepo.register(opSetting);
 	}
 
 }

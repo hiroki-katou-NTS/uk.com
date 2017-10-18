@@ -16,10 +16,14 @@ import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagement;
+import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagementPK;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
@@ -32,9 +36,12 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployee c";
 
-	/*public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode =:employeeCode " + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
-			+ " AND d.retireDate >= :entryDate ";*/
+	/*
+	 * public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE +
+	 * " WHERE c.companyId = :companyId" + " AND c.employeeCode =:employeeCode "
+	 * + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
+	 * + " AND d.retireDate >= :entryDate ";
+	 */
 
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND c.employeeCode IN :listEmployeeCode ";
@@ -55,21 +62,28 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployee c "
 			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY  c.employeeCode DESC";
+
+	public final String SELECT_BY_EMP_CODE = "SELECT c FROM BsymtEmployee c "
+			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " WHERE c.companyId = :companyId " + " AND c.employeeCode =:employeeCode"
+			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate" + " AND d.retireDate >= :standardDate";
+
+	public final String CHECK_DUPLICATE_EMPLOYEE_CODE_STRING_QUERY = "SELECT c FROM BsymtEmployee c"
+			+ " WHERE c.companyId = :companyId " + " AND c.employeeCode =:employeeCode";
+
+	public final String SELECT_BY_STANDARDDATE = "SELECT c FROM BsymtEmployee c "
+			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " WHERE c.companyId = :companyId " + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
+			+ " AND d.retireDate >= :standardDate";
 	
-	public final String SELECT_BY_EMP_CODE =  
-			"SELECT c FROM BsymtEmployee c "
-			   + " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
-			   + " WHERE c.companyId = :companyId "
-			   + " AND c.employeeCode =:employeeCode"
-			   + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
-			   + " AND d.retireDate >= :standardDate";
+	public final String GET_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
+			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
 	
-	public final String SELECT_BY_STANDARDDATE = 
-		     "SELECT c FROM BsymtEmployee c "
-		   + " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
-		   + " WHERE c.companyId = :companyId "
-		   + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
-		   + " AND d.retireDate >= :standardDate";
+	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = 
+			" SELECT c.employeeCode, d.personName "
+			+ " FROM BsymtDeleteEmpManagement a "
+			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
+			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId ";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -96,6 +110,18 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return domain;
 	}
 
+	private BsymtDeleteEmpManagement toEntityDeleteEmpManagent(DeleteEmpManagement domain) {
+		BsymtDeleteEmpManagementPK pk = new BsymtDeleteEmpManagementPK(domain.getSid());
+		BsymtDeleteEmpManagement entity = new BsymtDeleteEmpManagement();
+		entity.setBsymtDeleteEmpManagementPK(pk);
+		entity.setReason(domain.getReasonRemoveEmp().toString());
+		entity.setIsDeleted(0); // 0 : false
+		entity.setDeleteDate(domain.getDeleteDate());
+		
+		return entity;
+		
+		
+	}
 	@Override
 	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
 		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployee.class)
@@ -223,7 +249,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		if (entity != null) {
 			person = toDomainEmployee(entity);
 
-
 			if (!entity.listEntryHist.isEmpty()) {
 				person.setListEntryJobHist(
 						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
@@ -237,7 +262,8 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public String findLastEml(String companyId, String startLetter) {
 		if (startLetter == null)
 			startLetter = "";
-		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId).setParameter("emlCode", startLetter).getList();
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
+				.setParameter("emlCode", startLetter).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);
@@ -245,6 +271,43 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		}
 
 		return returnStr;
+	}
+
+	// sonnlb
+
+	@Override
+	public Boolean isDuplicateEmpCode(String companyId, String employeeCode) {
+		return this.queryProxy().query(CHECK_DUPLICATE_EMPLOYEE_CODE_STRING_QUERY, BsymtEmployee.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeCode", employeeCode)
+				.getSingle().isPresent();
+	}
+
+	@Override
+	public Boolean isDuplicateCardNo(String companyId, String cardNumber) {
+
+		return false;
+	}
+
+	// laitv
+	@Override
+	public Optional<Object[]> getEmployeeInfoToDelete(String employeeId) {
+		// TODO Auto-generated method stub
+
+		Optional<Object[]> empInfo = this.queryProxy().query(GET_EMPLOYEE_INFO_TO_DELETE)
+				.setParameter("sId", employeeId).getSingle();
+		return empInfo;
+	}
+
+	@Override
+	public void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement) {
+		this.commandProxy().insert(toEntityDeleteEmpManagent(deleteEmpManagement));
+	}
+
+	@Override
+	public List<Object[]> getAllEmployeeInfoToDelete() {
+		List<Object[]> lst = this.queryProxy().query(GET_ALL_EMPLOYEE_INFO_TO_DELETE).getList();
+		return lst;
 	}
 
 }

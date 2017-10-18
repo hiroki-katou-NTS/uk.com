@@ -16,11 +16,16 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
-        columnsSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
+        columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 90 },
+            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamCode', width: 100 },
         ]);
+        columnsRightSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
+            { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
+            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
+        ]);
+
 
         constructor() {
             let self = this;
@@ -48,14 +53,15 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             self.getAllTeam().done(() => {
                 if (self.listTeamDB().length == 0) {
                     self.openDialogLX();
+                } else {
+                    self.getAllTeamSetting().done(() => {
+                        // init selectTeam is first value
+                        self.selectedTeam(self.listTeamDB()[0].teamCode);
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
                 }
-                self.getAllTeamSetting().done(() => {
-                    // init selectTeam is first value
-                    self.selectedTeam(self.listTeamDB()[0].teamCode);
-                    dfd.resolve();
-                }).fail(() => {
-                    dfd.reject();
-                });
             });
             return dfd.promise();
         }
@@ -64,8 +70,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
          * open dialog LX
          */
         openDialogLX(): void {
-            var self = this;
-            nts.uk.ui.windows.setShared("workPlaceId", "000000A3");
+            let self = this;
+            nts.uk.ui.windows.setShared("workPlaceId", self.workPlaceId);
             nts.uk.ui.windows.sub.modal("/view/ksu/001/lx/index.xhtml").onClosed(() => {
                 self.startPage().done();
             });;
@@ -97,10 +103,6 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 let employeesSwapLeft = [];
                 let employeesSwapRight = [];
                 let teamDB = self.listTeamDB();
-                //clear list selectedswaplist
-                let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
-                self.selectedEmployeeSwap();
-                self.listEmployeeSwap(newListEmployeeSwap);
                 _.forEach(self.listEmployee, value => {
                     // add teamcode to employee
                     let employeeSeting = _.find(data, ["sid", value.empId]);
@@ -109,6 +111,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                         //check team exist
                         if (_.findKey(teamDB, ['teamCode', employeeSeting.teamCode])) {
                             employee.teamCode = employeeSeting.teamCode;
+                            employee.teamCodeOld = employeeSeting.teamCode;
                         }
                     }
                     if (employee.teamCode == self.selectedTeam()) {
@@ -148,16 +151,45 @@ module nts.uk.at.view.ksu001.l.viewmodel {
          */
         addEmToTeam(): void {
             let self = this;
+            nts.uk.ui.block.invisible();
             let data = {};
+            let teamCodes = _.map(self.selectedEmployeeSwap(), 'teamCode');
             data.employeeCodes = _.map(self.selectedEmployeeSwap(), 'empId');
             data.teamCode = self.selectedTeam();
             data.workPlaceId = self.workPlaceId;
-            service.addEmToTeam(data).done(function() {
-                self.getAllTeamSetting().done(function() {
-                    self.selectedTeam(data.teamCode);
+            let isSwapTeamCode = (_.filter(teamCodes, function(o) {
+                if (o != 'なし') {
+                    return o != self.selectedTeam();
+                }
+            }
+            ).length > 0) ? true : false;
+            if (isSwapTeamCode) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_342" }).ifYes(() => {
+                    service.addEmToTeam(data).done(function() {
+                        self.getAllTeamSetting().done(function() {
+                            self.selectedTeam(data.teamCode);
+                        });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error.message);
+                    })
+
+                }).then(function() {
+                    nts.uk.ui.block.clear();
                 });
 
-            });
+            } else {
+                service.addEmToTeam(data).done(function() {
+                    self.getAllTeamSetting().done(function() {
+                        self.selectedTeam(data.teamCode);
+                    });
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).then(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
 
     }
@@ -190,6 +222,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         workplaceName: string;
         baseDate: number;
         teamCode: string;
+        teamCodeOld: string;
         constructor(param: IPersonModel) {
             this.empId = param.empId;
             this.code = param.empCd;

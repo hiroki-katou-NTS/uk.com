@@ -21,32 +21,6 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 			+ " AND c.kafdtApproveAcceptedPK.dispOrder = :dispOrder"
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
 	
-	public static ApproveAccepted toDomain(KafdtApproveAccepted entity) {
-		return ApproveAccepted.createFromJavaType(
-				entity.kafdtApproveAcceptedPK.companyID, 
-				entity.kafdtApproveAcceptedPK.appAccedtedID, 
-				entity.approverSID, 
-				entity.approvalATR, 
-				entity.confirmATR, 
-				entity.approvalDate, 
-				entity.reason, 
-				entity.representerSID);
-	}
-	
-	private KafdtApproveAccepted toEntity(ApproveAccepted domain, String frameID) {
-		return new KafdtApproveAccepted(
-				new KafdtApproveAcceptedPK(
-						domain.getCompanyID(), 
-						domain.getAppAcceptedID()), 
-				frameID, 
-				domain.getApproverSID(), 
-				domain.getApprovalATR().value, 
-				domain.getConfirmATR().value, 
-				domain.getApprovalDate(), 
-				domain.getReason().v(), 
-				domain.getRepresenterSID(),null);
-	}
-	
 	/**
 	 * get all approve accepted
 	 */
@@ -55,7 +29,7 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 		return this.queryProxy().query(SELECT_FROM_APPROVE_ACCEPTED, KafdtApproveAccepted.class)
 				.setParameter("companyID", companyID)
 				.setParameter("frameID", frameID)
-				.getList(c->toDomain(c));
+				.getList(c-> c.toDomain());
 	}
 	
 	/**
@@ -69,7 +43,7 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 				.setParameter("phaseID", phaseID)
 				.setParameter("dispOrder", dispOrder)
 				.setParameter("approverSID", approverSID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 
 	/**
@@ -77,12 +51,12 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 	 */
 	@Override
 	public void createApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
-		this.commandProxy().insert(toEntity(approveAccepted, frameID));
+		this.commandProxy().insert(KafdtApproveAccepted.toEntity(approveAccepted, frameID));
 	}
 
 	@Override
 	public void updateApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
-		KafdtApproveAccepted newEntity = toEntity(approveAccepted, frameID);
+		KafdtApproveAccepted newEntity = KafdtApproveAccepted.toEntity(approveAccepted, frameID);
 		KafdtApproveAccepted updateEntity = this.queryProxy()
 				.find(newEntity.kafdtApproveAcceptedPK, KafdtApproveAccepted.class).get();
 		updateEntity.approvalATR = newEntity.approvalATR;

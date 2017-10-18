@@ -37,24 +37,28 @@ public class JpaWorkSchedulePersonFeeSetMemento implements WorkSchedulePersonFee
 		this.entity.getKscmtWsPersonFeePK().setYmd(baseDate);
 	}
 
-	/**
-	 * Sets the no.
-	 *
-	 * @param no the new no
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.
+	 * WorkSchedulePersonFeeSetMemento#setNo(nts.uk.ctx.at.schedule.dom.schedule
+	 * .basicschedule.personalfee.ExtraTimeItemNo)
 	 */
 	@Override
 	public void setNo(ExtraTimeItemNo no) {
 		this.entity.getKscmtWsPersonFeePK().setNo(no.value);
 	}
 
-	/**
-	 * Sets the personal fee amount.
-	 *
-	 * @param personalFeeAmount the new personal fee amount
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.
+	 * WorkSchedulePersonFeeSetMemento#setPersonalFeeAmount(nts.uk.ctx.at.
+	 * schedule.dom.schedule.basicschedule.personalfee.PersonalFeeAmount)
 	 */
 	@Override
 	public void setPersonalFeeAmount(PersonalFeeAmount personalFeeAmount) {
-		this.entity.setPersonalPeeAmount(personalFeeAmount.v());
+		this.entity.setPersonalFeeAmount(personalFeeAmount.v());
 	}
 
 }

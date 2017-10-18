@@ -29,4 +29,5 @@ public class GoBackDirectAppSet {
 	Application application;
 
 	DetailScreenInitModeOutput detailScreenInitModeOutput;
+	
 }

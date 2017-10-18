@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.info.setting.reghistory.BsymtEmployeeRegistrationHistory;
-import entity.person.info.setting.reghistory.BsymtEmployeeRegistrationHistoryPk;
+import entity.person.info.setting.reghistory.PpedtEmployeeRegistrationHistory;
+import entity.person.info.setting.reghistory.PpedtEmployeeRegistrationHistoryPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
 import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepository;
@@ -13,24 +13,25 @@ import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepositor
 @Stateless
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
-	private static final String SELECT_LAST_REG_HISTORY_QUERY_STRING = "SELECT TOP 1 er FROM BsymtEmployeeRegistrationHistory er WHERE er.registeredDate DESC";
+	private static final String SELECT_LAST_REG_HISTORY_QUERY_STRING = "SELECT  er FROM PpedtEmployeeRegistrationHistory er ORDER BY er.registeredDate DESC";
 
 	@Override
 	public Optional<EmpRegHistory> getLastRegHistory() {
-		return this.queryProxy().query(SELECT_LAST_REG_HISTORY_QUERY_STRING, BsymtEmployeeRegistrationHistory.class)
+
+		return this.queryProxy().query(SELECT_LAST_REG_HISTORY_QUERY_STRING, PpedtEmployeeRegistrationHistory.class)
 				.getSingle().map(x -> toDomain(x));
 	}
 
-	private EmpRegHistory toDomain(BsymtEmployeeRegistrationHistory entity) {
+	private EmpRegHistory toDomain(PpedtEmployeeRegistrationHistory entity) {
 
-		return EmpRegHistory.createFromJavaType(entity.bsydtEmployeeRegistrationHistoryPk.registeredEmployeeID,
+		return EmpRegHistory.createFromJavaType(entity.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID,
 				entity.companyId, entity.registeredDate, entity.lastRegEmployeeID);
 	}
 
-	private BsymtEmployeeRegistrationHistory toEntity(EmpRegHistory domain) {
+	private PpedtEmployeeRegistrationHistory toEntity(EmpRegHistory domain) {
 
-		return new BsymtEmployeeRegistrationHistory(
-				new BsymtEmployeeRegistrationHistoryPk(domain.getRegisteredEmployeeID()), domain.getCompanyId(),
+		return new PpedtEmployeeRegistrationHistory(
+				new PpedtEmployeeRegistrationHistoryPk(domain.getRegisteredEmployeeID()), domain.getCompanyId(),
 				domain.getRegisteredDate(), domain.getLastRegEmployeeID());
 	}
 

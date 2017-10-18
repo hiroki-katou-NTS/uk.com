@@ -1,3 +1,8 @@
+#content {
+/* 	width: 1200px;
+	margin-bottom: 20px; */
+}
+
 .float-right {
 	float: right !important;
 }
@@ -86,6 +91,6 @@ input.ntsSearchBox {
 	overflow: visible !important;
 }
 
-#grid2_displayContainer_a{
+#grid2_displayContainer_a {
 	position: fixed !important;
 }

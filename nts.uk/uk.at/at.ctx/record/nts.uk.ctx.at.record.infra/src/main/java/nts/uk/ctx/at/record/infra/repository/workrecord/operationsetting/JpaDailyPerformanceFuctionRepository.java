@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformFuncRepo;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceFun;
 
 /**
@@ -19,12 +19,12 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPer
  */
 @Stateless
 public class JpaDailyPerformanceFuctionRepository extends JpaRepository
-		implements DailyPerformanceFunctionRepoInterface {
+		implements DailyPerformFuncRepo {
 
 	private final String GET_ALL_DAI_PER_FUNC = "SELECT df FROM KrcmtDaiPerformanceFun df ORDER BY df.functionNo";
 
 	@Override
-	public List<DailyPerformanceFunction> getDailyPerformanceFunctions() {
+	public List<DailyPerformanceFunction> getAll() {
 		List<KrcmtDaiPerformanceFun> entities = this.queryProxy()
 				.query(GET_ALL_DAI_PER_FUNC, KrcmtDaiPerformanceFun.class).getList();
 		List<DailyPerformanceFunction> results = new ArrayList<>();

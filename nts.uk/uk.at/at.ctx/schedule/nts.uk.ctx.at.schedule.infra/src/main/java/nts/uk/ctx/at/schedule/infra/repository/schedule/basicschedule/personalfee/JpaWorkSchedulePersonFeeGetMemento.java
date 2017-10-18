@@ -53,7 +53,7 @@ public class JpaWorkSchedulePersonFeeGetMemento implements WorkSchedulePersonFee
 	 */
 	@Override
 	public PersonalFeeAmount getPersonalFeeAmount() {
-		return new PersonalFeeAmount(this.entity.getPersonalPeeAmount());
+		return new PersonalFeeAmount(this.entity.getPersonalFeeAmount());
 	}
 
 }

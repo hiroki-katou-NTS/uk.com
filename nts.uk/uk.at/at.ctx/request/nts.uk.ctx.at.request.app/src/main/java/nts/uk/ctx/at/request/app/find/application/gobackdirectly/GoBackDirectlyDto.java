@@ -8,6 +8,10 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 @Value
 public class GoBackDirectlyDto {
 	/**
+	 * version
+	 */
+	Long version;
+	/**
 	 * 会社ID
 	 */
 	String companyID;
@@ -74,6 +78,7 @@ public class GoBackDirectlyDto {
 	public static GoBackDirectlyDto convertToDto(GoBackDirectly domain) {
 		if(domain==null) return null;
 		return new GoBackDirectlyDto(
+				domain.getVersion(),
 				domain.getCompanyID(), 
 				domain.getAppID(), 
 				domain.getWorkTypeCD().v(),

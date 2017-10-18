@@ -12,10 +12,10 @@ import nts.arc.time.GeneralDate;
 public class PeriodDto {
 	
 	/** The start date. */
-	public GeneralDate startDate;
+	private GeneralDate startDate;
 	
 	/** The end date. */
-	public GeneralDate endDate;
+	private GeneralDate endDate;
 	
 
 	/**

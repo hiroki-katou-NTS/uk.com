@@ -4,8 +4,9 @@
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.List;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceEmployeeDto;
-import nts.uk.screen.at.app.dailyperformance.correction.DateRange;
+
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 
 /**
  * @author hungnm

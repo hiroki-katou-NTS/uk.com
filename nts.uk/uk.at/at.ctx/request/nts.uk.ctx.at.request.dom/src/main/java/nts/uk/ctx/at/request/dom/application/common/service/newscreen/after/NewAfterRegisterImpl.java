@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
@@ -22,6 +23,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Approva
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class NewAfterRegisterImpl implements NewAfterRegister {
@@ -44,12 +47,15 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
+	@Inject
+	private MailSender mailSender;
+	
 	public void processAfterRegister(Application application){
 		
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(application.getCompanyID(), application.getApplicationType().value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getApplicationType().value);
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
@@ -64,6 +70,12 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 			// sendMail(obj);
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
 			System.out.println("Send Mail to "+destinationList);
+			/*try {
+				mailSender.send("NSVC", destination, new MailContents("nts","approvalChange"));
+			} catch (SendMailFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		}
 	}
 	

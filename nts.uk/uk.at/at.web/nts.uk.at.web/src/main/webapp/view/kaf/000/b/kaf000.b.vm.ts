@@ -1,5 +1,5 @@
 module nts.uk.at.view.kaf000.b.viewmodel {
-
+    import vmbase =  nts.uk.at.view.kaf002.shr.vmbase;
     export abstract class ScreenModel {
 
         // Metadata
@@ -16,12 +16,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //list appID 
         listReasonByAppID: KnockoutObservableArray<String>;
 
-
-        /**
+        /**InputCommonData
          * value obj 
          */
-        listReasonToApprover: KnockoutObservable<String>;
+        reasonToApprover: KnockoutObservable<String>;
         reasonApp: KnockoutObservable<String>;
+        inputCommonData : KnockoutObservable<model.InputCommonData>;
 
         dataApplication: KnockoutObservable<model.ApplicationDto>;
 
@@ -72,12 +72,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //item InputCommandEvent
         appReasonEvent: KnockoutObservable<String>;
         
-        approvalList: Array<model.AppApprovalPhase> = [];
+        approvalList: Array<vmbase.AppApprovalPhase> = [];
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             let self = this;
             //reason input event
-            self.appReasonEvent = ko.observable('123');
+            self.appReasonEvent = ko.observable('');
             // Metadata
             self.listAppMeta = listAppMetadata;
             self.appType = ko.observable(currentApp.appType);
@@ -93,9 +93,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             /**
              * value obj
              */
-            self.listReasonToApprover = ko.observable('');
+            self.reasonToApprover = ko.observable('');
             self.reasonApp = ko.observable('');
             self.dataApplication = ko.observable(null);
+            self.inputCommonData = ko.observable(null);
             //application
             self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
             self.outputDetailCheck = ko.observable(null);
@@ -140,14 +141,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred();
-            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
+            //let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
              let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
-
-                //self.checkDisplayStart();
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
+                self.getMessageDeadline(self.dataApplication());
+                
                 dfd.resolve();
             });
             return dfd.promise();
@@ -160,7 +161,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     //b1_7
                     self.enableRelease(true);
 
-
+                    
                     if (self.outputDetailCheck().authorizableFlags == true) {
                         //例：ログイン者の承認区分が未承認
                         if (self.outputDetailCheck().approvalATR == 0) {
@@ -252,7 +253,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
-            });
+            }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+            }); 
             return dfd.promise();
         }
 
@@ -288,8 +292,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 let approvalList = [];
                 for(let x = 1; x <= listPhase.length; x++){
                     let phaseLoop = listPhase[x-1];
-                    let appPhase = new model.AppApprovalPhase(
-                        phaseLoop.appID,
+                    let appPhase = new vmbase.AppApprovalPhase(
                         phaseLoop.phaseID,
                         phaseLoop.approvalForm,
                         phaseLoop.dispOrder,
@@ -297,14 +300,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         []); 
                     for(let y = 1; y <= phaseLoop.listFrame.length; y++){
                         let frameLoop = phaseLoop.listFrame[y-1];
-                        let appFrame = new model.ApprovalFrame(
+                        let appFrame = new vmbase.ApprovalFrame(
                             frameLoop.frameID,
                             frameLoop.dispOrder,
                             []);
                         for(let z = 1; z <= frameLoop.listApproveAccepted.length; z++){
                             let acceptedLoop = frameLoop.listApproveAccepted[z-1];
-                            let appAccepted = new model.ApproveAccepted(
-                                acceptedLoop.appAccedtedID,
+                            let appAccepted = new vmbase.ApproveAccepted(
+                                acceptedLoop.appAcceptedID,
                                 acceptedLoop.approverSID,
                                 acceptedLoop.approvalATR,
                                 acceptedLoop.confirmATR,
@@ -320,8 +323,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.approvalList = approvalList;
                 dfd.resolve(data);
             }).fail(function(res: any) {
+                dfd.reject();
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            });
+            }); 
             return dfd.promise();
         }
         //get all reason by app ID
@@ -332,15 +336,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.listReasonByAppID(data);
                 if (self.listReasonByAppID().length > 0) {
                     self.reasonApp(self.listReasonByAppID()[0].toString());
-                    self.listReasonToApprover('');
-                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
-                        self.listReasonToApprover(
-                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
-                        );
+                    if(self.listReasonByAppID().length > 1){
+                        self.reasonToApprover(self.listReasonByAppID()[1].toString());    
                     }
+                    
+//                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
+//                        self.listReasonToApprover(
+//                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
+//                        );
+//                    }
                 }
                 dfd.resolve(data);
-            });
+            }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+            }); ;
             return dfd.promise();
         }
         //get detail check 
@@ -348,10 +358,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getDetailCheck(inputGetDetail).done(function(data) {
-                //
                 self.outputDetailCheck(data);
+                self.checkDisplayStart();
+                self.checkDisplayAction();
                 dfd.resolve(data);
             }).fail(function(res: any) {
+                dfd.reject();
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             });
             return dfd.promise();
@@ -401,15 +413,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnApprove() {
             let self = this;
+            self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             let dfd = $.Deferred<any>();
-            service.approveApp(self.dataApplication()).done(function(data) {
-                nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                    if (data.length != 0) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
-                    }
+            service.approveApp(self.inputCommonData()).done(function(data) {
+                self.getAllDataByAppID(self.appID()).done(function(value){
+                    nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
+                        if (!data) {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
+                        }
+                    });
                 });
-
                 dfd.resolve();
+            }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             });
             return dfd.promise();
         }
@@ -419,9 +436,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnDeny() {
             let self = this;
             let dfd = $.Deferred<any>();
-            service.denyApp(self.dataApplication()).done(function() {
+            self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
+            service.denyApp(self.inputCommonData()).done(function(data) {
+                self.getAllDataByAppID(self.appID()).done(function(value){
+                    nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
+                        if (!data) {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
+                        }
+                    });
+                });
                 dfd.resolve();
-            });
+           }).fail(function(res: any) {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+            }); 
+                
             return dfd.promise();
         }
 
@@ -430,11 +459,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         */
         btnRelease() {
             let self = this;
+            self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function() {
-                service.releaseApp(self.dataApplication()).done(function() {
+                service.releaseApp(self.inputCommonData()).done(function() {
+                    self.getAllDataByAppID(self.appID()).done(function(value){
+                        
+                    });
                     dfd.resolve();
-                });
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
             return dfd.promise();
         }
@@ -476,30 +512,36 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         if (data.length != 0) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
                         }
-                    });
-                    //lấy vị trí appID vừa xóa trong listAppID
-                    let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
-                    if (index > -1) {
-                        //xóa appID vừa xóa trong list
-                        self.listAppMeta.splice(index, 1);
-                    }
-                    //nếu vị trí vừa xóa khác vị trí cuối
-                    if (index != self.listAppMeta.length - 1) {
-                        //gán lại appId mới tại vị trí chính nó
-                        self.appID(self.listAppMeta[index].appID);
-                    } else {
-                        //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
-                        self.appID(self.listAppMeta[index - 1].appID);
-                    }
-                    //if list # null    
-                    if (self.listAppMeta.length != 0) {
+                        //lấy vị trí appID vừa xóa trong listAppID
+                        let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
+                        if (index > -1 && index != self.listAppMeta.length-1) {
+                            //xóa appID vừa xóa trong list
+                            self.appID(self.listAppMeta[index+1].appID);
+                        }
                         
-                    } else { //nếu list null thì trả về màn hình mẹ
-                        nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
-                    }
-
+                        self.listAppMeta.splice(index, 1);
+                        //nếu vị trí vừa xóa khác vị trí cuối
+                        if (index != self.listAppMeta.length - 1) {
+                            //gán lại appId mới tại vị trí chính nó
+                            self.btnAfter();
+                        } else {
+                            //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
+                            self.btnBefore();
+                        }
+                        
+                        //if list # null    
+                        if (self.listAppMeta.length == 0) {
+                            //nếu list null thì trả về màn hình mẹ
+                            nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+                        }
+                    });
+                    
+            
                     dfd.resolve();
-                });
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
             return dfd.promise();
         }
@@ -514,7 +556,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 service.cancelApp(self.inputCommandEvent()).done(function() {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_224" })
                     dfd.resolve();
-                });
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }); 
             });
             return dfd.promise();
         }
@@ -724,6 +769,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.deadline = deadline;
             }
         }// end class outputMessageDeadline
+        
+        //class InputApprove
+        export class InputCommonData {
+            applicationDto: ApplicationDto;
+            memo: String;
+            constructor(applicationDto : ApplicationDto, memo : String) {
+                this.applicationDto = applicationDto;
+                this.memo = memo;
+            }
+        }
 
         //class InputCommandEvent
         export class InputCommandEvent {
@@ -734,5 +789,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.applicationReason = applicationReason;
             }
         }
+        
     }
 }

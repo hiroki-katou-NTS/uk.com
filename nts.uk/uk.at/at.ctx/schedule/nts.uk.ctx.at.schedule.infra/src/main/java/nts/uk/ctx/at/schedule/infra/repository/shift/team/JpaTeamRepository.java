@@ -55,7 +55,7 @@ public class JpaTeamRepository extends JpaRepository implements TeamRepository {
 	 * insert team
 	 */
 	@Override
-	public void insertTeam(Team domain) {
+	public void addTeam(Team domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 

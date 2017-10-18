@@ -58,8 +58,14 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;;
 
@@ -127,6 +133,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The work type repository. */
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	/** The basic schedule service. */
+	@Inject
+	private BasicScheduleService basicScheduleService;
 		
 	/** The setter. */
 	private TaskDataSetter setter;
@@ -715,6 +725,51 @@ public class ScheduleCreatorExecutionCommandHandler
 			}
 		}
 		return Optional.empty();
+	}
+	
+	/**
+	 * Gets the work type code leave holiday type.
+	 *
+	 * @param employeeId the employee id
+	 * @param worktypeCode the work type code
+	 * @param leaveHolidayType the leave holiday type
+	 * @return the work type code leave holiday type
+	 */
+	// 休業休職の勤務種類コードを返す
+	private String getWorktypeCodeLeaveHolidayType(String employeeId, String worktypeCode, int leaveHolidayType) {
+		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(worktypeCode);
+		if (workStyle.equals(WorkStyle.ONE_DAY_REST)) {
+			return worktypeCode;
+		}
+		// find work type
+		WorkType worktype = this.workTypeRepository.findByPK(companyId, worktypeCode).get();
+
+		if (this.checkHolidayWork(worktype.getDailyWork())) {
+			// 休日出勤
+			return worktypeCode;
+		} else {
+			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(worktypeCode,
+					leaveHolidayType);
+			if (CollectionUtil.isEmpty(worktypeSets)) {
+				this.addError(employeeId, "Msg_601");
+			}
+			return worktypeSets.get(0).getWorkTypeCd().v();
+		}
+	}
+	
+	/**
+	 * Check holiday work.
+	 *
+	 * @param dailyWork the daily work
+	 * @return true, if successful
+	 */
+	// ? = 休日出勤
+	private boolean checkHolidayWork(DailyWork dailyWork){
+		if(dailyWork.getWorkTypeUnit().value == WorkTypeUnit.OneDay.value){
+			return dailyWork.getOneDay().value == WorkTypeClassification.HolidayWork.value;
+		}
+		return (dailyWork.getMorning().value == WorkTypeClassification.HolidayWork.value
+				|| dailyWork.getAfternoon().value == WorkTypeClassification.HolidayWork.value);
 	}
 
 }

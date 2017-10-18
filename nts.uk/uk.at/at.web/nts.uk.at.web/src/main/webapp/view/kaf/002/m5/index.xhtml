@@ -300,7 +300,7 @@
 								<td>	
 									<div class="m5-inline-div" data-bind="with: supportCard">
 										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectCardDialog() }, enable: checked">#{i18n.getText('KAF002_14')}</button>
 										<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 									</div>
 								</td>
@@ -308,7 +308,7 @@
 									<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
 										<div class="m5-inline-div" data-bind="with: supportLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('support', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>

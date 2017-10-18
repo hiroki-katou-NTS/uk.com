@@ -27,19 +27,19 @@ public class ScheduleCreateContentFinder {
 
 	/** The schedule execution log repository. */
 	@Inject
-	ScheduleExecutionLogRepository scheduleExecutionLogRepository;
+	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 
 	/** The schedule create content repository. */
 	@Inject
-	ScheduleCreateContentRepository scheduleCreateContentRepository;
+	private ScheduleCreateContentRepository scheduleCreateContentRepository;
 
 	/** The schedule creator repository. */
 	@Inject
-	ScheduleCreatorRepository scheduleCreatorRepository;
+	private ScheduleCreatorRepository scheduleCreatorRepository;
 
 	/** The schedule error log repository. */
 	@Inject
-	ScheduleErrorLogRepository scheduleErrorLogRepository;
+	private ScheduleErrorLogRepository scheduleErrorLogRepository;
 
 	/**
 	 * Find by execution id.

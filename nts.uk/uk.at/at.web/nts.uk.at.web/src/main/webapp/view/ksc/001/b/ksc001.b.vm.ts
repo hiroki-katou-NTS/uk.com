@@ -54,6 +54,13 @@ module nts.uk.at.view.ksc001.b {
             employeeList: KnockoutObservableArray<UnitModel>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
+            
+            //for control field
+            isReCreate: KnockoutObservable<boolean>;
+            isReSetting: KnockoutObservable<boolean>;
+//            isReCreate: KnockoutObservable<boolean>;
+//            isReCreate: KnockoutObservable<boolean>;
+//            isReCreate: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
@@ -170,6 +177,15 @@ module nts.uk.at.view.ksc001.b {
                 self.infoCreateMethod = ko.observable('');
                 self.infoPeriodDate = ko.observable('');
                 self.lengthEmployeeSelected = ko.observable('');
+                
+                //for control field
+                self.isReCreate = ko.computed(function() {
+                    return self.selectedImplementAtrCode() == ImplementAtr.RECREATE;
+                });
+
+                self.isReSetting = ko.computed(function() {
+                    return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
+                });
             }
             /**
              * get user login

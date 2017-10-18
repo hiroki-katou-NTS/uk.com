@@ -17,7 +17,7 @@ import entity.person.info.item.PpemtPerInfoItemCm;
 import entity.person.info.item.PpemtPerInfoItemCmPK;
 import entity.person.info.item.PpemtPerInfoItemOrder;
 import entity.person.info.item.PpemtPerInfoItemPK;
-import entity.person.info.setting.copysetting.BsystEmployeeCopySettingItem;
+import entity.person.info.setting.copysetting.PpestEmployeeCopySettingItem;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
@@ -178,11 +178,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(i) FROM BsystEmployeeCopySettingItem i "
+	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(i) FROM PpestEmployeeCopySettingItem i "
 			+ "JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
-			+ "WHERE i.BsystEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
+			+ "WHERE i.PpestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
 
-	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM BsystEmployeeCopySettingItem i"
+	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM PpestEmployeeCopySettingItem i"
 			+ " JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
 			+ " WHERE i.categoryId = :categoryId AND c.cid = :companyId";
 	// vinhpx: end
@@ -633,10 +633,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds) {
-		BsystEmployeeCopySettingItem obj;
+		PpestEmployeeCopySettingItem obj;
 		for (String perInfoItemDefId : perInfoItemDefIds) {
-			obj = new BsystEmployeeCopySettingItem();
-			obj.BsystEmployeeCopySettingItemPk.perInfoItemDefId = perInfoItemDefId;
+			obj = new PpestEmployeeCopySettingItem();
+			obj.PpestEmployeeCopySettingItemPk.perInfoItemDefId = perInfoItemDefId;
 			obj.categoryId = perInforCtgId;
 			getEntityManager().persist(obj);
 		}

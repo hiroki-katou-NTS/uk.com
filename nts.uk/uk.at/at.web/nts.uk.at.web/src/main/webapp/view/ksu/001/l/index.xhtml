@@ -64,23 +64,27 @@
 								<hr style="width: 280px" />
 							</div>
 						</div>
-					</div>
-				</div>
-				<div id="swap-list"
+						<div id="swap-list"
 								data-bind="ntsSwapList: {
 										showSearchBox: { showLeft : true, showRight: false},
 										height: 330,
 										width : 700,
 										dataSource: listEmployeeSwap,
 										primaryKey: 'code',
-										columns: columnsSwap,
+										leftColumns: columnsLeftSwap,
+										rightColumns: columnsRightSwap,
 										value: selectedEmployeeSwap,
 										searchMode: 'filter',
 										multiple: true,
+										enableRowNumbering: false ,
+										showNumbering: false,
 										showSort:{ showLeft : false, showRight: false}
 										
 									}">
 				</div>
+					</div>
+				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -20,6 +20,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     ];
 
     export class ScreenModel {
+        legendOptions: any;
         //grid user setting
         cursorMoveDirections: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "縦" },
@@ -80,6 +81,45 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.initLegendButton();
+            self.initDateRanger();
+            self.initDisplayFormat();
+            self.headersGrid = ko.observableArray(self.employeeModeHeader);
+            self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
+            //cursor move direction 
+            self.selectedDirection.subscribe((value) => {
+                if (value == 0) {
+                    $("#dpGrid").ntsGrid("directEnter", "below");
+                } else {
+                    $("#dpGrid").ntsGrid("directEnter", "right");
+                }
+            });
+            // show/hide header number
+            self.showHeaderNumber.subscribe((val) => {
+                self.reloadGrid();
+            });
+            // show/hide profile icon
+            self.showProfileIcon.subscribe((val) => {
+                self.reloadGrid();
+            });
+        }
+
+        initLegendButton() {
+            var self = this;
+            self.legendOptions = {
+                items: [
+                    { colorCode: '#94B7FE', labelText: '手修正（本人）' },
+                    { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
+                    { colorCode: '#BFEA60', labelText: '申請反映' },
+                    { colorCode: '#F69164', labelText: '計算値' },
+                    { colorCode: '#FD4D4D', labelText: nts.uk.resource.getText("KDW003_44") },
+                    { colorCode: '#F6F636', labelText: nts.uk.resource.getText("KDW003_45") },
+                ]
+            };
+        }
+
+        initDateRanger() {
+            var self = this;
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange) {
                     self.selectedDate(dateRange.startDate);
@@ -94,48 +134,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 startDate: moment().add(-1, "M").format("YYYY/MM/DD"),
                 endDate: moment().format("YYYY/MM/DD")
             });
+        }
+
+        initDisplayFormat() {
+            var self = this;
             self.displayFormatOptions = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText("Enum_DisplayFormat_Individual") },
                 { code: 1, name: nts.uk.resource.getText("Enum_DisplayFormat_ByDate") },
                 { code: 2, name: nts.uk.resource.getText("Enum_DisplayFormat_ErrorAlarm") }
             ]);
-            self.displayFormat.subscribe((val) => {
-                if (val == 0) {
-                    $("#emp-component").css("display", "block");
-                    $("#cbListDate").css("display", "none");
-                } else if (val == 1) {
-                    $("#cbListDate").css("display", "block");
-                    $("#emp-component").css("display", "none");
-                } else {
-                    $("#cbListDate").css("display", "none");
-                    $("#emp-component").css("display", "none");
-                }
-            });
             self.displayFormat(0);
-            self.headersGrid = ko.observableArray(self.employeeModeHeader);
-            self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
-            //cursor move direction 
-            self.selectedDirection.subscribe((value) => {
-                if (value == 0) {
-                    $("#dpGrid").ntsGrid("directEnter", "below");
-                } else {
-                    $("#dpGrid").ntsGrid("directEnter", "right");
-                }
-            });
-            // show header number when active
-            self.showHeaderNumber.subscribe((val) => {
-                nts.uk.ui.block.invisible();
-                nts.uk.ui.block.grayout();
-                self.extraction();
-                nts.uk.ui.block.clear();
-            });
-            // show/hide profile icon
-            self.showProfileIcon.subscribe((val) => {
-                nts.uk.ui.block.invisible();
-                nts.uk.ui.block.grayout();
-                self.extraction();
-                nts.uk.ui.block.clear();
-            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -151,9 +159,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
-                self.lstEmployee(data.lstEmployee);
+                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
                 self.receiveData(data);
-                self.selectedEmployee(self.lstEmployee()[self.lstEmployee().length - 1].id);
+                self.selectedEmployee(self.lstEmployee()[0].id);
                 self.extractionData();
                 self.loadGrid();
                 self.extraction();
@@ -165,8 +173,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return dfd.promise();
         }
 
+        receiveData(data) {
+            var self = this;
+            self.dpData = data.lstData;
+            self.cellStates(data.lstCellState);
+            self.optionalHeader = data.lstControlDisplayItem.lstHeader;
+            self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
+            self.sheetsGrid.valueHasMutated();
+        }
+
         btnExtraction_Click() {
             var self = this;
+            if (self.displayFormat() == 0) {
+                $("#emp-component").css("display", "block");
+                $("#cbListDate").css("display", "none");
+            } else if (self.displayFormat() == 1) {
+                $("#cbListDate").css("display", "block");
+                $("#emp-component").css("display", "none");
+            } else {
+                $("#cbListDate").css("display", "none");
+                $("#emp-component").css("display", "none");
+            }
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
@@ -191,13 +218,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
         }
 
-        receiveData(data) {
+        showErrorDialog() {
             var self = this;
-            self.dpData = data.lstData;
-            self.cellStates(data.lstCellState);
-            self.optionalHeader = data.lstControlDisplayItem.lstHeader;
-            self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
-            self.sheetsGrid.valueHasMutated();
+            let lstEmployee = [];
+            if (self.displayFormat() === 0) {
+                lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
+                    return employee.id === self.selectedEmployee();
+                }));
+            } else {
+                lstEmployee = self.lstEmployee();
+            }
+            let param = {
+                dateRange: {
+                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                },
+                lstEmployee: lstEmployee
+            };
+            nts.uk.ui.windows.setShared("paramToGetError", param);
+            nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
+            });
         }
 
         btnSetting_Click() {
@@ -243,8 +283,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         extraction() {
             var self = this;
-            self.extractionData();
             $("#dpGrid").ntsGrid("destroy");
+            self.extractionData();
             self.loadGrid();
         }
 
@@ -266,7 +306,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             _.forEach(self.dailyPerfomanceData(), (data) => {
                 if (!self.isDisableRow(data.id)) {
-                    data.sign = true;
+                    data.sign = !data.sign;
                 }
             });
             self.dailyPerfomanceData.valueHasMutated();
@@ -378,8 +418,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             isLoginUser: false
                         };
                     }));
-                    self.selectedEmployee(self.lstEmployee()[self.lstEmployee().length - 1].id);
+                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
+                    self.selectedEmployee(self.lstEmployee()[0].id);
                     self.loadKcp009();
+                    self.btnExtraction_Click();
                 },
                 onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                     self.lstEmployee([]);
@@ -391,8 +433,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         depName: '',
                         isLoginUser: false
                     });
-                    self.selectedEmployee(self.lstEmployee()[self.lstEmployee().length - 1].id);
+                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
+                    self.selectedEmployee(self.lstEmployee()[0].id);
                     self.loadKcp009();
+                    self.btnExtraction_Click();
                 },
                 onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                     self.lstEmployee(dataList.map((data: EmployeeSearchDto) => {
@@ -405,8 +449,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             isLoginUser: false
                         };
                     }));
-                    self.selectedEmployee(self.lstEmployee()[self.lstEmployee().length - 1].id);
+                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
+                    self.selectedEmployee(self.lstEmployee()[0].id);
                     self.loadKcp009();
+                    self.btnExtraction_Click();
                 },
                 onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                     self.lstEmployee(dataList.map((data: EmployeeSearchDto) => {
@@ -419,8 +465,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             isLoginUser: false
                         };
                     }));
-                    self.selectedEmployee(self.lstEmployee()[self.lstEmployee().length - 1].id);
+                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
+                    self.selectedEmployee(self.lstEmployee()[0].id);
                     self.loadKcp009();
+                    self.btnExtraction_Click();
                 },
                 onApplyEmployee: function(dataList: EmployeeSearchDto[]) {
                     self.lstEmployee(dataList.map((data: EmployeeSearchDto) => {
@@ -435,6 +483,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }));
                     self.selectedEmployee(self.lstEmployee()[self.lstEmployee().length - 1].id);
                     self.loadKcp009();
+                    self.btnExtraction_Click();
                 }
             }
         }
@@ -483,6 +532,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'Image', source: 'img-icon icon-people', controlType: 'Image' }]
             });
+        }
+
+        reloadGrid() {
+            var self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            self.extraction();
+            nts.uk.ui.block.clear();
         }
 
         createNtsFeatures() {

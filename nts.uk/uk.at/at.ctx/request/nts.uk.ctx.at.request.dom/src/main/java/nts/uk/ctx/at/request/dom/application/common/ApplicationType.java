@@ -36,9 +36,9 @@ public enum ApplicationType {
 	 
 	public int value;
 	
-	public String nameType;
-	ApplicationType(int type,String nameType){
+	public String nameId;
+	ApplicationType(int type,String nameId){
 		this.value = type;
-		this.nameType = nameType;
+		this.nameId = nameId;
 	}
 }

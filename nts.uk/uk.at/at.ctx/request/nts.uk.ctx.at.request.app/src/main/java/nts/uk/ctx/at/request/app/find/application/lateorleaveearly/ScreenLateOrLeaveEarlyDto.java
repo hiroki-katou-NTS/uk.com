@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 
 /**
  * 
@@ -23,5 +24,7 @@ public class ScreenLateOrLeaveEarlyDto {
 	private String applicantName;
 	
 	private AppCommonSettingDto appCommonSettingDto;
+	
+	private WorkManagementMultipleDto workManagementMultiple; 
 
 }

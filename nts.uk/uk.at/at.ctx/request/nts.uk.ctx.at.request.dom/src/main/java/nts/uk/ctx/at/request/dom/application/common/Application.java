@@ -111,6 +111,7 @@ public class Application extends AggregateRoot{
 	/**
 	 * List Phase
 	 */
+	@Setter
 	private List<AppApprovalPhase> listPhase;
 	
 	public static Application createFromJavaType(

@@ -31,6 +31,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
+	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
+			+ " AND a.closeAtr : closeAtr";
+
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
 
@@ -119,7 +122,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("companyId", companyId).setParameter("workTypeCode", workTypeCode)
 				.getList(x -> toDomainWorkTypeSet(x));
 	}
-
+	
+	@Override
+	public List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr) {
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr)
+				.getList(x -> toDomainWorkTypeSet(x));
+	}
 	@Override
 	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 		return this.queryProxy().find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class)
@@ -193,4 +202,6 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET).setParameter("companyId", companyId)
 				.setParameter("workTypeCode", workTypeCd).executeUpdate();
 	}
+
+	
 }
