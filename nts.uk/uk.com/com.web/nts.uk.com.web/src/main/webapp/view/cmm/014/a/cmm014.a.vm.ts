@@ -133,13 +133,8 @@ module nts.uk.com.view.cmm014.a {
                     
                     blockUI.clear();
                 }).fail(error => {
-                    if (error.messageId == 'Msg_3') {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_3" }).then(function() {
-                            $("#clfCode").focus();
-                        });
-                    } else {
-                        nts.uk.ui.dialog.alertError(error);
-                    }
+                    $('#clfCode').ntsError('set', {messageId:"Msg_3"});
+                    $('#clfCode').focus();
                     blockUI.clear();
                 });
             }
