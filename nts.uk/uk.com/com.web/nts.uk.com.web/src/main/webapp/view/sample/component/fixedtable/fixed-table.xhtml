@@ -8,6 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../../catalog/catalog.css" />
 			<com:scriptfile path="../../catalog/catalog.js" />
 			<com:scriptfile path="start.js" />
@@ -27,7 +28,7 @@
 							<col width="100px"/>
 							<col width="110px"/>
 							<col width="100px"/>
-							<col width="100px"/>
+							<col width="220px"/>
 							<col width="100px"/>
 							<col width="100px"/>
 							<col width="100px"/>
@@ -58,7 +59,14 @@
 								<td><span data-bind="text: enable"></span></td>
 								<td><input data-bind="ntsTextEditor: {value: text, option: {width: '80px'}}" /></td>
 								<td><span data-bind="text: text"></span></td>
-								<td>2017/08/08</td>
+								<td><div id="combo-box" data-bind="ntsComboBox: {options: itemList,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedCode,
+										optionsText: 'name',
+										columns: [
+												{ prop: 'name', length: 4 },
+											]}"></div></td>
 								<td>2017/08/08</td>
 								<td>就業承認</td>
 								<td>000000000001</td>
