@@ -35,7 +35,7 @@
 						#{i18n.getText('CMM011_5')}</button>
 				<button class="proceed" tabindex="1" data-bind="click: saveWorkplace,
 					enable:  (isNewMode() ? true : isWkpConfigHistLatest()) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMM011_6')}</button>
-				<button class="proceed" tabindex="3" data-bind="click: removeWorkplace,
+				<button class="danger" tabindex="3" data-bind="click: removeWorkplace,
 					enable: isNewMode() ? false : isWkpConfigHistLatest" style="margin-left: 200px;">#{i18n.getText('CMM011_7')}</button>
 				<!-- END A1_1 ~ A1_3 -->
 			</div>
@@ -46,9 +46,9 @@
 					<div id="left-content-top"
 						class="bg-green caret-bottom caret-inline caret-background">
 						<div class="cf">
-							<div data-bind="ntsFormLabel: {}" style="margin-right: 10px;">#{i18n.getText('CMM011_2')}</div>
+							<div data-bind="ntsFormLabel: {}" style="margin-right: 8px;">#{i18n.getText('CMM011_2')}</div>
 							<span data-bind="text: strDWorkplace"></span>
-							<label style="margin-left: 10px;margin-right: 10px;">#{i18n.getText('CMM011_26')}</label>
+							<label style="margin-left: 8px;margin-right: 8px;">#{i18n.getText('CMM011_26')}</label>
 							<span data-bind="text: endDWorkplace"></span>
 							<button class="pull-right" tabindex="6" data-bind="click: openWkpConfigDialog">#{i18n.getText('CMM011_21')}</button>
 						</div>
@@ -69,8 +69,9 @@
 							fields: ['name', 'code']}" style="width: 280px;"></div>
 							
 						<table id="single-tree-grid" class="cf" tabindex="8" data-bind="ntsTreeGridView:{
-								width: 360,
+								width: 385,
 								height: calHeightTree(),
+								name: '#[CMM011_8]',
 								dataSource: lstWorkplace,
 								value: selectedWpkId,
 								primaryKey: 'workplaceId',
