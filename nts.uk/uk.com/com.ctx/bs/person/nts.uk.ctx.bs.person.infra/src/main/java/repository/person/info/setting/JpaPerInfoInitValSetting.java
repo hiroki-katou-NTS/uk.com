@@ -20,18 +20,23 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 	private final String SEL_ALL_HAS_CHILD = " SELECT iv FROM PpemtPersonInitValueSetting iv"
 			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" + " ON ic.settingId = iv.initValueSettingPk.settingId"
 			+ " LEFT JOIN PpemtPerInfoCtg pc" + " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND pc.abolitionAtr=0"
-			+ " LEFT JOIN PpemtPerInfoItem pi"
-			+ " ON pi.perInfoCtgId= ic.settingCtgPk.perInfoCtgId"
-			+ " AND pi.abolitionAtr = 0"
-			+ " WHERE iv.companyId = :companyId"
-			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId != NULL";
+			+ " AND pc.abolitionAtr=0" + " LEFT JOIN PpemtPerInfoItem pi"
+			+ " ON pi.perInfoCtgId= ic.settingCtgPk.perInfoCtgId" + " AND pi.abolitionAtr = 0"
+			+ " WHERE iv.companyId = :companyId" + " AND pi.ppemtPerInfoItemPK.perInfoItemDefId != NULL";
 
 	private final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";
 
-	private final String SEL_A_INIT_VAL_SET = " SELECT c FROM FROM PpemtPersonInitValueSetting c"
+	private final String SEL_A_INIT_VAL_SET = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.companyId = :companyId" + " AND c.settingCode = :setCode";
+
+	private final String SEL_A_INIT_VAL_SET_1 = " SELECT c FROM PpemtPersonInitValueSetting c"
+			+ " WHERE c.companyId = :companyId" + " AND c.settingCode = :settingCode"
+			+ " AND c.initValueSettingPk.settingId = :settingId ";
+
+	private final String DELETE_BY_SETTINGCD_SETTINGID = " DELETE FROM PpemtPersonInitValueSetting c"
+			+ " WHERE c.initValueSettingPk.settingId =:settingId AND c.settingCode =:settingCode"
+			+ " AND c.companyId =:companyId";
 
 	private static PerInfoInitValueSetting toDomain(PpemtPersonInitValueSetting entity) {
 		PerInfoInitValueSetting domain = PerInfoInitValueSetting.createFromJavaType(entity.initValueSettingPk.settingId,
@@ -70,9 +75,8 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 	@Override
 	public Optional<PerInfoInitValueSetting> getDetailInitValSetting(String settingId) {
 		this.getEntityManager().flush();
-		Optional<PerInfoInitValueSetting> x= this.queryProxy().query(SEL_BY_SET_ID, PpemtPersonInitValueSetting.class)
-				.setParameter("settingId", settingId)
-				.getSingle(c -> toDomain(c));
+		Optional<PerInfoInitValueSetting> x = this.queryProxy().query(SEL_BY_SET_ID, PpemtPersonInitValueSetting.class)
+				.setParameter("settingId", settingId).getSingle(c -> toDomain(c));
 		return x;
 	}
 
@@ -104,9 +108,21 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 	}
 
 	@Override
-	public void delete(String initValueSettingId) {
-		this.commandProxy().remove(PpemtPersonInitValueSetting.class,
-				new PpemtPersonInitValueSettingPk(initValueSettingId));
+	public void delete(String companyId, String settingId, String settingCode) {
+		this.getEntityManager().createQuery(DELETE_BY_SETTINGCD_SETTINGID)
+							   .setParameter("companyId", companyId)
+							   .setParameter("settingId", settingId)
+							   .setParameter("settingCode", settingCode)
+							   .executeUpdate();
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public Optional<PerInfoInitValueSetting> getDetailInitValSetting(String companyId, String settingCode,
+			String settingId) {
+		return this.queryProxy().query(SEL_A_INIT_VAL_SET_1, PpemtPersonInitValueSetting.class)
+				.setParameter("companyId", companyId).setParameter("settingCode", settingCode)
+				.setParameter("settingId", settingId).getSingle(c -> toDomain(c));
 	}
 
 }
