@@ -9,19 +9,21 @@ module nts.uk.com.view.cps009.c.viewmodel {
 
     export class ViewModel {
 
+        
         currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue(
             {
                 id: "",
-                itemCode: "0001",
-                itemName: "A"
+                itemCode: "",
+                itemName: ""
             }));
 
         isCopy: KnockoutObservable<boolean> = ko.observable(false);
-
-
+        codeCtg: KnockoutObservable<string> = ko.observable('001');
+        nameCtg: KnockoutObservable<string> = ko.observable('Category');
+        codeInput: KnockoutObservable<string> = ko.observable('');
+        nameInput: KnockoutObservable<string> = ko.observable('');
         constructor() {
-
-
+            let param = getShared('CPS009C_PARAM') || {id: '', code: '', name: ''};
         }
 
         copyInitValue() {
@@ -32,7 +34,7 @@ module nts.uk.com.view.cps009.c.viewmodel {
                     itemCode: self.currentInitVal().itemCode(),
                     itemName: self.currentInitVal().itemName()
                 }
-
+            console.log(copyObj)
             close();
 
         }
@@ -88,5 +90,11 @@ module nts.uk.com.view.cps009.c.viewmodel {
             self.itemName(params.itemName || "");
         }
 
+    }
+    export class DataCopy{
+        id: string;
+        codeNew: string;
+        nameNew: string;
+        copy: boolean;    
     }
 }
