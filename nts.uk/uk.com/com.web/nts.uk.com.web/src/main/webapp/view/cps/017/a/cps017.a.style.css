@@ -1,8 +1,8 @@
-#history_lst_grid{
+#history_lst_grid {
 	width: 266px;
 }
 
-#history_lst{
+#history_lst {
 	width: 266px;
 }
 
@@ -17,9 +17,9 @@
 }
 
 #content-right {
-	margin-left: 40px;
+	margin-left: 150px;
 	margin-top: 10px;
-	width: 600px !important;
+	width: 500px !important;
 	float: left;
 	margin-top: 10px;
 }
@@ -70,6 +70,7 @@
 
 #itemRegisterLst {
 	margin-top: 20px;
+	width: 436px;
 }
 
 #code {

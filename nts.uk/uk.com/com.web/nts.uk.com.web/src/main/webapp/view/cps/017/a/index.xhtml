@@ -98,9 +98,8 @@
 
 
 				<!-- phần giữa của màn hình -->
-				<div id="content-center" class="pull-left"
-					data-bind="with: perInfoSelectionItem">
-					<div>
+				<div id="content-center" class="pull-left">
+					<div data-bind="with: perInfoSelectionItem">
 						<div data-bind="ntsFormLabel: {required: true}"
 							class='distane col1'>
 							<label>#{i18n.getText('CPS017_13')}</label>
@@ -113,22 +112,36 @@
 						<span> #{i18n.getText('CPS017_14')}</span>
 					</div>
 
-					
+
 					<!-- S -->
 					<div id="itemRegisterLst" class="caret-right caret-background">
-						
-						<table id="item_register_grid">
-						</table>
+						<div>
+							<table id="item_register_grid"
+								data-bind="ntsGridList: {
+									height: 270,
+									options: listSelection,
+									primaryKey: 'selectionID',
+									showNumbering:true,
+									columns: [
+						                { headerText: '', key: 'selectionID', width: 20 ,hidden:true},
+						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'selectionCode', width: 100 },
+						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCode', width: 120 },
+						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 140 }
+						            ],
+									multiple: false,
+									value: selection().selectionID}">
+							</table>
+						</div>
 					</div>
-					 
+
 				</div>
 
 
 
 				<!-- phần bên phải của màn hình  -->
-				<!-- 				
+
 				<div id="content-right">
-					
+
 					<div>
 						<div data-bind="ntsFormLabel: {required: true}"
 							class='distane col1'>
@@ -136,24 +149,24 @@
 						</div>
 					</div>
 
-					
+					 
 					
 					<div class="distance">
 						<input id="code"
 							data-bind="ntsTextEditor: {
-								value: currentItemSel().current_sel_item_id,
+								value: ,
 								required: true,
 								enable: true,
 								immediate: false}" />
 						<input id="name"
 							data-bind="ntsTextEditor: {
-								value: currentItemSel().current_sel_item_id,
+								value: ,
 								required: true,
 								enable: true,
 								immediate: false}" />
 					</div>
 
-					
+					<!--
 					
 					<div class="formlabel">
 						<div data-bind="ntsFormLabel: {}" class='distane'>
@@ -194,7 +207,11 @@
 							immediate: false}" />
 
 					</div>
- -->
+ 			
+
+					 -->
+				</div>
+
 
 			</div>
 		</ui:define>

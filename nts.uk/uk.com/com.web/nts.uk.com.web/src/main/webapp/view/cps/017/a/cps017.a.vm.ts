@@ -16,6 +16,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
         historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
 
+        //Selection:
+        listSelection: KnockoutObservableArray<ISelection> = ko.observableArray([]);
+        selection: KnockoutObservable<Selection> = ko.observable(new Selection({ selectionID: '', histId: '' }));
+
+        //OrderSelection:
+        listOrderSelection: KnockoutObservableArray<IOrderSelection> = ko.observableArray([]);
+        orderSelection: KnockoutObservable<OrderSelection> = ko.observable(new OrderSelection({ selectionID: '', histId: '' }));
+
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -27,26 +35,35 @@ module nts.uk.com.view.cps017.a.viewmodel {
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
-//                    nts.uk.ui.errors.clearAll();
-//                    
-//                    
-//                    service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
-//                        if (_perInfoSelectionItem) {
-//                            perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
-//                        }
-//                    });
-                let selectedObject = _.find( self.listItems(),(item)=>{
-                    return item.selectionItemId == x;  
-                } );
-                perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
-      
-                //history
-                service.getAllPerInfoHistorySelection(x).done((_selectionItemId: IHistorySelection) => {                    
-                            self.listHistorySelection(_selectionItemId);
- 
+                    //                    nts.uk.ui.errors.clearAll();
+                    //                    
+                    //                    
+                    //                    service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
+                    //                        if (_perInfoSelectionItem) {
+                    //                            perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
+                    //                        }
+                    //                    });
+                    let selectedObject = _.find(self.listItems(), (item) => {
+                        return item.selectionItemId == x;
+                    });
+                    perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
+
+
+                    //history
+                    service.getAllPerInfoHistorySelection(x).done((_selectionItemId: IHistorySelection) => {
+                        self.listHistorySelection(_selectionItemId);
+                        self.historySelection().histId(self.listHistorySelection()[0].histId);
                     });
                 }
             });
+
+            //sub theo historyID:
+            historySelection.histId.subscribe(x => {
+                service.getAllOrderItemSelection(x).done((_selectionID: ISelection) => {
+                    self.listSelection(_selectionID);
+                });
+            });
+
         }
 
         //開始
@@ -81,9 +98,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 alertError({ messageId: "Msg_455" });
             });
 
+
+
+
             return dfd.promise();
         }
-        
+
 
         //ダイアログC画面
         openDialogC() {
@@ -166,7 +186,57 @@ module nts.uk.com.view.cps017.a.viewmodel {
         }
     }
 
+    //Selection
+    interface ISelection {
+        selectionID: string;
+        histId: string;
+        selectionCD: string;
+        selectionName: string;
+        externalCD: string;
+        memoSelection: string;
+    }
 
+    class Selection {
+        selectionID: KnockoutObservable<string> = ko.observable('');
+        histId: KnockoutObservable<string> = ko.observable('');
+        selectionCD: KnockoutObservable<string> = ko.observable('');
+        selectionName: KnockoutObservable<string> = ko.observable('');
+        externalCD: KnockoutObservable<string> = ko.observable('');
+        memoSelection: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: ISelection) {
+            let self = this;
+            self.selectionID(param.selectionID || '');
+            self.histId(param.histId || '');
+            self.selectionCD(param.selectionCD || '');
+            self.selectionName(param.selectionName || '');
+            self.externalCD(param.externalCD || '');
+            self.memoSelection(param.memoSelection || '');
+        }
+    }
+
+    //Order Selection
+    interface IOrderSelection {
+        selectionID: string;
+        histId: string;
+        disporder: number;
+        initSelection: number;
+    }
+
+    class OrderSelection {
+        selectionID: KnockoutObservable<string> = ko.observable('');
+        histId: KnockoutObservable<string> = ko.observable('');
+        disporder: KnockoutObservable<number> = ko.observable('');
+        initSelection: KnockoutObservable<number> = ko.observable('');
+
+        constructor(param: OrderSelection) {
+            let self = this;
+            self.selectionID(param.selectionID || '');
+            self.histId(param.histId || '');
+            self.disporder(param.disporder || '');
+            self.initSelection(param.initSelection || '');
+        }
+    }
 }
 
 
