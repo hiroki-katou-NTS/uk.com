@@ -18,8 +18,6 @@ import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagem
 @Transactional
 public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFileManagementRepository{
 	
-	private static final String GET_DATA_BY_SID_AND_TYPE_FILE= "";
-	
 	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND (c.filetype = :filetype or c.filetype = -1)";
 
 	private EmployeeFileManagement toDomainEmpFileManagement(BsymtEmpFileManagement entity) {
