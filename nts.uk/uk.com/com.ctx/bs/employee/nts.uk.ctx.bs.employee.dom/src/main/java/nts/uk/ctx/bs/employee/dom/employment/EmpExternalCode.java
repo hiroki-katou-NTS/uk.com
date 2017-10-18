@@ -8,6 +8,7 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * The Class EmpExternalCode.
@@ -15,6 +16,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 // 雇用外部コード
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(10)
+@ZeroPaddedCode
 public class EmpExternalCode extends CodePrimitiveValue<EmpExternalCode> {
 
 	/**

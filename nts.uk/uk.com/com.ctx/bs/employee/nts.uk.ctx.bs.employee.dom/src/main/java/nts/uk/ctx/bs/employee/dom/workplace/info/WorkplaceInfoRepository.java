@@ -65,19 +65,11 @@ public interface WorkplaceInfoRepository {
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
 	
 	/**
-	 * Find latest by wkp id.
-	 *
-	 * @param wkpId the wkp id
-	 * @return the optional
-	 */
-	Optional<WorkplaceInfo> findLatestByWkpId(String wkpId);
-	
-	/**
 	 * Checks if is existed.
 	 *
 	 * @param companyId the company id
-	 * @param newWkpId the new wkp id
+	 * @param newWkpCd the new wkp id
 	 * @return true, if is existed
 	 */
-	boolean isExisted(String companyId, String newWkpId);
+	boolean isExistedWkpCd(String companyId, String newWkpCd);
 }

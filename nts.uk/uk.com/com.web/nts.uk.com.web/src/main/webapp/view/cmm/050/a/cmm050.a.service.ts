@@ -56,53 +56,37 @@ module nts.uk.com.view.cmm050.a {
             smtpTimeOut: number;
             smtpPort: number;
             
-            constructor( smtpIpVersion: number,
-                        smtpServer: string,
-                        smtpTimeOut: number,
+            constructor( smtpServer: string,
                         smtpPort: number ){
-                this.smtpIpVersion = smtpIpVersion;
                 this.smtpServer = smtpServer;
-                this.smtpTimeOut = smtpTimeOut;
                 this.smtpPort = smtpPort;
             }
         }
 
         export class PopInfoDto {
-            popIpVersion: number;
             popServer: string;
             popUseServer: number;
-            popTimeOut: number;
             popPort: number;
             
-            constructor( popIpVersion: number,
-                        popServer: string,
+            constructor(popServer: string,
                         popUseServer: number,
-                        popTimeOut: number,
                         popPort: number ){
-                this.popIpVersion = popIpVersion;
                 this.popServer = popServer;
                 this.popUseServer = popUseServer;
-                this.popTimeOut = popTimeOut;
                 this.popPort = popPort;
             }
         }
 
         export class ImapInfoDto {
-            imapIpVersion: number;
             imapServer: string;
             imapUseServer: number;
-            imapTimeOut: number;
             imapPort: number;
             
-            constructor( imapIpVersion: number,
-                        imapServer: string,
+            constructor( imapServer: string,
                         imapUseServer: number,
-                        imapTimeOut: number,
                         imapPort: number ){
-                this.imapIpVersion = imapIpVersion;
                 this.imapServer = imapServer;
                 this.imapUseServer = imapUseServer;
-                this.imapTimeOut = imapTimeOut;
                 this.imapPort = imapPort;
             }
         }

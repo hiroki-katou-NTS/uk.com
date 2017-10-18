@@ -16,6 +16,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(5)
 @ZeroPaddedCode
+// 職位コード
 public class JobTitleCode extends CodePrimitiveValue<JobTitleCode> {
 
 	/** The Constant serialVersionUID. */

@@ -37,5 +37,5 @@ public interface SequenceMasterGetMemento {
 	 *
 	 * @return the order
 	 */
-	short getOrder();
+	int getOrder();
 }

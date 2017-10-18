@@ -59,10 +59,11 @@ module nts.uk.com.view.cmm011 {
              */
             public isSelectedLatestHistory() {
                 let self = this;
-                if (self.lstWpkHistory().length > 0) {
-                    return self.selectedHistoryId() == self.lstWpkHistory()[0].historyId;
+                if (self.lstWpkHistory().length <= 0) {
+                    return false;
                 }
-                return false;
+                return self.lstWpkHistory().filter(item => item.historyId == self.selectedHistoryId()
+                    && item.endDate == "9999/12/31").length > 0;
             }
         }
         

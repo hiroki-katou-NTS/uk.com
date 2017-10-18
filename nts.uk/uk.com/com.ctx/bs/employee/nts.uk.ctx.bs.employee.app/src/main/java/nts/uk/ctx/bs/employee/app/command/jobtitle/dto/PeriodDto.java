@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  * Instantiates a new period dto.
  */
 @Data
+@AllArgsConstructor
 public class PeriodDto {
 	
 	/** The start date. */

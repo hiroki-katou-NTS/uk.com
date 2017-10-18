@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
@@ -54,8 +52,8 @@ public class JpaWorkplaceInfoSetMemento implements WorkplaceInfoSetMemento {
      * setHistoryId(nts.uk.ctx.bs.employee.dom.workplace.HistoryId)
      */
     @Override
-    public void setHistoryId(HistoryId historyId) {
-        this.entity.getBsymtWorkplaceInfoPK().setHistoryId(historyId.v());
+    public void setHistoryId(String historyId) {
+        this.entity.getBsymtWorkplaceInfoPK().setHistoryId(historyId);
     }
 
     /*
@@ -65,8 +63,8 @@ public class JpaWorkplaceInfoSetMemento implements WorkplaceInfoSetMemento {
      * setWorkplaceId(nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId)
      */
     @Override
-    public void setWorkplaceId(WorkplaceId workplaceId) {
-        this.entity.getBsymtWorkplaceInfoPK().setWkpid(workplaceId.v());
+    public void setWorkplaceId(String workplaceId) {
+        this.entity.getBsymtWorkplaceInfoPK().setWkpid(workplaceId);
     }
 
     /*

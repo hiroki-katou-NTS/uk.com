@@ -80,21 +80,9 @@ module demo.a.viewmodel {
             
             nts.uk.ui.windows.sub.modal("/view/cdl/002/a/index.xhtml").onClosed(function() {
                 var output = getShared('CDL002Output');
-                if (output) {
-                    self.selectedItem(output);
-                    self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
-                }
+                self.selectedItem(output);
+                self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
             });
-        }
-        
-        // Get Code of Selected Item(s)
-        private getSelectedItemCode(): string {
-            var self = this;
-            if (self.isMultiSelect()) {
-                return self.selectedItem().join(', ');
-            } else {
-                return self.selectedItem();
-            }
         }
         
     }

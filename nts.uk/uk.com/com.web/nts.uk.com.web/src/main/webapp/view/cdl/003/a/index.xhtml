@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 450, height: 550 };</script>
+				<script>var dialogSize = { width: 450, height: 500 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="cdl003.a.main.css" />
 				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -19,7 +19,7 @@
 					<div class="lableCDL" tabindex="-1">
 						<label>#{i18n.getText('CDL003_1')}</label>
 					</div>
-					<div id="classification" tabindex="1"></div>
+					<div id="classification" tabindex="-1"></div>
 				</div>
 				<div id="functions-area-bottom">
 					<button class="proceed x-large" tabindex="2" data-bind="click: selectedClassification">#{i18n.getText('CDL003_2')}</button>

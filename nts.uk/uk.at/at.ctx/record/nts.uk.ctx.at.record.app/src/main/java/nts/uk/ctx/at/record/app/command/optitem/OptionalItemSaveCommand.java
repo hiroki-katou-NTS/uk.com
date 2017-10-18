@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.record.dom.optitem.CalcResultRange;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -45,6 +48,9 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 
 	/** The calculation result range. */
 	private CalcResultRangeDto calcResultRange;
+
+	/** The formulas. */
+	private List<FormulaDto> formulas;
 
 	/*
 	 * (non-Javadoc)

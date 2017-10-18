@@ -181,7 +181,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository#findMaxOrder()
 	 */
 	@Override
-	public short findMaxOrder() {
+	public int findMaxOrder() {
 		
 		// Check if sequence is empty
 		if (isEmpty()) {

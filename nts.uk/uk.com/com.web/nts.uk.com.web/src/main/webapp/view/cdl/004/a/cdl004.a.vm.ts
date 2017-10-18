@@ -44,7 +44,8 @@ module nts.uk.com.view.cdl004.a {
                     isShowNoSelectRow:  self.isShowNoSelectRow,
                     selectedCode: null,
                     isDialog: true,
-                    maxRows: 12
+                    maxRows: 12,
+                    tabindex: 1
                 }
                 if (self.isMultiple) {
                     self.jobtitles.selectedCode = self.selectedMulJobtitle;
@@ -59,24 +60,46 @@ module nts.uk.com.view.cdl004.a {
              */
             private selectedJobtitle() :void {
                 var self = this;
+                var selectedCode: any = null;
                 if(self.isMultiple){
-                    if(!self.selectedMulJobtitle() || self.selectedMulJobtitle().length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
+                    var dataSelected: string[] = [];
+                    for(var code of self.selectedMulJobtitle()){
+                        if(self.checkExistJobtile(code, $("#jobtitle").getDataList())){
+                           dataSelected.push(code);     
+                        }    
+                    }
+                    self.selectedMulJobtitle(dataSelected);
+                    selectedCode = self.selectedMulJobtitle();
+                    if(!selectedCode || selectedCode.length == 0){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
                         return;    
                     }    
-                }else {
-                     if(!self.selectedSelJobtitle || !self.selectedSelJobtitle()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
-                        return;    
-                    }      
-                }
-                
-                var selectedCode : any = self.selectedMulJobtitle();
-                if (!self.isMultiple) {
+                } else {
                     selectedCode = self.selectedSelJobtitle();
+                    if (!self.checkExistJobtile(selectedCode, $("#jobtitle").getDataList())) {
+                        selectedCode = '';
+                    }
+                    if (!selectedCode) {
+                        // Check if selected No select Row.
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                        return;
+                    }
                 }
+
                 nts.uk.ui.windows.setShared('outputCDL004', { selectedCode: selectedCode });
                 nts.uk.ui.windows.close();    
+            }
+            
+            /**
+             * function check job title
+             */
+            private checkExistJobtile(code: string, data: UnitModel[]): boolean {
+                for (var item of data) {
+                    if (code === item.id) {
+                        return true;
+                    }
+                }
+                return false;
             }
             /**
              * close windows

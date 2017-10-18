@@ -152,12 +152,12 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository implements W
      */
     private List<BsymtWkpConfigInfo> toListEntity(WorkplaceConfigInfo wkpConfigInfo) {
         String companyId = wkpConfigInfo.getCompanyId();
-        String historyId = wkpConfigInfo.getHistoryId().v();
+        String historyId = wkpConfigInfo.getHistoryId();
 
         List<BsymtWkpConfigInfo> lstEntity = new ArrayList<>();
 
         for (WorkplaceHierarchy wkpHierarchy : wkpConfigInfo.getLstWkpHierarchy()) {
-            BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK(companyId, historyId, wkpHierarchy.getWorkplaceId().v());
+            BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK(companyId, historyId, wkpHierarchy.getWorkplaceId());
             Optional<BsymtWkpConfigInfo> optional = this.queryProxy().find(pk, BsymtWkpConfigInfo.class);
 
             BsymtWkpConfigInfo entity = null;

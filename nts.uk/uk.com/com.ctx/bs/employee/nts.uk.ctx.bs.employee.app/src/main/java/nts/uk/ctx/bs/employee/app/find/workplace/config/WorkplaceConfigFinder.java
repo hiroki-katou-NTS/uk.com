@@ -96,7 +96,7 @@ public class WorkplaceConfigFinder {
      *            the selected wkp id
      */
     private WorkplaceStateDto validWokplaceHierarchy(String companyId, String historyId, String selectedWkpId) {
-        WorkplaceStateDto wkpStateDto = new WorkplaceStateDto();
+        WorkplaceStateDto wkpStateDto = new WorkplaceStateDto(true, true);
         Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = this.wkpConfigInfoRepo.find(companyId, historyId);
         if (!optionalWkpConfigInfo.isPresent()) {
             return wkpStateDto;
@@ -133,8 +133,8 @@ public class WorkplaceConfigFinder {
             exceptions.throwExceptions();
         }
         // set infor return
-        wkpStateDto.setLessMaxHierarchy(isLessMaxHierarchy);
-        wkpStateDto.setLessMaxSiblings(isLessMaxSiblings);
+        wkpStateDto.setIsLessMaxHierarchy(isLessMaxHierarchy);
+        wkpStateDto.setIsLessMaxSiblings(isLessMaxSiblings);
         
         return wkpStateDto;
     }
