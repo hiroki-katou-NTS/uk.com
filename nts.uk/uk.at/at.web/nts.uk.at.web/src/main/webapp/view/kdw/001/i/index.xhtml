@@ -6,8 +6,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 930, height: 680 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.i.main.css" />
 			<com:scriptfile path="kdw001.i.start.js" />
@@ -20,60 +21,44 @@
 					
 			</div>
 			<div id="contents-area">
-				<table class="from-label">
+				<table id="table-label" class="from-label">
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_77')}</div>
 						</td>
+						<!-- I1_2 -->
 						<td colspan="2">入社日を変更した</td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
+						<!-- I1_4 -->
 						<td>11月度</td>
+						<!-- I1_5 -->
 						<td>01：末締めI1-4</td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
+						<!-- I1_6 -->
 						<td colspan="2">2016/11/01 ～ 2016/11/30</td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
 						</td>
+						<!-- I1_9 -->
 						<td colspan="2">33人</td>
 					</tr>
 				</table>
-				<!-- <div class="from-label">
-					<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_77')}</div>
-					<div class="text"> 入社日を変更した </div>
-					<div style="clear:both"></div>
-				</div>
-				<div class="from-label">
-					<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
-					<div class="text">11月度</div>
-					<div class="text">01：末締めI1-4</div>
-					<div style="clear:both"></div>
-				</div >
-				<div class="from-label">
-					<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
-					<div class="text">2016/11/01 ～ 2016/11/30</div>
-					<div style="clear:both"></div>
-				</div>
-				<div class="from-label">
-					<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
-					<div class="text">33人</div>
-					<div style="clear:both"></div>
-				</div> -->
 				
 				<div style="margin-top: 25px;margin-left: 50px;">
 					<table id="table-infor">
 						<thead>
 							<tr class="bg-green">
-								<!-- F3_2 3 4 5 6 7 8 -->
+								<!-- I2_2 3 4 5 6 7 8 9 -->
 								<th style="width: 180px;">#{i18n.getText('KDW001_24')}</th>
 								<th style="width: 180px;">#{i18n.getText('KDW001_25')}</th>
 								<th style="width: 100px;text-align: center;">#{i18n.getText('KDW001_26')}</th>
@@ -87,20 +72,33 @@
 						<tbody>
 							<com:ko-foreach bind="itemList">
 								<tr>
+									<!-- I2_10 -->
 									<td><span data-bind="text: $data.column1"></span></td>
+									<!-- I2_11 -->
 									<td><span data-bind="text: $data.column2"></span></td>
+									<!-- I2_12 -->
 									<td style="text-align: center;"><span data-bind="text: $data.column3"></span></td>
+									<!-- I2_13 -->
 									<td><span data-bind="text: $data.column4"></span></td>
+									<!-- I2_14 -->
 									<td><span data-bind="text: $data.column5"></span></td>
+									<!-- I2_15 -->
 									<td><span data-bind="text: $data.column6"></span></td>
-									<td style="text-align: center;"><a href="#" class="button-reference" data-bind="text: $data.column7"></a></td>
-									<td style="text-align: center;"><a href="#" class="button-reference" data-bind="text: $data.column8"></a></td>
+									<!-- I2_16 -->
+									<td style="text-align: center;"><span class="hyperlink" data-bind=" text: $data.column7, click: $parent.openDialogG "></span></td>
+									<!-- I2_17 -->
+									<td style="text-align: center;"><span class="hyperlink" data-bind="text: $data.column8, click : $parent.openDialogH "></span></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>
 					</table>
 				</div>
 			</div>
+			<div id="functions-area-bottom">
+				<!-- I3_2 -->
+				<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
+			</div>
+			
 		</ui:define>
 
 	</ui:composition>

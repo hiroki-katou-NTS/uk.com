@@ -9,22 +9,17 @@
     margin-left: 20px;
 }
 
-table {
-	border-collapse: collapse;
-}
 
 #table-infor th,#table-infor td{
 	 border: 1px solid black;
 }
 
-th{
+#table-infor th,#table-label th{
 	height: 40px;
 	padding-left: 5px;
 }
-td{
+#table-infor td,#table-label td{
 	padding: 5px 10px;
 	
 }
-a{
-    text-decoration: none;
-}
+

@@ -17,7 +17,6 @@
 			<div id="functions-area ">
 				<!-- F1_1 -->
 				<a id="linkButton" class="goback" data-bind="ntsLinkButton: {}">#{i18n.getText('KDW001_5')}</a> 
-					
 			</div>
 			
 			<div id="contents-area">
@@ -34,7 +33,7 @@
 									enable: enable, 
 									showNextPrevious: false, 
 									value: dateValue, 
-									maxRange: 'oneMonth'}"/>
+									maxRange: 'oneYear'}"/>
 						<!-- F2_7 -->
 						<button id="button-search" class="large">#{i18n.getText('KDW001_43')}</button>
 					</div>
@@ -43,10 +42,20 @@
 				</div>
 				<!-- F3_1 -->
 				<div style="margin-top: 7px;margin-left: 50px;">
-					<table>
+					<table id="single-list" 
+						data-bind="ntsGridList: {
+	                        width: 955,
+	                        height: 415,
+	                        options: listClassification,
+	                        optionsValue: 'code',
+	                        columns: columns ,
+	                        multiple: false,
+	                        value: currentSelectedRow}">
+					</table>
+					<!-- <table>
 						<thead>
 							<tr class="bg-green">
-								<!-- F3_2 3 4 5 6 7 8 -->
+								F3_2 3 4 5 6 7 8
 								<th class="text" style="width: 100px;">#{i18n.getText('KDW001_73')}</th>
 								<th class="text" style="width: 130px;">#{i18n.getText('KDW001_74')}</th>
 								<th class="text" style="width: 120px;">#{i18n.getText('KDW001_75')}</th>
@@ -65,12 +74,12 @@
 									<td><span data-bind="text: $data.column4"></span></td>
 									<td><span data-bind="text: $data.column5"></span></td>
 									<td><span data-bind="text: $data.column6"></span></td>
-									<td style="text-align: center;"><button class="button-reference">参照</button></td>
+									<td style="text-align: center;"><button class="button-reference" data-bind="click : $parent.openDialogI" >参照</button></td>
 								</tr>
 							</com:ko-foreach>
 							
 						</tbody>
-					</table>
+					</table> -->
 				</div>
 			</div>
 		</ui:define>

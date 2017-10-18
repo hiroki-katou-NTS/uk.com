@@ -25,6 +25,20 @@ module nts.uk.at.view.kdw001.i {
                 dfd.resolve();
                 return dfd.promise();
             }//end start page
+            
+            //open dialog G
+            openDialogG() {
+                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
+            }
+            
+             //open dialog H
+            openDialogH() {
+                nts.uk.ui.windows.sub.modal("/view/kdw/001/h/index.xhtml");
+            }
+            
+            closeDialog(): void {
+                nts.uk.ui.windows.close();
+            }
         }//end screenModel
     }//end viewmodel    
 }//end module
