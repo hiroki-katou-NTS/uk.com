@@ -19,6 +19,6 @@ private static final long serialVersionUID = 1L;
 	/** The sid. */
 	@Basic(optional = false)
 	@Column(name="FILE_ID")
-	private String fileid;
+	public String fileid;
 
 }

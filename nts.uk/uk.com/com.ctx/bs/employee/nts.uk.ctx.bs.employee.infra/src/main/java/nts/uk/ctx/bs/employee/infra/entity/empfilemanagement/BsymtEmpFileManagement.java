@@ -8,12 +8,12 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "BSYMT_EMP_FILE_MANAGEMENT")
 public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
@@ -24,25 +24,25 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	protected BsymtEmpFileManagementPK bsymtEmpFileManagementPK;
+	public BsymtEmpFileManagementPK bsymtEmpFileManagementPK;
 	
 	/** The name. */
 	@Basic(optional = false)
 	@Column(name = "SID")
-	private String sid;
+	public String sid;
 	
 	@Basic(optional = true)
 	@Column(name = "FILE_TYPE")
-	private int filetype;
+	public int filetype;
 	
 
 	@Basic(optional = true)
 	@Column(name = "DISPORDER")
-	private int disPOrder;
+	public int disPOrder;
 	
 	@Basic(optional = true)
 	@Column(name = "PERSON_INFO_CTG_ID")
-	private int personInfoctgId;
+	public String personInfoctgId;
 	
 	
 	@Override
