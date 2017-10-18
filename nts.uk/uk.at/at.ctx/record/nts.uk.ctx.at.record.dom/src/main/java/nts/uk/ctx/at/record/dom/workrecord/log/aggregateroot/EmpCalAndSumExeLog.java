@@ -10,9 +10,10 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.log.CaseExecutionContentId;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExeErMesInfor;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutedMenu;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExeStateOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutedMenu;
 
 /**
  * @author danpv
@@ -53,5 +54,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	private ExeStateOfCalAndSum executionStatus;
 
 	private CaseExecutionContentId operationCase;
+	
+	private ExeErMesInfor exeErmesInfor;
 
 }
