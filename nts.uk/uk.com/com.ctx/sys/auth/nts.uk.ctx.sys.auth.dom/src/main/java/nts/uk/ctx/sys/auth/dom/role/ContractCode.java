@@ -2,27 +2,30 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.jobtitle;
+package nts.uk.ctx.sys.auth.dom.role;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class PositionId.
+ * The Class ContractCode.
  */
-@StringMaxLength(36)
-public class JobTitleId extends StringPrimitiveValue<JobTitleId> {
+@StringCharType(CharType.NUMERIC)
+@StringMaxLength(12)
+public class ContractCode extends StringPrimitiveValue<ContractCode> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new position id.
+	 * Instantiates a new contract code.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
-	public JobTitleId(String rawValue) {
+	public ContractCode(String rawValue) {
 		super(rawValue);
 	}
-
 }

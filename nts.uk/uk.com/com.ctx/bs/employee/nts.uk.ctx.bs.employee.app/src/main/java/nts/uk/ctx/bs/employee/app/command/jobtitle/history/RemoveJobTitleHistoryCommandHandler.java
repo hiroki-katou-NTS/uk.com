@@ -71,7 +71,7 @@ public class RemoveJobTitleHistoryCommandHandler extends CommandHandler<RemoveJo
 		
 		// Update lastest history
 		this.jobTitleHistoryService.updateLastestHistory(companyId,
-				jobTitle.getJobTitleId().v(),
+				jobTitle.getJobTitleId(),
 				GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
 	}
 

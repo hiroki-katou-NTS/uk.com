@@ -41,12 +41,12 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	private BsymtJobInfo toEntity(JobTitleInfo jobTitleInfo) {
 
 		Optional<BsymtJobInfo> optional = this.queryProxy().find(new BsymtJobInfoPK(jobTitleInfo.getCompanyId().v(),
-				jobTitleInfo.getJobTitleHistoryId(), jobTitleInfo.getJobTitleId().v()), BsymtJobInfo.class);
+				jobTitleInfo.getJobTitleHistoryId(), jobTitleInfo.getJobTitleId()), BsymtJobInfo.class);
 		BsymtJobInfo entity = new BsymtJobInfo();
 		if (optional.isPresent()) {
 			entity = optional.get();
 		}
-
+		
 		JpaJobTitleInfoSetMemento memento = new JpaJobTitleInfoSetMemento(entity);
 		jobTitleInfo.saveToMemento(memento);
 		return entity;
@@ -127,6 +127,38 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	}
 
 	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#findByJobCode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<JobTitleInfo> findByJobCode(String companyId, String jobTitleCode) {
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
+		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		
+		// Build query
+		cq.select(root);
+
+		// add where
+		List<Predicate> listPredicate = new ArrayList<>();
+		listPredicate.add(
+				criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+		listPredicate.add(
+				criteriaBuilder.equal(root.get(BsymtJobInfo_.jobCd), jobTitleCode));
+		cq.where(listPredicate.toArray(new Predicate[] {}));
+
+		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
+
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))));
+		}
+	}
+	
+	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#isSequenceMasterUsed(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -183,5 +215,32 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
         return em.createQuery(cq).getResultList().stream()
                 .map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
                 .collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#isJobTitleCodeExist(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean isJobTitleCodeExist(String companyId, String jobTitleCode) {
+		
+		// Get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
+        Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+
+        // Build query
+        cq.select(root);
+
+        // add where
+        List<Predicate> listPredicate = new ArrayList<>();
+        listPredicate.add(
+        		criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+        listPredicate.add(
+        		criteriaBuilder.equal(root.get(BsymtJobInfo_.jobCd), jobTitleCode));
+
+        cq.where(listPredicate.toArray(new Predicate[] {}));
+
+        return !em.createQuery(cq).getResultList().isEmpty();
 	}
 }

@@ -8,6 +8,8 @@ module nts.uk.com.view.cmm013.a {
         var servicePath: any = {
             findJobHistoryList: "bs/employee/jobtitle/history/findByJobId",
             findJobInfoByJobIdAndHistoryId: "bs/employee/jobtitle/info/findByJobIdAndHistoryId",
+            findJobInfoByJobCode: "bs/employee/jobtitle/info/findByJobCode",
+            saveJobTitle: "bs/employee/jobtitle/save",
             removeJobTitleHistory: "bs/employee/jobtitle/history/remove",
         }
     
@@ -23,6 +25,20 @@ module nts.uk.com.view.cmm013.a {
          */
         export function findJobInfoByJobIdAndHistoryId(jobTitleId: string, jobTitleHistoryId: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findJobInfoByJobIdAndHistoryId, { jobTitleId: jobTitleId, jobTitleHistoryId: jobTitleHistoryId });
+        }
+        
+        /**
+         * findJobInfoByJobCode
+         */
+        export function findJobInfoByJobCode(jobTitleCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findJobInfoByJobCode, { jobTitleCode: jobTitleCode });
+        }
+        
+        /**
+         * saveJobTitle
+         */
+        export function saveJobTitle(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveJobTitle, command);
         }
         
         /**

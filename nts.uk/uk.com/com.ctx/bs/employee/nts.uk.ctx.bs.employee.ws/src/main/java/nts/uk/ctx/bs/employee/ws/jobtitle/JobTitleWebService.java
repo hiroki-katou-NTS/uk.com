@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.RemoveJobTitleCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.RemoveJobTitleCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.SaveJobTitleCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.SaveJobTitleCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.RemoveJobTitleHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.RemoveJobTitleHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.history.SaveJobTitleHistoryCommand;
@@ -34,6 +36,10 @@ public class JobTitleWebService extends WebService {
 	@Inject
 	private JobTitleFinder jobTitleFinder;
 	
+	/** The save job title command handler. */
+	@Inject
+	private SaveJobTitleCommandHandler saveJobTitleCommandHandler;
+	
 	/** The remove job title command handler. */
 	@Inject
 	private RemoveJobTitleCommandHandler removeJobTitleCommandHandler;
@@ -42,15 +48,43 @@ public class JobTitleWebService extends WebService {
 	@Inject
 	private SaveJobTitleHistoryCommandHandler saveJobTitleHistoryCommandHandler;
 	
+	/** The remove job title history command handler. */
+	@Inject
+	private RemoveJobTitleHistoryCommandHandler removeJobTitleHistoryCommandHandler;
+	
+	/**
+	 * Find all.
+	 *
+	 * @param dto the dto
+	 * @return the list
+	 */
 	@Path("findAll")
 	@POST
 	public List<JobTitleItemDto> findAll(Kcp003Dto dto) {
 		return this.jobTitleFinder.findAll(dto.getBaseDate());
 	}
 	
-	/** The remove job title history command handler. */
-	@Inject
-	private RemoveJobTitleHistoryCommandHandler removeJobTitleHistoryCommandHandler;
+	/**
+	 * Save job title.
+	 *
+	 * @param command the command
+	 */
+	@Path("save")
+	@POST
+	public void saveJobTitle(SaveJobTitleCommand command) {
+		this.saveJobTitleCommandHandler.handle(command);
+	}
+	
+	/**
+	 * Removes the job title.
+	 *
+	 * @param command the command
+	 */
+	@Path("remove")
+	@POST
+	public void removeJobTitle(RemoveJobTitleCommand command) {
+		this.removeJobTitleCommandHandler.handle(command);
+	}
 	
 	/**
 	 * Find by job id.
@@ -84,20 +118,5 @@ public class JobTitleWebService extends WebService {
 	@POST
 	public void removeHistory(RemoveJobTitleHistoryCommand command) {
 		this.removeJobTitleHistoryCommandHandler.handle(command);
-	}
-	
-	
-	
-	
-	
-	/**
-	 * Removes the job title.
-	 *
-	 * @param command the command
-	 */
-	@Path("remove")
-	@POST
-	public void removeJobTitle(RemoveJobTitleCommand command) {
-		this.removeJobTitleCommandHandler.handle(command);
 	}
 }

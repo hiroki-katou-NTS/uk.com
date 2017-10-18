@@ -64,7 +64,7 @@ module nts.uk.com.view.cmm013.d {
                     return {};
                 }
                 return {
-                    isAddMode: true,
+                    isCreateMode: true,
                     jobTitleId: jobTitleId,
                     jobTitleHistory: {
                         historyId: "",

@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.entity.jobtitle;
 
 import java.io.Serializable;
@@ -23,8 +22,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class BsymtJobInfo.
- *
- * @author NWS_THANHNC_PC
  */
 @Getter
 @Setter
@@ -42,20 +39,25 @@ public class BsymtJobInfo extends UkJpaEntity implements Serializable {
     /** The job cd. */
     @Column(name = "JOB_CD")
     private String jobCd;
-       
+    
     /** The job name. */
     @Column(name = "JOB_NAME")
     private String jobName;
-      
+   
     /** The sequence cd. */
     @Column(name = "SEQUENCE_CD")
     private String sequenceCd;
     
+    /** The is manager. */
+    @Column(name = "IS_MANAGER")
+    private int isManager;
+
+	/** The bsymt job hist. */
 	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
 			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtJobHist bsymtJobHist;
-
+    
     /**
      * Instantiates a new bsymt job info.
      */
@@ -103,5 +105,4 @@ public class BsymtJobInfo extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.bsymtJobInfoPK;
 	}
-    
 }

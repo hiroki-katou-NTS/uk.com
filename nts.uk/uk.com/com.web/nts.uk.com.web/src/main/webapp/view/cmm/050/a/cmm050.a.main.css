@@ -8,6 +8,13 @@ td {
 	padding-bottom: 10px;
 }
 
+#mail_setting_register{
+    margin-left: 25px;
+}
+#right-content{
+	margin-left: 45px;
+}
+
 .input_002 {
 	display: inline-block;
 }
@@ -20,6 +27,7 @@ td {
 }
 
 .method_info{
+	width: 650px;
 	margin-top: 50px;
 	border: 1px solid #cccccc;
 	border-radius: 6px;

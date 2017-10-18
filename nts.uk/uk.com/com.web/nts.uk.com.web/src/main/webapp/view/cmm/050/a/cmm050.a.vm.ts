@@ -25,25 +25,19 @@ module nts.uk.com.view.cmm050.a {
             
             //smtp info
             smtpPort: KnockoutObservable<number>;
-            smtpTimeOut: KnockoutObservable<number>;
             smtpServer: KnockoutObservable<string>;
-            smtpIpVersion: KnockoutObservable<number>;
-            
+                        
             //imap info
             imapPort: KnockoutObservable<number>;
-            imapTimeOut: KnockoutObservable<number>;
             imapUseServer: KnockoutObservable<number>;
             imapServer: KnockoutObservable<string>;
-            imapIpVersion: KnockoutObservable<number>;
             
             imapServerEnable: KnockoutObservable<boolean>;
             
             //pop info
             popPort: KnockoutObservable<number>;
-            popTimeOut: KnockoutObservable<number>;
             popUseServer: KnockoutObservable<number>;
             popServer: KnockoutObservable<string>;
-            popIpVersion: KnockoutObservable<number>;
             
             popServerEnable: KnockoutObservable<boolean>;
             
@@ -80,21 +74,15 @@ module nts.uk.com.view.cmm050.a {
                 _self.encryptionMethod = ko.observable(0);
                 
                 _self.smtpPort = ko.observable(0);
-                _self.smtpTimeOut = ko.observable(0);
                 _self.smtpServer = ko.observable(null);
-                _self.smtpIpVersion = ko.observable(0);
                 
                 _self.imapPort = ko.observable(0);
-                _self.imapTimeOut = ko.observable(0);
                 _self.imapUseServer = ko.observable(0);
                 _self.imapServer = ko.observable(null);
-                _self.imapIpVersion = ko.observable(0);
                 
                 _self.popPort = ko.observable(0);
-                _self.popTimeOut = ko.observable(0);
                 _self.popUseServer = ko.observable(0);
                 _self.popServer = ko.observable(null);
-                _self.popIpVersion = ko.observable(0);
                 
                 _self.imapServerEnable = ko.observable(false);
                 _self.popServerEnable = ko.observable(false);
@@ -170,9 +158,9 @@ module nts.uk.com.view.cmm050.a {
                         _self.authMethod(),
                         _self.emailAuth(),
                         _self.password(),
-                        new model.SmtpInfoDto(_self.smtpIpVersion(), _self.smtpServer(), _self.smtpTimeOut(), _self.smtpPort()),
-                        new model.PopInfoDto(_self.popIpVersion(), _self.popServer(), _self.popUseServer(), _self.popTimeOut(), _self.popPort()),
-                        new model.ImapInfoDto(_self.imapIpVersion(), _self.imapServer(), _self.imapUseServer(), _self.imapTimeOut(), _self.imapPort())
+                        new model.SmtpInfoDto(_self.smtpServer(), _self.smtpPort()),
+                        new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
+                        new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
@@ -329,23 +317,17 @@ module nts.uk.com.view.cmm050.a {
                     
                     // set smtp info data
                     _self.smtpPort(data.smtpDto.smtpPort);
-                    _self.smtpTimeOut(data.smtpDto.smtpTimeOut);
                     _self.smtpServer(data.smtpDto.smtpServer);
-                    _self.smtpIpVersion(data.smtpDto.smtpIpVersion);
                     
                     // set pop info data
                     _self.popPort(data.popDto.popPort);
-                    _self.popTimeOut(data.popDto.popTimeOut);
                     _self.popUseServer(data.popDto.popUseServer);
                     _self.popServer(data.popDto.popServer);
-                    _self.popIpVersion(data.popDto.popIpVersion);
                     
                     // set imap info data
                     _self.imapPort(data.imapDto.imapPort);
-                    _self.imapTimeOut(data.imapDto.imapTimeOut);
                     _self.imapUseServer(data.imapDto.imapUseServer);
                     _self.imapServer(data.imapDto.imapServer);
-                    _self.imapIpVersion(data.imapDto.imapIpVersion);
                     
                     dfd.resolve(data);
                 }).fail(function(){

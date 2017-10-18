@@ -1,82 +1,150 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
 
-import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
 
 /**
- * Instantiates a new job title info dto.
+ * The Class JobTitleInfoDto.
  */
-@Data
-public class JobTitleInfoDto implements JobTitleInfoSetMemento {
+@Getter
+@Setter
+public class JobTitleInfoDto {
 	
 	/** The company id. */
-	public String companyId;
+	private String companyId;
 
 	/** The job title id. */
-	public String jobTitleId;
+	private String jobTitleId;
 	
 	/** The job title history id. */
-	public String jobTitleHistoryId;
+	private String jobTitleHistoryId;
+	
+	/** The is manager. */
+	private Boolean isManager;
 	
 	/** The job title code. */
-	public String jobTitleCode;
+	private String jobTitleCode;
 	
 	/** The job title name. */
-	public String jobTitleName;
+	private String jobTitleName;
 	
 	/** The sequence code. */
-	public String sequenceCode;
+	private String sequenceCode;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
+	/**
+	 * To domain.
+	 *
+	 * @param companyId the company id
+	 * @param jobTitleId the job title id
+	 * @param historyId the history id
+	 * @return the job title info
 	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		this.companyId = companyId.v();
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
-	 */
-	@Override
-	public void setJobTitleHistoryId(String jobTitleHistoryId) {
-		this.jobTitleHistoryId = jobTitleHistoryId;
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
-	 */
-	@Override
-	public void setJobTitleId(JobTitleId jobTitleId) {
-		this.jobTitleId = jobTitleId.v();
+	public JobTitleInfo toDomain(String companyId, String jobTitleId, String historyId) {
+		return new JobTitleInfo(new JobTitleInfoGetMementoImpl(companyId, jobTitleId, historyId, this));
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleCode(nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode)
+	/**
+	 * The Class JobTitleInfoGetMementoImpl.
 	 */
-	@Override
-	public void setJobTitleCode(JobTitleCode jobTitleCode) {
-		this.jobTitleCode = jobTitleCode.v();
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleName(nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName)
-	 */
-	@Override
-	public void setJobTitleName(JobTitleName jobTitleName) {
-		this.jobTitleName = jobTitleName.v();
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setSequenceCode(nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode)
-	 */
-	@Override
-	public void setSequenceCode(SequenceCode sequenceCode) {
-		this.sequenceCode = sequenceCode.v();
+	class JobTitleInfoGetMementoImpl implements JobTitleInfoGetMemento {
+
+		/** The company id. */
+        private String companyId;
+
+        /** The job title id. */
+        private String jobTitleId;
+        
+        /** The history id. */
+        private String historyId;
+
+        /** The dto. */
+        private JobTitleInfoDto dto;
+        
+        /**
+         * Instantiates a new job title info get memento impl.
+         *
+         * @param companyId the company id
+         * @param jobTitleId the job title id
+         * @param historyId the history id
+         * @param dto the dto
+         */
+        public JobTitleInfoGetMementoImpl(String companyId, String jobTitleId, String historyId, JobTitleInfoDto dto) {
+            this.companyId = companyId;
+            this.jobTitleId = jobTitleId;
+            this.historyId = historyId;
+            this.dto = dto;
+        }
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(this.companyId);
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleHistoryId()
+		 */
+		@Override
+		public String getJobTitleHistoryId() {
+			return this.historyId;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleId()
+		 */
+		@Override
+		public String getJobTitleId() {
+			return this.jobTitleId;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleCode()
+		 */
+		@Override
+		public JobTitleCode getJobTitleCode() {
+			return new JobTitleCode(this.dto.getJobTitleCode());
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleName()
+		 */
+		@Override
+		public JobTitleName getJobTitleName() {
+			return new JobTitleName(this.dto.getJobTitleName());
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getSequenceCode()
+		 */
+		@Override
+		public SequenceCode getSequenceCode() {
+			String sequenceCode = this.dto.getSequenceCode();
+			if (StringUtils.isEmpty(sequenceCode)) {
+				return null;
+			}
+			return new SequenceCode(sequenceCode);
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getIsManager()
+		 */
+		@Override
+		public boolean getIsManager() {
+			return this.dto.getIsManager();
+		}		
 	}
 }

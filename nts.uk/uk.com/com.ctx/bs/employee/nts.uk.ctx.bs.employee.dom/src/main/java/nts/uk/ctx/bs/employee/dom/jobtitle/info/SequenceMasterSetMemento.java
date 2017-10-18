@@ -16,7 +16,7 @@ public interface SequenceMasterSetMemento {
 	 *
 	 * @param order the new order
 	 */
-	void setOrder(short order);
+	void setOrder(int order);
 
 	/**
 	 * Sets the company id.

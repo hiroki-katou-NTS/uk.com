@@ -12,17 +12,11 @@ import lombok.Data;
 @Data
 public class ImapInfoDto {
 	
-	/** The imap ip version. */
-	public int imapIpVersion;
-	
 	/** The imap server. */
 	public String imapServer;
 	
 	/** The imap use server. */
 	public int imapUseServer;
-	
-	/** The imap time out. */
-	public int imapTimeOut;
 	
 	/** The imap port. */
 	public int imapPort;
@@ -30,17 +24,13 @@ public class ImapInfoDto {
 	/**
 	 * Instantiates a new imap info dto.
 	 *
-	 * @param imapIpVersions the imap ip versions
 	 * @param imapServer the imap server
 	 * @param imapUseServer the imap use server
-	 * @param imapTimeOut the imap time out
 	 * @param imapPort the imap port
 	 */
-	public ImapInfoDto(int imapIpVersions, String imapServer, int imapUseServer, int imapTimeOut, int imapPort){
-		this.imapIpVersion = imapIpVersions;
+	public ImapInfoDto(String imapServer, int imapUseServer, int imapPort){
 		this.imapServer = imapServer;
 		this.imapUseServer = imapUseServer;
-		this.imapTimeOut = imapTimeOut;
 		this.imapPort = imapPort;
 	}
 	
