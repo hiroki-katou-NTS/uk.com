@@ -24,12 +24,13 @@
 		<div class="valign-center control-group">
 			<!--申請日付 -->
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
-			<input tabindex="6" id="inputdate"
-				data-bind="ntsTimeEditor: {
-					name: '#[KAF009_12]',	
-					required:true, 
-					value: appDate, 
-					inputFormat: 'date'}" />
+<!-- 			<input tabindex="6" id="inputdate" -->
+<!-- 				data-bind="ntsTimeEditor: { -->
+<!-- 					name: '#[KAF009_12]',	 -->
+<!-- 					required:true,  -->
+<!-- 					value: appDate,  -->
+<!-- 					inputFormat: 'date'}" /> -->
+			<div tabindex="6" id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
 		</div>
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
