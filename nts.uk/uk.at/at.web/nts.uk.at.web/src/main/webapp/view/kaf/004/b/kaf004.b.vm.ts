@@ -94,9 +94,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
 
-            service.getByCode().done(function(data) {
+            service.getByCode("").done(function(data) {
                 self.ListTypeReason(data.listApplicationReasonDto);
-                self.displayOrder(data.workManagementMultiple);
+                self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 dfd.resolve(data);
 

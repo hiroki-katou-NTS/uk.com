@@ -38,8 +38,8 @@ public class LateOrLeaveEarlyWebservice extends WebService{
 	
 	@POST
 	@Path("findbycode")
-	public ScreenLateOrLeaveEarlyDto getByCode() {
-		ScreenLateOrLeaveEarlyDto data = this.finder.getLateOrLeaveEarly();
+	public ScreenLateOrLeaveEarlyDto getByCode(String appID) {
+		ScreenLateOrLeaveEarlyDto data = this.finder.getLateOrLeaveEarly(appID);
 		return data;
 	}
 	

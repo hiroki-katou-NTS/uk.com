@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
@@ -52,8 +54,11 @@ public class LateOrLeaveEarlyFinder {
 	/** ドメインモデル「複数回勤務」を取得 (Lấy 「複数回勤務」) */
 	@Inject
 	private WorkManagementMultipleRepository workManagementMultipleRepository ;
+	
+	@Inject
+	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
-	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly() {
+	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID =  AppContexts.user().employeeId();
 		String applicantName = employeeAdapter.getEmployeeName(employeeID);
@@ -75,8 +80,15 @@ public class LateOrLeaveEarlyFinder {
 		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
 																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp()))
 																.collect(Collectors.toList());
+		LateOrLeaveEarlyDto lateOrLeaveEarlyDto = null;
+		if(Strings.isNotEmpty(appID)) {
+			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
+			if(lateOrLeaveEarlyOp.isPresent()){
+				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarlyOp.get()); 
+			}
+		}
 
-		return new ScreenLateOrLeaveEarlyDto(null, listApplicationReasonDto, 
+		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto, listApplicationReasonDto, 
 				employeeID, 
 				applicantName,AppCommonSettingDto.convertToDto(appCommonSettingOutput),
 				workManagementMultiple.isPresent() ? WorkManagementMultipleDto.convertoDto(workManagementMultiple.get()) : null);
