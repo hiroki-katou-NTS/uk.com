@@ -51,6 +51,11 @@ subprojects {
 		}
 	}
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	

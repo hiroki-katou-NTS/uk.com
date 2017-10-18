@@ -54,6 +54,11 @@ subprojects {
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
@@ -256,6 +261,8 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
+		
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.8.5')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
