@@ -31,7 +31,7 @@ public class SequenceMasterFinder {
 	 *
 	 * @return the short
 	 */
-	public short findMaxOrder() {
+	public int findMaxOrder() {
 		return this.repository.findMaxOrder();
 	}
 

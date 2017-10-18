@@ -44,7 +44,7 @@ public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMast
 	private String sequenceName;
 
 	/** The order. */
-	private short order;
+	private int order;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
@@ -109,7 +109,7 @@ public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMast
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento#setOrder(short)
 	 */
 	@Override
-	public void setOrder(short order) {
+	public void setOrder(int order) {
 		this.order = order;
 	}
 

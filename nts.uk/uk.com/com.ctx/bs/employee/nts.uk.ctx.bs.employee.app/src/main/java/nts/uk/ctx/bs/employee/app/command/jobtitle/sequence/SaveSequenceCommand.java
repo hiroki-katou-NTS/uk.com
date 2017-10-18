@@ -23,7 +23,7 @@ public class SaveSequenceCommand {
 	private Boolean isCreateMode;
 
 	/** The order. */
-	private short order;
+	private int order;
 
 	/** The sequence code. */
 	private String sequenceCode;
@@ -107,7 +107,7 @@ public class SaveSequenceCommand {
 		 * getOrder()
 		 */
 		@Override
-		public short getOrder() {
+		public int getOrder() {
 			return this.command.getOrder();
 		}
 	}

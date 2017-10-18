@@ -60,8 +60,8 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<SaveJobTitleHistoryCommand> context) {
-		SaveJobTitleHistoryCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyId();
+		final SaveJobTitleHistoryCommand command = context.getCommand();
+		final String companyId = AppContexts.user().companyId();
 
 		Optional<JobTitle> opJobTitle = this.jobTitleRepository.findByJobTitleId(companyId, command.getJobTitleId());
 		if (!opJobTitle.isPresent()) {

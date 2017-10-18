@@ -47,7 +47,7 @@ public class JobTitleInfo extends AggregateRoot {
 	 * Instantiates a new job title info.
 	 */
 	public JobTitleInfo() {
-
+		super();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class JobTitleInfo extends AggregateRoot {
 	 * @return the job title info
 	 */
 	public JobTitleInfo clone(String historyId) {
-		JobTitleInfo newEntity = new JobTitleInfo();
+		final JobTitleInfo newEntity = new JobTitleInfo();
 		newEntity.companyId = this.companyId;
 		newEntity.jobTitleHistoryId = historyId;
 		newEntity.isManager = this.isManager;

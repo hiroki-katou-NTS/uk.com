@@ -17,7 +17,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
 public class SequenceMasterFindDto implements SequenceMasterSetMemento {
 	
 	/** The order. */
-	private short order;
+	private int order;
 
 	/** The company id. */
 	private String companyId;
@@ -35,7 +35,7 @@ public class SequenceMasterFindDto implements SequenceMasterSetMemento {
 	 * setOrder(short)
 	 */
 	@Override
-	public void setOrder(short order) {
+	public void setOrder(int order) {
 		this.order = order;
 	}
 

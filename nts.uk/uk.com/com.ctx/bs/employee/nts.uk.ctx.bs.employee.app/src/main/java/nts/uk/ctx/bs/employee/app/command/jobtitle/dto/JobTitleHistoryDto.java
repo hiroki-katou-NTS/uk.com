@@ -16,10 +16,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JobTitleHistoryDto {
 
 	/** The history id. */
-	public String historyId;
+	private String historyId;
 
 	/** The period. */
-	public PeriodDto period;
+	private PeriodDto period;
 
 	/**
 	 * To domain.

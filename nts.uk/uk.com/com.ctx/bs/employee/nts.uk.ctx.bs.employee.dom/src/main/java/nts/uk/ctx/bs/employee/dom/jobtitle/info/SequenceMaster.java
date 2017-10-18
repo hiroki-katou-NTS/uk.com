@@ -23,7 +23,7 @@ public class SequenceMaster extends AggregateRoot {
 
 	/** The order. */
 	//並び順
-	private short order;
+	private int order;
 
 	/** The sequence code. */
 	//序列コード

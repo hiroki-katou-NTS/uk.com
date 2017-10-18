@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -40,15 +39,11 @@ public class JobTitle extends AggregateRoot {
 	public JobTitle(JobTitleGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.jobTitleId = memento.getJobTitleId();
-		this.jobTitleHistory = memento.getJobTitleHistory();
-		
-		// sort by start date desc 
-        Collections.sort(this.jobTitleHistory, new Comparator<JobTitleHistory>() {
-            @Override
-            public int compare(JobTitleHistory obj1, JobTitleHistory obj2) {
-                return obj2.getPeriod().start().compareTo(obj1.getPeriod().start());
-            }
-        });
+		this.jobTitleHistory = memento.getJobTitleHistory()
+				.stream()
+				// sort by start date desc 
+				.sorted((obj1, obj2) -> obj2.getPeriod().start().compareTo(obj1.getPeriod().start()))
+				.collect(Collectors.toList());
 	}
 	
 	/**
@@ -68,7 +63,7 @@ public class JobTitle extends AggregateRoot {
 	 * @return the lastest history
 	 */
 	public JobTitleHistory getLastestHistory() {
-		int indexLastestHistory = 0;
+		final int indexLastestHistory = 0;
         return this.jobTitleHistory.get(indexLastestHistory);
 	}
 
