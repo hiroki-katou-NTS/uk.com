@@ -46,6 +46,15 @@ public interface JobTitleInfoRepository {
 	 * @return the optional
 	 */
 	Optional<JobTitleInfo> find(String companyId, String jobTitleId, String historyId);
+	
+	/**
+	 * Find by job code.
+	 *
+	 * @param companyId the company id
+	 * @param jobTitleCode the job title code
+	 * @return the optional
+	 */
+	Optional<JobTitleInfo> findByJobCode(String companyId, String jobTitleCode);
 
 	/**
 	 * Checks if is sequence master used.
@@ -64,4 +73,13 @@ public interface JobTitleInfoRepository {
 	 * @return the list
 	 */
 	List<JobTitleInfo> findAll(String companyId, GeneralDate baseDate);
+	
+	/**
+	 * Checks if is job title code exist.
+	 *
+	 * @param companyId the company id
+	 * @param jobTitleCode the job title code
+	 * @return true, if is job title code exist
+	 */
+	boolean isJobTitleCodeExist(String companyId, String jobTitleCode);
 }

@@ -26,8 +26,8 @@
 		<ui:define name="content">
 		
 			<div id="functions-area">
-				<button tabindex="1" data-bind="enable: enable_A1_1" class="btnStyle">#{i18n.getText('CMM013_1')}</button>
-				<button tabindex="2" class="proceed btnStyle">#{i18n.getText('CMM013_2')}</button>
+				<button tabindex="1" data-bind="click: startCreateMode, enable: enable_A1_1" class="btnStyle">#{i18n.getText('CMM013_1')}</button>
+				<button tabindex="2" data-bind="click: saveJobTitle" class="proceed btnStyle">#{i18n.getText('CMM013_2')}</button>
 				<button tabindex="3" data-bind="click: openDeleteDialog, enable: enable_A1_3" class="danger btnStyle">#{i18n.getText('CMM013_3')}</button>
 				<button tabindex="5" data-bind="click: openSequenceManageDialog" class="btnStyle">#{i18n.getText('CMM013_4')}</button>
 			</div>
@@ -78,7 +78,7 @@
 								}">#{i18n.getText('CMM013_10')}</div>
 							</td>
 							<td>
-								<input tabindex="11" data-bind="ntsTextEditor: {
+								<input id="job-title-code" tabindex="11" data-bind="ntsTextEditor: {
 									value: jobTitleCode,
 									name: '#[CMM013_10]',
 									constraint: 'JobTitleCode',
@@ -100,7 +100,7 @@
 								}">#{i18n.getText('CMM013_12')}</div>
 							</td>
 							<td>
-								<input tabindex="12" data-bind="ntsTextEditor: {
+								<input id="job-title-name" tabindex="12" data-bind="ntsTextEditor: {
 									value: jobTitleName,
 									name: '#[CMM013_13]',
 									constraint: 'JobTitleName',
@@ -117,7 +117,9 @@
 						<tr>
 							<td></td>
 							<td>
-								<div tabindex="13" data-bind="ntsCheckBox: {}">#{i18n.getText('CMM013_52')}</div>
+								<div tabindex="13" data-bind="ntsCheckBox: {
+									checked: jobTitleIsManager
+								}">#{i18n.getText('CMM013_52')}</div>
 							</td>
 							<td></td>
 						</tr>

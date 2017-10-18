@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
@@ -48,9 +47,9 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
-	public void setJobTitleId(JobTitleId jobTitleId) {
+	public void setJobTitleId(String jobTitleId) {
 		this.listEntity.forEach(entity -> {
-            entity.getBsymtJobHistPK().setJobId(jobTitleId.v());
+            entity.getBsymtJobHistPK().setJobId(jobTitleId);
         });
 	}
 

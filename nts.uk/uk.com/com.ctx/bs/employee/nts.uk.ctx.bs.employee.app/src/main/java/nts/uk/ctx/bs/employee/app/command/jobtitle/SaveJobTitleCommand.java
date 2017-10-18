@@ -2,12 +2,13 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
+package nts.uk.ctx.bs.employee.app.command.jobtitle;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.JobTitleInfoDto;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
@@ -16,77 +17,50 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
 
 /**
- * The Class JobTitleInfoDto.
+ * The Class SaveJobTitleCommand.
  */
 @Getter
 @Setter
-public class JobTitleInfoDto {
+public class SaveJobTitleCommand {
 	
-	/** The company id. */
-	private String companyId;
+	/** The is create mode. */
+	private Boolean isCreateMode;
+    
+    /** The job title info. */
+    private JobTitleInfoDto jobTitleInfo;
+    
+    /**
+     * To domain.
+     *
+     * @param companyId the company id
+     * @return the job title info
+     */
+    public JobTitleInfo toDomain(String companyId) {
+        return new JobTitleInfo(new JobTitleInfoGetMementoImpl(companyId, this));
+    }
+    
+    /**
+     * The Class JobTitleInfoGetMementoImpl.
+     */
+    public class JobTitleInfoGetMementoImpl implements JobTitleInfoGetMemento {
 
-	/** The job title id. */
-	private String jobTitleId;
-	
-	/** The job title history id. */
-	private String jobTitleHistoryId;
-	
-	/** The is manager. */
-	private Boolean isManager;
-	
-	/** The job title code. */
-	private String jobTitleCode;
-	
-	/** The job title name. */
-	private String jobTitleName;
-	
-	/** The sequence code. */
-	private String sequenceCode;
-
-	/**
-	 * To domain.
-	 *
-	 * @param companyId the company id
-	 * @param jobTitleId the job title id
-	 * @param historyId the history id
-	 * @return the job title info
-	 */
-	public JobTitleInfo toDomain(String companyId, String jobTitleId, String historyId) {
-		return new JobTitleInfo(new JobTitleInfoGetMementoImpl(companyId, jobTitleId, historyId, this));
-	}
-	
-	/**
-	 * The Class JobTitleInfoGetMementoImpl.
-	 */
-	class JobTitleInfoGetMementoImpl implements JobTitleInfoGetMemento {
-
-		/** The company id. */
+        /** The company id. */
         private String companyId;
 
-        /** The job title id. */
-        private String jobTitleId;
-        
-        /** The history id. */
-        private String historyId;
+        /** The save command. */
+        private SaveJobTitleCommand saveCommand;
 
-        /** The dto. */
-        private JobTitleInfoDto dto;
-        
         /**
          * Instantiates a new job title info get memento impl.
          *
          * @param companyId the company id
-         * @param jobTitleId the job title id
-         * @param historyId the history id
-         * @param dto the dto
+         * @param saveCommand the save command
          */
-        public JobTitleInfoGetMementoImpl(String companyId, String jobTitleId, String historyId, JobTitleInfoDto dto) {
+        public JobTitleInfoGetMementoImpl(String companyId, SaveJobTitleCommand saveCommand) {
             this.companyId = companyId;
-            this.jobTitleId = jobTitleId;
-            this.historyId = historyId;
-            this.dto = dto;
+            this.saveCommand = saveCommand;
         }
-		
+    	
 		/* (non-Javadoc)
 		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getCompanyId()
 		 */
@@ -100,7 +74,7 @@ public class JobTitleInfoDto {
 		 */
 		@Override
 		public String getJobTitleHistoryId() {
-			return this.historyId;
+			return this.saveCommand.getJobTitleInfo().getJobTitleHistoryId();
 		}
 
 		/* (non-Javadoc)
@@ -108,7 +82,7 @@ public class JobTitleInfoDto {
 		 */
 		@Override
 		public String getJobTitleId() {
-			return this.jobTitleId;
+			return this.saveCommand.getJobTitleInfo().getJobTitleId();
 		}
 
 		/* (non-Javadoc)
@@ -116,7 +90,7 @@ public class JobTitleInfoDto {
 		 */
 		@Override
 		public JobTitleCode getJobTitleCode() {
-			return new JobTitleCode(this.dto.getJobTitleCode());
+			return new JobTitleCode(this.saveCommand.getJobTitleInfo().getJobTitleCode());
 		}
 
 		/* (non-Javadoc)
@@ -124,7 +98,7 @@ public class JobTitleInfoDto {
 		 */
 		@Override
 		public JobTitleName getJobTitleName() {
-			return new JobTitleName(this.dto.getJobTitleName());
+			return new JobTitleName(this.saveCommand.getJobTitleInfo().getJobTitleName());
 		}
 
 		/* (non-Javadoc)
@@ -132,7 +106,7 @@ public class JobTitleInfoDto {
 		 */
 		@Override
 		public SequenceCode getSequenceCode() {
-			String sequenceCode = this.dto.getSequenceCode();
+			String sequenceCode = this.saveCommand.getJobTitleInfo().getSequenceCode();
 			if (StringUtils.isEmpty(sequenceCode)) {
 				return null;
 			}
@@ -144,7 +118,7 @@ public class JobTitleInfoDto {
 		 */
 		@Override
 		public boolean getIsManager() {
-			return this.dto.getIsManager();
-		}		
-	}
+			return this.saveCommand.getJobTitleInfo().getIsManager();
+		}    	
+    }
 }

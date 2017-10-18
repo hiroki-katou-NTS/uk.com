@@ -71,7 +71,7 @@ module nts.uk.com.view.cmm013.e {
             private toJSON(): any {
                 let _self = this;
                 return {
-                    isAddMode: false,
+                    isCreateMode: false,
                     jobTitleId: _self.jobTitleId,
                     jobTitleHistory: {
                         historyId: _self.historyId,

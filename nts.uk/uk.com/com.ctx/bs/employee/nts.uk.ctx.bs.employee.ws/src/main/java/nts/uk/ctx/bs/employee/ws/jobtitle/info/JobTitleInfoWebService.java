@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.jobtitle.info;
 
 import javax.inject.Inject;
@@ -21,9 +25,27 @@ public class JobTitleInfoWebService extends WebService {
 	@Inject
 	private JobTitleInfoFinder jobTitleInfoFinder;
 	
+	/**
+	 * Find by job id and history id.
+	 *
+	 * @param findObj the find obj
+	 * @return the job title info find dto
+	 */
 	@Path("findByJobIdAndHistoryId")
 	@POST
 	public JobTitleInfoFindDto findByJobIdAndHistoryId(JobTitleInfoFindDto findObj) {
 		return this.jobTitleInfoFinder.findByJobIdAndHistoryId(findObj.getJobTitleId(), findObj.getJobTitleHistoryId());
 	}	
+
+	/**
+	 * Find by job code.
+	 *
+	 * @param findObj the find obj
+	 * @return the job title info find dto
+	 */
+	@Path("findByJobCode")
+	@POST
+	public JobTitleInfoFindDto findByJobCode(JobTitleInfoFindDto findObj) {
+		return this.jobTitleInfoFinder.findByJobCode(findObj.getJobTitleCode());
+	}
 }

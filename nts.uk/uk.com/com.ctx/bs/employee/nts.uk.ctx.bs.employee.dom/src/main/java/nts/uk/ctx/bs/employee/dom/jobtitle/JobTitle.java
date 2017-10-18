@@ -26,7 +26,7 @@ public class JobTitle extends AggregateRoot {
 
 	/** The job title id. */
 	//職位ID
-	private JobTitleId jobTitleId;
+	private String jobTitleId;
 	
 	/** The job title history. */
 	//履歴

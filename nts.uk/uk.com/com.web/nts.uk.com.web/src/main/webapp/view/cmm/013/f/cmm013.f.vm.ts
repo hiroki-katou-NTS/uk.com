@@ -167,10 +167,10 @@ module nts.uk.com.view.cmm013.f {
             public save(): void {
                 let _self = this;                  
                 
-                // Check required field
-                if (_self.sequenceCode() === "" || _self.sequenceName() === "") {
+                // Validate
+                if (!_self.validate()) {
                     return;
-                }
+                }  
                 
                 if (_self.createMode()) {
                     // Create mode                                 
@@ -185,6 +185,21 @@ module nts.uk.com.view.cmm013.f {
                     let updateCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), _self.order());
                     _self.saveHandler(updateCommand);                                       
                 }               
+            }
+            
+            /**
+             * Validate
+             */
+            private validate(): any {
+                let _self = this;
+
+                $('#sequence-code').ntsError('clear');
+                $('#sequence-name').ntsError('clear');
+
+                $('#sequence-code').ntsEditor('validate');
+                $('#sequence-name').ntsEditor('validate');
+
+                return !$('.nts-input').ntsError('hasError');
             }
             
             /**

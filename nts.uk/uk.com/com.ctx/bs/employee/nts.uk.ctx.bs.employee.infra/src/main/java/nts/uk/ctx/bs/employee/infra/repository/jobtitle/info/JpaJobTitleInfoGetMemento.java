@@ -1,12 +1,16 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
+import nts.uk.ctx.bs.employee.infra.repository.workplace.info.IsManagerStatus;
 
 /**
  * The Class JpaJobTitleInfoGetMemento.
@@ -19,70 +23,90 @@ public class JpaJobTitleInfoGetMemento implements JobTitleInfoGetMemento {
 	/**
 	 * Instantiates a new jpa job title info get memento.
 	 *
-	 * @param item the item
+	 * @param item
+	 *            the item
 	 */
 	public JpaJobTitleInfoGetMemento(BsymtJobInfo item) {
 		this.bsymtJobInfo = item;
 	}
 
-	/**
-	 * Gets the company id.
-	 *
-	 * @return the company id
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.bsymtJobInfo.getBsymtJobInfoPK().getCid());
 	}
 
-	/**
-	 * Gets the job title history id.
-	 *
-	 * @return the job title history id
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getJobTitleHistoryId()
 	 */
 	@Override
 	public String getJobTitleHistoryId() {
 		return this.bsymtJobInfo.getBsymtJobInfoPK().getHistId();
 	}
 
-	/**
-	 * Gets the job title id.
-	 *
-	 * @return the job title id
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getJobTitleId()
 	 */
 	@Override
-	public JobTitleId getJobTitleId() {
-		return new JobTitleId(this.bsymtJobInfo.getBsymtJobInfoPK().getJobId());
+	public String getJobTitleId() {
+		return this.bsymtJobInfo.getBsymtJobInfoPK().getJobId();
 	}
 
-	/**
-	 * Gets the job title code.
-	 *
-	 * @return the job title code
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getJobTitleCode()
 	 */
 	@Override
 	public JobTitleCode getJobTitleCode() {
 		return new JobTitleCode(this.bsymtJobInfo.getJobCd());
 	}
 
-	/**
-	 * Gets the job title name.
-	 *
-	 * @return the job title name
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getJobTitleName()
 	 */
 	@Override
 	public JobTitleName getJobTitleName() {
 		return new JobTitleName(this.bsymtJobInfo.getJobName());
 	}
 
-	/**
-	 * Gets the sequence code.
-	 *
-	 * @return the sequence code
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getSequenceCode()
 	 */
 	@Override
 	public SequenceCode getSequenceCode() {
+		if (this.bsymtJobInfo.getSequenceCd() == null) {
+			return null;
+		}
 		return new SequenceCode(this.bsymtJobInfo.getSequenceCd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+	 * getIsManager()
+	 */
+	@Override
+	public boolean getIsManager() {
+		return IsManagerStatus.valueOf(this.bsymtJobInfo.getIsManager()).booleanValue;
+	}
 }

@@ -37,7 +37,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 	/** The job title info repository. */
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepository;
-	
+
 	/** The job title history service. */
 	@Inject
 	private JobTitleHistoryService jobTitleHistoryService;
@@ -69,7 +69,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		}
 		JobTitle jobTitle = opJobTitle.get();
 
-		if (command.getIsAddMode()) {
+		if (command.getIsCreateMode()) {
 			this.addJobTitleHistory(companyId, command, jobTitle);
 		} else {
 			this.updateJobTitleHistory(companyId, command, jobTitle);
@@ -79,9 +79,12 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 	/**
 	 * Adds the job title history.
 	 *
-	 * @param companyId the company id
-	 * @param command the command
-	 * @param jobTitle the job title
+	 * @param companyId
+	 *            the company id
+	 * @param command
+	 *            the command
+	 * @param jobTitle
+	 *            the job title
 	 */
 	private void addJobTitleHistory(String companyId, SaveJobTitleHistoryCommand command, JobTitle jobTitle) {
 
@@ -105,30 +108,33 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		this.jobTitleHistoryService.updateHistory(companyId, currentHistory.getHistoryId(), updatedEndDate);
 
 		// Add new JobTitleInfo for new history id
-		this.addJobTitleInfo(companyId, jobTitle.getJobTitleId().v(), currentHistory.getHistoryId(),
+		this.addJobTitleInfo(companyId, jobTitle.getJobTitleId(), currentHistory.getHistoryId(),
 				newEntity.getLastestHistory().getHistoryId());
 	}
 
 	/**
 	 * Update job title history.
 	 *
-	 * @param companyId the company id
-	 * @param command the command
-	 * @param jobTitle the job title
+	 * @param companyId
+	 *            the company id
+	 * @param command
+	 *            the command
+	 * @param jobTitle
+	 *            the job title
 	 */
 	private void updateJobTitleHistory(String companyId, SaveJobTitleHistoryCommand command, JobTitle jobTitle) {
 
 		// Get new history
 		JobTitle updateEntity = command.toDomain(companyId);
 		updateEntity.getLastestHistory().updateEndDate(GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
-		
+
 		// If only 1 history available
 		if (jobTitle.getJobTitleHistory().size() == LIST_HISTORY_MIN_SIZE) {
 			// Update history
 			this.jobTitleRepository.update(updateEntity);
-            return;
-        }
-		
+			return;
+		}
+
 		int indexPreviousHistory = 1;
 		JobTitleHistory previousHistory = jobTitle.getJobTitleHistory().get(indexPreviousHistory);
 
@@ -151,18 +157,22 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 	/**
 	 * Valid history.
 	 *
-	 * @param isAddMode the is add mode
-	 * @param currentHistory the current history
-	 * @param newHistory the new history
-	 * @param isLastestHistory the is lastest history
+	 * @param isAddMode
+	 *            the is add mode
+	 * @param currentHistory
+	 *            the current history
+	 * @param newHistory
+	 *            the new history
+	 * @param isLastestHistory
+	 *            the is lastest history
 	 */
-	private void validHistory(boolean isAddMode, JobTitleHistory currentHistory, JobTitleHistory newHistory,
+	private void validHistory(boolean isCreateMode, JobTitleHistory currentHistory, JobTitleHistory newHistory,
 			boolean isLastestHistory) {
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		// Valid only new history can be edited
-		if (!isAddMode) {
+		if (!isCreateMode) {
 			if (!isLastestHistory) {
 				isError = true;
 				exceptions.addMessage("Msg_154");
@@ -172,7 +182,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		// Valid start date
 		if (currentHistory.getPeriod().start().afterOrEquals(newHistory.getPeriod().start())) {
 			isError = true;
-			if (isAddMode) {
+			if (isCreateMode) {
 				// Add mode
 				exceptions.addMessage("Msg_102");
 			} else {
@@ -190,10 +200,14 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 	/**
 	 * Adds the job title info.
 	 *
-	 * @param companyId the company id
-	 * @param jobTitleId the job title id
-	 * @param originHistoryId the origin history id
-	 * @param cloneHistoryId the clone history id
+	 * @param companyId
+	 *            the company id
+	 * @param jobTitleId
+	 *            the job title id
+	 * @param originHistoryId
+	 *            the origin history id
+	 * @param cloneHistoryId
+	 *            the clone history id
 	 */
 	private void addJobTitleInfo(String companyId, String jobTitleId, String originHistoryId, String cloneHistoryId) {
 		Optional<JobTitleInfo> opJobTitleInfo = this.jobTitleInfoRepository.find(companyId, jobTitleId,

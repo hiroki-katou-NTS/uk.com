@@ -33,7 +33,7 @@ public class JobTitleHistoryDto {
 	/**
 	 * The Class JobTitleHistoryGetMementoImpl.
 	 */
-	public class JobTitleHistoryGetMementoImpl implements JobTitleHistoryGetMemento {
+	class JobTitleHistoryGetMementoImpl implements JobTitleHistoryGetMemento {
 
 		/** The job title history dto. */
 		private JobTitleHistoryDto dto;

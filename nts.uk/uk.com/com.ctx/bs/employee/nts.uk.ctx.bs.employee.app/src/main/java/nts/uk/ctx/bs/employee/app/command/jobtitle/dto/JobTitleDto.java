@@ -2,35 +2,31 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.jobtitle.history;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
 
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.JobTitleHistoryDto;
+import lombok.Data;
+import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
 /**
- * The Class SaveJobTitleHistoryCommand.
+ * Instantiates a new job title dto.
  */
-@Getter
-@Setter
-public class SaveJobTitleHistoryCommand {
-
-    /** The is create mode. */
-    private Boolean isCreateMode;
-    
+@Data
+public class JobTitleDto {
+	
     /** The job title id. */
     private String jobTitleId;
-
+    
     /** The job title history. */
     private JobTitleHistoryDto jobTitleHistory;
-	
+    
     /**
      * To domain.
      *
@@ -44,23 +40,23 @@ public class SaveJobTitleHistoryCommand {
     /**
      * The Class JobTitleGetMementoImpl.
      */
-    public class JobTitleGetMementoImpl implements JobTitleGetMemento {
+    class JobTitleGetMementoImpl implements JobTitleGetMemento {
 
         /** The company id. */
         private String companyId;
 
-        /** The save command. */
-        private SaveJobTitleHistoryCommand saveCommand;
+        /** The dto. */
+        private JobTitleDto dto;
 
         /**
          * Instantiates a new job title get memento impl.
          *
          * @param companyId the company id
-         * @param saveCommand the save command
+         * @param dto the dto
          */
-        public JobTitleGetMementoImpl(String companyId, SaveJobTitleHistoryCommand saveCommand) {
+        public JobTitleGetMementoImpl(String companyId, JobTitleDto dto) {
             this.companyId = companyId;
-            this.saveCommand = saveCommand;
+            this.dto = dto;
         }
 
 		/* (non-Javadoc)
@@ -76,7 +72,11 @@ public class SaveJobTitleHistoryCommand {
 		 */
 		@Override
 		public String getJobTitleId() {
-			return this.saveCommand.getJobTitleId();
+			String jobTitleId = this.dto.getJobTitleId();
+            if (StringUtil.isNullOrEmpty(jobTitleId, true)) {
+            	jobTitleId = IdentifierUtil.randomUniqueId();
+            }
+            return jobTitleId;
 		}
 
 		/* (non-Javadoc)
@@ -84,7 +84,7 @@ public class SaveJobTitleHistoryCommand {
 		 */
 		@Override
 		public List<JobTitleHistory> getJobTitleHistory() {
-			return Arrays.asList(this.saveCommand.getJobTitleHistory().toDomain());
+			return Arrays.asList(this.dto.getJobTitleHistory().toDomain());
 		}
     }
 }

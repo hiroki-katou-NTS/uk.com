@@ -44,7 +44,7 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 					BsymtJobHistPK pk = new BsymtJobHistPK(
 							jobTitle.getCompanyId().v(), 
 							jobTitleHistory.getHistoryId(),
-							jobTitle.getJobTitleId().v());
+							jobTitle.getJobTitleId());
 					BsymtJobHist entity = this.queryProxy()
 							.find(pk, BsymtJobHist.class)
 							.orElse(new BsymtJobHist());

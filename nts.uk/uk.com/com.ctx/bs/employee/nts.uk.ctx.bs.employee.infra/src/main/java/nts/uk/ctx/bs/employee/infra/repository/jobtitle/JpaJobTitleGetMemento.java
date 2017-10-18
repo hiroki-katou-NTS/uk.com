@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 
@@ -48,8 +47,8 @@ public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento#getJobTitleId()
 	 */
 	@Override
-	public JobTitleId getJobTitleId() {
-		return new JobTitleId(this.listJobTitleHistory.get(ELEMENT_FIRST).getBsymtJobHistPK().getJobId());
+	public String getJobTitleId() {
+		return this.listJobTitleHistory.get(ELEMENT_FIRST).getBsymtJobHistPK().getJobId();
 	}
 
 	/*

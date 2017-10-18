@@ -22,7 +22,7 @@ public interface JobTitleSetMemento {
 	 *
 	 * @param jobTitleId the new job title id
 	 */
-	public void setJobTitleId(JobTitleId jobTitleId);
+	public void setJobTitleId(String jobTitleId);
 	
 	/**
 	 * Sets the workplace history.
