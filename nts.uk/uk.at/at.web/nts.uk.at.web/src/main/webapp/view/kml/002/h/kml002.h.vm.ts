@@ -126,7 +126,7 @@ module nts.uk.at.view.kml002 {
                 if(FixedItemAtr.TIME_ZONE == fixItemNo){
                     self.openIDialog(fixItemNo);
                 }else if(FixedItemAtr.TOTAL_COUNT == fixItemNo){
-                    self.openLDialog();
+                    self.openLDialog(fixItemNo);
                 }else{
                     self.openMDialog();   
                 }
@@ -138,8 +138,9 @@ module nts.uk.at.view.kml002 {
                     
                 });
             }
-            openLDialog() {
+            openLDialog(fixItemNo: number) {
                 let self = this;
+                nts.uk.ui.windows.setShared('KML002H_VERTICAL_ID', fixItemNo);
                 nts.uk.ui.windows.sub.modal('/view/kml/002/l/index.xhtml').onClosed(function(): any {
                 });
             }

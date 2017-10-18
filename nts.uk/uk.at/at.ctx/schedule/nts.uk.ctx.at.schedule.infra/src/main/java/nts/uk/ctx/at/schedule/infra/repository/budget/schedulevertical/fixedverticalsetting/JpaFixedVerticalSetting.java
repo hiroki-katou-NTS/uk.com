@@ -8,9 +8,12 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVertical;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalCnt;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVerticalSet;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVerticalSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalCntSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalCntSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalTimeSet;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalTimeSetPK;
 
@@ -28,10 +31,11 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 
 	private static final String SELECT_TIME_BY_CID;
 	
-	private static final String REMOVE_BY_CID;
-	
 	private static final String REMOVE_TIME_BY_CID;
-
+	
+	private static final String REMOVE_COUNT_BY_CID;
+	
+	private static final String SELECT_CNT_BY_CID;
 	static {
 
 		StringBuilder builderString = new StringBuilder();
@@ -41,15 +45,11 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 		SELECT_BY_CID = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("DELETE FROM KscstFixedVerticalSet e");
-		builderString.append(" WHERE e.kscstFixedVerticalSetPK.companyId = :companyId");
-		REMOVE_BY_CID = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscstVerticalTimeSet e");
 		builderString.append(" WHERE e.kscstVerticalTimeSetPK.companyId = :companyId");
 		builderString.append(" AND e.kscstVerticalTimeSetPK.fixedItemAtr = :fixedItemAtr");
+		builderString.append(" ORDER BY e.startClock ASC");
 		SELECT_TIME_BY_CID = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -57,6 +57,19 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 		builderString.append(" WHERE e.kscstVerticalTimeSetPK.companyId = :companyId");
 		builderString.append(" AND e.kscstVerticalTimeSetPK.fixedItemAtr = :fixedItemAtr");
 		REMOVE_TIME_BY_CID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE FROM KscstVerticalCntSet e");
+		builderString.append(" WHERE e.kscstVerticalCntSetPK.companyId = :companyId");
+		builderString.append(" AND e.kscstVerticalCntSetPK.fixedItemAtr = :fixedItemAtr");
+		REMOVE_COUNT_BY_CID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KscstVerticalCntSet e");
+		builderString.append(" WHERE e.kscstVerticalCntSetPK.companyId = :companyId");
+		builderString.append(" AND e.kscstVerticalCntSetPK.fixedItemAtr = :fixedItemAtr");
+		SELECT_CNT_BY_CID = builderString.toString();
 	}
 
 	/**
@@ -88,12 +101,35 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	}
 
 	/**
+	 * 
+	 * @param kVerticalTimeSet
+	 * @return
+	 */
+	private VerticalCnt convertToDomainCnt(KscstVerticalCntSet kVerticalCntSet) {
+		VerticalCnt verticalCnt = VerticalCnt.createFromJavaType(kVerticalCntSet.kscstVerticalCntSetPK.companyId,
+				kVerticalCntSet.kscstVerticalCntSetPK.fixedItemAtr,
+				kVerticalCntSet.kscstVerticalCntSetPK.verticalCountNo);
+		return verticalCnt;
+	}
+	
+	/**
 	 * Find all Fixed Vertical
 	 */
 	@Override
 	public List<FixedVertical> findAll(String companyId) {
 		return this.queryProxy().query(SELECT_BY_CID, KscstFixedVerticalSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
+	}
+	
+	/**
+	 * Find all Fixed Vertical
+	 */
+	
+	@Override
+	public List<VerticalCnt> findAllCnt(String companyId, int fixedItemAtr) {
+		return this.queryProxy().query(SELECT_CNT_BY_CID, KscstVerticalCntSet.class).setParameter("companyId", companyId)
+				.setParameter("fixedItemAtr", fixedItemAtr)
+				.getList(c -> convertToDomainCnt(c));
 	}
 
 	/**
@@ -138,13 +174,6 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 		kVerticalSet.verticalDetailedSet = fixedVertical.getVerticalDetailedSettings().value;
 		this.commandProxy().update(kVerticalSet);	
 	}
-	
-	@Override
-	public void deleteFixedVertical(String companyId, int fixedItemAtr) {
-		this.getEntityManager().createQuery(REMOVE_BY_CID)
-			.setParameter("companyId", companyId).setParameter("fixedItemAtr", fixedItemAtr)
-			.executeUpdate();
-	}
 
 	/**
 	 * Find all Vertical Time
@@ -182,6 +211,29 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	}
 
 	/**
+	 * 
+	 * @param verticalCnt
+	 * @return
+	 */
+	private KscstVerticalCntSet convertToDbTypeCnt(VerticalCnt verticalCnt) {
+		KscstVerticalCntSet kCntSet= new KscstVerticalCntSet();
+		KscstVerticalCntSetPK kVerticalSetPK = new KscstVerticalCntSetPK(
+				verticalCnt.getCompanyId(),
+				verticalCnt.getFixedItemAtr(),
+				verticalCnt.getVerticalCountNo());
+		kCntSet.kscstVerticalCntSetPK = kVerticalSetPK;
+		return kCntSet;
+	}
+	
+	/**
+	 * Add vertical CNT Set
+	 */
+	@Override
+	public void addVerticalCnt(VerticalCnt verticalCnt) {
+		this.commandProxy().insert(convertToDbTypeCnt(verticalCnt));	
+	}
+
+	/**
 	 * Update Vertical Time
 	 */
 	@Override
@@ -192,19 +244,26 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 		this.commandProxy().update(kTimeSet);	
 	}
 	
+
 	/**
 	 * Delete Vertical Time
 	 */
-	@Override
-	public void deleteVerticalTime(String companyId, int fixedItemAtr, int startClock){
-		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(companyId, fixedItemAtr, startClock);
-		this.commandProxy().remove(KscstVerticalTimeSet.class, kVerticalSetPK);
-	}
-	
 	@Override
 	public void deleteVerticalTime(String companyId, int fixedItemAtr) {
 		this.getEntityManager().createQuery(REMOVE_TIME_BY_CID)
 			.setParameter("companyId", companyId).setParameter("fixedItemAtr", fixedItemAtr)
 			.executeUpdate();
 	}
+	
+	/**
+	 * Delete Vertical Cnt
+	 */
+	@Override
+	public void deleteCount(String companyId, int fixedItemAtr) {
+		this.getEntityManager().createQuery(REMOVE_COUNT_BY_CID)
+			.setParameter("companyId", companyId).setParameter("fixedItemAtr", fixedItemAtr)
+			.executeUpdate();
+	}
+
+	
 }

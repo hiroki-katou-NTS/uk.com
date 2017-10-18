@@ -28,7 +28,6 @@ public class AddVerticalTimeSettingCommandHandler extends CommandHandler<AddVert
 		AddVerticalTimeSettingCommand command = context.getCommand();
 		List<VerticalTimeSettingCommand> verticalTimeList = command.getVerticalTimes();
 		String companyId = AppContexts.user().companyId();
-		
 		repository.deleteVerticalTime(companyId, command.getFixedItemAtr());
 		
 		for (VerticalTimeSettingCommand item : verticalTimeList) {
