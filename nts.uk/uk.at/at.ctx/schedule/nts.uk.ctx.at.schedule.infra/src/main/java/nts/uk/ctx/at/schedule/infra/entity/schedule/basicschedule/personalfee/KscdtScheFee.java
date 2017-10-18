@@ -16,50 +16,50 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtWsPersonFee.
+ * The Class KscdtScheFee.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_WS_PERSON_FEE")
-public class KscmtWsPersonFee implements Serializable {
+@Table(name = "KSCDT_SCHE_FEE")
+public class KscdtScheFee implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The kscmt ws person fee PK. */
     @EmbeddedId
-    protected KscmtWsPersonFeePK kscmtWsPersonFeePK;
+    protected KscdtScheFeePK kscdtScheFeePK;
     
     /** The personal pee amount. */
     @NotNull
     @Column(name = "PERSONAL_FEE_AMOUNT")
     private int personalFeeAmount;
 
-    public KscmtWsPersonFee() {
+    public KscdtScheFee() {
     }
 
-    public KscmtWsPersonFee(KscmtWsPersonFeePK kscmtWsPersonFeePK) {
-        this.kscmtWsPersonFeePK = kscmtWsPersonFeePK;
+    public KscdtScheFee(KscdtScheFeePK kscmtWsPersonFeePK) {
+        this.kscdtScheFeePK = kscmtWsPersonFeePK;
     }
 
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtWsPersonFeePK != null ? kscmtWsPersonFeePK.hashCode() : 0);
+        hash += (kscdtScheFeePK != null ? kscdtScheFeePK.hashCode() : 0);
         return hash;
     }
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KscmtWsPersonFee)) {
+		if (!(object instanceof KscdtScheFee)) {
 			return false;
 		}
-		KscmtWsPersonFee other = (KscmtWsPersonFee) object;
-		if ((this.kscmtWsPersonFeePK == null && other.kscmtWsPersonFeePK != null)
-				|| (this.kscmtWsPersonFeePK != null
-						&& !this.kscmtWsPersonFeePK.equals(other.kscmtWsPersonFeePK))) {
+		KscdtScheFee other = (KscdtScheFee) object;
+		if ((this.kscdtScheFeePK == null && other.kscdtScheFeePK != null)
+				|| (this.kscdtScheFeePK != null
+						&& !this.kscdtScheFeePK.equals(other.kscdtScheFeePK))) {
 			return false;
 		}
 		return true;
@@ -67,7 +67,7 @@ public class KscmtWsPersonFee implements Serializable {
 
 	@Override
 	public String toString() {
-		return "entity.KscmtWsPersonFee[ kscmtWsPersonFeePK=" + kscmtWsPersonFeePK + " ]";
+		return "entity.KscmtWsPersonFee[ kscmtWsPersonFeePK=" + kscdtScheFeePK + " ]";
 	}
     
 }

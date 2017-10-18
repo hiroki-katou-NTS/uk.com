@@ -20,13 +20,13 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KscmtSchCreateContent.
+ * The Class KscdtScheExeContent.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCH_CREATE_CONTENT")
-public class KscmtSchCreateContent implements Serializable {
+@Table(name = "KSCDT_SCHE_EXE_CONTENT")
+public class KscdtScheExeContent implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -94,7 +94,7 @@ public class KscmtSchCreateContent implements Serializable {
     /**
      * Instantiates a new kscmt sch create content.
      */
-    public KscmtSchCreateContent() {
+    public KscdtScheExeContent() {
     }
 
     /**
@@ -102,7 +102,7 @@ public class KscmtSchCreateContent implements Serializable {
      *
      * @param exeId the exe id
      */
-    public KscmtSchCreateContent(String exeId) {
+    public KscdtScheExeContent(String exeId) {
         this.exeId = exeId;
     }
 
@@ -122,10 +122,10 @@ public class KscmtSchCreateContent implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscmtSchCreateContent)) {
+        if (!(object instanceof KscdtScheExeContent)) {
             return false;
         }
-        KscmtSchCreateContent other = (KscmtSchCreateContent) object;
+        KscdtScheExeContent other = (KscdtScheExeContent) object;
         if ((this.exeId == null && other.exeId != null) || (this.exeId != null && !this.exeId.equals(other.exeId))) {
             return false;
         }

@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KscmtSchExecutionLogPK implements Serializable {
+public class KscdtScheExeLogPK implements Serializable {
     
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class KscmtSchExecutionLogPK implements Serializable {
     /**
      * Instantiates a new kscmt schedule exc log PK.
      */
-    public KscmtSchExecutionLogPK() {
+    public KscdtScheExeLogPK() {
     }
 
     /**
@@ -46,7 +46,7 @@ public class KscmtSchExecutionLogPK implements Serializable {
      * @param companyId the company id
      * @param executionId the execution id
      */
-    public KscmtSchExecutionLogPK(String companyId, String executionId) {
+    public KscdtScheExeLogPK(String companyId, String executionId) {
     	this.cid = companyId;
     	this.exeId = executionId;
 	}
@@ -67,10 +67,10 @@ public class KscmtSchExecutionLogPK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtSchExecutionLogPK)) {
+        if (!(object instanceof KscdtScheExeLogPK)) {
             return false;
         }
-        KscmtSchExecutionLogPK other = (KscmtSchExecutionLogPK) object;
+        KscdtScheExeLogPK other = (KscdtScheExeLogPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

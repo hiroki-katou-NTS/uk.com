@@ -22,8 +22,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_SCH_CRE_SET")
-public class KscmtPerSchCreSet implements Serializable {
+@Table(name = "KSCST_SCHE_CRE_SET")
+public class KscstScheCreSet implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -60,7 +60,7 @@ public class KscmtPerSchCreSet implements Serializable {
     /**
      * Instantiates a new kscmt per sch cre set.
      */
-    public KscmtPerSchCreSet() {
+    public KscstScheCreSet() {
     }
 
     /**
@@ -68,7 +68,7 @@ public class KscmtPerSchCreSet implements Serializable {
      *
      * @param sid the sid
      */
-    public KscmtPerSchCreSet(String sid) {
+    public KscstScheCreSet(String sid) {
         this.sid = sid;
     }
 
@@ -88,10 +88,10 @@ public class KscmtPerSchCreSet implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtPerSchCreSet)) {
+        if (!(object instanceof KscstScheCreSet)) {
             return false;
         }
-        KscmtPerSchCreSet other = (KscmtPerSchCreSet) object;
+        KscstScheCreSet other = (KscstScheCreSet) object;
         if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
             return false;
         }

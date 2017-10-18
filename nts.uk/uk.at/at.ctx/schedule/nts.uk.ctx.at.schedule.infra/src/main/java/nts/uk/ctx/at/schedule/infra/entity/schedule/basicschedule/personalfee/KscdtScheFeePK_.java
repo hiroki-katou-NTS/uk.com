@@ -6,16 +6,21 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDate;
+
 /**
- * The Class KscmtWsPersonFeeTimePK_.
+ * The Class KscdtScheFeePK_.
  */
-@StaticMetamodel(KscmtWsPersonFeeTimePK.class)
-public class KscmtWsPersonFeeTimePK_ {
+@StaticMetamodel(KscdtScheFeePK.class)
+public class KscdtScheFeePK_ {
 	
-    /** The kscmt ws person fee time PK. */
-    public static volatile SingularAttribute<KscmtWsPersonFeeTimePK, String> kscmtWsPersonFeeTimePK;
+    /** The sid. */
+    public static volatile SingularAttribute<KscdtScheFeePK, String> sid;
     
-    /** The person fee time. */
-    public static volatile SingularAttribute<KscmtWsPersonFeeTimePK, Integer> personFeeTime;
+    /** The ymd. */
+    public static volatile SingularAttribute<KscdtScheFeePK, GeneralDate> ymd;
+    
+    /** The no. */
+    public static volatile SingularAttribute<KscdtScheFeePK, Integer> no;
     
 }
