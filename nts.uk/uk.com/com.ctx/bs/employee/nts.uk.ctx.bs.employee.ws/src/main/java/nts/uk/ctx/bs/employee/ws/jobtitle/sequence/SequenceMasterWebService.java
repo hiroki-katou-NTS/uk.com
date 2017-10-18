@@ -39,7 +39,7 @@ public class SequenceMasterWebService extends WebService {
 	 */
 	@Path("findMaxOrder")
 	@POST
-	public short findMaxOrder() {
+	public int findMaxOrder() {
 		return this.sequenceMasterFinder.findMaxOrder();
 	}
 	
