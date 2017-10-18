@@ -1,51 +1,63 @@
-__viewContext.ready(function () {
+__viewContext.ready(function() {
     class ScreenModel {
-    
+        itemList: KnockoutObservableArray<ItemModel>;
+        selectedCode: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
+            self.itemList = ko.observableArray([
+                new ItemModel("1", "基本給"),
+                new ItemModel("2", "役職手当"),
+                new ItemModel("3", "基本給")
+            ]);
+            self.selectedCode = ko.observable("1");
         }
     }
+
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    $(".popup-area1").ntsPopup({
+        trigger: ".show-popup1",
+        position: {
+            my: "left top",
+            at: "left bottom",
+            of: ".show-popup1"
+        },
+        showOnStart: false,
+        dismissible: true
+    });
     
-    $('.popup-area').each(function() {
-        var popPos = $(this).siblings('.show-popup');
-        $(this).ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom',
-                of: popPos
-            },
-            dismissible: false
-        });
+    $(".destroy-popup1").click(function() {
+        $(".popup-area1").ntsPopup("destroy");
     });
-    $('.show-popup').click(function () {
-        $(this).siblings('.popup-area').ntsPopup('show');
+    
+    $(".popup-area2").ntsPopup({
+        position: {
+            my: "left top",
+            at: "left bottom",
+            of: ".show-popup2"
+        },
+        showOnStart: false,
+        dismissible: false
     });
-    $('.toggle-popup').click(function () {
-        $(this).siblings('.popup-area').ntsPopup('toggle');
+    $(".show-popup2").click(function() {
+        $(".popup-area2").ntsPopup("show");
     });
-    $('.close-popup').click(function(){
-        $(this).parent().ntsPopup('hide');
+    $(".toggle-popup2").click(function() {
+        $(".popup-area2").ntsPopup("toggle");
     });
-    $('.destroy-popup').click(function() {
-       var currentPopup = $(this).parent();
-       currentPopup.ntsPopup('destroy');
-       currentPopup.siblings('.toggle-popup').prop("disabled",true);
-       currentPopup.siblings('.show-popup').prop("disabled",true);
-    });
-    $('.reset-popup').click(function () {
-        var currentPop = $(this).siblings('.popup-area');
-        var showPop = $(this).siblings('.show-popup');
-        currentPop.ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom',
-                of: showPop
-            },
-            dismissible: false
-        });
-        $(this).siblings('.toggle-popup').prop("disabled",false);
-        $(this).siblings('.show-popup').prop("disabled",false);
+    
+    $(".close-popup").click(function() {
+        $(this).parent().ntsPopup("hide");
     });
     this.bind(new ScreenModel());
-    
+
 });
