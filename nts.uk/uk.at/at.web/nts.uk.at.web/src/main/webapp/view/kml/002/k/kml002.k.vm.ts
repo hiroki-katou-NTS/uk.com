@@ -31,9 +31,13 @@ module kml002.k.viewmodel {
                 startTime: self.startTime(),
                 endTime: self.endTime()
             }
+            if (self.startTime() > self.endTime()) {
+                nts.uk.ui.dialog.info({ messageId: "Msg_28" });
+                return;
+            }
             nts.uk.ui.windows.setShared('KML002K_TIME', dataTime);
             nts.uk.ui.windows.close();
         }
-        
+
     }
 }
