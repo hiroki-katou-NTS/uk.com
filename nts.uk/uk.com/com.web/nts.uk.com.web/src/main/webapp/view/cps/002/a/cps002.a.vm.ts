@@ -20,7 +20,7 @@ module cps002.a.vm {
 
         categoryList: KnockoutObservableArray<CategoryItem> = ko.observableArray([]);
 
-        initValueList: KnockoutObservableArray<InitValueSetting> = ko.observableArray([]);
+        initValueList: KnockoutObservableArray<SelectedItem> = ko.observableArray([]);
 
         itemList: KnockoutObservableArray<Item> = ko.observableArray([]);
 
@@ -42,32 +42,23 @@ module cps002.a.vm {
 
         initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
 
-        currentInitValueItem: KnockoutObservable<InitValueSetting> = ko.observable(new InitValueSetting(null));;
+        currentItem: KnockoutObservable<SelectedItem> = ko.observable(new SelectedItem(null));;
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
-            isQuickSearchTab: ko.observable(true),
-            isAdvancedSearchTab: ko.observable(true),
-            isAllReferableEmployee: ko.observable(true),
-            isOnlyMe: ko.observable(true),
-            isEmployeeOfWorkplace: ko.observable(true),
-            isEmployeeWorkplaceFollow: ko.observable(true),
-            isMutipleCheck: ko.observable(true),
-            isSelectAllEmployee: ko.observable(true),
-            onSearchAllClicked: (dataList: Array<any>) => {
-                let self = this;
-            },
-            onSearchOnlyClicked: (data: any) => {
-                let self = this;
-            },
-            onSearchOfWorkplaceClicked: (dataList: Array<any>) => {
-                let self = this;
-            },
-            onSearchWorkplaceChildClicked: (dataList: Array<any>) => {
-                let self = this;
-            },
+            isQuickSearchTab: true,
+            isAdvancedSearchTab: true,
+            isAllReferableEmployee: true,
+            isOnlyMe: true,
+            isEmployeeOfWorkplace: true,
+            isEmployeeWorkplaceFollow: true,
+            isMutipleCheck: false,
+            isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
+
+
                 let self = this;
+                self.currentItem(new SelectedItem(dataEmployee[0]));
             }
         };
 
@@ -95,8 +86,8 @@ module cps002.a.vm {
 
                 });
 
-                self.currentInitValueItem(_.find(self.initValueList(), item => {
-                    return item.settingCode = newValue;
+                self.currentItem(_.find(self.initValueList(), item => {
+                    return item.itemCode = newValue;
                 }));
 
             });
@@ -363,7 +354,7 @@ module cps002.a.vm {
             service.getAllInitValueSetting().done((result: Array<IInitValueSetting>) => {
                 if (result.length) {
                     self.initValueList(_.map(result, item => {
-                        return new InitValueSetting(item);
+                        return new SelectedItem(item);
                     }));
 
                     let lastValueItem = _.find(result, (item) => {
@@ -401,7 +392,13 @@ module cps002.a.vm {
             let self = this;
 
             nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
-                $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+                if (getShared('isContinue')) {
+
+                    self.gotoStep1();
+
+                } else {
+                    jump('/view/cps/001/a/index.xhtml');
+                }
             });
         }
 
@@ -433,7 +430,7 @@ module cps002.a.vm {
 
             subModal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(() => {
 
-                if (true) {
+                if (getShared("userSettingStatus")) {
                     service.getUserSetting().done((result: IUserSetting) => {
 
                         self.getLastRegHistory(result);
@@ -458,18 +455,6 @@ module cps002.a.vm {
                 }
 
             });
-
-        }
-
-        openHModal() {
-            let self = this;
-
-            subModal('/view/cps/002/i/index.xhtml', { dialogClass: "no-close" }).onClosed(() => {
-
-
-            });
-
-
 
         }
 
@@ -531,17 +516,17 @@ module cps002.a.vm {
 
     }
 
-    class InitValueSetting {
+    class SelectedItem {
 
-        settingId: string = '';
-        settingCode: string = '';
-        settingName: string = '';
+        itemId: string = '';
+        itemCode: string = '';
+        itemName: string = '';
 
-        constructor(param?: IInitValueSetting) {
+        constructor(param?: any) {
 
-            this.settingId = param ? param.settingId : '';
-            this.settingCode = param ? param.settingCode : '';
-            this.settingName = param ? param.settingName : '';
+            this.itemId = param ? param.settingId ? param.settingId : param.employeeId : '';
+            this.itemCode = param ? param.settingCode ? param.settingCode : param.employeeCode : '';
+            this.itemName = param ? param.settingName ? param.settingName : param.employeeName : '';
         }
 
     }
