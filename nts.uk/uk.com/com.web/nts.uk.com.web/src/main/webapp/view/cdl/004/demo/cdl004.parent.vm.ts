@@ -31,6 +31,10 @@ module nts.uk.com.view.cdl004.parent.viewmodel {
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/cdl/004/a/index.xhtml').onClosed(function(): any {
+                var isCancel = nts.uk.ui.windows.getShared('CDL004Cancel');
+                if (isCancel) {
+                    return;
+                }
                 //view all code of selected item 
                 var output = nts.uk.ui.windows.getShared('outputCDL004');
                 self.selectJobtitleCodes(output);

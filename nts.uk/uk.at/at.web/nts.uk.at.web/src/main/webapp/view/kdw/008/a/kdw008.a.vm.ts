@@ -181,7 +181,8 @@ module nts.uk.at.view.kdw008.a {
                                 var obj = {
                                     attendanceItemId: item.attendanceItemId,
                                     attendanceItemName: item.attendanceItemName,
-                                    attendanceItemDisplayNumber: item.dislayNumber
+                                    attendanceItemDisplayNumber: item.dislayNumber,
+                                    columnWidth : item.columnWidth
                                 };
                                 return new AttendanceItemModel(obj);
                             });
@@ -200,7 +201,8 @@ module nts.uk.at.view.kdw008.a {
                                 var daily = {
                                     attendanceItemId: item.attendanceItemId,
                                     attendanceItemName: item.attendanceItemName,
-                                    attendanceItemDisplayNumber: item.dislayNumber
+                                    attendanceItemDisplayNumber: item.dislayNumber,
+                                    columnWidth : item.columnWidth
                                 }
                                 return new AttendanceItemModel(daily);
                             });
@@ -259,7 +261,7 @@ module nts.uk.at.view.kdw008.a {
                         dislayNumber: item.attendanceItemDisplayNumber,
                         attendanceItemName: item.attendanceItemName,
                         order: indexOfItem,
-                        columnWidth: 0
+                        columnWidth: item.columnWidth ? item.columnWidth : null
                     };
                     return new DailyAttendanceAuthorityDetailDto(obj);
                 })
@@ -279,7 +281,7 @@ module nts.uk.at.view.kdw008.a {
                         dislayNumber: item.attendanceItemDisplayNumber,
                         attendanceItemName: item.attendanceItemName,
                         order: indexOfDaily,
-                        columnWidth: 0
+                        columnWidth: item.columnWidth ? item.columnWidth : null
                     };
                     return new DailyAttendanceAuthorityDetailDto(monthly);
                 });
@@ -381,11 +383,13 @@ module nts.uk.at.view.kdw008.a {
             attendanceItemId: number = 0;
             attendanceItemName: string = "";
             attendanceItemDisplayNumber: number = 0;
+            columnWidth : number;
             constructor(data: IAttendanceItem) {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId || 0;
                 this.attendanceItemName = data.attendanceItemName || "";
                 this.attendanceItemDisplayNumber = data.attendanceItemDisplayNumber || 0;
+                this.columnWidth = data.columnWidth;
             }
         }
 
@@ -445,6 +449,7 @@ module nts.uk.at.view.kdw008.a {
             attendanceItemId: number;
             attendanceItemName: string;
             attendanceItemDisplayNumber: number;
+            columnWidth : number;
         }
         export interface IAuthorityFormatDetail {
             attendanceItemId: number;

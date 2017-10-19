@@ -9,25 +9,69 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 820,
-					height : 510
+					width : 882,
+					height : 500
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<!-- <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/> -->
-			<com:scriptfile path="kmw.b.start.js" />
-			<com:scriptfile path="kmw.b.vm.js" />
+			<com:stylefile path="kmw005.b.main.css" />
+			<com:scriptfile path="kmw005.b.start.js" />
+			<com:scriptfile path="kmw005.b.service.js" />
+			<com:scriptfile path="kmw005.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>#{i18n.getText('CDL002_1')}</div>
-				<div id="emp-component" tabindex="1"></div>
+				
+				<!-- <div id="detail-content"> -->
+					<table>
+						<tr>
+							<td></td>
+							<td>
+								<div id="targetYM" tabindex="1"
+									data-bind="ntsDatePicker: { value: yearMonth, name: '#[KMW005_25]', dateFormat: 'yearmonth', showJumpButtons: true, valueFormat: 'YYYYMM'}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td id="contents-left">
+								<div id="closure-content" class="bg-green caret-background">
+									<table id="closure-list"
+									data-bind="ntsGridList: {
+												name: '#[KMW005_17]',
+												height: 235,
+												options: closureList,
+												optionsValue: 'closureId',
+												columns: closureColumn,
+												multiple: false,
+												value: selectedClosure,
+												rows: 5
+											}"></table>
+								</div>
+								
+							</td>
+
+							<td id="contents-right" class="caret-background">
+
+								<table id="history-list" 
+									data-bind="ntsGridList: {
+												name: '#[KMW005_19]',
+												height: 235,
+												options: lockHistList,
+												optionsValue: 'lockDateTime',
+												columns: lockHistColumn,
+												multiple: false,
+												value: lockHist.lockDateTime,
+												rows: 10
+											}"></table>
+							</td>
+						</tr>
+					</table>
+				<!-- </div> -->
 			</div>
 			<div id="ruled-line" style="border: 1px solid;"></div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: decideData" tabindex="2">#{i18n.getText('CDL002_2')}</button>
-				<button data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CDL002_3')}</button>
+				<button class="x-large" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('KMW005_24')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
