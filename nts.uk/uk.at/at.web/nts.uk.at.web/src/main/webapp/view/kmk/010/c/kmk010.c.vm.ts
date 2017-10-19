@@ -84,7 +84,9 @@ module nts.uk.at.view.kmk010.c {
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
-                       nts.uk.ui.dialog.alertError(error);
+                       nts.uk.ui.dialog.alertError(error).then(function() {
+                           nts.uk.ui.windows.close();
+                       });
                    });
                } else {
                    var overtimeLangNames: OutsideOTBRDItemLangDto[] = [];
@@ -102,7 +104,10 @@ module nts.uk.at.view.kmk010.c {
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
-                       nts.uk.ui.dialog.alertError(error);
+                       nts.uk.ui.dialog.alertError(error).then(function() {
+                           nts.uk.ui.windows.close();
+                       });
+                       
                    });
                }
            }

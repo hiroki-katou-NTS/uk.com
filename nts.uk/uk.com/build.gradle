@@ -54,6 +54,11 @@ subprojects {
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
@@ -759,6 +764,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
+		
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws')
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'

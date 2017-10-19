@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 
 /**
@@ -44,8 +43,8 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGetMemento#getWorkplaceId()
 	 */
 	@Override
-	public WorkplaceId getWorkplaceId() {
-	    return new WorkplaceId(this.lstWorkplaceHistory.get(ELEMENT_FIRST).getBsymtWorkplaceHistPK().getWkpid());
+	public String getWorkplaceId() {
+	    return this.lstWorkplaceHistory.get(ELEMENT_FIRST).getBsymtWorkplaceHistPK().getWkpid();
 	}
 
 	/* (non-Javadoc)

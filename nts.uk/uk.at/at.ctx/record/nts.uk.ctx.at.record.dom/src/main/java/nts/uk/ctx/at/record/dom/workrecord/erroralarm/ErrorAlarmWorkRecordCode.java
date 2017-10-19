@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * @author hungnm
@@ -12,6 +13,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 /* 勤務実績のエラーアラームコード */
 @StringMaxLength(4)
+@ZeroPaddedCode
 public class ErrorAlarmWorkRecordCode extends StringPrimitiveValue<ErrorAlarmWorkRecordCode> {
 
 	private static final long serialVersionUID = 1L;

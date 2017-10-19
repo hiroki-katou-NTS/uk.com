@@ -234,7 +234,7 @@ module kcp.share.tree {
                     if (self.hasBaseDate()) {
                         $('.base-date-editor').first().focus();
                     } else {
-                        $(".ntsSearchBox").focus();
+                        $("#combo-box-tree-component").focus();
                     }
                 }
             });

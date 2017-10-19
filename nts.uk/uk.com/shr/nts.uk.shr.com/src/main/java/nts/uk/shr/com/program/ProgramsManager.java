@@ -977,6 +977,9 @@ public class ProgramsManager {
 										
 	public static final Program CDL004 = new Program(WebAppId.COM, ProgramIdConsts.CDL004, "CDL004_1",
 			"/view/cdl/004/a/index.xhtml");
+	
+	public static final Program KDW003B = new Program(WebAppId.AT, ProgramIdConsts.KDW003B, "KDW003_16",
+			"/view/kdw/003/b/index.xhtml");
 
 	// TODO: Define new programs here.
 

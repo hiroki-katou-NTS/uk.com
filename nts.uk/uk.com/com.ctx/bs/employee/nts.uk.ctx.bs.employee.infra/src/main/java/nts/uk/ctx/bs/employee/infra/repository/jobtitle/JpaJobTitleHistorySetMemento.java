@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK;
@@ -31,9 +30,9 @@ public class JpaJobTitleHistorySetMemento implements JobTitleHistorySetMemento {
 	 *            the new history id
 	 */
 	@Override
-	public void setHistoryId(HistoryId historyId) {
+	public void setHistoryId(String historyId) {
 		BsymtJobHistPK pk = new BsymtJobHistPK();
-		pk.setHistId(historyId.v());
+		pk.setHistId(historyId);
 		this.entity.setBsymtJobHistPK(pk);
 	}
 

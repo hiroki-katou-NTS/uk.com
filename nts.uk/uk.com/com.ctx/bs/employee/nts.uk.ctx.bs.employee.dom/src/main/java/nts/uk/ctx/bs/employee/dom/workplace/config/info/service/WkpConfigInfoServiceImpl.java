@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,9 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
 
     /** The Constant EQUAL_VALUE. */
     private static final Integer EQUAL_VALUE = 0;
+
+    /** The Constant HIERARCHY_ORIGIN. */
+    private static final String HIERARCHY_ORIGIN = "001";
 
     /*
      * (non-Javadoc)
@@ -72,31 +76,28 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
     @Override
     public void updateWkpHierarchy(String historyId, String wkpIdSelected, Workplace newWorkplace,
             CreateWorkpceType createType) {
-        Optional<WorkplaceConfigInfo> optional = wkpConfigInfoRepo.find(newWorkplace.getCompanyId(),
-                historyId);
+        Optional<WorkplaceConfigInfo> optional = wkpConfigInfoRepo.find(newWorkplace.getCompanyId(), historyId);
         if (!optional.isPresent()) {
             throw new RuntimeException(String.format("Didn't have workplace config infor %s", historyId));
         }
         WorkplaceConfigInfo wkpConfigInfo = optional.get();
 
         Optional<WorkplaceHierarchy> optionalWkpHierarchySelected = wkpConfigInfo.getLstWkpHierarchy().stream()
-                .filter(item -> item.getWorkplaceId().v().equals(wkpIdSelected))
-                .findFirst();
+                .filter(item -> item.getWorkplaceId().equals(wkpIdSelected)).findFirst();
         if (!optionalWkpHierarchySelected.isPresent()) {
             throw new RuntimeException(String.format("Didn't have workplace %s", wkpIdSelected));
         }
 
         WorkplaceHierarchy wkpHierarchySelected = optionalWkpHierarchySelected.get();
-        
+
         // create hierarchy at child
         if (createType == CreateWorkpceType.CREATE_AT_CHILD) {
             this.updateHierarchyChild(wkpConfigInfo.getLstWkpHierarchy(), wkpHierarchySelected,
-                    newWorkplace.getWorkplaceId().v());
+                    newWorkplace.getWorkplaceId());
         } else {
-            this.process(wkpConfigInfo.getLstWkpHierarchy(), wkpHierarchySelected, createType,
-                    newWorkplace.getWorkplaceId().v());
+            this.process(wkpConfigInfo, wkpHierarchySelected, createType, newWorkplace.getWorkplaceId());
         }
-        
+
         // update workplace config infor
         this.wkpConfigInfoRepo.update(wkpConfigInfo);
     }
@@ -104,8 +105,8 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
     /**
      * Process.
      *
-     * @param lstWkpHierarchy
-     *            the lst wkp hierarchy
+     * @param wkpConfigInfo
+     *            the wkp config info
      * @param wkpHierarchySelected
      *            the wkp hierarchy selected
      * @param createType
@@ -113,7 +114,7 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
      * @param newWkpId
      *            the new wkp id
      */
-    private void process(List<WorkplaceHierarchy> lstWkpHierarchy, WorkplaceHierarchy wkpHierarchySelected,
+    private void process(WorkplaceConfigInfo wkpConfigInfo, WorkplaceHierarchy wkpHierarchySelected,
             CreateWorkpceType createType, String newWkpId) {
 
         String hierarchyCdSelected = wkpHierarchySelected.getHierarchyCode().v();
@@ -122,16 +123,16 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
 
         WorkplaceHierarchy newWkpHierarchy = null;
 
-        for (WorkplaceHierarchy wkpHierarchy : lstWkpHierarchy) {
+        for (WorkplaceHierarchy wkpHierarchy : wkpConfigInfo.getLstWkpHierarchy()) {
 
             String hierarchyCd = wkpHierarchy.getHierarchyCode().v();
 
             // except hierarchy not relation
-            if (!hierarchyCd.startsWith(hierarchyParent)) {
+            if (!hierarchyCd.startsWith(hierarchyParent) || hierarchyCd.length() == hierarchyParent.length()) {
                 continue;
             }
             // update hierarchyCd child
-            if (hierarchyCd.length() > hierarchyCdSelected.length()) {
+            if (this.isChangedHierarchyChild(hierarchyCd, hierarchyCdSelected, createType)) {
                 String newHierarchyCd = hierarchyCd.replace(hierarchyCdSelected,
                         this.getNewHierarchyCd(hierarchyCdSelected));
                 wkpHierarchy.setHierarchyCode(new HierarchyCode(newHierarchyCd));
@@ -147,7 +148,9 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
         }
 
         // add new workplace hierarchy
-        lstWkpHierarchy.add(newWkpHierarchy);
+        WorkplaceConfigInfo newWkpConfigInfo = WorkplaceConfigInfo.cloneWithWkpHierarchy(wkpConfigInfo,
+                Arrays.asList(newWkpHierarchy));
+        this.wkpConfigInfoRepo.add(newWkpConfigInfo);
     }
 
     /**
@@ -164,18 +167,19 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
             String newWkpId) {
         String hierarchyCdSelected = wkpHierarchySelected.getHierarchyCode().v();
 
-        WorkplaceHierarchy wkpHierarchyLast = lstWkpHierarchy.stream()
-                .filter(wkpHierarchy -> wkpHierarchy.getHierarchyCode().v().startsWith(hierarchyCdSelected))
-                .sorted((item1, item2) -> item2.getHierarchyCode().v().compareTo(item1.getHierarchyCode().v()))
-                .findFirst()
+        WorkplaceHierarchy wkpHierarchyLast = lstWkpHierarchy.stream().filter(wkpHierarchy -> {
+            String hierarchyCd = wkpHierarchy.getHierarchyCode().v();
+            return hierarchyCd.startsWith(hierarchyCdSelected) && hierarchyCd.length() > hierarchyCdSelected.length();
+        }).sorted((item1, item2) -> item2.getHierarchyCode().v().compareTo(item1.getHierarchyCode().v())).findFirst()
                 .orElse(null);
 
-        String newHierarchyLast = hierarchyCdSelected;
-        if (wkpHierarchyLast != null) {
-            newHierarchyLast = wkpHierarchyLast.getHierarchyCode().v();
+        String newHierarchyCd = Strings.EMPTY;
+        if (wkpHierarchyLast == null) {
+            newHierarchyCd = hierarchyCdSelected.concat(HIERARCHY_ORIGIN);
+        } else {
+            newHierarchyCd = this.getNewHierarchyCd(wkpHierarchyLast.getHierarchyCode().v());
         }
-        WorkplaceHierarchy newWkpHierarchy = WorkplaceHierarchy.newInstance(newWkpId,
-                this.getNewHierarchyCd(newHierarchyLast));
+        WorkplaceHierarchy newWkpHierarchy = WorkplaceHierarchy.newInstance(newWkpId, newHierarchyCd);
         lstWkpHierarchy.add(newWkpHierarchy);
     }
 
@@ -204,6 +208,7 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
             // create on top
             if (createType == CreateWorkpceType.CREATE_ON_TOP) {
                 newHierarchyCd = hierarchyCdSelected;
+                wkpHierarchy.setHierarchyCode(new HierarchyCode(this.getNewHierarchyCd(hierarchyCdSelected)));
             }
             // create on below
             else {
@@ -211,7 +216,10 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
             }
         }
         // update hierarchy
-        wkpHierarchy.setHierarchyCode(new HierarchyCode(this.getNewHierarchyCd(hierarchyCdSelected)));
+        else {
+            wkpHierarchy.setHierarchyCode(new HierarchyCode(this.getNewHierarchyCd(hierarchyCd)));
+            return wkpHierarchy;
+        }
         // return new wkpHierarchy
         return WorkplaceHierarchy.newInstance(newWkpId, newHierarchyCd);
     }
@@ -224,9 +232,34 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
      * @return the new hierarchy cd
      */
     private String getNewHierarchyCd(String hierarchyCd) {
-        int length = hierarchyCd.length();
-        String charLast = hierarchyCd.substring(length - 1, length);
-        return hierarchyCd.replace(charLast, String.valueOf(Integer.parseInt(charLast) + 1));
+        Long number = Long.parseLong(hierarchyCd);
+        number++;
+        StringBuffer result = new StringBuffer(number.toString());
+        result.reverse();
+        String charZero = "0";
+        while(result.length() < hierarchyCd.length()) {
+            result.append(charZero);
+        }
+        return result.reverse().toString();
+    }
+
+    /**
+     * Checks if is changed hierarchy child.
+     *
+     * @param hierarchyCd the hierarchy cd
+     * @param hierarchyCdSelected the hierarchy cd selected
+     * @param createType the create type
+     * @return the boolean
+     */
+    private Boolean isChangedHierarchyChild(String hierarchyCd, String hierarchyCdSelected,
+            CreateWorkpceType createType) {
+        // when create at top
+        boolean isCreatedTop = createType == CreateWorkpceType.CREATE_ON_TOP
+                && hierarchyCd.length() > hierarchyCdSelected.length();
+        // when create at below
+        boolean isCreatedBelow = createType == CreateWorkpceType.CREATE_ON_BELOW
+                && hierarchyCd.length() > hierarchyCdSelected.length() && !hierarchyCd.startsWith(hierarchyCdSelected);
+        return isCreatedTop || isCreatedBelow;
     }
 
 }

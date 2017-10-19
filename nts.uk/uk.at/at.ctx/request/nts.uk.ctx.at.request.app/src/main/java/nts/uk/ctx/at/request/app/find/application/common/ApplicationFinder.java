@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetadata;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -61,10 +61,10 @@ public class ApplicationFinder {
 				.collect(Collectors.toList());
 	}
 	
-	public List<ApplicationMetadata> getAppbyDate(ApplicationPeriodDto dto){
+	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto){
 		String companyID = AppContexts.user().companyId();
 		return this.appRepo.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
-				.stream().map(c -> { return new ApplicationMetadata(c.getApplicationID(), c.getApplicationType().value); })
+				.stream().map(c -> { return new ApplicationMetaDto(c.getApplicationID(), c.getApplicationType().value, c.getApplicationDate()); })
 				.collect(Collectors.toList());
 	}
 

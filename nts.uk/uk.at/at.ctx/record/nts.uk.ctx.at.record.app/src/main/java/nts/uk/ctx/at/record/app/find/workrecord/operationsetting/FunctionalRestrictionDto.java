@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.operationsetting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmationOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
 
 /**
  * @author danpv

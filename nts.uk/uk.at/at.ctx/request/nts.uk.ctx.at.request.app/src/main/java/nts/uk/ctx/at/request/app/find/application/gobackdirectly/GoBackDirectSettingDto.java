@@ -29,6 +29,10 @@ public class GoBackDirectSettingDto {
 	List<ApplicationReasonDto> listReasonDto;
 
 	AppCommonSettingDto appCommonSettingDto;
+	/**
+	 * 複数回勤務
+	 */
+	boolean isDutiesMulti;
 
 	/**
 	 * Convert Data Setting to DTO
@@ -44,7 +48,8 @@ public class GoBackDirectSettingDto {
 						domain.getSID(), 
 						domain.getListAppReason().stream()
 						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
-				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()));
+				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()),
+				domain.isDutiesMulti());
 	}
 
 }

@@ -20,9 +20,9 @@ import nts.uk.ctx.at.record.app.command.workrecord.authfuncrest.AuthFuncRestrict
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.EmployeeRoleDto;
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.FunctionalRestrictionWithAuthorityDto;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthorityRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformFuncRepo;
 import nts.uk.ctx.at.record.dom.workrecord.emplrole.EmployeeRole;
 import nts.uk.ctx.at.record.dom.workrecord.emplrole.EmployeeRoleRepoInterface;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -40,11 +40,11 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 	private EmployeeRoleRepoInterface emplRoleRepo;
 
 	@Inject
-	private DailyPerformanceFunctionRepoInterface dailyPerfFunctionRepo;
+	private DailyPerformFuncRepo dailyPerfFunctionRepo;
 
 	@Inject
-	private DailyPerformanceAuthorityRepoInterface dailyPerAuthRepo;
-	
+	private DailyPerformAuthorRepo dailyPerAuthRepo;
+
 	@Inject
 	private AuthFuncRestrictionCommandHandler authFuncRestHandler;
 
@@ -63,8 +63,8 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 	@POST
 	@Path("find/{roleId}")
 	public List<FunctionalRestrictionWithAuthorityDto> findFuncRestWithAuthor(@PathParam("roleId") String roleId) {
-		List<DailyPerformanceFunction> daiPerfFunctions = dailyPerfFunctionRepo.getDailyPerformanceFunctions();
-		List<DailyPerformanceAuthority> daiPerAuthors = dailyPerAuthRepo.getDailyPerformanceAuthorities(roleId);
+		List<DailyPerformanceFunction> daiPerfFunctions = dailyPerfFunctionRepo.getAll();
+		List<DailyPerformanceAuthority> daiPerAuthors = dailyPerAuthRepo.get(roleId);
 
 		// function-No , function-name, function-description
 		List<FunctionalRestrictionWithAuthorityDto> results = new ArrayList<>();
@@ -82,7 +82,7 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 		});
 		return results;
 	}
-	
+
 	@POST
 	@Path("register")
 	public void registerAuthFuncRestriction(AuthFuncRestrictionCommand command) {

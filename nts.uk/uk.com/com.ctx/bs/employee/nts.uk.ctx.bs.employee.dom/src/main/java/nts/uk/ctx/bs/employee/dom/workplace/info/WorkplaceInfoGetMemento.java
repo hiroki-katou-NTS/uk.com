@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-
 /**
  * The Interface WorkplaceInfoGetMemento.
  */
@@ -24,14 +21,14 @@ public interface WorkplaceInfoGetMemento {
      *
      * @return the history id
      */
-    public HistoryId getHistoryId();
+    public String getHistoryId();
 
     /**
      * Gets the workplace id.
      *
      * @return the workplace id
      */
-    public WorkplaceId getWorkplaceId();
+    public String getWorkplaceId();
 
     /**
      * Gets the workplace code.

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApp
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
@@ -83,6 +86,20 @@ public class GetAllDataAppPhaseFrame {
 						String reasonAll = "";
 						//duyet list approveaccepted to frame
 						for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAccepted() ) {
+							switch(approveAcceptedDto.getApprovalATR()) {
+								case 0:
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.UNAPPROVED.nameId);break;
+								case 1:
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.APPROVED.nameId);break;
+								case 2 : 
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.DENIAL.nameId);break;
+								default :
+									approveAcceptedDto.setNameApprovalATR(ApprovalAtr.UNAPPROVED.nameId);break;
+							}
+							if(approveAcceptedDto.getApprovalATR() == ApprovalAtr.UNAPPROVED.value) {
+								approveAcceptedDto.setNameApprovalATR(ApprovalAtr.UNAPPROVED.nameId);
+							}
+								
 							String str ="";
 							String str1 ="";
 							String str2 ="";
@@ -97,7 +114,7 @@ public class GetAllDataAppPhaseFrame {
 							if( approveAcceptedDto.getReason().isEmpty() == false  && reasonAll != "" ) {
 								str2 = ",";
 							}
-							approveAll += str1 + EnumAdaptor.valueOf(approveAcceptedDto.getApprovalATR(), ApprovalAtr.class);
+							approveAll += str1 + approveAcceptedDto.getNameApprovalATR();
 							reasonAll += str2 + approveAcceptedDto.getReason() ;
 							nameAll += str + name;
 							
@@ -120,6 +137,9 @@ public class GetAllDataAppPhaseFrame {
 		if(application.equals(null)) {
 			throw new BusinessException("Msg_198");
 		}
+		application.getListPhase().stream().forEach(x -> {
+			Collections.sort(x.getListFrame(), Comparator.comparing(ApprovalFrameDto :: getDispOrder));
+		});
 		return application;
 	}
 	

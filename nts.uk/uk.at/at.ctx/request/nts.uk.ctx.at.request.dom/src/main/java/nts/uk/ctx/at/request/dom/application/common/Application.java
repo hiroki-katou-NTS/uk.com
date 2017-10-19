@@ -101,16 +101,19 @@ public class Application extends AggregateRoot{
 	/**
 	 * 申請終了日
 	 */
+	@Setter
 	private GeneralDate startDate;
 	
 	/**
 	 * 申請開始日
 	 */
+	@Setter
 	private GeneralDate endDate;
 	
 	/**
 	 * List Phase
 	 */
+	@Setter
 	private List<AppApprovalPhase> listPhase;
 	
 	public static Application createFromJavaType(

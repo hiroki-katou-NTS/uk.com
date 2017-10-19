@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
@@ -27,6 +29,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class DetailAfterUpdateImpl implements DetailAfterUpdate {
@@ -51,13 +55,14 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 
 	@Inject
 	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
+	
+	@Inject
+	private MailSender mailSender;
 
-	public void processAfterDetailScreenRegistration(String companyID, String appID) {
+	public void processAfterDetailScreenRegistration(Application application) {
+		String companyID = application.getCompanyID();
 		List<String> destinationList = new ArrayList<>();
 		// ドメインモデル「申請」を取得する ( Acquire the domain model "application" )
-		Optional<Application> applicationOptional = applicationRepository.getAppById(companyID, appID);
-		if (!applicationOptional.isPresent()) return;
-		Application application = applicationOptional.get();
 		List<AppApprovalPhase> appApprovalPhases = application.getListPhase();
 		
 		// 承認を行った承認者を取得する ( Acquire approver who approved )
@@ -72,7 +77,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		if(appApprovalPhases == null) return ;
 		for (AppApprovalPhase appApprovalPhase : appApprovalPhases) {
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
-			List<ApprovalFrame> approvalFrames = approvalFrameRepository.getAllApproverByPhaseID(companyID, appID);
+			List<ApprovalFrame> approvalFrames = appApprovalPhase.getListFrame();
 			for (ApprovalFrame approvalFrame : approvalFrames) {
 				approvalFrame.getListApproveAccepted().forEach(x -> {
 					x.changeApprovalATR(ApprovalAtr.UNAPPROVED);
@@ -127,11 +132,17 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」を取得する ???
 			System.out.println("Send mail to: "+destinationList);
+			/*try {
+				mailSender.send("NSVC", "", new MailContents("nts","approvalChange"));
+			} catch (SendMailFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		}
 	}
 
 	public ApproverResult acquireApproverWhoApproved(List<AppApprovalPhase> appApprovalPhases){
-		ApproverResult approverResult = new ApproverResult();
+		ApproverResult approverResult = new ApproverResult(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
 		if(appApprovalPhases == null) {
 			return approverResult;
 		} 

@@ -19,4 +19,13 @@ public interface WorkplaceService {
      * @param endĐate the end đate
      */
     void updatePreviousHistory(String companyId, String prevHistId, GeneralDate endĐate);
+    
+    /**
+     * Removes the wkp history.
+     *
+     * @param companyId the company id
+     * @param lstWkpId the lst wkp id
+     * @param startDate the start date
+     */
+    void removeWkpHistory(String companyId, String wkpId, GeneralDate startDate);
 }

@@ -34,7 +34,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 * SequenceMasterGetMemento#getOrder()
 	 */
 	@Override
-	public short getOrder() {
+	public int getOrder() {
 		return this.typeValue.getDisporder();
 	}
 

@@ -71,12 +71,12 @@ module nts.uk.com.view.cmm011.a {
         export function findLstWkpConfigHistory(): JQueryPromise<Array<base.IHistory>> {
             let dfd = $.Deferred<Array<base.IHistory>>();
             nts.uk.request.ajax(servicePath.getListWkpConfigHistory).done((res: any) => {
-                let list: Array<base.IHistory> = _.map(res.wkpConfigHistory, function(item: any) {
+                let list: Array<base.IHistory> = _.map(res ? res.wkpConfigHistory : [], function(item: any) {
                     return {
                         workplaceId: "",
                         historyId: item.historyId,
-                        startDate: item.period.startDate,
-                        endDate: item.period.endDate
+                        startDate: item.startDate,
+                        endDate: item.endDate
                     };
                 });
                 dfd.resolve(list);

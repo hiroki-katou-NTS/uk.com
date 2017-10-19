@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 
 @Stateless
 public class NewBeforeRegisterImpl implements NewBeforeRegister {
@@ -46,37 +49,63 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	@Inject
 	private ApprovalRootAdapter approvalRootService;
 	
-	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr postAtr, int routeAtr, int appType){
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	public void processBeforeRegister(Application application){
 		// アルゴリズム「未入社前チェック」を実施する(Check trước khi vào cty)
-		retirementCheckBeforeJoinCompany(companyID, employeeID, date);
+		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
 		
 		// アルゴリズム「社員の当月の期間を算出する」を実行する(Tính toán thời gian của tháng hiện tại cưa nhân viên)
-		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
+		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
 		
 		// 登録する期間のチェック(Check thời gian đăng ký)
-		// if(endDate.after(startDate.addDays(31))) throw new BusinessException("Msg_277");
+		if(application.getApplicationDate().after(periodCurrentMonth.getStartDate().addDays(31))) {
+			throw new BusinessException("Msg_277");
+		}
 		
 		// 登録可能期間のチェック(１年以内)(check thời gian có thế đăng ký (trong vong 1 năm)
-		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(date)) throw new BusinessException("Msg_276");
+		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getApplicationDate())) {
+			throw new BusinessException("Msg_276");			
+		}
 		
 		// 過去月のチェック(check tháng quá khứ)
-		if(date.before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
+		if(application.getApplicationDate().before(periodCurrentMonth.getStartDate())) {
+			throw new BusinessException("Msg_236");			
+		}
 		
 		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)
-		List<ApprovalRootImport> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, routeAtr, appType, date);
+		
+		List<ApprovalRootImport> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(
+				application.getCompanyID(), 
+				application.getApplicantSID(), 
+				1, 
+				application.getApplicationType().value, 
+				application.getApplicationDate());
 		ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) throw new BusinessException("Msg_238");
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) throw new BusinessException("Msg_237");
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) throw new BusinessException("Msg_324");
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
+			throw new BusinessException("Msg_238");
+		} 
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
+			throw new BusinessException("Msg_238");
+		}
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
+			throw new BusinessException("Msg_324");
+		}
 		
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する(Check thời gian hết hạn xin)
-		//deadlineApplicationCheck(companyID, appID, appStartDate, appEndDate, date, date);
+		String employmentCD = employeeAdaptor.getEmploymentCode(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(application.getCompanyID(), employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new RuntimeException("Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+		}
+		deadlineApplicationCheck(application.getCompanyID(), closureEmployment.get().getClosureId(), application.getStartDate(), application.getEndDate(), periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate());
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する(Check giới hạn chấp nhân xin)
-		applicationAcceptanceRestrictionsCheck(postAtr, date, date);
+		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getApplicationType(), application.getPrePostAtr(), application.getStartDate(), application.getEndDate());
 		
 		// アルゴリズム「確定チェック」を実施する(check xác thực)
-		confirmationCheck(companyID, employeeID, date);
+		confirmationCheck(application.getCompanyID(), application.getApplicantSID(), application.getApplicationDate());
 	}
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem
@@ -87,7 +116,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		
 		// lấy lịch sử làm việc mới nhất
 		if(pesionInforImport.getListJobEntryHist().isEmpty()){
-			throw new RuntimeException("Khong ton tai lich su cua nhan vien");
+			throw new RuntimeException("Not found PersionInforImport in table BSYMT_JOB_ENTRY_HISTORY, employeeID =" + employeeID);
 		}
 		JobEntryHistoryImport jobEntryHistoryImport = pesionInforImport.getListJobEntryHist().get(0);
 		
@@ -104,15 +133,15 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		}
 	}
 	
-	public void deadlineApplicationCheck(String companyID, String appID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate){
+	public void deadlineApplicationCheck(String companyID, Integer closureID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
 		
 		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, Integer.parseInt(appID));
+		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, closureID);
 		if(!appDeadlineOp.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
 		}
 		ApplicationDeadline appDeadline = appDeadlineOp.get();
 		
@@ -122,7 +151,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		};
 		
 		// 申請する開始日(input)から申請する終了日(input)までループする(loop từ  startdate  đến  end date)
-		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate.addDays(1)){
+		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
 			GeneralDate deadline = null;
 			// ドメインモデル「申請締切設定」．締切基準をチェックする(Check ngày chốt chuẩn)
 			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
@@ -139,7 +168,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
@@ -147,9 +176,9 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		GeneralDate systemDate = GeneralDate.today();
 		
 		// キャッシュから取得(lấy từ cache) (Obtained from cache )
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType("", ApplicationType.STAMP_APPLICATION.value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		
@@ -172,11 +201,12 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				return;
 			} else {
 				// 申請する開始日(input)から申請する終了日(input)までループする(Loop từ startDate -> enđate)
-				for(GeneralDate loopDay = startDate;loopDay.beforeOrEquals(endDate);loopDay.addDays(1)){
+				for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+					GeneralDate loopDay = startDate.addDays(i);
 					// ドメインモデル「事前の受付制限」．チェック方法をチェックする(Check phương phám check)
 					if(appTypeDiscreteSetting.getRetrictPreMethodFlg().equals(CheckMethod.DAYCHECK)){
 						// ループする日と受付制限日と比較する(So sánh ngày loop với ngày giới hạn chấp nhận)
-						GeneralDate limitDay = systemDate.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
+						GeneralDate limitDay = systemDate.addDays(0 - appTypeDiscreteSetting.getRetrictPreDay().value);
 						if(loopDay.before(limitDay)) {
 							throw new BusinessException("Msg_327");
 						}
@@ -185,10 +215,10 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 						if(loopDay.before(systemDate)){
 							throw new BusinessException("Msg_327");
 						} else if(loopDay.equals(systemDate)){
-							Integer limitDay = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
+							Integer limitTime = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
 							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
 							// システム日時と受付制限日時と比較する(So sánh ngày hệ thống với ngày giới hạn chấp nhận)
-							if(systemTime > limitDay) {
+							if(systemTime > limitTime) {
 								throw new BusinessException("Msg_327");
 							}
 						}

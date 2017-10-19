@@ -7,7 +7,6 @@ package nts.uk.ctx.bs.employee.app.find.workplace.config.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 
@@ -40,8 +39,8 @@ public class WorkplaceConfigInfoDto implements WorkplaceConfigInfoSetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfigInfoSetMemento#setHistoryId(nts.uk.ctx.bs.employee.dom.workplace.HistoryId)
 	 */
 	@Override
-	public void setHistoryId(HistoryId historyId) {
-		this.historyId = historyId.v();
+	public void setHistoryId(String historyId) {
+		this.historyId = historyId;
 	}
 
 	/* (non-Javadoc)

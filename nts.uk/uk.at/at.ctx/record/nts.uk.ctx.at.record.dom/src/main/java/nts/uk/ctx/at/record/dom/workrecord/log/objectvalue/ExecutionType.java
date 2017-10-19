@@ -9,9 +9,11 @@ package nts.uk.ctx.at.record.dom.workrecord.log.objectvalue;
  */
 public enum ExecutionType {
 	
-	normalExecution(0),
+	// 通常実行
+	NormalExecution(0),
 	
-	rerun(1);
+	// 再実行
+	Rerun(1);
 	
 	public final int value;
 	

@@ -19,9 +19,16 @@ module nts.uk.ui.jqueryExtentions {
                 case "clear": {
                     return clear($element);     
                 } 
+                case "getImgStatus": {
+                    return getImgStatus($element);     
+                } 
                 default: 
                     return; 
             }            
+        }
+         
+        function getImgStatus($element: JQuery){
+            return $element.data("img-status");
         }
 
         function uploadImage($element: JQuery, option){
@@ -42,7 +49,7 @@ module nts.uk.ui.jqueryExtentions {
                         "y": cropperData.y,
                         "width": cropperData.width,
                         "height": cropperData.height,
-                        "crop": $element.data('checkbox').checked() 
+                        "crop": nts.uk.util.isNullOrEmpty($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {

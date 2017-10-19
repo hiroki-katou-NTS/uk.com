@@ -30,11 +30,10 @@
 						<button>#{i18n.getText('KDW003_5')}</button>
 						<button>#{i18n.getText('KDW003_6')}</button>
 						<button>#{i18n.getText('KDW003_12')}</button>
-						<button>#{i18n.getText('KDW003_65')}</button>
 						<button>#{i18n.getText('KDW003_13')}</button>
 						<button>#{i18n.getText('KDW003_14')}</button>
 						<button>#{i18n.getText('KDW003_15')}</button>
-						<button class="danger">#{i18n.getText('KDW003_16')}</button>
+						<button class="danger" data-bind="click: showErrorDialog">#{i18n.getText('KDW003_16')}</button>
 						<button>#{i18n.getText('KDW003_17')}</button>
 					</div>
 				</div>
@@ -59,13 +58,22 @@
 							columns: [
 								{ prop: 'name', length: 10 },
 							]}"></div>
-						<button id="btnExtraction" data-bind="click: extraction">#{i18n.getText('KDW003_20')}</button>
-						<button id="btnVacationRemaining">#{i18n.getText('KDW003_21')}</button>
+						<button id="btnExtraction" data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
+						<div class="vacationRemaining-container">
+							<button id="btnVacationRemaining" data-bind="click: btnVacationRemaining_Click">#{i18n.getText('KDW003_21')}</button>
+							<div id="vacationRemaining-content">
+								<button>#{i18n.getText('Com_PaidHoliday')}</button>
+								<button>#{i18n.getText('Com_SubstituteHoliday')}</button>
+								<button>#{i18n.getText('Com_FundedPaidHoliday')}</button>
+								<button>#{i18n.getText('Com_CompensationHoliday')}</button>
+								<button>#{i18n.getText('Com_ExsessHoliday')}</button>
+							</div>
+						</div>
 						<button id="btnComfirmAttendance">#{i18n.getText('KDW003_22')}</button>
 						
 						<div id="emp-component"></div>
 						<div id="cbListDate">
-							<div data-bind="ntsDatePicker: {value: selectedDate, 
+							<div id="choosenDate" data-bind="ntsDatePicker: {value: selectedDate, 
 											dateFormat: 'YYYY/MM/DD', 
 											showJumpButtons: true, 
 											startDate: dateRanger().startDate, 
@@ -75,7 +83,7 @@
 						<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
 						<div class="setting-container">
 							<button id="btn-setting" data-bind="click: btnSetting_Click" >&#9881;</button>
-							<div id="setting-wrapper">
+							<div id="setting-content">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
 								<div id="cbCursorMoveDirection" data-bind="ntsComboBox: {
 								options: cursorMoveDirections,
@@ -92,6 +100,7 @@
 							</div>
 						</div>
 						<button id="btn-saveColumnWidth">#{i18n.getText('KDW003_24')}</button>
+						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
 						<div class="compact-grid grid-container" >
 							<table id="dpGrid"></table>
 						</div>

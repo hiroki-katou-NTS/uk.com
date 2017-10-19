@@ -37,7 +37,7 @@ public class KrcmtCalcItemSelectionPK implements Serializable {
 
 	/** The attendance item id. */
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	private String attendanceItemId;
+	private int attendanceItemId;
 
 	/**
 	 * Instantiates a new krcmt calc item selection PK.
@@ -52,7 +52,7 @@ public class KrcmtCalcItemSelectionPK implements Serializable {
 	 * @param formulaPk the formula pk
 	 * @param attendanceItemId the attendance item id
 	 */
-	public KrcmtCalcItemSelectionPK(KrcmtOptItemFormulaPK formulaPk, String attendanceItemId) {
+	public KrcmtCalcItemSelectionPK(KrcmtOptItemFormulaPK formulaPk, int attendanceItemId) {
 		this.cid = formulaPk.getCid();
 		this.optionalItemNo = formulaPk.getOptionalItemNo();
 		this.formulaId = formulaPk.getFormulaId();
@@ -66,12 +66,13 @@ public class KrcmtCalcItemSelectionPK implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (optionalItemNo != null ? optionalItemNo.hashCode() : 0);
-		hash += (formulaId != null ? formulaId.hashCode() : 0);
-		hash += (attendanceItemId != null ? attendanceItemId.hashCode() : 0);
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + attendanceItemId;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((formulaId == null) ? 0 : formulaId.hashCode());
+		result = prime * result + ((optionalItemNo == null) ? 0 : optionalItemNo.hashCode());
+		return result;
 	}
 
 	/*
@@ -80,26 +81,31 @@ public class KrcmtCalcItemSelectionPK implements Serializable {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KrcmtCalcItemSelectionPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KrcmtCalcItemSelectionPK other = (KrcmtCalcItemSelectionPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.optionalItemNo == null && other.optionalItemNo != null)
-				|| (this.optionalItemNo != null && !this.optionalItemNo.equals(other.optionalItemNo))) {
+		KrcmtCalcItemSelectionPK other = (KrcmtCalcItemSelectionPK) obj;
+		if (attendanceItemId != other.attendanceItemId)
 			return false;
-		}
-		if ((this.formulaId == null && other.formulaId != null)
-				|| (this.formulaId != null && !this.formulaId.equals(other.formulaId))) {
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
-		if ((this.attendanceItemId == null && other.attendanceItemId != null)
-				|| (this.attendanceItemId != null && !this.attendanceItemId.equals(other.attendanceItemId))) {
+		if (formulaId == null) {
+			if (other.formulaId != null)
+				return false;
+		} else if (!formulaId.equals(other.formulaId))
 			return false;
-		}
+		if (optionalItemNo == null) {
+			if (other.optionalItemNo != null)
+				return false;
+		} else if (!optionalItemNo.equals(other.optionalItemNo))
+			return false;
 		return true;
 	}
 
