@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCNTSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,6 +41,20 @@ public class HoriTotalCategoryFinder {
 		return horiCalDaySetDto;
 	}
 	
+	private List<HoriTotalCNTSetDto> fromDomainCnt(List<HoriTotalCNTSet> lstHoriTotalCNTSet){
+		List<HoriTotalCNTSetDto> lst = new ArrayList<>(); 
+		HoriTotalCNTSetDto horiTotalCNTSetDto = new HoriTotalCNTSetDto();
+		for(HoriTotalCNTSet item: lstHoriTotalCNTSet){
+			horiTotalCNTSetDto.setCategoryCode(item.getCategoryCode());
+			horiTotalCNTSetDto.setTotalItemNo(item.getTotalItemNo());
+			horiTotalCNTSetDto.setTotalTimeNo(item.getTotalTimeNo());
+			lst.add(horiTotalCNTSetDto);
+			horiTotalCNTSetDto = new HoriTotalCNTSetDto();
+		}
+		return lst;
+	}
+	
+	
 	
 	/**
 	 * convert from domain to dto
@@ -52,6 +68,7 @@ public class HoriTotalCategoryFinder {
 		totalEvalOrderDto.setTotalItemNo(totalEvalOrder.getTotalItemNo().v());
 		totalEvalOrderDto.setDispOrder(totalEvalOrder.getDispOrder());
 		totalEvalOrderDto.setHoriCalDaySet(fromDomainCalSet(totalEvalOrder.getHoriCalDaysSet()));
+		totalEvalOrderDto.setCntSetls(fromDomainCnt(totalEvalOrder.getCntSetls()));
 		return totalEvalOrderDto;
 	}
 	
