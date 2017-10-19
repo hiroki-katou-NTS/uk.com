@@ -9,10 +9,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpDocumentFileCommand;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpDocumentFileCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
-import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementSimpleDto;
+import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
 
 @Path("basic/organization/empfilemanagement")
 @Produces({ "application/json", "text/plain" })
@@ -23,17 +27,51 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@Inject
 	EmpDocumentFileCommandHandler empDocumentFileCommandHandler; 
+	
+	@Inject
+	AddEmpAvaOrMapCommandHandler addEmpAvaOrMapCommandHandler;
 
+	@Inject
+	UpdateEmpAvaOrMapCommandHandler updateEmpAvaOrMapCommandHandler;
+	
+	@Inject
+	RemoveEmpAvaOrMapCommandHandler removeEmpAvaOrMapCommandHandler;
 	/**
-	 * Gets the all employee.
+	 * Gets employee file management by employeeId.
 	 *
-	 * @return the all employee
+	 * @return employee file management
 	 */
+	//vinhpx: start
 	@POST
-	@Path("getAvaOrMap")
-	public EmployeeFileManagementSimpleDto getAvaOrMap(String employeeId) {
-		return this.employeeFileManagementFinder.getAvaOrMap(employeeId);
+	@Path("find/getAvaOrMap/{employeeId}/{fileType}")
+	public EmployeeFileManagementDto getAvaOrMap(@PathParam("employeeId") String employeeId, @PathParam("fileType") int fileType) {
+		return this.employeeFileManagementFinder.getAvaOrMap(employeeId, fileType);
 	}
+	
+	@POST
+	@Path("command/insertAvaOrMap")
+	public void insertAvaOrMap(EmpAvaOrMapCommand command) {
+		this.addEmpAvaOrMapCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("command/updateAvaOrMap")
+	public void updateAvaOrMap(EmpAvaOrMapCommand command) {
+		this.updateEmpAvaOrMapCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("command/removeAvaOrMap")
+	public void removeAvaOrMap(EmpAvaOrMapCommand command) {
+		this.removeEmpAvaOrMapCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("find/checkEmpFileMnExist/{employeeId}/{fileType}")
+	public boolean checkEmpFileMnExist(@PathParam("employeeId") String employeeId, @PathParam("fileType") int fileType) {
+		return this.employeeFileManagementFinder.checkEmpFileMnExist(employeeId, fileType);
+	}
+	//vinhpx: end
 
 	@POST
 	@Path("getlistdocfile/{employeeId}")

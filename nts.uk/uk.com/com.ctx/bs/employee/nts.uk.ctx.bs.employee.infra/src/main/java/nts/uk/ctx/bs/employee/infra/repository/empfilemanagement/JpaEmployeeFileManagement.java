@@ -22,8 +22,9 @@ import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagem
 @Transactional
 public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFileManagementRepository{
 
-	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND (c.filetype = :filetype or :filetype = -1)";
+	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND c.filetype = :filetype";
 
+	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND c.filetype = :filetype";
 	
 	public final String GET_BY_FILEID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.bsymtEmpFileManagementPK.fileid = :fileid ";
 
@@ -45,8 +46,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		entity.bsymtEmpFileManagementPK = new BsymtEmpFileManagementPK(domain.getFileID());
 		entity.sid = domain.getSId();
 		entity.filetype = domain.getTypeFile();
-		entity.disPOrder = domain.getUploadOrder() < 0?null: domain.getUploadOrder();
-		entity.personInfoctgId = domain.getPersonInfoCategoryId().equals("")? null: domain.getPersonInfoCategoryId();
+		entity.disPOrder = domain.getUploadOrder();
+		entity.personInfoctgId = domain.getPersonInfoCategoryId();
 		return entity;
 	}
 	
@@ -75,8 +76,9 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void remove(EmployeeFileManagement domain) {
-		// TODO Auto-generated method stub
-		
+		Optional<BsymtEmpFileManagement> entity = this.queryProxy().find(new BsymtEmpFileManagementPK(domain.getFileID()), BsymtEmpFileManagement.class);
+		if(entity.isPresent())
+			this.commandProxy().remove(entity.get());
 	}
 
 	@Override
@@ -119,7 +121,21 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void update(EmployeeFileManagement domain) {
-		this.commandProxy().update(toEntityEmpFileManagement(domain));
+		//
+		
+	}
+
+
+	@Override
+	public boolean checkObjectExist(String employeeId, int fileType) {
+		Optional<Long> count = this.queryProxy().query(CHECK_EXIST, long.class)
+				.setParameter("sid", employeeId)
+				.setParameter("filetype", fileType)
+				.getSingle();
+		if(!count.isPresent()) return false;
+		else{
+			return count.get().intValue() > 0;
+		}
 	}
 
 

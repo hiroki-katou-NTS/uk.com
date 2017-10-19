@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -49,5 +50,13 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	public BsymtEmpFileManagement updateFromDomain(EmployeeFileManagement domain) {
+		this.filetype = domain.getTypeFile();
+		this.disPOrder = domain.getUploadOrder();
+		this.personInfoctgId = domain.getPersonInfoCategoryId();
+		return this;
 	}
 }
