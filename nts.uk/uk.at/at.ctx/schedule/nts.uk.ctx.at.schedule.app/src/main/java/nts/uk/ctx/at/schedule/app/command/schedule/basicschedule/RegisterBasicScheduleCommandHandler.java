@@ -74,8 +74,7 @@ public class RegisterBasicScheduleCommandHandler
 		}, x -> x));
 
 		for (RegisterBasicScheduleCommand bSchedule : bScheduleCommand) {
-			BasicSchedule basicScheduleObj = BasicSchedule.createFromJavaType(bSchedule.getEmployeeId(),
-					bSchedule.getDate(), bSchedule.getWorkTypeCode(), bSchedule.getWorkTimeCode());
+			BasicSchedule basicScheduleObj = bSchedule.toDomain();
 
 			// Check WorkType
 			WorkType workType = workTypeMap.get(bSchedule.getWorkTypeCode());

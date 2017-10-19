@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtPerSchCreSet.
+ * The Class KscstScheCreSet.
  */
 @Getter
 @Setter

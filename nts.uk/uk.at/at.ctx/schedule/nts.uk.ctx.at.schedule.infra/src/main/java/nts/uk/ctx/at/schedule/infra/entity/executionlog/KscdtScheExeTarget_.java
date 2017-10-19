@@ -12,8 +12,8 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(KscdtScheExeTarget.class)
 public class KscdtScheExeTarget_ {
 	
-	/** The kscmt sch creator PK. */
-    public static volatile SingularAttribute<KscdtScheExeTarget, KscdtScheExeTargetPK> kscmtSchCreatorPK;
+	/** The kscdt sche exe target PK. */
+    public static volatile SingularAttribute<KscdtScheExeTarget, KscdtScheExeTargetPK> kscdtScheExeTargetPK;
     
     /** The exe status. */
     public static volatile SingularAttribute<KscdtScheExeTarget, Integer> exeStatus;

@@ -17,10 +17,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
@@ -37,46 +35,18 @@ import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcares
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
 
 /**
- * 
- * @author sonnh1
- *
+ * The Class JpaBasicScheduleRepository.
  */
 @Stateless
-// @Transactional
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
 
-	/**
-	 * Convert Domain to Entity
-	 * 
-	 * @param domain
-	 * @return
-	 */
-	private static KscdtBasicSchedule toEntity(BasicSchedule domain) {
-		val entity = new KscdtBasicSchedule();
 
-		entity.kscdpBSchedulePK = new KscdpBasicSchedulePK(domain.getSId(), domain.getDate());
-		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
-				|| ("000").equals(domain.getWorkTimeCode()) ? "   " : domain.getWorkTimeCode();
-		entity.workTypeCode = domain.getWorkTypeCode();
-		return entity;
-	}
-
-	/**
-	 * Convert Entity to Domain
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param entity
-	 * @return
-	 */
-	private static BasicSchedule toDomain(KscdtBasicSchedule entity) {
-		val domain = BasicSchedule.createFromJavaType(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
-				entity.workTypeCode, entity.workTimeCode);
-		return domain;
-	}
-
-	/**
-	 * Insert data to Basic Schedule
-	 * 
-	 * @param bSchedule
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
+	 * #insert(nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule)
 	 */
 	@Override
 	public void insert(BasicSchedule bSchedule) {
@@ -84,32 +54,39 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.commandProxy().insert(x);
 	}
 
-	/**
-	 * update data to Basic Schedule
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param bSchedule
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
+	 * #update(nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule)
 	 */
 	@Override
 	public void update(BasicSchedule bSchedule) {
-		KscdpBasicSchedulePK pk = new KscdpBasicSchedulePK(bSchedule.getSId(), bSchedule.getDate());
-		KscdtBasicSchedule entity = this.queryProxy()
-				.find(new KscdpBasicSchedulePK(bSchedule.getSId(), bSchedule.getDate()), KscdtBasicSchedule.class)
-				.get();
-		entity.kscdpBSchedulePK = pk;
-		entity.workTimeCode = StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
-				|| ("000").equals(bSchedule.getWorkTimeCode()) ? "   " : bSchedule.getWorkTimeCode();
-		entity.workTypeCode = bSchedule.getWorkTypeCode();
-
-		this.commandProxy().update(entity);
+		this.commandProxy().update(this.toEntityUpdate(bSchedule));
 	}
 
-	/**
-	 * Get BasicSchedule
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
+	 * #find(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public Optional<BasicSchedule> find(String sId, GeneralDate date) {
-		return this.queryProxy().find(new KscdpBasicSchedulePK(sId, date), KscdtBasicSchedule.class)
-				.map(x -> toDomain(x));
+		return this.findById(sId, date).map(x -> toDomain(x));
+	}
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param employeeId the employee id
+	 * @param date the date
+	 * @return the optional
+	 */
+	private Optional<KscdtBasicSchedule> findById(String employeeId, GeneralDate date){
+		return this.queryProxy().find(new KscdpBasicSchedulePK(employeeId,date), KscdtBasicSchedule.class);
 	}
 
 	/*
@@ -138,21 +115,19 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
-						.get(KscdtScheChildCarePK_.sid), employeeId));
-		
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid), employeeId));
+
 		// equal year month date base date
-		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
-						.get(KscdtScheChildCarePK_.ymd), baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by child care number asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
-				.get(KscdtScheChildCarePK_.childCareNumber)));
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.childCareNumber)));
 
 		// create query
 		TypedQuery<KscdtScheChildCare> query = em.createQuery(cq);
@@ -161,7 +136,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return query.getResultList().stream().map(entity -> this.toDomainChildCare(entity))
 				.collect(Collectors.toList());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -212,21 +187,62 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * To domain child care.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the child care schedule
 	 */
-	private ChildCareSchedule toDomainChildCare(KscdtScheChildCare entity){
+	private ChildCareSchedule toDomainChildCare(KscdtScheChildCare entity) {
 		return new ChildCareSchedule(new JpaChildCareScheduleGetMemento(entity));
 	}
-	
+
 	/**
 	 * To domain person fee.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the work schedule person fee
 	 */
 	private WorkSchedulePersonFee toDomainPersonFee(KscdtScheFee entity) {
 		return new WorkSchedulePersonFee(new JpaWorkSchedulePersonFeeGetMemento(entity));
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kscdt basic schedule
+	 */
+	private KscdtBasicSchedule toEntity(BasicSchedule domain) {
+		KscdtBasicSchedule entity = new KscdtBasicSchedule();
+		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
+		return entity;
+	}
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kscdt basic schedule
+	 */
+	private KscdtBasicSchedule toEntityUpdate(BasicSchedule domain) {
+		KscdtBasicSchedule entity = new KscdtBasicSchedule();
+		Optional<KscdtBasicSchedule> optionalEntity = this.findById(domain.getEmployeeId(), domain.getDate());
+		if (optionalEntity.isPresent()) {
+			entity = optionalEntity.get();
+		}
+		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
+		return entity;
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the basic schedule
+	 */
+	private BasicSchedule toDomain(KscdtBasicSchedule entity) {
+		return new BasicSchedule(new JpaBasicScheduleGetMemento(entity));
+
 	}
 
 }
