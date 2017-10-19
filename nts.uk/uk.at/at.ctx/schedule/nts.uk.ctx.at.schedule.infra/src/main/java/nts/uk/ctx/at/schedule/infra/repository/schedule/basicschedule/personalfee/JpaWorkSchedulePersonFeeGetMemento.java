@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalf
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.PersonalFeeAmount;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFeeGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFee;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFeePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK;
 
 /**
  * The Class JpaWorkSchedulePersonFeeGetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.Ks
 public class JpaWorkSchedulePersonFeeGetMemento implements WorkSchedulePersonFeeGetMemento {
 
 	/** The entity. */
-	private KscmtWsPersonFee entity;
+	private KscdtScheFee entity;
 	
 	
 	/**
@@ -26,9 +26,9 @@ public class JpaWorkSchedulePersonFeeGetMemento implements WorkSchedulePersonFee
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
 	 */
-	public JpaWorkSchedulePersonFeeGetMemento(KscmtWsPersonFee entity) {
-		if (entity.getKscmtWsPersonFeePK() == null) {
-			entity.setKscmtWsPersonFeePK(new KscmtWsPersonFeePK());
+	public JpaWorkSchedulePersonFeeGetMemento(KscdtScheFee entity) {
+		if (entity.getKscdtScheFeePK() == null) {
+			entity.setKscdtScheFeePK(new KscdtScheFeePK());
 		}
 		
 		this.entity = entity;
@@ -42,7 +42,7 @@ public class JpaWorkSchedulePersonFeeGetMemento implements WorkSchedulePersonFee
 	 */
 	@Override
 	public ExtraTimeItemNo getNo() {
-		return ExtraTimeItemNo.valueOf(this.entity.getKscmtWsPersonFeePK().getNo());
+		return ExtraTimeItemNo.valueOf(this.entity.getKscdtScheFeePK().getNo());
 	}
 
 	/*

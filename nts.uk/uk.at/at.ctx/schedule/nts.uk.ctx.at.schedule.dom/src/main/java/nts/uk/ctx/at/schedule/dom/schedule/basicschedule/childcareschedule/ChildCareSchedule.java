@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ClockValue;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class ChildCareSchedule.
@@ -21,11 +21,11 @@ public class ChildCareSchedule extends DomainObject{
 	
 	/** The child care schedule start. */
 	// 予定育児介護開始時刻
-	private ClockValue childCareScheduleStart;
+	private TimeWithDayAttr childCareScheduleStart;
 	
 	/** The child care schedule end. */
 	// 予定育児介護終了時刻
-	private ClockValue childCareScheduleEnd;
+	private TimeWithDayAttr childCareScheduleEnd;
 
 	/** The child care atr. */
 	// 育児介護区分

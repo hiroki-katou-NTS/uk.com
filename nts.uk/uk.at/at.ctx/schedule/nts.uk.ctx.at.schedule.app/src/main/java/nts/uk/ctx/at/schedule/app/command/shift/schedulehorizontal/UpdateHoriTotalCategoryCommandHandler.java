@@ -39,7 +39,7 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 		// get hori cal day set item
 		if(data.getTotalEvalOrders() != null){
 			totalEvalOrders = data.getTotalEvalOrders().stream()
-									.map(x -> x.toDomainOrder(companyId))
+									.map(x -> x.toDomainOrder(companyId, data.getCategoryCode()))
 									.collect(Collectors.toList());
 		}
 //		// get hori total cnt set list

@@ -60,6 +60,9 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWor
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -137,6 +140,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The basic schedule service. */
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	/** The work time repository. */
+	@Inject
+	private WorkTimeRepository workTimeRepository;
 		
 	/** The setter. */
 	private TaskDataSetter setter;
@@ -164,6 +171,9 @@ public class ScheduleCreatorExecutionCommandHandler
 
 	/** The Constant FAIL_CNT. */
 	private static final String FAIL_CNT = "FAIL_CNT";
+	
+	/** The Constant DEFAULT_CODE. */
+	public static final String DEFAULT_CODE = "000";
 	
 	/** The Constant NEXT_DAY_MONTH. */
 	public static final int NEXT_DAY_MONTH = 1;
@@ -297,6 +307,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	/**
 	 * Creates the schedule based person.
 	 *
+	 * @param creator the creator
 	 * @param domain the domain
 	 */
 	// 個人情報をもとにスケジュールを作成する
@@ -373,6 +384,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	// 勤務種類を取得する
 	private void getWorktype(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
 		this.getBasicWorkSetting(personalWorkScheduleCreSet);
+		Optional<String> optionalWorktypeCode = this.getWorktypeCode(personalWorkScheduleCreSet);
+		if (!this.checkExistError(personalWorkScheduleCreSet.getEmployeeId())) {
+			this.getWorktime(optionalWorktypeCode.get(), personalWorkScheduleCreSet);
+		}
 	}
 	
 	
@@ -396,29 +411,53 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the work type code.
+	 * Gets the worktype code.
 	 *
-	 * @return the work type code
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @return the worktype code
 	 */
 	// 在職状態に対応する「勤務種類コード」を取得する
-	private void getWorktypeCode(PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+	private Optional<String> getWorktypeCode(PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
+		String worktypeCode = null;
 		// check 就業時間帯の参照先 of 勤務予定の時間帯マスタ参照区分 == 個人曜日別
 		if (personalWorkScheduleCreSet.getWorkScheduleBusCal()
 				.getReferenceWorkingHours().value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			this.convertWorktypeCodeByDayOfWeek();
+			worktypeCode = this.convertWorktypeCodeByDayOfWeek();
 		} else
-		// 個人勤務日別, マスタ参照区分に従う
+		// マスタ参照区分に従う、個人勤務日別
 		{
-
+			worktypeCode = this.convertWorktypeCodeByWorkingStatus();
 		}
+		Optional<WorkType> optionalWorktype = this.workTypeRepository.findByPK(companyId, worktypeCode);
+		
+		if(!optionalWorktype.isPresent()){
+			this.addError(personalWorkScheduleCreSet.getEmployeeId(), "Msg_590");
+		}
+		else {
+			return Optional.of(worktypeCode);
+		}
+		return Optional.empty();
 	}
 
 	/**
 	 * Convert worktype code by day of week.
+	 *
+	 * @return the string
 	 */
 	// 個人曜日別と在職状態から「勤務種類コード」を変換する
 	private String convertWorktypeCodeByDayOfWeek() {
+		
+		return "001";
+	}
+	
+	/**
+	 * Convert worktype code by working status.
+	 *
+	 * @return the string
+	 */
+	// 在職状態から「勤務種類コード」を変換する
+	private String convertWorktypeCodeByWorkingStatus(){
 		return "001";
 	}
 	
@@ -459,11 +498,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the basic work setting by work day division.
+	 * Gets the basic work setting by workday division.
 	 *
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 * @param workdayDivision the work day division
-	 * @return the basic work setting by work day division
+	 * @param workdayDivision the workday division
+	 * @return the basic work setting by workday division
 	 */
 	// 「稼働日区分」に対応する「基本勤務設定」を取得する
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(
@@ -503,29 +542,66 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param messageId the message id
 	 */
 	private void addError(String employeeId, String messageId) {
-		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository
-				.findByEmployeeId(content.getExecutionId(), employeeId);
-		if (CollectionUtil.isEmpty(errorLogs)) {
+		if (!this.checkExistError(employeeId)) {
 			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(employeeId, messageId));
 		}
 	}
 	
 	/**
+	 * Check exist error.
+	 *
+	 * @param employeeId the employee id
+	 * @return true, if successful
+	 */
+	private boolean checkExistError(String employeeId) {
+		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository.findByEmployeeId(content.getExecutionId(),
+				employeeId);
+		if (CollectionUtil.isEmpty(errorLogs)) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
 	 * Gets the schedule work hour.
 	 *
+	 * @param worktypeCode the worktype code
+	 * @param worktimeCode the worktime code
 	 * @return the schedule work hour
 	 */
 	// 勤務予定時間帯を取得する
-	private void getScheduleWorkHour(String worktypeCode){
-		Optional<WorkType> optionalWorktype = workTypeRepository.findByPK(companyId, worktypeCode);
-		if (optionalWorktype.isPresent()) {
-			WorkType workType = optionalWorktype.get();
+	private Optional<String> getScheduleWorkHour(String worktypeCode, String worktimeCode){
+		
+		WorkStyle  workStyle = this.basicScheduleService.checkWorkDay(worktypeCode);
+		
+		if (workStyle.value == WorkStyle.ONE_DAY_REST.value) {
+			return Optional.empty();
 		}
+		
+		if (workStyle.value == WorkStyle.AFTERNOON_WORK.value || workStyle.value == WorkStyle.MORNING_WORK.value) {
+			this.getHalfDayWorkingHours(worktimeCode);
+		}
+		
+		if(workStyle.value == WorkStyle.ONE_DAY_WORK.value){
+			
+		}
+		return Optional.empty();
+		
+	}
+	
+	/**
+	 * Gets the half day working hours.
+	 *
+	 * @param worktimeCode the worktime code
+	 * @return the half day working hours
+	 */
+	// 午前または午後の勤務時間帯を取得
+	private void getHalfDayWorkingHours(String worktimeCode){
 		
 	}
 		
 	/**
-	 * Find by workplace ids.
+	 * Find lelvel workplace.
 	 *
 	 * @param workplaceId the workplace id
 	 * @return the list
@@ -537,11 +613,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	
 	/**
-	 * Gets the basic work setting by wkp id.
+	 * Gets the basic work setting by wkp ids.
 	 *
 	 * @param workplaceId the workplace id
 	 * @param workDayAtr the work day atr
-	 * @return the basic work setting by wkp id
+	 * @return the basic work setting by wkp ids
 	 */
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWkpIds(String workplaceId,
 			int workDayAtr) {
@@ -557,6 +633,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 		return Optional.empty();
 	}
+	
 	/**
 	 * Gets the basic work setting by wkp id.
 	 *
@@ -575,6 +652,14 @@ public class ScheduleCreatorExecutionCommandHandler
 			return null;
 		});
 	}
+	
+	/**
+	 * To schedule error log.
+	 *
+	 * @param employeeId the employee id
+	 * @param messageId the message id
+	 * @return the schedule error log
+	 */
 	private ScheduleErrorLog toScheduleErrorLog(String employeeId, String messageId) {
 		return new ScheduleErrorLog(new ScheduleErrorLogGetMemento() {
 
@@ -648,11 +733,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the work day division by wkp.
+	 * Gets the workday division by wkp.
 	 *
 	 * @param employeeId the employee id
-	 * @param workplaceIds the work place ids
-	 * @return the work day division by wkp
+	 * @param workplaceIds the workplace ids
+	 * @return the workday division by wkp
 	 */
 	// 職場の稼働日区分を取得する
 	public Optional<Integer> getWorkdayDivisionByWkp(String employeeId, List<String> workplaceIds) {
@@ -680,7 +765,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	/**
 	 * To year month date.
 	 *
-	 * @param toDate the to date
+	 * @param baseDate the base date
 	 * @return the big decimal
 	 */
 	private BigDecimal toYearMonthDate(GeneralDate baseDate) {
@@ -716,6 +801,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 *
 	 * @param domain the domain
 	 * @param workdayAtr the workday atr
+	 * @return the optional
 	 */
 	private Optional<BasicWorkSetting> toBasicWorkSetting(WorkplaceBasicWork domain,
 			int workdayAtr) {
@@ -728,12 +814,12 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the work type code leave holiday type.
+	 * Gets the worktype code leave holiday type.
 	 *
 	 * @param employeeId the employee id
-	 * @param worktypeCode the work type code
+	 * @param worktypeCode the worktype code
 	 * @param leaveHolidayType the leave holiday type
-	 * @return the work type code leave holiday type
+	 * @return the worktype code leave holiday type
 	 */
 	// 休業休職の勤務種類コードを返す
 	private String getWorktypeCodeLeaveHolidayType(String employeeId, String worktypeCode, int leaveHolidayType) {
@@ -770,6 +856,132 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 		return (dailyWork.getMorning().value == WorkTypeClassification.HolidayWork.value
 				|| dailyWork.getAfternoon().value == WorkTypeClassification.HolidayWork.value);
+	}
+	
+	/**
+	 * Gets the worktime.
+	 *
+	 * @param worktypeCode the worktype code
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @return the worktime
+	 */
+	// 就業時間帯を取得する
+	private void getWorktime(String worktypeCode, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+		this.getBasicWorkSetting(personalWorkScheduleCreSet);
+		this.getWorkingTimeZoneCode(worktypeCode, personalWorkScheduleCreSet);
+	}
+	
+	/**
+	 * Gets the working time zone code.
+	 *
+	 * @param worktypeCode the worktype code
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @return the working time zone code
+	 */
+	// 在職状態に対応する「就業時間帯コード」を取得する
+	private void getWorkingTimeZoneCode(String worktypeCode, PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
+		
+		String worktimeCode = null;
+		switch (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceWorkingHours()) {
+		case FOLLOW_MASTER_REFERENCE:
+			worktimeCode = this.convertWorkingHoursEmploymentStatus();
+			break;
+
+		case PERSONAL_WORK_DAILY:
+			worktimeCode = this.convertWorkingHoursPersonalWork();
+		case PERSONAL_DAY_OF_WEEK:
+			worktimeCode = this.convertWorkingHoursPersonalDayofWeek();
+			break;
+		}
+		
+		// check not exist data work 
+		if (!this.workTimeRepository.findByCode(companyId, worktimeCode).isPresent()) {
+			this.addError(personalWorkScheduleCreSet.getEmployeeId(), "Msg_591");
+		} else {
+			this.getScheduleWorkHour(worktypeCode, worktimeCode);
+		}
+	}
+	
+	/**
+	 * Convert working hours employment status.
+	 *
+	 * @return the string
+	 */
+	// 在職状態から「就業時間帯コードを変換する」に変更
+	private String convertWorkingHoursEmploymentStatus(){
+		return "000";
+	}
+	
+	/**
+	 * Convert working hours personal work.
+	 *
+	 * @return the string
+	 */
+	// 個人勤務日別と在職状態から「就業時間帯コード」を変換する
+	private String convertWorkingHoursPersonalWork(){
+		return "000";
+	}
+	
+	/**
+	 * Convert working hours personal dayof week.
+	 *
+	 * @return the string
+	 */
+	// 個人曜日別と在職状態から「就業時間帯コード」を変換する
+	private String convertWorkingHoursPersonalDayofWeek(){
+		return "000";
+	}
+	
+	/**
+	 * Gets the schedule break time.
+	 *
+	 * @param worktimeCode the worktime code
+	 * @return the schedule break time
+	 */
+	// 休憩予定時間帯を取得する
+	private void getScheduleBreakTime(String worktypeCode, String worktimeCode) {
+		if (worktypeCode == null || worktypeCode.equals(DEFAULT_CODE)) {
+			return;
+		}
+
+		Optional<WorkType> optionalWorktype = this.workTypeRepository.findByPK(companyId, worktypeCode);
+		if (optionalWorktype.isPresent()) {
+			WorkType workType = optionalWorktype.get();
+
+			if (this.checkHolidayWork(workType.getDailyWork())) {
+
+				Optional<WorkTime> optionalWorktime = this.workTimeRepository.findByCode(companyId, worktimeCode);
+
+				if (optionalWorktime.isPresent()) {
+					WorkTime workTime = optionalWorktime.get();
+					if (WorkTimeDailyAtr.Enum_Regular_Work.value == workTime.getWorkTimeDivision()
+							.getWorkTimeDailyAtr().value) {
+						switch (workTime.getWorkTimeDivision().getWorkTimeMethodSet()) {
+						case Enum_Fixed_Work:
+
+							break;
+
+						default:
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Gets the schedule determination atr.
+	 *
+	 * @return the schedule determination atr
+	 */
+	// 予定確定区分を取得
+	private void getScheduleDeterminationAtr(boolean isConfirm){
+		if (isConfirm) {
+			
+		} else {
+
+		}
 	}
 
 }

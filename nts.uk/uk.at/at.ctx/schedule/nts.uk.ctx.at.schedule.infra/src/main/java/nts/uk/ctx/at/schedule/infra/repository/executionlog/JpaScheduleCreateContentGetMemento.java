@@ -6,7 +6,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreateContent;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
 
 /**
  * The Class JpaExecutionContentGetMemento.
@@ -17,14 +17,14 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	public static final int TRUE_VALUE = 1;
 
 	/** The entity. */
-	private KscmtSchCreateContent entity;
+	private KscdtScheExeContent entity;
 
 	/**
 	 * Instantiates a new jpa execution content get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaScheduleCreateContentGetMemento(KscmtSchCreateContent entity) {
+	public JpaScheduleCreateContentGetMemento(KscdtScheExeContent entity) {
 		this.entity = entity;
 	}
 

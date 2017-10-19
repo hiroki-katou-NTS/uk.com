@@ -4,17 +4,17 @@ module nts.uk.at.view.kmk004.b.viewmodel {
     
         export class ScreenModel {
             // object cal day set receive from kml004-A
-            calDaySet: KnockoutObservable<any>;
+            calDaySet: KnockoutObservable<any> =ko.observable(null);
             // check checkbox hidden
             check: KnockoutObservable<boolean>;
             // check_1
-            yearHd: KnockoutObservable<boolean>;
+            yearHd: KnockoutObservable<any>;
             // check 2
-            heavyHd: KnockoutObservable<boolean>;
+            heavyHd: KnockoutObservable<any>;
             // check 3 
-            specialHoliday: KnockoutObservable<boolean>;
+            specialHoliday: KnockoutObservable<any>;
             // check 4
-            halfDay: KnockoutObservable<boolean>;
+            halfDay: KnockoutObservable<any>;
             share: KnockoutObservable<any>;
             constructor() {
                 let self = this;
@@ -23,8 +23,8 @@ module nts.uk.at.view.kmk004.b.viewmodel {
                 self.heavyHd = ko.observable(false);
                 self.specialHoliday = ko.observable(false);
                 self.halfDay = ko.observable(false);
-                self.share = ko.observable(null);
-                self.calDaySet = ko.observable(getShared("KML004A_DAY_SET"));
+                self.share = ko.observable(getShared("KML004A_DAY_SET"));
+                self.calDaySet(getShared("KML004A_DAY_SET"));
                 self.halfDay.subscribe((value) => {
                     self.calDaySet().halfDay = value;
                 });
@@ -70,7 +70,6 @@ module nts.uk.at.view.kmk004.b.viewmodel {
                 let specialHoliday = self.specialHoliday() == true ? 1 : 0;
                 let heavyHd = self.heavyHd() == true ? 1 : 0;
                 let calSet = new CalDaySet(self.calDaySet().categoryCode, self.calDaySet().totalItemNo, halfDay, yearHd, specialHoliday, heavyHd);
-                self.share(calSet);
                 setShared('KML004B_DAY_SET', calSet);
                 nts.uk.ui.windows.close();
             }
@@ -80,7 +79,9 @@ module nts.uk.at.view.kmk004.b.viewmodel {
              */
             public cancel(): void {
                 let self = this;
-                setShared('KML004B_DAY_SET', null);
+                self.calDaySet(getShared("KML004A_DAY_SET"));
+                self.calDaySet().halfDay = self.share().halfDay;
+                setShared('KML004B_DAY_SET', self.share());
                 nts.uk.ui.windows.close();
             }
         }

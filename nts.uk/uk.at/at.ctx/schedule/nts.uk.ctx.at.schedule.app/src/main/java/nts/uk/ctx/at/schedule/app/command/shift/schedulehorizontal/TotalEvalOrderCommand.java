@@ -16,8 +16,8 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 @Data
 @AllArgsConstructor
 public class TotalEvalOrderCommand {
-	/** カテゴリコード */
-	private String categoryCode;
+//	/** カテゴリコード */
+//	private String categoryCode;
 	/** 集計項目NO */
 	private int totalItemNo;
 	/** 並び順 */
@@ -31,7 +31,7 @@ public class TotalEvalOrderCommand {
 	 * @param categoryCode
 	 * @return
 	 */
-	public TotalEvalOrder toDomainOrder(String companyId){
+	public TotalEvalOrder toDomainOrder(String companyId, String categoryCode){
 		HoriCalDaysSet horiCalDaysSet = this.horiCalDaysSet != null 
 				? this.horiCalDaysSet.toDomainCalSet(companyId, categoryCode, totalItemNo)
 				: null;

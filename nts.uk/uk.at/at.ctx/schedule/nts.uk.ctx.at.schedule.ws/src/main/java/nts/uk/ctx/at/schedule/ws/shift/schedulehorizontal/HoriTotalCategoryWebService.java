@@ -57,6 +57,16 @@ public class HoriTotalCategoryWebService extends WebService{
 	}
 	
 	/**
+	 * get all hori total cnt set
+	 * @return
+	 */
+	@POST
+	@Path("findAllCNT")
+	public List<HoriTotalCNTSetDto> finderAllCNT(){
+		return this.finderCNT.finderAll();
+	}
+	
+	/**
 	 * get data total eval order
 	 * @param a
 	 * @param b

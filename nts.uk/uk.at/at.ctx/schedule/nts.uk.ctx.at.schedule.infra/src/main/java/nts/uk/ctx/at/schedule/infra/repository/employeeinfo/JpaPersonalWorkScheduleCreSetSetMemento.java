@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetSetMemento;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBusCal;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscmtPerSchCreSet;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscstScheCreSet;
 
 /**
  * The Class JpaPersonalWorkScheduleCreSetSetMemento.
@@ -17,14 +17,14 @@ public class JpaPersonalWorkScheduleCreSetSetMemento
 		implements PersonalWorkScheduleCreSetSetMemento {
 	
 	/** The entity. */
-	private KscmtPerSchCreSet entity;
+	private KscstScheCreSet entity;
 
 	/**
 	 * Instantiates a new jpa personal work schedule cre set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPersonalWorkScheduleCreSetSetMemento(KscmtPerSchCreSet entity) {
+	public JpaPersonalWorkScheduleCreSetSetMemento(KscstScheCreSet entity) {
 		this.entity = entity;
 	}
 

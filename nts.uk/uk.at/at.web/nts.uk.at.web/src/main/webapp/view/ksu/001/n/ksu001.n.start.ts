@@ -7,6 +7,7 @@ module nts.uk.at.view.ksu001.n {
         __viewContext["viewModel"] = screenModel;
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
+            $('.ntsSearchBox.nts-editor.ntsSearchBox_Component').focus();
         });
     });
 }

@@ -35,4 +35,21 @@ public class HoriTotalCNTFinder {
 								return new HoriTotalCNTSetDto(companyId, param.getCategoryCode(), param.getTotalItemNo(), x.getTotalTimeNo());
 							}).collect(Collectors.toList());
 	}
+	
+	/**
+	 *  find all hori total cnt set list 
+	 * @param param
+	 * @return
+	 */
+	public List<HoriTotalCNTSetDto> finderAll(){
+		String companyId = AppContexts.user().companyId();
+		return this.horiRep.findAllCNT(companyId)
+							.stream()
+							.map(x -> {
+								return new HoriTotalCNTSetDto(companyId, 
+																x.getCategoryCode(),
+																x.getTotalItemNo(),
+																x.getTotalTimeNo());
+							}).collect(Collectors.toList());
+	}
 }

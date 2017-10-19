@@ -3,6 +3,7 @@ module nts.uk.at.view.kml004.a.service {
         findAllCate: "at/schedule/schedulehorizontal/findAllCate/",
         findAllItem: "at/schedule/schedulehorizontal/findItem/",
         findAllSet: "at/schedule/schedulehorizontal/findSet",
+        findAllCNT: "at/schedule/schedulehorizontal/findAllCNT",
         remove: "at/schedule/schedulehorizontal/delete",
         add: "at/schedule/schedulehorizontal/add",
         update: "at/schedule/schedulehorizontal/update",
@@ -16,12 +17,16 @@ module nts.uk.at.view.kml004.a.service {
         return nts.uk.request.ajax(paths.findAllItem);
     }
     
-     export function getSet(){
+    export function getSet(){
         return nts.uk.request.ajax(paths.findAllSet);
     }
     
-    export function update(aa: viewmodel.TotalCategory): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.update, aa);    
+    export function getCNT(){
+        return nts.uk.request.ajax(paths.findAllCNT);    
+    }
+    
+    export function update(command: viewmodel.TotalCategory): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.update, command);    
     }
     
     export function add(command: viewmodel.TotalCategory): JQueryPromise<void>{

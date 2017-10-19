@@ -5,12 +5,12 @@
 package nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ClockValue;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleRound;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSch;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscmtChildCareSchPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCarePK;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class JpaChildCareScheduleSetMememto.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcaresched
 public class JpaChildCareScheduleSetMememto implements ChildCareScheduleSetMemento {
 	
 	/** The entity. */
-	private KscmtChildCareSch entity;
+	private KscdtScheChildCare entity;
 	
 	/**
 	 * Instantiates a new jpa child care schedule set mememto.
@@ -27,14 +27,14 @@ public class JpaChildCareScheduleSetMememto implements ChildCareScheduleSetMemen
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
 	 */
-	public JpaChildCareScheduleSetMememto(KscmtChildCareSch entity, String employeeId,
+	public JpaChildCareScheduleSetMememto(KscdtScheChildCare entity, String employeeId,
 			GeneralDate baseDate) {
-		if (entity.getKscmtChildCareSchPK() == null) {
-			entity.setKscmtChildCareSchPK(new KscmtChildCareSchPK());
+		if (entity.getKscdtScheChildCarePK() == null) {
+			entity.setKscdtScheChildCarePK(new KscdtScheChildCarePK());
 		}
 		this.entity = entity;
-		this.entity.getKscmtChildCareSchPK().setSid(employeeId);
-		this.entity.getKscmtChildCareSchPK().setYmd(baseDate);
+		this.entity.getKscdtScheChildCarePK().setSid(employeeId);
+		this.entity.getKscdtScheChildCarePK().setYmd(baseDate);
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class JpaChildCareScheduleSetMememto implements ChildCareScheduleSetMemen
 	 */
 	@Override
 	public void setChildCareNumber(ChildCareScheduleRound childCareNumber) {
-		this.entity.getKscmtChildCareSchPK().setChildCareNumber(childCareNumber.value);
+		this.entity.getKscdtScheChildCarePK().setChildCareNumber(childCareNumber.value);
 	}
 
 	/*
@@ -57,9 +57,8 @@ public class JpaChildCareScheduleSetMememto implements ChildCareScheduleSetMemen
 	 * schedule.dom.schedule.basicschedule.ClockValue)
 	 */
 	@Override
-	public void setChildCareScheduleStart(ClockValue childCareScheduleStart) {
-		this.entity.setStrTime(childCareScheduleStart.getTimeOfDay().valueAsMinutes());
-		this.entity.setStrDayAtr(childCareScheduleStart.getDayAtr().value);
+	public void setChildCareScheduleStart(TimeWithDayAttr childCareScheduleStart) {
+		this.entity.setStrTime(childCareScheduleStart.valueAsMinutes());
 	}
 
 	/*
@@ -70,9 +69,8 @@ public class JpaChildCareScheduleSetMememto implements ChildCareScheduleSetMemen
 	 * schedule.dom.schedule.basicschedule.ClockValue)
 	 */
 	@Override
-	public void setChildCareScheduleEnd(ClockValue childCareScheduleEnd) {
-		this.entity.setEndTime(childCareScheduleEnd.getTimeOfDay().valueAsMinutes());
-		this.entity.setEndDayAtr(childCareScheduleEnd.getDayAtr().value);
+	public void setChildCareScheduleEnd(TimeWithDayAttr childCareScheduleEnd) {
+		this.entity.setEndTime(childCareScheduleEnd.valueAsMinutes());
 	}
 
 	/*

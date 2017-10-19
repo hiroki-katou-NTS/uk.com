@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTSetDto;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCNTSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
@@ -95,8 +96,15 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	private static KscmtTotalEvalOrderItem toEntityOrder(TotalEvalOrder domain){
 		val entity = new KscmtTotalEvalOrderItem();
+		List<KscstHoriTotalCntSetItem> lst = new ArrayList<>();
 		if(domain.getHoriCalDaysSet() != null){
 			entity.horiCalDaysSet = toEntitySet(domain.getHoriCalDaysSet());
+		}
+		if(domain.getCntSetls() != null){
+			for(HoriTotalCNTSet item : domain.getCntSetls()){
+				lst.add(toEntityCNT(item));
+			}
+			entity.listHoriCNTSet = lst;
 		}
 		entity.kscmtTotalEvalOrderPK = new KscmtTotalEvalOrderPK(domain.getCompanyId(), 
 																domain.getCategoryCode().v(), 

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchExecutionLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -17,14 +17,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaScheduleExecutionLogGetMemento implements ScheduleExecutionLogGetMemento {
 
 	/** The entity. */
-	private KscmtSchExecutionLog entity;
+	private KscdtScheExeLog entity;
 
 	/**
 	 * Instantiates a new jpa schedule execution log get memento.
 	 *
 	 * @param item the item
 	 */
-	public JpaScheduleExecutionLogGetMemento(KscmtSchExecutionLog item) {
+	public JpaScheduleExecutionLogGetMemento(KscdtScheExeLog item) {
 		this.entity = item;
 	}
 
@@ -37,7 +37,7 @@ public class JpaScheduleExecutionLogGetMemento implements ScheduleExecutionLogGe
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKscmtSchExecutionLogPK().getCid());
+		return new CompanyId(this.entity.getKscdtScheExeLogPK().getCid());
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class JpaScheduleExecutionLogGetMemento implements ScheduleExecutionLogGe
 	 */
 	@Override
 	public String getExecutionId() {
-		return this.entity.getKscmtSchExecutionLogPK().getExeId();
+		return this.entity.getKscdtScheExeLogPK().getExeId();
 	}
 
 	/*
