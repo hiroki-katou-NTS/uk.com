@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AddEmpAvaOrMapCommand {
+public class EmpAvaOrMapCommand {
 	/**employee id*/
 	private String employeeId;
 	/**file id*/
 	private String fileId;
 	/**file type*/
 	private int fileType;
-	public AddEmpAvaOrMapCommand(){}
+	public EmpAvaOrMapCommand(){}
 }
 

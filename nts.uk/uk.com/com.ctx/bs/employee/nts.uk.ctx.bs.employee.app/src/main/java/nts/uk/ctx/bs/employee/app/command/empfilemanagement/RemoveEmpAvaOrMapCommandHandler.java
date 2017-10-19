@@ -9,7 +9,7 @@ import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
 
 @Stateless
-public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand>{
+public class RemoveEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand>{
 
 	@Inject
 	private EmpFileManagementRepository empFileManagementRepository;
@@ -17,7 +17,7 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 	@Override
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
-		this.empFileManagementRepository.insert(EmployeeFileManagement.createFromJavaType(command.getEmployeeId(),
+		this.empFileManagementRepository.remove(EmployeeFileManagement.createFromJavaType(command.getEmployeeId(),
 				command.getFileId(), command.getFileType(), null, null));
 	}
 

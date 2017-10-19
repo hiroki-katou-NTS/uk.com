@@ -22,6 +22,10 @@ public class EmployeeFileManagementFinder {
 		return lst.size() > 0 ? lst.get(0) : null;
 	}
 	
+	public boolean checkEmpFileMnExist(String employeeId, int fileType){
+		return empFileManagementRepository.checkObjectExist(employeeId, fileType);
+	}
+	
 	public List<Object> getListDocumentFile(String employeeId){
 		return empFileManagementRepository.getListDocumentFile(employeeId, 2);
 	}
