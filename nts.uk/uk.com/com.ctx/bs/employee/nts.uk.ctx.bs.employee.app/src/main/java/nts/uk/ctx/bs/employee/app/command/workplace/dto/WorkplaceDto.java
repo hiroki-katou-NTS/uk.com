@@ -7,7 +7,8 @@ package nts.uk.ctx.bs.employee.app.command.workplace.dto;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
@@ -17,7 +18,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 /**
  * The Class WorkplaceDto.
  */
-@Data
+@Setter
+@Getter
 public class WorkplaceDto {
 
     /** The workplace id. */
