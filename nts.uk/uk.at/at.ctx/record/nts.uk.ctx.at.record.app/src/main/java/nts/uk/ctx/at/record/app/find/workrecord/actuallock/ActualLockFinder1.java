@@ -70,7 +70,7 @@ public class ActualLockFinder1 {
 		// FindAll Closure
 		List<Closure> closureList = this.closureRepo.findAll(companyId);
 		
-		closureList.stream().filter(closure -> {
+		List<Closure> filtedList = closureList.stream().filter(closure -> {
 			Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
 					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
 			// Check exist
@@ -92,10 +92,10 @@ public class ActualLockFinder1 {
 		}).collect(Collectors.toList());
 		
 		// Check isEmpty
-		if (CollectionUtil.isEmpty(closureList)) {
+		if (CollectionUtil.isEmpty(filtedList)) {
 			throw new BusinessException("Msg_183");
 		} else {
-			closureList.stream().forEach(c -> {
+			filtedList.stream().forEach(c -> {
 				ActualLockFinderDto dto = new ActualLockFinderDto();
 				// Find ClosureHistory
 				Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
@@ -173,6 +173,26 @@ public class ActualLockFinder1 {
 		
 		// Convert to Dto
 		return filtedList.stream().map(actualLockHist -> {
+			ActualLockHistFindDto dto = new ActualLockHistFindDto();
+			actualLockHist.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+
+	}
+	
+	public List<ActualLockHistFindDto> findHistByClosure(int closureId, int targetMonth) {
+		// Get LoginUserContext
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// CompanyId
+		String companyId = loginUserContext.companyId();
+		
+		// FindAll ActualLock By ClosureId
+		List<ActualLockHistory> actualLockHistList = this.actualLockHistRepo.findByTargetMonth(companyId, closureId,
+				targetMonth);
+		
+		// Convert to Dto
+		return actualLockHistList.stream().map(actualLockHist -> {
 			ActualLockHistFindDto dto = new ActualLockHistFindDto();
 			actualLockHist.saveToMemento(dto);
 			return dto;
