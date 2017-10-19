@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalroot;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -51,18 +51,31 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	 * @return
 	 */
 	private ApprovalRootImport convertApprovalRootImport(ApprovalRootExport export) {
-		ApprovalRootImport temp =  new ApprovalRootImport(
-				export.getCompanyId(),
+		List<ApprovalPhaseImport> beforeApprovers = new ArrayList<>();
+		export.getBeforeApprovers().stream().forEach(x ->{
+			ApprovalPhaseImport beforeApprover = new ApprovalPhaseImport(x.getCompanyId(), x.getBranchId(), x.getApprovalPhaseId(), x.getApprovalForm(), x.getBrowsingPhase(), x.getOrderNumber());
+			beforeApprovers.add(beforeApprover);
+		});
+		List<ApprovalPhaseImport> afterApprovers = new ArrayList<>();
+		export.getAfterApprovers().stream().forEach(x -> {
+			ApprovalPhaseImport afterApprover = new ApprovalPhaseImport(x.getCompanyId(), x.getBranchId(), x.getApprovalPhaseId(), x.getApprovalForm(), x.getBrowsingPhase(), x.getOrderNumber());
+			afterApprovers.add(afterApprover);
+		});
+		ApprovalRootImport temp = new ApprovalRootImport(export.getCompanyId(),
 				export.getWorkplaceId(),
 				export.getApprovalId(),
 				export.getEmployeeId(),
 				export.getHistoryId(),
+				export.getApplicationType(),
 				export.getStartDate(),
 				export.getEndDate(),
 				export.getBranchId(),
-				export.getAnyItemApplicationId()
-				
-				);
+				export.getAnyItemApplicationId(), 
+				export.getConfirmationRootType(),
+				export.getEmploymentRootAtr(), 
+				beforeApprovers, 
+				afterApprovers, 
+				EnumAdaptor.valueOf(export.getErrorFlag() == null ? 0 : export.getErrorFlag().value, ErrorFlagImport.class));
 		temp.addBeforeApprovers(
 				export.getBeforeApprovers().stream()
 				.map(x -> this.convertApprovalPhaseImport(x)).collect(Collectors.toList())

@@ -133,7 +133,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		if (checkInputTime <= 0 && prePost == 0) {
 			throw new BusinessException("Msg_470");
 		}
-
+		
+		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
 	}
 
 	@Override

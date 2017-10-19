@@ -38,7 +38,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyId, 
-						"", 
+						appApprovalPhaseCmd.getAppID(), 
 						UUID.randomUUID().toString(), 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
@@ -103,7 +103,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		
-		//登録ボタンをクリックする
+		//直行直帰登録
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
 	}
 }

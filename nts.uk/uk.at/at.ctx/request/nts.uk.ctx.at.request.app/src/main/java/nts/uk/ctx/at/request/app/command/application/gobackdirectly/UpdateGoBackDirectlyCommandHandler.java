@@ -42,19 +42,19 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyId, 
-						"", 
-						"", 
+						command.goBackCommand.getAppID(), 
+						appApprovalPhaseCmd.phaseID, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
 						//Frame
 						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyId, 
-								"", 
+								approvalFrame.frameID, 
 								approvalFrame.dispOrder, 
 								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyId, 
-										"", 
+										approveAccepted.appAcceptedID, 
 										approveAccepted.approverSID,
 										ApprovalAtr.UNAPPROVED.value,
 										approveAccepted.confirmATR,

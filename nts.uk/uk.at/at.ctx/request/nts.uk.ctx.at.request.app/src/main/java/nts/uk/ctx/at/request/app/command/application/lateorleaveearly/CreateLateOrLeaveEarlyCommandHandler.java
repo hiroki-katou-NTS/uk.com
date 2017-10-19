@@ -45,17 +45,13 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 
 	@Inject
-	private NewBeforeRegister newBeforeProcessRegisterSerivce;
+	private NewAfterRegister newAfterRegister;
 
 	@Inject
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Inject
-	private NewAfterRegister newAfterRegister;
-
-	@Inject
-	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
-
+	private NewBeforeRegister newBeforeRegister;
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -81,9 +77,11 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 				command.getApplicationDate(), command.getReasonTemp() + ":" + command.getAppReason(), appApprovalPhases,
 				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
 				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
-
-		// 2-1.譁ｰ隕冗判髱｢逋ｻ骭ｲ蜑阪蜃ｦ逅縲
-		// TODO: Change GeneralDate.today() to StartDate and EndDate
+		domainLateOrLeaveEarly.setListPhase(appApprovalPhases);
+		domainLateOrLeaveEarly.setStartDate(domainLateOrLeaveEarly.getApplicationDate());
+		domainLateOrLeaveEarly.setEndDate(domainLateOrLeaveEarly.getApplicationDate());
+		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する (Thực thi 共通アルゴリズム「2-1.新規画面登録前の処理」)
+		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly);
 
 		// newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
 		// AppContexts.user().employeeId(), GeneralDate.today(),
@@ -102,7 +100,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 		 * @param appID
 		 *            逕ｳ隲紀D
 		 */
-		// newAfterRegister.processAfterRegister(domainLateOrLeaveEarly);
+		newAfterRegister.processAfterRegister(domainLateOrLeaveEarly);
 
 		/*
 		 * Optional<ApplicationSetting> applicationSetting =

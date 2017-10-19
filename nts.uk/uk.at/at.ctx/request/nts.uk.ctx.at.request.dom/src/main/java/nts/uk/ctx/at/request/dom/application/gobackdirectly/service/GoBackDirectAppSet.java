@@ -26,8 +26,6 @@ public class GoBackDirectAppSet {
 
 	PrelaunchAppSetting prelaunchAppSetting;
 
-	Application application;
-
 	DetailScreenInitModeOutput detailScreenInitModeOutput;
 	
 }
