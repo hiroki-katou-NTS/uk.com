@@ -902,10 +902,24 @@ module nts.uk.at.view.kmk002.a {
 
                 self.selectedCode = ko.observable('');
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 50 },
+                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100 },
-                    { headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 50 },
-                    { headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50 }
+                    { headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 75,
+                        formatter: atr => {
+                            if (atr == 0) {
+                                return nts.uk.resource.getText("KMK002_23");
+                            }
+                            return nts.uk.resource.getText("KMK002_22")
+                        }
+                    },
+                    { headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50,
+                        formatter: used => {
+                            if (used == 1) {
+                                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                            }
+                            return '';
+                        }
+                    }
                 ]);
 
             }
