@@ -51,7 +51,7 @@ public class HoriTotalCategoryFinder {
 		totalEvalOrderDto.setCategoryCode(totalEvalOrder.getCategoryCode().v());
 		totalEvalOrderDto.setTotalItemNo(totalEvalOrder.getTotalItemNo().v());
 		totalEvalOrderDto.setDispOrder(totalEvalOrder.getDispOrder());
-		totalEvalOrderDto.setHoriCalDaySetDto(fromDomainCalSet(totalEvalOrder.getHoriCalDaysSet()));
+		totalEvalOrderDto.setHoriCalDaySet(fromDomainCalSet(totalEvalOrder.getHoriCalDaysSet()));
 		return totalEvalOrderDto;
 	}
 	
