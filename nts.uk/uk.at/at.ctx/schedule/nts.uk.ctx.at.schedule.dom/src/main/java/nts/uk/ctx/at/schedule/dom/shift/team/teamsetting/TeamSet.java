@@ -15,8 +15,17 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 @Getter
 @AllArgsConstructor
 public class TeamSet extends AggregateRoot {
+	/**
+	 * team code
+	 */
 	private TeamCode teamCode;
+	/**
+	 * employee Id
+	 */
 	private String sId;
+	/**
+	 * workplace Id
+	 */
 	private WorkplaceId workPlaceId;
 
 	public static TeamSet createFromJavaType(String teamCode, String sId, String workPlaceId) {
