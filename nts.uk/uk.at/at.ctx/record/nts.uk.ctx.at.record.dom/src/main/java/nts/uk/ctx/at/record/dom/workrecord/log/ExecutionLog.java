@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ObjectPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalExeSettingInfor;
 
 /**
  * 実行ログ
