@@ -42,16 +42,29 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value) {
                     self.currentCategory().itemList.removeAll();
 
-                    for (let i = 0; i < Math.floor((Math.random() * 4) + 1); i++) {
-                        self.currentCategory().itemList.push(new PerInfoInitValueSettingItemDto({
-                            perInfoItemDefId: i.toString(), settingId: i.toString(),
-                            perInfoCtgId: i.toString(), itemName: "A",
-                            isRequired: i % 2, refMethodType: i % 4,
-                            saveDataType: i % 3, stringValue: i.toString(),
-                            intValue: i.toString(), dateValue: i.toString(),
-                            value: i.toString(), itemType: i % 8,
-                            dataType: i%4
-                        }));
+                    for (let i = 0; i < Math.floor((Math.random() * 8) + 1); i++) {
+                        if (i % 2 === 0) {
+                            self.currentCategory().itemList.push(new PerInfoInitValueSettingItemDto({
+                                perInfoItemDefId: i.toString(), settingId: i.toString(),
+                                perInfoCtgId: i.toString(), itemName: "A",
+                                isRequired: 0, refMethodType: i % 4,
+                                saveDataType: i % 3, stringValue: i.toString(),
+                                intValue: i.toString(), dateValue: i.toString(),
+                                value: i.toString(), itemType: i % 6,
+                                dataType: i % 7
+                            }));
+                        } else {
+                            self.currentCategory().itemList.push(new PerInfoInitValueSettingItemDto({
+                                perInfoItemDefId: i.toString(), settingId: i.toString(),
+                                perInfoCtgId: i.toString(), itemName: "A",
+                                isRequired: 1, refMethodType: i % 4,
+                                saveDataType: i % 3, stringValue: i.toString(),
+                                intValue: i.toString(), dateValue: i.toString(),
+                                value: i.toString(), itemType: i % 6,
+                                dataType: i % 7
+                            }));
+
+                        }
 
                     }
                     self.currentCategory().itemList.valueHasMutated();
@@ -140,7 +153,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // thiet lap item hang loat
         openBDialog() {
 
-            let self = this;
+            let self = this,
+                PARAMS = { categoryId : self.currentCategory().currentItemId()};
+            console.log(PARAMS);
 
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
@@ -323,6 +338,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringValue?: string;
         intValue?: number;
         dateValue?: string;
+        dateWithDay?: number;
+        timePoint?: string;
         value? any;
     }
 
@@ -336,28 +353,41 @@ module nts.uk.com.view.cps009.a.viewmodel {
         refMethodType: KnockoutObservable<number>;
         itemType: KnockoutObservable<number>;
         listComboItem: KnockoutObservableArray<any>;
+        selectedRuleCode: KnockoutObservable<string>;
+
 
         dataType: KnockoutObservable<number>;
-        
+
         saveDataType: KnockoutObservable<number>;
         stringValue: KnockoutObservable<string>;
         intValue: KnockoutObservable<number>;
         dateValue: KnockoutObservable<String>;
+        dateWithDay: KnockoutObservable<number>;
+        timePoint: KnockoutObservable<string>;
         value: KnockoutObservable<string> = ko.observable("");
-        selectedRuleCode: KnockoutObservable<string>;
+
+        // trường hợp datatype là kiểu selection
+        selection: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<string>;
         constructor(params: IPerInfoInitValueSettingItemDto) {
-            debugger;
             let self = this;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
             self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
             self.itemName = ko.observable(params.itemName || "");
+
             self.isRequired = ko.observable(params.isRequired || 0);
             self.refMethodType = ko.observable(params.refMethodType || 0);
+
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || "");
             self.intValue = ko.observable(params.intValue || 0);
+
             self.dateValue = ko.observable(params.dateValue || "99991221");
+            self.dateWithDay = ko.observable(params.dateWithDay || 0);
+            self.timePoint = ko.observable(params.timePoint || "");
+
+
             self.itemType = ko.observable(params.itemType || 0);
             self.dataType = ko.observable(params.dataType || 0);
             self.selectedRuleCode = ko.observable("");
@@ -383,7 +413,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "ログイン者と同じ" }]);
+            } else if (params.itemType === 5 || params.itemType === 6) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "ログイン者と同じ" }]);
             }
+
+
             if (params.refMethodType === 1) {
                 ko.observable(params.stringValue);
             } else if (params.refMethodType === 2) {
@@ -391,6 +427,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             } else if (params.refMethodType === 3) {
                 ko.observable(params.dateValue);
             }
+
+            self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
+                { code: 2, name: "固定値" },
+                { code: 3, name: "ログイン者と同じ" }]);
+            self.selectedCode = ko.observable("");
         }
     }
 

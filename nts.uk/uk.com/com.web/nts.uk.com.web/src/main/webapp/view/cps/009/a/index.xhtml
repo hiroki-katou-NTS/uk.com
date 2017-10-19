@@ -8,6 +8,12 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+					nts.uk.shr.com.time.TimeWithDayAttr
+					nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
+					nts.uk.shr.com.primitive.sample.ResidenceCode
+					
+   			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
 			<com:scriptfile path="cps009.a.service.js" />
 			<com:scriptfile path="cps009.a.start.js" />
@@ -27,16 +33,15 @@
 			<div id="contents-area" class="cf">
 				<div id="content">
 					<div id="content-left"
-						data-bind="ntsPanel:{width: '260px', height: '500px',
-					direction: 'right', showIcon: false, visible: true}">
+						data-bind="ntsPanel:{width: '260px', height: '500px',direction: 'right', showIcon: false, visible: true}">
 						<table id="category_grid"
 							data-bind="ntsGridList: {	
-						dataSource: initValSettingLst ,
-						primaryKey: 'settingId' ,
-						columns: ctgColums ,
-						multiple: false,
-						value: initSettingId,
-						rows:15 }">
+							dataSource: initValSettingLst ,
+							primaryKey: 'settingId' ,
+							columns: ctgColums ,
+							multiple: false,
+							value: initSettingId,
+							rows:15 }">
 						</table>
 					</div>
 					<div id="content-right">
@@ -60,21 +65,21 @@
 							<div id='sub-left'>
 								<div id="search" tabindex="6"
 									data-bind="ntsSearchBox: {
-						searchMode: 'filter',
-						targetKey: 'perInfoCtgId',
-						mode: 'igGrid', 
-						comId: 'item_grid',
-						items: currentCategory().ctgList ,  
-						selectedKey: 'perInfoCtgId',
-						fields: ['categoryName']}" />
+									searchMode: 'filter',
+									targetKey: 'perInfoCtgId',
+									mode: 'igGrid', 
+									comId: 'item_grid',
+									items: currentCategory().ctgList ,  
+									selectedKey: 'perInfoCtgId',
+									fields: ['categoryName']}" />
 								<table id="item_grid"
 									data-bind="ntsGridList: {	
-						dataSource: currentCategory().ctgList ,
-						primaryKey: 'perInfoCtgId' ,
-						columns: currentCategory().ctgColums ,
-						multiple: false,
-						value: currentCategory().currentItemId ,
-						rows:10 }">
+									dataSource: currentCategory().ctgList ,
+									primaryKey: 'perInfoCtgId' ,
+									columns: currentCategory().ctgColums ,
+									multiple: false,
+									value: currentCategory().currentItemId ,
+									rows:10 }">
 								</table>
 
 							</div>
@@ -82,14 +87,12 @@
 								<div id="history">
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<button
-										data-bind="ntsHelpButton: {image: 'helpcps0091.png', 
-									position: 'right top',
-									enable: true }">?</button>
+										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
 									<input id="date"
 										data-bind="ntsTextEditor: {
-								value: currentCategory().settingCode ,
-								enable: true,
-								immediate: false}"></input>
+										value: currentCategory().settingCode ,
+										enable: true,
+										immediate: false}"></input>
 								</div>
 
 								<table id="grid">
@@ -98,10 +101,9 @@
 											<td colspan="2">#{i18n.getText('CPS009_21')}</td>
 
 											<td colspan="2">
-												<button id="A2_012" style='margin-left: 20px;'
-													data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')}
+												<button id="A2_012" data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')}
 												</button>
-												<button style='margin-left: 10px;'
+												<button id="help"
 													data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }">?</button>
 											</td>
 
@@ -109,11 +111,13 @@
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: currentCategory().itemList()">
-										<td colspan="2" class="input-units"><input
-											class="months-input"
-											data-bind="ntsTextEditor: {value: perInfoItemDefId}" /></td>
 
-										<td  class="input-units">
+										<td id="name" colspan="2" class="input-units"
+											data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}"><span
+											class="months-input " data-bind="text: itemName" /></td>
+
+										<td class="input-units"
+											data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}">
 											<div id="combo-box"
 												data-bind="ntsComboBox: {
 												options: listComboItem,
@@ -129,38 +133,50 @@
 										</td>
 
 										<td colspan="2" class="input-units">
-										
 											<!-- String  -->
+											<com:ko-if bind="(dataType() === 0)">
+												<input class="sub-input-units" data-bind="ntsTextEditor: {value: perInfoItemDefId , constraint: 'CategoryName', required: true}" />
+											</com:ko-if> 
+											
+											<!-- number  --> 
 											<com:ko-if bind="(dataType() === 1)">
-													<input
-													class="months-input"
-													data-bind="ntsTextEditor: {value: perInfoItemDefId}" />
-											</com:ko-if>	
+												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { value: stringValue, constraint: 'ResidenceCode', required: true}" />
+											</com:ko-if>
 											
-											<!-- number  -->
-											<com:ko-if bind="(dataType() === 2)">
-													<input data-bind="ntsNumberEditor: {
-															value: stringValue}" />
-											</com:ko-if>	
+											 <!-- date  --> 
+											 <com:ko-if bind="(dataType() === 2)">
+												<div class="sub-input-units"
+													data-bind="ntsDatePicker: {value: dateValue, dateFormat: 'YYYY/MM/DD'}"></div>
+											</com:ko-if> 
 											
-											<!-- date  -->
+											<!-- timepoint  --> 
 											<com:ko-if bind="(dataType() === 3)">
-													<div data-bind="ntsDatePicker: {value: dateValue, dateFormat: 'YYYY/MM/DD'}"></div>
-											</com:ko-if>	
+												<input class="sub-input-units"
+													data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
+													 value: dateWithDay, enable: true, readonly: true, required: true }" />
+											</com:ko-if>
 											
-											<!-- timepoint  -->
-											<com:ko-if bind="(dataType() === 4)">
-													<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
-													 value: dateValue, enable: true, readonly: true, required: true }" />	
-											</com:ko-if>	
+											 <!-- timepoint  --> 
+											 <com:ko-if bind="(dataType() === 4)">
+												<input class="sub-input-units" data-bind="ntsTimeEditor: {value: timePoint, inputFormat: 'date'}" />
+											</com:ko-if>
 											
-											<!-- timepoint  -->
-											<com:ko-if bind="(dataType() === 5)">
-													<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
-													 value: dateValue, enable: true, readonly: true, required: true }" />	
-											</com:ko-if>																																
-																																	
-											</td>
+											 <!-- list box  -->
+											 <com:ko-if bind="(dataType() === 5)">
+												<div class="sub-input-units"
+													data-bind="ntsComboBox: {
+													options: selection,
+													optionsValue: 'code',
+													value: selectedCode,
+													optionsText: 'name',
+													editable: false,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}"></div>
+											</com:ko-if>
+
+										</td>
 
 									</tbody>
 								</table>
