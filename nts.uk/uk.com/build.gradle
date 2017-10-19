@@ -760,6 +760,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
 		
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws')
+		
 		// shr find implement
 		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
 		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
