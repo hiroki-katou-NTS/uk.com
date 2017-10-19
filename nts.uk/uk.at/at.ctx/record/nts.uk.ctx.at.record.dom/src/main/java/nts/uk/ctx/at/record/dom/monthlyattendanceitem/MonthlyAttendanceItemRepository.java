@@ -20,4 +20,12 @@ public interface MonthlyAttendanceItemRepository {
 	 */
 	List<MonthlyAttendanceItem> findByAtr(String companyId, int itemAtr);
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<MonthlyAttendanceItem> findAll(String companyId);
+
 }
