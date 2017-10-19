@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApp
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
@@ -134,6 +137,9 @@ public class GetAllDataAppPhaseFrame {
 		if(application.equals(null)) {
 			throw new BusinessException("Msg_198");
 		}
+		application.getListPhase().stream().forEach(x -> {
+			Collections.sort(x.getListFrame(), Comparator.comparing(ApprovalFrameDto :: getDispOrder));
+		});
 		return application;
 	}
 	

@@ -70,8 +70,9 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 					// có thì thay đổi approveAccepted
 					if(approveAccepted.getApproverSID().equals(loginID)||approveAccepted.getRepresenterSID().equals(loginID)){
 						approveAccepted.setApprovalATR(ApprovalAtr.UNAPPROVED);
-						approveAccepted.setApproverSID("");
-						approveAccepted.setRepresenterSID("");
+						// clear ApproverSID and RepresenterSID ???
+						// approveAccepted.setApproverSID("");
+						// approveAccepted.setRepresenterSID("");
 					}
 				}
 			}
@@ -79,7 +80,6 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
 			
 		}
-		appRepo.updateApplication(application);
 		
 		if(!cancelFlag) return;
 		

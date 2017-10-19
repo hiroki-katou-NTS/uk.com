@@ -217,9 +217,6 @@ module kcp.share.tree {
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-                    $('#combo-box-tree-component').on('mousedown', function() {
-                        $('#combo-box-tree-component').focus();
-                    });
                     // Set default value when initial component.
                     self.initSelectedValue(res);
 
@@ -450,11 +447,7 @@ module kcp.share.tree {
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 self.itemList(subItemList);
                 self.initSelectedValue(self.itemList());
-                self.loadTreeGrid().done(() => {
-                    $('#combo-box-tree-component').on('mousedown', function() {
-                        $('#combo-box-tree-component').focus();
-                    });
-                });
+                self.loadTreeGrid();
             }
         }
 

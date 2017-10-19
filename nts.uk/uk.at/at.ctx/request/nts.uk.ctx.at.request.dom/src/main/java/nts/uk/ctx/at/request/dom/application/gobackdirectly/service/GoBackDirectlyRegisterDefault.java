@@ -86,28 +86,18 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		String companyID = AppContexts.user().companyId();
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		//TODO : TAM THOI BO QUA 
-//		processBeforeRegister.processBeforeRegister(
-//				companyID, 
-//				employeeID, 
-//				application.getApplicationDate(), 
-//				application.getPrePostAtr(), 
-//				1, 
-//				application.getApplicationType().value);
-		
-		 if(true) throw new BusinessException("Msg_297");	
-		// アルゴリズム「直行直帰するチェック」を実行する
-		if (this.goBackDirectCheck(goBackDirectly) == GoBackDirectAtr.IS) {
-			// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
-			GoBackDirectLateEarlyOuput goBackLateEarly = this.goBackDirectLateEarlyCheck(goBackDirectly);
-			//エラーあり
-			if(goBackLateEarly.isError) {
-				//直行直帰申請共通設定.早退遅刻設定がチェックする
-				if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
-					throw new BusinessException("Msg_297");
-				}else {
-					throw new BusinessException("Msg_298");	
-				}
+		processBeforeRegister.processBeforeRegister(application);
+		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
+
+		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
+		GoBackDirectLateEarlyOuput goBackLateEarly = this.goBackDirectLateEarlyCheck(goBackDirectly);
+		//エラーあり
+		if(goBackLateEarly.isError) {
+			//直行直帰申請共通設定.早退遅刻設定がチェックする
+			if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
+				throw new BusinessException("Msg_297");
+			}else {
+				throw new BusinessException("Msg_298");	
 			}
 		}
 	}
@@ -150,8 +140,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 				//Mac Dinh tra ve 0
 				int earlyTime = 0;
-				//日別実績の勤怠時間.実働時間.総労働時間.早退時間.時間
+				//日別実績の勤怠時間.実働時間.総労働時間.早退時間.時間 
+				//TODO: chua the lam duoc do chua co 日別実績
 				// So sách tới 日別実績 để biết đi sớm về muộn, nếu  
+				
 				if (earlyTime < 0) {
 					output.isError = true;
 					throw new BusinessException("Msg_296");

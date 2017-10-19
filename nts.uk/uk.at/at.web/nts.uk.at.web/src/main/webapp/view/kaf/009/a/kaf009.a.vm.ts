@@ -132,19 +132,21 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             return dfd.promise();
         }
         /**
-         * insert
+         * insert//登録ボタンをクリックする
          */
         insert() {
             let self = this;
+            //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
+            //直行直帰するチェック
             var promiseResult = self.checkBeforeInsert();
             promiseResult.done((result) => {
                 if (result) {
                     nts.uk.ui.block.invisible();
                     service.insertGoBackDirect(self.getCommand()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }).fail(function(res) {
+                    }).fail(function(res: any) {
                         //$('#inpStartTime1').ntsError('set', {messageId:"Msg_297"});
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError(res.messageId).then(function() { nts.uk.ui.block.clear(); });
                     }).then(function(){
                         nts.uk.ui.block.clear();    
                     })
@@ -153,7 +155,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         }
         
         /**
-         * 
+         * //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
+            //直行直帰するチェック
          */
         checkBeforeInsert(): JQueryPromise<boolean> {
             let self = this;
@@ -162,7 +165,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
            if(self.checkUse()){
                service.checkInsertGoBackDirect(self.getCommand()).done(function(){
                    dfd.resolve(true);
-                }).fail(function(res){
+                }).fail(function(res: any){
                     if(res.messageId =="Msg_297"){
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
                            dfd.resolve(true);
@@ -191,7 +194,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         checkUse(){
             let self = this;
-            if (self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0) {
+            if ((self.selectedGo() == 0 && self.selectedBack()== 0) 
+                || (self.selectedGo2() == 0 && self.selectedBack2()== 0)) {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
                     return true;
                 }).ifNo(function() {
