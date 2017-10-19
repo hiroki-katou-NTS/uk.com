@@ -183,7 +183,7 @@
                                  <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div>
                               </td>
                               <td>
-                                 <div tabindex="10" style="width: 100px"
+                                 <div tabindex="10" style="width: 80px"
                                     data-bind="ntsComboBox: {
                                     name: '#[KMK002_24]',
                                     options: atrDataSource,
@@ -193,7 +193,7 @@
                                     editable: false,
                                     enable: isUsed,
                                     columns: [
-                                    { prop: 'localizedName', length: 10 },
+                                    { prop: 'localizedName', length: 1 },
                                     ]}">
                                  </div>
                               </td>
@@ -220,17 +220,17 @@
                         <!-- Optional Item formula view model -->
                         <table id="tbl-calc-formula" data-bind="name: '#[KMK002_32]'">
                            <colgroup>
-                              <col width="50px"/>
-                              <col width="50px"/>
-                              <col width="200px"/>
-                              <col width="200px"/>
-                              <col width="600px"/>
                               <col width="35px"/>
-                              <col width="200px"/>
+                              <col width="40px"/>
+                              <col width="80px"/>
+                              <col width="190px"/>
+                              <col width="191px"/>
+                              <col width="35px"/>
+                              <col width="190px"/>
                               <col width="100px"/>
+                              <col width="150px"/>
                               <col width="100px"/>
-                              <col width="100px"/>
-                              <col width="100px"/>
+                              <col width="150px"/>
                            </colgroup>
                            <thead>
                               <tr>
@@ -259,9 +259,9 @@
                                           enable: $parent.isUsed,
                                           text: '' }"></div>
                                     </td>
-                                    <td data-bind="text: symbolValue"></td>
+                                    <td style="text-align: right" data-bind="text: symbolValue"></td>
                                     <td>
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 80px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_24]',
                                           options: formulaAtrDs,
                                           optionsValue: 'value',
@@ -269,7 +269,7 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 1 },
                                           ]}">
                                        </div>
                                     </td>
@@ -310,7 +310,7 @@
                                     </td>
                                     <td>
                                     	<com:ko tag="if" bind="isTimeSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 100px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_36]',
                                           options: timeUnitDs,
                                           optionsValue: 'value',
@@ -318,12 +318,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                        <com:ko tag="if" bind="isAmountSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 100px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_36]',
                                           options: amountUnitDs,
                                           optionsValue: 'value',
@@ -331,12 +331,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                        <com:ko tag="if" bind="isNumberSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 100px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_36]',
                                           options: numberUnitDs,
                                           optionsValue: 'value',
@@ -344,14 +344,14 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     </td>
                                     <td>
                                     	<com:ko tag="if" bind="isTimeSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
                                           options: timeRoundingDs,
                                           optionsValue: 'value',
@@ -359,12 +359,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     	<com:ko tag="if" bind="isNumberSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
                                           options: numberRoundingDs,
                                           optionsValue: 'value',
@@ -372,12 +372,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     	<com:ko tag="if" bind="isAmountSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
                                           options: amountRoundingDs,
                                           optionsValue: 'value',
@@ -385,14 +385,14 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     </td>
                                     <td>
                                     <com:ko tag="if" bind="isTimeSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 100px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_38]',
                                           options: timeUnitDs,
                                           optionsValue: 'value',
@@ -400,12 +400,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     <com:ko tag="if" bind="isNumberSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 100px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_38]',
                                           options: numberUnitDs,
                                           optionsValue: 'value',
@@ -413,12 +413,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     <com:ko tag="if" bind="isAmountSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 100px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_38]',
                                           options: amountUnitDs,
                                           optionsValue: 'value',
@@ -426,14 +426,14 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 5 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     </td>
                                     <td>
                                     <com:ko tag="if" bind="isTimeSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
                                           options: timeRoundingDs,
                                           optionsValue: 'value',
@@ -441,12 +441,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     <com:ko tag="if" bind="isNumberSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
                                           options: numberRoundingDs,
                                           optionsValue: 'value',
@@ -454,12 +454,12 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                        </com:ko>
                                     <com:ko tag="if" bind="isAmountSelected()">
-                                       <div data-bind="ntsComboBox: {
+                                       <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
                                           options: amountRoundingDs,
                                           optionsValue: 'value',
@@ -467,7 +467,7 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 10 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                        </com:ko>
