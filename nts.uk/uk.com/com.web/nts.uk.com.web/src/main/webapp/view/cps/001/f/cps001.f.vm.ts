@@ -44,7 +44,6 @@ module cps001.f.vm {
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
             self.onchange = (filename) => {
-                console.log(filename);
             };
             self.onfilenameclick = (filename) => {
                 alert(filename);
@@ -54,10 +53,15 @@ module cps001.f.vm {
 
         start() {
             let self = this;
+
+
             for (let i = 0; i < 5; i++) {
                 self.items.push(new GridItem(i));
             }
 
+            service.getInfoCatagory().done((data: Array<IPerInfoCtgFullDto>) => {
+                console.log(data);
+            });
         }
         pushData() {
             let self = this;
@@ -65,15 +69,15 @@ module cps001.f.vm {
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
                 self.fileId(res[0].id);
                 // save file to domain EmployeeFileManagement
-                service.savedata({sid: '90000000-0000-0000-0000-000000000001', fileid : res[0].id}).done(() =>{
+                service.savedata({ sid: '90000000-0000-0000-0000-000000000001', fileid: res[0].id }).done(() => {
                     console.log("done");
                 });
-                
+
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
             });
             let fileid = self.fileId();
-            
+
             setShared('CPS001B_VALUE', {});
         }
 
@@ -82,8 +86,18 @@ module cps001.f.vm {
         }
     }
 
-    interface IModelDto {
+    interface IPerInfoCtgFullDto {
+        id: string;
+        categoryName: string;
+    }
 
+    class PerInfoCtgFullDto {
+        id: string;
+        categoryName: string;
+        constructor(param: IPerInfoCtgFullDto) {
+            this.id = param.id;
+            this.categoryName = param.categoryName;
+        }
     }
 
     class GridItem {

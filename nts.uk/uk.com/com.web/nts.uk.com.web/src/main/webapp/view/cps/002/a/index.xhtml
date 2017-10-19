@@ -191,13 +191,13 @@
 										<div class="div_line">
 											<div style="width: 190px"
 												data-bind="ntsSearchBox: {
-															targetKey: 'settingId',
+															targetKey: 'itemId',
 															mode:'igGrid', 
 															comId:'init_list', 
 															items: initValueList , 
 															selected: initValueSelectedCode , 
 															selectedKey: 'settingId', 
-															fields: ['settingName'],
+															fields: ['itemName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
 															}" />
 
@@ -207,11 +207,11 @@
 												data-bind="ntsGridList: {								
 															height: 350,
 															dataSource: initValueList ,
-															primaryKey: 'settingId',
+															primaryKey: 'itemId',
 															columns:[
-																	{ headerText: '#{i18n.getText('CAS001_8')}', key: 'settingId', width: 50, hidden : true},
-																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'settingCode', width: 40},
-															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'settingName', width: 130 } ]  ,
+																	{ headerText: '#{i18n.getText('CAS001_8')}', key: 'itemId', width: 50, hidden : true},
+																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
+															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
 															multiple: false,
 															value: initValueSelectedCode ,
 															rows:15
@@ -231,15 +231,9 @@
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_46')}</div>
 											</com:ko-if>
 										</div>
-										<div class="step2_col2">
-											<com:ko-if bind="selectedId()===1">
-												<label></label>
-											</com:ko-if>
-											<com:ko-if bind="selectedId()===2">
-												<div data-bind="with:currentInitValueItem">
-													<label data-bind="text:settingCode + '' + settingName"></label>
-												</div>
-											</com:ko-if>
+										<div class="step2_col2" data-bind="with:currentItem">
+											<label class="textLabel"
+												data-bind="text:itemCode + ' ' + itemName"></label>
 										</div>
 									</div>
 

@@ -38,7 +38,7 @@ public class BsymtEmpFileManagement extends UkJpaEntity implements Serializable{
 
 	@Basic(optional = true)
 	@Column(name = "DISPORDER")
-	public int disPOrder;
+	public Integer disPOrder;
 	
 	@Basic(optional = true)
 	@Column(name = "PERSON_INFO_CTG_ID")

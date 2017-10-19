@@ -5,6 +5,7 @@ module cps001.f.service {
     let paths: any = {
         'getData': 'basic/organization/empfilemanagement/getlistdocfile/{0}',
         'savedata': 'basic/organization/empfilemanagement/savedocfile',
+        'getInfoCatagory':'ctx/bs/person/info/ctg/findAll'
     };
 
     export function getData(employeeId : any) {
@@ -13,5 +14,9 @@ module cps001.f.service {
 
     export function savedata(command: any) {
         return ajax(paths.savedata, command);
+    }
+    
+    export function getInfoCatagory() {
+        return ajax(paths.savedata);
     }
 }

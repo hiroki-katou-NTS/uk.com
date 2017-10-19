@@ -45,8 +45,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		entity.bsymtEmpFileManagementPK = new BsymtEmpFileManagementPK(domain.getFileID());
 		entity.sid = domain.getSId();
 		entity.filetype = domain.getTypeFile();
-		entity.disPOrder = domain.getUploadOrder();
-		entity.personInfoctgId = domain.getPersonInfoCategoryId();
+		entity.disPOrder = domain.getUploadOrder() < 0?null: domain.getUploadOrder();
+		entity.personInfoctgId = domain.getPersonInfoCategoryId().equals("")? null: domain.getPersonInfoCategoryId();
 		return entity;
 	}
 	
@@ -69,8 +69,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void insert(EmployeeFileManagement domain) {
-		// TODO Auto-generated method stub
-		
+		BsymtEmpFileManagement entity = toEntityEmpFileManagement(domain);
+		getEntityManager().persist(entity);
 	}
 
 	@Override
@@ -109,9 +109,11 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		EmployeeFileManagement empFileMana = new EmployeeFileManagement();
 		if (entity != null) {
 			empFileMana = toDomainEmpFileManagement(entity);
+			return Optional.of(empFileMana);
 
+		} else {
+			return Optional.empty();
 		}
-		return Optional.of(empFileMana);
 	}
 
 
