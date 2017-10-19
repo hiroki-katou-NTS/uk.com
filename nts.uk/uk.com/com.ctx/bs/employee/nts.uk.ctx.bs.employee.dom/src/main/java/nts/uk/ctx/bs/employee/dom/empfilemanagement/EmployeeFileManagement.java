@@ -26,12 +26,12 @@ public class EmployeeFileManagement extends AggregateRoot{
 	private int typeFile;
 
 	/** order document file*/
-	private int uploadOrder;
+	private Integer uploadOrder;
 
 	/** The PersonalInformationCtgID */
 	private String personInfoCategoryId;
 	
-	public static EmployeeFileManagement createFromJavaType(String sId, String fileID,int typeFile , int uploadOrder , String personInfoCategoryId) {
+	public static EmployeeFileManagement createFromJavaType(String sId, String fileID,int typeFile , Integer uploadOrder , String personInfoCategoryId) {
 		return new EmployeeFileManagement(sId, fileID, typeFile, uploadOrder, personInfoCategoryId);
 	}
 
