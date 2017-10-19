@@ -45,8 +45,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		entity.bsymtEmpFileManagementPK = new BsymtEmpFileManagementPK(domain.getFileID());
 		entity.sid = domain.getSId();
 		entity.filetype = domain.getTypeFile();
-		entity.disPOrder = domain.getUploadOrder() < 0?null: domain.getUploadOrder();
-		entity.personInfoctgId = domain.getPersonInfoCategoryId().equals("")? null: domain.getPersonInfoCategoryId();
+		entity.disPOrder = domain.getUploadOrder();
+		entity.personInfoctgId = domain.getPersonInfoCategoryId();
 		return entity;
 	}
 	
