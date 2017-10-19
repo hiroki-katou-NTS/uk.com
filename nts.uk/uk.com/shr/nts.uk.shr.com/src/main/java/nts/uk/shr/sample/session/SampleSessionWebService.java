@@ -7,6 +7,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import lombok.val;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.scoped.session.SessionContextProvider;
@@ -29,6 +30,8 @@ public class SampleSessionWebService extends WebService {
 	@POST
 	@Path("getvalue")
 	public JavaTypeResult<String> getValue() {
+		I18NText.getText("Msg_1");
+		
 		return new JavaTypeResult<>((String)SessionContextProvider.get().get("SAMPLE_SESSION"));
 	}
 	

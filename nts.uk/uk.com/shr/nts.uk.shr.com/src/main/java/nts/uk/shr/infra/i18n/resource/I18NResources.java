@@ -73,6 +73,7 @@ public class I18NResources implements IInternationalization {
 	// なぜか１箇所だけ使われている
 	@Override
 	public Optional<String> getRawMessage(String messageId) {
+		this.resourcesRepository.loadResourcesDefault("ja");
 		return this.getRawContent(messageId);
 	}
 
