@@ -38,7 +38,7 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 		// get total eval order list
 		if(data.getTotalEvalOrders() != null){
 			totalEvalOrders = data.getTotalEvalOrders().stream()
-					.map(x -> x.toDomainOrder(companyId))
+					.map(x -> x.toDomainOrder(companyId, data.getCategoryCode()))
 					.collect(Collectors.toList());
 		}
 //		// get hori cal day set item
