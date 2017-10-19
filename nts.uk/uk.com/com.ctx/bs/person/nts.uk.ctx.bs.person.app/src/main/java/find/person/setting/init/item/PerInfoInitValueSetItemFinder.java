@@ -10,15 +10,14 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem
 
 @Stateless
 public class PerInfoInitValueSetItemFinder {
-	
+
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String perInfoCtgId) {
 
 		return this.settingItemRepo.getAllItem(perInfoCtgId).stream()
-				.map(c -> PerInfoInitValueSettingItemDto.fromDomain(c))
-				.collect(Collectors.toList());
+				.map(c -> PerInfoInitValueSettingItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
 
 }

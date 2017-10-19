@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 
 import command.person.setting.init.CopyInitValueSetCommand;
 import command.person.setting.init.CopyInitValueSetCommandHandler;
+import command.person.setting.init.DeleteInitValueSettingCommand;
+import command.person.setting.init.DeleteInitValueSettingHandler;
 import command.person.setting.init.InsertInitValueSettingCommand;
 import command.person.setting.init.InsertInitValueSettingHandler;
 import find.person.setting.init.PerInfoInitValueSettingDto;
@@ -27,6 +29,9 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 	@Inject
 	private CopyInitValueSetCommandHandler copyInitValue;
 
+	@Inject
+	private DeleteInitValueSettingHandler delete;
+
 	@POST
 	@Path("findAll")
 	public List<PerInfoInitValueSettingDto> getAllInitValueSetting() {
@@ -39,6 +44,12 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 		this.add.handle(command);
 	}
 
+	@POST
+	@Path("delete")
+	public void delete(DeleteInitValueSettingCommand command) {
+		this.delete.handle(command);
+	}
+
 	// sonnlb
 
 	@POST
@@ -49,10 +60,10 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 
 	// sonnlb
 
-	//hoatt
+	// hoatt
 	@POST
 	@Path("copyInitValue")
-	public void copyInitValueCtg(CopyInitValueSetCommand command){
+	public void copyInitValueCtg(CopyInitValueSetCommand command) {
 		this.copyInitValue.handle(command);
 	}
 }

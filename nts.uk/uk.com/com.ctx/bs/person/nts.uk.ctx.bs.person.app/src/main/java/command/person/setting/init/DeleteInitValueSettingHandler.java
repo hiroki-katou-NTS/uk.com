@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtg;
@@ -41,15 +42,17 @@ public class DeleteInitValueSettingHandler extends CommandHandler<DeleteInitValu
 		Optional<PerInfoInitValueSetting> isDelete = this.settingRepo.getDetailInitValSetting(companyId,
 				command.getSettingCode(), command.getSettingId());
 		List<PerInfoInitValSetCtg> ctgLst = this.ctgRepo.getAllInitValueCtg(command.getSettingId());
-		ctgLst.stream().forEach(c ->{
-			List<PerInfoInitValueSetItem> itemLst = this.itemRepo.getAllInitValueItem(c.getPerInfoCtgId(), command.getSettingId());
-			if(!itemLst.isEmpty()) {
-				//this.itemRepo.de
-				
+		List<PerInfoInitValueSetItem> itemLst = this.itemRepo.getAllInitValueItem(command.getSettingId());
+		if (isDelete.isPresent()) {
+			this.settingRepo.delete(companyId, command.getSettingId(), command.getSettingCode());
+			if (!CollectionUtil.isEmpty(ctgLst)) {
+				this.ctgRepo.delete(command.getSettingId());
+				if (!CollectionUtil.isEmpty(itemLst)) {
+					this.itemRepo.deleteAllBySetId(command.getSettingId());
+				}
 			}
-		});
-		
-		
+		}
+
 	}
 
 }

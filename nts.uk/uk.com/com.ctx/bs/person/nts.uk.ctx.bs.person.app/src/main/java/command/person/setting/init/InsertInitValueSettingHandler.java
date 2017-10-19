@@ -29,11 +29,11 @@ public class InsertInitValueSettingHandler extends CommandHandler<InsertInitValu
 	protected void handle(CommandHandlerContext<InsertInitValueSettingCommand> context) {
 		InsertInitValueSettingCommand insert = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		String initValueSettingId = IdentifierUtil.randomUniqueId();
 		Optional<PerInfoInitValueSetting> setting = this.settingRepo.getDetailInitValSetting(companyId,
 				insert.getItemCode());
-		if (setting.isPresent()) {
-			PerInfoInitValueSetting initSetting = PerInfoInitValueSetting.createFromJavaType(initValueSettingId,
+		if (!setting.isPresent() || setting == null) {
+			PerInfoInitValueSetting initSetting = PerInfoInitValueSetting.createFromJavaType(
+					IdentifierUtil.randomUniqueId(),
 					companyId, insert.getItemCode(), insert.getItemName());
 			this.settingRepo.insert(initSetting);
 		} else {

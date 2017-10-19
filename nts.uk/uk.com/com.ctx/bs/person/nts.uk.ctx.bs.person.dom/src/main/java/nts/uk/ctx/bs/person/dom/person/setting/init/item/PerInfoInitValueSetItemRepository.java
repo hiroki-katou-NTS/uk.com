@@ -4,16 +4,25 @@ import java.util.List;
 
 public interface PerInfoInitValueSetItemRepository {
 
-	
+	/**
+	 * getAllInitValueItem
+	 * 
+	 * @param settingId
+	 * @return List<PerInfoInitValueSetItem>
+	 */
+
+	List<PerInfoInitValueSetItem> getAllInitValueItem(String settingId);
+
 	/**
 	 * get all init value
+	 * 
 	 * @param perInfoCtgId
 	 * @param settingId
 	 * @return List<PerInfoInitValueSetItem>
 	 */
-	
+
 	List<PerInfoInitValueSetItem> getAllInitValueItem(String perInfoCtgId, String settingId);
-	
+
 	/**
 	 * get all init value item: initvalueItem ^ itemDefined
 	 * 
@@ -33,6 +42,7 @@ public interface PerInfoInitValueSetItemRepository {
 
 	/**
 	 * delete by perInfoItemDefId, perInfoCtgId, settingId
+	 * 
 	 * @param perInfoItemDefId
 	 * @param perInfoCtgId
 	 * @param settingId
@@ -49,12 +59,14 @@ public interface PerInfoInitValueSetItemRepository {
 
 	/**
 	 * delete all item by settingId
+	 * 
 	 * @param settingId
 	 */
 	void deleteAllBySetId(String settingId);
-	
+
 	/**
 	 * add all list item
+	 * 
 	 * @param lstItem
 	 */
 	void addAllItem(List<PerInfoInitValueSetItem> lstItem);
