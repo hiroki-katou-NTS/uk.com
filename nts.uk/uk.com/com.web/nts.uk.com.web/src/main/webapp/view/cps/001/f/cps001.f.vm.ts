@@ -8,6 +8,18 @@ module cps001.f.vm {
 
     export class ViewModel {
 
+
+        fileId: KnockoutObservable<string>;
+        filename: KnockoutObservable<string>;
+        fileInfo: KnockoutObservable<any>;
+        textId: KnockoutObservable<string>;
+        accept: KnockoutObservableArray<string>;
+        asLink: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
+        onchange: (filename) => void;
+        onfilenameclick: (filename) => void;
+
+
         items: Array<GridItem> = [];
         comboItems = [new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
@@ -24,6 +36,20 @@ module cps001.f.vm {
             console.log(self.items);
             $("#grid2").ntsGrid('option', 'dataSource', self.items);
 
+            self.fileId = ko.observable("");
+            self.filename = ko.observable("");
+            self.fileInfo = ko.observable(null);
+            self.accept = ko.observableArray([".png", '.gif', '.jpg', '.jpeg']);
+            self.textId = ko.observable("CPS001_71");
+            self.asLink = ko.observable(true);
+            self.enable = ko.observable(true);
+            self.onchange = (filename) => {
+                console.log(filename);
+            };
+            self.onfilenameclick = (filename) => {
+                alert(filename);
+            };
+
         }
 
         start() {
@@ -35,14 +61,22 @@ module cps001.f.vm {
         }
         pushData() {
             let self = this;
-
+            // upload file 
+            $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
+                self.fileId(res[0].id);
+                // save file to domain EmployeeFileManagement
+                service.savedata({sid: '90000000-0000-0000-0000-000000000001', fileid : res[0].id}).done(() =>{
+                    console.log("done");
+                });
+                
+            }).fail(function(err) {
+                nts.uk.ui.dialog.alertError(err);
+            });
+            let fileid = self.fileId();
+            
             setShared('CPS001B_VALUE', {});
-            self.close();
         }
-        
-        clickLink() {
-             alert('Do something 2'); 
-        }
+
         close() {
             close();
         }

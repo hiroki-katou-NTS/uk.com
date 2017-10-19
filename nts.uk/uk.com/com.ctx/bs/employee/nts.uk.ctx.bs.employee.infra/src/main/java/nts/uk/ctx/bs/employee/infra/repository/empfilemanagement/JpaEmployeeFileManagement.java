@@ -2,14 +2,18 @@ package nts.uk.ctx.bs.employee.infra.repository.empfilemanagement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import entity.employeeinfo.BsymtEmployee;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagement;
 import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagementPK;
 
@@ -17,9 +21,17 @@ import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagem
 @Stateless
 @Transactional
 public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFileManagementRepository{
-	
+
 	public final String GET_ALL_BY_SID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND (c.filetype = :filetype or :filetype = -1)";
 
+	
+	public final String GET_BY_FILEID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.bsymtEmpFileManagementPK.fileid = :fileid ";
+
+
+	public final String GET_ALL_DOCUMENT_FILE = "SELECT c, d.categoryName FROM BsymtEmpFileManagement c "
+			+" JOIN PpemtPerInfoCtg d ON c.personInfoctgId =  d.ppemtPerInfoCtgPK.perInfoCtgI"
+			+ " WHERE c.sid = :sid AND c.filetype = :filetype ";
+	
 	private EmployeeFileManagement toDomainEmpFileManagement(BsymtEmpFileManagement entity) {
 		val domain = EmployeeFileManagement.createFromJavaType(entity.sid,
 				entity.bsymtEmpFileManagementPK.fileid, entity.filetype, entity.disPOrder,
@@ -75,6 +87,37 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 				.getList();
 
 		return toListEmpFileManagement(listFile);
+	}
+
+
+	@Override
+	public List<Object> getListDocumentFile(String employeeId, int filetype) {
+		List<Object> listFile = this.queryProxy().query(GET_ALL_DOCUMENT_FILE, Object.class)
+				.setParameter("sid", employeeId)
+				.setParameter("filetype", filetype)
+				.getList();
+		return listFile;
+	}
+
+
+	@Override
+	public Optional<EmployeeFileManagement> getEmpMana(String fileid) {
+		
+		BsymtEmpFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtEmpFileManagement.class)
+				.setParameter("fileid", fileid).getSingleOrNull();
+
+		EmployeeFileManagement empFileMana = new EmployeeFileManagement();
+		if (entity != null) {
+			empFileMana = toDomainEmpFileManagement(entity);
+
+		}
+		return Optional.of(empFileMana);
+	}
+
+
+	@Override
+	public void update(EmployeeFileManagement domain) {
+		this.commandProxy().update(toEntityEmpFileManagement(domain));
 	}
 
 
