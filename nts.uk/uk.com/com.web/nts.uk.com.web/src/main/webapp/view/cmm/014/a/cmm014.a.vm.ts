@@ -190,7 +190,7 @@ module nts.uk.com.view.cmm014.a {
                     });
                 }).ifNo(function() {
                     blockUI.clear();
-                    $('#empName').focus();
+                    $('#clfName').focus();
                 });
             }
 
@@ -202,6 +202,7 @@ module nts.uk.com.view.cmm014.a {
                 self.clearErrors();
                 $('#clfCode').ntsEditor("validate");
                 $('#clfName').ntsEditor("validate");
+                 $('#memo').ntsEditor("validate");
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
                 }
