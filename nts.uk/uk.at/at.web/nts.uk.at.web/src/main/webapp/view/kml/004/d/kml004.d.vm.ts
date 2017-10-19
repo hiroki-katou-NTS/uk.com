@@ -29,10 +29,12 @@ module nts.uk.at.view.kml004.d.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getAll().done((lstSet) => {
-                _.forEach(lstSet, function(item) {
-                    var param = new TotalSet(self.cateCode(), self.itemNo(), item.totalCountNo, item.totalTimesName);
-                    self.itemsSwap().push(param);
-                });
+                if(lstSet.length > 0){
+                     _.forEach(lstSet, function(item) {
+                        var param = new TotalSet(self.cateCode(), self.itemNo(), item.totalCountNo, item.totalTimesName);
+                        self.itemsSwap().push(param);
+                    }); 
+                }
                 dfd.resolve();
             });
             return dfd.promise();
