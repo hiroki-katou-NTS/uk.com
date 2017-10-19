@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalExeSettingInfor;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalExeSettingInfor;
  *
  */
 @Getter
+@AllArgsConstructor
 public class CaseSpecExeContent extends AggregateRoot {
 
 	/**
