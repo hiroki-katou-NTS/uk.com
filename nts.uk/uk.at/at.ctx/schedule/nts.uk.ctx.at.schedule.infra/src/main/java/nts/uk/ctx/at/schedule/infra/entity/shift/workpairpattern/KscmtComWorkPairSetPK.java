@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.rank;
+package nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern;
 
 import java.io.Serializable;
 
@@ -16,11 +16,19 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtRankPk implements Serializable {
+public class KscmtComWorkPairSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "RANK_CD")
-	public String rankCode;
+	@Column(name = "GROUP_NO")
+	public int groupNo;
+
+	@Column(name = "PATTERN_NO")
+	public int patternNo;
+	
+	@Column(name = "PAIR_NO")
+	public int pairNo;
+
 }

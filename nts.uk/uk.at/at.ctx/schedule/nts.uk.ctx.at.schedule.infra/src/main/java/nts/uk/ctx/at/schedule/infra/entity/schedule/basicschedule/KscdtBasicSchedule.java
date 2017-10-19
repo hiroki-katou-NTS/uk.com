@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
+ * 勤務予定基本情報
  * 
  * @author sonnh1
  *
@@ -32,6 +33,12 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 
 	@Column(name = "WORKTIME_CD")
 	public String workTimeCode;
+
+	@Column(name = "CONFIRMED_ATR")
+	public int confirmedAtr;
+
+	@Column(name = "WORKING_DAY_ATR")
+	public int workingDayAtr;
 
 	@Override
 	protected Object getKey() {

@@ -9,7 +9,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * ランク設定
+ * @author sonnh1
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -23,8 +27,7 @@ public class KscstRankSet extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return kscstRankSetPk;
+		return this.kscstRankSetPk;
 	}
 
 }

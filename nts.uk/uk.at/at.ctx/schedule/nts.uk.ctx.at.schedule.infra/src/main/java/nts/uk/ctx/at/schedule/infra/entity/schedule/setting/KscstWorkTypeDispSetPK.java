@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.rank.ranksetting;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.setting;
 
 import java.io.Serializable;
 
@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author sonnh1
@@ -15,12 +16,14 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstRankSetPk implements Serializable {
+public class KscstWorkTypeDispSetPK implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "RANK_CD")
-	public String rankCode;
+	@Column(name = "CID")
+	public String companyId;
 
-	@Column(name = "SID")
-	public String sId;
+	@Column(name = "WORKTYPE_CD")
+	public String workTypeCode;
+
 }

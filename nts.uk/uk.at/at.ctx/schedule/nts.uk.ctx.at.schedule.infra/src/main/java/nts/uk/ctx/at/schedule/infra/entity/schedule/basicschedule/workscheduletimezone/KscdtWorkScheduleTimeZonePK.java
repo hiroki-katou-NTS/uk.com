@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone;
 
 import java.io.Serializable;
 
@@ -7,23 +7,27 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
  * @author sonnh1
  *
  */
-@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstTeamSetPK implements Serializable {
+@Embeddable
+public class KscdtWorkScheduleTimeZonePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "SID")
 	public String sId;
-	
-	@Column(name = "WKP_ID")
-	public String workPlaceId;
+
+	@Column(name = "YMD")
+	public GeneralDate date;
+
+	@Column(name = "SCHEDULE_CNT")
+	public int scheduleCnt;
 
 }

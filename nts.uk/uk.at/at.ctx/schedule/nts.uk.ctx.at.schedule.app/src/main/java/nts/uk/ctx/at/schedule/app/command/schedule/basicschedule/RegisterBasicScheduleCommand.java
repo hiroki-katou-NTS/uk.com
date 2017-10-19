@@ -14,4 +14,6 @@ public class RegisterBasicScheduleCommand {
 	private GeneralDate date;
 	private String workTypeCode;
 	private String workTimeCode;
+	private int confirmedAtr;
+	private int workDayAtr;
 }
