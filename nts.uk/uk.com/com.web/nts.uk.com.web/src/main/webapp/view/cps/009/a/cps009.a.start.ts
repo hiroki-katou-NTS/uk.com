@@ -8,16 +8,6 @@ module nts.uk.com.view.cps009.a {
         var screenModel = new viewmodel.ViewModel();
 
         __viewContext["viewModel"] = screenModel;
-        init();
         __viewContext.bind(__viewContext["viewModel"]);
     });
-}
-
-function init() {
-    let array = Array.prototype.slice.call(document.getElementById("grid").getElementsByTagName("td"));
-    for (let i in array) {
-        console.log(i);
-    }
-
-
 }

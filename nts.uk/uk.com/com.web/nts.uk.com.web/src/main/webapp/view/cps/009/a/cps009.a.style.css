@@ -15,11 +15,11 @@
 }
 
 .requiredCell {
-	background-color: #FAEC82;
+	background-color: #FFC000;
 }
 
 .notrequiredCell {
-	background-color: rgb(151, 209, 85);
+	background-color: #C7F391;
 }
 
 .input-units {

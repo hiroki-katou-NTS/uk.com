@@ -7,6 +7,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
         initValSettingLst: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -25,7 +27,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this;
 
             self.initValue();
-            self.start();
+            self.start(undefined);
 
             self.initSettingId.subscribe(function(value: string) {
                 service.getAllCtg(value).done((data: any) => {
@@ -76,15 +78,23 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         }
 
-        start(): JQueryPromise<any> {
+        start(id: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            service.getAll().done((data: Array<any>) => {
+            service.getAll().done((data: Array<IPerInfoInitValueSettingDto>) => {
                 if (data.length > 0) {
                     self.isUpdate = true;
                     self.initValSettingLst.removeAll();
                     self.initValSettingLst(data);
-                    self.initSettingId(self.initValSettingLst()[0].settingId);
+                    if (id === undefined) {
+                        if (self.initValSettingLst().length > 0) {
+                            self.initSettingId(self.initValSettingLst()[0].settingId);
+                        }else{
+                             self.initSettingId("");
+                        }
+                    } else {
+                        self.initSettingId(id);
+                    }
 
                 } else {
                     self.isUpdate = false;
@@ -102,7 +112,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             service.getAll().done((data: Array<any>) => {
                 self.initValSettingLst.removeAll();
                 self.initValSettingLst(data);
-                self.initSettingId(self.initValSettingLst()[0].settingId);
+                if (self.initValSettingLst().length > 0) {
+                    self.initSettingId(self.initValSettingLst()[0].settingId);
+                } else {
+                    self.initSettingId("");
+
+                }
 
             });;
         }
@@ -137,24 +152,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         }
 
-        //delete
-
-        deleteInitValue() {
-            let self = this;
-
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
-
-            }).ifCancel(function() {
-
-            })
-
-        }
-
         // thiet lap item hang loat
         openBDialog() {
 
             let self = this,
-                PARAMS = { categoryId : self.currentCategory().currentItemId()};
+                PARAMS = { categoryId: self.currentCategory().currentItemId() };
             console.log(PARAMS);
 
             setShared('categoryInfo', self.currentCategory());
@@ -188,14 +190,56 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this;
 
-            setShared('categoryInfo', self.currentCategory());
+            //setShared('categoryInfo', self.currentCategory());
 
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.start();
+                self.start(undefined);
                 block.clear();
             });
+
+        }
+
+        //delete init value
+
+        deleteInitValue() {
+
+            let self = this,
+                objDelete = {
+                    settingId: self.initSettingId(),
+                    settingCode: self.currentCategory().settingCode()
+                };
+
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deleteInitVal(objDelete).done(function(data) {
+                    dialog.info({ messageId: "Msg_16" }).then(function() {
+                        var sourceLength = self.initValSettingLst().length;
+                        var i = _.findIndex(self.initValSettingLst(), function(init: IPerInfoInitValueSettingDto) { return init.settingId === self.initSettingId(); });
+                        var evens = _.remove(self.initValSettingLst(), function(init: IPerInfoInitValueSettingDto) {
+                            return init.settingId !== self.initSettingId();
+                        });
+                        var newLength = evens.length;
+
+                        if (newLength > 0) {
+                            if (i === (sourceLength - 1)) {
+                                i = newLength - 1;
+                            }
+
+                            self.start(evens[i].settingId);
+                        } else {
+                            self.start(undefined);
+
+                        }
+
+                        close();
+                    });
+                })
+            }).ifNo(() => {
+                return;
+            })
+
+
 
         }
     }
@@ -435,5 +479,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
     }
 
+    export interface IPerInfoInitValueSettingDto {
+        companyId?: string;
+        settingId: string;
+        settingCode: string;
+        settingName: string;
+
+    }
 
 }

@@ -12,6 +12,8 @@
 					nts.uk.shr.com.time.TimeWithDayAttr
 					nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
 					nts.uk.shr.com.primitive.sample.ResidenceCode
+					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingCode
+					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingName
 					
    			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
@@ -25,7 +27,7 @@
 				<button id="A1_001" tabindex="1" data-bind="click: openDDialog">#{i18n.getText('CPS009_3')}</button>
 				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS009_4')}</button>
 				<button id="A1_003" data-bind="click: openCDialog" tabindex="3">#{i18n.getText('CPS009_5')}</button>
-				<button id="A1_004" class="danger" tabindex="4">#{i18n.getText('CPS009_6')}</button>
+				<button id="A1_004" class="danger" data-bind="click: deleteInitValue" tabindex="4">#{i18n.getText('CPS009_6')}</button>
 				<div class='float-right'>
 					<a class='goout' data-bind="ntsLinkButton: {}" tabindex="5">#{i18n.getText('CPS009_7')}</a>
 				</div>
@@ -47,17 +49,19 @@
 					<div id="content-right">
 
 						<div>
-							<div data-bind="ntsFormLabel: {required: true}" class='distane'>
+							<div data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}" class='distane'>
 								<label>#{i18n.getText('CPS009_12')}</label>
 							</div>
 							<input id="ctgCode"
 								data-bind="ntsTextEditor: {
 								value: currentCategory().settingCode ,
+								constraint: 'ValueSettingCode',
 								enable: true,
 								immediate: false}"></input>
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
 								value: currentCategory().settingName ,
+								constraint: 'ValueSettingName',
 								enable: true,
 								immediate: false}"></input>
 						</div>
