@@ -11,7 +11,19 @@ public class EmployeeToDeleteDto {
 
 	private String name;
 
+	private String id;
+
 	public static EmployeeToDeleteDto fromDomain(Object[] obj) {
-		return new EmployeeToDeleteDto(obj[0].toString(), obj[1].toString());
+		if (obj.length == 2) {
+			return new EmployeeToDeleteDto(obj[0].toString(), obj[1].toString());
+		} else {
+			return new EmployeeToDeleteDto(obj[0].toString(), obj[1].toString(), obj[2].toString());
+		}
+	}
+
+	public EmployeeToDeleteDto(String code, String name) {
+		super();
+		this.code = code;
+		this.name = name;
 	}
 }

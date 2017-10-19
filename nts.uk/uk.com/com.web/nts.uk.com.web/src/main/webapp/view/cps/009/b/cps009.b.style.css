@@ -2,7 +2,6 @@
 	margin-bottom: 5px;
 }
 
-
 #itemLst {
 	margin-left: 13px;
 }
@@ -11,6 +10,16 @@
 	margin-left: 40px;
 }
 
-/* #grid_container {
-	margin-left: 5px !important;
-} */
+.requiredCell {
+	background-color: #FAEC82;
+}
+
+.notrequiredCell {
+	background-color: #CFF1A5;
+}
+
+.ui-iggrid table tr td {
+}
+#grid_B {
+	height: initial !important;
+}

@@ -36,5 +36,8 @@ public class PerInfoInitValSetCtg  extends AggregateRoot {
 	public static PerInfoInitValSetCtg createFromJavaType(String initValueSettingId, String initValueSettingCtgId) {
 		return new PerInfoInitValSetCtg(initValueSettingId, initValueSettingCtgId);
 	}
-
+	
+	public void updateInitSetId(String initValueSettingId){
+		this.initValueSettingId = initValueSettingId;
+	}
 }
