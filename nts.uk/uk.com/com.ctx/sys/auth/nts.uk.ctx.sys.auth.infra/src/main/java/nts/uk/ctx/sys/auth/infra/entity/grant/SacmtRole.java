@@ -30,19 +30,19 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 	@Column(name = "CID")
 	private String cid;
 
-	@Column(name = "CODE")
+	@Column(name = "ROLE_CODE")
 	private String code;
 
 	@Column(name = "ROLE_TYPE")
 	private Integer roleType;
 
-	@Column(name = "REFERENCE_RANGE")
+	@Column(name = "REF_RANGE")
 	private Integer referenceRange;
 
-	@Column(name = "NAME")
+	@Column(name = "ROLE_NAME")
 	private String name;
 
-	@Column(name = "CONTRACT_CODE")
+	@Column(name = "CONTRACT_CD")
 	private String contractCode;
 
 	@Column(name = "ASSIGN_ATR")
