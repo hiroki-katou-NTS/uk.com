@@ -53,16 +53,19 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             self.getAllTeam().done(() => {
                 if (self.listTeamDB().length == 0) {
                     self.openDialogLX();
-                } else {
-                    self.getAllTeamSetting().done(() => {
-                        // init selectTeam is first value
-                        self.selectedTeam(self.listTeamDB()[0].teamCode);
-                        dfd.resolve();
-                    }).fail(() => {
-                        dfd.reject();
-                    });
                 }
+                self.getAllTeamSetting().done(() => {
+                    // init selectTeam is first value
+                    if (self.listTeamDB().length > 0) {
+                        self.selectedTeam(self.listTeamDB()[0].teamCode);
+                    }
+                    dfd.resolve();
+                }).fail(() => {
+                    dfd.reject();
+                });
+
             });
+
             return dfd.promise();
         }
 
@@ -73,8 +76,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared("workPlaceId", self.workPlaceId);
             nts.uk.ui.windows.sub.modal("/view/ksu/001/lx/index.xhtml").onClosed(() => {
-                self.startPage().done();
-            });;
+                location.reload();
+            });
         }
         getListTeam(): JQueryPromise<any> {
             let self = this;
@@ -171,13 +174,13 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error.message);
-                    })
-
+                        nts.uk.ui.dialog.alertError(error.message).then(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                    });
                 }).then(function() {
                     nts.uk.ui.block.clear();
                 });
-
             } else {
                 service.addEmToTeam(data).done(function() {
                     self.getAllTeamSetting().done(function() {
@@ -185,15 +188,14 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     });
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
-                }).then(function() {
-                    nts.uk.ui.block.clear();
-                });
+                    nts.uk.ui.dialog.alertError(error.message).then(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }).then(() => { nts.uk.ui.block.clear(); });
             }
+
         }
-
     }
-
     class TeamModel {
         code: string;
         name: string;
