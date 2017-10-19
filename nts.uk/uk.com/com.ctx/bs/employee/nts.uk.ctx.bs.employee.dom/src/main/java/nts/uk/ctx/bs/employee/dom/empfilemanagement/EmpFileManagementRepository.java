@@ -13,6 +13,8 @@ public interface EmpFileManagementRepository {
 	
 	List<EmployeeFileManagement> getDataByParams(String employeeId, int fileType);
 	
+	boolean checkObjectExist(String employeeId, int fileType);
+	
 	Optional<EmployeeFileManagement> getEmpMana(String fileid);
 
 	List<Object> getListDocumentFile(String employeeId, int fileType);
