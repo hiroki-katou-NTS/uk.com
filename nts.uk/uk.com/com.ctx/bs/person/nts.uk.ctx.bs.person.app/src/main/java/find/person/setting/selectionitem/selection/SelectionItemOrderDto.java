@@ -19,11 +19,15 @@ public class SelectionItemOrderDto {
 	private int initSelection;
 	private String selectionName;
 	private String selectionCode;
+	private String externalCD;
+	private String memoSelection;
 
 	public static SelectionItemOrderDto fromSelectionOrder(SelectionItemOrder domain, Selection selectionDomain) {
 		return new SelectionItemOrderDto(domain.getSelectionID(), domain.getHistId(), domain.getDisporder().v(),
 				domain.getInitSelection().value,
 				selectionDomain != null ? selectionDomain.getSelectionName().v() : null,
-				selectionDomain != null ? selectionDomain.getSelectionCD().v() : null);
+				selectionDomain != null ? selectionDomain.getSelectionCD().v() : null,
+				selectionDomain != null ? selectionDomain.getExternalCD().v() : null,
+				selectionDomain != null ? selectionDomain.getMemoSelection().v() : null);
 	}
 }
