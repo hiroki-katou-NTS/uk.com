@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.rank;
+package nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * ランク
+ * 会社勤務ペアパターングループ
  * 
  * @author sonnh1
  *
@@ -20,22 +20,26 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_RANK")
-public class KscmtRank extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_COM_PATTERN")
+public class KscmtComPattern extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtRankPk kscmtRankPk;
+	public KscmtComPatternPK kscmtComPatternPk;
 
-	@Column(name = "RANK_MEMO")
-	public String rankMemo;
+	@Column(name = "GROUP_NAME")
+	public String groupName;
 
-	@Column(name = "DISPORDER")
-	public int displayOrder;
+	@Column(name = "GROUP_USAGE_ATR")
+	public int groupUsageAtr;
+
+	@Column(name = "NOTE")
+	public String note;
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtRankPk;
+		return this.kscmtComPatternPk;
 	}
+
 }

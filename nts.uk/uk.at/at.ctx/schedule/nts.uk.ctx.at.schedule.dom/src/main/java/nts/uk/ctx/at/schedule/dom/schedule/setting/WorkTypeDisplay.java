@@ -12,9 +12,8 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 @AllArgsConstructor
-public class DisplayableWorkTypeControl extends AggregateRoot {
+public class WorkTypeDisplay extends AggregateRoot {
 	private String companyId;
-	private String workTypeCode;
 	// 制御使用区分
-	private ControlUseCls controlUseCls;
+	private UseAtr useAtr;
 }

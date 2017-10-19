@@ -1,8 +1,7 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.rank;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.setting;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * ランク
+ * 表示可能勤務種類制御設定
  * 
  * @author sonnh1
  *
@@ -20,22 +19,17 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_RANK")
-public class KscmtRank extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_WORKTYPE_DISP_SET")
+public class KscstWorkTypeDispSet extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtRankPk kscmtRankPk;
-
-	@Column(name = "RANK_MEMO")
-	public String rankMemo;
-
-	@Column(name = "DISPORDER")
-	public int displayOrder;
+	public KscstWorkTypeDispSetPK kscstWorkTypeDispSetPk;
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtRankPk;
+		return this.kscstWorkTypeDispSetPk;
 	}
+
 }

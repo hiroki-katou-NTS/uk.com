@@ -527,7 +527,10 @@ module ksu001.a.viewmodel {
                         date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
                         employeeId: self.listSid()[arrCell[i].rowIndex],
                         workTimeCode: arrCell[i].value.workTimeCode,
-                        workTypeCode: arrCell[i].value.workTypeCode
+                        workTypeCode: arrCell[i].value.workTypeCode,
+                        //set static
+                        confirmedAtr: 0,
+                        workDayAtr: 0
                     }));
                 }
 
@@ -791,10 +794,10 @@ module ksu001.a.viewmodel {
          */
         openDialogD(): void {
             let self = this;
-            if(self.empItems().length != 0){
-                _.each(self.empItems(), (x) =>{
-                    
-                });    
+            if (self.empItems().length != 0) {
+                _.each(self.empItems(), (x) => {
+
+                });
             }
             setShared('dataForScreenD', {
                 empItems: self.empItems(),
@@ -907,7 +910,9 @@ module ksu001.a.viewmodel {
         date: string,
         employeeId: string,
         workTimeCode: string,
-        workTypeCode: string
+        workTypeCode: string,
+        confirmedAtr: number,
+        workDayAtr: number
     }
 
     class BasicSchedule {
@@ -915,12 +920,16 @@ module ksu001.a.viewmodel {
         employeeId: string;
         workTimeCode: string;
         workTypeCode: string;
+        confirmedAtr: number;
+        workDayAtr: number;
 
         constructor(params: IBasicSchedule) {
             this.date = params.date;
             this.employeeId = params.employeeId;
             this.workTimeCode = params.workTimeCode;
             this.workTypeCode = params.workTypeCode;
+            this.confirmedAtr = params.confirmedAtr;
+            this.workDayAtr = params.workDayAtr;
         }
     }
 

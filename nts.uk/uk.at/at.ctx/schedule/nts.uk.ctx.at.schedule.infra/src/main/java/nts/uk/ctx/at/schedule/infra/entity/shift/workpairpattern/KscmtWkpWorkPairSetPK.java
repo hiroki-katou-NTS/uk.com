@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting;
+package nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern;
 
 import java.io.Serializable;
 
@@ -16,14 +16,20 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstTeamSetPK implements Serializable {
+public class KscmtWkpWorkPairSetPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	@Column(name = "SID")
-	public String sId;
-	
+
 	@Column(name = "WKP_ID")
-	public String workPlaceId;
+	public String workplaceId;
+
+	@Column(name = "GROUP_NO")
+	public int groupNo;
+
+	@Column(name = "PATTERN_NO")
+	public int patternNo;
+
+	@Column(name = "PAIR_NO")
+	public int pairNo;
 
 }

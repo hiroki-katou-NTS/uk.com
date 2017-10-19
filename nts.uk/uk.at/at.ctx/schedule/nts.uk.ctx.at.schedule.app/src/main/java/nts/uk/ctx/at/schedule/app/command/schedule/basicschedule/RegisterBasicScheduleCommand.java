@@ -29,6 +29,8 @@ public class RegisterBasicScheduleCommand{
 	private GeneralDate date;
 	private String workTypeCode;
 	private String workTimeCode;
+	private int confirmedAtr;
+	private int workDayAtr;
 	
 	/**
 	 * To domain.
@@ -70,7 +72,7 @@ public class RegisterBasicScheduleCommand{
 			
 			@Override
 			public WorkdayDivision getWorkDayAtr() {
-				return null;
+				return WorkdayDivision.valuesOf(workDayAtr);
 			}
 			
 			@Override
@@ -85,7 +87,7 @@ public class RegisterBasicScheduleCommand{
 			
 			@Override
 			public ConfirmedAtr getConfirmedAtr() {
-				return ConfirmedAtr.CONFIRMED;
+				return ConfirmedAtr.valueOf(confirmedAtr);
 			}
 		});
 	}

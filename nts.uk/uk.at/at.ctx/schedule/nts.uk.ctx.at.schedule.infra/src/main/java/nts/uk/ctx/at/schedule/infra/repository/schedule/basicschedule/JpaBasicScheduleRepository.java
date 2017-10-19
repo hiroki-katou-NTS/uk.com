@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
@@ -40,9 +41,24 @@ import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfe
 @Stateless
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
 
+	/**
+	 * Convert Entity to Domain
+	 * 
+	 * @param entity
+	 * @return
+	 */
+//	private static BasicSchedule toDomain(KscdtBasicSchedule entity) {
+//		val domain = BasicSchedule.createFromJavaType(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
+//				entity.workTypeCode, entity.workTimeCode, entity.confirmedAtr, entity.workingDayAtr);
+//		return domain;
+//	}
 
+	/**
+	 * Insert data to Basic Schedule
+=======
 	/*
 	 * (non-Javadoc)
+>>>>>>> 9d7baa317ab83506ede32cd2a93f55de59389167
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
@@ -230,6 +246,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			entity = optionalEntity.get();
 		}
 		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
+		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
+				|| ("000").equals(domain.getWorkTimeCode()) ? "   " : domain.getWorkTimeCode();
+		
 		return entity;
 	}
 
