@@ -183,7 +183,7 @@
                                  <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div>
                               </td>
                               <td>
-                                 <div tabindex="10" style="width: 100px"
+                                 <div tabindex="10" style="width: 20px"
                                     data-bind="ntsComboBox: {
                                     name: '#[KMK002_24]',
                                     options: atrDataSource,
@@ -193,7 +193,7 @@
                                     editable: false,
                                     enable: isUsed,
                                     columns: [
-                                    { prop: 'localizedName', length: 10 },
+                                    { prop: 'localizedName', length: 1 },
                                     ]}">
                                  </div>
                               </td>
@@ -220,17 +220,17 @@
                         <!-- Optional Item formula view model -->
                         <table id="tbl-calc-formula" data-bind="name: '#[KMK002_32]'">
                            <colgroup>
-                              <col width="50px"/>
-                              <col width="50px"/>
-                              <col width="200px"/>
-                              <col width="200px"/>
-                              <col width="600px"/>
                               <col width="35px"/>
-                              <col width="200px"/>
+                              <col width="50px"/>
+                              <col width="60px"/>
+                              <col width="190px"/>
+                              <col width="191px"/>
+                              <col width="35px"/>
+                              <col width="190px"/>
                               <col width="100px"/>
+                              <col width="150px"/>
                               <col width="100px"/>
-                              <col width="100px"/>
-                              <col width="100px"/>
+                              <col width="150px"/>
                            </colgroup>
                            <thead>
                               <tr>
@@ -259,7 +259,7 @@
                                           enable: $parent.isUsed,
                                           text: '' }"></div>
                                     </td>
-                                    <td data-bind="text: symbolValue"></td>
+                                    <td style="text-align: right" data-bind="text: symbolValue"></td>
                                     <td>
                                        <div data-bind="ntsComboBox: {
                                           name: '#[KMK002_24]',

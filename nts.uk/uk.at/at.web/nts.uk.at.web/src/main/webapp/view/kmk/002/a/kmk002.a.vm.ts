@@ -33,6 +33,9 @@ module nts.uk.at.view.kmk002.a {
                 // init formula sorter.
                 FormulaSorter.initSorter();
 
+                // set ntsFixedTable style
+                $("#tbl-calc-formula").ntsFixedTable({ height: 300 });
+
                 // Load data.
                 self.loadEnum()
                     .done(() => {
@@ -560,7 +563,7 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
                 if (self.isInUse()) {
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_113' });
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_113' });
                     // TODO:
                     // 警告メッセージ(Msg_113,削除する行の記号,使用している行の記号)を表示する
                     // (Hiển thị message cảnh báo (Msg_113, ký hiệu của dòng xóa, ký hiệu của dòng đang sử dụng))
