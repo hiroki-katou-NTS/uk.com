@@ -2,9 +2,11 @@ package nts.uk.ctx.bs.employee.dom.empfilemanagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class EmployeeFileManagement extends AggregateRoot{
 	

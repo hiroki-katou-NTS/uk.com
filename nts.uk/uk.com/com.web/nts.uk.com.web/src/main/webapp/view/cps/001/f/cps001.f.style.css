@@ -1,3 +1,8 @@
 #contents-area {
 	height: auto !important;
 }
+
+.uploadfile {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
