@@ -55,6 +55,7 @@ module nts.uk.com.view.cdl002.a {
              * Close dialog.
              */
             closeDialog(): void {
+                setShared('CDL002Cancel', true);
                 nts.uk.ui.windows.close();
             }
 
