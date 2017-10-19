@@ -8,15 +8,7 @@ module nts.uk.com.view.cps009.c.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
-
-        
-        currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue(
-            {
-                id: "",
-                itemCode: "",
-                itemName: ""
-            }));
-
+        currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue("", "", "" ));
         isCopy: KnockoutObservable<boolean> = ko.observable(false);
         codeCtg: KnockoutObservable<string> = ko.observable('001');
         nameCtg: KnockoutObservable<string> = ko.observable('Category');
@@ -24,10 +16,10 @@ module nts.uk.com.view.cps009.c.viewmodel {
         nameInput: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let param = getShared('CPS009C_PARAM') || {id: '', code: '', name: ''};
+            
         }
 
         copyInitValue() {
-
             let self = this,
                 copyObj = {
                     isCopy: self.isCopy(),
@@ -35,28 +27,19 @@ module nts.uk.com.view.cps009.c.viewmodel {
                     itemName: self.currentInitVal().itemName()
                 }
             console.log(copyObj)
-            close();
-
+            service.copyInitValue(copyObj).done(function(){
+                nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                    //close dialog
+                    close();
+                });
+            }).fail(function(res){
+                
+            });
         }
 
         cancelCopyInitValue() {
-
             close();
         }
-
-
-
-
-    }
-
-    export interface IItemInitValue {
-
-        id: string;
-
-        itemCode: string;
-
-        itemName: string;
-
     }
 
     export class ItemInitValue {
@@ -67,29 +50,17 @@ module nts.uk.com.view.cps009.c.viewmodel {
 
         itemName: KnockoutObservable<string>;
 
-        constructor(params: IItemInitValue) {
+        constructor(id: string, itemCode: string,itemName: string) {
 
             let self = this;
 
-            self.id = ko.observable(params.id || "");
+            self.id = ko.observable(id);
 
-            self.itemCode = ko.observable(params.itemCode || "");
+            self.itemCode = ko.observable(itemCode);
 
-            self.itemName = ko.observable(params.itemName || "");
+            self.itemName = ko.observable(itemName);
 
         }
-
-        setData(params: any) {
-
-            let self = this;
-
-            self.id(params.id || "");
-
-            self.itemCode(params.itemCode || "");
-
-            self.itemName(params.itemName || "");
-        }
-
     }
     export class DataCopy{
         id: string;

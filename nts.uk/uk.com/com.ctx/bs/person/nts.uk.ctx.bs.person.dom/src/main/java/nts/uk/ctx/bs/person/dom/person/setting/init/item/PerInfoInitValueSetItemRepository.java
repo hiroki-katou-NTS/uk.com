@@ -47,4 +47,15 @@ public interface PerInfoInitValueSetItemRepository {
 	 */
 	boolean isExist(String perInfoCtgId);
 
+	/**
+	 * delete all item by settingId
+	 * @param settingId
+	 */
+	void deleteAllBySetId(String settingId);
+	
+	/**
+	 * add all list item
+	 * @param lstItem
+	 */
+	void addAllItem(List<PerInfoInitValueSetItem> lstItem);
 }

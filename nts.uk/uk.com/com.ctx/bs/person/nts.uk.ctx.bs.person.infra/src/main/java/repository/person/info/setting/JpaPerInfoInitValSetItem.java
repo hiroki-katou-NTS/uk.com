@@ -1,10 +1,13 @@
 package repository.person.info.setting;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingCtg;
+import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingCtgPk;
 import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItem;
 import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItemPk;
 import nts.arc.enums.EnumAdaptor;
@@ -12,6 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
+import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
@@ -37,6 +41,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
+	
+	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
+			+ " WHERE c.settingItemPk.settingId =:settingId";
 
 	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
@@ -151,4 +158,38 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 				.getList(c -> toDomain(c));
 	}
 
+		//hoatt
+		@Override
+		public void deleteAllBySetId(String settingId) {
+			this.getEntityManager().createQuery(DELETE_ALL_ITEM_BY_ID)
+			.setParameter("settingId", settingId)
+			.executeUpdate();
+		}
+
+		@Override
+		public void addAllItem(List<PerInfoInitValueSetItem> lstItem) {
+			List<PpemtPersonInitValueSettingItem> lstEntity = new ArrayList<>();
+			for (PerInfoInitValueSetItem perSetItem : lstItem) {
+				lstEntity.add(toEntity(perSetItem));
+			}
+			this.commandProxy().insertAll(lstEntity);
+		}
+		/**
+		 * convert from domain PerInfoInitValueSetItem to entity PpemtPersonInitValueSettingItem
+		 * @param domain
+		 * @return
+		 */
+		private static PpemtPersonInitValueSettingItem toEntity(PerInfoInitValueSetItem domain) {
+			PpemtPersonInitValueSettingItem entity = new PpemtPersonInitValueSettingItem();
+			entity.settingItemPk = new PpemtPersonInitValueSettingItemPk(domain.getPerInfoItemDefId(),
+					domain.getPerInfoCtgId(),					
+					domain.getSettingId());
+			entity.refMethodAtr = domain.getRefMethodType().value;
+			entity.saveDataType = domain.getSaveDataType().value;
+			entity.stringValue = domain.getStringValue().v();
+			entity.intValue = domain.getIntValue().v().intValue();
+			entity.dateValue = domain.getDateValue().toString();
+			return entity;
+
+		}
 }

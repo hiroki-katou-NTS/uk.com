@@ -72,6 +72,10 @@ public interface PerInfoInitValSetCtgRepository {
 	 */
 	void delete(String settingId);
 	
-	
+	/**
+	 * add All list category
+	 * @param lstCtg
+	 */
+	void addAllCtg(List<PerInfoInitValSetCtg> lstCtg);
 
 }
