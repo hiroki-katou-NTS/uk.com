@@ -1,5 +1,6 @@
 package repository.person.info.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,6 +121,16 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 		this.getEntityManager().createQuery(DELETE_BY_SETTING_ID).setParameter("settingId", settingId).executeUpdate();
 		this.getEntityManager().flush();
 
+	}
+
+	//hoatt
+	@Override
+	public void addAllCtg(List<PerInfoInitValSetCtg> lstCtg) {
+		List<PpemtPersonInitValueSettingCtg> lstEntity = new ArrayList<>();
+		for (PerInfoInitValSetCtg perSetCtg : lstCtg) {
+			lstEntity.add(toEntity(perSetCtg));
+		}
+		this.commandProxy().insertAll(lstEntity);
 	}
 
 }

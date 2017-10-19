@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
 
@@ -21,6 +22,8 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 
 	@Override
 	protected void handle(CommandHandlerContext<AddEmpDocumentFileCommand> context) {
+
+
 		AddEmpDocumentFileCommand commad = context.getCommand();
 
 		List<EmployeeFileManagement> listEmpfile = empFileManagementRepo.getDataByParams(commad.getSid(), 2);
@@ -28,9 +31,13 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 		Optional<EmployeeFileManagement> empFileMana = empFileManagementRepo.getEmpMana(commad.getFileid());
 		if (empFileMana.isPresent()) {
 			// update
+			EmployeeFileManagement domain = empFileMana.get();
+			domain.setFileID(commad.getFileid());
+			domain.setPersonInfoCategoryId("");
 			
 		}else {
 			// insert
+			EmployeeFileManagement domain = new EmployeeFileManagement(commad.getSid(), commad.getFileid(),2,0,"");
 			
 		}
 	}

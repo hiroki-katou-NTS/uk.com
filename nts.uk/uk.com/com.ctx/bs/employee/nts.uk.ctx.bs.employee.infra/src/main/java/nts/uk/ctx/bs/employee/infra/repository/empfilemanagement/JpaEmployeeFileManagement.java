@@ -109,9 +109,11 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		EmployeeFileManagement empFileMana = new EmployeeFileManagement();
 		if (entity != null) {
 			empFileMana = toDomainEmpFileManagement(entity);
+			return Optional.of(empFileMana);
 
+		} else {
+			return Optional.empty();
 		}
-		return Optional.of(empFileMana);
 	}
 
 

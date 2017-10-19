@@ -19,7 +19,21 @@
 }
 
 .notrequiredCell {
-	background-color: #CFF1A5;
+	background-color: rgb(151, 209, 85);
+}
+
+.input-units {
+	width: 200px !important;
+}
+
+.sub-input-units{
+	width: 161px !important;
+	margin-left: 3px !important;
+	margin-right: 3px !important;
+	
+}
+.nts-datepicker-wrapper .ntsDatepicker {
+	width: 161px !important;
 }
 
 #content-right {
@@ -82,16 +96,6 @@ input.ntsSearchBox {
 	margin-left: 220px;
 }
 
-/* .item td {
-    border: 1px solid #CCC;
-    text-align: center;
-    height: 20px;
-}
-.item{
-	
-	margin-top: 10px;
-}
- */
 #grid {
 	margin-top: 20px !important;
 }
@@ -110,15 +114,40 @@ tr {
 	height: 10px;
 }
 
-#combo-box{
+table.grid tbody {
+    height: 350px;   
+    overflow-y: auto;   
+    overflow-x: hidden; 
+    border: 1px solid #CCC;
+}
+
+#combo-box {
 	width: 100px;
 }
 
-.input-units{
-	
+.input-units {
 	width: 200px;
 }
 
+.ui-igcombo-buttonicon, .ui-igcombo-clearicon {
+	top: 27% !important;
+	margin-top: -8px !important;
+	position: inherit !important;
+}
+
+.value {
+	width: 200px !important;
+}
+
+#A2_012 {
+	margin-left: 0px;
+	width: 124px;
+}
+
+#help {
+	width: 30px;
+	margin-left: 5px;
+}
 /* #grid2__container {
 	margin-left: 20px !important;
 	margin-top: 20px !important;

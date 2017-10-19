@@ -1,6 +1,7 @@
 package repository.person.info.setting;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -36,7 +37,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND c.perInfoCtgId =:perInfoCtgId";
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
-			+ " c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
+			+ " WHERE c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
+	
+	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
+			+ " WHERE c.settingItemPk.settingId =:settingId";
 
 	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
@@ -47,12 +51,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setIsRequired(EnumAdaptor.valueOf(0, IsRequired.class));
 
 		domain.setRefMethodType(EnumAdaptor.valueOf(entity.refMethodAtr, ReferenceMethodType.class));
-		domain.setSaveDataType(EnumAdaptor.valueOf(entity.saveDataType, SaveDataType.class));
+		domain.setSaveDataType(entity.saveDataType == null ? null : EnumAdaptor.valueOf(entity.saveDataType, SaveDataType.class));
 
 		domain.setStringValue(new StringValue(entity.stringValue == null ? "" : entity.stringValue.toString()));
-		domain.setIntValue(new IntValue(new BigDecimal(entity.intValue)));
+		domain.setIntValue(entity.intValue == null ? null : new IntValue(new BigDecimal(entity.intValue)));
 
-		domain.setDateValue(GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
+		domain.setDateValue(entity.dateValue == null ? null : GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
 
 		return domain;
 
@@ -151,4 +155,38 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 				.getList(c -> toDomain(c));
 	}
 
+		//hoatt
+		@Override
+		public void deleteAllBySetId(String settingId) {
+			this.getEntityManager().createQuery(DELETE_ALL_ITEM_BY_ID)
+			.setParameter("settingId", settingId)
+			.executeUpdate();
+		}
+
+		@Override
+		public void addAllItem(List<PerInfoInitValueSetItem> lstItem) {
+			List<PpemtPersonInitValueSettingItem> lstEntity = new ArrayList<>();
+			for (PerInfoInitValueSetItem perSetItem : lstItem) {
+				lstEntity.add(toEntity(perSetItem));
+			}
+			this.commandProxy().insertAll(lstEntity);
+		}
+		/**
+		 * convert from domain PerInfoInitValueSetItem to entity PpemtPersonInitValueSettingItem
+		 * @param domain
+		 * @return
+		 */
+		private static PpemtPersonInitValueSettingItem toEntity(PerInfoInitValueSetItem domain) {
+			PpemtPersonInitValueSettingItem entity = new PpemtPersonInitValueSettingItem();
+			entity.settingItemPk = new PpemtPersonInitValueSettingItemPk(domain.getPerInfoItemDefId(),
+					domain.getPerInfoCtgId(),					
+					domain.getSettingId());
+			entity.refMethodAtr = domain.getRefMethodType().value;
+			entity.saveDataType = domain.getSaveDataType() == null ? null : domain.getSaveDataType().value;
+			entity.stringValue = domain.getStringValue() == null ? null : domain.getStringValue().v();
+			entity.intValue = domain.getIntValue() == null ? null : domain.getIntValue().v().intValue();
+			entity.dateValue = domain.getDateValue() == null ? null : domain.getDateValue().toString();
+			return entity;
+
+		}
 }
