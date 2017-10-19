@@ -122,7 +122,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	private ScWorkplaceAdapter scWorkplaceAdapter;
 	
 	
-	/** The workplace basic work repository. */
+	/** The work place basic work repository. */
 	@Inject
 	private WorkplaceBasicWorkRepository workplaceBasicWorkRepository;
 	
@@ -274,6 +274,11 @@ public class ScheduleCreatorExecutionCommandHandler
 			ScheduleExecutionLogInfoDto dto = this.finder.findInfoById(scheduleExecutionLog.getExecutionId());
 			setter.updateData(SUCCESS_CNT, dto.getTotalNumberCreated());
 			setter.updateData(FAIL_CNT, dto.getTotalNumberError());
+			//insert basic schedule
+			BasicScheduleSaveCommand command = new BasicScheduleSaveCommand();
+			command.setConfirmedAtr(this.getConfirmedAtr(true, ConfirmedAtr.CONFIRMED).value);
+
+			this.saveBasicSchedule(this.toCommandSave(command, domain.getEmployeeId(), "001", "001"));
 		});
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 	}
@@ -377,10 +382,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	
 	/**
-	 * Gets the worktype.
+	 * Gets the work type.
 	 *
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 * @return the worktype
+	 * @return the work type
 	 */
 	// 勤務種類を取得する
 	private void getWorktype(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
@@ -412,10 +417,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the worktype code.
+	 * Gets the work type code.
 	 *
 	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 * @return the worktype code
+	 * @return the work type code
 	 */
 	// 在職状態に対応する「勤務種類コード」を取得する
 	private Optional<String> getWorktypeCode(PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
@@ -453,7 +458,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Convert worktype code by working status.
+	 * Convert work type code by working status.
 	 *
 	 * @return the string
 	 */
@@ -481,7 +486,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (optionalWorkplace.isPresent()) {
 				WorkplaceDto workplaceDto = optionalWorkplace.get();
 				
-				List<String> workplaceIds = this.findLelvelWorkplace(workplaceDto.getWorkplaceId());
+				List<String> workplaceIds = this.findLevelWorkplace(workplaceDto.getWorkplaceId());
 
 				return this.getWorkdayDivisionByWkp(personalWorkScheduleCreSet.getEmployeeId(), workplaceIds);
 			} else {
@@ -518,7 +523,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (optionalWorkplace.isPresent()) {
 				WorkplaceDto workplaceDto = optionalWorkplace.get();
 
-				List<String> workplaceIds = this.findLelvelWorkplace(workplaceDto.getWorkplaceId());
+				List<String> workplaceIds = this.findLevelWorkplace(workplaceDto.getWorkplaceId());
 
 				return this.getBasicWorkSetting(workplaceIds, workdayDivision);
 
@@ -602,13 +607,13 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 		
 	/**
-	 * Find lelvel workplace.
+	 * Find level work place.
 	 *
-	 * @param workplaceId the workplace id
+	 * @param workplaceId the work place id
 	 * @return the list
 	 */
 	// 所属職場を含む上位職場を取得
-	private List<String> findLelvelWorkplace(String workplaceId) {
+	private List<String> findLevelWorkplace(String workplaceId) {
 		return this.scWorkplaceAdapter.findWpkIdList(companyId, workplaceId, toDate);
 	}
 	
@@ -622,7 +627,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWkpIds(String workplaceId,
 			int workDayAtr) {
-		List<String> workplaceIds = this.findLelvelWorkplace(workplaceId);
+		List<String> workplaceIds = this.findLevelWorkplace(workplaceId);
 
 		// loop work place id
 		for (String wkpId : workplaceIds) {
@@ -972,17 +977,34 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the schedule determination atr.
+	 * Gets the confirmed atr.
 	 *
-	 * @return the schedule determination atr
+	 * @param isConfirmContent the is confirm content
+	 * @param confirmedAtr the confirmed atr
+	 * @return the confirmed atr
 	 */
 	// 予定確定区分を取得
-	private void getScheduleDeterminationAtr(boolean isConfirm){
-		if (isConfirm) {
-			
+	private ConfirmedAtr getConfirmedAtr(boolean isConfirmContent, ConfirmedAtr confirmedAtr) {
+		if (isConfirmContent) {
+			return ConfirmedAtr.CONFIRMED;
 		} else {
-
+			return confirmedAtr;
 		}
+	}
+	
+	/**
+	 * To command save.
+	 *
+	 * @param worktypeCode the worktype code
+	 * @return the basic schedule save command
+	 */
+	private BasicScheduleSaveCommand toCommandSave(BasicScheduleSaveCommand command, String employeeId,
+			String worktypeCode, String worktimeCode) {
+		command.setWorktypeCode(worktypeCode);
+		command.setEmployeeId(employeeId);
+		command.setWorktimeCode(worktimeCode);
+		command.setYmd(GeneralDate.today());
+		return command;
 	}
 	
 	/**
@@ -991,8 +1013,14 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param command the command
 	 */
 	// 勤務予定情報を登録する
-	private void saveBasicSchedule(BasicScheduleSaveCommand command){
-		this.basicScheduleRepository.insert(command.toDomain());
+	private void saveBasicSchedule(BasicScheduleSaveCommand command) {
+		Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
+				command.getYmd());
+		if (optionalBasicSchedule.isPresent()) {
+			this.basicScheduleRepository.update(command.toDomain());
+		} else {
+			this.basicScheduleRepository.insert(command.toDomain());
+		}
 	}
 
 }
