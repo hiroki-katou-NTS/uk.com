@@ -350,7 +350,7 @@ module nts.uk.at.view.kmk002.a {
                 f.orderNo = order;
 
                 // Set symbol
-                f.symbolValue = 'a';
+                f.symbolValue = 'A';
                 let lastSymbol = self.getLastSymbol();
                 if (lastSymbol) {
                     f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
@@ -757,7 +757,7 @@ module nts.uk.at.view.kmk002.a {
                 };
 
                 // find the last symbol.
-                let lastSymbol = 'a';
+                let lastSymbol = 'A';
                 self.calcFormulas().forEach(item => {
                     // Check two string's length first
                     // Because z > aa using localeCompare
@@ -1486,6 +1486,9 @@ module nts.uk.at.view.kmk002.a {
                 // set result
                 result = leftItem + ' ' + operator + ' ' + rightItem;
                 self.settingResult(result);
+
+                // clear error
+                $('#settingResult' + (self.orderNo - 1)).ntsEditor('validate');
             }
 
             /**
@@ -1604,12 +1607,12 @@ module nts.uk.at.view.kmk002.a {
                 let arr = new Array<Sorter>();
                 let order = 1;
 
-                for (let i = 97; i <= 122; i++) {
+                for (let i = 65; i <= 90; i++) {
                     arr.push({ order: order, value: String.fromCharCode(i) });
                     order++;
                 }
 
-                for (let i = 97; i <= 122; i++) {
+                for (let i = 65; i <= 90; i++) {
                     for (let j = 97; j <= 122; j++) {
                         arr.push({ order: order, value: String.fromCharCode(i) + String.fromCharCode(j) });
                         order++;
