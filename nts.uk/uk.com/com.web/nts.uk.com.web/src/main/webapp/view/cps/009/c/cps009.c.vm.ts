@@ -22,9 +22,10 @@ module nts.uk.com.view.cps009.c.viewmodel {
         copyInitValue() {
             let self = this,
                 copyObj = {
-                    isCopy: self.isCopy(),
-                    itemCode: self.currentInitVal().itemCode(),
-                    itemName: self.currentInitVal().itemName()
+                    idSource: '744926ab-6aaa-4e73-a047-034dcaf359dd',
+                    overWrite: self.isCopy(),
+                    codeInput: self.currentInitVal().itemCode(),
+                    nameInput: self.currentInitVal().itemName()
                 }
             console.log(copyObj)
             service.copyInitValue(copyObj).done(function(){
@@ -33,7 +34,8 @@ module nts.uk.com.view.cps009.c.viewmodel {
                     close();
                 });
             }).fail(function(res){
-                
+                //display message error.
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId});
             });
         }
 

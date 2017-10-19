@@ -1,9 +1,9 @@
-package command.person.setting.init.category;
+package command.person.setting.init;
 
 import lombok.Value;
 
 @Value
-public class CopyInitValueSetCtgCommand {
+public class CopyInitValueSetCommand {
 
 	private String idSource;
 	private String codeInput;

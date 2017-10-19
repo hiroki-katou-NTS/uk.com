@@ -7,6 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import command.person.setting.init.CopyInitValueSetCommand;
+import command.person.setting.init.CopyInitValueSetCommandHandler;
 import command.person.setting.init.InsertInitValueSettingCommand;
 import command.person.setting.init.InsertInitValueSettingHandler;
 import find.person.setting.init.PerInfoInitValueSettingDto;
@@ -21,6 +23,9 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 
 	@Inject
 	private InsertInitValueSettingHandler add;
+
+	@Inject
+	private CopyInitValueSetCommandHandler copyInitValue;
 
 	@POST
 	@Path("findAll")
@@ -44,4 +49,10 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 
 	// sonnlb
 
+	//hoatt
+	@POST
+	@Path("copyInitValue")
+	public void copyInitValueCtg(CopyInitValueSetCommand command){
+		this.copyInitValue.handle(command);
+	}
 }

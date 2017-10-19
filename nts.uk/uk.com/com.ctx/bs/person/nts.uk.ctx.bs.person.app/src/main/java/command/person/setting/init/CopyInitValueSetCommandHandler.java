@@ -1,4 +1,4 @@
-package command.person.setting.init.category;
+package command.person.setting.init;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class CopyInitValueSetCtgCommandHandler extends CommandHandler<CopyInitValueSetCtgCommand> {
+public class CopyInitValueSetCommandHandler extends CommandHandler<CopyInitValueSetCommand> {
 	
 	@Inject
 	private PerInfoInitValueSettingRepository repoPerSet;
@@ -28,14 +28,17 @@ public class CopyInitValueSetCtgCommandHandler extends CommandHandler<CopyInitVa
 	@Inject
 	private PerInfoInitValueSetItemRepository repoPerSetItem;
 	@Override
-	protected void handle(CommandHandlerContext<CopyInitValueSetCtgCommand> context) {
+	protected void handle(CommandHandlerContext<CopyInitValueSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		CopyInitValueSetCtgCommand data = context.getCommand();
+		CopyInitValueSetCommand data = context.getCommand();
 		boolean checkOverWrite = data.isOverWrite();
 		String codeInput = data.getCodeInput();
 		String valueSetIdSource = data.getIdSource();
 		//複製元のドメインモデル「個人情報初期値設定」を取得する(Lấy Domain Model 「個人情報初期値設定」 của copy nguồn)
 		Optional<PerInfoInitValueSetting> perSet = repoPerSet.getDetailInitValSetting(valueSetIdSource);
+		if(!perSet.isPresent()){
+			throw new BusinessException("Loi");
+		}
 		//複製先のドメインモデル「個人情報初期値設定」を取得する (Lấy Domain Model ドメインモデル「個人情報初期値設定」 của copy đích)
 		Optional<PerInfoInitValueSetting> perSetInput = repoPerSet.getDetailInitValSetting(companyId, codeInput);
 		//複製先のドメインモデル「個人情報初期値設定」が存在するかチェックする (Kiểm tra Domain Model 「個人情報初期値設定」 của copy đích tồn tại hay không)
@@ -47,7 +50,7 @@ public class CopyInitValueSetCtgCommandHandler extends CommandHandler<CopyInitVa
 				throw new BusinessException("Msg_3");
 			}
 			//入力さたコードが複製元のコードと同じかチェックする (Kiểm tra Code nhập vào có giống Code của copy nguồn không)
-			if(codeInput.equals(perSet.get().getSettingCode())){
+			if(codeInput.equals(perSet.get().getSettingCode().toString())){
 				//エラーメッセージ（#Msg_355）を表示する (Hiển thị Error Message Msg_355)
 				throw new BusinessException("Msg_355");
 			}
@@ -65,23 +68,32 @@ public class CopyInitValueSetCtgCommandHandler extends CommandHandler<CopyInitVa
 		String initValueSettingId = IdentifierUtil.randomUniqueId();
 		PerInfoInitValueSetting perSetInsert = PerInfoInitValueSetting.createFromJavaType(initValueSettingId, companyId, codeInput, data.getNameInput());
 		//get all category by initValueSettingId
-		List<PerInfoInitValueSettingCtg> lstCtgCopy = repoPerSetCtg.getAllCategoryBySetId(valueSetIdSource);
+		List<PerInfoInitValSetCtg> lstCtg = repoPerSetCtg.getAllInitValueCtg(valueSetIdSource);
 		//get all item by initValueSettingId
+		List<PerInfoInitValueSetItem> lstItem = new ArrayList<>();
 		List<PerInfoInitValueSetItem> lstItemCopy = new ArrayList<>();
-		for (PerInfoInitValueSettingCtg perSetCtg : lstCtgCopy) {
-			List<PerInfoInitValueSetItem> lstItem = repoPerSetItem.getAllInitValueItem(perSetCtg.getPerInfoCtgId(), valueSetIdSource);
-			if(!lstItem.isEmpty()){
-				lstItemCopy.addAll(lstItem);
+		List<PerInfoInitValSetCtg> lstCtgCopy = new ArrayList<>();
+		for (PerInfoInitValSetCtg perSetCtg : lstCtg) {
+			perSetCtg.updateInitSetId(initValueSettingId);
+			lstCtgCopy.add(perSetCtg);
+			List<PerInfoInitValueSetItem> lstperSetItem = repoPerSetItem.getAllInitValueItem(perSetCtg.getPerInfoCtgId(), valueSetIdSource);
+			if(!lstperSetItem.isEmpty()){
+				lstItem.addAll(lstperSetItem);
 			}
 		}
 		//copy category -> per set new
 		if(!lstCtgCopy.isEmpty()){
-			
+			repoPerSetCtg.addAllCtg(lstCtgCopy);
 		}
 		//copy item -> per set new
-		
+		if(!lstItem.isEmpty()){
+			for (PerInfoInitValueSetItem perSetItem : lstItem) {
+				perSetItem.updateInitSetId(initValueSettingId);
+				lstItemCopy.add(perSetItem);
+			}
+			repoPerSetItem.addAllItem(lstItemCopy);
+		}
 		//insert per set new
 		repoPerSet.insert(perSetInsert);
 	}
-
 }

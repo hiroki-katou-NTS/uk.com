@@ -8,8 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import command.person.setting.init.category.CopyInitValueSetCtgCommand;
-import command.person.setting.init.category.CopyInitValueSetCtgCommandHandler;
 import find.person.setting.init.PerInfoInitValueSettingFinder;
 import find.person.setting.init.PerInitValueSettingDto;
 import find.person.setting.init.category.PerInfoInitValueSettingCtgDto;
@@ -25,9 +23,6 @@ public class PerInfoInitValueSettingCtgWebservice extends WebService {
 	
 	@Inject
 	private PerInfoInitValueSettingFinder finder;
-
-	@Inject
-	private CopyInitValueSetCtgCommandHandler copyInitValue;
 	
 	@POST
 	@Path("find/{settingId}")
@@ -44,11 +39,4 @@ public class PerInfoInitValueSettingCtgWebservice extends WebService {
 	}
 
 	// sonnlb
-
-	//hoatt
-	@POST
-	@Path("copyInitValue")
-	public void copyInitValueCtg(CopyInitValueSetCtgCommand command){
-		this.copyInitValue.handle(command);
-	}
 }

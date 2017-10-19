@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingCtg;
-import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingCtgPk;
 import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItem;
 import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItemPk;
 import nts.arc.enums.EnumAdaptor;
@@ -15,7 +13,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
-import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
@@ -40,7 +37,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND c.perInfoCtgId =:perInfoCtgId";
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
-			+ " c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
+			+ " WHERE c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
 	
 	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
@@ -54,12 +51,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setIsRequired(EnumAdaptor.valueOf(0, IsRequired.class));
 
 		domain.setRefMethodType(EnumAdaptor.valueOf(entity.refMethodAtr, ReferenceMethodType.class));
-		domain.setSaveDataType(EnumAdaptor.valueOf(entity.saveDataType, SaveDataType.class));
+		domain.setSaveDataType(entity.saveDataType == null ? null : EnumAdaptor.valueOf(entity.saveDataType, SaveDataType.class));
 
 		domain.setStringValue(new StringValue(entity.stringValue == null ? "" : entity.stringValue.toString()));
-		domain.setIntValue(new IntValue(new BigDecimal(entity.intValue)));
+		domain.setIntValue(entity.intValue == null ? null : new IntValue(new BigDecimal(entity.intValue)));
 
-		domain.setDateValue(GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
+		domain.setDateValue(entity.dateValue == null ? null : GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
 
 		return domain;
 
@@ -185,10 +182,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 					domain.getPerInfoCtgId(),					
 					domain.getSettingId());
 			entity.refMethodAtr = domain.getRefMethodType().value;
-			entity.saveDataType = domain.getSaveDataType().value;
-			entity.stringValue = domain.getStringValue().v();
-			entity.intValue = domain.getIntValue().v().intValue();
-			entity.dateValue = domain.getDateValue().toString();
+			entity.saveDataType = domain.getSaveDataType() == null ? null : domain.getSaveDataType().value;
+			entity.stringValue = domain.getStringValue() == null ? null : domain.getStringValue().v();
+			entity.intValue = domain.getIntValue() == null ? null : domain.getIntValue().v().intValue();
+			entity.dateValue = domain.getDateValue() == null ? null : domain.getDateValue().toString();
 			return entity;
 
 		}
