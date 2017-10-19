@@ -9,10 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpAvaOrMapCommand;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpDocumentFileCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpDocumentFileCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
-import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementSimpleDto;
+import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
 
 @Path("basic/organization/empfilemanagement")
 @Produces({ "application/json", "text/plain" })
@@ -23,17 +25,28 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@Inject
 	EmpDocumentFileCommandHandler empDocumentFileCommandHandler; 
+	
+	@Inject
+	AddEmpAvaOrMapCommandHandler addEmpAvaOrMapCommandHandler;
 
 	/**
-	 * Gets the all employee.
+	 * Gets employee file management by employeeId.
 	 *
-	 * @return the all employee
+	 * @return employee file management
 	 */
+	//vinhpx: start
 	@POST
-	@Path("getAvaOrMap")
-	public EmployeeFileManagementSimpleDto getAvaOrMap(String employeeId) {
-		return this.employeeFileManagementFinder.getAvaOrMap(employeeId);
+	@Path("find/getAvaOrMap")
+	public EmployeeFileManagementDto getAvaOrMap(String employeeId) {
+		return this.employeeFileManagementFinder.getAvaOrMap(employeeId, 1);
 	}
+	
+	@POST
+	@Path("command/insertAvaOrMap")
+	public void insertAvaOrMap(AddEmpAvaOrMapCommand command) {
+		this.addEmpAvaOrMapCommandHandler.handle(command);
+	}
+	//vinhpx: end
 
 	@POST
 	@Path("getlistdocfile/{employeeId}")
