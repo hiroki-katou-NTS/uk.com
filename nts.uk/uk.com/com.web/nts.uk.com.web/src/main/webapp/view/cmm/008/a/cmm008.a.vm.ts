@@ -135,14 +135,17 @@ module nts.uk.com.view.cmm008.a {
                     
                     blockUI.clear();
                 }).fail(error => {
+                    blockUI.clear();
                     if (error.messageId == 'Msg_3') {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_3" }).then(function() {
+                        blockUI.clear();
+                        $('#empCode').ntsError('set', { messageId: "Msg_3" }).then(function() {
+                            
                             $("#empCode").focus();
                         });
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }
-                    blockUI.clear();
+                    
                 });
             }
 
