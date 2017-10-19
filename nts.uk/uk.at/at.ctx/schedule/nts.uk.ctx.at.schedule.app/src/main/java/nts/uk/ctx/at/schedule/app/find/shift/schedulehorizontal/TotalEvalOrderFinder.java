@@ -66,7 +66,7 @@ public class TotalEvalOrderFinder {
 		totalEvalOrderDto.setTotalItemNo(totalEvalOrderDto.getTotalItemNo());
 		totalEvalOrderDto.setDispOrder(totalEvalOrderDto.getDispOrder());
 		totalEvalOrderDto.setHoriCalDaySet(fromDomainCalSet(totalEvalOrder.getHoriCalDaysSet()));
-		totalEvalOrderDto.setLstHoriTotalCNTSet(fromDomainCnt(totalEvalOrder.getCntSetls()));
+		totalEvalOrderDto.setCntSetls(fromDomainCnt(totalEvalOrder.getCntSetls()));
 		return totalEvalOrderDto;
 	}
 	

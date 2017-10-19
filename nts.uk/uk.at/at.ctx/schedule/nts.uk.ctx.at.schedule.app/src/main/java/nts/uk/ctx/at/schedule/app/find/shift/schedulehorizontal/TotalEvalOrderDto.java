@@ -18,5 +18,5 @@ public class TotalEvalOrderDto {
 	/** 並び順 */
 	private Integer dispOrder;
 	private HoriCalDaySetDto horiCalDaySet;
-	private List<HoriTotalCNTSetDto> lstHoriTotalCNTSet;
+	private List<HoriTotalCNTSetDto> cntSetls;
 }
