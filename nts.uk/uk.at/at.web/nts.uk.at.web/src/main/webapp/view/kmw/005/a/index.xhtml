@@ -28,7 +28,7 @@
 							<td id="contents-left"
 								class="bg-green caret-right caret-background">
 								
-								<table id="single-list" tabindex="3"
+								<table id="actualLock-list" tabindex="3" style="border: 1px"
 										data-bind="ntsGridList: {
 													name: '#[KMW005_2]',
 													height: 150,
@@ -36,7 +36,7 @@
 													optionsValue: 'closureId',
 													columns: actualLockColumn,
 													multiple: false,
-													value: selectedClosure,
+													value: actualLock.closureId,
 													rows: 5
 												}"></table>
 							</td>
@@ -44,11 +44,11 @@
 	
 								<div class="contents" >
 									<table>
-										<tr>
+										<tr class="height-50">
 											<td colspan="3"><div data-bind="ntsFormLabel: {}"><label data-bind="text: selectedClosureText()"></label></div></td>
 										</tr>
-										<tr>
-											<td class="padding-right">
+										<tr class="height-50">
+											<td class="padding-right height-50">
 												<div data-bind="ntsFormLabel: {}">
 													<label>#{i18n.getText('KMW005_9')}</label>
 												</div>
@@ -69,10 +69,10 @@
 											</td>
 											
 											<td>
-												<button data-bind="ntsHelpButton: {image: 'images/IMG_KWM005_1.png', position: 'right top', enable: true }">?</button>
+												<button tabindex="-1" data-bind="ntsHelpButton: {image: 'images/IMG_KWM005_1.png', position: 'right top', enable: true }">?</button>
 											</td>
 										</tr>
-										<tr>
+										<tr class="height-50">
 											<td class="padding-right">
 												<div data-bind="ntsFormLabel: {}">
 													<label>#{i18n.getText('KMW005_13')}</label>
@@ -94,7 +94,7 @@
 											</td>
 											
 											<td>
-												<button data-bind="ntsHelpButton: {image: 'images/IMG_KWM005_2.png', position: 'right top', enable: true }">?</button>
+												<button tabindex="-1" data-bind="ntsHelpButton: {image: 'images/IMG_KWM005_2.png', position: 'right top', enable: true }">?</button>
 											</td>
 										</tr>
 										
