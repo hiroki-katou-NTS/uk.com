@@ -116,8 +116,8 @@ module nts.uk.com.view.cmm014.a {
                     command.memo = self.classificationModel().memo();
                     command.isUpdateMode = self.isUpdateMode();
                 
-                blockUI.invisible();
                 service.saveClassification(command).done(() => {
+                    blockUI.invisible();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         
                         // ReLoad Component
@@ -133,9 +133,7 @@ module nts.uk.com.view.cmm014.a {
                     
                     blockUI.clear();
                 }).fail(error => {
-                    $('#clfCode').ntsError('set', {messageId:"Msg_3"});
-                    $('#clfCode').focus();
-                    blockUI.clear();
+                    $('#clfCode').ntsError('set', {messageId: error.messageId});
                 });
             }
 
