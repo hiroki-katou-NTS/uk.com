@@ -14,18 +14,18 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * The Class KscmtWorkSchTime.
+ * The Class KscdtScheTime.
  */
 @Entity
-@Table(name = "KSCMT_WORK_SCH_TIME")
-public class KscmtWorkSchTime implements Serializable {
+@Table(name = "KSCDT_SCHE_TIME")
+public class KscdtScheTime implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The kscmt work sch time PK. */
     @EmbeddedId
-    protected KscmtWorkSchTimePK kscmtWorkSchTimePK;
+    protected KscdtScheTimePK kscdtScheTimePK;
     
     /** The break time. */
     @Basic(optional = false)
@@ -66,7 +66,7 @@ public class KscmtWorkSchTime implements Serializable {
     /**
      * Instantiates a new kscmt work sch time.
      */
-    public KscmtWorkSchTime() {
+    public KscdtScheTime() {
     }
 
     /**
@@ -74,8 +74,8 @@ public class KscmtWorkSchTime implements Serializable {
      *
      * @param kscmtWorkSchTimePK the kscmt work sch time PK
      */
-    public KscmtWorkSchTime(KscmtWorkSchTimePK kscmtWorkSchTimePK) {
-        this.kscmtWorkSchTimePK = kscmtWorkSchTimePK;
+    public KscdtScheTime(KscdtScheTimePK kscmtWorkSchTimePK) {
+        this.kscdtScheTimePK = kscmtWorkSchTimePK;
     }
 
 
@@ -85,7 +85,7 @@ public class KscmtWorkSchTime implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtWorkSchTimePK != null ? kscmtWorkSchTimePK.hashCode() : 0);
+        hash += (kscdtScheTimePK != null ? kscdtScheTimePK.hashCode() : 0);
         return hash;
     }
 
@@ -94,11 +94,11 @@ public class KscmtWorkSchTime implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtWorkSchTime)) {
+        if (!(object instanceof KscdtScheTime)) {
             return false;
         }
-        KscmtWorkSchTime other = (KscmtWorkSchTime) object;
-        if ((this.kscmtWorkSchTimePK == null && other.kscmtWorkSchTimePK != null) || (this.kscmtWorkSchTimePK != null && !this.kscmtWorkSchTimePK.equals(other.kscmtWorkSchTimePK))) {
+        KscdtScheTime other = (KscdtScheTime) object;
+        if ((this.kscdtScheTimePK == null && other.kscdtScheTimePK != null) || (this.kscdtScheTimePK != null && !this.kscdtScheTimePK.equals(other.kscdtScheTimePK))) {
             return false;
         }
         return true;
@@ -109,7 +109,7 @@ public class KscmtWorkSchTime implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KscmtWorkSchTime[ kscmtWorkSchTimePK=" + kscmtWorkSchTimePK + " ]";
+        return "entity.KscmtWorkSchTime[ kscmtWorkSchTimePK=" + kscdtScheTimePK + " ]";
     }
     
     

@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBusCal;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscmtPerSchCreSet;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscstScheCreSet;
 
 /**
  * The Class JpaPersonalWorkScheduleCreSetGetMemento.
@@ -19,14 +19,14 @@ public class JpaPersonalWorkScheduleCreSetGetMemento
 		implements PersonalWorkScheduleCreSetGetMemento {
 	
 	/** The entity. */
-	private KscmtPerSchCreSet entity;
+	private KscstScheCreSet entity;
 
 	/**
 	 * Instantiates a new jpa personal work schedule cre set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPersonalWorkScheduleCreSetGetMemento(KscmtPerSchCreSet entity) {
+	public JpaPersonalWorkScheduleCreSetGetMemento(KscstScheCreSet entity) {
 		this.entity = entity;
 	}
 

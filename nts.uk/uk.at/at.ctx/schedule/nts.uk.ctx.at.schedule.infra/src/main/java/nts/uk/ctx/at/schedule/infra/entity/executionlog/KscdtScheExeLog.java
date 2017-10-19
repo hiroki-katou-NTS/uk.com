@@ -23,20 +23,20 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * The Class KscmtSchExecutionLog.
+ * The Class KscdtScheExeLog.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCH_EXECUTION_LOG")
-public class KscmtSchExecutionLog implements Serializable {
+@Table(name = "KSCDT_SCHE_EXE_LOG")
+public class KscdtScheExeLog implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kscmt sch execution log PK. */
+    /** The kscdt sche exe log PK. */
     @EmbeddedId
-    protected KscmtSchExecutionLogPK kscmtSchExecutionLogPK;
+    protected KscdtScheExeLogPK kscdtScheExeLogPK;
     
     /** The exe sid. */
     @Basic(optional = false)
@@ -81,7 +81,7 @@ public class KscmtSchExecutionLog implements Serializable {
     /**
      * Instantiates a new kscmt sch execution log.
      */
-    public KscmtSchExecutionLog() {
+    public KscdtScheExeLog() {
     }
 
     /**
@@ -89,8 +89,8 @@ public class KscmtSchExecutionLog implements Serializable {
      *
      * @param kscmtSchExecutionLogPK the kscmt sch execution log PK
      */
-    public KscmtSchExecutionLog(KscmtSchExecutionLogPK kscmtSchExecutionLogPK) {
-        this.kscmtSchExecutionLogPK = kscmtSchExecutionLogPK;
+    public KscdtScheExeLog(KscdtScheExeLogPK kscmtSchExecutionLogPK) {
+        this.kscdtScheExeLogPK = kscmtSchExecutionLogPK;
     }
 
 
@@ -100,33 +100,37 @@ public class KscmtSchExecutionLog implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtSchExecutionLogPK != null ? kscmtSchExecutionLogPK.hashCode() : 0);
+        hash += (kscdtScheExeLogPK != null ? kscdtScheExeLogPK.hashCode() : 0);
         return hash;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscmtSchExecutionLog)) {
-            return false;
-        }
-        KscmtSchExecutionLog other = (KscmtSchExecutionLog) object;
-        if ((this.kscmtSchExecutionLogPK == null && other.kscmtSchExecutionLogPK != null) || (this.kscmtSchExecutionLogPK != null && !this.kscmtSchExecutionLogPK.equals(other.kscmtSchExecutionLogPK))) {
-            return false;
-        }
-        return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KscdtScheExeLog)) {
+			return false;
+		}
+		KscdtScheExeLog other = (KscdtScheExeLog) object;
+		if ((this.kscdtScheExeLogPK == null && other.kscdtScheExeLogPK != null)
+				|| (this.kscdtScheExeLogPK != null && !this.kscdtScheExeLogPK.equals(other.kscdtScheExeLogPK))) {
+			return false;
+		}
+		return true;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KscmtSchExecutionLog[ kscmtSchExecutionLogPK=" + kscmtSchExecutionLogPK + " ]";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "entity.KscmtSchExecutionLog[ kscmtSchExecutionLogPK=" + kscdtScheExeLogPK + " ]";
+	}
     
 }
 

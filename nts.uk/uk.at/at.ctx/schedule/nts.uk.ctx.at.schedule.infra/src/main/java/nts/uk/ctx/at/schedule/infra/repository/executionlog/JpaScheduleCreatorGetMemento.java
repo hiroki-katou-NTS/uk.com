@@ -6,8 +6,8 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreator;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreatorPK;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTarget;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTargetPK;
 
 /**
  * The Class JpaScheduleCreatorGetMemento.
@@ -15,16 +15,16 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchCreatorPK;
 public class JpaScheduleCreatorGetMemento implements ScheduleCreatorGetMemento{
 	
 	/** The entity. */
-	private KscmtSchCreator entity;
+	private KscdtScheExeTarget entity;
 	
 	/**
 	 * Instantiates a new jpa schedule creator get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaScheduleCreatorGetMemento(KscmtSchCreator entity) {
-		if (entity.getKscmtSchCreatorPK() == null) {
-			entity.setKscmtSchCreatorPK(new KscmtSchCreatorPK());
+	public JpaScheduleCreatorGetMemento(KscdtScheExeTarget entity) {
+		if (entity.getKscdtScheExeTargetPK() == null) {
+			entity.setKscdtScheExeTargetPK(new KscdtScheExeTargetPK());
 		}
 		this.entity = entity;
 	}
@@ -37,7 +37,7 @@ public class JpaScheduleCreatorGetMemento implements ScheduleCreatorGetMemento{
 	 */
 	@Override
 	public String getExecutionId() {
-		return this.entity.getKscmtSchCreatorPK().getExeId();
+		return this.entity.getKscdtScheExeTargetPK().getExeId();
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaScheduleCreatorGetMemento implements ScheduleCreatorGetMemento{
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entity.getKscmtSchCreatorPK().getSid();
+		return this.entity.getKscdtScheExeTargetPK().getSid();
 	}
 
 }

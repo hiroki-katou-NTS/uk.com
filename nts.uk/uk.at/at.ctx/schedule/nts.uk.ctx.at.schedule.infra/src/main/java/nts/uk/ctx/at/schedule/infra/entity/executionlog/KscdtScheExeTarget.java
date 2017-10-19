@@ -17,20 +17,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtSchCreator.
+ * The Class KscdtScheExeTarget.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCH_CREATOR")
-public class KscmtSchCreator implements Serializable {
+@Table(name = "KSCDT_SCHE_EXE_TARGET")
+public class KscdtScheExeTarget implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kscmt sch creator PK. */
+    /** The kscdt sche exe target PK. */
     @EmbeddedId
-    protected KscmtSchCreatorPK kscmtSchCreatorPK;
+    protected KscdtScheExeTargetPK kscdtScheExeTargetPK;
     
     /** The exe status. */
     @Basic(optional = false)
@@ -41,7 +41,7 @@ public class KscmtSchCreator implements Serializable {
     /**
      * Instantiates a new kscmt sch creator.
      */
-    public KscmtSchCreator() {
+    public KscdtScheExeTarget() {
     }
 
     /**
@@ -49,8 +49,8 @@ public class KscmtSchCreator implements Serializable {
      *
      * @param kscmtSchCreatorPK the kscmt sch creator PK
      */
-    public KscmtSchCreator(KscmtSchCreatorPK kscmtSchCreatorPK) {
-        this.kscmtSchCreatorPK = kscmtSchCreatorPK;
+    public KscdtScheExeTarget(KscdtScheExeTargetPK kscmtSchCreatorPK) {
+        this.kscdtScheExeTargetPK = kscmtSchCreatorPK;
     }
 
 
@@ -60,7 +60,7 @@ public class KscmtSchCreator implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtSchCreatorPK != null ? kscmtSchCreatorPK.hashCode() : 0);
+        hash += (kscdtScheExeTargetPK != null ? kscdtScheExeTargetPK.hashCode() : 0);
         return hash;
     }
 
@@ -70,11 +70,11 @@ public class KscmtSchCreator implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscmtSchCreator)) {
+        if (!(object instanceof KscdtScheExeTarget)) {
             return false;
         }
-        KscmtSchCreator other = (KscmtSchCreator) object;
-        if ((this.kscmtSchCreatorPK == null && other.kscmtSchCreatorPK != null) || (this.kscmtSchCreatorPK != null && !this.kscmtSchCreatorPK.equals(other.kscmtSchCreatorPK))) {
+        KscdtScheExeTarget other = (KscdtScheExeTarget) object;
+        if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null) || (this.kscdtScheExeTargetPK != null && !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
             return false;
         }
         return true;
@@ -85,7 +85,7 @@ public class KscmtSchCreator implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KscmtSchCreator[ kscmtSchCreatorPK=" + kscmtSchCreatorPK + " ]";
+        return "entity.KscmtSchCreator[ kscmtSchCreatorPK=" + kscdtScheExeTargetPK + " ]";
     }
     
     

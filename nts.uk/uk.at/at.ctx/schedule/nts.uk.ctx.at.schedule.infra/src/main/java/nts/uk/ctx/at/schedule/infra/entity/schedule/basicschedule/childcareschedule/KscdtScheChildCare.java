@@ -17,20 +17,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtChildCareSch.
+ * The Class KscdtScheChildCare.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_CHILD_CARE_SCH")
-public class KscmtChildCareSch implements Serializable {
+@Table(name = "KSCDT_SCHE_CHILD_CARE")
+public class KscdtScheChildCare implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kscmt child care sch PK. */
+    /** The kscdt sche child care PK. */
     @EmbeddedId
-    protected KscmtChildCareSchPK kscmtChildCareSchPK;
+    protected KscdtScheChildCarePK kscdtScheChildCarePK;
     
     /** The str time. */
     @Basic(optional = false)
@@ -38,23 +38,12 @@ public class KscmtChildCareSch implements Serializable {
     @Column(name = "STR_TIME")
     private int strTime;
     
-    /** The str day atr. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STR_DAY_ATR")
-    private int strDayAtr;
-    
     /** The end time. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "END_TIME")
     private int endTime;
-    
-    /** The end day atr. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "END_DAY_ATR")
-    private int endDayAtr;
+ 
     
     /** The child care atr. */
     @Basic(optional = false)
@@ -65,7 +54,7 @@ public class KscmtChildCareSch implements Serializable {
     /**
      * Instantiates a new kscmt child care sch.
      */
-    public KscmtChildCareSch() {
+    public KscdtScheChildCare() {
     }
 
 
@@ -75,7 +64,7 @@ public class KscmtChildCareSch implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtChildCareSchPK != null ? kscmtChildCareSchPK.hashCode() : 0);
+        hash += (kscdtScheChildCarePK != null ? kscdtScheChildCarePK.hashCode() : 0);
         return hash;
     }
 
@@ -83,23 +72,25 @@ public class KscmtChildCareSch implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof KscmtChildCareSch)) {
-            return false;
-        }
-        KscmtChildCareSch other = (KscmtChildCareSch) object;
-        if ((this.kscmtChildCareSchPK == null && other.kscmtChildCareSchPK != null) || (this.kscmtChildCareSchPK != null && !this.kscmtChildCareSchPK.equals(other.kscmtChildCareSchPK))) {
-            return false;
-        }
-        return true;
-    }
+	public boolean equals(Object object) {
+		if (!(object instanceof KscdtScheChildCare)) {
+			return false;
+		}
+		KscdtScheChildCare other = (KscdtScheChildCare) object;
+		if ((this.kscdtScheChildCarePK == null && other.kscdtScheChildCarePK != null)
+				|| (this.kscdtScheChildCarePK != null
+						&& !this.kscdtScheChildCarePK.equals(other.kscdtScheChildCarePK))) {
+			return false;
+		}
+		return true;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "entity.KscmtChildCareSch[ kscmtChildCareSchPK=" + kscmtChildCareSchPK + " ]";
+        return "entity.KscmtChildCareSch[ kscdtScheChildCarePK=" + kscdtScheChildCarePK + " ]";
     }
     
     

@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KscmtSchCreatorPK implements Serializable {
+public class KscdtScheExeTargetPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class KscmtSchCreatorPK implements Serializable {
     /**
      * Instantiates a new kscmt sch creator PK.
      */
-    public KscmtSchCreatorPK() {
+    public KscdtScheExeTargetPK() {
     }
 
 
@@ -61,10 +61,10 @@ public class KscmtSchCreatorPK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscmtSchCreatorPK)) {
+        if (!(object instanceof KscdtScheExeTargetPK)) {
             return false;
         }
-        KscmtSchCreatorPK other = (KscmtSchCreatorPK) object;
+        KscdtScheExeTargetPK other = (KscdtScheExeTargetPK) object;
         if ((this.exeId == null && other.exeId != null) || (this.exeId != null && !this.exeId.equals(other.exeId))) {
             return false;
         }
@@ -89,7 +89,7 @@ public class KscmtSchCreatorPK implements Serializable {
 	 * @param exeId the exe id
 	 * @param sid the sid
 	 */
-	public KscmtSchCreatorPK(String exeId, String sid) {
+	public KscdtScheExeTargetPK(String exeId, String sid) {
 		super();
 		this.exeId = exeId;
 		this.sid = sid;

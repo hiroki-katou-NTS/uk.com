@@ -18,12 +18,12 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KscmtWorkSchTimePK.
+ * The Class KscdtScheTimePK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KscmtWorkSchTimePK implements Serializable {
+public class KscdtScheTimePK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -44,7 +44,7 @@ public class KscmtWorkSchTimePK implements Serializable {
     /**
      * Instantiates a new kscmt work sch time PK.
      */
-    public KscmtWorkSchTimePK() {
+    public KscdtScheTimePK() {
     }
 
 
@@ -54,7 +54,7 @@ public class KscmtWorkSchTimePK implements Serializable {
      * @param sid the sid
      * @param ymd the ymd
      */
-    public KscmtWorkSchTimePK(String sid, GeneralDate ymd) {
+    public KscdtScheTimePK(String sid, GeneralDate ymd) {
 		this.sid = sid;
 		this.ymd = ymd;
 	}
@@ -76,10 +76,10 @@ public class KscmtWorkSchTimePK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtWorkSchTimePK)) {
+        if (!(object instanceof KscdtScheTimePK)) {
             return false;
         }
-        KscmtWorkSchTimePK other = (KscmtWorkSchTimePK) object;
+        KscdtScheTimePK other = (KscdtScheTimePK) object;
         if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
             return false;
         }

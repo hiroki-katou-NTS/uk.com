@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchErrorLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog;
 
 /**
  * The Class JpaScheduleErrorLogGetMemento.
@@ -10,14 +10,14 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchErrorLog;
 public class JpaScheduleErrorLogGetMemento implements ScheduleErrorLogGetMemento {
 
 	/** The entity. */
-	private KscmtSchErrorLog entity;
+	private KscdtScheErrLog entity;
 
 	/**
 	 * Instantiates a new jpa schedule error log get memento.
 	 *
 	 * @param item the item
 	 */
-	public JpaScheduleErrorLogGetMemento(KscmtSchErrorLog item) {
+	public JpaScheduleErrorLogGetMemento(KscdtScheErrLog item) {
 		this.entity = item;
 	}
 
@@ -34,7 +34,7 @@ public class JpaScheduleErrorLogGetMemento implements ScheduleErrorLogGetMemento
 	 */
 	@Override
 	public String getExecutionId() {
-		return this.entity.getKscmtSchErrorLogPK().getExeId();
+		return this.entity.getKscdtScheErrLogPK().getExeId();
 	}
 
 	/* (non-Javadoc)
@@ -42,7 +42,7 @@ public class JpaScheduleErrorLogGetMemento implements ScheduleErrorLogGetMemento
 	 */
 	@Override
 	public GeneralDate getDate() {
-		return this.entity.getKscmtSchErrorLogPK().getYmd();
+		return this.entity.getKscdtScheErrLogPK().getYmd();
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaScheduleErrorLogGetMemento implements ScheduleErrorLogGetMemento
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entity.getKscmtSchErrorLogPK().getSid();
+		return this.entity.getKscdtScheErrLogPK().getSid();
 	}
 
 }

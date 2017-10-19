@@ -19,9 +19,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchErrorLog;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchErrorLogPK_;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtSchErrorLog_;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLogPK_;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog_;
 
 /**
  * The Class JpaScheduleErrorLogRepository.
@@ -42,8 +42,8 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscmtSchErrorLog> cq = criteriaBuilder.createQuery(KscmtSchErrorLog.class);
-		Root<KscmtSchErrorLog> root = cq.from(KscmtSchErrorLog.class);
+		CriteriaQuery<KscdtScheErrLog> cq = criteriaBuilder.createQuery(KscdtScheErrLog.class);
+		Root<KscdtScheErrLog> root = cq.from(KscdtScheErrLog.class);
 
 		// select root
 		cq.select(root);
@@ -51,13 +51,13 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK).get(KscmtSchErrorLogPK_.exeId), executionId));
+				root.get(KscdtScheErrLog_.kscdtScheErrLogPK).get(KscdtScheErrLogPK_.exeId), executionId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		cq.orderBy(criteriaBuilder
-				.desc(root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK).get(KscmtSchErrorLogPK_.ymd)));
+				.desc(root.get(KscdtScheErrLog_.kscdtScheErrLogPK).get(KscdtScheErrLogPK_.ymd)));
 
-		List<KscmtSchErrorLog> lstKscmtScheduleErrLog = em.createQuery(cq).getResultList();
+		List<KscdtScheErrLog> lstKscmtScheduleErrLog = em.createQuery(cq).getResultList();
 		// check empty
 		if (CollectionUtil.isEmpty(lstKscmtScheduleErrLog)) {
 			return null;
@@ -79,9 +79,9 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscmtSchErrorLog> cq = criteriaBuilder
-				.createQuery(KscmtSchErrorLog.class);
-		Root<KscmtSchErrorLog> root = cq.from(KscmtSchErrorLog.class);
+		CriteriaQuery<KscdtScheErrLog> cq = criteriaBuilder
+				.createQuery(KscdtScheErrLog.class);
+		Root<KscdtScheErrLog> root = cq.from(KscdtScheErrLog.class);
 
 		// select root
 		cq.select(root);
@@ -90,19 +90,19 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK)
-						.get(KscmtSchErrorLogPK_.exeId), executionId));
+				.add(criteriaBuilder.equal(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
+						.get(KscdtScheErrLogPK_.exeId), executionId));
 		
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK)
-						.get(KscmtSchErrorLogPK_.sid), employeeId));
+				.add(criteriaBuilder.equal(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
+						.get(KscdtScheErrLogPK_.sid), employeeId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		
-		cq.orderBy(criteriaBuilder.desc(root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK)
-				.get(KscmtSchErrorLogPK_.ymd)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
+				.get(KscdtScheErrLogPK_.ymd)));
 
-		List<KscmtSchErrorLog> lstKscmtScheduleErrLog = em.createQuery(cq).getResultList();
+		List<KscdtScheErrLog> lstKscmtScheduleErrLog = em.createQuery(cq).getResultList();
 		// check empty
 		if (CollectionUtil.isEmpty(lstKscmtScheduleErrLog)) {
 			return null;
@@ -125,17 +125,17 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
-		Root<KscmtSchErrorLog> root = cq.from(KscmtSchErrorLog.class);
+		Root<KscdtScheErrLog> root = cq.from(KscdtScheErrLog.class);
 
 		// select root
-		cq.select(criteriaBuilder.countDistinct(root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK)
-				.get(KscmtSchErrorLogPK_.sid)));
+		cq.select(criteriaBuilder.countDistinct(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
+				.get(KscdtScheErrLogPK_.sid)));
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtSchErrorLog_.kscmtSchErrorLogPK)
-						.get(KscmtSchErrorLogPK_.exeId), executionId));
+				.add(criteriaBuilder.equal(root.get(KscdtScheErrLog_.kscdtScheErrLogPK)
+						.get(KscdtScheErrLogPK_.exeId), executionId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		int cntError = em.createQuery(cq).getSingleResult().intValue();
@@ -160,8 +160,8 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kscmt schedule err log
 	 */
-	private KscmtSchErrorLog toEntity(ScheduleErrorLog domain) {
-		KscmtSchErrorLog entity = new KscmtSchErrorLog();
+	private KscdtScheErrLog toEntity(ScheduleErrorLog domain) {
+		KscdtScheErrLog entity = new KscdtScheErrLog();
 		domain.saveToMemento(new JpaScheduleErrorLogSetMemento(entity));
 		return entity;
 	}

@@ -21,7 +21,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @Embeddable
-public class KscmtSchErrorLogPK implements Serializable {
+public class KscdtScheErrLogPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class KscmtSchErrorLogPK implements Serializable {
     /**
      * Instantiates a new kscmt schedule err log PK.
      */
-    public KscmtSchErrorLogPK() {
+    public KscdtScheErrLogPK() {
     }
 
     /**
@@ -52,7 +52,7 @@ public class KscmtSchErrorLogPK implements Serializable {
      * @param sid the sid
      * @param ymd the ymd
      */
-    public KscmtSchErrorLogPK(String exeId, String sid, GeneralDate ymd) {
+    public KscdtScheErrLogPK(String exeId, String sid, GeneralDate ymd) {
         this.exeId = exeId;
         this.sid = sid;
         this.ymd = ymd;
@@ -111,10 +111,10 @@ public class KscmtSchErrorLogPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KscmtSchErrorLogPK)) {
+		if (!(object instanceof KscdtScheErrLogPK)) {
 			return false;
 		}
-		KscmtSchErrorLogPK other = (KscmtSchErrorLogPK) object;
+		KscdtScheErrLogPK other = (KscdtScheErrLogPK) object;
 		if ((this.exeId == null && other.exeId != null)
 				|| (this.exeId != null && !this.exeId.equals(other.exeId))) {
 			return false;

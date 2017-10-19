@@ -10,18 +10,18 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KscmtChildCareSchPK_.
+ * The Class KscdtScheChildCarePK_.
  */
-@StaticMetamodel(KscmtChildCareSchPK.class)
-public class KscmtChildCareSchPK_ {
+@StaticMetamodel(KscdtScheChildCarePK.class)
+public class KscdtScheChildCarePK_ {
 
 	/** The sid. */
-	public static volatile SingularAttribute<KscmtChildCareSchPK, String> sid;
+	public static volatile SingularAttribute<KscdtScheChildCarePK, String> sid;
 
 	/** The ymd. */
-	public static volatile SingularAttribute<KscmtChildCareSchPK, GeneralDate> ymd;
+	public static volatile SingularAttribute<KscdtScheChildCarePK, GeneralDate> ymd;
 
 	/** The child care number. */
-	public static volatile SingularAttribute<KscmtChildCareSchPK, Integer> childCareNumber;
+	public static volatile SingularAttribute<KscdtScheChildCarePK, Integer> childCareNumber;
 
 }

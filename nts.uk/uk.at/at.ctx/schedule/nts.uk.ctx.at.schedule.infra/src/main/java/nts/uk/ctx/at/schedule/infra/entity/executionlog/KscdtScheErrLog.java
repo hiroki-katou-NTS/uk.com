@@ -17,20 +17,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtSchErrorLog.
+ * The Class KscdtScheErrLog.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_SCH_ERROR_LOG")
-public class KscmtSchErrorLog implements Serializable {
+@Table(name = "KSCDT_SCHE_ERR_LOG")
+public class KscdtScheErrLog implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kscmt sch error log PK. */
+    /** The kscdt sche err log PK. */
     @EmbeddedId
-    protected KscmtSchErrorLogPK kscmtSchErrorLogPK;
+    protected KscdtScheErrLogPK kscdtScheErrLogPK;
     
     /** The err content. */
     @Basic(optional = false)
@@ -41,7 +41,7 @@ public class KscmtSchErrorLog implements Serializable {
     /**
      * Instantiates a new kscmt sch error log.
      */
-    public KscmtSchErrorLog() {
+    public KscdtScheErrLog() {
     }
 
     /**
@@ -49,8 +49,8 @@ public class KscmtSchErrorLog implements Serializable {
      *
      * @param kscmtSchErrorLogPK the kscmt sch error log PK
      */
-    public KscmtSchErrorLog(KscmtSchErrorLogPK kscmtSchErrorLogPK) {
-        this.kscmtSchErrorLogPK = kscmtSchErrorLogPK;
+    public KscdtScheErrLog(KscdtScheErrLogPK kscmtSchErrorLogPK) {
+        this.kscdtScheErrLogPK = kscmtSchErrorLogPK;
     }
 
 
@@ -60,7 +60,7 @@ public class KscmtSchErrorLog implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtSchErrorLogPK != null ? kscmtSchErrorLogPK.hashCode() : 0);
+        hash += (kscdtScheErrLogPK != null ? kscdtScheErrLogPK.hashCode() : 0);
         return hash;
     }
 
@@ -69,11 +69,11 @@ public class KscmtSchErrorLog implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KscmtSchErrorLog)) {
+        if (!(object instanceof KscdtScheErrLog)) {
             return false;
         }
-        KscmtSchErrorLog other = (KscmtSchErrorLog) object;
-        if ((this.kscmtSchErrorLogPK == null && other.kscmtSchErrorLogPK != null) || (this.kscmtSchErrorLogPK != null && !this.kscmtSchErrorLogPK.equals(other.kscmtSchErrorLogPK))) {
+        KscdtScheErrLog other = (KscdtScheErrLog) object;
+        if ((this.kscdtScheErrLogPK == null && other.kscdtScheErrLogPK != null) || (this.kscdtScheErrLogPK != null && !this.kscdtScheErrLogPK.equals(other.kscdtScheErrLogPK))) {
             return false;
         }
         return true;
@@ -84,7 +84,7 @@ public class KscmtSchErrorLog implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KscmtSchErrorLog[ kscmtSchErrorLogPK=" + kscmtSchErrorLogPK + " ]";
+        return "entity.KscmtSchErrorLog[ kscmtSchErrorLogPK=" + kscdtScheErrLogPK + " ]";
     }
     
     

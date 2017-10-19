@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscmtSchErrorLog_.
  */
-@StaticMetamodel(KscmtSchErrorLog.class)
-public class KscmtSchErrorLog_ {
+@StaticMetamodel(KscdtScheErrLog.class)
+public class KscdtScheErrLog_ {
 
-	/** The kscmt sch error log PK. */
-	public static volatile SingularAttribute<KscmtSchErrorLog, KscmtSchErrorLogPK> kscmtSchErrorLogPK;
+	/** The kscdt sche err log PK. */
+	public static volatile SingularAttribute<KscdtScheErrLog, KscdtScheErrLogPK> kscdtScheErrLogPK;
 
 	/** The err content. */
-	public static volatile SingularAttribute<KscmtSchErrorLog, String> errContent;
+	public static volatile SingularAttribute<KscdtScheErrLog, String> errContent;
 
 }

@@ -7,15 +7,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KscmtWsPersonFee_.
+ * The Class KscdtScheFeeTime_.
  */
-@StaticMetamodel(KscmtWsPersonFee.class)
-public class KscmtWsPersonFee_ {
+@StaticMetamodel(KscdtScheFeeTime.class)
+public class KscdtScheFeeTime_ {
 	
-    /** The kscmt ws person fee PK. */
-    public static volatile SingularAttribute<KscmtWsPersonFee, KscmtWsPersonFeePK> kscmtWsPersonFeePK;
+    /** The kscdt sche fee time PK. */
+    public static volatile SingularAttribute<KscdtScheFeeTime, KscdtScheFeeTimePK> kscdtScheFeeTimePK;
     
-    /** The personal pee amount. */
-    public static volatile SingularAttribute<KscmtWsPersonFee, Integer> personalPeeAmount;
+    /** The person fee time. */
+    public static volatile SingularAttribute<KscdtScheFeeTime, Integer> personFeeTime;
     
 }
