@@ -87,6 +87,7 @@
 						optionsText: 'histId',
 						value: historySelection().histId,
 						enable: true,
+						multiple: false,
 						rows: 9,
 						columns: [
 							{ key: 'startDate', length: 7 },
@@ -140,7 +141,7 @@
 
 				<!-- phần bên phải của màn hình  -->
 
-				<div id="content-right">
+				<div id="content-right" data-bind="with: selection">
 
 					<div>
 						<div data-bind="ntsFormLabel: {required: true}"
@@ -149,22 +150,61 @@
 						</div>
 					</div>
 
-					 
-					
 					<div class="distance">
-						<input id="code"
-							data-bind="ntsTextEditor: {
-								value: ,
-								required: true,
-								enable: true,
-								immediate: false}" />
+						<input id="code" style="width: 100px"
+							data-bind="ntsTextEditor: { 
+								value: selectionCode,
+								constraint: 'listSelection', 
+								required: true, 
+								enable: true, 
+ 								immediate: false}" />
+
 						<input id="name"
-							data-bind="ntsTextEditor: {
-								value: ,
-								required: true,
-								enable: true,
+							data-bind="ntsTextEditor: { 
+								value: selectionName, 
+								constraint: 'listSelection', 
+								required: true, 
+ 								enable: true, 
 								immediate: false}" />
 					</div>
+
+
+
+
+
+
+					<!--  -->
+					<div class="row">
+						<div class="coll"
+							data-bind="ntsFormLabel: {constraint: 'IntegrationCode', required: false }">#{i18n.getText('CPS017_23')}</div>
+						<input style="width: 100px;"
+							data-bind="ntsTextEditor: {
+									value: externalCD,
+									constraint: 'listSelection',
+									option: '',
+									required: false,
+									enable: true,
+									readonly: false}" />
+					</div>
+
+
+
+					<!--  -->
+					<div class="row">
+						<div class="coll"
+							data-bind="ntsFormLabel: {constraint: 'Memo', required: false }">
+							<label>#{i18n.getText('CPS016_21')}</label>
+						</div>
+						<textarea style="width: 450px; height: 90px;"
+							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'Memo',required: false}" />
+					</div>
+
+
+
+
+
+
+
 
 					<!--
 					

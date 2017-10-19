@@ -29,8 +29,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
                 historySelection: HistorySelection = self.historySelection(),
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                _selectId = _.find(listHistorySelection, x => x.selectionItemId == historySelection.selectionItemId),
-                comand: HistorySelection = ko.toJS(historySelection);
+                //_selectId = _.find(listHistorySelection, x => x.selectionItemId == historySelection.selectionItemId),
+                //comand: HistorySelection = ko.toJS(historySelection)
+                selection: Selection = self.selection();
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -50,8 +51,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
 
                     //history
-                    service.getAllPerInfoHistorySelection(x).done((_selectionItemId: IHistorySelection) => {
-                        self.listHistorySelection(_selectionItemId);
+                    service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
+                        self.listHistorySelection(_selectionItemList);
                         self.historySelection().histId(self.listHistorySelection()[0].histId);
                     });
                 }
@@ -61,7 +62,21 @@ module nts.uk.com.view.cps017.a.viewmodel {
             historySelection.histId.subscribe(x => {
                 service.getAllOrderItemSelection(x).done((_selectionID: ISelection) => {
                     self.listSelection(_selectionID);
+                    self.selection().selectionID(self.listSelection()[0].selectionID);
                 });
+            });
+
+            // sub theo selectionID: 
+            selection.selectionID.subscribe(x => {
+                if (x) {
+                    let selectLists = _.find(self.listSelection(), (item) => {
+                        return item.selectionID == x;
+                    });
+                    selection.selectionCode(selectLists.selectionCode);
+                    selection.selectionName(selectLists.selectionName);
+                    selection.externalCD(selectLists.externalCD);
+                    selection.memoSelection(selectLists.memoSelection);
+                }
             });
 
         }
@@ -79,31 +94,20 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                //項目がある場合
                 if (itemList && itemList.length > 0) {
-
-                    //取得した選択項目を画面項目「A2_3：選択項目名称一覧」に表示する
-                    itemList.forEach(x => self.listItems.push(x));
-
-                    //画面項目「A2_3：選択項目リスト」の先頭を選択状態にする
+                    self.listItems(itemList);
                     self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
 
                 } else {
-                    //0件の場合: エラーメッセージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                 }
                 dfd.resolve();
             }).fail(error => {
-                //0件の場合: エラーメッセージの表示(#Msg_455)
                 alertError({ messageId: "Msg_455" });
             });
 
-
-
-
             return dfd.promise();
         }
-
 
         //ダイアログC画面
         openDialogC() {
@@ -162,8 +166,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
     //history:
     interface IHistorySelection {
-        histId: string;
-        selectionItemId: string;
+        histId?: string;
+        selectionItemId?: string;
         companyCode: string;
         startDate: string;
         endDate: string;
@@ -184,22 +188,22 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.startDate(param.startDate || '');
             self.endDate(param.endDate || '');
         }
+
     }
 
     //Selection
     interface ISelection {
-        selectionID: string;
-        histId: string;
-        selectionCD: string;
+        selectionID?: string;
+        histId?: string;
+        selectionCode: string;
         selectionName: string;
         externalCD: string;
         memoSelection: string;
     }
-
     class Selection {
         selectionID: KnockoutObservable<string> = ko.observable('');
         histId: KnockoutObservable<string> = ko.observable('');
-        selectionCD: KnockoutObservable<string> = ko.observable('');
+        selectionCode: KnockoutObservable<string> = ko.observable('');
         selectionName: KnockoutObservable<string> = ko.observable('');
         externalCD: KnockoutObservable<string> = ko.observable('');
         memoSelection: KnockoutObservable<string> = ko.observable('');
@@ -208,7 +212,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this;
             self.selectionID(param.selectionID || '');
             self.histId(param.histId || '');
-            self.selectionCD(param.selectionCD || '');
+            self.selectionCode(param.selectionCode || '');
             self.selectionName(param.selectionName || '');
             self.externalCD(param.externalCD || '');
             self.memoSelection(param.memoSelection || '');
@@ -217,8 +221,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
     //Order Selection
     interface IOrderSelection {
-        selectionID: string;
-        histId: string;
+        selectionID?: string;
+        histId?: string;
         disporder: number;
         initSelection: number;
     }
