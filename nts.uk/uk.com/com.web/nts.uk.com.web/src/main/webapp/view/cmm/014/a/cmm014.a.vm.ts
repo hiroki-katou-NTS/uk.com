@@ -34,6 +34,7 @@ module nts.uk.com.view.cmm014.a {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
                     isDialog: false,
+                    tabindex: 5
                 };
 
                 self.clfList = ko.observableArray<ItemModel>([]);
