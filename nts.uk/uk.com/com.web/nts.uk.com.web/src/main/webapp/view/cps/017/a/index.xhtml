@@ -38,7 +38,7 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content-left" class="pull-left"
-					data-bind="ntsPanel:{width: '270px', height: '665px',
+					data-bind="ntsPanel:{width: '270px', height: '540px',
 					direction: 'right', showIcon: true, visible: true}">
 
 					<div id="search" tabindex="1"
@@ -125,9 +125,9 @@
 									showNumbering:true,
 									columns: [
 						                { headerText: '', key: 'selectionID', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'selectionCode', width: 100 },
+						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'initSelection', width: 100, formatter :makeIcon },
 						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCode', width: 120 },
-						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 140 }
+						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 140}
 						            ],
 									multiple: false,
 									value: selection().selectionID}">
@@ -137,15 +137,11 @@
 
 				</div>
 
-
-
 				<!-- phần bên phải của màn hình  -->
-
 				<div id="content-right" data-bind="with: selection">
-
-					<div>
-						<div data-bind="ntsFormLabel: {required: true}"
-							class='distane col1'>
+					<div class="row">
+						<div style="float: left;"
+							data-bind="ntsFormLabel: {required: true}" class='distane col1'>
 							<label>#{i18n.getText('CPS017_20')}</label>
 						</div>
 					</div>
@@ -156,7 +152,7 @@
 								value: selectionCode,
 								constraint: 'listSelection', 
 								required: true, 
-								enable: true, 
+								enable: $parent.selection().selectionID() == undefined , 
  								immediate: false}" />
 
 						<input id="name"
@@ -168,12 +164,6 @@
 								immediate: false}" />
 					</div>
 
-
-
-
-
-
-					<!--  -->
 					<div class="row">
 						<div class="coll"
 							data-bind="ntsFormLabel: {constraint: 'IntegrationCode', required: false }">#{i18n.getText('CPS017_23')}</div>
@@ -190,12 +180,12 @@
 
 
 					<!--  -->
-					<div class="row">
-						<div class="coll"
+					<div>
+						<div
 							data-bind="ntsFormLabel: {constraint: 'Memo', required: false }">
 							<label>#{i18n.getText('CPS016_21')}</label>
 						</div>
-						<textarea style="width: 450px; height: 90px;"
+						<textarea style="width: 350px; height: 110px;"
 							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'Memo',required: false}" />
 					</div>
 

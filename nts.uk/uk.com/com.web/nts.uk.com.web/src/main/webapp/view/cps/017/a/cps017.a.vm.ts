@@ -199,6 +199,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selectionName: string;
         externalCD: string;
         memoSelection: string;
+        
+        initSelection: number;
     }
     class Selection {
         selectionID: KnockoutObservable<string> = ko.observable('');
@@ -207,6 +209,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selectionName: KnockoutObservable<string> = ko.observable('');
         externalCD: KnockoutObservable<string> = ko.observable('');
         memoSelection: KnockoutObservable<string> = ko.observable('');
+        
+        initSelection: KnockoutObservable<number> = ko.observable();
 
         constructor(param: ISelection) {
             let self = this;
@@ -216,6 +220,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.selectionName(param.selectionName || '');
             self.externalCD(param.externalCD || '');
             self.memoSelection(param.memoSelection || '');
+            
+            //self.initSelection(param.initSelection === 1 ? true : false);
+            self.initSelection(param.initSelection || '');
+            
         }
     }
 
@@ -243,7 +251,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
     }
 }
 
-
+function makeIcon(value, row) {
+    if (value == 1)
+        return "●";
+    return '';
+}
 
 
 
