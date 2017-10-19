@@ -69,8 +69,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void insert(EmployeeFileManagement domain) {
-		// TODO Auto-generated method stub
-		
+		BsymtEmpFileManagement entity = toEntityEmpFileManagement(domain);
+		getEntityManager().persist(entity);
 	}
 
 	@Override
