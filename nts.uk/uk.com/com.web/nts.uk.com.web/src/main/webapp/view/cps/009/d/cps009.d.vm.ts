@@ -30,9 +30,11 @@ module nts.uk.com.view.cps009.d.viewmodel {
                     itemName: self.currentInitVal().itemName()
                 }
             service.add(copyObj).done(function(data) {
-                  close();
+                dialog.info({ messageId: "Msg_20" }).then(function() {
+                    close();
+                });
             }).fail(functions(res: any){
-                alert(res.message);
+                dialog.alert(res.message);
 
             });
         }

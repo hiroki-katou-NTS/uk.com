@@ -13,12 +13,22 @@ public interface PerInfoInitValSetCtgRepository {
 	List<PerInfoInitValueSettingCtg> getAllCategoryBySetId(String initValueSettingId);
 
 	// sonnlb
+
 	/**
-	 * getAllCategory isAbortlition: false employeeType = 2 categoryType # 2 vs
-	 * #5 category_parent_cd: not set
+	 * getAllInitValueCtg
 	 * 
-	 * @param initValueSettingId, String settingId
-	 * @return
+	 * @param settingId
+	 * @return List<PerInfoInitValueSettingCtg>
+	 */
+	List<PerInfoInitValSetCtg> getAllInitValueCtg(String settingId);
+
+	/**
+	 * getAllCategory isAbortlition: false employeeType = 2 categoryType # 2 vs #5
+	 * category_parent_cd: not set
+	 * 
+	 * @param initValueSettingId,
+	 *            String settingId
+	 * @return List<PerInfoInitValueSettingCtg>
 	 */
 	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId);
 
@@ -49,8 +59,19 @@ public interface PerInfoInitValSetCtgRepository {
 	/**
 	 * delete PerInfoInitValSetCtg
 	 * 
-	 * @param initValueSettingCtgId
+	 * @param perInfoCtgId,
+	 *            settingId
 	 */
-	void delete(String initValueSettingCtgId);
+	void delete(String perInfoCtgId, String settingId);
+	
+	
+	/**
+	 * delete PerInfoInitValSetCtg
+	 * 
+	 * @param settingId
+	 */
+	void delete(String settingId);
+	
+	
 
 }

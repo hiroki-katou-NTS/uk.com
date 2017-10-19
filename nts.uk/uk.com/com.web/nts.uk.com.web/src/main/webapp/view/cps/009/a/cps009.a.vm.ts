@@ -38,6 +38,29 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 });
             });
 
+            self.currentCategory().currentItemId.subscribe(function(value: string) {
+                if (value) {
+                    self.currentCategory().itemList.removeAll();
+
+                    for (let i = 0; i < Math.floor((Math.random() * 4) + 1); i++) {
+                        self.currentCategory().itemList.push(new PerInfoInitValueSettingItemDto({
+                            perInfoItemDefId: i.toString(), settingId: i.toString(),
+                            perInfoCtgId: i.toString(), itemName: "A",
+                            isRequired: i % 2, refMethodType: i % 4,
+                            saveDataType: i % 3, stringValue: i.toString(),
+                            intValue: i.toString(), dateValue: i.toString(),
+                            value: i.toString(), itemType: i % 8,
+                            dataType: i%4
+                        }));
+
+                    }
+                    self.currentCategory().itemList.valueHasMutated();
+
+                }
+
+
+            });
+
         }
 
         start(): JQueryPromise<any> {
@@ -101,6 +124,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         }
 
+        //delete
+
+        deleteInitValue() {
+            let self = this;
+
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+
+            }).ifCancel(function() {
+
+            })
+
+        }
+
         // thiet lap item hang loat
         openBDialog() {
 
@@ -142,7 +178,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
-
+                self.start();
                 block.clear();
             });
 
@@ -160,54 +196,26 @@ module nts.uk.com.view.cps009.a.viewmodel {
             { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
             { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
         ]);
-        itemList: Array<any>;
+        itemList: KnockoutObservableArray<any>;
         constructor(params: IInitValueSettingDetail) {
-            this.settingCode = ko.observable(params.settingCode);
-            this.settingName = ko.observable(params.settingName);
-            this.ctgList = ko.observableArray(params.ctgList);
-            this.itemList = params.itemList || [];
-
-            this.currentItemId.subscribe(function(value: string) {
-                if (value) {
-                    service.getAllItemByCtgId(value).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
-                        if (item.length > 0) {
-                            let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
-                                if (obj.refMethodType === 2) {
-                                    if (obj.saveDataType === 1) {
-                                        obj.value = obj.stringValue;
-                                    }
-                                    else if (obj.saveDataType === 2) {
-                                        obj.value = obj.intValue;
-                                    }
-                                    else if (obj.saveDataType === 3) {
-                                        obj.value = obj.dateValue;
-                                    }
-                                } else {
-                                    obj.value = "";
-
-                                }
-                                return obj;
-
-                            })
-                            $("#grid2").igGrid("option", "dataSource", itemConvert);
-                        }
-                    })
-                }
+            let self = this;
+            self.settingCode = ko.observable(params.settingCode);
+            self.settingName = ko.observable(params.settingName);
+            self.ctgList = ko.observableArray(params.ctgList);
+            self.itemList = ko.observableArray(params.itemList || []);
 
 
-
-
-            });
         }
 
         setData(params: IInitValueSettingDetail) {
-            this.settingCode(params.settingCode);
-            this.settingName(params.settingName);
-            this.ctgList(params.ctgList);
-            if (this.ctgList().length > 0) {
-                this.currentItemId(params.ctgList[0].perInfoCtgId);
+            let self = this;
+            self.settingCode(params.settingCode);
+            self.settingName(params.settingName);
+            self.ctgList(params.ctgList);
+            if (self.ctgList().length > 0) {
+                self.currentItemId(params.ctgList[0].perInfoCtgId);
             } else {
-                this.currentItemId('');
+                self.currentItemId('');
             }
         }
     }
@@ -295,49 +303,93 @@ module nts.uk.com.view.cps009.a.viewmodel {
     }
 
     export interface IPerInfoInitValueSettingItemDto {
+
+        // đoạn này dùng để  hiển thị
         perInfoItemDefId: string;
         settingId?: string;
         perInfoCtgId: string;
         itemName: string;
         isRequired: number;
         refMethodType: number;
+        //dành cho cột 2 - combo
+        itemType: number; //日付　型-1; 統合ログインコード-2; 口座名１～口座名５-3; .....
+        listComboItem: Array<any> = [];
+
+        //trường này dùng để dataType
+        dataType: number;
+
+        // đoạn này dùng để lưu dữ liệu        
         saveDataType: number;
         stringValue?: string;
         intValue?: number;
-        dateValue?: Date;
+        dateValue?: string;
         value? any;
     }
 
     export class PerInfoInitValueSettingItemDto {
-        perInfoItemDefId: string;
-        settingId: string;
-        perInfoCtgId: string;
-        itemName: string;
-        isRequired: number;
-        refMethodType: number;
-        saveDataType: number;
-        stringValue: string;
-        intValue: number;
-        dateValue: Date;
-        value: any = "";
+        perInfoItemDefId: KnockoutObservable<string>;
+        settingId: KnockoutObservable<string>;
+        perInfoCtgId: KnockoutObservable<string>;
+        itemName: KnockoutObservable<string>;
+        isRequired: KnockoutObservable<number>;
+
+        refMethodType: KnockoutObservable<number>;
+        itemType: KnockoutObservable<number>;
+        listComboItem: KnockoutObservableArray<any>;
+
+        dataType: KnockoutObservable<number>;
+        
+        saveDataType: KnockoutObservable<number>;
+        stringValue: KnockoutObservable<string>;
+        intValue: KnockoutObservable<number>;
+        dateValue: KnockoutObservable<String>;
+        value: KnockoutObservable<string> = ko.observable("");
+        selectedRuleCode: KnockoutObservable<string>;
         constructor(params: IPerInfoInitValueSettingItemDto) {
+            debugger;
             let self = this;
-            self.perInfoItemDefId = params.perInfoItemDefId || "";
-            self.settingId = params.settingId || "";
-            self.perInfoCtgId = params.perInfoCtgId || "";
-            self.itemName = params.itemName || "";
-            self.isRequired = params.isRequired || 0;
-            self.refMethodType = params.refMethodType || 0;
-            self.saveDataType = params.saveDataType || 0;
-            self.stringValue = params.stringValue || "";
-            self.intValue = params.intValue || 0;
-            self.dateValue = params.dateValue || new Date("9999-12-21");
+            self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
+            self.settingId = ko.observable(params.settingId || "");
+            self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
+            self.itemName = ko.observable(params.itemName || "");
+            self.isRequired = ko.observable(params.isRequired || 0);
+            self.refMethodType = ko.observable(params.refMethodType || 0);
+            self.saveDataType = ko.observable(params.saveDataType || 0);
+            self.stringValue = ko.observable(params.stringValue || "");
+            self.intValue = ko.observable(params.intValue || 0);
+            self.dateValue = ko.observable(params.dateValue || "99991221");
+            self.itemType = ko.observable(params.itemType || 0);
+            self.dataType = ko.observable(params.dataType || 0);
+            self.selectedRuleCode = ko.observable("");
+            if (params.itemType === 0) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "ログイン者と同じ" },
+                    { code: 4, name: "入力日と同じ" },
+                    { code: 5, name: "システム日付と同じ" }]);
+            } else if (params.itemType === 1) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "社員コードと同じ" }]);
+            } else if (params.itemType === 2) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "氏名と同じ" }]);
+            } else if (params.itemType === 3) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "氏名（カナ）と同じ" }]);
+            } else if (params.itemType === 4) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "ログイン者と同じ" }]);
+            }
             if (params.refMethodType === 1) {
-                self.value = params.stringValue;
+                ko.observable(params.stringValue);
             } else if (params.refMethodType === 2) {
-                self.value = params.intValue;
+                ko.observable(params.intValue);
             } else if (params.refMethodType === 3) {
-                self.value = params.dateValue;
+                ko.observable(params.dateValue);
             }
         }
     }
