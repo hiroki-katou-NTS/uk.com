@@ -76,7 +76,7 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 
 		default:
 			secondsToTimeout = 60;
-			smtpServer = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
+			serverLocator = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 					mailServer.getSmtpInfo().getPort().v());
 			break;
 		}
