@@ -10,7 +10,7 @@ module cps001.e.MainScreen.vm {
 
     export class ViewModel {
         imageId: KnockoutObservable<string> = ko.observable("");
-      
+        sid: KnockoutObservable<string> = ko.observable("");
 
         constructor() {;
         }
@@ -20,7 +20,8 @@ module cps001.e.MainScreen.vm {
         OpenFModal() {
 
             let self = this;
-            setShared("imageId", self.imageId());
+            self.sid("");
+            setShared("employeeId", self.sid());
             subModal('/view/cps/001/e/index.xhtml', { title: '' }).onClosed(function(): any {
                  self.imageId(getShared("imageId"));
             });
