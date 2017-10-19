@@ -21,6 +21,7 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
 import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
@@ -982,6 +983,16 @@ public class ScheduleCreatorExecutionCommandHandler
 		} else {
 
 		}
+	}
+	
+	/**
+	 * Save basic schedule.
+	 *
+	 * @param command the command
+	 */
+	// 勤務予定情報を登録する
+	private void saveBasicSchedule(BasicScheduleSaveCommand command){
+		this.basicScheduleRepository.insert(command.toDomain());
 	}
 
 }

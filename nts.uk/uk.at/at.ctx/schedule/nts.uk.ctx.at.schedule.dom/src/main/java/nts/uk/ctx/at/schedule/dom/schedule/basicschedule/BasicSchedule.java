@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
@@ -64,6 +65,10 @@ public class BasicSchedule extends AggregateRoot {
 	/** The work schedule person fees. */
 	// 勤務予定人件費
 	private List<WorkSchedulePersonFee> workSchedulePersonFees;
+	
+	/** The child care schedules. */
+	// 勤務予定育児介護時間帯
+	private List<ChildCareSchedule> childCareSchedules;
 
 	/**
 	 * Instantiates a new basic schedule.
@@ -81,6 +86,7 @@ public class BasicSchedule extends AggregateRoot {
 		this.workScheduleBreaks = memento.getWorkScheduleBreaks();
 		this.workScheduleTime = memento.getWorkScheduleTime();
 		this.workSchedulePersonFees = memento.getWorkSchedulePersonFees();
+		this.childCareSchedules = memento.getChildCareSchedules();
 	}
 
 	/**
@@ -140,5 +146,6 @@ public class BasicSchedule extends AggregateRoot {
 		memento.setWorkScheduleBreaks(this.workScheduleBreaks);
 		memento.setWorkScheduleTime(this.workScheduleTime);
 		memento.setWorkSchedulePersonFees(this.workSchedulePersonFees);
+		memento.setChildCareSchedules(this.childCareSchedules);
 	}
 }

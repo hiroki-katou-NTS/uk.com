@@ -10,6 +10,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleGetMemento;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
@@ -115,6 +116,14 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkSchedulePersonFee> getWorkSchedulePersonFees() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleGetMemento#getChildCareSchedules()
+	 */
+	@Override
+	public List<ChildCareSchedule> getChildCareSchedules() {
 		return null;
 	}
 

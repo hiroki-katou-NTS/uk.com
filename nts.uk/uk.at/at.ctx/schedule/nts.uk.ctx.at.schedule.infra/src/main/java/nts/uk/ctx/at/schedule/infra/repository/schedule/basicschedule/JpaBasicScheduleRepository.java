@@ -203,8 +203,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	/**
 	 * To domain child care.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 * @return the child care schedule
 	 */
 	private ChildCareSchedule toDomainChildCare(KscdtScheChildCare entity) {

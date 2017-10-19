@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
@@ -97,5 +98,13 @@ public interface BasicScheduleGetMemento {
 	 * @return the work schedule person fees
 	 */
 	public List<WorkSchedulePersonFee> getWorkSchedulePersonFees();
+	
+	
+	/**
+	 * Gets the child care schedules.
+	 *
+	 * @return the child care schedules
+	 */
+	public List<ChildCareSchedule> getChildCareSchedules();
 
 }
