@@ -17,6 +17,8 @@ public class LateOrLeaveEarlyDto {
 		/** 申請ID */
 		private String appID;
 		
+		private int postAtr;
+		
 		 /** 申請理由ID */
 			private String appReasonID;
 		
@@ -63,6 +65,7 @@ public class LateOrLeaveEarlyDto {
 			return new LateOrLeaveEarlyDto(
 					domain.getCompanyID(),
 					domain.getAppID(),
+					domain.getPrePostAtr().value,
 					appReasonID,
 					//Get ApplicationName
 					domain.getApplicantSID(),

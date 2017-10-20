@@ -74,7 +74,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(appID,
-				command.getApplicationDate(), command.getReasonTemp() + ":" + command.getAppReason(), appApprovalPhases,
+				command.getApplicationDate(), command.getPrePostAtr(), command.getReasonTemp() + ":" + command.getAppReason(), appApprovalPhases,
 				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
 				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
 		domainLateOrLeaveEarly.setListPhase(appApprovalPhases);
