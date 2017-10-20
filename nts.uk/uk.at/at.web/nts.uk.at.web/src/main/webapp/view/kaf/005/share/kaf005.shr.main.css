@@ -25,7 +25,8 @@
 }
 
 .link-label {
-	margin-left: 55px;
+	/*margin-left: 30px;*/
+	padding: 0px 10px 0px 10px;
 }
 /*Set Width*/
 input.nts-editor.nts-input.reset-element {
@@ -59,7 +60,7 @@ div#combo-box.reset-element.ui-igcombo-wrapper {
 }
 
 textarea.nts-editor.nts-input.reset-element {
-	height: 150px;
+	height: 120px;
 }
 
 #multiline {
@@ -70,9 +71,13 @@ div.form-label.broken {
 	vertical-align: top;
 }
 
+.workSelect{
+    height: 70px;
+    margin-left: 22px;
+}
 .panel.panel-gray-bg {
 	float: right;
-	height: 450px;
+	height: 300px;
 	width: 250px;
 	margin-top: 20px;
 }
@@ -85,6 +90,7 @@ div.form-label.broken {
 
 .right-contents {
 	margin-top: 10px;
+	width: 300px;
 	float: left;
 	margin-left: 30px;
 }
@@ -102,7 +108,7 @@ div.form-label.broken {
 }
 
 .mainScreen {
-	height: 620px;
+	height:1000	px;
 }
 
 #label-1 {
@@ -111,6 +117,7 @@ div.form-label.broken {
 
 .lstApprover {
 	margin-left: 20px;
+	margin-top: 730px;
 }
 /*workType, Sift */
 .lblSiftCd, .lblWorkTypeCd {

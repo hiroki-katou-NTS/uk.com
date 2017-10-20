@@ -146,6 +146,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         self.early2(null);
                         self.earlyTime1(null);
                         self.earlyTime2(null);
+                        self.appreason(null);
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res);

@@ -32,9 +32,10 @@ public interface CompanyApprovalRootRepository {
 	 * @param companyId
 	 * @param endDate
 	 * @param applicationType
+	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType);
+	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * add Company Approval Root

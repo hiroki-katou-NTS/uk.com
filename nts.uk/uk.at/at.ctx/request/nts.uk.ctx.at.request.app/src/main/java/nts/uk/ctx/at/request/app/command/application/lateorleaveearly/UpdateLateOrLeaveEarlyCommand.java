@@ -16,6 +16,8 @@ public class UpdateLateOrLeaveEarlyCommand {
 	
    /** 申請日*/
 	private GeneralDate applicationDate;
+	
+	private int prePostAtr;
 
 	/** 実績取消区分 */
 	private int actualCancelAtr;

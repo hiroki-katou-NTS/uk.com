@@ -127,7 +127,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 							.findByBaseDateOfCommon(cid, baseDate);
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
-						result = comAppRoots.stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
+						result = companyAppRootsOfCom.stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
 								.collect(Collectors.toList());
 						this.adjustmentData(cid, sid, baseDate, result);
 					}
