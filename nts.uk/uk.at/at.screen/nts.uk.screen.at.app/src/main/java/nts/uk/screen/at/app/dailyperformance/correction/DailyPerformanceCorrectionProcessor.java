@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,17 +65,21 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
 		if (lstFormat.size() > 0) {
-			lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode,
-					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
+			List<Integer> lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId())
+					.collect(Collectors.toList());
+			List<Integer> lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
+			lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode, lstAtdItemUnique);
 		}
 		if (lstDPBusinessTypeControl.size() > 0) {
+			List<Integer> lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId())
+					.collect(Collectors.toList());
+			List<Integer> lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
 			// set text to header
-			List<DPAttendanceItem> lstAttendanceItem = this.repo.getListAttendanceItem(
-					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
+			List<DPAttendanceItem> lstAttendanceItem = this.repo.getListAttendanceItem(lstAtdItemUnique);
 			result.setHeaderText(lstAttendanceItem);
 			// set color to header
-			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo.getListAttendanceItemControl(
-					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
+			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
+					.getListAttendanceItemControl(lstAtdItemUnique);
 			result.setHeaderColor(lstAttendanceItemControl);
 			// set header access modifier
 			// only user are login can edit or others can edit
