@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             //check sendMail
             self.sendMail = ko.observable(true);
             //date editor
-            self.date = ko.observable("");
+            self.date = ko.observable(new Date());
             //time editor
             self.lateTime1 = ko.observable(0);
             self.lateTime2 = ko.observable(0);

@@ -9,10 +9,14 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 450,
-					height :300
+					width : 550,
+					height :270
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingCode
+					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps009.c.style.css" />
 			<com:scriptfile path="cps009.c.service.js" />
@@ -28,28 +32,39 @@
 						class="form-label ">
 						<label>#{i18n.getText('CPS009_12')}</label>
 					</div>
-					<label id="roleCodeOld">0001</label> <label id="roleNameOld">コピー元情報</label>
+					<!-- C3_003: 複製元のコード -->
+					<label id="roleCodeOld" data-bind="text: codeCtg"></label> 
+					<!-- C3_004: 複製元の名称 -->
+					<label id="roleNameOld" data-bind="text: nameCtg"></label>
 				</div>
 				<div id="copy_row_2">
 					<label>#{i18n.getText('CPS009_27')}</label>
-					<div id="label_code" data-bind="ntsFormLabel: {required: true}"
+					<div id="label_code" data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}"
 						class="form-label ">
 						<label>#{i18n.getText('CPS009_12')}</label>
 					</div>
-					<input id="roleCode"
-						data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
-										required: true, enable: true,
+					<!-- C_006 -->
+					<input id="codeInput"
+						data-bind="ntsTextEditor: {
+										value: currentInitVal().itemCode, 
+										constraint: 'ValueSettingCode',
+										required: true, 
+										enable: true,
 										immediate: true}" />
+					<!-- C_007 -->
 					<input id="roleName"
-						data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
-										required: true, enable: true,
+						data-bind="ntsTextEditor: {
+										value: currentInitVal().itemName,  
+										required: true,
+										constraint: 'ValueSettingName',
+										enable: true,
 										immediate: true}" />
 
 				</div>
 			</div>
-			<div id='functions-area-bottom'>
+			<div id='functions-area-bottom' style = "height: 90px !important;">
 				<div id='copyCheck'
-					data-bind="ntsCheckBox: {checked: isCopy, text: '設定済みの場合は、データを'}"
+					data-bind="ntsCheckBox: {checked: isCopy, text: nts.uk.resource.getText('CPS009_28')}"
 					class='bg-yellow'></div>
 				<div>
 					<button id="registration" data-bind="click: copyInitValue"

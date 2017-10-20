@@ -28,6 +28,8 @@ public interface PerInfoCategoryRepositoty {
 	void addListDateRangeItem(List<DateRangeItem> dateRangeItems);
 
 	// vinhpx: start
+	
+	List<PersonInfoCategory> getPerInfoCtgByParentId(String parentCtgId, String contractCd);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
 

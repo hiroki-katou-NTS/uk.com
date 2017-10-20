@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDailyPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implements BusinessTypeFormatDailyRepository {
@@ -23,6 +25,8 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 
 	private static final String REMOVE_EXIST_DATA;
 
+	private final static String SEL_FORMAT_BY_ATD_ITEM = "SELECT f FROM KrcmtBusinessTypeDaily f WHERE f.krcmtBusinessTypeDailyPK.companyId = :companyId AND f.krcmtBusinessTypeDailyPK.attendanceItemId IN :lstItem";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -115,4 +119,17 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		
 		return entity;
 	}
+	
+	@Override
+	public void updateColumnsWidth(Map<Integer, Integer> lstHeader) {
+		List<KrcmtBusinessTypeDaily> lstBusDailyItem = this.queryProxy()
+				.query(SEL_FORMAT_BY_ATD_ITEM, KrcmtBusinessTypeDaily.class)
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstHeader.keySet())
+				.getList();
+		for(KrcmtBusinessTypeDaily busItem: lstBusDailyItem){
+			busItem.columnWidth =  new BigDecimal(lstHeader.get(busItem.krcmtBusinessTypeDailyPK.attendanceItemId));
+		}
+		this.commandProxy().updateAll(lstBusDailyItem);
+	}
+	
 }

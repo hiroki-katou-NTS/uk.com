@@ -276,6 +276,57 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Checks whether an item of a nonexistent line is set in a formula
+             */
+            public findInvalidFormula(): Formula {
+                let self = this;
+
+                // find invalid formula
+                 return _.find(self.calcFormulas(), item => {
+
+                     // only check formula of type 'formula setting'
+                     if (item.isTypeOfFormulaSetting()) {
+                         let leftItem  = item.formulaSetting.leftItem;
+                         let rightItem = item.formulaSetting.rightItem;
+
+                         // check whether left item is a nonexistent formula
+                         // only check item selection setting method
+                         if (item.isSettingMethodOfItemSelection(leftItem)) {
+                             // if formula not found => invalid setting
+                             if (!self.isFormulaExist(leftItem.formulaItemId)) {
+                                 return true;
+                             }
+                         }
+
+                         // check whether right item is a nonexistent formula
+                         // only check item selection setting method
+                         if (item.isSettingMethodOfItemSelection(rightItem)) {
+                             // if formula not found => invalid setting
+                             if (!self.isFormulaExist(rightItem.formulaItemId)) {
+                                 return true;
+                             }
+                         }
+                     }
+
+                     // setting is valid
+                     return false;
+                 });
+
+            }
+
+            /**
+             * Check a formula's existent
+             */
+            private isFormulaExist(id: string): boolean {
+                let self = this;
+                let found = _.find(self.calcFormulas(), item => item.formulaId == id);
+                if (found) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
              * Add formula above
              */
             public addFormulaAbove(): void {
@@ -700,10 +751,10 @@ module nts.uk.at.view.kmk002.a {
 
                 // set formula setting result
                 _.each(self.calcFormulas(), formula => {
-                    if (formula.calcAtr() == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.calcAtr)) {
-                        formula.setItemSelectionResult(formula.itemSelection);
-                    } else {
+                    if (formula.isTypeOfFormulaSetting()) {
                         formula.setFormulaSettingResult(formula.formulaSetting);
+                    } else {
+                        formula.setItemSelectionResult(formula.itemSelection);
                     }
                 });
 
@@ -1018,24 +1069,13 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 // validate list formula
-                if (!self.isListFormulaValid()) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_111' });
+                let invalid = self.optionalItem.findInvalidFormula();
+                if (invalid) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_111', messageParams: [invalid.orderNo] });
                     return false;
                 };
 
                 return true;
-            }
-
-            /**
-             * Checks whether an item of a nonexistent line is set in a formula
-             */
-            private isListFormulaValid(): boolean {
-                // TODO chi toi dong bi loi.
-                // xem lai 計算式登録時チェック処理 trong EA.
-                if (1 == 1) {
-                    return true;
-                }
-                return false;
             }
 
             /**
@@ -1283,6 +1323,28 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Check whether calculation attribute is formula setting or not.
+             */
+            public isTypeOfFormulaSetting(): boolean {
+                let self = this;
+                if (self.calcAtr() == EnumAdaptor.valueOf('FORMULA_SETTING', Enums.ENUM_OPT_ITEM.calcAtr)) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Check whether the setting method is item selection or not
+             */
+            public isSettingMethodOfItemSelection(settingItem: SettingItemDto): boolean {
+                let self = this;
+                if (settingItem.settingMethod == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.settingMethod)) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
              * Clear formula setting
              */
             private clearFormulaSetting(): void {
@@ -1480,18 +1542,17 @@ module nts.uk.at.view.kmk002.a {
                 let rightItem;
 
                 // get item selection enum value.
-                let itemSelectionMethod: number = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.settingMethod);
                 let operator: string = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_OPT_ITEM.operatorAtr);
 
                 // set left item
-                if (dto.leftItem.settingMethod == itemSelectionMethod) {
+                if (self.isSettingMethodOfItemSelection(dto.leftItem)) {
                     leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
                 } else {
                     leftItem = dto.leftItem.inputValue;
                 }
 
                 // set right item
-                if (dto.rightItem.settingMethod == itemSelectionMethod) {
+                if (self.isSettingMethodOfItemSelection(dto.rightItem)) {
                     rightItem = self.getSymbolById(dto.rightItem.formulaItemId);
                 } else {
                     rightItem = dto.rightItem.inputValue;

@@ -12,23 +12,24 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @AllArgsConstructor
 @StringMaxLength(1)
 public enum ReferenceMethodType {
-	/** 固定値): 1 **/
-	FIXEDVALUE(1),
+	/** (設定なし): */
+	NOSETTING(1),
+	/** 固定値): 2 **/
+	FIXEDVALUE(2),
 
 	/** (ログイン者と同じ) */
-	SAMEASLOGIN(2),
+	SAMEASLOGIN(3),
 	/** (入社日と同じ): */
-	SAMEASEMPLOYMENTDATE(3),
+	SAMEASEMPLOYMENTDATE(4),
 	/** (社員コードと同じ): */
-	SAMEASEMPLOYEECODE(4),
+	SAMEASEMPLOYEECODE(5),
 	/** (システム日付): */
-	SAMEASBIRTHDATE(5),
+	SAMEASBIRTHDATE(6),
 	/** (氏名と同じ ): */
-	SAMEASNAME(6),
+	SAMEASNAME(7),
 	/** (氏名（カナ）と同じ): */
-	SAMEASKANANAME(7),
-	/** (設定なし): */
-	NOSETTING(8);
+	SAMEASKANANAME(8);
+
 
 	public final int value;
 
