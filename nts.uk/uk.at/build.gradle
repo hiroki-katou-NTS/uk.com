@@ -175,6 +175,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	}
 }
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra') {
@@ -224,6 +225,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.app') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	}
 }
 project (':at.ctx:function:nts.uk.ctx.at.function.infra') {
@@ -267,6 +269,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.app') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.infra') {
@@ -313,6 +316,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.app') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	}
 }
 project (':at.ctx:request:nts.uk.ctx.at.request.infra') {
@@ -353,6 +357,7 @@ project (':at.screen:nts.uk.screen.at.ws') {
 
 project (':at.screen:nts.uk.screen.at.app') {
 	dependencies {
+		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	 	compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
@@ -387,23 +392,23 @@ project (':at.file:nts.uk.file.at.ws') {
 project (':at.file:nts.uk.file.at.app') {
 	dependencies {
 		compile project (':at.screen:nts.uk.screen.at.app')
-		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
+		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	 	compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
-		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 
 project (':at.file:nts.uk.file.at.infra') {
 	dependencies {
 		compile project (':at.file:nts.uk.file.at.app')
-		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
-		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project (':at.ctx:record:nts.uk.ctx.at.record.infra')
+		compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
-		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
-		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 	}
 }
 //=============at.file↑===========================================
@@ -451,6 +456,11 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime project (':at.ctx:shared:nts.uk.ctx.at.shared.ac')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.app')

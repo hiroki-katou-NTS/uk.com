@@ -12,7 +12,7 @@ __viewContext.ready(function () {
             self.readonly = ko.observable(false);
             
             self.timeOfDay = ko.observable(2400);
-            self.time = ko.observable(1200);
+            self.time = ko.observable(null);
             self.time2 = ko.observable(3200);
         }
     }
