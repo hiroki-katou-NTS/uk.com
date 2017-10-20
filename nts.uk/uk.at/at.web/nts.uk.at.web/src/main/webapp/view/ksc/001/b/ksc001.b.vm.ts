@@ -356,11 +356,22 @@ module nts.uk.at.view.ksc001.b {
                 self.previous();
             }
             /**
-             * function next page by selection employee goto page (D)
+             * function next page by selection employee goto next page
              */
             private nextPageC(): void {
                 var self = this;
-                self.next();
+                //
+                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
+                    //build string for Screen E
+                    self.buildString();
+                    //goto screen E
+                    var index = $('#wizard').ntsWizard("getCurrentStep");
+                    $('#wizard').ntsWizard("goto", index + 2);
+                }
+                else {
+                    // goto screen D
+                    self.next();
+                }
             }
             /**
              * function previous page by selection employee goto page (D)
@@ -374,58 +385,8 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
-                var lstLabelInfomation: string[] = [];
-                if (self.selectedImplementAtrCode() == ImplementAtr.GENERALLY_CREATED) {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_35"));
-                } else {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_36"));
-                }
-                self.lstLabelInfomation(lstLabelInfomation);
-                if (self.checkReCreateAtrAllCase()) {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_4"));
-                }
-                if (self.checkReCreateAtrOnlyUnConfirm()) {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_5"));
-                }
-                if (self.checkProcessExecutionAtrRebuild()) {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_7"));
-                }
-                if (self.checkProcessExecutionAtrReconfig()) {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_8"));
-                }
-                if (self.resetWorkingHours()) {
-                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
-                }
-                if (self.resetDirectLineBounce()) {
-                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
-                }
-                if (self.resetMasterInfo()) {
-                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
-                }
-                if (self.resetTimeChildCare()) {
-                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
-                }
-                if (self.resetAbsentHolidayBusines()) {
-                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
-                }
-                if (self.resetTimeAssignment()) {
-                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
-                }
-                if (self.confirm()) {
-                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_17"));
-                }
-                self.lstLabelInfomation(lstLabelInfomation);
-                if(self.checkCreateMethodAtrPersonalInfo()){
-                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_22"));    
-                }
-                if(self.checkCreateMethodAtrPatternSchedule()){
-                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));    
-                }
-                if(self.checkCreateMethodAtrCopyPastSchedule()){
-                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",[moment(self.copyStartDate()).format('YYYY/MM/DD')]));    
-                }
-                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46",[moment(self.periodStartDate()).format('YYYY/MM/DD'),(moment(self.periodEndDate()).format('YYYY/MM/DD'))]));
-                self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47",[self.selectedEmployeeCode().length]));
+                
+                self.buildString();
                 self.next();
             }
             /**
@@ -433,7 +394,15 @@ module nts.uk.at.view.ksc001.b {
              */
             private previousPageE(): void {
                 var self = this;
-                self.previous();
+                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
+                    //back screen C
+                    var index = $('#wizard').ntsWizard("getCurrentStep");
+                    $('#wizard').ntsWizard("goto", index - 2);
+                }
+                else {
+                    //back screen D
+                    self.previous();
+                }
             }
             /**
              * finish next page by selection employee goto page (F)
@@ -459,6 +428,84 @@ module nts.uk.at.view.ksc001.b {
                 });
             }
             
+            private buildString() {
+                var self = this;
+                var lstLabelInfomation: string[] = [];
+
+                //NO1
+                if (self.selectedImplementAtrCode() == ImplementAtr.GENERALLY_CREATED) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_35"));
+                } else {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_36"));
+
+                    //NO2
+                    if (self.checkReCreateAtrAllCase()) {
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_4"));
+                    }
+                    if (self.checkReCreateAtrOnlyUnConfirm()) {
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_5"));
+                    }
+
+                    //NO3
+                    if (self.checkProcessExecutionAtrRebuild()) {
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_7"));
+                    } else {
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_8"));
+
+                        //NO4
+                        if (self.resetWorkingHours()) {
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_15"));
+                        }
+
+                        //NO5
+                        if (self.resetDirectLineBounce()) {
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_11"));
+                        }
+
+                        //NO6
+                        if (self.resetMasterInfo()) {
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_12"));
+                        }
+
+                        //NO7
+                        if (self.resetTimeChildCare()) {
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_13"));
+                        }
+
+                        //NO8
+                        if (self.resetAbsentHolidayBusines()) {
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_14"));
+                        }
+
+                        //NO9
+                        if (self.resetTimeAssignment()) {
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_16"));
+                        }
+                    }
+                }
+
+                if (self.confirm()) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_17"));
+                }
+                self.lstLabelInfomation(lstLabelInfomation);
+
+                //reset infoCreateMethod !important
+                self.infoCreateMethod('');
+                //check select recreate and select resetting
+                if (!((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig())) {
+                    if (self.checkCreateMethodAtrPersonalInfo()) {
+                        self.infoCreateMethod(nts.uk.resource.getText("KSC001_22"));
+                    }
+                    if (self.checkCreateMethodAtrPatternSchedule()) {
+                        self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));
+                    }
+                    if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                        self.infoCreateMethod(nts.uk.resource.getText("KSC001_39", [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
+                    }
+                }
+                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46", [moment(self.periodStartDate()).format('YYYY/MM/DD'), (moment(self.periodEndDate()).format('YYYY/MM/DD'))]));
+                self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47", [self.selectedEmployeeCode().length]));
+            }
             /**
              * function createPersonalSchedule to client by check month max
              */
