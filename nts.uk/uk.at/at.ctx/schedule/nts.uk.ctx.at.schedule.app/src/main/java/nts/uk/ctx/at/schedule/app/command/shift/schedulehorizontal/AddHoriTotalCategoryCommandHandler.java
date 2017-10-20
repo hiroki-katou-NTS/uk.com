@@ -41,19 +41,6 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 					.map(x -> x.toDomainOrder(companyId, data.getCategoryCode()))
 					.collect(Collectors.toList());
 		}
-//		// get hori cal day set item
-//		if(data.getHoriCalDaysSet() != null){
-//			horiCalDaysSet = context.getCommand().getHoriCalDaysSet()
-//								.toDomainCalSet(companyId, data.getCategoryCode());
-//		}
-		
-//		// get hori total cnt set list
-//		if(data.getCntSetls() != null){
-//			horiCntSets = data.getCntSetls().stream()
-//											.map(x -> x.toDomainCNTSet(companyId, data.getCategoryCode(), 
-//																		x.getTotalItemNo(), x.getTotalTimeNo()))
-//											.collect(Collectors.toList());
-//		}
 		HoriTotalCategory hori = HoriTotalCategory.createFromJavaType(companyId, 
 																	data.getCategoryCode(), 
 																	data.getCategoryName(), 

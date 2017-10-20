@@ -94,6 +94,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.cntSetAll = ko.observableArray([]);
             
             self.selectedCode.subscribe((value) => {
+                var t0 = performance.now(); 
                 self.list([]);
                 self.items([]);
                 let lstTemp = [];
@@ -165,6 +166,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
 //                    self.selectedOption(new TotalCategory(foundItem));
 //                    foundItem.totalEvalOrders.horiCalDaysSet = self.calSetObject();
                 }
+                var t1 = performance.now();
+                console.log("Selection process " + (t1 - t0) + " milliseconds.");
             });
         }
 
