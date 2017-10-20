@@ -19,6 +19,7 @@ import find.person.info.category.PerInfoCtgDataEnumDto;
 import find.person.info.category.PerInfoCtgFullDto;
 import find.person.info.category.PerInfoCtgMapDto;
 import find.person.info.category.PerInfoCtgWithItemsNameDto;
+import find.person.info.category.PerInfoCtgWithParentMapDto;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/category")
@@ -59,6 +60,12 @@ public class PerInfoCtgWebservice extends WebService {
 	@Path("find/perInfoCtgHasItems")
 	public List<PerInfoCtgMapDto> getPerInfoCtgHasItems(String ctgName){
 		return perInfoCtgFinder.getAllPerInfoCategoryWithCondition(ctgName);
+	}
+	
+	@POST
+	@Path("find/getPerInfoWithParent")
+	public List<PerInfoCtgWithParentMapDto> getPerInfoWithParent(String parentCd){
+		return perInfoCtgFinder.getPerInfoCtgWithParent(parentCd);
 	}
 	
 	@POST

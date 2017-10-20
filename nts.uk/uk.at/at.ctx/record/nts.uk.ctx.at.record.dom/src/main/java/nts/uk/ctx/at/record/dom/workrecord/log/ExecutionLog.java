@@ -9,52 +9,55 @@ import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ObjectPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalExeSettingInfor;
 
 /**
- * @author danpv
+ * 実行ログ
+ * @author tutk
  *
  */
 @Getter
 public class ExecutionLog {
 
 	/**
-	 * mother of id
+	 * 就業計算と集計実行ログID
 	 */
 	private long empCalAndSumExecLogId;
 
 	/**
-	 * ・日別作成 ・日別計算 ・承認結果反映 ・月別集計
+	 * 設定情報
 	 * 
-	 * 通常実行 再実行
 	 */
 	private CalExeSettingInfor calExeSetInfor;
 
 	/**
-	 * ・日別作成 ・日別計算 ・承認結果反映 ・月別集計
+	 * 実行内容
 	 */
 	private ExecutionContent executionContent;
 
 	/**
-	 * ・エラーあり ・エラーなし
+	 * エラーの有無
 	 */
 	public ErrorPresent errorPresentation;
 
 	/**
-	 * caseExecutionContentId
+	 * ケース別実行実施内容ID
 	 */
 	private int caseExecutionContentId;
 
 	/**
-	 * ・完了 ・処理中 ・未完了
+	 * 処理状況
 	 */
 	private ExecutionStatus processStatus;
 
 	/**
+	 * 実行日時
 	 * start time - end time
 	 */
 	private ExecutionTime executionTime;
 
 	/**
+	 * 対象期間
 	 * start date - end date
 	 */
 	private ObjectPeriod objectPeriod;

@@ -14,19 +14,36 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         // history:
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
+        historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
 
         constructor() {
             let self = this,
-                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem();
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                historySelection: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                _selectId = _.find(listHistorySelection, x => x.selectionItemId == historySelection.selectionItemId),
+                comand: HistorySelection = ko.toJS(historySelection);
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
-                    nts.uk.ui.errors.clearAll();
-                    service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
-                        if (_perInfoSelectionItem) {
-                            perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
-                        }
+//                    nts.uk.ui.errors.clearAll();
+//                    
+//                    
+//                    service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
+//                        if (_perInfoSelectionItem) {
+//                            perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
+//                        }
+//                    });
+                let selectedObject = _.find( self.listItems(),(item)=>{
+                    return item.selectionItemId == x;  
+                } );
+                perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
+      
+                //history
+                service.getAllPerInfoHistorySelection(x).done((_selectionItemId: IHistorySelection) => {                    
+                            self.listHistorySelection(_selectionItemId);
+ 
                     });
                 }
             });
@@ -35,6 +52,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //開始
         start(): JQueryPromise<any> {
             let self = this,
+                historySelection: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                _selectId = _.find(listHistorySelection, x => x.selectionItemId == historySelection.selectionItemId),
+                comand: HistorySelection = ko.toJS(historySelection),
                 dfd = $.Deferred();
 
             nts.uk.ui.errors.clearAll();
@@ -55,32 +76,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     alertError({ messageId: "Msg_455" });
                 }
                 dfd.resolve();
-
-
             }).fail(error => {
                 //0件の場合: エラーメッセージの表示(#Msg_455)
                 alertError({ messageId: "Msg_455" });
             });
 
-
-            //Histor:
-            service.getAllPerInfoHistorySelection().done((listHistorySelection: Array<IHistorySelection>) => {
-                //項目がある場合
-                if (listHistorySelection && listHistorySelection.length > 0) {
-                    listHistorySelection.forEach(x => self.listHistorySelection.push(x));
-                    //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
-                    //debugger;
-
-                } else {
-                    alertError({ messageId: "Msg_455" });
-                }
-                dfd.resolve();
-            }).fail(error => {
-                alertError({ messageId: "Msg_455" });
-            });
-
             return dfd.promise();
         }
+        
 
         //ダイアログC画面
         openDialogC() {

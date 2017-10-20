@@ -87,15 +87,36 @@ public interface EmployeeRepository {
 	Boolean isDuplicateEmpCode(String companyId, String employeeCode);
 
 	Boolean isDuplicateCardNo(String companyId, String cardNumber);
-	
-	//laitv
+
+	// laitv
+	/**
+	 * Get Employee Info
+	 * 
+	 * @param employeeId
+	 * @return
+	 */
 	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
 
-	List<Object[]> getAllEmployeeInfoToDelete();
 	/**
+	 * Get Employee Info
 	 * 
-	 * temporary delete Employee 
-	 * @param domain: DeleteEmpManagement
+	 * @param employeeId
+	 * @return
 	 */
-	void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement);
+	Optional<Object[]> getEmployeeDetailToDelete(String employeeId);
+	
+	/**
+	 * Get list EmployeeDelete
+	 * @return
+	 */
+
+	List<Object[]> getAllEmployeeInfoToDelete();
+
+	
+
+	/**
+	 * Update Employee
+	 * @param domain
+	 */
+	void updateEmployee(Employee domain);
 }

@@ -154,6 +154,12 @@ module cps001.a.vm {
 
             modal('../e/index.xhtml').onClosed(() => { });
         }
+        
+        uploadebook(){
+            let self = this;
+
+            modal('../f/index.xhtml').onClosed(() => { });    
+        }
 
         saveData() {
             let self = this;

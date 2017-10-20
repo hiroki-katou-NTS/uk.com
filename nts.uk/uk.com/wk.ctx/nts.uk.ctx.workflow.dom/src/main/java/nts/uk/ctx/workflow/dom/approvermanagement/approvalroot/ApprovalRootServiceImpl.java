@@ -45,20 +45,19 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 
 	@Inject
 	private CompanyApprovalRootRepository comApprovalRootRepository;
-	
+
 	@Inject
 	private PersonApprovalRootRepository perApprovalRootRepository;
-	
+
 	@Inject
 	private WorkplaceApprovalRootRepository wkpApprovalRootRepository;
-	
+
 	@Inject
 	private ApprovalPhaseRepository approvalPhaseRepository;
-	
 
 	@Inject
 	private EmployeeAdapter employeeAdapter;
-	
+
 	@Inject
 	private JobtitleToApproverService jobtitleToAppService;
 
@@ -67,7 +66,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	 */
 	@Inject
 	private ApprovalAgencyInfoService appAgencyInfoService;
-	
+
 	/** 承認設定 */
 	@Inject
 	private ApprovalSettingRepository approvalSettingRepository;
@@ -75,98 +74,114 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
 	 * 
-	 * @param cid 会社ID
-	 * @param sid 社員ID（申請本人の社員ID）
-	 * @param employmentRootAtr 就業ルート区分
-	 * @param subjectRequest 対象申請
-	 * @param baseDate 基準日
+	 * @param cid
+	 *            会社ID
+	 * @param sid
+	 *            社員ID（申請本人の社員ID）
+	 * @param employmentRootAtr
+	 *            就業ルート区分
+	 * @param subjectRequest
+	 *            対象申請
+	 * @param baseDate
+	 *            基準日
 	 */
 	@Override
-	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(
-			String cid, String sid, int employmentRootAtr, 
-			int appType,GeneralDate baseDate) {
+	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
+			int appType, GeneralDate baseDate) {
 		List<ApprovalRootOutput> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
-		List<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate, appType);
+		List<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate,
+				appType);
 		if (CollectionUtil.isEmpty(perAppRoots)) {
 			// get 個人別就業承認ルート from workflow by other conditions
-			List<PersonApprovalRoot> perAppRootsOfCommon = this.perApprovalRootRepository.findByBaseDateOfCommon(cid, sid, baseDate);
+			List<PersonApprovalRoot> perAppRootsOfCommon = this.perApprovalRootRepository.findByBaseDateOfCommon(cid,
+					sid, baseDate);
 			if (CollectionUtil.isEmpty(perAppRootsOfCommon)) {
 				// 所属職場を含む上位職場を取得
 				List<String> wpkList = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
 				for (String wｋｐId : wpkList) {
-					List<WorkplaceApprovalRoot> wkpAppRoots = this.wkpApprovalRootRepository.findByBaseDate(cid, wｋｐId, baseDate, appType);
+					List<WorkplaceApprovalRoot> wkpAppRoots = this.wkpApprovalRootRepository.findByBaseDate(cid, wｋｐId,
+							baseDate, appType);
 					if (!CollectionUtil.isEmpty(wkpAppRoots)) {
 						// 2.承認ルートを整理する
-						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
+						result = wkpAppRoots.stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))
+								.collect(Collectors.toList());
 						this.adjustmentData(cid, sid, baseDate, result);
 						break;
-					} 
-					
-					List<WorkplaceApprovalRoot> wkpAppRootsOfCom = this.wkpApprovalRootRepository.findByBaseDateOfCommon(cid, wｋｐId, baseDate);
+					}
+
+					List<WorkplaceApprovalRoot> wkpAppRootsOfCom = this.wkpApprovalRootRepository
+							.findByBaseDateOfCommon(cid, wｋｐId, baseDate);
 					if (!CollectionUtil.isEmpty(wkpAppRootsOfCom)) {
 						// 2.承認ルートを整理する
-						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
+						result = wkpAppRoots.stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))
+								.collect(Collectors.toList());
 						this.adjustmentData(cid, sid, baseDate, result);
 						break;
-					} 
+					}
 				}
-				
+
 				// ドメインモデル「会社別就業承認ルート」を取得する
-				List<CompanyApprovalRoot> comAppRoots = this.comApprovalRootRepository.findByBaseDate(cid, baseDate, appType);
-				if (CollectionUtil.isEmpty(comAppRoots)){
-					List<CompanyApprovalRoot> companyAppRootsOfCom = this.comApprovalRootRepository.findByBaseDateOfCommon(cid, baseDate);
+				List<CompanyApprovalRoot> comAppRoots = this.comApprovalRootRepository.findByBaseDate(cid, baseDate,
+						appType);
+				if (CollectionUtil.isEmpty(comAppRoots)) {
+					List<CompanyApprovalRoot> companyAppRootsOfCom = this.comApprovalRootRepository
+							.findByBaseDateOfCommon(cid, baseDate);
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
-						result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());
+						result = comAppRoots.stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
+								.collect(Collectors.toList());
 						this.adjustmentData(cid, sid, baseDate, result);
-					} 
-				}else {
+					}
+				} else {
 					// 2.承認ルートを整理する
-					result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());
+					result = comAppRoots.stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
+							.collect(Collectors.toList());
 					this.adjustmentData(cid, sid, baseDate, result);
 				}
-					
-			}else {
+
+			} else {
 				// 2.承認ルートを整理する
-				result = perAppRoots.stream().map( x -> ApprovalRootOutput.convertFromPersonData(x)).collect(Collectors.toList());
+				result = perAppRoots.stream().map(x -> ApprovalRootOutput.convertFromPersonData(x))
+						.collect(Collectors.toList());
 				this.adjustmentData(cid, sid, baseDate, result);
 			}
-			
-		}else {
+
+		} else {
 			// 2.承認ルートを整理する
-			result = perAppRoots.stream().map( x -> ApprovalRootOutput.convertFromPersonData(x)).collect(Collectors.toList());
+			result = perAppRoots.stream().map(x -> ApprovalRootOutput.convertFromPersonData(x))
+					.collect(Collectors.toList());
 			this.adjustmentData(cid, sid, baseDate, result);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
-	 * 2.承認ルートを整理する 
+	 * 2.承認ルートを整理する
 	 * 
 	 * @param cid
 	 * @param sid
 	 * @param baseDate
-	 * @param branchIds	
+	 * @param branchIds
 	 */
 	@Override
-	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootOutput> appDatas) {
+	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,
+			List<ApprovalRootOutput> appDatas) {
 		appDatas.stream().forEach(x -> {
 			List<ApprovalPhase> appPhase = this.approvalPhaseRepository.getAllIncludeApprovers(cid, x.getBranchId())
-					.stream().filter(f -> f.getBrowsingPhase() == 0)
-					.collect(Collectors.toList());
+					.stream().filter(f -> f.getBrowsingPhase() == 0).collect(Collectors.toList());
 			x.setBeforeApprovers(appPhase);
 			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
 			x.setAfterApprovers(phases);
 			// 7.承認ルートの異常チェック
 			ErrorFlag errorFlag = ErrorFlag.NO_ERROR;
-			if(CollectionUtil.isEmpty(appPhase)) {
+			if (CollectionUtil.isEmpty(appPhase)) {
 				errorFlag = ErrorFlag.NO_APPROVER;
-			}else {
-				errorFlag = this.checkError(appPhase, phases);				
+			} else {
+				errorFlag = this.checkError(appPhase, phases);
 			}
-			 
+
 			x.setErrorFlag(errorFlag);
 		});
 		return appDatas;
@@ -182,136 +197,137 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			if (!CollectionUtil.isEmpty(phase.getApprovers())) {
 				int approverCounts = 0;
 				List<ApproverInfo> afterApprovers = new ArrayList<>();
-				if(!CollectionUtil.isEmpty(afterDatas)) {
-					afterApprovers = afterDatas.stream().filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get().getApprovers();
+				if (!CollectionUtil.isEmpty(afterDatas)) {
+					afterApprovers = afterDatas.stream()
+							.filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get()
+							.getApprovers();
 					approverCounts = afterApprovers.size();
 				}
-				//int approverCounts = afterApprovers.size();
-				
+				// int approverCounts = afterApprovers.size();
+
 				// １フェーズにトータルの実際の承認者 > 10
 				if (approverCounts > 10) {
 					errorFlag = ErrorFlag.APPROVER_UP_10;
 					break;
 				}
-				
+
 				// １フェーズにトータルの実際の承認者 <= 0
 				if (approverCounts <= 0) {
 					errorFlag = ErrorFlag.NO_APPROVER;
 					break;
 				}
-				
+
 				// approvers count > 0 and < 10
 				if (phase.getApprovalForm() == ApprovalForm.SINGLE_APPROVED) {
-					List<Approver> befApprovers = phase.getApprovers().stream().filter(x-> x.getConfirmPerson() == ConfirmPerson.CONFIRM).collect(Collectors.toList());
-					
+					List<Approver> befApprovers = phase.getApprovers().stream()
+							.filter(x -> x.getConfirmPerson() == ConfirmPerson.CONFIRM).collect(Collectors.toList());
+
 					if (!CollectionUtil.isEmpty(befApprovers)) {
 						// 確定者あるドメインモデル「承認者」から変換した実際の承認者がいるかチェックする
-						Optional<ApproverInfo> approver =  afterApprovers.stream().map(x -> {
-							Optional<Approver> impBef = befApprovers.stream().filter(y -> y.getApproverId().equals(x.getSid())).findFirst();
+						Optional<ApproverInfo> approver = afterApprovers.stream().map(x -> {
+							Optional<Approver> impBef = befApprovers.stream()
+									.filter(y -> y.getApproverId().equals(x.getSid())).findFirst();
 							if (!impBef.isPresent()) {
 								return null;
 							}
 							return x;
 						}).findFirst();
-						
+
 						if (!approver.isPresent()) {
 							errorFlag = ErrorFlag.NO_CONFIRM_PERSON;
 							break;
 						}
 					}
 				}
-				
+
 			}
 		}
-		
+
 		return errorFlag;
 	}
-	
-	
+
 	/**
 	 * 2.承認ルートを整理する call this activity fo every branchId
 	 */
 	private List<ApprovalPhaseOutput> adjustmentApprovalRootData(String cid, String sid, GeneralDate baseDate,
 			List<ApprovalPhase> appPhases) {
 		List<ApprovalPhaseOutput> phaseResults = new ArrayList<>();
-		
+
 		for (ApprovalPhase phase : appPhases) {
 			ApprovalPhaseOutput phaseResult = ApprovalPhaseOutput.convertToOutputData(phase);
-			
+
 			List<Approver> approvers = phase.getApprovers();
-			if (!CollectionUtil.isEmpty(approvers)) {
-				List<ApproverInfo> approversResult = new ArrayList<>();
-				approvers.stream().forEach(x -> {
-					// 個人の場合
-					if (x.getApprovalAtr() == ApprovalAtr.PERSON) {
-						approversResult.add(new ApproverInfo(x.getJobTitleId(),
-								x.getEmployeeId(), 
-								x.getApprovalPhaseId(), 
-								true, 
-								x.getOrderNumber(),
-								employeeAdapter.getEmployeeName(x.getEmployeeId()),
-								x.getApprovalAtr().value
-								));
-					} else {
-						// 職位の場合
-						List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid,
-								baseDate, x.getJobTitleId());
-						if(approversOfJob != null) {
-							approversResult.addAll(approversOfJob);
-						}
-					}
-				});
-				
-				// 承認者IDリストに承認者がいるかチェックする
-				if (!CollectionUtil.isEmpty(approversResult)) {
-					List<String> approverIds = approversResult.stream().map(x -> x.getSid()).collect(Collectors.toList());	
-					// 3-1.承認代行情報の取得処理
-					ApprovalAgencyInfoOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(cid, approverIds);
-					// remove approvers with agency is PASS
-					List<String> agencyAppIds = agency.getListApproverAndRepresenterSID().stream()
-							.filter(x -> x.getRepresenter().equals("Pass"))
-							.map(x->x.getApprover()).collect(Collectors.toList());
-					approverIds.removeAll(agencyAppIds);
-					
-					//get 承認設定 
-					PrincipalApprovalFlg appSetting = this.approvalSettingRepository.getPrincipalByCompanyId(cid);
-					if (!Objects.isNull(appSetting)) {
-						if (appSetting == PrincipalApprovalFlg.NOT_PRINCIPAL) {
-							// 申請本人社員IDを承認者IDリストから消す
-							approverIds.remove(sid);
-						}
-					}
-					
-					// remove duplicate data
-					phaseResult.addApproverList(removeDuplicateSid(approversResult.stream().filter(x -> {
-						return approverIds.contains(x);
-					}).collect(Collectors.toList())));
-					
-					// add to result
-					phaseResults.add(phaseResult);
+			if (CollectionUtil.isEmpty(approvers)) {
+				break;
+			}
+
+			List<ApproverInfo> approversResult = new ArrayList<>();
+			approvers.stream().forEach(x -> {
+				// 個人の場合
+				if (x.getApprovalAtr() == ApprovalAtr.PERSON) {
+					approversResult.add(ApproverInfo.create(x, employeeAdapter.getEmployeeName(x.getEmployeeId())));
+				} else {
+					// 職位の場合
+					List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid, baseDate,
+							x.getJobTitleId());
+					approversResult.addAll(approversOfJob);
+				}
+			});
+
+			// 承認者IDリストに承認者がいるかチェックする
+			if (CollectionUtil.isEmpty(approversResult)) {
+				break;
+			}
+			
+			List<String> approverIds = approversResult.stream().map(x -> x.getSid()).collect(Collectors.toList());
+			// 3-1.承認代行情報の取得処理
+			ApprovalAgencyInfoOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(cid, approverIds);
+			// remove approvers with agency is PASS
+			List<String> agencyAppIds = agency.getListApproverAndRepresenterSID().stream()
+					.filter(x -> x.getRepresenter().equals("Pass")).map(x -> x.getApprover())
+					.collect(Collectors.toList());
+			approverIds.removeAll(agencyAppIds);
+
+			// get 承認設定
+			PrincipalApprovalFlg appSetting = this.approvalSettingRepository.getPrincipalByCompanyId(cid);
+			if (!Objects.isNull(appSetting)) {
+				if (appSetting == PrincipalApprovalFlg.NOT_PRINCIPAL) {
+					// 申請本人社員IDを承認者IDリストから消す
+					approverIds.remove(sid);
 				}
 			}
+
+			// remove duplicate data
+			phaseResult.addApproverList(removeDuplicateSid(approversResult.stream().filter(x -> {
+				return approverIds.contains(x);
+			}).collect(Collectors.toList())));
+
+			// add to result
+			phaseResults.add(phaseResult);
 		}
 		return phaseResults;
 	}
 
 	/**
-	 * 承認者IDリストに重複の社員IDを消す(xóa ID của nhân viên bị trùng trong List ID người xác nhận)
+	 * 承認者IDリストに重複の社員IDを消す(xóa ID của nhân viên bị trùng trong List ID người xác
+	 * nhận)
 	 * 
-	 * @param approvers 承認者IDリスト
+	 * @param approvers
+	 *            承認者IDリスト
 	 * @return ApproverInfos
 	 */
 	private List<ApproverInfo> removeDuplicateSid(List<ApproverInfo> approvers) {
 		List<ApproverInfo> result = new ArrayList<>();
-		
-		Map<String, List<ApproverInfo>> approversBySid = approvers.stream().collect(Collectors.groupingBy(x -> x.getSid()));
+
+		Map<String, List<ApproverInfo>> approversBySid = approvers.stream()
+				.collect(Collectors.groupingBy(x -> x.getSid()));
 		for (Map.Entry<String, List<ApproverInfo>> info : approversBySid.entrySet()) {
 			List<ApproverInfo> values = info.getValue();
-			values.sort((a,b) -> Integer.compare(a.getOrderNumber(), b.getOrderNumber()));
+			values.sort((a, b) -> Integer.compare(a.getOrderNumber(), b.getOrderNumber()));
 			Optional<ApproverInfo> value = values.stream().filter(x -> x.getIsConfirmPerson()).findFirst();
 			if (value.isPresent()) {
 				result.add(value.get());
-			}else {
+			} else {
 				result.add(values.get(0));
 			}
 		}

@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 
 /**
  * 承認者IDリスト
@@ -28,4 +29,14 @@ public class ApproverInfo {
 	private String name;
 	/**確定者*/
 	private int approvalAtr;
+	
+	public static ApproverInfo create(Approver x, String employeeName) {
+		 	return new ApproverInfo(x.getJobTitleId(),
+		 			x.getEmployeeId(), 
+		 			x.getApprovalPhaseId(), 
+		 			true, 
+		 			x.getOrderNumber(),
+		 			employeeName,
+		 			x.getApprovalAtr().value);
+			}
 }
