@@ -19,22 +19,15 @@ module cps001.f.vm {
         onchange: (filename) => void;
         onfilenameclick: (filename) => void;
 
-
         items: Array<GridItem> = [];
-        comboItems = [new ItemModel('1', '基本給'),
-            new ItemModel('2', '役職手当'),
-            new ItemModel('3', '基本給2')];
+        comboItems: Array<PersonCtg> = [];
 
-        comboColumns = [{ prop: 'code', length: 4 },
-            { prop: 'name', length: 8 }];
+        comboColumns = [{ prop: 'categoryName', length: 12 }];
 
 
         constructor() {
             let self = this,
-                dto: IModelDto = getShared('CPS001B_PARAM') || {};
-            self.start();
-            console.log(self.items);
-            $("#grid2").ntsGrid('option', 'dataSource', self.items);
+                dto: any = getShared('CPS001B_PARAM') || {};
 
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
@@ -44,25 +37,33 @@ module cps001.f.vm {
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
             self.onchange = (filename) => {
+
             };
             self.onfilenameclick = (filename) => {
                 alert(filename);
             };
-
         }
 
-        start() {
-            let self = this;
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
 
+            var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
+            var dfdGetInfoCategory = service.getInfoCatagory();
 
-            for (let i = 0; i < 5; i++) {
-                self.items.push(new GridItem(i));
-            }
-
-            service.getInfoCatagory().done((data: Array<IPerInfoCtgFullDto>) => {
-                console.log(data);
+            $.when(dfdGetData, dfdGetInfoCategory).done((data1: Array<IEmpFileMana>, data2: Array<IPersonCtg>) => {
+                _.forEach(data1, function(item) {
+                    self.items.push(new GridItem(item));
+                });
+                _.forEach(data2, function(item) {
+                    self.comboItems.push(new PersonCtg(item));
+                });
+                dfd.resolve();
             });
+            return dfd.promise();
         }
+
+
         pushData() {
             let self = this;
             // upload file 
@@ -76,7 +77,6 @@ module cps001.f.vm {
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
             });
-            let fileid = self.fileId();
 
             setShared('CPS001B_VALUE', {});
         }
@@ -86,42 +86,61 @@ module cps001.f.vm {
         }
     }
 
-    interface IPerInfoCtgFullDto {
-        id: string;
-        categoryName: string;
-    }
-
-    class PerInfoCtgFullDto {
-        id: string;
-        categoryName: string;
-        constructor(param: IPerInfoCtgFullDto) {
-            this.id = param.id;
-            this.categoryName = param.categoryName;
-        }
-    }
 
     class GridItem {
-        id: number;
-        header2: string;
+        id: string;
+        filename: string;
         flag: boolean;
         ruleCode: string;
         combo: string;
-        constructor(index: number) {
-            this.id = index;
-            this.header2 = index.toString();
-            this.flag = index % 2 == 0;
-            this.ruleCode = String(index % 3 + 1);
-            this.combo = String(index % 3 + 1);
+        constructor(param: IEmpFileMana) {
+            this.id = nts.uk.util.randomId();
+            this.filename = param.categoryName;
+            this.flag = true;
+            this.ruleCode = param.fileId;
+            this.combo = param.fileId;
         }
     }
 
-    class ItemModel {
+    interface IEmpFileMana {
+        employeeId: string;
+        fileId: string;
+        categoryName: string;
+        personInfoCategoryId: string;
+        uploadOrder: number;
+    }
+
+    class EmpFileMana {
+        employeeId: string;
+        fileId: string;
+        categoryName: string;
+        personInfoCategoryId: string;
+        uploadOrder: number;
+        constructor(param: IEmpFileMana) {
+            this.employeeId = param.employeeId;
+            this.fileId = param.fileId;
+            this.categoryName = param.categoryName;
+            this.personInfoCategoryId = param.personInfoCategoryId;
+            this.uploadOrder = param.uploadOrder;
+        }
+    }
+
+    interface IPersonCtg {
+        id: string;
+        categoryCode: string;
+        categoryName: string;
+        personEmployeeType: number;
+        isAbolition: number;
+        categoryType: number;
+        isFixed: number;
+    }
+
+    class PersonCtg {
         code: string;
         name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        constructor(param: IPersonCtg) {
+            this.name = param.categoryName;
+            this.code = param.id;
         }
     }
 }
