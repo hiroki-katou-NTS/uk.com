@@ -1,6 +1,8 @@
 package find.person.setting.init.item;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 @Value
 public class PerInfoInitValueSettingItemDto {
 	
@@ -29,5 +31,11 @@ public class PerInfoInitValueSettingItemDto {
 	private int intValue;
 
 	// 日付
-	private String dateValue;
+	private GeneralDate dateValue;
+	
+	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
+		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), domain.getSettingId(), domain.getPerInfoCtgId(),
+				domain.getItemName(), domain.getIsRequired().value, domain.getRefMethodType().value, domain.getSaveDataType().value,
+				domain.getStringValue().v(), Integer.valueOf(domain.getIntValue().toString()), domain.getDateValue());
+	}
 }

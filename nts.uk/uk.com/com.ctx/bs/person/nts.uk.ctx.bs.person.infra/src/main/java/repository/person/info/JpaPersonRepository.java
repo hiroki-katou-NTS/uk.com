@@ -34,10 +34,7 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 public class JpaPersonRepository extends JpaRepository implements PersonRepository {
 	public final String SELECT_NO_WHERE = "SELECT c FROM BpsmtPerson c";
 
-	
-	
 	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE + " WHERE c.bpsmtPersonPk.pId IN :pids";
-
 
 	public final String GET_LAST_CARD_NO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
 
@@ -47,6 +44,29 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	private static Person toDomain(BpsmtPerson entity) {
 		Person domain = Person.createFromJavaType(entity.bpsmtPersonPk.pId, entity.personName);
 		return domain;
+	}
+
+	private BpsmtPerson toEntity(Person domain) {
+		BpsmtPerson entity = new BpsmtPerson();
+		entity.bpsmtPersonPk = new BpsmtPersonPk(domain.getPersonId());
+		entity.birthday = domain.getBirthDate();
+		entity.bloodType = domain.getBloodType() == null ? 0: domain.getBloodType().value;
+		entity.businessEnglishName = domain.getPersonNameGroup().getBusinessEnglishName() == null ? "" : domain.getPersonNameGroup().getBusinessEnglishName().v(); 
+		entity.businessOtherName = domain.getPersonNameGroup().getBusinessOtherName() == null ? "" :domain.getPersonNameGroup().getBusinessOtherName().v();
+		entity.businessName = domain.getPersonNameGroup().getBusinessName()  == null ? "" : domain.getPersonNameGroup().getBusinessName().v();
+		entity.gender = domain.getGender() == null ? 0 :  domain.getGender().value ;
+		entity.hobby = domain.getHobBy() == null ? "" :domain.getHobBy().v();
+		entity.nationality = domain.getCountryId() == null ? "" : domain.getCountryId().v();
+		entity.oldName = domain.getPersonNameGroup().getOldName()  == null ? "" : domain.getPersonNameGroup().getOldName().toString();
+		entity.personMailAddress = domain.getMailAddress() == null ? "" : domain.getMailAddress().v();
+		entity.personMobile = domain.getPersonMobile() == null ? "" :domain.getPersonMobile().v() ;
+		entity.personName = domain.getPersonNameGroup().getPersonName() == null ? "" : domain.getPersonNameGroup().getPersonName().v();
+		entity.personNameKana = domain.getPersonNameGroup().getPersonNameKana() == null ? "" :domain.getPersonNameGroup().getPersonNameKana().v(); 
+		entity.personRomanji = domain.getPersonNameGroup().getPersonRomanji() == null ? "" : domain.getPersonNameGroup().getPersonRomanji().toString();
+		entity.taste = domain.getTaste() == null ? "" :domain.getTaste().v();
+		entity.todokedeFullName = domain.getPersonNameGroup().getTodokedeFullName() == null ? "" : domain.getPersonNameGroup().getTodokedeFullName().toString();
+		entity.todokedeOldFullName = domain.getPersonNameGroup().getTodokedeOldFullName() == null ? "" : domain.getPersonNameGroup().getTodokedeOldFullName().toString();
+		return entity;
 	}
 
 	/*
@@ -89,7 +109,8 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	public String getLastCardNo(String companyId, String startCardNoLetter) {
 		if (startCardNoLetter == null)
 			startCardNoLetter = "";
-		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARD_NO).setParameter("companyId", companyId).setParameter("cardNo", startCardNoLetter).getList();
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARD_NO).setParameter("companyId", companyId)
+				.setParameter("cardNo", startCardNoLetter).getList();
 
 		String returnStr = "";
 		if (lst.size() > 0) {
@@ -98,5 +119,10 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		}
 
 		return returnStr;
+	}
+
+	@Override
+	public void updatePerson(Person person) {
+		this.commandProxy().update(toEntity(person));
 	}
 }

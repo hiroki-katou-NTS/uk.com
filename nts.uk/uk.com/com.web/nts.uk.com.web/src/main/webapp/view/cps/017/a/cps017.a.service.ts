@@ -4,7 +4,7 @@ module nts.uk.com.view.cps017.a.service {
     var paths = {
         getAllSelectionItems: "ctx/bs/person/info/setting/selection/findAll",
         getPerInfoSelectionItem: "ctx/bs/person/info/setting/selection/findItem/{0}",
-        getAllPerInfoHistorySelection: "ctx/bs/person/info/setting/selection/findAllHistSelection"
+        getAllPerInfoHistorySelection: "ctx/bs/person/info/setting/selection/findAllHistSelection/{0}"
     }
 
     export function getAllSelectionItems() {
@@ -16,8 +16,9 @@ module nts.uk.com.view.cps017.a.service {
         return nts.uk.request.ajax("com", _path);
     }
 
-    export function getAllPerInfoHistorySelection() {
-        return ajax(paths.getAllPerInfoHistorySelection);
+    export function getAllPerInfoHistorySelection(selectedId: string) {
+        let _path = format(paths.getAllPerInfoHistorySelection, selectedId);
+        return nts.uk.request.ajax("com", _path);
     }
 }
 

@@ -27,9 +27,15 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	   + " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
 	private final String FIND_BY_DATE = FIND_BY_CID 
 	   + " AND c.endDate = :endDate"
-	   + " AND c.applicationType = :applicationType";;
+	   + " AND c.applicationType = :applicationType"
+	   + " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String FIND_BY_DATE_CFR = FIND_BY_CID 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	private final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
 				   + " AND c.endDate = :endDate"
+				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL";
 	private final String FIND_BY_BASEDATE = FIND_BY_CID
 				+ " AND c.startDate <= :baseDate"
@@ -74,12 +80,22 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return
 	 */
 	@Override
-	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType) {
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr) {
 		//common
-		if(applicationType == null){
+		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_COM_APR_BY_DATE_APP_NULL, WwfmtComApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("endDate", endDate)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(FIND_BY_DATE_CFR, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("endDate", endDate)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainComApR(c));
 		}
 		//15 app type
@@ -87,6 +103,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("companyId", companyId)
 				.setParameter("endDate", endDate)
 				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainComApR(c));
 	}
 	

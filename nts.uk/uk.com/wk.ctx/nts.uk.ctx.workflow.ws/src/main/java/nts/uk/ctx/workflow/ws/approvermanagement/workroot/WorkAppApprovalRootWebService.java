@@ -30,6 +30,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.EmployeeRegisterApprovalRoot;
@@ -78,7 +79,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	 }
 		
 	/**
-	 * Enumクラスの値一覧取得.
+	 * Enum 申請種類.
 	 *
 	 * @return the list
 	 */
@@ -144,5 +145,14 @@ public class WorkAppApprovalRootWebService extends WebService{
 		String companyId = AppContexts.user().companyId();
 		return jobTitle.findJobTitleByPositionId(companyId, jobTitleInfo.getPositionId(), jobTitleInfo.getStartDate());
 	}
-	
+	/**
+	 * Enum 確認ルート種類.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("find/confirmRootType")
+	public List<EnumConstant> findConfirmRootType() {
+		return EnumAdaptor.convertToValueNameList(ConfirmationRootType.class);
+	}
 }

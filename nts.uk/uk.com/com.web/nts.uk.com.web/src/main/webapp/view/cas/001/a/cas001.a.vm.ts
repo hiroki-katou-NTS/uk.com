@@ -37,6 +37,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 let newPersonRole = _.find(self.personRoleList(), (role) => { return role.roleId === newRoleId });
 
+
+                block.invisible();
                 service.getPersonRoleAuth(newPersonRole.roleId).done((result: IPersonRole) => {
 
                     newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(() => {
@@ -56,6 +58,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             dialog({ messageId: "Msg_364" });
                         }
 
+                    }).always(() => {
+
+                        block.clear();
                     });
                 });
 
@@ -67,6 +72,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     return;
                 }
 
+                _.defer(() => {
+                    block.invisible();
+                });
+                
                 let newCategory = _.find(self.RoleCategoryList(), (roleCategory) => {
 
                     return roleCategory.categoryId === categoryId;
@@ -81,7 +90,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         self.currentRole().currentCategory(newCategory);
 
+                    }).always(() => {
+                        block.clear();
                     });
+
                 });
             });
 
@@ -205,7 +217,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 if (!getShared('isCanceled')) {
-                    self.reload().done(function() {
+                    self.reload().always(() => {
 
                         block.clear();
 
@@ -225,7 +237,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 if (!getShared('isCanceled')) {
-                    self.reload().done(function() {
+                    self.reload().always(() => {
 
                         block.clear();
 
@@ -258,7 +270,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 showHeader: true,
 
                 width: '830px',
-    
+
                 height: '315px',
 
                 dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
@@ -268,9 +280,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 virtualization: true,
 
                 virtualizationMode: 'continuous',
-                
+
                 enter: 'right',
-                
+
                 virtualrecordsrender: function(evt, ui) {
                     if ($("#item_role_table_body").data("igGrid") === undefined) {
                         return;
@@ -391,9 +403,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 });
 
-                block.clear();
+
 
                 dfd.resolve();
+            }).always(() => {
+                block.clear();
+
             });
 
             return dfd.promise();
@@ -410,7 +425,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 dialog({ messageId: "Msg_15" }).then(function() {
 
-                    self.reload().done(function() {
+                    self.reload().always(() => {
 
                         block.clear();
 
@@ -543,7 +558,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var self = this,
                 dfd = $.Deferred();
             let screenModel = __viewContext['screenModel'];
-            block.invisible();
 
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
@@ -554,8 +568,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     screenModel.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
 
                 });
-
-                block.clear();
 
                 dfd.resolve();
             });
@@ -636,8 +648,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
 
-            block.invisible();
-
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
@@ -655,8 +665,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 grid.ntsGrid(screenModel.isDisableAll() ? "disableNtsControls" : "enableNtsControls", "isChecked", "CheckBox");
 
                 screenModel.RoleCategoryList.valueHasMutated();
-
-                block.clear();
 
                 dfd.resolve();
 

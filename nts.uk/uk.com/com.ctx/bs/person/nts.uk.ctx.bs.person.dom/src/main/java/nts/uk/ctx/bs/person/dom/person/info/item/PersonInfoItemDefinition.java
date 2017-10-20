@@ -64,7 +64,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.itemName = new ItemName(itemName);
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.isFixed = IsFixed.NOT_FIXED;
-		this.isRequired = IsRequired.REQUIRED;
+		this.isRequired = IsRequired.NONE_REQUIRED;
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}
@@ -78,7 +78,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.itemName = new ItemName(itemName);
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.isFixed = IsFixed.NOT_FIXED;
-		this.isRequired = IsRequired.REQUIRED;
+		this.isRequired = IsRequired.NONE_REQUIRED;
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}

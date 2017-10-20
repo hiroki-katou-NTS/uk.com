@@ -28,7 +28,7 @@ public class PpemtPersonInitValueSettingItem extends UkJpaEntity implements Seri
 	
 	@Basic(optional = true)
 	@Column(name = "SAVE_DATA_TYPE")
-	public int saveDataType;
+	public Integer saveDataType;
 	
 	@Basic(optional = true)
 	@Column(name = "STRING_VAL")
@@ -36,11 +36,11 @@ public class PpemtPersonInitValueSettingItem extends UkJpaEntity implements Seri
 	
 	@Basic(optional = true)
 	@Column(name = "INT_VAL")
-	public int intValue;
+	public Integer intValue;
 	
 	@Basic(optional = true)
 	@Column(name = "DATE_VAL")
-	public int dateValue;
+	public String dateValue;
 	
 	
 	@Override
