@@ -308,8 +308,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             if (!nts.uk.util.isNullOrUndefined(data)) {
                 self.commentGo1(data.commentContent1);
-                self.commentGo2(data.commentContent2);
-                self.commentBack1(data.commentContent1);
+                self.commentGo2(data.commentContent1);
+                self.commentBack1(data.commentContent2);
                 self.commentBack2(data.commentContent2);
                 self.colorGo(data.commentFontColor1);
                 self.colorBack(data.commentFontColor2);

@@ -23,14 +23,14 @@
 		</div>
 		<div class="valign-center control-group">
 			<!--申請日付 -->
-			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
+			<div class="lblTitle" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div tabindex="6" id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
 		</div>
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitle" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div>
@@ -91,7 +91,7 @@
 		<div class="valign-center control-group" data-bind="if: useMulti()">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitle" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div>
