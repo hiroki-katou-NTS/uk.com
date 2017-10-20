@@ -25,7 +25,7 @@
 			<div id="contents-area">
 				<div id="wizard" data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}" class="cf">
 					<div class="header">
-						<div class="image" data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+						<div class="image" data-icon="image/startImage.png"></div>
 						<div class="content">#{i18n.getText('KDW001_2')}</div>
 					</div>
 					<div class="steps">
@@ -34,10 +34,10 @@
 						<div class="end step-3">#{i18n.getText('KDW001_8')}</div>
 					</div>
 					<div class="contents">
-						<div class="step-1">
+						<div class="step-1">contents step1</div>
+						<div class="step-2">
 							<ui:include src="b.xhtml" />
 						</div>
-						<div class="step-2">contents step2</div>
 						<div class="step-3">contents step3</div>
 					</div>
 				</div>
