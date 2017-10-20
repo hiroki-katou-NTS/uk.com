@@ -40,13 +40,4 @@ public interface ApprovalRootService {
 	 * @param appPhases 承認フーズ
 	 */
 	List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootOutput> appDatas);
-	
-	/**
-	 * 7.承認ルートの異常チェック
-	 * 
-	 * @param beforeDatas
-	 * @param afterDatas
-	 * @return
-	 */
-	ErrorFlag checkError(List<ApprovalPhase> beforeDatas, List<ApprovalPhaseOutput> afterDatas);
 }
