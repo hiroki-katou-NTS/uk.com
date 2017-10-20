@@ -493,8 +493,23 @@ module nts.uk.at.view.kml004.a.viewmodel {
         /** click 設定 button **/
         openDDialog(itemNo: number) {
             let self = this;
-            setSharedA('KML004A_CNT_SET_ID', itemNo);
-            setSharedA('KML004A_CNT_SET_CD', self.selectedOption().categoryCode());
+            var currentEvalOrder: EvalOrder = _.find(self.selectedOption().totalEvalOrders(), function(item) {
+                return item.totalItemNo == itemNo;  
+            });
+            if(!currentEvalOrder.hasOwnProperty("horiCalDaysSet")){
+                var dataTranfer = {
+                    totalItemNo: itemNo,
+                    categoryCode: self.selectedOption().categoryCode(),
+                    cntSetls: [],    
+                };
+            }else{
+                var dataTranfer = {
+                    totalItemNo: itemNo,
+                    categoryCode: self.selectedOption().categoryCode(),
+                    cntSetls: currentEvalOrder.cntSetls(),    
+                };
+            }
+            setSharedA("KML004A_CNT_SET", dataTranfer)
             nts.uk.ui.windows.sub.modal('/view/kml/004/d/index.xhtml').onClosed(function(): any {
                 var sets = getSharedA("KML004D_CNT_SET");
                 if (!sets) {
@@ -540,21 +555,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
         openDialog(id, name) {
             var self = this;
             if ("3" == id) {
-                self.calSetObject(_.find(self.calDaySetList(), function(a){
-                    return (a.categoryCode == self.selectedOption().categoryCode() && a.totalItemNo == id);
-                }));
-                
-                if(self.calSetObject() == undefined || self.checkUpdate()==false || self.calSetObject() == null){
-                    self.calSetObject(new CalDaySet(self.selectedOption().categoryCode(), id, 0, 0, 0, 0));
-                }
-                   
                 self.openBDialog(id);
             } else if("21" == id || "22" == id) {
-                _.forEach(self.selectedOption().totalEvalOrders(), function(item){
-                    if(item.totalItemNo == id){
-                        setSharedA('KML004A_CNT_SET', item.cntSetls());
-                    } 
-                });
                 self.openDDialog(id);
             }
         }

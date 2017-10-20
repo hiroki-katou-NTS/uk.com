@@ -8,23 +8,26 @@ module nts.uk.at.view.kml004.d.viewmodel {
         // list columns 
         columns: KnockoutObservableArray<any>;
         currentCodeListSwap: KnockoutObservableArray<TotalSet>;
-        // cate code received from screen A
-        cateCode: KnockoutObservable<string>;
+        // object received from screen A
+        object: KnockoutObservable<any>;
         // item No from screen A
-        itemNo: KnockoutObservable<number>;
+//        itemNo: KnockoutObservable<number>;
         lst: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
             self.itemsSwap = ko.observableArray([]);
-            self.itemNo = ko.observable(getSharedD("KML004A_CNT_SET_ID"));
-            self.cateCode= ko.observable(getSharedD("KML004A_CNT_SET_CD"));
+//            self.itemNo = ko.observable(getSharedD("KML004A_CNT_SET_ID"));
+//            self.cateCode= ko.observable(getSharedD("KML004A_CNT_SET_CD"));
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML004_40"), key: 'totalTimeNo', width: 70 },
                 { headerText: nts.uk.resource.getText("KML004_41"), key: 'totalTimeName', width: 250, formatter: _.escape }
             ]);
+            self.object = ko.observable(getSharedD("KML004A_CNT_SET"));
             self.currentCodeListSwap = ko.observableArray([]);
-            self.currentCodeListSwap(getSharedD("KML004A_CNT_SET_CD"));
-            self.lst = ko.observableArray(getSharedD("KML004A_CNT_SET"));
+            self.currentCodeListSwap(self.object().cntSetls);
+            self.lst = ko.observableArray([]);
+            self.currentCodeListSwap(self.object().cntSetls);
+            self.lst(self.object().cntSetls);
         }  
 
         /** get total time */
@@ -34,7 +37,7 @@ module nts.uk.at.view.kml004.d.viewmodel {
             service.getAll().done((lstSet) => {
                 if(lstSet.length > 0){
                      _.forEach(lstSet, function(item) {
-                        var param = new TotalSet(self.cateCode(), self.itemNo(), item.totalCountNo, item.totalTimesName);
+                        var param = new TotalSet(self.object().categoryCode, self.object().totalItemNo, item.totalCountNo, item.totalTimesName);
                         self.itemsSwap().push(param);
                     }); 
                 }
