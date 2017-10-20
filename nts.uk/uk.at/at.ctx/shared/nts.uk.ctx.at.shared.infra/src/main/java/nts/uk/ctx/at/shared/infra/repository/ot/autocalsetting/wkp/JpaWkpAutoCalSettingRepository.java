@@ -4,22 +4,37 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.wkp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet_;
 
 /**
  * The Class JpaWkpAutoCalSettingRepository.
  */
 @Stateless
 public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
-
+	
+	/** The select no where. */
+	public final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
+	
+	/** The select by company id. */
+	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -34,6 +49,9 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository#add(nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting)
+	 */
 	@Override
 	public void add(WkpAutoCalSetting wkpAutoCalSetting) {
 		this.commandProxy().insert(this.toEntity(wkpAutoCalSetting));
@@ -44,9 +62,8 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	/**
 	 * To entity.
 	 *
-	 * @param jobAutoCalSetting
-	 *            the job auto cal setting
-	 * @return the kshmt auto job cal set
+	 * @param wkpAutoCalSetting the wkp auto cal setting
+	 * @return the kshmt auto wkp cal set
 	 */
 	private KshmtAutoWkpCalSet toEntity(WkpAutoCalSetting wkpAutoCalSetting) {
 		Optional<KshmtAutoWkpCalSet> optinal = this.queryProxy().find(
@@ -71,7 +88,7 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 * java.lang.String)
 	 */
 	@Override
-	public Optional<WkpAutoCalSetting> getAllWkpAutoCalSetting(String companyId, String wkpId) {
+	public Optional<WkpAutoCalSetting> getWkpAutoCalSetting(String companyId, String wkpId) {
 		KshmtAutoWkpCalSetPK kshmtAutoWkpCalSetPK = new KshmtAutoWkpCalSetPK(companyId, wkpId);
 
 		Optional<KshmtAutoWkpCalSet> optKshmtAutoWkpCalSet = this.queryProxy().find(kshmtAutoWkpCalSetPK,
@@ -94,6 +111,28 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	public void delete(String cid, String wkpId) {
 		this.commandProxy().remove(KshmtAutoWkpCalSet.class, new KshmtAutoWkpCalSetPK(cid, wkpId));
 
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository#getAllWkpAutoCalSetting(java.lang.String)
+	 */
+	@Override
+	public List<WkpAutoCalSetting> getAllWkpAutoCalSetting(String companyId) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KshmtAutoWkpCalSet> cq = builder.createQuery(KshmtAutoWkpCalSet.class);
+		Root<KshmtAutoWkpCalSet> root = cq.from(KshmtAutoWkpCalSet.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		predicateList.add(builder.equal(root.get(KshmtAutoWkpCalSet_.kshmtAutoWkpCalSetPK)
+				.get(KshmtAutoWkpCalSetPK_.cid), companyId));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return em.createQuery(cq).getResultList().stream()
+				.map(entity -> new WkpAutoCalSetting(new JpaWkpAutoCalSettingGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }

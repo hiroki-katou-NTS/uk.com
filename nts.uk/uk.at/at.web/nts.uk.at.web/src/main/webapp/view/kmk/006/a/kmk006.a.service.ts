@@ -12,6 +12,7 @@ module nts.uk.at.view.kmk006.a {
             saveWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/save",
             getJobAutoCal: "ctx/at/shared/ot/autocal/job/getautocaljob",
             getWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/getautocalwkp",
+            getAllWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/getallautocalwkp",
             getWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/getautocalwkpjob",
             deleteJobAutoCal: "ctx/at/shared/ot/autocal/job/delete",
             deleteWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/delete",
@@ -87,6 +88,10 @@ module nts.uk.at.view.kmk006.a {
         export function getWkpAutoCal(wkpId: string): JQueryPromise<model.WkpAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpAutoCal + '/' + wkpId);
         }
+        export function getAllWkpAutoCal(): JQueryPromise<Array<model.WkpAutoCalSettingDto>> {
+            return nts.uk.request.ajax("at", paths.getAllWkpAutoCal);
+        }
+        
         export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
         }
