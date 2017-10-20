@@ -10,12 +10,12 @@ module nts.uk.com.view.cmm018.shr {
             startDate: string;
             endDate: string;
             addHist: IData;
-            lstAppType: Array<number>;
+            lstAppType: Array<ApplicationType>;
             root: Array<CompanyAppRootADto>;
             constructor(rootType: number, checkAddHist: boolean,
                 workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
-                addHist: IData,lstAppType: Array<number>,
+                addHist: IData,lstAppType: Array<ApplicationType>,
                 root: Array<CompanyAppRootADto>){
                     this.rootType = rootType;
                     this.checkAddHist = checkAddHist;
@@ -566,6 +566,13 @@ module nts.uk.com.view.cmm018.shr {
                 return _.find(lstNameAppType, function(obj: ApplicationType) {
                     return obj.value == applicationType && obj.employRootAtr == employRootAtr;
                 });
+            }
+            
+            /**
+             * check input date before or equal date
+             */
+            static validateDateInput(inputDate: string, date: string){
+                return moment(inputDate).isSameOrAfter(moment(date));
             }
         }
         

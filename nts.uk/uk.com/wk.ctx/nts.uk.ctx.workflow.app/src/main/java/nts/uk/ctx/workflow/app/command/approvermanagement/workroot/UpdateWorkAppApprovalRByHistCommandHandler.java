@@ -17,6 +17,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -84,7 +85,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			//item update (New)
 			CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.updateSdate(comAppRootDb.get(), startDate.replace("/","-"));
 			//find history previous
-			List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, eDatePrevious, comAppRoot.getApplicationType()== null ? null : comAppRoot.getApplicationType().value);
+			Integer appType = comAppRoot.getEmploymentRootAtr()== EmploymentRootAtr.COMMON ? null : comAppRoot.getEmploymentRootAtr()== EmploymentRootAtr.APPLICATION ? comAppRoot.getApplicationType().value : comAppRoot.getConfirmationRootType().value;
+			List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, eDatePrevious, appType, comAppRoot.getEmploymentRootAtr().value);
 			if(lstOld.isEmpty()){// history previous is not exist
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					repoCom.updateComApprovalRoot(comAppRoot);
@@ -160,7 +162,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			}
 			WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.updateSdate(wpAppRootDb.get(), startDate.replace("/","-"));
 			//find history previous
-			List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious, wpAppRoot.getApplicationType() == null ? null : wpAppRoot.getApplicationType().value);
+			Integer appType = wpAppRoot.getEmploymentRootAtr()== EmploymentRootAtr.COMMON ? null : wpAppRoot.getEmploymentRootAtr()== EmploymentRootAtr.APPLICATION ? wpAppRoot.getApplicationType().value : wpAppRoot.getConfirmationRootType().value;
+			List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious,appType,wpAppRoot.getConfirmationRootType().value);
 			if(lstOld.isEmpty()){// history previous is not exist
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					repoWorkplace.updateWpApprovalRoot(wpAppRoot);
@@ -239,7 +242,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			}
 			PersonApprovalRoot psAppRoot = PersonApprovalRoot.updateSdate(psAppRootDb.get(), startDate.replace("/","-"));
 			//find history previous
-			List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, psAppRoot.getApplicationType() == null ? null : psAppRoot.getApplicationType().value);
+			Integer appType = psAppRoot.getEmploymentRootAtr()== EmploymentRootAtr.COMMON ? null : psAppRoot.getEmploymentRootAtr()== EmploymentRootAtr.APPLICATION ? psAppRoot.getApplicationType().value : psAppRoot.getConfirmationRootType().value;
+			List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, appType, psAppRoot.getConfirmationRootType().value);
 			if(lstOld.isEmpty()){// history previous is not exist
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					

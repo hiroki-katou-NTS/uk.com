@@ -148,6 +148,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: tab person
                     else{
+                        self.getDataPerson();
                         $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                     }
                 });
@@ -756,7 +757,7 @@ module nts.uk.com.view.cmm018.a {
              */
             findAppTypeHistory(rootType: number): Array<vmbase.ApplicationType>{
                 let self = this;
-                let lstApp: Array<vmbase.ApplicationType>;
+                let lstApp: Array<vmbase.ApplicationType> = [];
                 if(rootType == vmbase.RootType.COMPANY){
                     let obj: vmbase.DataDisplayComDto = self.findAppIdForCom(self.currentCode());
                     if(obj != undefined){
@@ -1072,7 +1073,7 @@ module nts.uk.com.view.cmm018.a {
              */
             register(rootType: number){
                 let self = this;
-                block.invisible();
+//                block.invisible();
                 let checkAddHist = false;
                 let root: Array<vmbase.CompanyAppRootADto> = [];
                 if(self.dataI() != null){
@@ -1089,7 +1090,7 @@ module nts.uk.com.view.cmm018.a {
                 let listType = self.findAppTypeHistory(self.tabSelected());
                 let data: vmbase.DataResigterDto = new vmbase.DataResigterDto(self.tabSelected(),
                                     checkAddHist,self.workplaceId(), self.selectedItem(),
-                                    history.startDate, history.endDate,self.dataI(), listType, root);
+                                    history.startDate, history.endDate,self.dataI(), listType == undefined ? [] : listType, root);
                 servicebase.updateRoot(data).done(function(){
                     self.enableDelete(true);
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
@@ -1101,6 +1102,8 @@ module nts.uk.com.view.cmm018.a {
                     }
                     block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(){
+                    block.clear();
                 });
             }
             /**

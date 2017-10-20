@@ -27,10 +27,16 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
 	private final String SELECT_WPAPR_BY_EDATE = FIND_BY_WKPID
 			+ " AND c.endDate = :endDate"
+			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType";
 	private final String SELECT_WPAPR_BY_EDATE_APP_NULL = FIND_BY_WKPID
 			   + " AND c.endDate = :endDate"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
+	private final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
+			   + " AND c.endDate = :endDate"
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	private final String FIND_BY_BASEDATE = FIND_BY_WKPID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
@@ -82,13 +88,24 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType) {
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType, int employmentRootAtr) {
 		//common
-		if(applicationType == null){
+		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_APP_NULL, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainWpApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CONFIRM, WwfmtWpApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("workplaceId", workplaceId)
+					.setParameter("endDate", endDate)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainWpApR(c));
 		}
 		//15 app type
@@ -97,6 +114,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
 				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainWpApR(c));
 	}
 	
