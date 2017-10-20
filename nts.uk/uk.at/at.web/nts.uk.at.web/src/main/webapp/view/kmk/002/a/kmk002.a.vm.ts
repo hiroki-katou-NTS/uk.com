@@ -546,7 +546,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private hasReachedZZ(): boolean {
                 let self = this;
-                if (self.getLastSymbol() == 'zz') {
+                if (self.getLastSymbol() == 'ZZ') {
                     return true;
                 }
                 return false;
@@ -746,7 +746,10 @@ module nts.uk.at.view.kmk002.a {
                     return formula;
                 });
 
-                // set list formula.
+                // clear current list formula
+                self.calcFormulas([]);
+
+                // set new mapped list formula.
                 self.calcFormulas(mapped);
 
                 // set formula setting result
@@ -1688,7 +1691,7 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 for (let i = 65; i <= 90; i++) {
-                    for (let j = 97; j <= 122; j++) {
+                    for (let j = 65; j <= 90; j++) {
                         arr.push({ order: order, value: String.fromCharCode(i) + String.fromCharCode(j) });
                         order++;
                     }
