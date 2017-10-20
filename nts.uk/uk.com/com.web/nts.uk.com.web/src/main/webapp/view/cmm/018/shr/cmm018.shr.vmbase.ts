@@ -574,6 +574,17 @@ module nts.uk.com.view.cmm018.shr {
             static validateDateInput(inputDate: string, date: string){
                 return moment(inputDate).isSameOrAfter(moment(date));
             }
+            /**
+             * check appType is exist in list root ?
+             */
+            static checkExist(lstRoot: Array<CompanyAppRootADto>,appType: number, employRootAtr: number): boolean{
+                _.each(lstRoot, function(root){
+                    if(root.appTypeValue == appType && root.employRootAtr == employRootAtr){
+                        return true;
+                    }
+                });
+                return false;
+            }
         }
         
         export class ApproverDtoK{
