@@ -26,7 +26,10 @@ public class EmployeeFileManagementFinder {
 		return empFileManagementRepository.checkObjectExist(employeeId, fileType);
 	}
 	
-	public List<Object> getListDocumentFile(String employeeId){
-		return empFileManagementRepository.getListDocumentFile(employeeId, 2);
+	public List<EmployeeFileManagementDto> getListDocumentFile(String employeeId) {
+		return empFileManagementRepository.getListDocumentFile(employeeId, 2).stream()
+				.map(x -> new EmployeeFileManagementDto(x[0].toString(), x[1].toString(),
+						Integer.parseInt(x[2].toString()), x[3].toString(), x[4].toString()))
+				.collect(Collectors.toList());
 	}
 }

@@ -17,6 +17,6 @@ public interface EmpFileManagementRepository {
 	
 	Optional<EmployeeFileManagement> getEmpMana(String fileid);
 
-	List<Object> getListDocumentFile(String employeeId, int fileType);
+	List<Object[]> getListDocumentFile(String employeeId, int fileType);
 	
 }

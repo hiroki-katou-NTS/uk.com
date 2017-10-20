@@ -75,7 +75,7 @@ public class EmpFileManagementWebService extends WebService {
 
 	@POST
 	@Path("getlistdocfile/{employeeId}")
-	public List<Object> getListDocumentFile(@PathParam("employeeId") String employeeId) {
+	public List<EmployeeFileManagementDto> getListDocumentFile(@PathParam("employeeId") String employeeId) {
 		return this.employeeFileManagementFinder.getListDocumentFile(employeeId);
 	}
 
