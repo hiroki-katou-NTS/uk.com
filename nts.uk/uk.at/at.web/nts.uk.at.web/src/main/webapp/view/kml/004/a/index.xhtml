@@ -88,39 +88,6 @@
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_16')}</div>
 						<!-- A5_3 disableMoveButton-->
 
-						<!-- 						<div class="left-contents"> -->
-						<!-- 							<br /> -->
-						<!-- 							<table class="left-data" id="multi-list1" tabindex="9" -->
-						<!-- 								data-bind="ntsGridList: { -->
-						<!-- 									height: 320, -->
-						<!-- 									options: items, -->
-						<!-- 									optionsValue: 'totalItemNo', -->
-						<!-- 									columns: columns, -->
-						<!-- 									multiple: true, -->
-						<!-- 									value: currentCodeList}"> -->
-						<!-- 							</table> -->
-						<!-- 						</div> -->
-
-						<!-- 						<div class="move-function"> -->
-						<!-- 							<button id="insert_btn" data-bind="click: add"> -->
-						<!-- 								<i class="icon icon-button-arrow-right"></i> -->
-						<!-- 							</button> -->
-						<!-- 							<br /> -->
-						<!-- 							<button id="remove-items" data-bind="click: del"> -->
-						<!-- 								<i class="icon icon-button-arrow-left"></i> -->
-						<!-- 							</button> -->
-						<!-- 						</div> -->
-
-						<!-- 						<div class="right-contents"> -->
-						<!-- 							<table id="multi-list2" data-bind="ntsGridList: { -->
-						<!--   									height: 320,  -->
-						<!--   									options: newItems,   -->
-						<!--  									optionsValue: 'totalItemNo',   -->
-						<!--   									columns: newColumns,   -->
-						<!--   									multiple: true,   -->
-						<!--   									value: newCurrentCodeList}">   -->
-						<!-- 							</table> -->
-						<!-- 						</div> -->
 
 
 						<div id="swap-list"
@@ -139,26 +106,15 @@
 									}">
 						</div>
 
-
-<!-- 									<div id="up-down"
-									data-bind="ntsUpDown: {
-									targetSource: newItems,
-									primaryKey: 'totalItemNo',
-									comId: '#swap-list',
-									type: 'swap',
-									swapTarget: 'right'
-								}"></div>  -->
-
-
-
- 						  <div class="chane-position-function">
+ 						  <div class="chane-position-function" >
 							<div id="swap-up-down"
 								data-bind="ntsUpDown: {
-										targetSource: newItems,
+										targetSource: selectedOption().totalEvalOrders,
 										primaryKey: 'totalItemNo',
 										comId: '#swap-list',
 										type: 'swap',
-										swapTarget: 'right'
+										swapTarget: 'right',
+										enable: ko.computed(function() { return selectedOption().totalEvalOrders().length > 0;}) 
 									}">
 							</div> 
 						 </div> 

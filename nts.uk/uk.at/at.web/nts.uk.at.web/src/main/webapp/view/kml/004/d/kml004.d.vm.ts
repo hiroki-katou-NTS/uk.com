@@ -12,6 +12,7 @@ module nts.uk.at.view.kml004.d.viewmodel {
         cateCode: KnockoutObservable<string>;
         // item No from screen A
         itemNo: KnockoutObservable<number>;
+        lst: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
             self.itemsSwap = ko.observableArray([]);
@@ -22,7 +23,9 @@ module nts.uk.at.view.kml004.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KML004_41"), key: 'totalTimeName', width: 250, formatter: _.escape }
             ]);
             self.currentCodeListSwap = ko.observableArray([]);
-        }
+            self.currentCodeListSwap(getSharedD("KML004A_CNT_SET_CD"));
+            self.lst = ko.observableArray(getSharedD("KML004A_CNT_SET"));
+        }  
 
         /** get total time */
         getTotalTime(): JQueryPromise<any> {
@@ -40,24 +43,24 @@ module nts.uk.at.view.kml004.d.viewmodel {
             return dfd.promise();
         }
         
-        /** get hori total cnt set**/
-        findCNTCode(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            let param = {
-                categoryCode: self.cateCode(),
-                totalItemNo: self.itemNo(),
-            }
-            service.getCNT(param).done((data) => {
-                var totalItemNoList = _.map(data, function(item) { return item.totalTimeNo; });
-                var itemSelected = _.filter(self.itemsSwap(), function(item) {
-                    return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
-                });
-                self.currentCodeListSwap(itemSelected);
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
+//        /** get hori total cnt set**/
+//        findCNTCode(): JQueryPromise<any> {
+//            let self = this;
+//            let dfd = $.Deferred();
+//            let param = {
+//                categoryCode: self.cateCode(),
+//                totalItemNo: self.itemNo(),
+//            }
+//            service.getCNT(param).done((data) => {
+//                var totalItemNoList = _.map(data, function(item) { return item.totalTimeNo; });
+//                var itemSelected = _.filter(self.itemsSwap(), function(item) {
+//                    return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
+//                });
+//                self.currentCodeListSwap(itemSelected);
+//                dfd.resolve();
+//            });
+//            return dfd.promise();
+//        }
 
         /**
          * Event on start page.
@@ -65,10 +68,14 @@ module nts.uk.at.view.kml004.d.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            // get left list
             self.getTotalTime().done(function(data1) {
-                self.findCNTCode().done(function(data2){
-                    dfd.resolve();
-                })
+                self.currentCodeListSwap(self.lst());
+                var totalItemNoList = _.map(self.lst(), function(item) { return item.totalTimeNo; });
+                var itemSelected = _.filter(self.itemsSwap(), function(item) {
+                    return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
+                });
+                self.currentCodeListSwap(itemSelected);
                 dfd.resolve();
             });
             return dfd.promise();

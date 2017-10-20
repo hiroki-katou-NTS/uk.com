@@ -47,9 +47,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
         cntReceived: KnockoutObservableArray<any>;
         // list cnt set 
         cntSetAll: KnockoutObservableArray<any>;
-        // list id 21: 回数集計1 & id 22: 回数集計2
-        id2122: KnockoutObservableArray<any>;
-        
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
@@ -95,7 +92,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.cntSetls = ko.observableArray(null);
             self.cntReceived = ko.observableArray([]);
             self.cntSetAll = ko.observableArray([]);
-            self.id2122 = ko.observableArray([]);
             
             self.selectedCode.subscribe((value) => {
                 self.list([]);
@@ -254,7 +250,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             totalEvalOrders: item.totalEvalOrders
                         });
                     }); 
-                    
                     self.lstCate(array); 
                 }
                 dfd.resolve();
@@ -318,18 +313,20 @@ module nts.uk.at.view.kml004.a.viewmodel {
 //                }
 //            }
 //            
-//            _.map(self.selectedOption().totalEvalOrders(), function(item) {
-//                part.push({
-//                    categoryCode: self.selectedOption().categoryCode(),
-//                    totalItemNo: item.totalItemNo,
-//                    totalItemName: item.totalItemName,
-//                    dispOrder: item.dispOrder,
-//                    horiCalDaysSet: item.horiCalDaysSet,
-//                    cntSetls: item.cntSetls,   
-//                });
-//            });
-//            self.newItems(part);
-           
+            _.map(self.selectedOption().totalEvalOrders(), function(item) {
+                part.push({
+                    categoryCode: self.selectedOption().categoryCode(),
+                    totalItemNo: item.totalItemNo,
+                    totalItemName: item.totalItemName,
+                    dispOrder: 0,
+                    horiCalDaysSet: item.horiCalDaysSet,
+                    cntSetls: item.cntSetls,   
+                });
+            });
+            self.selectedOption().totalEvalOrders(part);
+            for(let i = 0; i < self.selectedOption().totalEvalOrders().length; i++){
+                self.selectedOption().totalEvalOrders()[i].dispOrder = i;    
+            }
             let param: ITotalCategory ={
                 categoryCode: self.selectedOption().categoryCode(),
                 categoryName: self.selectedOption().categoryName(),
@@ -462,14 +459,16 @@ module nts.uk.at.view.kml004.a.viewmodel {
         openBDialog(itemNo: number) {
             let self = this;
             var horiCalDaysSet: CalDaySet = null;
+            
             var currentEvalOrder: EvalOrder = _.find(self.selectedOption().totalEvalOrders(), function(item) {
                 return item.totalItemNo == itemNo;  
             });
-            if (!currentEvalOrder || !currentEvalOrder.horiCalDaysSet()) {
+            if (!currentEvalOrder || !currentEvalOrder.hasOwnProperty("horiCalDaysSet") || !currentEvalOrder.horiCalDaysSet()) {
                 horiCalDaysSet = new CalDaySet(self.selectedOption().categoryCode(), itemNo, 0, 0, 0, 0);    
             } else {
                 horiCalDaysSet = currentEvalOrder.horiCalDaysSet();    
             }
+            
             setSharedA('KML004A_DAY_SET', horiCalDaysSet);
             nts.uk.ui.windows.sub.modal('/view/kml/004/b/index.xhtml').onClosed(function(): any {
                var daySet = getSharedA("KML004B_DAY_SET");
@@ -551,6 +550,11 @@ module nts.uk.at.view.kml004.a.viewmodel {
                    
                 self.openBDialog(id);
             } else if("21" == id || "22" == id) {
+                _.forEach(self.selectedOption().totalEvalOrders(), function(item){
+                    if(item.totalItemNo == id){
+                        setSharedA('KML004A_CNT_SET', item.cntSetls());
+                    } 
+                });
                 self.openDDialog(id);
             }
         }

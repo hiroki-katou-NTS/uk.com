@@ -11,5 +11,5 @@ module nts.uk.at.view.kml004.a {
                 $("#code-text").focus(); 
             }
         });
-    });
+    });  
 }   
