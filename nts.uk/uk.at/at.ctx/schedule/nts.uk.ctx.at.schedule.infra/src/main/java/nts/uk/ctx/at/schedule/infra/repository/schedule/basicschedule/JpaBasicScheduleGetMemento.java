@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkS
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdpBasicSchedulePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 
 /**
@@ -34,7 +34,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	public JpaBasicScheduleGetMemento(KscdtBasicSchedule entity) {
 		if(entity.getKscdpBSchedulePK() == null){
-			entity.setKscdpBSchedulePK(new KscdpBasicSchedulePK());
+			entity.setKscdpBSchedulePK(new KscdtBasicSchedulePK());
 		}
 		this.entity = entity;
 	}

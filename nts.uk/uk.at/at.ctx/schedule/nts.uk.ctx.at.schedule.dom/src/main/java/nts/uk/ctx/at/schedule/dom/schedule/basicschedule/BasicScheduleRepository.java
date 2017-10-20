@@ -41,6 +41,14 @@ public interface BasicScheduleRepository {
 	
 	
 	/**
+	 * Delete.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 */
+	void delete(String employeeId, GeneralDate baseDate);
+	
+	/**
 	 * Find child care by id.
 	 *
 	 * @param employeeId the employee id
