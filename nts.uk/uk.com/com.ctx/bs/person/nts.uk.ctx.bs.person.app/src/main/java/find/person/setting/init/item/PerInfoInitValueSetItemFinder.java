@@ -19,5 +19,14 @@ public class PerInfoInitValueSetItemFinder {
 		return this.settingItemRepo.getAllItem(perInfoCtgId).stream()
 				.map(c -> PerInfoInitValueSettingItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
+	
+	//sonnlb
+	public List<PerInfoInitValueSettingItemDto> getAllInitItem(String perInfoCtgId) {
+
+		return this.settingItemRepo.getAllInitItem(perInfoCtgId).stream()
+				.map(c -> PerInfoInitValueSettingItemDto.fromDomain(c)).collect(Collectors.toList());
+	}
+	
+	//sonnlb
 
 }

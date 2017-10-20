@@ -16,10 +16,11 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSet
 @Stateless
 public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoInitValSetCtgRepository {
 
-	private final String SEL_CTG_BY_SET_ID = "SELECT c FROM PpemtPersonInitValueSettingCtg c "
-			+ " INNER JOIN PpemtPerInfoCtg b" + " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoCtgCm cm " + " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder e"
+	private final String SEL_CTG_BY_SET_ID = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, "
+			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
+			+ " FROM PpemtPersonInitValueSettingCtg c " + " INNER JOIN PpemtPerInfoCtg b"
+			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoCtgCm cm "
+			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " INNER JOIN PpemtPerInfoCtgOrder e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
@@ -123,7 +124,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	}
 
-	//hoatt
+	// hoatt
 	@Override
 	public void addAllCtg(List<PerInfoInitValSetCtg> lstCtg) {
 		List<PpemtPersonInitValueSettingCtg> lstEntity = new ArrayList<>();

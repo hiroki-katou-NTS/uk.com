@@ -55,8 +55,6 @@ module cps002.a.vm {
             isMutipleCheck: false,
             isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
-
-
                 let self = this;
                 self.currentItem(new SelectedItem(dataEmployee[0]));
             }
@@ -72,23 +70,30 @@ module cps002.a.vm {
 
             self.initValueSelectedCode.subscribe((newValue) => {
 
+                let selectedItem = _.find(self.initValueList(), item => {
+                    return item.itemCode = newValue;
+                });
 
-
-                service.getAllInitValueCtgSetting(newValue).done((result: Array<IInitValueCtgSetting>) => {
+                service.getAllInitValueCtgSetting(selectedItem.itemId).done((result: Array<IInitValueCtgSetting>) => {
                     self.categoryList.removeAll();
                     if (result.length) {
                         self.categoryList(_.map(result, item => {
                             return new CategoryItem(item);
                         }));
                         self.categorySelectedId(result[0].perInfoCtgId);
-
                     }
-
                 });
 
-                self.currentItem(_.find(self.initValueList(), item => {
-                    return item.itemCode = newValue;
-                }));
+                self.currentItem(selectedItem);
+
+            });
+
+            self.currentItem.subscribe((newItem) => {
+
+                if (!self.isUseInitValue()) {
+                    // service.      
+                }
+
 
             });
 
@@ -104,6 +109,7 @@ module cps002.a.vm {
                         }
                     });
                 } else {
+
 
                 }
             });

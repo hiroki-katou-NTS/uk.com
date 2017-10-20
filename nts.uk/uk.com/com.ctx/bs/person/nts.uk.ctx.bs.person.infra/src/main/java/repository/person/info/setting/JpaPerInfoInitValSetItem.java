@@ -35,6 +35,15 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ON b.settingItemPk.perInfoItemDefId = c.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " WHERE c.abolitionAtr = 0"
 			+ " AND c.perInfoCtgId =:perInfoCtgId";
+	// SONNLB
+	private final String SEL_ALL_INIT_ITEM = " SELECT c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue "
+			+ " FROM  PpemtPersonInitValueSettingItem b" + " LEFT JOIN PpemtPerInfoItem c"
+			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = b.settingItemPk.perInfoItemDefId "
+			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " WHERE c.abolitionAtr = 0"
+			+ " AND c.perInfoCtgId =:perInfoCtgId";
+
+	// SONNLB
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
@@ -148,6 +157,69 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	}
 
+	// sonnlb
+	@Override
+	public List<PerInfoInitValueSetItem> getAllInitItem(String perInfoCtgId) {
+		return this.queryProxy().query(SEL_ALL_INIT_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
+				.getList(c -> toInitDomain(c));
+
+	}
+
+	private static PerInfoInitValueSetItem toInitDomain(Object[] entity) {
+		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
+		domain.setPerInfoItemDefId(entity[0].toString());
+		domain.setPerInfoCtgId(entity[1].toString());
+		domain.setItemName(entity[2] == null ? "" : entity[2].toString());
+		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class));
+		domain.setSettingId(entity[4] == null ? "" : entity[4].toString());
+
+		String refMethod;
+
+		if (entity[5].toString().equals("0")) {
+			// return No setting type
+			refMethod = "1";
+
+		} else {
+
+			refMethod = entity[5].toString();
+
+		}
+
+		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
+
+		String saveDataType;
+
+		if (entity[6].toString().equals("0")) {
+			// return defaul value
+			saveDataType = "1";
+
+		} else {
+
+			saveDataType = entity[6].toString();
+
+		}
+		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
+
+		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
+		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
+
+		String dateValue;
+
+		if (entity[6].toString().equals("0")) {
+			dateValue = "9999-12-21";
+
+		} else {
+			dateValue = entity[9].toString();
+
+		}
+
+		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
+
+		return domain;
+
+	}
+
+	// sonnlb
 	@Override
 	public PerInfoInitValueSetItem getDetailItem(String initValueSettingCtgId, String perInfoItemDefId) {
 		// TODO Auto-generated method stub
@@ -197,7 +269,6 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	@Override
 	public List<PerInfoInitValueSetItem> getAllInitValueItem(String settingId) {
 		return this.queryProxy().query(SEL_ALL_ITEM_BY_SETTINGID, PpemtPersonInitValueSettingItem.class)
-				.setParameter("settingId", settingId)
-				.getList(c -> toDomain(c));
+				.setParameter("settingId", settingId).getList(c -> toDomain(c));
 	}
 }

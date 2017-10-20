@@ -17,10 +17,16 @@ import nts.arc.layer.ws.WebService;
 public class PerInfoInitValueSettingItemWebservice extends WebService {
 	@Inject
 	private PerInfoInitValueSetItemFinder finder;
-	
+
 	@POST
 	@Path("find/{perInfoCtgId}")
 	public List<PerInfoInitValueSettingItemDto> getAllItem(@PathParam("perInfoCtgId") String perInfoCtgId) {
 		return this.finder.getAllItem(perInfoCtgId);
+	}
+
+	@POST
+	@Path("findInit/{perInfoCtgId}")
+	public List<PerInfoInitValueSettingItemDto> getAllInitItem(@PathParam("perInfoCtgId") String perInfoCtgId) {
+		return this.finder.getAllInitItem(perInfoCtgId);
 	}
 }
