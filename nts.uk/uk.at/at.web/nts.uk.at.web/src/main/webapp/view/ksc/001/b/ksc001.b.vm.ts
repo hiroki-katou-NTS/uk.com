@@ -36,8 +36,8 @@ module nts.uk.at.view.ksc001.b {
             resetAbsentHolidayBusines: KnockoutObservable<boolean>;
             resetTimeAssignment: KnockoutObservable<boolean>;
             confirm: KnockoutObservable<boolean>;
-            periodStartDate: KnockoutObservable<Date>;
-            periodEndDate: KnockoutObservable<Date>;
+            
+            periodDate:KnockoutObservable<any>;
             copyStartDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
@@ -76,8 +76,8 @@ module nts.uk.at.view.ksc001.b {
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
-                self.periodStartDate = ko.observable(new Date());
-                self.periodEndDate = ko.observable(new Date());
+                
+                self.periodDate = ko.observable({});
                 self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
                 self.checkReCreateAtrAllCase = ko.observable(true);
                 self.checkProcessExecutionAtrRebuild = ko.observable(true);
@@ -228,8 +228,12 @@ module nts.uk.at.view.ksc001.b {
                 var dfd = $.Deferred();
 
                 service.findPeriodById(1).done(function(data) {
-                    self.periodStartDate(data.startDate);
-                    self.periodEndDate(data.endDate);
+                    self.periodDate({
+                        startDate: data.startDate,
+                        endDate: data.endDate
+                    });
+//                    self.periodStartDate(data.startDate);
+//                    self.periodEndDate(data.endDate);
                     dfd.resolve(self);
                 });
                 return dfd.promise();
@@ -409,12 +413,12 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
-                console.log(self.periodStartDate());
-                service.checkThreeMonth(self.periodStartDate()).done(function(check) {
+                console.log(self.periodDate().startDate);
+                service.checkThreeMonth(self.periodDate().startDate).done(function(check) {
                     if (check) {
                         // show message confirm 567
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {
-                            service.checkMonthMax(self.periodStartDate()).done(function(checkMax) {
+                            service.checkMonthMax(self.periodDate().startDate).done(function(checkMax) {
                                 self.createByCheckMaxMonth();
                             });
                         }).ifNo(function() {
@@ -503,7 +507,7 @@ module nts.uk.at.view.ksc001.b {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_39", [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
                     }
                 }
-                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46", [moment(self.periodStartDate()).format('YYYY/MM/DD'), (moment(self.periodEndDate()).format('YYYY/MM/DD'))]));
+                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46", [self.periodDate().startDate,self.periodDate().endDate]));
                 self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47", [self.selectedEmployeeCode().length]));
             }
             /**
@@ -511,7 +515,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private createByCheckMaxMonth(): void {
                 var self = this;
-                service.checkMonthMax(self.periodStartDate()).done(function(checkMax) {
+                service.checkMonthMax(self.periodDate().startDate).done(function(checkMax) {
                     // check max
                     if (checkMax) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_568' }).ifYes(function() {
@@ -582,10 +586,10 @@ module nts.uk.at.view.ksc001.b {
             private convertPersonalScheduleToReflectionSetting(data: PersonalSchedule): ReflectionSetting{
                 var self = this;    
                 var dto: ReflectionSetting = {
-                    calendarStartDate: moment(self.periodStartDate()).format('YYYY-MM-DD'),
-                    calendarEndDate: moment(self.periodEndDate()).format('YYYY-MM-DD'),
+                    calendarStartDate: self.periodDate().startDate,
+                    calendarEndDate: self.periodDate().endDate,
                     selectedPatternCd: data.patternCode,
-                    patternStartDate: moment(data.patternStartDate).format('YYYY-MM-DD'),
+                    patternStartDate: self.periodDate().startDate,
                     reflectionMethod: data.holidayReflect,
                     statutorySetting: self.convertWorktypeSetting(data.statutoryHolidayUseAtr, data.statutoryHolidayWorkType),
                     holidaySetting: self.convertWorktypeSetting(data.holidayUseAtr, data.holidayWorkType),
@@ -628,8 +632,8 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var data: PersonalSchedule = self.toPersonalScheduleData('');
                 var dto: ScheduleExecutionLogSaveDto = {
-                    periodStartDate: self.periodStartDate(),
-                    periodEndDate: self.periodEndDate(),
+                    periodStartDate: self.periodDate().startDate,
+                    periodEndDate: self.periodDate().endDate,
                     implementAtr: data.implementAtr,
                     reCreateAtr: data.reCreateAtr,
                     processExecutionAtr: data.processExecutionAtr,
