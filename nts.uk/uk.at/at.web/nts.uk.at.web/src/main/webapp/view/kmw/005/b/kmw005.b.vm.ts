@@ -43,11 +43,11 @@ module nts.uk.at.view.kmw005.b {
                 self.lockHist = new ActualLockHist;
                 self.lockHistColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
-                    { headerText: getText('KMW005_20'), key: 'lockDateTime', width: 100 },
-                    { headerText: getText('KMW005_21'), key: 'updater', width: 180 },
+                    { headerText: getText('KMW005_20'), key: 'lockDateTime', width: 170 },
+                    { headerText: getText('KMW005_21'), key: 'updater', width: 130 },
                     { headerText: getText('KMW005_26'), key: 'targetMonth', width: 80 },
-                    { headerText: getText('KMW005_22'), key: 'dailyLockState', width: 90, formatter: lockIcon },
-                    { headerText: getText('KMW005_23'), key: 'monthlyLockState', width: 90, formatter: lockIcon }
+                    { headerText: getText('KMW005_22'), key: 'dailyLockState', width: 120, formatter: lockIcon },
+                    { headerText: getText('KMW005_23'), key: 'monthlyLockState', width: 120, formatter: lockIcon }
                 ]);
             }
             
@@ -57,9 +57,11 @@ module nts.uk.at.view.kmw005.b {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                blockUI.invisible();
                 // Selected the First Closure in list
 //                self.bindLockHist(self.selectedClosure());
                 self.selectedClosure(self.closureList()[0].closureId);
+                blockUI.clear();
                 // Focus on Target YearMonth
                 $('#targetYM').focus();
 //                self.addLockIcon();
@@ -75,7 +77,7 @@ module nts.uk.at.view.kmw005.b {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/72.png').serialize();
-                $('.icon-72').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 27px;")
+                $('.icon-72').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 46px;")
             }
             
             /**

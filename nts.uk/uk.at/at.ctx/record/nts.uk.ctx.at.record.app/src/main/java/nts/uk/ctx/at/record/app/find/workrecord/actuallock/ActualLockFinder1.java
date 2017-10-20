@@ -78,16 +78,6 @@ public class ActualLockFinder1 {
 				return false;
 			} else {
 				return (closure.getUseClassification().value == UseClassification.UseClass_Use.value);
-				// Get ClosureHistory
-//				ClosureHistory closureHistory = closureHistOpt.get();
-//				int startYM = closureHistory.getStartYearMonth().v();
-//				int endYM = closureHistory.getEndYearMonth().v();
-//				int currentYM = closure.getClosureMonth().getProcessingYm().v();
-//				if (!(startYM <= currentYM && currentYM <= endYM)) {
-//					return false;
-//				} else {
-//					return (closure.getUseClassification().value == UseClassification.USE.value);
-//				}
 			}
 		}).collect(Collectors.toList());
 		
