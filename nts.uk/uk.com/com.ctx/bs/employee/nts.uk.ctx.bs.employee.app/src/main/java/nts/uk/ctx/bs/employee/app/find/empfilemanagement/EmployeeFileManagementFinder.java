@@ -19,7 +19,7 @@ public class EmployeeFileManagementFinder {
 		List<EmployeeFileManagementDto> lst = empFileManagementRepository.getDataByParams(employeeId, fileType).stream()
 				.map(x -> new EmployeeFileManagementDto(x.getSId(), x.getFileID(), x.getTypeFile()))
 				.collect(Collectors.toList());
-		return lst.size() > 0 ? lst.get(0) : null;
+		return lst.size() > 0 ? lst.get(0) : new EmployeeFileManagementDto();
 	}
 	
 	public boolean checkEmpFileMnExist(String employeeId, int fileType){

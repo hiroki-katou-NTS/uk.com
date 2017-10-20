@@ -19,6 +19,8 @@ public class EmployeeFileManagementDto {
 	/** The PersonalInformationCtgID */
 	private String categoryName;
 	
+	public EmployeeFileManagementDto(){}
+	
 	public EmployeeFileManagementDto(String sId, String fileId, int fileType, Integer uploadOder, String perInfCtgId){
 		this.employeeId = sId;
 		this.fileId = fileId;
