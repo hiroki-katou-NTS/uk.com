@@ -10,13 +10,7 @@
 		<div class="contentB" tabindex="-1">
 			<div class="periodCovered">
 				<div class="labelRangeDate" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-					<div class="rangeDatePicker">
-						<div data-bind="ntsDatePicker: {value: periodStartDate, dateFormat: 'YYYY/MM/DD', required: true, name: '#[KSC001_72]'}"></div>
-					</div> 
-					<label class="rangeLabel">～</label>
-					<div class="rangeDatePicker">
-						<div data-bind="ntsDatePicker: {value: periodEndDate, dateFormat: 'YYYY/MM/DD', required: true, name: '#[KSC001_73]'}"></div>
-					</div>
+					<div data-bind="ntsDateRangePicker: { required: true,showNextPrevious: false, value: periodDate, maxRange: 'oneMonth'}"></div>
 				</div>
 			
 			<div class ="selectionEmployee">
