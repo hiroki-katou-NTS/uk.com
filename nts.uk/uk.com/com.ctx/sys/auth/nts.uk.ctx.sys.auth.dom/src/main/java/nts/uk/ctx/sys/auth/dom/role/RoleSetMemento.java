@@ -42,7 +42,7 @@ public interface RoleSetMemento {
 	 *
 	 * @param name the new name
 	 */
-	void setName(String name);
+	void setName(RoleName name);
 
 	/**
 	 * Sets the contract code.

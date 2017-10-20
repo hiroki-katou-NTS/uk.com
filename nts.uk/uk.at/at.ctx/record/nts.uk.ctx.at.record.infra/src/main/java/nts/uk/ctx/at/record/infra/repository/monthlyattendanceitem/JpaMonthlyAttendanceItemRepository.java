@@ -29,4 +29,15 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 	public List<MonthlyAttendanceItem> findByAtr(String companyId, int itemAtr) {
 		return Collections.emptyList();// TODO wait for entity
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.monthlyattendanceitem.
+	 * MonthlyAttendanceItemRepository#findAll(java.lang.String)
+	 */
+	@Override
+	public List<MonthlyAttendanceItem> findAll(String companyId) {
+		return Collections.emptyList();// TODO wait for entity
+	}
 }

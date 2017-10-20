@@ -51,13 +51,6 @@ module nts.uk.at.view.kmw005.a {
                 self.selectedClosureText = ko.computed(function() {
                     return nts.uk.resource.getText("KMW005_7", [self.closureName()]);
                 });
-                self.actualLock.dailyLockState.subscribe(function() {
-                    self.addLockIcon();
-                });
-                self.actualLock.monthlyLockState.subscribe(function() {
-                    self.addLockIcon();
-                });
-
             }
 
             /**
@@ -66,7 +59,9 @@ module nts.uk.at.view.kmw005.a {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                blockUI.invisible();
                 service.findAllActualLock().done(function(data) {
+                    blockUI.clear();
                     var dataRes: ActualLockFind[] = [];
                     for (var item: ActualLockFinderDto of data) {
                         var actualLock: ActualLockFind = new ActualLockFind();
@@ -79,25 +74,18 @@ module nts.uk.at.view.kmw005.a {
                         actualLock.period = item.startDate + " ~ " + item.endDate;
                         dataRes.push(actualLock);
                     }
-                    // Sort by closureId
-                    dataRes.sort(function(left, right) {
-                        return left.closureId == right.closureId ?
-                            0 : (left.closureId < right.closureId ? -1 : 1)
-                    });
                     self.actualLockList(dataRes);
-                    self.addLockIcon();
-//                    self.selectedClosure(data[0].closureId);
                     self.actualLock.closureId(data[0].closureId);
+                    dfd.resolve();
                 }).fail(error => {
+                    blockUI.clear();
                     if (error.messageId == 'Msg_183') {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_183" });
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }
-                    blockUI.clear();
                 });
-                $('#actualLock-list_container').focus();
-                dfd.resolve();
+                
                 return dfd.promise();
             }
 
@@ -144,10 +132,31 @@ module nts.uk.at.view.kmw005.a {
                 service.saveActualLock(command).done(function() {
                     service.saveActualLockHist(command).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        blockUI.clear();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
                     });
-                    self.bindActualLock(self.actualLock.closureId());
+//                    self.bindActualLock(self.actualLock.closureId());
+                    // Reload Page
+                    blockUI.invisible();
+                    service.findAllActualLock().done(function(data) {
+                        var dataRes: ActualLockFind[] = [];
+                        for (var item: ActualLockFinderDto of data) {
+                            var actualLock: ActualLockFind = new ActualLockFind();
+                            actualLock.closureId = item.closureId;
+                            actualLock.closureName = item.closureName;
+                            actualLock.dailyLockState = item.dailyLockState;
+                            actualLock.monthlyLockState = item.monthlyLockState;
+                            actualLock.startDate = item.startDate;
+                            actualLock.endDate = item.endDate;
+                            actualLock.period = item.startDate + " ~ " + item.endDate;
+                            dataRes.push(actualLock);
+                        }
+                        self.actualLockList(dataRes);
+                        self.addLockIcon();
+//                        self.actualLock.closureId(data[0].closureId);
+                    })
+                    // 
                     blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});

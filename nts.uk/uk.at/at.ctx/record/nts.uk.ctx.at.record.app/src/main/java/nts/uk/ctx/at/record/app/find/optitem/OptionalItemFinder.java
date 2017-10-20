@@ -13,13 +13,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
@@ -73,9 +70,11 @@ public class OptionalItemFinder {
 		// Get list attendance item
 		Map<Integer, String> attendanceItems;
 		if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE) {
-			attendanceItems = this.getDailyAttendanceItems(optionalItem.getOptionalItemAtr());
+			attendanceItems = this.dailyRepo.getList(companyId).stream().collect(
+					Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
 		} else {
-			attendanceItems = this.getMonthlyAttendanceItems(optionalItem.getOptionalItemAtr());
+			attendanceItems = this.monthlyRepo.findAll(companyId).stream().collect(
+					Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
 		}
 
 		// Get list formula order.
@@ -114,56 +113,6 @@ public class OptionalItemFinder {
 	private Map<FormulaId, Integer> getFormulaOrders(String companyId, String itemNo) {
 		return this.orderRepo.findByOptItemNo(companyId, itemNo).stream()
 				.collect(Collectors.toMap(FormulaDispOrder::getOptionalItemFormulaId, dod -> dod.getDispOrder().v()));
-	}
-
-	/**
-	 * Gets the monthly attendance items.
-	 *
-	 * @param attribute the attribute
-	 * @return the monthly attendance items
-	 */
-	private Map<Integer, String> getMonthlyAttendanceItems(OptionalItemAtr attribute) {
-		MonthlyAttendanceItemAtr converted = MonthlyAttendanceItemAtr.NUMBER;
-		switch (attribute) {
-		case NUMBER:
-			converted = MonthlyAttendanceItemAtr.NUMBER;
-			break;
-		case AMOUNT:
-			converted = MonthlyAttendanceItemAtr.AMOUNT;
-			break;
-		case TIME:
-			converted = MonthlyAttendanceItemAtr.TIME;
-			break;
-		default:
-			break;
-		}
-		return this.monthlyRepo.findByAtr(AppContexts.user().companyId(), converted.value).stream().collect(
-				Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
-	}
-
-	/**
-	 * Gets the daily attendance items.
-	 *
-	 * @param attribute the attribute
-	 * @return the daily attendance items
-	 */
-	private Map<Integer, String> getDailyAttendanceItems(OptionalItemAtr attribute) {
-		DailyAttendanceAtr converted = DailyAttendanceAtr.NumberOfTime;
-		switch (attribute) {
-		case NUMBER:
-			converted = DailyAttendanceAtr.NumberOfTime;
-			break;
-		case AMOUNT:
-			converted = DailyAttendanceAtr.AmountOfMoney;
-			break;
-		case TIME:
-			converted = DailyAttendanceAtr.Time;
-			break;
-		default:
-			break;
-		}
-		return this.dailyRepo.findByAtr(AppContexts.user().companyId(), converted.value).stream().collect(
-				Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
 	}
 
 	/**

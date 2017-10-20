@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
 
 /**
  * @author danpv
- *
+ * 計算実行設定情報
  */
 @Getter
 public class CalExeSettingInfor {
@@ -28,6 +28,4 @@ public class CalExeSettingInfor {
 	 */
 	private ExecutionType executionType;
 	
-	private SettingInforForDailyCreation partResetClass;
-
 }
