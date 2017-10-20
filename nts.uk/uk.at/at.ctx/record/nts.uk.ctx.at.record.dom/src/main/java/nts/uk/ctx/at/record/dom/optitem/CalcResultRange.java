@@ -48,6 +48,13 @@ public class CalcResultRange extends DomainObject {
 		this.numberRange = memento.getNumberRange();
 		this.timeRange = memento.getTimeRange();
 		this.amountRange = memento.getAmountRange();
+
+		// validate
+		if (this.lowerLimit == CalcRangeCheck.SET) {
+			this.numberRange.validateRange();
+			this.timeRange.validateRange();
+			this.amountRange.validateRange();
+		}
 	}
 
 	/**

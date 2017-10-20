@@ -36,7 +36,12 @@ public class NumberRange extends DomainObject {
 		super();
 		this.upperLimit = new NumberRangeValue(upperLimit);
 		this.lowerLimit = new NumberRangeValue(lowerLimit);
+	}
 
+	/**
+	 * Validate range.
+	 */
+	public void validateRange() {
 		// Validate
 		if (this.isInvalidRange()) {
 			throw new BusinessException("Msg_574");
