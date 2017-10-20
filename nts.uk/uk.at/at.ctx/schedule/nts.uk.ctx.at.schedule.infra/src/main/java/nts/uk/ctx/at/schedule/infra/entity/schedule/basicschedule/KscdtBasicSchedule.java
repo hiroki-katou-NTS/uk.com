@@ -32,7 +32,7 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 
 	/** The kscdp B schedule PK. */
 	@EmbeddedId
-	public KscdpBasicSchedulePK kscdpBSchedulePK;
+	public KscdtBasicSchedulePK kscdpBSchedulePK;
 
 	/** The work type code. */
 	@Column(name = "WORKTYPE_CD")

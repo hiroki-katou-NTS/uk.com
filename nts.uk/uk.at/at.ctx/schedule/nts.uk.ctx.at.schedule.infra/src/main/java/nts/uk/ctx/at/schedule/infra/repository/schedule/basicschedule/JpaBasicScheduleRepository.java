@@ -24,8 +24,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdpBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCarePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare_;
@@ -41,24 +41,8 @@ import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfe
 @Stateless
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
 
-	/**
-	 * Convert Entity to Domain
-	 * 
-	 * @param entity
-	 * @return
-	 */
-//	private static BasicSchedule toDomain(KscdtBasicSchedule entity) {
-//		val domain = BasicSchedule.createFromJavaType(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
-//				entity.workTypeCode, entity.workTimeCode, entity.confirmedAtr, entity.workingDayAtr);
-//		return domain;
-//	}
-
-	/**
-	 * Insert data to Basic Schedule
-=======
 	/*
 	 * (non-Javadoc)
->>>>>>> 9d7baa317ab83506ede32cd2a93f55de59389167
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
@@ -81,6 +65,19 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	public void update(BasicSchedule bSchedule) {
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
 	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
+	 * #delete(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public void delete(String employeeId, GeneralDate baseDate) {
+		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -102,7 +99,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @return the optional
 	 */
 	private Optional<KscdtBasicSchedule> findById(String employeeId, GeneralDate date){
-		return this.queryProxy().find(new KscdpBasicSchedulePK(employeeId,date), KscdtBasicSchedule.class);
+		return this.queryProxy().find(new KscdtBasicSchedulePK(employeeId,date), KscdtBasicSchedule.class);
 	}
 
 	/*

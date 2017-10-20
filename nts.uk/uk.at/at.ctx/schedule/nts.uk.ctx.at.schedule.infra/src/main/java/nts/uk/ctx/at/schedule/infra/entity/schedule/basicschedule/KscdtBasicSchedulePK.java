@@ -14,12 +14,12 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KscdpBasicSchedulePK.
+ * The Class KscdtBasicSchedulePK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KscdpBasicSchedulePK implements Serializable {
+public class KscdtBasicSchedulePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,12 +30,12 @@ public class KscdpBasicSchedulePK implements Serializable {
 	public GeneralDate date;
 
 	/**
-	 * Instantiates a new kscdp basic schedule PK.
+	 * Instantiates a new kscdt basic schedule PK.
 	 *
 	 * @param sId the s id
 	 * @param date the date
 	 */
-	public KscdpBasicSchedulePK(String sId, GeneralDate date) {
+	public KscdtBasicSchedulePK(String sId, GeneralDate date) {
 		this.sId = sId;
 		this.date = date;
 	}
@@ -43,7 +43,7 @@ public class KscdpBasicSchedulePK implements Serializable {
 	/**
 	 * Instantiates a new kscdp basic schedule PK.
 	 */
-	public KscdpBasicSchedulePK() {
+	public KscdtBasicSchedulePK() {
 		super();
 	}
 
