@@ -2,11 +2,15 @@ package nts.uk.ctx.bs.employee.dom.deleteEmpManagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 public class DeleteEmpManagement extends AggregateRoot {
 
 	/**

@@ -23,7 +23,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		//String mess = "Msg_233";
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(), itemCommand.getPerInfoItemDefId())) {
-			throw new BusinessException(new RawErrorMessage("Msg_215"));
+			throw new BusinessException(new RawErrorMessage("Msg_358"));
 		}
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep
 				.getPerInfoItemDefById(itemCommand.getPerInfoItemDefId(), contractCd).orElse(null);

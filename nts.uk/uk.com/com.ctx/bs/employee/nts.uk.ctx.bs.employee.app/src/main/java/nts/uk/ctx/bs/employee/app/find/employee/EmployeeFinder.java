@@ -152,4 +152,18 @@ public class EmployeeFinder {
 		return this.employeeRepository.getAllEmployeeInfoToDelete().stream()
 				.map(item -> EmployeeToDeleteDto.fromDomain(item)).collect(Collectors.toList());
 	}
+	
+	/**
+	 * Gets EmployeeInfo to Delete by employeeId.
+	 *
+	 * @param employeeCode
+	 *            the employee code
+	 * @return the person id by employee code
+	 */
+	public EmployeeToDeleteDetailDto getEmployeeDetailInfoToDelete(String employeeId) {
+
+		EmployeeToDeleteDetailDto s =  this.employeeRepository.getEmployeeDetailToDelete(employeeId)
+				.map(item -> EmployeeToDeleteDetailDto.fromDomain(item)).get();
+		return s;
+	}
 }

@@ -77,21 +77,27 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 			throw new BusinessException("Msg_115");
 		}
 
-		// 驕�蛻ｻ譎ょ綾譌ｩ騾�譎ょ綾縺後→繧ゅ↓險ｭ螳壹＆繧後※縺�繧九→縺阪��驕�蛻ｻ譎ょ綾竕ｧ譌ｩ騾�譎ょ綾 (#Msg_381#)
-
-		if (lateTime1 >= earlyTime1 && lateTime2 >= earlyTime2 && prePost == 0) {
+		// [画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
+		if (((late1 == 1 && early1 == 1 && lateTime1 >= earlyTime1) || (late2 == 1 && early2 == 1 && lateTime2 >= earlyTime2)) 
+			&& prePost == 0) {
 			throw new BusinessException("Msg_381");
 		}
-		// 驕�蛻ｻ縲∵掠騾�縲�驕�蛻ｻ2縲∵掠騾�2縺ｮ縺�縺壹ｌ縺具ｼ代▽縺ｯ繝√ぉ繝�繧ｯ蠢�鬆�(#Msg_382#)
-
+		
+		// 遅刻、早退、遅刻2、早退2のいずれか１つはチェック必須(#Msg_382#))
 		int checkSelect = late1 + late2 + early1 + early2;
 		if (checkSelect == 0) {
 			throw new BusinessException("Msg_382");
 		}
 
-		// [逕ｻ髱｢B縺ｮ縺ｿ]驕�蛻ｻ縲∵掠騾�縲�驕�蛻ｻ2縲∵掠騾�2縺ｮ繝√ぉ繝�繧ｯ縺後≠繧矩≦蛻ｻ譎ょ綾縲∵掠騾�譎ょ綾縺ｯ蜈･蜉帛ｿ�鬆�(#Msg_470#)
+		// [画面Bのみ]遅刻、早退、遅刻2、早退2のチェックがある遅刻時刻、早退時刻は入力必須(#Msg_470#)
 		int checkInputTime = lateTime1 + lateTime2 + earlyTime1 + earlyTime2;
-		if (checkInputTime <= 0 && prePost == 0 ) {
+		if (prePost == 0 && 
+			( 	(late1 == 1 && lateTime1 <= 0) || 
+				(late2 == 1 && lateTime2 <= 0) ||
+				(early1 == 1 && earlyTime1 <= 0)||
+				(early2 == 1 && earlyTime2 <= 0) 
+			)
+		) {
 			throw new BusinessException("Msg_470");
 		}
 		// Add LateOrLeaveEarly

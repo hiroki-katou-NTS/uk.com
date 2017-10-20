@@ -3,6 +3,8 @@ module cps001.c.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
     import clearError = nts.uk.ui.errors.clearAll;
+    import showDialog = nts.uk.ui.dialog;
+    import close = nts.uk.ui.windows.close;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -13,7 +15,7 @@ module cps001.c.vm {
 
         listEmpDelete: KnockoutObservableArray<IEmployees> = ko.observableArray([]);
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
-        detail: KnockoutObservable<IEmployeeInfo> = ko.observable(null);
+        detail: KnockoutObservable<EmployeeInfo> = ko.observable(null);
 
         constructor() {
             let self = this,
@@ -21,49 +23,146 @@ module cps001.c.vm {
                 listEmpDelete = self.listEmpDelete(),
                 detail = self.detail();
 
+            self.start();
+
             currentEmployee.code.subscribe(x => {
                 if (x) {
-                    // clear all error message
-                    clearError();
-                    service.getDetail(x).done((data: IEmployeeInfo) => {
+                    let self = this;
+                    let emp: IEmployees = self.findByCode(x, self.listEmpDelete());
+                    service.getDetail(emp.id).done((data: IEmployeeInfo) => {
                         if (data) {
-                            self.detail(data);
+                            self.currentEmployee(new Employee(emp));
+                            self.detail(new EmployeeInfo(data));
                         }
                     });
                 }
             });
-
-
-
-            self.start();
         }
 
-        start() {
+        start(sid?: string): JQueryPromise<any> {
             let self = this,
-                currentEmployee = self.currentEmployee();
+                currentEmployee = self.currentEmployee(),
+                dfd = $.Deferred();
             self.listEmpDelete.removeAll();
             service.getData().done((data: Array<IEmployees>) => {
                 if (data && data.length) {
                     self.listEmpDelete(data);
-                    currentEmployee.code(data[0].code);
+
+                    if (!sid) {
+                        self.currentEmployee(new Employee(data[0]));
+                        currentEmployee.code(data[0].code);
+                    } else {
+                        let _item: IEmployees = _.find(ko.toJS(self.listEmpDelete()), function(item: IEmployees) { return item.id == sid; });
+                        if (_item) {
+                            self.currentEmployee(new Employee(_item));
+                            currentEmployee.code(_item.code);
+                        } else {
+                            self.currentEmployee(new Employee(data[0]));
+                            currentEmployee.code(data[0].code);
+                        }
+                    }
+                } else {
+                    // list null
+                    self.newMode();
                 }
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        reStoreData() {
+            let self = this,
+                currentItem: IEmployees = ko.toJS(self.currentEmployee()),
+                listItem: Array<IEmployees> = ko.toJS(self.listEmpDelete()),
+                detail: IEmployeeInfo = ko.toJS(self.detail());
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_528" }).ifYes(() => {
+                let itemListLength = self.listEmpDelete().length;
+                let indexItemDelete = _.findIndex(ko.toJS(self.listEmpDelete), function(item: any) { return item.id == currentItem.id; });
+                let objToRestore = { sid: currentItem.id, code: currentItem.code, newCode: detail.newCode, newName: detail.newName };
+                service.restoreData(objToRestore).done(() => {
+                    if (itemListLength === 1) {
+                        self.start();
+                    } else if (itemListLength - 1 === indexItemDelete) {
+                        self.start(listItem[indexItemDelete - 1].id).done(() => {
+                        });
+                    } else if (itemListLength - 1 > indexItemDelete) {
+                        self.start(listItem[indexItemDelete + 1].id).done(() => {
+                        });
+                    }
+
+                });
+
+            }).ifCancel(() => {
+
+            });
+        }
+
+        deleteData() {
+            let self = this,
+                currentItem: IEmployees = ko.toJS(self.currentEmployee()),
+                listItem: Array<IEmployees> = ko.toJS(self.listEmpDelete()),
+                detail: IEmployeeInfo = ko.toJS(self.detail());
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let sid = currentItem.id;
+                service.removedata(sid).done(() => {
+                    showDialog.info({ messageId: "Msg_464" }).then(function() {
+                        self.start(sid).done(() => {
+
+                        });
+                    });
+
+
+                });
+            }).ifCancel(() => {
+
             });
 
         }
 
-        saveData() {
-            let self = this;
+        closeUp() { 
+                close();
         }
 
+        newMode() {
+            let self = this,
+                listItem: Array<IEmployees> = self.listEmpDelete(),
+                detail: EmployeeInfo = self.detail();
 
+            detail.datedelete('');
+            detail.reason('');
+            detail.newCode('');
+            detail.newName('');
+        }
+
+        private findByCode(code: string, sources: any) {
+            let self = this;
+            if (!sources || !sources.length) {
+                return undefined;
+            }
+            let listEmp = ko.toJS(sources);
+            return _.find(listEmp, function(item: IEmployees) { return item.code == code; });
+        }
+
+        private findByIndex(code: string, sources: any) {
+            let self = this;
+            if (!sources || !sources.length) {
+                return undefined;
+            }
+
+            let indexOfItemSelected = _.findIndex(ko.toJS(sources), function(item: IEmployees) { return item.code == code; });
+
+        }
     }
 
     interface IEmployees {
         code: string;
         name: string;
+        id: string;
     }
 
     class Employee {
+        id: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
 
@@ -72,6 +171,7 @@ module cps001.c.vm {
             if (param) {
                 self.code(param.code || '');
                 self.name(param.name || '');
+                self.id(param.id || '');
             }
         }
     }

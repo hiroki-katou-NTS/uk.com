@@ -39,6 +39,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	
+
+	private final static String SELECT_CATEGORY_BY_PARENT_CD = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " AND CO.categoryParentCd = :parentCd";
 
 	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.ppemtPerInfoCtgCmPK.categoryCd FROM PpemtPerInfoCtgCm co"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.ppemtPerInfoCtgCmPK.categoryCd DESC";
@@ -246,7 +254,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 				});
 	}
+	
+	
+	@Override
+	public List<PersonInfoCategory> getPerInfoCtgByParentId(String parentCtgCd, String contractCd) {
+		// TODO Auto-generated method stub
+		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD, Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("parentCd", parentCtgCd).getList(c -> {
+					return createDomainFromEntity(c);
+					});
+	}
 	// vinhpx: end
+
+	
 
 
 }

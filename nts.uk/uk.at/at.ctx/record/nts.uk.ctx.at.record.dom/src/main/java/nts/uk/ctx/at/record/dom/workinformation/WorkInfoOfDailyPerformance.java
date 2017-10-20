@@ -7,8 +7,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 
 /**
  * 
@@ -17,17 +15,13 @@ import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
  *
  */
 @Getter
-public class WorkInfoOfDailyPerformance  extends AggregateRoot {
+public class WorkInfoOfDailyPerformance extends AggregateRoot {
 
 	private String employeeId;
 	
-	private WorkTypeCode recordWorkWorktypeCode;
+	private WorkInformation recordWorkInformation;
 	
-	private WorkTimeCode recordWorkWorktimeCode;
-	
-	private WorkTypeCode scheduleWorkWorktypeCode;
-	
-	private WorkTimeCode scheduleWorkWorktimeCode;
+	private WorkInformation scheduleWorkInformation;
 	
 	private List<ScheduleTimeSheet> scheduleTimeSheets;
 	

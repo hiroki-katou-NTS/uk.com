@@ -32,14 +32,14 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	@Inject
 	private UpdateSelectionItemCommandHandler updateCommandHandler;
-	
+
 	@Inject
 	private RemoveSelectionItemCommandHandler removeCommandHandler;
 
-	//history:
+	// history:
 	@Inject
 	private PerInfoHistorySelectionFinder hisFinder;
-	
+
 	@POST
 	@Path("findAll")
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
@@ -63,18 +63,18 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void updateSelectionItem(UpdateSelectionItemCommand command) {
 		this.updateCommandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("removeSelectionItem")
 	public void removeSelectionItem(RemoveSelectionItemCommand command) {
 		this.removeCommandHandler.handle(command);
 	}
-	
-	//history:
+
+	// history:
 	@POST
-	@Path("findAllHistSelection")
-	public List<PerInfoHistorySelectionDto> getAllPerInfoHistorySelection() {
-		return this.hisFinder.historySelection();
+	@Path("findAllHistSelection/{selectedId}")
+	public List<PerInfoHistorySelectionDto> getAllPerInfoHistorySelection(@PathParam("selectedId") String selectedId) {
+		return this.hisFinder.historySelection(selectedId);
 	}
 
 }

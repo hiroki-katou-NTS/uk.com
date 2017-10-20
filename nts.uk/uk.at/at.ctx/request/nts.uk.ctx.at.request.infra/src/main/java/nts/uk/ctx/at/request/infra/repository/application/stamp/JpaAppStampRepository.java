@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStampDetail;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampDetail;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author Doan Duy Hung
@@ -83,9 +84,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			case STAMP_GO_OUT_PERMIT: 
 				for(int i=0;i<appStamp.getAppStampGoOutPermits().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).goOutReasonAtr = appStamp.getAppStampGoOutPermits().get(i).getStampGoOutAtr().value;
-					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampGoOutPermits().get(i).getStartTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampGoOutPermits().get(i).getStartTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampGoOutPermits().get(i).getStartLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampGoOutPermits().get(i).getEndTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampGoOutPermits().get(i).getEndTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampGoOutPermits().get(i).getEndLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
@@ -143,9 +144,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class), 
 							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
 							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
-							krqdtAppStampDetail.startTime, 
+							new TimeWithDayAttr(krqdtAppStampDetail.startTime), 
 							krqdtAppStampDetail.startLocationCD, 
-							krqdtAppStampDetail.endTime, 
+							new TimeWithDayAttr(krqdtAppStampDetail.endTime), 
 							krqdtAppStampDetail.endLocationCD);
 					appStampGoOutPermits.add(appStampGoOutPermit);
 				}
@@ -276,9 +277,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStampGoOutPermit.getStampFrameNo()), 
 							appStamp.getVersion(),
 							appStampGoOutPermit.getStampGoOutAtr().value, 
-							appStampGoOutPermit.getStartTime(), 
+							appStampGoOutPermit.getStartTime().v(), 
 							appStampGoOutPermit.getStartLocation(), 
-							appStampGoOutPermit.getEndTime(), 
+							appStampGoOutPermit.getEndTime().v(), 
 							appStampGoOutPermit.getEndLocation(), 
 							null, 
 							null, 
