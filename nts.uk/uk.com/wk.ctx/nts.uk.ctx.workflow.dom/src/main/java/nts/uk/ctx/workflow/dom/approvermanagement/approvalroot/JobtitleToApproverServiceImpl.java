@@ -18,6 +18,7 @@ import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
 
@@ -142,7 +143,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			if (wkpId.equals(wkpIdOfEmp)) {
 				// truyền tạm approvalAtr = 1
 				approvers.add(new ApproverInfo(emp.getJobId(), emp.getEmployeeId(), null, null, null,
-						emp.getPersonName(), 1));
+						emp.getPersonName(), ApprovalAtr.JOB_TITLE));
 			}
 		}
 		return approvers;

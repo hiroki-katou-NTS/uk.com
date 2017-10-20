@@ -136,7 +136,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 							b.getConfirmPerson() == ConfirmPerson.CONFIRM ? true : false, 
 							b.getOrderNumber(),
 							null,
-							b.getApprovalAtr().value)).collect(Collectors.toList());
+							b.getApprovalAtr())).collect(Collectors.toList());
 					adjustmentPhase
 							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getBranchId(), w.getApprovalPhaseId(),
 									w.getApprovalForm().value, w.getBrowsingPhase(), w.getOrderNumber(), approvers));
@@ -148,7 +148,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				List<EmployeeOrderApproverAsAppOutput> employIn = new ArrayList<>();
 				for (ApproverInfo appInfo : phase.getApprovers()) {
 					String name = "";
-					if(appInfo.getApprovalAtr() == ApprovalAtr.PERSON.value) {
+					if(appInfo.getApprovalAtr() == ApprovalAtr.PERSON) {
 						name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
 					}else {
 						name = jobTitle.findJobTitleByPositionId(companyID, appInfo.getJobId(), baseDate).getPositionName();
