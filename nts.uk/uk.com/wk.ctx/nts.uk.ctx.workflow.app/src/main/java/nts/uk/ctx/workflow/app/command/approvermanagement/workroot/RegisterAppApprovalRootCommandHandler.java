@@ -76,6 +76,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private void registerCom(RegisterAppApprovalRootCommand data,String historyId){
 		String companyId = AppContexts.user().companyId();
 		List<CompanyAppRootADto> root = data.getRoot();
+		List<CompanyAppRootADto> rootInsert = new ArrayList<>();
 		boolean checkAddHist = data.isCheckAddHist();
 		String startDate = data.getStartDate().replace("/", "-");
 		String endDateOld = data.getEndDate().replace("/", "-");
@@ -85,6 +86,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		String endDateS = "9999-12-31";
 		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
+		//loai bo nhung root chua duoc setting
+		for (CompanyAppRootADto commonRoot : root) {
+			if(commonRoot.isColor()){
+				rootInsert.add(commonRoot);
+			}
+		}
 		//TH: create history new
 		if(checkAddHist){
 			//Tạo root có ls mới với appType ở dữ liệu bên phải.
@@ -92,7 +99,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<CompanyApprovalRoot> listCom = new ArrayList<>();
 			List<CompanyApprovalRoot> listComPre = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
-			for (CompanyAppRootADto commonRoot : root) {
+			for (CompanyAppRootADto commonRoot : rootInsert) {
 				Integer type = commonRoot.getAppTypeValue();
 				String branchId = UUID.randomUUID().toString();
 				//root right
@@ -122,7 +129,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		else{
 			List<Integer> lstAppTypeDb = data.getLstAppType();
 			List<Integer> lstAppTypeUi = new ArrayList<>();
-			for (CompanyAppRootADto commonRoot : root) {
+			for (CompanyAppRootADto commonRoot : rootInsert) {
 				lstAppTypeUi.add(commonRoot.getAppTypeValue());
 			}
 			//delete root not display in screen
@@ -149,7 +156,10 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 */
 	private void registerWp(RegisterAppApprovalRootCommand data,String historyId){
 		String companyId = AppContexts.user().companyId();
+		//list display in screen
 		List<CompanyAppRootADto> root = data.getRoot();
+		//list insert in db
+		List<CompanyAppRootADto> rootInsert = new ArrayList<>();
 		String workplaceId = data.getWorkpplaceId();
 		boolean checkAddHist = data.isCheckAddHist();
 		String startDate = data.getStartDate().replace("/", "-");
@@ -160,6 +170,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		String endDateS = "9999-12-31";
 		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
+		//loai bo nhung root chua duoc setting
+		for (CompanyAppRootADto commonRoot : root) {
+			if(commonRoot.isColor()){
+				rootInsert.add(commonRoot);
+			}
+		}
 		//TH: create history new
 		if(checkAddHist){
 			if(workplaceId.compareTo("") == 0){
@@ -172,7 +188,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<WorkplaceApprovalRoot> listWp = new ArrayList<>();
 			List<WorkplaceApprovalRoot> listWpPre = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
-			for (CompanyAppRootADto commonRoot : root) {
+			for (CompanyAppRootADto commonRoot : rootInsert) {
 				Integer type = commonRoot.getAppTypeValue();
 				String branchId = UUID.randomUUID().toString();
 				WorkplaceApprovalRoot com = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, 
@@ -199,7 +215,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		else{
 			List<Integer> lstAppTypeDb = data.getLstAppType();
 			List<Integer> lstAppTypeUi = new ArrayList<>();
-			for (CompanyAppRootADto commonRoot : root) {
+			for (CompanyAppRootADto commonRoot : rootInsert) {
 				lstAppTypeUi.add(commonRoot.getAppTypeValue());
 			}
 			//delete root not display in screen
@@ -226,7 +242,10 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 */
 	private void registerPs(RegisterAppApprovalRootCommand data,String historyId){
 		String companyId = AppContexts.user().companyId();
+		//list display in screen
 		List<CompanyAppRootADto> root = data.getRoot();
+		//list insert in db
+		List<CompanyAppRootADto> rootInsert = new ArrayList<>();
 		String employeeId = data.getEmployeeId(); 
 		boolean checkAddHist = data.isCheckAddHist();
 		String startDate = data.getStartDate().replace("/", "-");
@@ -237,6 +256,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		String endDateS = "9999-12-31";
 		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
+		//loai bo nhung root chua duoc setting
+		for (CompanyAppRootADto commonRoot : root) {
+			if(commonRoot.isColor()){
+				rootInsert.add(commonRoot);
+			}
+		}
 		//TH: create history new
 		if(checkAddHist){
 			//Tạo root có ls mới với appType ở dữ liệu bên phải.
@@ -244,7 +269,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<PersonApprovalRoot> listPs = new ArrayList<>();
 			List<PersonApprovalRoot> listPsPre = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
-			for (CompanyAppRootADto commonRoot : root) {
+			for (CompanyAppRootADto commonRoot : rootInsert) {
 				Integer type = commonRoot.getAppTypeValue();
 				String branchId = UUID.randomUUID().toString();
 				PersonApprovalRoot com = PersonApprovalRoot.createSimpleFromJavaType(companyId, 
@@ -271,7 +296,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		else{
 			List<Integer> lstAppTypeDb = data.getLstAppType();
 			List<Integer> lstAppTypeUi = new ArrayList<>();
-			for (CompanyAppRootADto commonRoot : root) {
+			for (CompanyAppRootADto commonRoot : rootInsert) {
 				lstAppTypeUi.add(commonRoot.getAppTypeValue());
 			}
 			//delete root not display in screen

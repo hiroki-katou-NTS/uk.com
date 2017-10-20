@@ -76,9 +76,11 @@ module nts.uk.com.view.cmm018.shr {
         export class ApplicationType{
             value: number;
             localizedName: string;
-            constructor(value: number, localizedName: string){
+            employRootAtr: number;
+            constructor(value: number, localizedName: string, employRootAtr: number){
                 this.value = value;
                 this.localizedName = localizedName;
+                this.employRootAtr = employRootAtr;
             }
         }
         //screenA
@@ -118,7 +120,7 @@ module nts.uk.com.view.cmm018.shr {
             check: number;
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
-            lstAppType: Array<number>;
+            lstAppType: Array<ApplicationType>;
         }
         //ScreenI
         export class IData{
@@ -132,13 +134,13 @@ module nts.uk.com.view.cmm018.shr {
             mode: number;
             /** 履歴から引き継ぐか、初めから作成するかを選択する*/
             copyDataFlag: boolean;
-            lstAppType: Array<number>;
+            lstAppType: Array<ApplicationType>;
             constructor(startDate: string,
                 startDateOld: string,
                 check: number,
                 mode: number,
                 copyDataFlag: boolean,
-                lstAppType: Array<number>){
+                lstAppType: Array<ApplicationType>){
                     this.startDate = startDate;
                     this.startDateOld = startDateOld;
                     this.check = check;
@@ -301,7 +303,7 @@ module nts.uk.com.view.cmm018.shr {
         //list display right
         export class CompanyAppRootADto{
             color: boolean;
-            common: boolean;
+            employRootAtr: number;
             appTypeValue: number;
             appTypeName: string;
             approvalId: string;
@@ -313,7 +315,7 @@ module nts.uk.com.view.cmm018.shr {
             appPhase4: ApprovalPhaseDto;
             appPhase5: ApprovalPhaseDto;
             constructor(color: boolean, 
-            common: boolean,
+            employRootAtr: number,
             appTypeValue: number,
             appTypeName: string,
             approvalId: string,
@@ -324,7 +326,7 @@ module nts.uk.com.view.cmm018.shr {
             appPhase4: ApprovalPhaseDto, 
             appPhase5: ApprovalPhaseDto){
                 this.color = color;
-                this.common = common;
+                this.employRootAtr = employRootAtr;
                 this.appTypeValue = appTypeValue;
                 this.appTypeName = appTypeName;
                 this.approvalId =  approvalId;
@@ -511,33 +513,59 @@ module nts.uk.com.view.cmm018.shr {
             
         }
         export class ProcessHandler {
-            
             /**
-             * get one day before input date as string format
+             * sort by list root
              */
-            static getOneDayBefore(date: string) {
-                return moment(date).add(-1,'days').format("YYYY/MM/DD");
+            static orderByList(lstRoot: Array<CompanyAppRootADto>): Array<CompanyAppRootADto>{
+                let result: Array<vmbase.CompanyAppRootADto> = [];
+                let lstA: Array<vmbase.CompanyAppRootADto> = [];//common
+                let lstB: Array<vmbase.CompanyAppRootADto> = [];//application
+                let lstC: Array<vmbase.CompanyAppRootADto> = [];//confirmation
+                let lstD: Array<vmbase.CompanyAppRootADto> = [];//anyItem
+                _.each(lstRoot, function(obj){
+                    if(obj.employRootAtr == 0){//common
+                        lstA.push(obj);
+                    }
+                    if(obj.employRootAtr == 1){//application
+                        lstB.push(obj);
+                    }
+                    if(obj.employRootAtr == 2){//confirmation
+                        lstC.push(obj);
+                    }
+                    if(obj.employRootAtr == 3){//anyItem
+                        lstC.push(obj);
+                    }
+                });
+                let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);
+                let sortByB =  _.orderBy(lstB, ["appTypeValue"], ["asc"]);
+                let sortByC =  _.orderBy(lstC, ["appTypeValue"], ["asc"]);
+                let sortByD =  _.orderBy(lstD, ["appTypeValue"], ["asc"]);
+                //push list A (common)
+                _.each(sortByA, function(obj){
+                    result.push(obj);
+                });
+                //push list B (application)
+                _.each(sortByB, function(obj){
+                    result.push(obj);
+                });
+                //push list C (confirmation)
+                _.each(sortByC, function(obj){
+                    result.push(obj);
+                });
+                //push list D (anyItem)
+                _.each(sortByD, function(obj){
+                    result.push(obj);
+                });
+                return result;
             }
-            
-            /**
-             * get one day after input date as string format
+             /**
+             * find appType by value
              */
-            static getOneDayAfter(date: string) {
-                return moment(date).add(1,'days').format("YYYY/MM/DD");
-            }
-            
-            /**
-             * check input date in range, if date in range return true
-             */
-            static validateDateRange(inputDate: string, startDate: string, endDate: string){
-                return moment(inputDate).isBetween(moment(this.getOneDayBefore(startDate)), moment(this.getOneDayAfter(endDate)));
-            }
-            
-            /**
-             * check input date before or equal date
-             */
-            static validateDateInput(inputDate: string, date: string){
-                return moment(inputDate).isSameOrAfter(moment(date));
+            static findAppbyValue(applicationType: number, employRootAtr: number, lstNameAppType: Array<ApplicationType>): ApplicationType{
+                let self = this;
+                return _.find(lstNameAppType, function(obj: ApplicationType) {
+                    return obj.value == applicationType && obj.employRootAtr == employRootAtr;
+                });
             }
         }
         
