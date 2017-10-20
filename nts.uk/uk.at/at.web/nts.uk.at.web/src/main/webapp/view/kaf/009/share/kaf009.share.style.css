@@ -118,3 +118,7 @@ div.form-label.broken {
 	line-height: 40px;
 	margin-left: 20px;
 }
+/*div cover label of comment*/
+.lblComment {
+	width: 230px;
+}
