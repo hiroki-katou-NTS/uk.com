@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
