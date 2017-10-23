@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingReposi
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SearchSetFlg;
 
 /**
  * 3.職位から承認者へ変換する
@@ -50,7 +51,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	@Override
 	public List<ApproverInfo> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
-		boolean isApper = compareRank(cid, sid, baseDate, jobTitleId);
+		boolean isApper = checkIfApproverIsGreaterThanRequester(cid, sid, baseDate, jobTitleId);
 		if (isApper) {
 			String wkpId = this.wkApproverAdapter.getWorkplaceId(cid, sid, baseDate);
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
@@ -60,8 +61,10 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 
 			// lấy domain 「職位別のサーチ設定」
-			Optional<JobtitleSearchSet> job = this.jobtitleSearchSetRepository.finById(cid, jobTitleId);
-			if (job.isPresent()) {
+			boolean needsSearch = this.jobtitleSearchSetRepository.finById(cid, jobTitleId)
+						.map(s -> s.needsSearch())
+							.orElse(false);
+			if (needsSearch) {
 				List<String> wkpIds = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
 				wkpIds.remove(0);
 
@@ -94,7 +97,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 * @param jobTitleId
 	 * @return
 	 */
-	private boolean compareRank(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
+	private boolean checkIfApproverIsGreaterThanRequester(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		JobTitleImport jobOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
 		// 承認者の
 		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
@@ -133,10 +136,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 		JobAssignSetting assignSet = this.jobAssignSetRepository.findById(cid);
 		if (assignSet.getIsConcurrently()) {
 			// 本務兼務区分が兼務の対象者を除く
-			List<ConcurrentEmployeeImport> concurrentList = employeeList.stream()
-					.filter(x -> x.isConcurrent())
-					.collect(Collectors.toList());
-			employeeList.removeAll(concurrentList);
+			employeeList.removeIf(x -> x.isConcurrent());
 		}
 		
 		List<ApproverInfo> approvers = new ArrayList<>();

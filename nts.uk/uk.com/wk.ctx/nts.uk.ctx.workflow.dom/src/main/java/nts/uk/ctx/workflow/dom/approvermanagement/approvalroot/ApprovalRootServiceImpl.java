@@ -223,18 +223,17 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			ApprovalAgencyInfoOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(cid, approverIds);
 			// remove approvers with agency is PASS
 			List<String> agencyAppIds = agency.getListApproverAndRepresenterSID().stream()
-					.filter(x -> x.getRepresenter().equals("Pass")).map(x -> x.getApprover())
+					.filter(x -> x.isPass()).map(x -> x.getApprover())
 					.collect(Collectors.toList());
 			approverIds.removeAll(agencyAppIds);
 
 			// get 承認設定
-			PrincipalApprovalFlg appSetting = this.approvalSettingRepository.getPrincipalByCompanyId(cid);
-			if (!Objects.isNull(appSetting)) {
-				if (appSetting == PrincipalApprovalFlg.NOT_PRINCIPAL) {
+			this.approvalSettingRepository.getPrincipalByCompanyId(cid).ifPresent(a -> {
+				if (a == PrincipalApprovalFlg.NOT_PRINCIPAL) {
 					// 申請本人社員IDを承認者IDリストから消す
 					approverIds.remove(sid);
 				}
-			}
+			});
 
 			// remove duplicate data
 			phaseResult.addApproverList(removeDuplicateSid(approversResult.stream().filter(x -> {
