@@ -50,7 +50,7 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleId)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
 	public void setJobTitleId(String jobTitleId) {
