@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 /**
  * 
  * @author hieult
- *
+ *遅刻早退取消申請
  */
 @Getter
 public class LateOrLeaveEarly extends Application {

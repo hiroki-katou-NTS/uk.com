@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //current Data
         curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
-        employeeName: KnockoutObservable<string> = ko.observable("Hoang Mai");
+        employeeName: KnockoutObservable<string> = ko.observable("Vu Thang Loi");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
         workState : KnockoutObservable<boolean> = ko.observable(true);;
@@ -31,11 +31,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //MultilineEditor
         requiredReason : KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
-        multiOption: any;
-        //Insert command
-        command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
-        //list Work Location 
-        locationData: Array<common.IWorkLocation>= [];;
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
@@ -48,13 +43,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let self = this;
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            //MultilineEditor 
-            self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                resizeable: false,
-                placeholder: "Placeholder for text editor",
-                width: "500",
-                textalign: "left",
-            }));
             //startPage 005a AFTER start 000_A
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){

@@ -107,7 +107,15 @@
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
 				<textarea tabindex="20"
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason()}" />
+					data-bind="ntsMultilineEditor: {
+								value: multilContent,
+								constraint: 'ResidenceCode',
+								option: {
+									resizeable: false,
+			                    	width: '500',
+			                    	required: requiredReason()
+			                   	},
+							}" />
 			</div>
 		</div>
 		<!--定型理由 -->
@@ -129,7 +137,15 @@
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
 				<textarea tabindex="22"
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason()}" />
+					data-bind="ntsMultilineEditor: {
+								value: multilContent,
+								constraint: 'ResidenceCode',
+								option: {
+									resizeable: false,
+			                    	width: '500',
+			                    	required: requiredReason()
+			                   	},
+							}" />
 			</div>
 		</div>
 	</div>
