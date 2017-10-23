@@ -110,7 +110,7 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 					if (agency.getListRepresenterSID().contains(loginEmp)) {
 						// (ドメインモデル「承認枠」)承認区分=「否認」、承認者=空、代行者=ログイン者の社員ID
 						//insert them 1 ban ghi vao bang KRQDT_APPROVE_ACCEPTED (ko co trong EAP)
-						ApproveAccepted approveAccepted = ApproveAccepted.createFromJavaType(companyID,
+						ApproveAccepted representer = ApproveAccepted.createFromJavaType(companyID,
 								UUID.randomUUID().toString(),
 								"", 
 								ApprovalAtr.DENIAL.value, 
@@ -118,7 +118,8 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 								GeneralDate.today(),
 								memo, 
 								loginEmp);
-						approveAcceptedRepo.createApproverAccepted(approveAccepted, frame.getFrameID());
+						//frame.getListApproveAccepted().add(approveAccepted);
+						approveAcceptedRepo.createApproverAccepted(representer, frame.getFrameID());
 					}
 				}
 			}

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.ApprovalRootService;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.JobtitleToApproverService;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalPhaseOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.AdjustedApprovalPhases;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -52,8 +52,8 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 					x.getAnyItemApplicationId()); 
 					
 			export.addDataType(x.getApplicationType(), x.getConfirmationRootType(), x.getEmploymentRootAtr());
-			export.addBeforeApprovers(this.convertApprovalPhaseListBefore(x.getBeforeApprovers()));
-			export.addAfterApprovers(this.convertApprovalPhaseListAfter(x.getAfterApprovers()));
+			export.addBeforeApprovers(this.convertApprovalPhaseListBefore(x.getBeforePhases()));
+			export.addAfterApprovers(this.convertApprovalPhaseListAfter(x.getAfterPhases()));
 			return export;
 			}).collect(Collectors.toList());
 	}
@@ -74,11 +74,11 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 	/**
 	 * Convert before adjustment data
 	 * 
-	 * @param beforeApprovers
+	 * @param beforePhases
 	 * @return
 	 */
-	private List<ApprovalPhaseExport> convertApprovalPhaseListBefore(List<ApprovalPhase> beforeApprovers) {
-		return beforeApprovers.stream()
+	private List<ApprovalPhaseExport> convertApprovalPhaseListBefore(List<ApprovalPhase> beforePhases) {
+		return beforePhases.stream()
 				.map(m -> {
 					ApprovalPhaseExport phase = new ApprovalPhaseExport(
 							m.getCompanyId(), 
@@ -102,11 +102,11 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 
 	/**
 	 * convert after adjustment data
-	 * @param beforeApprovers
+	 * @param afterPhases
 	 * @return
 	 */
-	private List<ApprovalPhaseExport> convertApprovalPhaseListAfter(List<ApprovalPhaseOutput> beforeApprovers) {
-		return beforeApprovers.stream()
+	private List<ApprovalPhaseExport> convertApprovalPhaseListAfter(AdjustedApprovalPhases afterPhases) {
+		return afterPhases.getPhases().stream()
 				.map(m -> {
 					ApprovalPhaseExport phase = new ApprovalPhaseExport(
 							m.getCompanyId(), 

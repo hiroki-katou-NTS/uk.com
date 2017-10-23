@@ -142,7 +142,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 									w.getApprovalForm().value, w.getBrowsingPhase(), w.getOrderNumber(), approvers));
 				});
 			});
-			approvalService.checkError(approvalPhases, adjustmentPhase);
+//			approvalService.checkError(approvalPhases, adjustmentPhase);
 
 			for (ApprovalPhaseOutput phase : adjustmentPhase) {
 				List<EmployeeOrderApproverAsAppOutput> employIn = new ArrayList<>();
