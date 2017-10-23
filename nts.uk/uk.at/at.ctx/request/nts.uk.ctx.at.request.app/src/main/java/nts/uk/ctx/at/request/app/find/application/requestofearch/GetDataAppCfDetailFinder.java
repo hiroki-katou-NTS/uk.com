@@ -9,18 +9,18 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
-import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.ApplicationDeadline;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.DeadlineCriteria;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.AllowAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.RequestOfEachCommon;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -34,7 +34,7 @@ public class GetDataAppCfDetailFinder {
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 
 	@Inject
-	private nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
+	private nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm; 
@@ -46,7 +46,7 @@ public class GetDataAppCfDetailFinder {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
+	private nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
 	
 
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto) {

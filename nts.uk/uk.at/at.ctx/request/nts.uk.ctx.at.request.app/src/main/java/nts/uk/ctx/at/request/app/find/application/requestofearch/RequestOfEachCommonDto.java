@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.RequestOfEachCommon;
 
 /**
  * 

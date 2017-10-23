@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
 /**
  * 直行直帰申請共通設定 DTO

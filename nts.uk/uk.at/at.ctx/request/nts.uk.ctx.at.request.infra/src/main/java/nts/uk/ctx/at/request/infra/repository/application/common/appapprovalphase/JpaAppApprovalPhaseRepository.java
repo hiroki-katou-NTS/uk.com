@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhasePK;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;

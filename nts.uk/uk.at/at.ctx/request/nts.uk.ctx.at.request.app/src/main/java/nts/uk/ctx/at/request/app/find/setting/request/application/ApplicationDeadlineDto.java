@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.find.setting.request.application;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.ApplicationDeadline;
 
 /**
  * 

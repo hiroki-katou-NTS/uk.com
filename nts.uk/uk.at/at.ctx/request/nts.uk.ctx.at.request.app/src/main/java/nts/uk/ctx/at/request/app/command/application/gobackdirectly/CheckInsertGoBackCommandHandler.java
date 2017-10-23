@@ -10,14 +10,14 @@ import javax.transaction.Transactional;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalForm;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

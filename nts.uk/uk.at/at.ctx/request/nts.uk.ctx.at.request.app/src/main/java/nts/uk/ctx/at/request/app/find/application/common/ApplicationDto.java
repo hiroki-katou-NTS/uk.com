@@ -12,16 +12,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.AppReason;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalForm;
 
 @Getter
 @Setter

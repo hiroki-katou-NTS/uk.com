@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.stamp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStampCancel;
 /**
  * 
  * @author Doan Duy Hung

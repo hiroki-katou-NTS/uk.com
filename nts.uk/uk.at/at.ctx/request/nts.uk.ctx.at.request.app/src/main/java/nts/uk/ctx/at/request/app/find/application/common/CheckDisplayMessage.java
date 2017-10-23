@@ -4,9 +4,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

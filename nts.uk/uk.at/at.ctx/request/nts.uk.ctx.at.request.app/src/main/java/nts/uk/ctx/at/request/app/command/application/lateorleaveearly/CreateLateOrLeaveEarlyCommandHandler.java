@@ -16,21 +16,20 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegisterImpl;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
-
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalForm;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.newscreen.after.NewAfterRegisterImpl;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.lateorleaveearly.LateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.lateorleaveearly.service.LateOrLeaveEarlyService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;

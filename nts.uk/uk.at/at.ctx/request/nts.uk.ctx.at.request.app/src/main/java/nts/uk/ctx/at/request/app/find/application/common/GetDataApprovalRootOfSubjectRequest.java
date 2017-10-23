@@ -10,8 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.ApprovalRootAdapter;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.ApproverInfoImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

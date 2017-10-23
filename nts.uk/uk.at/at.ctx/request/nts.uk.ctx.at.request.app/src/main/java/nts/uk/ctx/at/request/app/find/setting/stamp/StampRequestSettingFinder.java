@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
-import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSetting;
-import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.stamp.StampRequestSettingRepository;
 
 
 @Stateless

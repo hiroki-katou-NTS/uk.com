@@ -8,7 +8,7 @@ import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
 
 @AllArgsConstructor
 @Value

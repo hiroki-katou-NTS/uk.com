@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;

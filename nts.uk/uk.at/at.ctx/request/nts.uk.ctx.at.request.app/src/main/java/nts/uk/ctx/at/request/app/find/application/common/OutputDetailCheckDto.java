@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.common;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 @Value
 public class OutputDetailCheckDto {
 	//利用者

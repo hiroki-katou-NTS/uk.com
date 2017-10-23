@@ -9,10 +9,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestAppDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompany;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.SelectionFlg;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.RequestOfEachCompany;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.SelectionFlg;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstComAppConfig;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstComAppConfigDetail;
 @Stateless

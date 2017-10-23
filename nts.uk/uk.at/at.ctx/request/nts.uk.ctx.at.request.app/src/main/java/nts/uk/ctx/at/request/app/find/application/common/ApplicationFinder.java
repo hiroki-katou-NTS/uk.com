@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

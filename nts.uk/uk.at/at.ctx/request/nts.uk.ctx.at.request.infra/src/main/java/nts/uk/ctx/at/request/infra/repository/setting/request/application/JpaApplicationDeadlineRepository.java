@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.ApplicationDeadline;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadline;
 
 @Stateless

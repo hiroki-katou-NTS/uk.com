@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;

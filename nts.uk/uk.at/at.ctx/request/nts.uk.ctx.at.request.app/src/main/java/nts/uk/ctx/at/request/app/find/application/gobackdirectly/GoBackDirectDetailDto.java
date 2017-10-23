@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.OutputAllDataApp;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSet;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.before.PrelaunchAppSetting;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.other.output.OutputAllDataApp;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.service.GoBackDirectAppSet;
 
 @AllArgsConstructor
 @Value

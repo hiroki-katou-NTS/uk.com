@@ -11,9 +11,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.bs.dto.JobEntryHistoryImport;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;

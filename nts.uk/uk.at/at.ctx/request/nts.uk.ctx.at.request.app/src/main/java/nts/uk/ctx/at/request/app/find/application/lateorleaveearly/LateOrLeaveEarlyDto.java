@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.lateorleaveearly.LateOrLeaveEarly;
 /**
  * 
  * @author hieult

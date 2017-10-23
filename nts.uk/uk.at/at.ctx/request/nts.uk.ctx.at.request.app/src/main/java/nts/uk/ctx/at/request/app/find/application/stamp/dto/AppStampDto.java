@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStamp;
 /**
  * 
  * @author Doan Duy Hung

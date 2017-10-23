@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

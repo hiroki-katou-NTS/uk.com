@@ -36,9 +36,9 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.InputGetDetailCheck;
 
 @Path("at/request/application")
 @Produces("application/json")

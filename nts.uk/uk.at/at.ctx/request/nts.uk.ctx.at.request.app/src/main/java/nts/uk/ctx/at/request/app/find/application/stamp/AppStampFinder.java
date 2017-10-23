@@ -16,12 +16,12 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
-import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStampCommonDomainService;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStampNewDomainService;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 

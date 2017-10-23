@@ -10,10 +10,10 @@ import lombok.Setter;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalForm;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrame;
 @Getter
 @Setter
 @NoArgsConstructor

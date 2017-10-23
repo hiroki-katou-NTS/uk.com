@@ -15,13 +15,13 @@ import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.ApproverInfoImport;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.AppApprovalPhaseRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 15.詳細画面申請データを取得する

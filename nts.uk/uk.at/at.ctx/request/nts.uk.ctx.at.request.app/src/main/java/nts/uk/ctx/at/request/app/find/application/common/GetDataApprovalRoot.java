@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
