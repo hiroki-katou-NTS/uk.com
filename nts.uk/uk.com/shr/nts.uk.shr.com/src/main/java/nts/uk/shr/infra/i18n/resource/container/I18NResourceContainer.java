@@ -31,6 +31,10 @@ public class I18NResourceContainer<T extends I18NResourceItem> {
 		return this.items.get(identifier).content();
 	}
 	
+	public Optional<String> getContentOptional(String identifier) {
+		return this.contains(identifier) ? Optional.of(this.getContent(identifier)) : Optional.empty();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T extends I18NResourceItem> I18NResourceContainer<T> empty() {
 		return (I18NResourceContainer<T>) EMPTY;

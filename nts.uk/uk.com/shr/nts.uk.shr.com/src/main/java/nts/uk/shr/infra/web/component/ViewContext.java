@@ -51,7 +51,7 @@ public class ViewContext extends UIComponentBase {
 
 		CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
 		rw.write("</script>");
-		rw.write("<script src='/nts.uk.com.web/webapi/loadresource'></script>");
+		//rw.write("<script src='/nts.uk.com.web/webapi/loadresource'></script>");
 
 	}
 	

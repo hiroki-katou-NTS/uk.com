@@ -8,6 +8,8 @@ import java.util.Map;
 import lombok.val;
 
 public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
+	
+	private static final CustomizedI18NResourceContainers<?> EMPTY = new CustomizedI18NResourceContainers<>();
 
 	private final Map<String, I18NResourceContainer<T>> itemsEachCompany = new HashMap<>();
 	
@@ -43,5 +45,9 @@ public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
 		});
 		
 		return merged;
+	}
+	
+	public static CustomizedI18NResourceContainers<?> empty() {
+		return EMPTY;
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -15,8 +16,8 @@ import nts.arc.i18n.Locale;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.i18n.custom.ResourceType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.LanguageConsts;
 import nts.uk.shr.infra.i18n.resource.container.CustomizedI18NResourceContainers;
-import nts.uk.shr.infra.i18n.resource.container.I18NResourceContainer;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourcesRepository;
 
 @ApplicationScoped
@@ -25,11 +26,9 @@ public class I18NResources implements IInternationalization {
 	@Inject
 	private I18NResourcesRepository resourcesRepository;
 	
-	/** LanguageId -> container */
-	private Map<String, I18NResourceContainer<?>> defaultResources = new HashMap<>();
+	private I18NResourcesDefault defaultResources = new I18NResourcesDefault();
 
-	/** LanguageId -> containers */
-	private Map<String, CustomizedI18NResourceContainers<?>> customizedResources = new HashMap<>();
+	private I18NResourcesCustomized customizedResources = new I18NResourcesCustomized();
 	
 	private I18NResourceContentProcessor contentProcessor;
 	
@@ -73,7 +72,6 @@ public class I18NResources implements IInternationalization {
 	// なぜか１箇所だけ使われている
 	@Override
 	public Optional<String> getRawMessage(String messageId) {
-		this.resourcesRepository.loadResourcesDefault("ja");
 		return this.getRawContent(messageId);
 	}
 
@@ -119,16 +117,18 @@ public class I18NResources implements IInternationalization {
 	}
 
 	private Optional<String> getRawContent(String resourceId) {
-		String companyId = AppContexts.user().companyId();
-		String languageId = "ja";
-		
-		val customized = this.customizedResources.get(languageId).containerOf(companyId);
-		if (customized.contains(resourceId)) {
-			return Optional.ofNullable(customized.getContent(resourceId));
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+
+		if (AppContexts.user().hasLoggedIn()) {
+			languageId = AppContexts.user().language().basicLanguageId();
+			String companyId = AppContexts.user().companyId();
+			
+			val customizedOptional = this.customizedResources.getContent(companyId, languageId, resourceId);
+			if (customizedOptional.isPresent()) {
+				return customizedOptional;
+			}
 		}
 		
-		return this.defaultResources.get(languageId).contains(resourceId)
-				? Optional.of(this.defaultResources.get(languageId).getContent(resourceId))
-				: Optional.empty();
+		return this.defaultResources.getContent(languageId, resourceId);
 	}
 }
