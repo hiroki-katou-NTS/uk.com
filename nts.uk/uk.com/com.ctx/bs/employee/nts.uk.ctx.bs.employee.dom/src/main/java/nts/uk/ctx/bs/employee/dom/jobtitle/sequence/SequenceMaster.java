@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.jobtitle.info;
+package nts.uk.ctx.bs.employee.dom.jobtitle.sequence;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

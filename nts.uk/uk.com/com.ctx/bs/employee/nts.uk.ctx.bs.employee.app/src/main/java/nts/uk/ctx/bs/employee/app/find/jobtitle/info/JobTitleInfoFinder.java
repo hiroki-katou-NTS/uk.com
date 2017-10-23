@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.info.dto.JobTitleInfoFindDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
