@@ -16,7 +16,10 @@ module nts.uk.at.view.kmk010.a {
             superHD60HConMedModel: SuperHD60HConMedModel;
             useClassification: KnockoutObservableArray<any>;
             lstUnit: EnumConstantDto[];
+            lstRoundingSet: KnockoutObservableArray<EnumConstantDto>;
             lstRounding: EnumConstantDto[];
+            lstRoundingSub: EnumConstantDto[];
+            checkRounding : KnockoutObservable<number>;
             languageId: string;
             isManage : KnockoutObservable<boolean>;
             static LANGUAGE_ID_JAPAN = 'ja';
@@ -26,8 +29,14 @@ module nts.uk.at.view.kmk010.a {
                 self.calculationMethods = ko.observableArray<EnumConstantDto>([]);
                 self.outsideOTSettingModel = new OutsideOTSettingModel();
                 self.superHD60HConMedModel = new SuperHD60HConMedModel();
+                self.lstRoundingSet = ko.observableArray<EnumConstantDto>([]);
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
+                self.checkRounding = ko.observable(0);
+                self.superHD60HConMedModel.roundingTime.subscribe(function(selectuint: number){
+                   self.updateSelectUnitRounding(selectuint); 
+                   self.checkRounding(selectuint);
+                });
             }
 
             /**
@@ -41,11 +50,18 @@ module nts.uk.at.view.kmk010.a {
                 // find all unit
                 service.findAllOvertimeUnit().done(function(data) {
                     self.lstUnit = data;
+                    self.checkRounding(data[0].value);
                 });
 
                 // find all rounding
                 service.findAllOvertimeRounding().done(function(data) {
                     self.lstRounding = data;
+                    self.lstRoundingSet(self.lstRounding);
+                });
+                
+                // find all rounding sub
+                service.findAllOvertimeRoundingSub().done(function(data) {
+                    self.lstRoundingSub = data;
                 });
 
                 // check manage call service
@@ -256,6 +272,18 @@ module nts.uk.at.view.kmk010.a {
                     
                     service.exportOutsideOTSettingExcel(self.languageId, self.isManage());
                 });
+            }
+            /**
+             * function update select unit rounding
+             */
+            private updateSelectUnitRounding(selectunit: number){
+                var self = this;
+                //15 , 30
+                if ((self.checkRounding() == 15 || self.checkRounding() == 30) && selectunit != 15 && selectunit != 30) {
+                    self.lstRoundingSet(self.lstRoundingSub);
+                } else if((self.checkRounding() != 15 && self.checkRounding() != 30) && (selectunit == 15 || selectunit == 30)){
+                    self.lstRoundingSet(self.lstRounding);
+                }
             }
         }
         export class OvertimeModel {
