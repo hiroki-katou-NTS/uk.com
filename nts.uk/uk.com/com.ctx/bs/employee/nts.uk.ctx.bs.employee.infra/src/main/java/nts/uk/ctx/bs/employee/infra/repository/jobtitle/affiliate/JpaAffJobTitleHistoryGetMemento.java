@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.repository.jobtitle_old.affiliate;
+package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.PositionId;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.affiliate.KmnmtAffiliJobTitleHist;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.affiliate.KmnmtAffiliJobTitleHistPK;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHist;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHistPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

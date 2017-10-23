@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.repository.jobtitle_old.affiliate;
+package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,9 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.affiliate.KmnmtAffiliJobTitleHist;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.affiliate.KmnmtAffiliJobTitleHistPK_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle_old.affiliate.KmnmtAffiliJobTitleHist_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHist;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHistPK_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.KmnmtAffiliJobTitleHist_;
 
 /**
  * The Class JpaAffJobTitleHistoryRepository.
