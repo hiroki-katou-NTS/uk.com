@@ -15,14 +15,33 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExecutionLogDto {
+	
+	/**
+	 * 会社ID
+	 */
+
+	private String companyID;
+	
+	/**
+	 * ID(table 就業計算と集計実行ログ)
+	 */
+	private long empCalAndSumExecLogID;
+
+	/**
+	 * 運用ケース
+	 */
+	private long caseSpecExeContentID;
+	
+	/**
+	 * 実行社員ID
+	 */
+
+	private String employeeID;
+	
 	/**
 	 * 就業計算と集計実行ログID
 	 */
 	private String executedLogID;
-	/**
-	 * ID (table 就業計算と集計実行ログ)
-	 */
-	private long empCalAndSumExecLogID;
 	
 	/**
 	 * エラーの有無
@@ -65,8 +84,11 @@ public class ExecutionLogDto {
 	
 	public static ExecutionLogDto fromDomain(ExecutionLog domain) {
 		return new ExecutionLogDto(
-				domain.getExecutedLogID(), 
+				domain.getCompanyID(), 
 				domain.getEmpCalAndSumExecLogID(), 
+				domain.getCaseSpecExeContentID(), 
+				domain.getEmployeeID(), 
+				domain.getExecutedLogID(), 
 				domain.getExistenceError().value, 
 				domain.getExecuteContenByCaseID(),
 				domain.getExecutionContent().value, 

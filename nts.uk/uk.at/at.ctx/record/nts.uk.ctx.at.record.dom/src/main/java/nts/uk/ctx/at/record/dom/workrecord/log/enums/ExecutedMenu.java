@@ -9,11 +9,11 @@ package nts.uk.ctx.at.record.dom.workrecord.log.enums;
  */
 public enum ExecutedMenu {
 	
-	// 選択して実行
-	SelectAndRun(0), 
+	//0: 選択して実行
+	SELECT_AND_RUN(0), 
 	
-	// ケース別実行
-	ExecutionByCase(1);
+	// 1:ケース別実行
+	EXECUTION_BY_CASE(1);
 
 	public final int value;
 

@@ -67,7 +67,10 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumns({
-        @JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false)
+		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+		@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false),
+		@JoinColumn(name="OPERATION_CASE_ID", referencedColumnName="OPERATION_CASE_ID", insertable = false, updatable = false),
+        @JoinColumn(name="SID", referencedColumnName="SID", insertable = false, updatable = false)
     })
 	public KrcmtEmpExecutionLog executionlog;
 
@@ -79,8 +82,11 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 	public static KrcmtExecutionLog toEntity(ExecutionLog domain) {
 		return new KrcmtExecutionLog(
 				 new KrcmtExecutionLogPK(
-				     domain.getExecutedLogID(),
-					 domain.getEmpCalAndSumExecLogID()
+					 domain.getCompanyID(),
+					domain.getEmpCalAndSumExecLogID(),
+					domain.getCaseSpecExeContentID(),
+					domain.getEmployeeID(),
+				     domain.getExecutedLogID()
 					),
 				 domain.getExistenceError().value,
 				 domain.getExecuteContenByCaseID(),
@@ -97,8 +103,11 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 	
 	public ExecutionLog toDomain() {
 		return ExecutionLog.createFromJavaType(
-				this.krcmtExecutionLogPK.executedLogID, 
+				this.krcmtExecutionLogPK.companyID, 
 				this.krcmtExecutionLogPK.empCalAndSumExecLogID, 
+				this.krcmtExecutionLogPK.caseSpecExeContentID, 
+				this.krcmtExecutionLogPK.employeeID, 
+				this.krcmtExecutionLogPK.executedLogID, 
 				this.existenceError, 
 				this.executeContenByCaseID, 
 				this.executionContent, 

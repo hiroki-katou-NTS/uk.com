@@ -9,23 +9,23 @@ package nts.uk.ctx.at.record.dom.workrecord.log.enums;
  */
 public enum ExeStateOfCalAndSum {
 
-	// 完了
-	Done(0),
+	//0: 完了
+	DONE(0),
 	
-	// 完了（エラーあり）
-	DoneWithError(1),
+	//1: 完了（エラーあり）
+	DONE_WITH_ERROR(1),
 
-	// 処理中
-	Processing(2),
+	//2: 処理中
+	PROCESSING(2),
 
-	//実行中止
-	Stopping(3),
+	//3:実行中止
+	STOPPING(3),
 
-	// 中断開始
-	StartInterruption(4),
+	//4: 中断開始
+	START_INTERRUPTION(4),
 
-	// 中断終了
-	EndInterruption(5);
+	//5: 中断終了
+	END_INTERRUPTION(5);
 
 	public final int value;
 

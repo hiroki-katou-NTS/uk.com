@@ -9,11 +9,11 @@ package nts.uk.ctx.at.record.dom.workrecord.log.enums;
  */
 public enum ExecutionType {
 	
-	// 通常実行
-	NormalExecution(0),
+	//0: 通常実行
+	NORMAL_EXECUTION(0),
 	
-	// 再実行
-	Rerun(1);
+	//1: 再実行
+	RERUN(1);
 	
 	public final int value;
 	

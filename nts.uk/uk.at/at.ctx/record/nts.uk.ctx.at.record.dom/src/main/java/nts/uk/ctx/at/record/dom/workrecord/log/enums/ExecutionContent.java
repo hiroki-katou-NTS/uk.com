@@ -9,17 +9,17 @@ package nts.uk.ctx.at.record.dom.workrecord.log.enums;
  */
 public enum ExecutionContent {
 
-	// 日別作成
-	DailyCreation(0),
+	//0: 日別作成
+	DAILY_CREATION(0),
 
-	// 日別計算
-	DailyCalculation(1),
+	//1: 日別計算
+	DAILY_CALCULATION(1),
 
-	// 承認結果反映
-	ReflectApprovalResult(2),
+	//2: 承認結果反映
+	REFLRCT_APPROVAL_RESULT(2),
 
-	// 月別集計
-	MonthlyAggregation(3);
+	//3: 月別集計
+	MONTHLY_AGGREGATION(3);
 
 	public final int value;
 

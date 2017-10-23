@@ -20,15 +20,32 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 @Getter
 @AllArgsConstructor
 public class ExecutionLog {
-
 	/**
-	 * 就業計算と集計実行ログID
+	 * 会社ID
 	 */
-	private String executedLogID;
+
+	private String companyID;
+	
 	/**
 	 * ID (table 就業計算と集計実行ログ)
 	 */
 	private long empCalAndSumExecLogID;
+
+	/**
+	 * 運用ケース
+	 */
+	private long caseSpecExeContentID;
+	
+	/**
+	 * 実行社員ID
+	 */
+
+	private String employeeID;
+	
+	/**
+	 * 就業計算と集計実行ログID
+	 */
+	private String executedLogID;
 	
 	/**
 	 * エラーの有無
@@ -69,12 +86,20 @@ public class ExecutionLog {
 	 */
 	private ObjectPeriod objectPeriod;
 	
-	public static ExecutionLog createFromJavaType(String executedLogID,long empCalAndSumExecLogID,int existenceError,
+	public static ExecutionLog createFromJavaType(String companyID,
+			long empCalAndSumExecLogID,
+			long caseSpecExeContentID,
+			String employeeID,
+			String executedLogID,int existenceError,
 			int executeContenByCaseID,int executionContent,GeneralDate startExecutionTime,GeneralDate endExecutionTime,
 			int processStatus,int exeType ,int exeContent,GeneralDate startObjectPeriod,GeneralDate endObjectPeriod) {
 		
 		return new ExecutionLog(
-				executedLogID,empCalAndSumExecLogID,
+				companyID,
+				empCalAndSumExecLogID,
+				caseSpecExeContentID,
+				employeeID,
+				executedLogID,
 				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
 				executeContenByCaseID,
 				EnumAdaptor.valueOf(executionContent,ExecutionContent.class),

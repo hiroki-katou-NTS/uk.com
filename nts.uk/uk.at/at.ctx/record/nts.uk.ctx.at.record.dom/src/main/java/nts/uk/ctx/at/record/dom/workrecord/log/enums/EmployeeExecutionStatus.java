@@ -9,9 +9,15 @@ package nts.uk.ctx.at.record.dom.workrecord.log.enums;
  */
 public enum EmployeeExecutionStatus {
 
-	Complete(0),
+	/**
+	 * 0 : complete
+	 */
+	COMPLETE(0),
 
-	Incomplete(1);
+	/**
+	 * 1 : In complete
+	 */
+	INCOMPLETE(1);
 
 	public final int value;
 

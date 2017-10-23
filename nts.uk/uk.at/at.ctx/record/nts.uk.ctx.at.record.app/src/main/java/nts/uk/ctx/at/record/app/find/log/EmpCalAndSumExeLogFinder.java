@@ -9,9 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
-import nts.uk.ctx.at.record.app.find.stamp.StampDto;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,16 +17,18 @@ public class EmpCalAndSumExeLogFinder {
 	
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
+	
+	private String companyID = AppContexts.user().companyId();
+	private String employeeID = AppContexts.user().employeeId();
 	/**
 	 * get All EmpCalAndSumExeLog
 	 * @param operationCaseID
 	 * @param employeeID
 	 * @return list EmpCalAndSumExeLog
 	 */
-	List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(String operationCaseID,String employeeID){
-		String companyId = AppContexts.user().companyId();
+	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(String operationCaseID){
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
-				.getAllEmpCalAndSumExeLog(companyId, operationCaseID, employeeID)
+				.getAllEmpCalAndSumExeLog(companyID, operationCaseID, employeeID)
 				.stream()
 				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c))
 				.collect(Collectors.toList());
@@ -37,10 +37,9 @@ public class EmpCalAndSumExeLogFinder {
 		return data;
 	}
 	
-	EmpCalAndSumExeLogDto getEmpCalAndSumExeLogById(String companyID, long empCalAndSumExecLogID,String operationCaseID,String employeeID){
-		String companyId = AppContexts.user().companyId();
+	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogById(long empCalAndSumExecLogID,String operationCaseID){
 		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
-				.getEmpCalAndSumExeLogByID(companyId, empCalAndSumExecLogID, operationCaseID, employeeID)
+				.getEmpCalAndSumExeLogByID(companyID, empCalAndSumExecLogID, operationCaseID, employeeID)
 				.map(c->EmpCalAndSumExeLogDto.fromDomain(c));
 			if(data.isPresent())
 				return data.get();

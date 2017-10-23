@@ -12,11 +12,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum SysErClass {
 	
-	NoError(0),
+	NO_ERROR(0),
 	
-	DBAccessFailure(1),
+	DB_ACCESS_FAILURE(1),
 	
-	ManMasShortage(2);
+	MAN_MAS_SHORTAGE(2);
 	
 	public final int value;
 
