@@ -4,10 +4,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.service.GoBackDirectCommonDefault;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonDefault;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

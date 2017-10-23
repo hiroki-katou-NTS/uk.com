@@ -7,18 +7,18 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.primitive.UseAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.AllowAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.CheckMethod;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.PossibleAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.RetrictDay;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.common.RetrictPreTimeDay;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.PossibleAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictDay;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictPreTimeDay;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscrete;
 
 @Stateless

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 
 @AllArgsConstructor
 @Value

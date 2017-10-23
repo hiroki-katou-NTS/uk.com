@@ -10,10 +10,10 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.CheckApprover;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.Application;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.after.AfterApprovalProcess;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

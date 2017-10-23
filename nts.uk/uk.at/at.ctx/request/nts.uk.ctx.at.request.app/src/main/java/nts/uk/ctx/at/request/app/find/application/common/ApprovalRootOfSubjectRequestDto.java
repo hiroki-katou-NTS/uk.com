@@ -4,8 +4,8 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.ApprovalPhaseImport;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.ApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 
 @Value
 public class ApprovalRootOfSubjectRequestDto {

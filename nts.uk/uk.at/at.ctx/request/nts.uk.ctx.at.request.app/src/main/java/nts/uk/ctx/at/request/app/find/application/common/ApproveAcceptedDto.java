@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approvalframe.ConfirmAtr;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approveaccepted.ApproveAccepted;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.approveaccepted.Reason;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 
 @Data
 @AllArgsConstructor

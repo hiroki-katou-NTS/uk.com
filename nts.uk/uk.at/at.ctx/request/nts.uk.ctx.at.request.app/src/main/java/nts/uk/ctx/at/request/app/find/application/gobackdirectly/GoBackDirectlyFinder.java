@@ -4,9 +4,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.gobackdirectly.service.GoBackDirectAppSetService;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

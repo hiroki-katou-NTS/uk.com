@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.requestofearch;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 
 @Data
 @AllArgsConstructor

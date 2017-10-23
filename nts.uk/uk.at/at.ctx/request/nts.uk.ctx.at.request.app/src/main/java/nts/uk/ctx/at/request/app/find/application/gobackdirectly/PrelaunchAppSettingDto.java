@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.detailscreen.before.PrelaunchAppSetting;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 
 @AllArgsConstructor
 @Value
