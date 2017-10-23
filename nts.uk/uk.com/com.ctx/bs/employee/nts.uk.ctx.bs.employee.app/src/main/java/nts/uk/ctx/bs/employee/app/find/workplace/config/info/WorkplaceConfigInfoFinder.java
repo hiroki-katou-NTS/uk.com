@@ -94,12 +94,13 @@ public class WorkplaceConfigInfoFinder {
             Optional<WorkplaceInfo> opWkpInfor = this.wkpInfoRepo.find(companyId, item.getWorkplaceId(),
                     workplace.getWkpHistoryLatest().getHistoryId());
             if (!opWkpInfor.isPresent()) {
-                throw new RuntimeException(String.format("Workplace Infor %s didn't exist.", item.getWorkplaceId()));
+                throw new RuntimeException(String.format("Workplace Infor %s didn't exist.",
+                        workplace.getWkpHistoryLatest().getHistoryId()));
             }
             lstWkpInfo.add(opWkpInfor.get());
         });
 
-        return this.createTree(lstWkpInfo.iterator(), lstHierarchy, new ArrayList<>());
+        return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
 	}
 
 	/**
@@ -126,15 +127,17 @@ public class WorkplaceConfigInfoFinder {
 	 * @param lstReturn the lst return
 	 * @return the list
 	 */
-	private List<WorkplaceHierarchyDto> createTree(Iterator<WorkplaceInfo> iteratorWkpInfo,List<WorkplaceHierarchy> lstHierarchy,
-			List<WorkplaceHierarchyDto> lstReturn) {
+    private List<WorkplaceHierarchyDto> createTree(Iterator<WorkplaceHierarchy> iteratorWkpHierarchy,
+            List<WorkplaceInfo> lstHWkpInfo, List<WorkplaceHierarchyDto> lstReturn) {
 		// while have workplace
-		while (iteratorWkpInfo.hasNext()) {
+		while (iteratorWkpHierarchy.hasNext()) {
 			// pop 1 item
-			WorkplaceInfo workplaceInfo = iteratorWkpInfo.next();
+		    WorkplaceHierarchy wkpHierarchy = iteratorWkpHierarchy.next();
 			// get workplace hierarchy by wkpId
-			WorkplaceHierarchy wkpHierarchy = lstHierarchy.stream()
-					.filter(w -> w.getWorkplaceId().equals(workplaceInfo.getWorkplaceId())).findFirst().get();
+		    WorkplaceInfo workplaceInfo = lstHWkpInfo.stream()
+					.filter(w -> w.getWorkplaceId().equals(wkpHierarchy.getWorkplaceId()))
+					.findFirst()
+					.get();
 			// convert
 			WorkplaceHierarchyDto dto = this.covertToWorkplaceHierarchyDto(wkpHierarchy, workplaceInfo);
 

@@ -174,12 +174,8 @@ module nts.uk.com.view.cmm013.f {
                 
                 if (_self.createMode()) {
                     // Create mode                                 
-                    // Get max order
-                    service.findMaxOrder()
-                        .done((maxOrder: number) => {
-                            let newCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), maxOrder + 1);                           
-                            _self.saveHandler(newCommand);   
-                        });                                    
+                    let newCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), null);                           
+                    _self.saveHandler(newCommand);                                      
                 } else {
                     // Update mode
                     let updateCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), _self.order());

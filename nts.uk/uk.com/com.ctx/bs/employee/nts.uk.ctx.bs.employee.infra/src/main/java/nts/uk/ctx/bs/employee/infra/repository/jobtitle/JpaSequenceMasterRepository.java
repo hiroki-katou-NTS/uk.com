@@ -191,7 +191,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();		
-		CriteriaQuery<Short> cq = criteriaBuilder.createQuery(Short.class);
+		CriteriaQuery<Integer> cq = criteriaBuilder.createQuery(Integer.class);
 		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
 		
 		// Build query
