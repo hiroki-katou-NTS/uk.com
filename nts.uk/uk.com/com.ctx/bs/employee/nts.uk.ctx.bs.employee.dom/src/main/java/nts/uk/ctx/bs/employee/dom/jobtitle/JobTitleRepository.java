@@ -6,6 +6,8 @@ package nts.uk.ctx.bs.employee.dom.jobtitle;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface JobTitleRepository.
  */
@@ -58,5 +60,16 @@ public interface JobTitleRepository {
      * @param historyId the history id
      * @return the optional
      */
-    Optional<JobTitle> findByHistoryId(String companyId, String historyId);   
+    Optional<JobTitle> findByHistoryId(String companyId, String historyId);
+    
+    /**
+     * Find by base date.
+     *
+     * @param companyId the company id
+     * @param jobTitleId the job title id
+     * @param baseDate the base date
+     * @return the optional
+     */
+    Optional<JobTitle> findByBaseDate(String companyId, String jobTitleId, GeneralDate baseDate);
+    
 }

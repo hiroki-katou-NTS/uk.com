@@ -14,7 +14,7 @@ import entity.person.info.BpsmtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
-import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 
 /**
  * The Class JpaEmployeeSearchQueryRepository.
@@ -28,8 +28,10 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsymtEmployeePk.sId"
 			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
 			+ " AND h.endD >= :baseDate "
-			+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId"
-			+ " AND wp.cwpmtWorkplacePK.cid = e.companyId "
+			+ "LEFT JOIN BsymtWorkplaceInfo wp ON  wp.bsymtWorkplaceInfoPK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId"
+			+ " AND wp.bsymtWorkplaceInfoPK.cid = e.companyId "
+			+ " AND wp.bsymtWorkplaceHist.strD <= :baseDate"
+			+ " AND wp.bsymtWorkplaceHist.endD >= :baseDate "
 			+ "LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeePk.sId"
 			+ " AND ad.strD <= :baseDate"
 			+ " AND ad.endD >= :baseDate "
@@ -63,7 +65,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		// Convert query data.
 		BsymtEmployee employee = (BsymtEmployee) resultQuery[0];
 		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
-		CwpmtWorkplace workplace = resultQuery[2] == null ? null : (CwpmtWorkplace) resultQuery[2];
+		BsymtWorkplaceInfo workplace = resultQuery[2] == null ? null : (BsymtWorkplaceInfo) resultQuery[2];
 		BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
 		
 		switch (system) {
@@ -73,7 +75,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 					.employeeId(employee.bsymtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
-					.orgName(workplace != null ? workplace.getWkpname() : null)
+					.orgName(workplace != null ? workplace.getWkpName() : null)
 					.build());
 		default:
 			// Get department

@@ -62,25 +62,30 @@ public class OptionalItemFinder {
 	 */
 	public OptionalItemDto find(String optionalItemNo) {
 		OptionalItemDto dto = new OptionalItemDto();
-		String companyId = AppContexts.user().companyId();
 		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo).get();
 		optionalItem.saveToMemento(dto);
-		List<FormulaDto> listFormula = this.getFormulas(optionalItemNo);
 
+		// Set list formula.
+		dto.setFormulas(this.getFormulas(optionalItem));
+
+		return dto;
+	}
+
+	/**
+	 * Sets the name and order.
+	 *
+	 * @param listFormula the list formula
+	 * @param optionalItem the optional item
+	 */
+	private void setNameAndOrder(List<FormulaDto> listFormula, OptionalItem optionalItem) {
 		// Get list attendance item
-		Map<Integer, String> attendanceItems;
-		if (optionalItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE) {
-			attendanceItems = this.dailyRepo.getList(companyId).stream().collect(
-					Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
-		} else {
-			attendanceItems = this.monthlyRepo.findAll(companyId).stream().collect(
-					Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
-		}
+		Map<Integer, String> attendanceItems = this.getAttendanceItems(optionalItem.getPerformanceAtr());
 
 		// Get list formula order.
-		Map<FormulaId, Integer> orders = this.getFormulaOrders(companyId, optionalItem.getOptionalItemNo().v());
+		Map<FormulaId, Integer> orders = this.getFormulaOrders(AppContexts.user().companyId(),
+				optionalItem.getOptionalItemNo().v());
 
-		// Set order & attendance item name & operator text.
+		// Set formula order & attendance item name & operator text.
 		listFormula.forEach(item -> {
 			// Set order
 			item.setOrderNo(orders.get(new FormulaId(item.getFormulaId())));
@@ -98,9 +103,22 @@ public class OptionalItemFinder {
 			}
 		});
 
-		// Set list formula.
-		dto.setFormulas(listFormula);
-		return dto;
+	}
+
+	/**
+	 * Gets the attendance items.
+	 *
+	 * @param atr the atr
+	 * @return the attendance items
+	 */
+	private Map<Integer, String> getAttendanceItems(PerformanceAtr atr) {
+		if (atr == PerformanceAtr.DAILY_PERFORMANCE) {
+			return this.dailyRepo.getList(AppContexts.user().companyId()).stream().collect(
+					Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
+		}
+		return this.monthlyRepo.findAll(AppContexts.user().companyId()).stream().collect(
+				Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
+
 	}
 
 	/**
@@ -118,14 +136,14 @@ public class OptionalItemFinder {
 	/**
 	 * Gets the formulas.
 	 *
-	 * @param itemNo the item no
+	 * @param optionalItem the optional item
 	 * @return the formulas
 	 */
-	private List<FormulaDto> getFormulas(String itemNo) {
+	private List<FormulaDto> getFormulas(OptionalItem optionalItem) {
 		String comId = AppContexts.user().companyId();
 
 		// Get list formula
-		List<Formula> list = this.formulaRepo.findByOptItemNo(comId, itemNo);
+		List<Formula> list = this.formulaRepo.findByOptItemNo(comId, optionalItem.getOptionalItemNo().v());
 
 		// Convert to dto.
 		List<FormulaDto> listDto = list.stream().map(item -> {
@@ -133,6 +151,9 @@ public class OptionalItemFinder {
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
+
+		// Set formula order & attendance item name & operator text.
+		this.setNameAndOrder(listDto, optionalItem);
 
 		return listDto;
 

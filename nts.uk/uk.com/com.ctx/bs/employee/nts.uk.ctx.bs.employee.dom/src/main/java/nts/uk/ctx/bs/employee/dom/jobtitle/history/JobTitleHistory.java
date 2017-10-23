@@ -12,8 +12,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class JobTitleHistory.
  */
+//職位履歴
 @Getter
-// 職場履歴
 public class JobTitleHistory extends DomainObject {
 
 	/** The history id. */

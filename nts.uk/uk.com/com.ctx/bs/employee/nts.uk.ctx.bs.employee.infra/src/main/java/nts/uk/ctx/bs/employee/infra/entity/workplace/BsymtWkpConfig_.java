@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
  */
 @StaticMetamodel(BsymtWkpConfig.class)
 public class BsymtWkpConfig_ {
-
 	/** The bsymt wkp config PK. */
 	public static volatile SingularAttribute<BsymtWkpConfig, BsymtWkpConfigPK> bsymtWkpConfigPK;
 
@@ -24,6 +23,4 @@ public class BsymtWkpConfig_ {
 	/** The end D. */
 	public static volatile SingularAttribute<BsymtWkpConfig, GeneralDate> endD;
 
-	/** The bsymt wkp config. */
-	public static volatile SingularAttribute<BsymtWkpConfig, BsymtWkpConfig> bsymtWkpConfig;
 }

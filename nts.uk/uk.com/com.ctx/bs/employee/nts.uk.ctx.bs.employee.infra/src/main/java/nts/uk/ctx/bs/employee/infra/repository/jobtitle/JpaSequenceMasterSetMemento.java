@@ -5,9 +5,9 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterSetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
 
