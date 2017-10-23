@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps006.a.style.css" />
 			<com:scriptfile path="cps006.a.service.js" />
@@ -62,13 +65,14 @@
 						</div>
 
 						<div>
-							<div id='col1' data-bind="ntsFormLabel: {required: true}"
+							<div id='col1' data-bind="ntsFormLabel: {required: true, constraint: 'CategoryName'}"
 								class='distane'>
 								<label>#{i18n.getText('CPS006_9')}</label>
 							</div>
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
 								value: categoryName ,
+								constraint:'CategoryName',
 								enable: true,
 								immediate: false}"></input>
 							<com:ko-if bind="displayIsAbolished === 0">

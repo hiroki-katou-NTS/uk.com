@@ -42,7 +42,7 @@ input.ntsSearchBox {
 	margin-bottom: 5px;
 }
 #ctgName{
-	width: 200px;
+	width: 200px !important;
 
 }
 #col1{
