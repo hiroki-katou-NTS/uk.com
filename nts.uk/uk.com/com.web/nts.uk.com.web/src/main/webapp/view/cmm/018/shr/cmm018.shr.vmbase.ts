@@ -578,12 +578,19 @@ module nts.uk.com.view.cmm018.shr {
              * check appType is exist in list root ?
              */
             static checkExist(lstRoot: Array<CompanyAppRootADto>,appType: number, employRootAtr: number): boolean{
+                let check = false;
                 _.each(lstRoot, function(root){
                     if(root.appTypeValue == appType && root.employRootAtr == employRootAtr){
+                        check = true;
                         return true;
                     }
                 });
-                return false;
+                if(!check){
+                    return false;
+                }else{
+                    return true;    
+                }
+                
             }
         }
         

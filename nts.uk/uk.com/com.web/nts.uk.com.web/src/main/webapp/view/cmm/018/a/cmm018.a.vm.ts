@@ -99,7 +99,6 @@ module nts.uk.com.view.cmm018.a {
                                                 item.company.applicationType, item.company.employmentRootAtr, item.company.branchId,item.lstAppPhase));
                             });
                         }
-                        console.log(self.lstNameAppType());
                         let itemHist: vmbase.ListHistory = self.findHistory(self.currentCode());
                         if(itemHist.overLap == '※' || itemHist.overLap == true){
                             self.cpA(self.convertlistRoot(lstRoot,true));
@@ -121,7 +120,13 @@ module nts.uk.com.view.cmm018.a {
                                                 item.workplace.applicationType, item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
                             });
                         }
-                        self.cpA(self.convertlistRoot(lstRoot,false));
+                        let itemHist: vmbase.ListHistory = self.findHistory(self.currentCode());
+                        if(itemHist.overLap == '※' || itemHist.overLap == true){
+                            self.cpA(self.convertlistRoot(lstRoot,true));
+                        }else{
+                            self.cpA(self.convertlistRoot(lstRoot,false));    
+                        }
+//                        self.cpA(self.convertlistRoot(lstRoot,false));
                     }
                     //TH: tab person: vmbase.RootType.PERSON
                     else{
@@ -137,7 +142,13 @@ module nts.uk.com.view.cmm018.a {
                                                 item.person.applicationType, item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
                             }); 
                         }
-                        self.cpA(self.convertlistRoot(lstRoot,false));
+//                        self.cpA(self.convertlistRoot(lstRoot,false));
+                        let itemHist: vmbase.ListHistory = self.findHistory(self.currentCode());
+                        if(itemHist.overLap == '※' || itemHist.overLap == true){
+                            self.cpA(self.convertlistRoot(lstRoot,true));
+                        }else{
+                            self.cpA(self.convertlistRoot(lstRoot,false));    
+                        }
                     }
                     self.cpA.valueHasMutated();
                 });
@@ -369,9 +380,6 @@ module nts.uk.com.view.cmm018.a {
                             _.each(lstNameCfr, function(item){
                                 self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName, 2));
                             });
-                            if(self.listHistory().length > 0){
-                                self.currentCode(self.listHistory()[0].id);
-                            }
                             if(transferData.screen == 'Application'){//screen Application
                                 //list person
                                 self.lstPerson(data.lstPerson);
@@ -389,6 +397,9 @@ module nts.uk.com.view.cmm018.a {
                                 }
                                 let name = data.lstCompany.length > 1 ? data.lstCompany[0].companyName : '';
                                 self.nameCompany(name);  
+                            }
+                            if(self.listHistory().length > 0){
+                                self.currentCode(self.listHistory()[0].id);
                             }
                         });
                     });
@@ -543,10 +554,15 @@ module nts.uk.com.view.cmm018.a {
                                         item.person.applicationType, item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
                         });
                     }
-                    self.cpA(self.convertlistRoot(lstRoot,false));
                     self.cpA.valueHasMutated();
                     if(self.dataI() != null){
                         self.currentCode(self.listHistory()[0].id);
+                    }
+                    let itemHist: vmbase.ListHistory = self.findHistory(self.currentCode());
+                    if(itemHist.overLap == '※' || itemHist.overLap == true){
+                        self.cpA(self.convertlistRoot(lstRoot,true));
+                    }else{
+                        self.cpA(self.convertlistRoot(lstRoot,false));    
                     }
                     self.dataI(null);
                     block.clear();
@@ -778,21 +794,21 @@ module nts.uk.com.view.cmm018.a {
                     let obj: vmbase.DataDisplayComDto = self.findAppIdForCom(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstCompanyRoot, function(item){
-                            lstApp.push(new vmbase.ApplicationType(item.company.applicationType,'',item.company.confirmationRootType));
+                            lstApp.push(new vmbase.ApplicationType(item.company.applicationType,'',item.company.employmentRootAtr));
                         });
                     }
                 }else if(rootType == vmbase.RootType.WORKPLACE){
                     let obj: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstWorkplaceRoot, function(item){
-                            lstApp.push(new vmbase.ApplicationType(item.workplace.applicationType,'',item.workplace.confirmationRootType));
+                            lstApp.push(new vmbase.ApplicationType(item.workplace.applicationType,'',item.workplace.employmentRootAtr));
                         });
                     }
                 }else{
                     let obj: vmbase.DataDisplayPsDto = self.findAppIdForPs(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstPersonRoot, function(item){
-                            lstApp.push(new vmbase.ApplicationType(item.person.applicationType,'',item.person.confirmationRootType));
+                            lstApp.push(new vmbase.ApplicationType(item.person.applicationType,'',item.person.employmentRootAtr));
                         });
                     }
                 }
