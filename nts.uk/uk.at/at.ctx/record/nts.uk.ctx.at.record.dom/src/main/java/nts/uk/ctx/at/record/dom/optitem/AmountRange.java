@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.dom.optitem;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -35,10 +34,14 @@ public class AmountRange extends DomainObject {
 		super();
 		this.upperLimit = new AmountRangeValue(upperLimit);
 		this.lowerLimit = new AmountRangeValue(lowerLimit);
+	}
 
-		// Validate
+	/**
+	 * Validate range.
+	 */
+	public void validateRange() {
 		if (isInvalidRange()) {
-			throw new BusinessException(new RawErrorMessage("Upper limit >= Lower limit"));
+			throw new BusinessException("Msg_574");
 		}
 	}
 
