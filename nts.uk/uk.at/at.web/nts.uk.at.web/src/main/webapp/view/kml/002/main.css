@@ -107,11 +107,14 @@ table.calculator-items tbody {
 }
 
 table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2)
-	{
+{
 	text-align: center;
 }
 
-table.calculator-items tbody td {
+table.calculator-items tbody td:nth-child(1), table.calculator-items tbody td:nth-child(2), 
+table.calculator-items tbody td:nth-child(4), table.calculator-items tbody td:nth-child(5),
+table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nth-child(7)
+{
 	text-align: center;
 }
 
@@ -126,22 +129,22 @@ table.calculator-items tbody td {
 
 .display-atr {
 	min-width: 0 !important;
-	width: 100px !important;
+	width: 110px !important;
 }
 
 .total {
 	min-width: 0 !important;
-	width: 100px !important;
+	width: 110px !important;
 }
 
 .rounding {
 	min-width: 0 !important;
-	width: 120px !important;
+	width: 130px !important;
 }
 
 .fraction {
 	min-width: 0 !important;
-	width: 120px !important;
+	width: 130px !important;
 }
 
 .cbx-list-header {
@@ -290,7 +293,7 @@ table.cal-formula-input-form tr:nth-child(1) td:nth-child(1), table.cal-formula-
 }
 
 input.ui-igcombo-field.ui-corner-all.ui-unselectable {
-	text-align: center;
+	text-align: left;
 }
 
 .ntsControl.radio-wrapper.reset-element {

@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,6 +40,9 @@ public class KscstVerticalCalSet extends UkJpaEntity implements Serializable {
 	/* 応援集計区分 */
 	@Column(name = "ASSISTANCE_TABULATION_ATR")
 	public int assistanceTabulationAtr;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="verticalCalSet", orphanRemoval = true)
+	public List<KscstVerticalCalItem> verticalCalItems;
 	
 	@Override
 	protected Object getKey() {

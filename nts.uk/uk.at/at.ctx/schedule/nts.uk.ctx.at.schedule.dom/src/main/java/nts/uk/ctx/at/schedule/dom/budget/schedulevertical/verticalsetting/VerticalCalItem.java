@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
-@AllArgsConstructor
 @Getter
 public class VerticalCalItem {
-	/* 会社ID */
+	/** 会社ID **/
     private String companyId;
     
     /*コード*/
@@ -33,4 +30,22 @@ public class VerticalCalItem {
     
     // 端数処理
  	private Rounding rounding;
+ 	
+ 	private int dispOrder;
+
+	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
+			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
+			Rounding rounding, int dispOrder) {
+		
+		this.companyId = companyId;
+		this.verticalCalCd = verticalCalCd;
+		this.itemId = itemId;
+		this.itemName = itemName;
+		this.calculateAtr = calculateAtr;
+		this.displayAtr = displayAtr;
+		this.cumulativeAtr = cumulativeAtr;
+		this.attributes = attributes;
+		this.rounding = rounding;
+		this.dispOrder = dispOrder;
+	}
 }
