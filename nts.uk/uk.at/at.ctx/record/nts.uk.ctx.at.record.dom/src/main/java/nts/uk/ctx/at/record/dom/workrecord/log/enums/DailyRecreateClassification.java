@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.usecase;
+package nts.uk.ctx.at.record.dom.workrecord.log.enums;
 
 /**
  * @author danpv

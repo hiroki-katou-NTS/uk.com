@@ -94,5 +94,21 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 				 domain.getObjectPeriod().getEndDate(),
 				 null);
 	}
+	
+	public ExecutionLog toDomain() {
+		return ExecutionLog.createFromJavaType(
+				this.krcmtExecutionLogPK.executedLogID, 
+				this.krcmtExecutionLogPK.empCalAndSumExecLogID, 
+				this.existenceError, 
+				this.executeContenByCaseID, 
+				this.executionContent, 
+				this.executionStartDate,
+				this.executionEndDate, 
+				this.processStatus, 
+				this.settingInfoType, 
+				this.settingInfoContent, 
+				this.periodCoverdStartDate, 
+				this.periodCoverdEndDate);
+	}
 
 }

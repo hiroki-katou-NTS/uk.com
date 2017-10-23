@@ -1,11 +1,10 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot;
+package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
 
 /**
  * @author danpv

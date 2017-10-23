@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot;
+package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,9 +1,10 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.usecase;
+package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 
 /**
  * @author danpv

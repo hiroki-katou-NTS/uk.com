@@ -1,5 +1,5 @@
 
-package nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot;
+package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,10 +10,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExeErMesInfor;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutedMenu;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
 
 
 /**

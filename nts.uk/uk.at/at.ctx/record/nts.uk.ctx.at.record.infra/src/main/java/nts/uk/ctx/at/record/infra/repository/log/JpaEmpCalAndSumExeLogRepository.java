@@ -3,12 +3,14 @@ package nts.uk.ctx.at.record.infra.repository.log;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.infra.entity.log.KrcmtEmpExecutionLog;
 
+@Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository  {
 	
 	private final String SELECT_FROM_LOG = "SELECT c FROM KrcmtEmpExecutionLog c ";
@@ -19,30 +21,18 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	private final String SELECT_LOG_BY_CODE = SELECT_All_LOG
 			+ " AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 	
-	private static EmpCalAndSumExeLog toDomain(KrcmtEmpExecutionLog entity ) {
-		return EmpCalAndSumExeLog.createFromJavaType (
-					entity.krcmtEmpExecutionLogPK.companyID,
-					entity.krcmtEmpExecutionLogPK.empCalAndSumExecLogID,
-					entity.krcmtEmpExecutionLogPK.caseSpecExeContentID,
-					entity.krcmtEmpExecutionLogPK.employeeID,
-					entity.executedMenu,
-					entity.executedStatus,
-					entity.executedDate,
-					entity.processingMonth,
-					entity.closureID,
-					null//list executionLogs( 実行ログ)
-				);
-		
-	}
-	
 	/**
 	 * get all EmpCalAndSumExeLog
 	 */
 	@Override
 	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID, String operationCaseID,
 			String employeeID) {
-		// TODO Auto-generated method stub
-		return null;
+		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG,KrcmtEmpExecutionLog.class)
+				.setParameter("companyID", companyID)
+				.setParameter("operationCaseID", operationCaseID)
+				.setParameter("employeeID", employeeID)
+				.getList(c -> c.toDomain());
+		return data;
 	}
 	
 	/**
@@ -51,10 +41,12 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@Override
 	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, long empCalAndSumExecLogID,
 			String operationCaseID, String employeeID) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_CODE,KrcmtEmpExecutionLog.class)
+				.setParameter("companyID", companyID)
+				.setParameter("operationCaseID", operationCaseID)
+				.setParameter("employeeID", employeeID)
+				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
+				.getSingle(c -> c.toDomain());
+		return data;
 	}
-	
-
-
 }

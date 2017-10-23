@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -72,5 +71,19 @@ public class KrcmtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				domain.getClosureID(),
 				domain.getExecutionLogs().stream().map(c->KrcmtExecutionLog.toEntity(c)).collect(Collectors.toList())
 				);
+	}
+	
+	public EmpCalAndSumExeLog toDomain() {
+		return EmpCalAndSumExeLog.createFromJavaType(
+				this.krcmtEmpExecutionLogPK.companyID, 
+				this.krcmtEmpExecutionLogPK.empCalAndSumExecLogID, 
+				this.krcmtEmpExecutionLogPK.caseSpecExeContentID, 
+				this.krcmtEmpExecutionLogPK.employeeID, 
+				this.executedMenu, 
+				this.executedStatus,
+				this.executedDate, 
+				this.processingMonth, 
+				this.closureID, 
+				this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
 	}
 }

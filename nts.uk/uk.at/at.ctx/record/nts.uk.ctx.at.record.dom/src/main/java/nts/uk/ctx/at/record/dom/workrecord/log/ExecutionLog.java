@@ -7,13 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ErrorPresent;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionTime;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ObjectPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.log.usecase.CalExeSettingInfor;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * 実行ログ

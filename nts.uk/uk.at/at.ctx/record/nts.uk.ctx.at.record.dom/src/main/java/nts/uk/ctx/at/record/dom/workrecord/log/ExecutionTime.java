@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.objectvalue;
+package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
