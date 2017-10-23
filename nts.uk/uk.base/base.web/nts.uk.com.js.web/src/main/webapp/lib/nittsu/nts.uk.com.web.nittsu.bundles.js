@@ -4145,7 +4145,7 @@ var nts;
                     _.forEach(errors["messageId"], function (id, idx) {
                         if ($.isArray(errors.messages[id])) {
                             _.forEach(errors.messages[id], function (m) {
-                                addError(errorBody, , id, idx + idxCount + 1);
+                                addError(errorBody, m, id, idx + idxCount + 1);
                                 idxCount++;
                             });
                         }
