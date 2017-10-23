@@ -151,6 +151,7 @@ module nts.uk.at.view.kmk002.c {
                 self.formulaAtr = dto.formulaAtr;
                 self.formulaName = dto.formulaName;
                 self.lstSelectDailyAttendanceItem(dto.itemSelection.attendanceItems);
+                self.checkMul(dto.itemSelection.minusSegment == 1 ? true : false);
             }
 
             /**

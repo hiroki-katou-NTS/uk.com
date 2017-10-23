@@ -12,6 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommand;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommandHandler;
@@ -34,6 +35,10 @@ public class OptionalItemWs extends WebService {
 	/** The save. */
 	@Inject
 	private OptionalItemSaveCommandHandler handler;
+
+	/** The i 18 n. */
+	@Inject
+	private IInternationalization i18n;
 
 	/**
 	 * Find.
@@ -76,7 +81,7 @@ public class OptionalItemWs extends WebService {
 	@POST
 	@Path("getenum")
 	public OptItemEnumDto getEnum() {
-		return OptItemEnumDto.init();
+		return OptItemEnumDto.init(i18n);
 	}
 
 }

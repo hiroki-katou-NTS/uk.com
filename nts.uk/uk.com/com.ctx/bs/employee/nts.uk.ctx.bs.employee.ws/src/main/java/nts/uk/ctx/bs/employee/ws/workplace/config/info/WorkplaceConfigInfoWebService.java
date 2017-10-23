@@ -37,6 +37,6 @@ public class WorkplaceConfigInfoWebService extends WebService {
     @Path("find")
     @POST
     public List<WorkplaceHierarchyDto> wkpConfigInfoFind(WkpConfigInfoFindObject findObject) {
-        return this.wkpConfigInfoFinder.findAll(findObject.getStartDate());
+        return this.wkpConfigInfoFinder.findAll(findObject.getBaseDate());
     }
 }

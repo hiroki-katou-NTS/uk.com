@@ -66,8 +66,8 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
                     workplace.getWkpHistoryLatest().getHistoryId());
             
             // delete workplace
-            this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(),
-                    workplace.getWkpHistoryLatest().getHistoryId());
+//            this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(),
+//                    workplace.getWkpHistoryLatest().getHistoryId());
         } else {
             if (command.getStartDWkpConfigInfo().before(startDWkpHistLatest)) {
                 List<String> lstHistIdRemove = this.findHistory(workplace, command.getStartDWkpConfigInfo());
@@ -77,7 +77,7 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
                     this.wkpInfoRepo.remove(companyId, command.getWkpIdSelected(), historyId);
                     
                     // delete workplace
-                    this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(), historyId);
+//                    this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(), historyId);
                 });
             }
             int dayOfAgo = -1;

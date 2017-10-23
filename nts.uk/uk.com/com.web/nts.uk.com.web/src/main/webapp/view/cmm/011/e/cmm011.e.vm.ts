@@ -9,12 +9,14 @@ module nts.uk.com.view.cmm011.e {
             wkpId: string;
             historyId: string;
             startDate: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
                 self.wkpId = null;
                 self.historyId = null;
                 self.startDate = ko.observable(null);
+                self.endDate = ko.observable("9999/12/31");//TODO: nts.uk.resource.getText("CMM011_27")
             }
             
             /**
@@ -66,7 +68,7 @@ module nts.uk.com.view.cmm011.e {
                         historyId: self.historyId,
                         period: {
                             startDate: self.startDate(),
-                            endDate: new Date("9999-12-31")
+                            endDate: new Date(self.endDate())
                         }
                     }
                 }

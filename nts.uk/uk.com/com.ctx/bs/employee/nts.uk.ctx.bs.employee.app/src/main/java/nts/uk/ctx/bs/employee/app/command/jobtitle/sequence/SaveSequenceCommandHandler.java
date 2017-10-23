@@ -58,6 +58,8 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 				// Throw Exception - Duplicated
 				throw new BusinessException("Msg_3");
 			}
+			final int newOrder = this.repository.findMaxOrder() + 1;
+			command.setOrder(newOrder);
 			this.repository.add(command.toDomain(companyId));
 		} else {
 			// Update
