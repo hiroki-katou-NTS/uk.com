@@ -16,9 +16,9 @@ public class KrcmtExecutionLogPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "EXECUTED_LOG_ID")
-	public String executedLogId;
+	public String executedLogID;
 
 	@Column(name = "EMP_EXECUTION_LOG_ID")
-	public String employmentExecutionLogId;
+	public long empCalAndSumExecLogID;
 
 }

@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log.usecase;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
  * 計算実行設定情報
  */
 @Getter
+@AllArgsConstructor
 public class CalExeSettingInfor {
 	
 	/**
