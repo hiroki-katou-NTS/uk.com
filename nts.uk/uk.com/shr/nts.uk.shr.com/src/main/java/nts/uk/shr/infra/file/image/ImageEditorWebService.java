@@ -33,8 +33,8 @@ public class ImageEditorWebService extends WebService{
 			String string64 = query.getFile().substring(query.getFile().indexOf(",")+1);
 			InputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(string64));
 			BufferedImage bfi = ImageIO.read(is);
-			int width = getWidth(query, bfi);
-			int height = getHeight(query, bfi);
+			int width = getWidth(query, bfi.getWidth()), height = getHeight(query, bfi.getHeight());
+			
 			if(query.isCrop() && isCroppable(width, height)){
 				bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
 			}
@@ -56,11 +56,11 @@ public class ImageEditorWebService extends WebService{
 		return width > 0 && height > 0;
 	}
 	
-	private int getWidth(ImageCropQuery query, BufferedImage bfi){
-		return Math.min(query.getHeight(), bfi.getHeight() - query.getX());
+	private int getWidth(ImageCropQuery query, int width){
+		return Math.min(query.getWidth(), width - query.getX());
 	}
 	
-	private int getHeight(ImageCropQuery query, BufferedImage bfi){
-		return Math.min(query.getHeight(), bfi.getHeight() - query.getY());
+	private int getHeight(ImageCropQuery query, int height){
+		return Math.min(query.getHeight(), height - query.getY());
 	}
 }
