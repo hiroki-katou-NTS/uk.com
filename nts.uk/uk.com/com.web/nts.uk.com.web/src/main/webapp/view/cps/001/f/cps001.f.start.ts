@@ -34,7 +34,7 @@ function init() {
         ntsControls: [
             { name: 'Combobox', options: __viewContext['viewModel'].comboItems, optionsValue: 'id', optionsText: 'name', columns: __viewContext['viewModel'].comboColumns, controlType: 'ComboBox', enable: true },
             { name: 'Button', text: nts.uk.resource.getText('CPS001_83'), click: ButtonClick, controlType: 'Button' },
-            { name: 'Link1', click: function() { alert('Do something'); }, controlType: 'LinkLabel' },
+            { name: 'Link1', controlType: 'LinkLabel' }
         ]
     });
 
@@ -42,7 +42,7 @@ function init() {
         var rowId: string = String($(ui.owner.element).closest("tr").data("id"));
         let rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == rowId; });
         var comboBoxIdNew = ui.items[0].data.id;
-        
+
         __viewContext['viewModel'].updateCtgItem(rowItem, comboBoxIdNew);
 
     });
@@ -52,5 +52,5 @@ function ButtonClick() {
     let id = $(this).data("id");
     let rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
-    debugger;
 }
+

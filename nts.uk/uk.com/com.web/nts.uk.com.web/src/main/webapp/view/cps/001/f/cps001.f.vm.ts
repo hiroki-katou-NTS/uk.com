@@ -17,7 +17,7 @@ module cps001.f.vm {
         asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         onchange: (filename) => void;
-        onfilenameclick: (filename) => void;
+        onfilenameclick: (fileId) => void;
 
         items: Array<GridItem> = [];
         comboItems: Array<PersonCtg> = [];
@@ -39,8 +39,8 @@ module cps001.f.vm {
             self.onchange = (filename) => {
 
             };
-            self.onfilenameclick = (filename) => {
-                alert(filename);
+            self.onfilenameclick = (fileId) => {
+                alert(fileId);
             };
 
         }
@@ -48,7 +48,7 @@ module cps001.f.vm {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-
+            self.items = [];
             var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
             var dfdGetInfoCategory = service.getInfoCatagory();
 
@@ -78,9 +78,8 @@ module cps001.f.vm {
                         personInfoCtgId: self.comboItems[0].id,
                         uploadOrder: 1
                     }).done(() => {
-
-                        console.log("done");
-
+                        self.restart();
+                        self.filename("");
                     });
                 } else {
                     service.savedata({
@@ -90,16 +89,14 @@ module cps001.f.vm {
                         uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
                     }).done(() => {
                         self.start().done(() => {
-                            console.log("done");
+                            self.restart();
+                            self.filename("");
                         });
-
-
                     });
                 }
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
             });
-
             setShared('CPS001B_VALUE', {});
         }
 
@@ -107,8 +104,7 @@ module cps001.f.vm {
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deletedata(rowItem.fileId).done(() => {
-                    
-                    
+                    self.restart();
                 });
             }).ifCancel(() => {
 
@@ -117,17 +113,27 @@ module cps001.f.vm {
 
         updateCtgItem(rowItem: IEmpFileMana, comboBoxIdNew: any) {
             let self = this;
-            debugger;
             if (rowItem.personInfoCategoryId != comboBoxIdNew) {
                 service.updateCtgdata({ fileId: rowItem.fileId, personInfoCategoryIdNew: comboBoxIdNew }).done(() => {
-
+                    self.restart();
                 });
             }
+        }
+
+        restart() {
+            __viewContext['viewModel'] = new vm.ViewModel();
+
+            __viewContext['viewModel'].start().done(() => {
+                init();
+                __viewContext.bind(__viewContext['viewModel']);
+            });
         }
 
         close() {
             close();
         }
+
+
     }
 
 
