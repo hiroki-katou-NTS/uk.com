@@ -21,7 +21,7 @@ import nts.uk.shr.infra.i18n.resource.container.CustomizedI18NResourceContainers
 import nts.uk.shr.infra.i18n.resource.container.I18NResourcesRepository;
 
 @ApplicationScoped
-public class I18NResources implements IInternationalization {
+public class I18NResourcesForUK implements IInternationalization {
 
 	@Inject
 	private I18NResourcesRepository resourcesRepository;
