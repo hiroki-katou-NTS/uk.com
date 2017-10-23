@@ -9,16 +9,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ViewModel {
-        categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+        initValSettingLst: KnockoutObservableArray<any> = ko.observableArray([]);
         itemList: KnockoutObservableArray<any> = ko.observableArray([]);
         initValueList: KnockoutObservableArray<any> = ko.observableArray([]);
-        categoryId: KnockoutObservable<string> = ko.observable('');
+        initSettingId: KnockoutObservable<string> = ko.observable('');
         ctgColums: KnockoutObservableArray<any>;
         itemValueLst: KnockoutObservableArray<any>;
         selectionColumns: any;
-        currentCategory: KnockoutObservable<CategoryInfoDetail>;
+        currentCategory: KnockoutObservable<InitValueSettingDetail>;
         comboItems: any;
         comboColumns: any;
+        isUpdate: boolean = false;
         items = _(new Array(10)).map((x, i) => new GridItem(i + 1)).value();
         constructor() {
 
@@ -27,15 +28,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initValue();
             self.start();
 
-            self.categoryId.subscribe(function(value: string) {
+            self.initSettingId.subscribe(function(value: string) {
+                service.getAllCtg().done((data: Array<any>) => {
+                    self.currentCategory().setData({
+                        settingCode: value,
+                        settingName: value,
+                        itemList: data
+                    });
+                    if (data.length > 0) {
+                        service.getAllItemByCtgId(data[0].perInfoCtgId).done((item: Array<any>) => {
+                            console.log(item);
 
-                self.currentCategory().setData({
-                    categoryCode: value,
-                    categoryName: value,
-                    itemList: self.itemList()
+                        })
+                    }
+
+                    self.currentCategory.valueHasMutated();
                 });
-
-                self.currentCategory.valueHasMutated();
             });
 
         }
@@ -43,35 +51,53 @@ module nts.uk.com.view.cps009.a.viewmodel {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            for (var i = 0; i < 10; i++) {
-                self.categoryList.push(new CategoryInfo({ id: i.toString(), categoryName: 'A', categoryCode: "000" + i.toString() }));
-                self.itemList.push(new ItemInfo({ id: i.toString(), itemCode: "000" + i.toString(), itemName: "B" }));
-                self.initValueList.push(new InitValue({ id: i.toString(), itemName: "C", comboxValue: "1", value: "HHH" }));
-            }
-            self.categoryId(self.categoryList()[0].id);
+            service.getAll().done((data: Array<any>) => {
+                if (data.length > 0) {
+                    self.isUpdate = true;
+                    self.initValSettingLst.removeAll();
+                    self.initValSettingLst(data);
+                    self.initSettingId(self.initValSettingLst()[0].settingId);
 
+                } else {
+                    self.isUpdate = false;
+                    self.openDDialog();
+                    self.refresh();
+
+                }
+            });
             return dfd.promise();
+        }
+
+        refresh() {
+            let self = this;
+
+            service.getAll().done((data: Array<any>) => {
+                self.initValSettingLst.removeAll();
+                self.initValSettingLst(data);
+                self.initSettingId(self.initValSettingLst()[0].settingId);
+
+            });;
         }
 
         initValue() {
             let self = this;
 
             self.ctgColums = ko.observableArray([
-                { headerText: 'id', key: 'id', width: 100, hidden: true },
-                { headerText: text('CPS009_10'), key: 'categoryCode', width: 80 },
-                { headerText: text('CPS006_11'), key: 'categoryName', width: 160 }
+                { headerText: 'settingId', key: 'settingId', width: 100, hidden: true },
+                { headerText: text('CPS009_10'), key: 'settingCode', width: 80 },
+                { headerText: text('CPS006_11'), key: 'settingName', width: 160 }
             ]);
 
-            self.itemValueLst = ko.observableArray(
-                [new ItemModel('1', '基本給'),
-                    new ItemModel('2', '役職手当'),
-                    new ItemModel('3', '基本給2')]);
+            self.itemValueLst = ko.observableArray([
+                new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給2')]);
 
             self.selectionColumns = [{ prop: 'id', length: 4 },
                 { prop: 'itemName', length: 8 }];
 
-            self.currentCategory = ko.observable(new CategoryInfoDetail({
-                categoryCode: '', categoryName: '', itemList: []
+            self.currentCategory = ko.observable(new InitValueSettingDetail({
+                settingCode: '', settingName: '', itemList: []
             }));
 
             self.comboItems = [new ItemModel('1', '基本給'),
@@ -130,39 +156,72 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         }
     }
-    
-    export interface ICategoryInfo {
-        id: string;
-        categoryName: string;
-        categoryCode: string;
+
+
+    export class InitValueSettingDetail {
+        settingCode: KnockoutObservable<string>;
+        settingName: KnockoutObservable<string>;
+        itemList: KnockoutObservableArray<any>;
+        currentItemId: KnockoutObservable<string> = ko.observable('');
+        itemColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'id', key: 'perInfoCtgId', width: 100, hidden: true },
+            { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
+            { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
+        ]);
+        constructor(params: IInitValueSettingDetail) {
+            this.settingCode = ko.observable(params.settingCode);
+            this.settingName = ko.observable(params.settingName);
+            this.itemList = ko.observableArray(params.itemList);
+        }
+
+        setData(params: IInitValueSettingDetail) {
+            this.settingCode(params.settingCode);
+            this.settingName(params.settingName);
+            this.itemList(params.itemList);
+            if (this.itemList().length > 0) {
+                this.currentItemId(params.itemList[0].perInfoCtgId);
+            } else {
+                this.currentItemId('');
+            }
+        }
     }
 
-    export class CategoryInfo {
-        id: string;
-        categoryCode: string;
-        categoryName: string;
-        constructor(params: ICategoryInfo) {
-            this.id = params.id;
-            this.categoryName = params.categoryName;
-            this.categoryCode = params.categoryCode;
+
+    // obj list bên trái
+    export interface IInitValueSetting {
+        companyId?: string;
+        settingId: string;
+        settingCode: string;
+        settingName: string;
+    }
+
+    export class InitValueSetting {
+        companyId: string;
+        settingId: string;
+        settingCode: string;
+        settingName: string;
+        constructor(params: IInitValueSetting) {
+            this.settingId = params.settingId;
+            this.settingCode = params.settingCode;
+            this.settingName = params.settingName;
         }
 
     }
-    
-    export interface IItemInfo {
-        id: string;
-        itemCode: string;
-        itemName: string;
+
+    export interface ICategoryInfo {
+        perInfoCtgId: string;
+        categoryName: string;
+        setting: boolean;
     }
 
-    export class ItemInfo {
-        id: string;
-        itemCode: string;
-        itemName: string;
-        constructor(params: IItemInfo) {
-            this.id = params.id;
-            this.itemCode = params.itemCode;
-            this.itemName = params.itemName;
+    export class CategoryInfo {
+        perInfoCtgId: string;
+        categoryName: string;
+        setting: boolean;
+        constructor(params: ICategoryInfo) {
+            this.perInfoCtgId = params.perInfoCtgId;
+            this.categoryName = params.categoryName;
+            this.setting = params.setting;
         }
     }
 
@@ -186,34 +245,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
     }
 
-    export interface ICategoryInfoDetail {
-        categoryCode: string;
-        categoryName: string;
+    export interface IInitValueSettingDetail {
+        settingCode: string;
+        settingName: string;
         itemList?: Array<any>;
     }
 
-    export class CategoryInfoDetail {
-        categoryCode: KnockoutObservable<string>;
-        categoryName: KnockoutObservable<string>;
-        itemList: KnockoutObservableArray<any>;
-        currentItemId: KnockoutObservable<string> = ko.observable('');
-        itemColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_15'), key: 'itemCode', width: 50 },
-            { headerText: text('CPS009_16'), key: 'itemName', width: 200 }
-        ]);
-        constructor(params: ICategoryInfoDetail) {
-            this.categoryCode = ko.observable(params.categoryCode);
-            this.categoryName = ko.observable(params.categoryName);
-            this.itemList = ko.observableArray(params.itemList);
-        }
-
-        setData(params: ICategoryInfoDetail) {
-            this.categoryCode(params.categoryCode);
-            this.categoryName(params.categoryName);
-            this.itemList(params.itemList);
-        }
-    }
 
     class GridItem {
         id: number;
@@ -231,9 +268,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
     }
 
     function makeIcon(value, row) {
-        if (value == "true")
-            return "●";
-        return '';
+        if (value == "false")
+            return '';
+        return '<i class=\"icon icon-dot\"></i>';
     }
 
     export class ItemModel {

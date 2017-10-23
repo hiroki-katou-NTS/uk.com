@@ -2,6 +2,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import service = nts.uk.at.view.kaf004.b.service;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+        // applicantName
+        applicantName: KnockoutObservable<string>;
         // date editor
         date: KnockoutObservable<string>;
         //latetime editor
@@ -52,12 +54,13 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             self.ListTypeReason = ko.observableArray([]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable('0002')
+            self.selectedCode = ko.observable('0002');
             //MultilineEditor 
             self.appreason = ko.observable('');
             //Show Screen
             self.showScreen = __viewContext.transferred.value.showScreen;
             self.startPage();
+            self.applicantName = ko.observable("");
         }
         
         update(): JQueryPromise<any> {
@@ -68,8 +71,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             var self = this;
             var dfd = $.Deferred();
 
-            service.getByCode().done(function(data) {
+            service.getByCode().done(function(data) { 
                 self.ListTypeReason(data.listApplicationReasonDto);
+                self.applicantName(data.applicantName);
+                
                 dfd.resolve();
             });
                
@@ -83,7 +88,6 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
-                    applicant: string;
                     appDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
@@ -115,7 +119,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     }
 
     interface LateOrLeaveEarly {
-        applicant: string;
+        applicantName: string;
         appDate: string;
         sendMail: boolean
         late1: number;

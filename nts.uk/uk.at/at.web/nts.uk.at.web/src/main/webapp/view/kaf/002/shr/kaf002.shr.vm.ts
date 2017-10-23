@@ -262,6 +262,11 @@ module nts.uk.at.view.kaf002.shr {
             }    
         }
         
+        export interface SimpleObject {
+            code: number;
+            name: string;        
+        }
+        
         export enum Enum {
             WORK = 0,
             GOOUT = 1   

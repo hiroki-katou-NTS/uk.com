@@ -8,14 +8,21 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 public class KscstTeamSetPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Column(name = "SID")
 	public String sId;
+	
 	@Column(name = "WKP_ID")
 	public String workPlaceId;
 

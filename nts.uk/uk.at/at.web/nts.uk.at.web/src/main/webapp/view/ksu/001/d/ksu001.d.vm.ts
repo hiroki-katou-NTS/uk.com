@@ -1,4 +1,6 @@
 module ksu001.d.viewmodel {
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<any> = ko.observableArray([
@@ -20,11 +22,15 @@ module ksu001.d.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        employeeList: KnockoutObservableArray<UnitModel>;
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        //ExCalendar
+        startDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").startDate);
+        endDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").endDate);
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this;
-            self.baseDate = ko.observable(new Date());
+
             self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
@@ -37,12 +43,11 @@ module ksu001.d.viewmodel {
             self.isMultiSelect = ko.observable(false);
             self.isShowWorkPlaceName = ko.observable(false);
             self.isShowSelectAllButton = ko.observable(false);
-            this.employeeList = ko.observableArray<UnitModel>([
-                { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-                { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-                { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-                { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
-            ]);
+
+            _.each(getShared("dataForScreenD").empItems, (x) => {
+                self.employeeList.push({ code: x.empCd, name: x.empName });
+            });
+
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultiSelect(),
@@ -77,7 +82,7 @@ module ksu001.d.viewmodel {
 
     export interface UnitModel {
         code: string;
-        name?: string;
+        name: string;
         workplaceName?: string;
         isAlreadySetting?: boolean;
     }

@@ -32,10 +32,6 @@
 						data-bind="click: remove, enable: lstCate().length >0 &amp; checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
 					<button tabindex="4" id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
-					<!-- B dialog -->
-					<button id="Close_BTN" data-bind="click: openBDialog">#{i18n.getText('KML004_4')}</button>
-					<!-- D dialog -->
-					<button id="Close_BTN" data-bind="click: openDDialog">#{i18n.getText('KML004_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -43,7 +39,8 @@
 					class="bg-green caret-right caret-background cf"
 					style="width: 340px; height: 335px;">
 					<!-- A2_1 -->
-					<div tabindex="5" id="LST_001" style="margin-left: 10px; padding: 10px;">
+					<div tabindex="5" id="LST_001"
+						style="margin-left: 10px; padding: 10px;">
 						<table id="single-list"
 							data-bind="ntsGridList: {	
 								width: 300,
@@ -65,7 +62,7 @@
 							style="width: 40px; margin-left: -1px;"
 							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.check, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
 						<!-- A3_3 -->
-						<span><input tabindex="7" id="name-text" style="width: 180px"
+						<span><input tabindex="7" id="nameCtg" style="width: 180px"
 							data-bind="ntsTextEditor: {value: categoryName, constraint:'CategoryName' , required: true, name: '#[KML004_10]'}" /></span>
 						<div id="memo">
 							<!-- A4_1 -->
@@ -91,72 +88,38 @@
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_16')}</div>
 						<!-- A5_3 disableMoveButton-->
 
-						<div class="left-contents">
-							<br />
-							<table class="left-data" id="multi-list1" tabindex="9"
-								data-bind="ntsGridList: {
-									height: 320,
-									options: items,
-									optionsValue: 'totalItemNo',
-									columns: columns,
-									multiple: true,
-									value: currentCodeList}">
-							</table>
+
+
+						<div id="swap-list" tabindex="9"
+							data-bind="ntsSwapList: {
+										height: 330,
+										dataSource: items,
+										primaryKey: 'totalItemNo',
+										leftColumns: columns,
+										rightColumns: newColumns,
+										value: selectedOption().totalEvalOrders,
+										multiple: true,
+										enableRowNumbering: false ,
+										showNumbering: false,
+										showSort:{ showLeft : false, showRight: false}
+										
+									}">
 						</div>
 
-						<div class="move-function">
-							<button id="insert_btn" data-bind="click: add">
-								<i class="icon icon-button-arrow-right"></i>
-							</button>
-							<br />
-							<button id="remove-items" data-bind="click: del">
-								<i class="icon icon-button-arrow-left"></i>
-							</button>
-						</div>
-
-						<div class="right-contents">
-							<table id="multi-list2" data-bind="ntsGridList: {
-  									height: 320, 
-  									options: newItems,  
- 									optionsValue: 'totalItemNo',  
-  									columns: newColumns,  
-  									multiple: true,  
-  									value: newCurrentCodeList}">  
-							</table>
-						</div>
-						
-						<div class="chane-position-function">
+ 						  <div class="chane-position-function" >
 							<div id="swap-up-down"
 								data-bind="ntsUpDown: {
-										targetSource: newItems,
+										targetSource: selectedOption().totalEvalOrders,
 										primaryKey: 'totalItemNo',
-										comId: '#multi-list2',
-										type: 'grid',
-										enable: true
+										comId: '#swap-list',
+										type: 'swap',
+										swapTarget: 'right',
+										enable: ko.computed(function() { return selectedOption().totalEvalOrders().length > 0;}) 
 									}">
-							</div>
-						</div>
-						
+							</div> 
+						 </div> 
+ 
 					</div>
-					
-<!-- 					<table style="border: 1px red;"> -->
-<!-- 						<tr> -->
-<!-- 							<td>A</td> -->
-<!-- 							<td><button data-bind="click: openDialog.bind(1, 'A')">set</button></td> -->
-<!-- 						</tr> -->
-<!-- 						<tr> -->
-<!-- 							<td>B</td> -->
-<!-- 							<td></td> -->
-<!-- 						</tr> -->
-<!-- 						<tr> -->
-<!-- 							<td>C</td> -->
-<!-- 							<td><button  data-bind="click: openDialog.bind(3, 'C')">set</button></td> -->
-<!-- 						</tr> -->
-<!-- 						<tr> -->
-<!-- 							<td>D</td> -->
-<!-- 							<td></td> -->
-<!-- 						</tr> -->
-<!-- 					</table> -->
 				</div>
 			</div>
 		</ui:define>

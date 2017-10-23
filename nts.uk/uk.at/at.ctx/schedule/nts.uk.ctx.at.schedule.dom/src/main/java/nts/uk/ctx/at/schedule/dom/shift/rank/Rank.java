@@ -13,13 +13,21 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 @AllArgsConstructor
 public class Rank extends AggregateRoot {
-	// 会社ID
+	/**
+	 * 会社ID
+	 */
 	private String companyId;
-	// ランクコード
+	/**
+	 * ランクコード
+	 */
 	private RankCode rankCode;
-	// ランクメモ
+	/**
+	 * ランクメモ
+	 */
 	private RankMemo rankMemo;
-	// 並び順
+	/**
+	 * 並び順
+	 */
 	private int displayOrder;
 
 	public static Rank convertFromJavaType(String companyId, String rankCode, String rankMemo, int orderBy) {

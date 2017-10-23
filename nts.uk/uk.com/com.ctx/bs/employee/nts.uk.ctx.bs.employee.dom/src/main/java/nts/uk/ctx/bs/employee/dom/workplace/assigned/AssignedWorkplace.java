@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.assigned;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
@@ -19,7 +18,7 @@ public class AssignedWorkplace extends AggregateRoot{
 	
 	/** The history id. */
 	//履歴ID
-	private HistoryId historyId;
+	private String historyId;
 
 	/** The period. */
 	//期間

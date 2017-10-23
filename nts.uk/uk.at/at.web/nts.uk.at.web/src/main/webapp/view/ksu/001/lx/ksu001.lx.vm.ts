@@ -83,28 +83,35 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
          * save team
          */
         saveData(): any {
-            var self = this;
+            let self = this;
             $("#input-teamCode").trigger("validate");
             $("#input-teamName").trigger("validate");
-            nts.uk.ui.block.invisible();
-            let teamCode = self.teamCode();
-            let teamName = self.teamName();
-            let team = {
-                workPlaceId: self.workPlaceId,
-                teamCode: teamCode,
-                teamName: teamName
-            };
-            service.saveTeam(self.isCreated(), team).done(function() {
-                self.isCreated(false);
-                self.getAllTeam().done(function() {
-                    self.selectedTeam(teamCode);
+            if (!nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.invisible();
+                let teamCode = self.teamCode();
+                let teamName = self.teamName();
+                let team = {
+                    workPlaceId: self.workPlaceId,
+                    teamCode: teamCode,
+                    teamName: teamName
+                };
+                service.saveTeam(self.isCreated(), team).done(function() {
+                    self.isCreated(false);
+                    self.getAllTeam().done(function() {
+                        self.selectedTeam(teamCode);
+                    });
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15')).then(() => {
+                        $("#input-teamName").focus();
+                    });;
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(() => {
+                        nts.uk.ui.block.clear();
+                        $("#input-teamCode").focus();
+                    });
+                }).then(function() {
+                    nts.uk.ui.block.clear();
                 });
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
-            }).then(function() {
-                nts.uk.ui.block.clear();
-            });
+            }
         }
         /**
          * remove team 
@@ -122,16 +129,18 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
 
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeTeam(team).done(function() {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
-                    self.getAllTeam().done(function() {
-                        if (self.listTeam().length == 0) {
-                            self.cleanForm();
-                        } else if (self.index() == self.listTeam().length) {
-                            self.selectedTeam(self.listTeam()[self.index() - 1].code);
-                        } else {
-                            self.selectedTeam(self.listTeam()[self.index()].code);
-                        }
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16')).then(function() {
+                        self.getAllTeam().done(function() {
+                            if (self.listTeam().length == 0) {
+                                self.cleanForm();
+                            } else if (self.index() == self.listTeam().length) {
+                                self.selectedTeam(self.listTeam()[self.index() - 1].code);
+                            } else {
+                                self.selectedTeam(self.listTeam()[self.index()].code);
+                            }
+                        });
                     });
+
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.message);

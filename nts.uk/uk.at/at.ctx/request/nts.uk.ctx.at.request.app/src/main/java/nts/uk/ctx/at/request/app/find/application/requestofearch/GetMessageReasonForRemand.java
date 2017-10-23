@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetAllDataAppPhaseFrame;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetMessageReasonForRemand {
@@ -19,6 +20,7 @@ public class GetMessageReasonForRemand {
 
 	public List<String> getMessageReasonForRemand(String appID){
 		List<String> listReason = new ArrayList<>();
+		String loginEmp = AppContexts.user().employeeId();
 		ApplicationDto ouput = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID);
 		//add reason B3_1 in list Reason
 		if(ouput == null) {
@@ -45,16 +47,19 @@ public class GetMessageReasonForRemand {
 			//loop list frame get reason approver
 			for(ApprovalFrameDto approvalFrameDto :list ) {
 				approvalFrameDto.getListApproveAccepted().forEach(x -> {
-					if(x.getReason().isEmpty()) {
-						listReason.add("");
-					}else {
-						listReason.add(x.getReason());
+					if(x.getApproverSID().equals(loginEmp)) {
+						if(x.getReason().isEmpty()) {
+							listReason.add("");
+						}else {
+							listReason.add(x.getReason());
+						}
 					}
+					
 				});
 			}
 		}
 		//list[0] = B3_1 Reason in Domain : Application
-		//list[1 ---> end] list reason in approver in frame : list Reason in domain Frame
+		//list[1] reason to approver(loginer)
 		return listReason;
 	}
 }

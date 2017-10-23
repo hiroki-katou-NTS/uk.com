@@ -8,6 +8,11 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor

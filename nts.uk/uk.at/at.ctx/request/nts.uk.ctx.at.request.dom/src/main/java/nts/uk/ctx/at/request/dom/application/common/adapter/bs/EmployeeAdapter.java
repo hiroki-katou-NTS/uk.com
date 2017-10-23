@@ -46,4 +46,7 @@ public interface EmployeeAdapter {
 	
 	PesionInforImport getEmployeeInfor(String sID);
 	
+	
+	String empEmail(String sID);
+	
 }

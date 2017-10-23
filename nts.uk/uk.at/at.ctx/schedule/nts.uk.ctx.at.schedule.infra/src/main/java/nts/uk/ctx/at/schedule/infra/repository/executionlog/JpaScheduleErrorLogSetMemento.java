@@ -6,8 +6,8 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleErrLog;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleErrLogPK;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLogPK;
 
 /**
  * The Class JpaScheduleErrorLogSetMemento.
@@ -15,16 +15,16 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleErrLogPK;
 public class JpaScheduleErrorLogSetMemento implements ScheduleErrorLogSetMemento {
 
 	/** The entity. */
-	private KscmtScheduleErrLog entity;
+	private KscdtScheErrLog entity;
 
 	/**
 	 * Instantiates a new jpa schedule error log set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaScheduleErrorLogSetMemento(KscmtScheduleErrLog entity) {
-		if(entity.getKscmtScheduleErrLogPK() == null){
-			entity.setKscmtScheduleErrLogPK(new KscmtScheduleErrLogPK());
+	public JpaScheduleErrorLogSetMemento(KscdtScheErrLog entity) {
+		if(entity.getKscdtScheErrLogPK() == null){
+			entity.setKscdtScheErrLogPK(new KscdtScheErrLogPK());
 		}
 		this.entity = entity;
 	}
@@ -48,7 +48,7 @@ public class JpaScheduleErrorLogSetMemento implements ScheduleErrorLogSetMemento
 	 */
 	@Override
 	public void setExecutionId(String executionId) {
-		this.entity.getKscmtScheduleErrLogPK().setExeId(executionId);
+		this.entity.getKscdtScheErrLogPK().setExeId(executionId);
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaScheduleErrorLogSetMemento implements ScheduleErrorLogSetMemento
 	 */
 	@Override
 	public void setDate(GeneralDate date) {
-		this.entity.getKscmtScheduleErrLogPK().setYmd(date);
+		this.entity.getKscdtScheErrLogPK().setYmd(date);
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class JpaScheduleErrorLogSetMemento implements ScheduleErrorLogSetMemento
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		this.entity.getKscmtScheduleErrLogPK().setSid(employeeId);
+		this.entity.getKscdtScheErrLogPK().setSid(employeeId);
 
 	}
 

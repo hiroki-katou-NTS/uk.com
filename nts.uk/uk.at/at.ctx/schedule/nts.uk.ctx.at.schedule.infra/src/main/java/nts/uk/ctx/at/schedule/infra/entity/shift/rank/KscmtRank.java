@@ -11,6 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * ランク
+ * 
+ * @author sonnh1
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,6 +36,6 @@ public class KscmtRank extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return kscmtRankPk;
+		return this.kscmtRankPk;
 	}
 }

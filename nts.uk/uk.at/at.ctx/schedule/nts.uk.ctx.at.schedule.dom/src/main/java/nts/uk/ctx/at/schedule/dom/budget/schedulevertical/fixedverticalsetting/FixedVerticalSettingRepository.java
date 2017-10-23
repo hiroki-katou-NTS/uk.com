@@ -48,12 +48,6 @@ public interface FixedVerticalSettingRepository {
 	 */
 	void updateVerticalTime(VerticalTime verticalTime);
 	
-	/**
-	 * Delete Vertical Time
-	 * @param companyId
-	 * @param fixedItemAtr
-	 */
-	void deleteVerticalTime(String companyId, int fixedItemAtr, int startClock);
 	
 	/**
 	 * Delete Vertical Time
@@ -61,13 +55,6 @@ public interface FixedVerticalSettingRepository {
 	 * @param fixedItemAtr
 	 */
 	void deleteVerticalTime(String companyId, int fixedItemAtr);
-
-	/**
-	 * Delete Fixed Vertical
-	 * @param companyId
-	 * @param fixedItemAtr
-	 */
-	void deleteFixedVertical(String companyId, int fixedItemAtr);
 	
 	/**
 	 * Find Vertical Time
@@ -76,6 +63,22 @@ public interface FixedVerticalSettingRepository {
 	 * @return
 	 */
 	Optional<FixedVertical> find(String companyId, int fixedItemAtr);
+
+	/**
+	 * Delete Vertical Count CNT
+	 * @param companyId
+	 * @param fixedItemAtr
+	 */
+	void deleteCount(String companyId, int fixedItemAtr);
+
+	/**
+	 * 
+	 * @param verticalCnt
+	 */
+	void addVerticalCnt(VerticalCnt verticalCnt);
+
+	List<VerticalCnt> findAllCnt(String companyId, int fixedItemAtr);
+
 	
 
 }

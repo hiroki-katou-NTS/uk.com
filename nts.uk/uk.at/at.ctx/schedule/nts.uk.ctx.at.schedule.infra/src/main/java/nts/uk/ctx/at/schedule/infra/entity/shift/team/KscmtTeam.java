@@ -11,22 +11,29 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * チーム
+ * 
+ * @author sonnh1
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_TEAM")
-public class KscmtTeam extends UkJpaEntity implements Serializable{
+public class KscmtTeam extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@EmbeddedId
 	public KscmtTeamPK kscmtTeamPk;
-	
-	@Column(name="TEAM_NAME")
+
+	@Column(name = "TEAM_NAME")
 	public String teamName;
-	
+
 	@Override
 	protected Object getKey() {
-		return kscmtTeamPk;
+		return this.kscmtTeamPk;
 	}
 
 }

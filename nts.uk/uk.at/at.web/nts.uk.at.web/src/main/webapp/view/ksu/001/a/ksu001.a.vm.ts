@@ -3,6 +3,8 @@ module ksu001.a.viewmodel {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
 
@@ -47,7 +49,6 @@ module ksu001.a.viewmodel {
         dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/01/31'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
-
 
         //Switch
         timePeriod: KnockoutObservableArray<any> = ko.observableArray([
@@ -526,7 +527,10 @@ module ksu001.a.viewmodel {
                         date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
                         employeeId: self.listSid()[arrCell[i].rowIndex],
                         workTimeCode: arrCell[i].value.workTimeCode,
-                        workTypeCode: arrCell[i].value.workTypeCode
+                        workTypeCode: arrCell[i].value.workTypeCode,
+                        //set static
+                        confirmedAtr: 0,
+                        workDayAtr: 0
                     }));
                 }
 
@@ -789,6 +793,17 @@ module ksu001.a.viewmodel {
          * open dialog D
          */
         openDialogD(): void {
+            let self = this;
+            if (self.empItems().length != 0) {
+                _.each(self.empItems(), (x) => {
+
+                });
+            }
+            setShared('dataForScreenD', {
+                empItems: self.empItems(),
+                startDate: self.dtPrev(),
+                endDate: self.dtAft()
+            });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml");
         }
 
@@ -796,7 +811,11 @@ module ksu001.a.viewmodel {
          * open dialog L
          */
         openDialogL(): void {
+            let self = this;
             $('#popup-area5').ntsPopup('hide');
+            //hiện giờ fix cứng workplaceId và truyền sang tất cả emmployee . Sau này sửa truyền list employee theo workplace id
+            nts.uk.ui.windows.setShared("workPlaceId", "000000000000000000000000000000000002");
+            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
 
@@ -804,7 +823,9 @@ module ksu001.a.viewmodel {
          * open dialog N
          */
         openDialogN(): void {
+            let self = this;
             $('#popup-area5').ntsPopup('hide');
+            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
         }
 
@@ -814,14 +835,14 @@ module ksu001.a.viewmodel {
         gotoKml004(): void {
             nts.uk.request.jump("/view/kml/004/a/index.xhtml");
         }
-        
-         /**
-         * go to screen KML002
-         */
+
+        /**
+        * go to screen KML002
+        */
         gotoKml002(): void {
             nts.uk.request.jump("/view/kml/002/a/index.xhtml");
         }
-        
+
     }
 
     class BoxModel {
@@ -889,7 +910,9 @@ module ksu001.a.viewmodel {
         date: string,
         employeeId: string,
         workTimeCode: string,
-        workTypeCode: string
+        workTypeCode: string,
+        confirmedAtr: number,
+        workDayAtr: number
     }
 
     class BasicSchedule {
@@ -897,12 +920,16 @@ module ksu001.a.viewmodel {
         employeeId: string;
         workTimeCode: string;
         workTypeCode: string;
+        confirmedAtr: number;
+        workDayAtr: number;
 
         constructor(params: IBasicSchedule) {
             this.date = params.date;
             this.employeeId = params.employeeId;
             this.workTimeCode = params.workTimeCode;
             this.workTypeCode = params.workTypeCode;
+            this.confirmedAtr = params.confirmedAtr;
+            this.workDayAtr = params.workDayAtr;
         }
     }
 

@@ -29,16 +29,16 @@ public class KscmtTotalEvalOrderItem extends UkJpaEntity implements Serializable
 	/** 並び順 */
 	@Column(name = "DISPORDER")
 	public Integer dispOrder;
-	
+	// many eval order in one category
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CID", insertable = false, updatable = false),
 			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
 	})
 	public KscmtHoriTotalCategoryItem kscmtHoriTotalCategory;
-	
+	// one eval order to one cal day set
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtTotalEvalOrderItem", orphanRemoval = true)
 	public KscstHoriCalDaysSetItem horiCalDaysSet;
-	
+	// one eval order to many cnt set
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtTotalEvalOrderItem", orphanRemoval = true)
 	public List<KscstHoriTotalCntSetItem> listHoriCNTSet;
 	

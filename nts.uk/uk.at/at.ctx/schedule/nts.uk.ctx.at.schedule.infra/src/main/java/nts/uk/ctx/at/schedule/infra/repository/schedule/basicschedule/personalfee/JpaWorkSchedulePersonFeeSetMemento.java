@@ -8,8 +8,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.PersonalFeeAmount;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFeeSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFee;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscmtWsPersonFeePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK;
 
 /**
  * The Class JpaWorkSchedulePersonFeeSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.Ks
 public class JpaWorkSchedulePersonFeeSetMemento implements WorkSchedulePersonFeeSetMemento {
 
 	/** The entity. */
-	private KscmtWsPersonFee entity;
+	private KscdtScheFee entity;
 	
 	
 	/**
@@ -27,34 +27,38 @@ public class JpaWorkSchedulePersonFeeSetMemento implements WorkSchedulePersonFee
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
 	 */
-	public JpaWorkSchedulePersonFeeSetMemento(KscmtWsPersonFee entity, String employeeId,
+	public JpaWorkSchedulePersonFeeSetMemento(KscdtScheFee entity, String employeeId,
 			GeneralDate baseDate) {
-		if (entity.getKscmtWsPersonFeePK() == null) {
-			entity.setKscmtWsPersonFeePK(new KscmtWsPersonFeePK());
+		if (entity.getKscdtScheFeePK() == null) {
+			entity.setKscdtScheFeePK(new KscdtScheFeePK());
 		}
 		this.entity = entity;
-		this.entity.getKscmtWsPersonFeePK().setSid(employeeId);
-		this.entity.getKscmtWsPersonFeePK().setYmd(baseDate);
+		this.entity.getKscdtScheFeePK().setSid(employeeId);
+		this.entity.getKscdtScheFeePK().setYmd(baseDate);
 	}
 
-	/**
-	 * Sets the no.
-	 *
-	 * @param no the new no
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.
+	 * WorkSchedulePersonFeeSetMemento#setNo(nts.uk.ctx.at.schedule.dom.schedule
+	 * .basicschedule.personalfee.ExtraTimeItemNo)
 	 */
 	@Override
 	public void setNo(ExtraTimeItemNo no) {
-		this.entity.getKscmtWsPersonFeePK().setNo(no.value);
+		this.entity.getKscdtScheFeePK().setNo(no.value);
 	}
 
-	/**
-	 * Sets the personal fee amount.
-	 *
-	 * @param personalFeeAmount the new personal fee amount
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.
+	 * WorkSchedulePersonFeeSetMemento#setPersonalFeeAmount(nts.uk.ctx.at.
+	 * schedule.dom.schedule.basicschedule.personalfee.PersonalFeeAmount)
 	 */
 	@Override
 	public void setPersonalFeeAmount(PersonalFeeAmount personalFeeAmount) {
-		this.entity.setPersonalPeeAmount(personalFeeAmount.v());
+		this.entity.setPersonalFeeAmount(personalFeeAmount.v());
 	}
 
 }

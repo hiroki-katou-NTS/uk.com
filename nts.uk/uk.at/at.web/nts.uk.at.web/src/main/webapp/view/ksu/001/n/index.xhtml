@@ -18,8 +18,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: addRankSetting , enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1301')}</button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_1302')}</button>
+				<button class="proceed" data-bind="click: addRankSetting , enable: listEmployee.length >0 ">#{i18n.getText('KSU001_1301')}</button>
+				<button id="close-dialog" data-bind="click: closeDialog">#{i18n.getText('KSU001_1302')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="content-top">

@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.main;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class JobTitleMain {
 	private GenericHistoryItem genericHistoryItem;
 	
 	public static JobTitleMain creatFromJavaType(String jobTitleId, String sid , String hisid, GeneralDate startDate, GeneralDate endDate) {
-		return new JobTitleMain(jobTitleId, hisid, new GenericHistoryItem(hisid, new Period(startDate, endDate)));
+		return new JobTitleMain(jobTitleId, hisid, new GenericHistoryItem(hisid, new DatePeriod(startDate, endDate)));
 		
 	}
 	

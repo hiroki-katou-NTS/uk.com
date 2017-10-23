@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetSetMemento;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBusCal;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscmtPewScheduleCreset;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscstScheCreSet;
 
 /**
  * The Class JpaPersonalWorkScheduleCreSetSetMemento.
@@ -17,14 +17,14 @@ public class JpaPersonalWorkScheduleCreSetSetMemento
 		implements PersonalWorkScheduleCreSetSetMemento {
 	
 	/** The entity. */
-	private KscmtPewScheduleCreset entity;
+	private KscstScheCreSet entity;
 
 	/**
 	 * Instantiates a new jpa personal work schedule cre set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPersonalWorkScheduleCreSetSetMemento(KscmtPewScheduleCreset entity) {
+	public JpaPersonalWorkScheduleCreSetSetMemento(KscstScheCreSet entity) {
 		this.entity = entity;
 	}
 
@@ -61,7 +61,7 @@ public class JpaPersonalWorkScheduleCreSetSetMemento
 	@Override
 	public void setMonthlyPatternWorkScheduleCre(
 			MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre) {
-		this.entity.setMpWorkscheduleCre(monthlyPatternWorkScheduleCre.getReferenceType().value);
+		this.entity.setRefType(monthlyPatternWorkScheduleCre.getReferenceType().value);
 
 	}
 
@@ -74,9 +74,9 @@ public class JpaPersonalWorkScheduleCreSetSetMemento
 	 */
 	@Override
 	public void setWorkScheduleBusCal(WorkScheduleBusCal workScheduleBusCal) {
-		this.entity.setReferBusDayCal(workScheduleBusCal.getReferenceBusinessDayCalendar().value);
-		this.entity.setReferBasicWork(workScheduleBusCal.getReferenceBasicWork().value);
-		this.entity.setReferWorkingHour(workScheduleBusCal.getReferenceWorkingHours().value);
+		this.entity.setRefBusDayCal(workScheduleBusCal.getReferenceBusinessDayCalendar().value);
+		this.entity.setRefBasicWork(workScheduleBusCal.getReferenceBasicWork().value);
+		this.entity.setRefWorkingHour(workScheduleBusCal.getReferenceWorkingHours().value);
 
 	}
 

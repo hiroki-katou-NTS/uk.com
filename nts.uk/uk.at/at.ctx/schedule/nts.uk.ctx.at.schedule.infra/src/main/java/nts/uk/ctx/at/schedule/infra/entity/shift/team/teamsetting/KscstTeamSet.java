@@ -10,7 +10,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * チーム設定
+ * @author sonnh1
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -26,6 +30,6 @@ public class KscstTeamSet extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return ksctTeamSetPk;
+		return this.ksctTeamSetPk;
 	}
 }

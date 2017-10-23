@@ -5,7 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.log.aggregateroot;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.log.CompletionStateOfExecutionContents;
+import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
 
 /**
  * @author danpv
@@ -18,6 +18,6 @@ public class TargetPerson extends AggregateRoot{
 
 	private String employeeId;
 	
-	private CompletionStateOfExecutionContents state;
+	private ComplStateOfExeContents state;
 	
 }

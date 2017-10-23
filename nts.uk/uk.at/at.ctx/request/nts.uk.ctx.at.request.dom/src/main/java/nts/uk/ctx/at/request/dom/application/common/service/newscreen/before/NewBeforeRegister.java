@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
@@ -20,7 +22,7 @@ public interface NewBeforeRegister {
 	 * @param routeAtr
 	 * @param targetApp
 	 */
-	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr prePostAtr, int employmentRootAtr, int appType);
+	public void processBeforeRegister(Application application);
 	
 	/**
 	 * 1.入社前退職チェック
@@ -39,7 +41,7 @@ public interface NewBeforeRegister {
 	 * @param startDate
 	 * @param endDate
 	 */
-	public void deadlineApplicationCheck(String companyID, String appID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate);
+	public void deadlineApplicationCheck(String companyID, Integer closureID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * 5.申請の受付制限をチェック
@@ -47,7 +49,7 @@ public interface NewBeforeRegister {
 	 * @param startDate 申請する開始日
 	 * @param endDate 申請する終了日
 	 */
-	public void applicationAcceptanceRestrictionsCheck(PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate);
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * 3.確定チェック

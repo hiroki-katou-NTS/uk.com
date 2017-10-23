@@ -11,10 +11,5 @@ import lombok.Setter;
 @Getter
 public class HeaderEmployeeUnregisterOutput {
 	private String nameCompany;
-	private String title;
-	private String employee;
-	private String workplaceCode;
-	private String workplaceName;
-	private String appName;
 
 }

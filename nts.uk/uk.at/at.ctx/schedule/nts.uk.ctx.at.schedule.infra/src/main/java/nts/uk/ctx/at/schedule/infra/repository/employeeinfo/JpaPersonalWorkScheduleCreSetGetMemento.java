@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBusCal;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscmtPewScheduleCreset;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscstScheCreSet;
 
 /**
  * The Class JpaPersonalWorkScheduleCreSetGetMemento.
@@ -19,14 +19,14 @@ public class JpaPersonalWorkScheduleCreSetGetMemento
 		implements PersonalWorkScheduleCreSetGetMemento {
 	
 	/** The entity. */
-	private KscmtPewScheduleCreset entity;
+	private KscstScheCreSet entity;
 
 	/**
 	 * Instantiates a new jpa personal work schedule cre set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPersonalWorkScheduleCreSetGetMemento(KscmtPewScheduleCreset entity) {
+	public JpaPersonalWorkScheduleCreSetGetMemento(KscstScheCreSet entity) {
 		this.entity = entity;
 	}
 
@@ -61,7 +61,7 @@ public class JpaPersonalWorkScheduleCreSetGetMemento
 	@Override
 	public MonthlyPatternWorkScheduleCre getMonthlyPatternWorkScheduleCre() {
 		return new MonthlyPatternWorkScheduleCre(
-				TimeZoneScheduledMasterAtr.valueOf(this.entity.getMpWorkscheduleCre()));
+				TimeZoneScheduledMasterAtr.valueOf(this.entity.getRefType()));
 	}
 
 	/*
@@ -73,9 +73,9 @@ public class JpaPersonalWorkScheduleCreSetGetMemento
 	@Override
 	public WorkScheduleBusCal getWorkScheduleBusCal() {
 		return new WorkScheduleBusCal(
-				WorkScheduleMasterReferenceAtr.valueOf(this.entity.getReferBusDayCal()),
-				WorkScheduleMasterReferenceAtr.valueOf(this.entity.getReferBasicWork()),
-				TimeZoneScheduledMasterAtr.valueOf(this.entity.getReferWorkingHour()));
+				WorkScheduleMasterReferenceAtr.valueOf(this.entity.getRefBusDayCal()),
+				WorkScheduleMasterReferenceAtr.valueOf(this.entity.getRefBasicWork()),
+				TimeZoneScheduledMasterAtr.valueOf(this.entity.getRefWorkingHour()));
 	}
 
 }

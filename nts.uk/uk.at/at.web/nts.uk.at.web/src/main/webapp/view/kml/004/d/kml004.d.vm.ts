@@ -8,52 +8,62 @@ module nts.uk.at.view.kml004.d.viewmodel {
         // list columns 
         columns: KnockoutObservableArray<any>;
         currentCodeListSwap: KnockoutObservableArray<TotalSet>;
-        // cate code received from screen A
-        cateCode: KnockoutObservable<string>;
+        // object received from screen A
+        object: KnockoutObservable<any>;
+        // item No from screen A
+//        itemNo: KnockoutObservable<number>;
+        lst: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
             self.itemsSwap = ko.observableArray([]);
-            self.cateCode= ko.observable(getSharedD("KML004A_CNT_SET"));
+//            self.itemNo = ko.observable(getSharedD("KML004A_CNT_SET_ID"));
+//            self.cateCode= ko.observable(getSharedD("KML004A_CNT_SET_CD"));
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML004_40"), key: 'totalTimeNo', width: 70 },
                 { headerText: nts.uk.resource.getText("KML004_41"), key: 'totalTimeName', width: 250, formatter: _.escape }
             ]);
+            self.object = ko.observable(getSharedD("KML004A_CNT_SET"));
             self.currentCodeListSwap = ko.observableArray([]);
-        }
+            self.currentCodeListSwap(self.object().cntSetls);
+            self.lst = ko.observableArray([]);
+            self.currentCodeListSwap(self.object().cntSetls);
+            self.lst(self.object().cntSetls);
+        }  
 
         /** get total time */
         getTotalTime(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             service.getAll().done((lstSet) => {
-                _.forEach(lstSet, function(item) {
-                    var param = new TotalSet('01', 1, item.totalCountNo, item.totalTimesName);
-                    self.itemsSwap().push(param);
-                });
+                if(lstSet.length > 0){
+                     _.forEach(lstSet, function(item) {
+                        var param = new TotalSet(self.object().categoryCode, self.object().totalItemNo, item.totalCountNo, item.totalTimesName);
+                        self.itemsSwap().push(param);
+                    }); 
+                }
                 dfd.resolve();
             });
             return dfd.promise();
         }
         
-        /** get hori total cnt set**/
-        findCNTCode(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            let param = {
-                categoryCode: self.cateCode(),
-                totalItemNo: 1,
-            }
-            service.getCNT(param).done((data) => {
-                var totalItemNoList = _.map(data, function(item) { return item.totalTimeNo; });
-                var itemSelected = _.filter(self.itemsSwap(), function(item) {
-                    return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
-                });
-                self.currentCodeListSwap(itemSelected);
-                console.log(self.currentCodeListSwap());
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
+//        /** get hori total cnt set**/
+//        findCNTCode(): JQueryPromise<any> {
+//            let self = this;
+//            let dfd = $.Deferred();
+//            let param = {
+//                categoryCode: self.cateCode(),
+//                totalItemNo: self.itemNo(),
+//            }
+//            service.getCNT(param).done((data) => {
+//                var totalItemNoList = _.map(data, function(item) { return item.totalTimeNo; });
+//                var itemSelected = _.filter(self.itemsSwap(), function(item) {
+//                    return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
+//                });
+//                self.currentCodeListSwap(itemSelected);
+//                dfd.resolve();
+//            });
+//            return dfd.promise();
+//        }
 
         /**
          * Event on start page.
@@ -61,10 +71,14 @@ module nts.uk.at.view.kml004.d.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            // get left list
             self.getTotalTime().done(function(data1) {
-                self.findCNTCode().done(function(data2){
-                    dfd.resolve();
-                })
+                self.currentCodeListSwap(self.lst());
+                var totalItemNoList = _.map(self.lst(), function(item) { return item.totalTimeNo; });
+                var itemSelected = _.filter(self.itemsSwap(), function(item) {
+                    return _.indexOf(totalItemNoList, item.totalTimeNo) >= 0;    
+                });
+                self.currentCodeListSwap(itemSelected);
                 dfd.resolve();
             });
             return dfd.promise();

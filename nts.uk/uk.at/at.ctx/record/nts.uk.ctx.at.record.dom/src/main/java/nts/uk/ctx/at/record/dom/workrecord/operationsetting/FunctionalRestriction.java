@@ -56,7 +56,7 @@ public class FunctionalRestriction {
 	/**
 	 * エラーがある場合の上司確認
 	 */
-	private ConfirmationOfManagerOrYouself supervisorConfirmError;
+	private ConfirmOfManagerOrYouself supervisorConfirmError;
 
 	/**
 	 * 本人確認を利用する
@@ -66,7 +66,7 @@ public class FunctionalRestriction {
 	/**
 	 * エラーがある場合の本人確認
 	 */
-	private ConfirmationOfManagerOrYouself yourselfConfirmError;
+	private ConfirmOfManagerOrYouself yourselfConfirmError;
 
 	/**
 	 * @param registeredTotalTimeCheer
@@ -85,8 +85,8 @@ public class FunctionalRestriction {
 	public FunctionalRestriction(boolean registeredTotalTimeCheer, boolean completeDisplayOneMonth,
 			boolean useWorkDetail, boolean registerActualExceed, boolean confirmSubmitApp, boolean useInitialValueSet,
 			boolean startAppScreen, boolean displayConfirmMessage, boolean useSupervisorConfirm,
-			ConfirmationOfManagerOrYouself supervisorConfirmError, boolean useConfirmByYourself,
-			ConfirmationOfManagerOrYouself yourselfConfirmError) {
+			ConfirmOfManagerOrYouself supervisorConfirmError, boolean useConfirmByYourself,
+			ConfirmOfManagerOrYouself yourselfConfirmError) {
 		super();
 		this.registeredTotalTimeCheer = registeredTotalTimeCheer;
 		this.completeDisplayOneMonth = completeDisplayOneMonth;
@@ -133,10 +133,10 @@ public class FunctionalRestriction {
 		this.displayConfirmMessage = toBooleanValue(displayConfirmMessage);
 		this.useSupervisorConfirm = toBooleanValue(useSupervisorConfirm);
 		this.supervisorConfirmError = EnumAdaptor.valueOf(supervisorConfirmError.intValue(),
-				ConfirmationOfManagerOrYouself.class);
+				ConfirmOfManagerOrYouself.class);
 		this.useConfirmByYourself = toBooleanValue(useConfirmByYourself);
 		this.yourselfConfirmError = EnumAdaptor.valueOf(yourselfConfirmError.intValue(),
-				ConfirmationOfManagerOrYouself.class);
+				ConfirmOfManagerOrYouself.class);
 	}
 	
 	private Boolean toBooleanValue(BigDecimal decimalNumber) {

@@ -7,17 +7,18 @@ package nts.uk.ctx.at.request.dom.application.common.appapprovalphase;
 public enum ApprovalAtr {
 
 	/** 0:未承認 */
-	UNAPPROVED(0),
+	UNAPPROVED(0,"未承認"),
 	/** 1:承認済 */
-	APPROVED(1),
+	APPROVED(1,"承認済"),
 	/** 2:否認 */
-	DENIAL(2),
+	DENIAL(2,"否認 "),
 	/** 3:差し戻し */
-	REMAND(3);
+	REMAND(3,"差し戻し");
 
 	public int value;
-
-	ApprovalAtr(int type) {
+	public String nameId;
+	ApprovalAtr(int type,String nameId) {
 		this.value = type;
+		this.nameId = nameId;
 	}
 }
