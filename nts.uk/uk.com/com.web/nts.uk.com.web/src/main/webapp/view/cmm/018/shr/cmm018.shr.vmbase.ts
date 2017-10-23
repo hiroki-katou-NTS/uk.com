@@ -212,9 +212,15 @@ module nts.uk.com.view.cmm018.shr {
             approvalId: string;
             /**履歴ID*/
             historyId: string;
-            constructor(approvalId: string, historyId: string){
+            /**申請種類*/
+            applicationType: number;
+            /**就業ルート区分*/
+            employRootAtr: number;
+            constructor(approvalId: string, historyId: string, applicationType: number, employRootAtr: number){
                 this.approvalId = approvalId;
                 this.historyId = historyId; 
+                this.applicationType = applicationType;
+                this.employRootAtr = employRootAtr;
             }
         }
         //Param screen A,C,E
@@ -274,19 +280,23 @@ module nts.uk.com.view.cmm018.shr {
         export class DataTree{
             approvalId: string;
             nameAppType: string;
+            employmentRootAtr: number;
             lstbyApp: Array<Com>;
-            constructor(approvalId: string, nameAppType: string,lstbyApp: Array<Com>){
+            constructor(approvalId: string, nameAppType: string,employmentRootAtr: number,lstbyApp: Array<Com>){
                 this.approvalId = approvalId;
                 this.nameAppType = nameAppType;
+                this.employmentRootAtr = employmentRootAtr;
                 this.lstbyApp = lstbyApp;
             }
         }
         export class Com{
             approvalId: string;
             nameAppType: string;
-            constructor(approvalId: string, nameAppType: string){
+            employmentRootAtr: number;
+            constructor(approvalId: string, nameAppType: string, employmentRootAtr: number){
                 this.nameAppType = nameAppType;
                 this.approvalId = approvalId;
+                this.employmentRootAtr = employmentRootAtr;
             }
         }
         //data display

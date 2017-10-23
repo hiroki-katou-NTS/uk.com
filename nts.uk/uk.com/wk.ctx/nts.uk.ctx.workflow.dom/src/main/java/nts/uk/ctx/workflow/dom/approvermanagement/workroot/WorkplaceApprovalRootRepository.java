@@ -103,4 +103,13 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate);
+	/**
+	 * get Work place Approval Root By type
+	 * @param companyId
+	 * @param workplaceId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType, int employmentRootAtr);
 }

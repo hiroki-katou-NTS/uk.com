@@ -8,4 +8,8 @@ public class UpdateHistoryDto {
 	public String approvalId;
 	/**履歴ID*/
 	private String historyId;
+	 /**申請種類*/
+    private Integer applicationType;
+    /**就業ルート区分*/
+    private int employRootAtr;
 }
