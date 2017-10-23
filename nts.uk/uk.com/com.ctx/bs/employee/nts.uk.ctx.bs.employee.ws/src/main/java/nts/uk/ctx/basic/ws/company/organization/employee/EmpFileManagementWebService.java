@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpAvaOrMapComman
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpDocumentFileCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpDocumentFileCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveDocumentFileEmpCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
@@ -36,6 +37,9 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@Inject
 	RemoveEmpAvaOrMapCommandHandler removeEmpAvaOrMapCommandHandler;
+	
+	@Inject
+	RemoveDocumentFileEmpCommandHandler removeDocFileCommandHandler;
 	/**
 	 * Gets employee file management by employeeId.
 	 *
@@ -83,5 +87,17 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("savedocfile")
 	public void saveDocumentFile(AddEmpDocumentFileCommand command) {
 		this.empDocumentFileCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updatedata")
+	public void updateDocumentFile(AddEmpDocumentFileCommand command) {
+		this.empDocumentFileCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("deletedata/{fileid}")
+	public void deleteDocumentFile(@PathParam("fileid") String fileid) {
+		this.removeDocFileCommandHandler.handle(fileid);
 	}
 }

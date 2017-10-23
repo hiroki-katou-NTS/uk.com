@@ -22,7 +22,7 @@ module cps001.f.vm {
         items: Array<GridItem> = [];
         comboItems: Array<PersonCtg> = [];
 
-        comboColumns = [{ prop: 'categoryName', length: 12 }];
+        comboColumns = [{ prop: 'name', length: 12 }];
 
 
         constructor() {
@@ -42,6 +42,7 @@ module cps001.f.vm {
             self.onfilenameclick = (filename) => {
                 alert(filename);
             };
+
         }
 
         start(): JQueryPromise<any> {
@@ -51,11 +52,11 @@ module cps001.f.vm {
             var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
             var dfdGetInfoCategory = service.getInfoCatagory();
 
-            $.when(dfdGetData, dfdGetInfoCategory).done((data1: Array<IEmpFileMana>, data2: Array<IPersonCtg>) => {
-                _.forEach(data1, function(item) {
+            $.when(dfdGetData, dfdGetInfoCategory).done((datafile: Array<IEmpFileMana>, dataCategory: Array<IPersonCtg>) => {
+                _.forEach(datafile, function(item) {
                     self.items.push(new GridItem(item));
                 });
-                _.forEach(data2, function(item) {
+                _.forEach(dataCategory, function(item) {
                     self.comboItems.push(new PersonCtg(item));
                 });
                 dfd.resolve();
@@ -70,15 +71,41 @@ module cps001.f.vm {
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
                 self.fileId(res[0].id);
                 // save file to domain EmployeeFileManagement
-                service.savedata({ sid: '90000000-0000-0000-0000-000000000001', fileid: res[0].id }).done(() => {
-                    console.log("done");
-                });
+                if (self.items.length == 0) {
+                    service.savedata({
+                        sid: '90000000-0000-0000-0000-000000000001',
+                        fileid: res[0].id,
+                        personInfoCtgId: self.comboItems[0].id,
+                        uploadOrder: 1
+                    }).done(() => {
 
+                        console.log("done");
+
+                    });
+                } else {
+                    service.savedata({
+                        sid: '90000000-0000-0000-0000-000000000001',
+                        fileid: res[0].id,
+                        personInfoCtgId: self.comboItems[0].id,
+                        uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
+                    }).done(() => {
+
+                        console.log("done");
+
+                    });
+                }
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
             });
 
             setShared('CPS001B_VALUE', {});
+        }
+
+        deleteItem(rowItem: IEmpFileMana) {
+            let self = this;
+            service.deletedata(rowItem.fileId).done(() => {
+                self.start();
+            });
         }
 
         close() {
@@ -89,22 +116,31 @@ module cps001.f.vm {
 
     class GridItem {
         id: string;
-        filename: string;
-        flag: boolean;
-        ruleCode: string;
+        fileName: string;
+        fileId: string;
+        employeeId: string;
+        categoryName: string;
+        personInfoCategoryId: string;
+        open: string;
         combo: string;
+        uploadOrder: number
         constructor(param: IEmpFileMana) {
             this.id = nts.uk.util.randomId();
-            this.filename = param.categoryName;
-            this.flag = true;
-            this.ruleCode = param.fileId;
-            this.combo = param.fileId;
+            this.fileName = param.fileName;
+            this.fileId = param.fileId;
+            this.employeeId = param.employeeId;
+            this.categoryName = param.categoryName;
+            this.personInfoCategoryId = param.personInfoCategoryId;
+            this.open = param.fileId;
+            this.uploadOrder = param.uploadOrder;
+            this.combo = param.personInfoCategoryId;
         }
     }
 
     interface IEmpFileMana {
         employeeId: string;
         fileId: string;
+        fileName: string;
         categoryName: string;
         personInfoCategoryId: string;
         uploadOrder: number;
@@ -136,11 +172,11 @@ module cps001.f.vm {
     }
 
     class PersonCtg {
-        code: string;
+        id: string;
         name: string;
         constructor(param: IPersonCtg) {
             this.name = param.categoryName;
-            this.code = param.id;
+            this.id = param.id;
         }
     }
 }

@@ -11,6 +11,8 @@ public interface EmpFileManagementRepository {
 	
 	void remove(EmployeeFileManagement domain);
 	
+	void removebyFileId(String fileId);
+	
 	List<EmployeeFileManagement> getDataByParams(String employeeId, int fileType);
 	
 	boolean checkObjectExist(String employeeId, int fileType);
