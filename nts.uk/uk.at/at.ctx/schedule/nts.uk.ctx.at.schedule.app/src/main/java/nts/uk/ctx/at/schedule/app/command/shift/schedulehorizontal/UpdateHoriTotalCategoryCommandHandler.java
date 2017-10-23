@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+@Transactional
 @Stateless
 public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<UpdateHoriTotalCategoryCommand>{
 	@Inject
