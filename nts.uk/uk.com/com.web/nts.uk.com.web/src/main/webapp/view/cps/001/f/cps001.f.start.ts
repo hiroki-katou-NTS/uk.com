@@ -39,15 +39,18 @@ function init() {
     });
 
     $(document).delegate(".nts-combo-container", "igcomboselectionchanged", function(evt, ui) {
-        var id: string = String($(ui.owner.element).closest("tr").data("id"));
-
+        var rowId: string = String($(ui.owner.element).closest("tr").data("id"));
+        let rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == rowId; });
+        var comboBoxIdNew = ui.items[0].data.id;
+        
+        __viewContext['viewModel'].updateCtgItem(rowItem, comboBoxIdNew);
 
     });
 }
 
 function ButtonClick() {
     let id = $(this).data("id");
-    let rowItem = _.find(__viewContext['viewModel'].items, function(x:any) { return x.id == id;});
+    let rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
     debugger;
 }

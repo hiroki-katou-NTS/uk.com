@@ -122,7 +122,12 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void update(EmployeeFileManagement domain) {
-		//
+		String fileid = domain.getFileID();
+		BsymtEmpFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtEmpFileManagement.class)
+				.setParameter("fileid", fileid).getSingleOrNull();
+		
+		entity.personInfoctgId = domain.getPersonInfoCategoryId();
+		this.commandProxy().update(entity);
 		
 	}
 

@@ -89,8 +89,10 @@ module cps001.f.vm {
                         personInfoCtgId: self.comboItems[0].id,
                         uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
                     }).done(() => {
+                        self.start().done(() => {
+                            console.log("done");
+                        });
 
-                        console.log("done");
 
                     });
                 }
@@ -103,9 +105,24 @@ module cps001.f.vm {
 
         deleteItem(rowItem: IEmpFileMana) {
             let self = this;
-            service.deletedata(rowItem.fileId).done(() => {
-                self.start();
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deletedata(rowItem.fileId).done(() => {
+                    
+                    
+                });
+            }).ifCancel(() => {
+
             });
+        }
+
+        updateCtgItem(rowItem: IEmpFileMana, comboBoxIdNew: any) {
+            let self = this;
+            debugger;
+            if (rowItem.personInfoCategoryId != comboBoxIdNew) {
+                service.updateCtgdata({ fileId: rowItem.fileId, personInfoCategoryIdNew: comboBoxIdNew }).done(() => {
+
+                });
+            }
         }
 
         close() {

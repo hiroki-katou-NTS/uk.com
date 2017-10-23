@@ -15,6 +15,8 @@ import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpDocumentFileCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveDocumentFileEmpCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateCtgDocFileCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateCtgDocFileDocumentFileCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
@@ -40,6 +42,9 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@Inject
 	RemoveDocumentFileEmpCommandHandler removeDocFileCommandHandler;
+	
+	@Inject
+	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;;
 	/**
 	 * Gets employee file management by employeeId.
 	 *
@@ -99,5 +104,12 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("deletedata/{fileid}")
 	public void deleteDocumentFile(@PathParam("fileid") String fileid) {
 		this.removeDocFileCommandHandler.handle(fileid);
+	}
+	
+	@POST
+	@Path("updatectgdocfile")
+	public void updateCtgForDocFile(UpdateCtgDocFileDocumentFileCommand command) {
+		this.updateCtgDocumentFile.handle(command);
+		System.out.println(command);
 	}
 }
