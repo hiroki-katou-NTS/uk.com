@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,7 +67,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 
 				// 上位職場が存在する(not exist wkpId 上位)
 				if (CollectionUtil.isEmpty(wkpIds)) {
-					return null;
+					Collections.emptyList();
 				}
 
 				// 上位職場の先頭から最後ループ
@@ -81,7 +82,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			if (jobOfApprover == null || jobOfRequest == null) {
 				return false;
 			}
-			if (jobOfRequest.getSequenceCode().compareTo(jobOfApprover.getSequenceCode()) < 0) {
+			if (jobOfRequest.isGreaterThan(jobOfRequest)) {
 				return true;
 			}
 
@@ -125,25 +126,25 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 * @return
 	 */
 	private List<ApproverInfo> getByWkp(String cid, String wkpId, GeneralDate baseDate, String jobTitleId) {
-		List<ApproverInfo> approvers = new ArrayList<>();
+		
 		// 承認者の
 		List<ConcurrentEmployeeImport> employeeList = this.employeeAdapter.getConcurrentEmployee(cid, jobTitleId,
 				baseDate);
 		JobAssignSetting assignSet = this.jobAssignSetRepository.findById(cid);
 		if (assignSet.getIsConcurrently()) {
 			// 本務兼務区分が兼務の対象者を除く
-			List<ConcurrentEmployeeImport> concurrentList = employeeList.stream().filter(x -> {
-				return x.getJobCls() == 1;
-			}).collect(Collectors.toList());
+			List<ConcurrentEmployeeImport> concurrentList = employeeList.stream()
+					.filter(x -> x.isConcurrent())
+					.collect(Collectors.toList());
 			employeeList.removeAll(concurrentList);
 		}
-
+		
+		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
 			String wkpIdOfEmp = this.wkApproverAdapter.getWorkplaceId(cid, emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp)) {
 				// truyền tạm approvalAtr = 1
-				approvers.add(new ApproverInfo(emp.getJobId(), emp.getEmployeeId(), null, null, null,
-						emp.getPersonName(), ApprovalAtr.JOB_TITLE));
+				approvers.add(ApproverInfo.create(emp));
 			}
 		}
 		return approvers;
