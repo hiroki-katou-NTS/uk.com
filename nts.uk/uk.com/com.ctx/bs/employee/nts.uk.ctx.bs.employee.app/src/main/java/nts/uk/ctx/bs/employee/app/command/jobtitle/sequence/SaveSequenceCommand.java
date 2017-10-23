@@ -7,10 +7,10 @@ package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterGetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
 
 /**
  * The Class SaveSequenceCommand.

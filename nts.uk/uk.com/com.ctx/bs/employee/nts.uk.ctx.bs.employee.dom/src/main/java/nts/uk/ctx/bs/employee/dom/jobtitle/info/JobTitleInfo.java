@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 
 /**
  * The Class JobTitleInfo.

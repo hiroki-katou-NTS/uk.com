@@ -6,9 +6,9 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.sequence.dto;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterSetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
 
 /**
  * The Class SequenceMasterFindDto.
