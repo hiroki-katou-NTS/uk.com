@@ -28,10 +28,16 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
 	 private final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
 	   + " AND c.endDate = :endDate"
+	   + " AND c.employmentRootAtr = :employmentRootAtr"
 	   + " AND c.applicationType = :applicationType";
 	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
+	 private final String SELECT_PS_APR_BY_ENDATE_CONFIRM = FIN_BY_EMP 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	 private final String FIND_BY_DATE = FIN_BY_EMP
 	   + " AND c.endDate = :endDate";
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
@@ -139,13 +145,23 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @return
 	 */
 	@Override
-	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate, Integer applicationType) {
+	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate, Integer applicationType, int employmentRootAtr) {
 		//common
-		if(applicationType == null){
+		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE_APP_NULL, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
 					.setParameter("endDate", endDate)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainPsApR(c));
+		}
+		if(employmentRootAtr == 2){//confirm
+			return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE_CONFIRM, WwfmtPsApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employeeId", employeeId)
+					.setParameter("endDate", endDate)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainPsApR(c));
 		}
 		//15 app type
@@ -154,6 +170,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("employeeId", employeeId)
 				.setParameter("endDate", endDate)
 				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainPsApR(c));
 	}
 	/**

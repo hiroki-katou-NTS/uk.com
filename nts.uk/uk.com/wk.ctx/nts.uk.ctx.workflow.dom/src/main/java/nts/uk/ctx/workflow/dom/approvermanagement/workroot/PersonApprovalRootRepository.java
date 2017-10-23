@@ -66,7 +66,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate,
-			Integer applicationType);
+			Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * get PsApprovalRoot

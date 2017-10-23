@@ -59,7 +59,7 @@ module nts.uk.at.view.kmk006.a {
             jobTitleList: KnockoutObservableArray<UnitModel>;
             selectedCurrentJob: KnockoutObservable<string>;
             selectedCurrentWkp: KnockoutObservable<string>;
-            useUnitAutoCalSettingModel: UnitAutoCalSettingDto;
+            useUnitAutoCalSettingModel: KnockoutObservable<UnitAutoCalSettingView>;
             treeItemName: KnockoutObservable<string>;
             componentItemName: KnockoutObservable<string>;
             treeItemCode: KnockoutObservable<string>;
@@ -88,7 +88,7 @@ module nts.uk.at.view.kmk006.a {
                 self.date = ko.observable('20000101');
                 self.yearMonth = ko.observable(200001);
                 // Initial common data.
-                self.useUnitAutoCalSettingModel = null;
+                self.useUnitAutoCalSettingModel = ko.observable(new UnitAutoCalSettingView(true, true, true));
                 this.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK006_14"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText("KMK006_15"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -254,19 +254,14 @@ module nts.uk.at.view.kmk006.a {
             */
             public startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
-                var self = this;
-                var dfd = $.Deferred();
+                var _self = this;
+                var dfd = $.Deferred<any>();
 
                 // Initial settings.
-                $.when(self.loadTimeLimitUpperLimitSettingEnum(), self.loadAutoCalAtrOvertimeEnum(), self.loadComAutoCal(), self.loadUseUnitAutoCalSettingModel()).done(function() {
-                    self.onSelectCompany().done(function() {
-                        dfd.resolve(self);
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), _self.loadAutoCalAtrOvertimeEnum(), _self.loadUseUnitAutoCalSettingModel()).done(function() {
+                    _self.onSelectCompany();
+                    dfd.resolve(_self);
                 });
-
-                dfd.resolve(self);
 
                 return dfd.promise();
             }
@@ -274,11 +269,11 @@ module nts.uk.at.view.kmk006.a {
             /**
           * call service load UseUnitAutoCalSettingModel
           */
-            private loadUseUnitAutoCalSettingModel(): : JQueryPromise<void> {
+            private loadUseUnitAutoCalSettingModel(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred();
+                var dfd = $.Deferred<void>();
                 nts.uk.at.view.kmk006.e.service.getUseUnitAutoCal().done(function(data) {
-                    self.useUnitAutoCalSettingModel = data;
+                    self.useUnitAutoCalSettingModel(new UnitAutoCalSettingView(data.useWkpSet, data.useJobSet, data.useJobwkpSetdata));
                     dfd.resolve();
                 }).fail(res => {
                     nts.uk.ui.dialog.alertError(res);
@@ -372,6 +367,7 @@ module nts.uk.at.view.kmk006.a {
                         self.reLoadListEnum(self.itemJobAutoCalModel);
 
                     }
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
                 }).always(function() {
@@ -398,6 +394,7 @@ module nts.uk.at.view.kmk006.a {
                         self.reLoadListEnum(self.itemWkpAutoCalModel);
 
                     }
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
                 }).always(function() {
@@ -424,6 +421,7 @@ module nts.uk.at.view.kmk006.a {
                         self.reLoadListEnum(self.itemWkpJobAutoCalModel);
 
                     }
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
                 }).always(function() {
@@ -701,6 +699,8 @@ module nts.uk.at.view.kmk006.a {
                 self.loadComAutoCal();
 
                 self.isLoading(true);
+                
+                dfd.resolve();
 
                 return dfd.promise();
             }
@@ -1068,6 +1068,18 @@ module nts.uk.at.view.kmk006.a {
             resetData() {
                 this.upLimitOtSet(0);
                 this.calAtr(0);
+            }
+        }
+        
+        export class UnitAutoCalSettingView {
+            useWkpSet: any;
+            useJobSet: any;
+            useJobwkpSet: any;
+            
+            constructor(useWkpSet: boolean, useJobSet : boolean, useJobwkpSet: boolean) {
+                this.useWkpSet = useWkpSet;
+                this.useJobSet = useJobSet;
+                this.useJobwkpSet = useJobwkpSet;
             }
         }
 

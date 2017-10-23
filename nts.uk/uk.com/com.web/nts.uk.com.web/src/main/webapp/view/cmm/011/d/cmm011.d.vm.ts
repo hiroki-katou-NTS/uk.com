@@ -8,7 +8,7 @@ module nts.uk.com.view.cmm011.d {
             constructor() {
                 let self = this;
                 self.startDate = ko.observable('');
-                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
+                self.endDate = ko.observable("9999/12/31");//TODO: nts.uk.resource.getText("CMM011_27")
                 
                 self.startDate.subscribe((newValue) => {
 //                    nts.uk.ui.windows.getSelf().setSize(290, 500);
@@ -56,7 +56,7 @@ module nts.uk.com.view.cmm011.d {
                         historyId: '',
                         period: {
                             startDate: self.startDate(),
-                            endDate: new Date("9999-12-31")
+                            endDate: new Date(self.endDate())
                         }
                     }
                 }

@@ -34,6 +34,7 @@ module nts.uk.com.view.cmm014.a {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
                     isDialog: false,
+                    tabindex: 5
                 };
 
                 self.clfList = ko.observableArray<ItemModel>([]);
@@ -116,8 +117,8 @@ module nts.uk.com.view.cmm014.a {
                     command.memo = self.classificationModel().memo();
                     command.isUpdateMode = self.isUpdateMode();
                 
-                blockUI.invisible();
                 service.saveClassification(command).done(() => {
+                    blockUI.invisible();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         
                         // ReLoad Component
@@ -133,14 +134,7 @@ module nts.uk.com.view.cmm014.a {
                     
                     blockUI.clear();
                 }).fail(error => {
-                    if (error.messageId == 'Msg_3') {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_3" }).then(function() {
-                            $("#clfCode").focus();
-                        });
-                    } else {
-                        nts.uk.ui.dialog.alertError(error);
-                    }
-                    blockUI.clear();
+                    $('#clfCode').ntsError('set', {messageId: error.messageId});
                 });
             }
 
@@ -197,7 +191,7 @@ module nts.uk.com.view.cmm014.a {
                     });
                 }).ifNo(function() {
                     blockUI.clear();
-                    $('#empName').focus();
+                    $('#clfName').focus();
                 });
             }
 
@@ -209,6 +203,7 @@ module nts.uk.com.view.cmm014.a {
                 self.clearErrors();
                 $('#clfCode').ntsEditor("validate");
                 $('#clfName').ntsEditor("validate");
+                 $('#memo').ntsEditor("validate");
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
                 }

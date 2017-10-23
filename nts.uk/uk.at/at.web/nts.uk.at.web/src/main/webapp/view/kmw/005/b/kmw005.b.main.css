@@ -1,45 +1,30 @@
 @CHARSET "UTF-8";
 
-.btnSave {
-	width: 90px;
-}
-
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
-	min-width: 200px;
+	min-width: 100px;
 }
 
-.divHeader {
-	margin: 5px;
-	min-width: 1360px;
+#contents-left {
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 #contents-right {
-	padding-left: 40px !important;
+	padding-left: 20px !important;
+	width: 300px;
 }
 
-.contents {
-	margin-top: 20px;
-	margin-left: 20px;
-	min-width: 800px;
+#targetYM {
+	height: 30px;
+	margin-left: 10px;
+	margin-bottom: 10px;
 }
 
-.lableData {
-	width: 170px;
-	float: left;
-}
-
-.lableDataEnd {
-	width: 130px;
-	margin-left: 50px;
-	float: left;
-}
-
-.valueData {
-	float: left;
-}
-
-.nts-editor {
-	width: 180px !important;
+#closure-content {
+	padding-top: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 30px;
 }

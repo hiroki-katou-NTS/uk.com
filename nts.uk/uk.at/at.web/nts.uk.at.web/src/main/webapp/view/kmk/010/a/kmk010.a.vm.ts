@@ -445,11 +445,13 @@ module nts.uk.at.view.kmk010.a {
             overtimeNo: KnockoutObservable<number>;
             breakdownItemNo: KnockoutObservable<number>;
             premiumRate: KnockoutObservable<number>;
+            stashpremiumRate: KnockoutObservable<number>;
             enableInput: KnockoutObservable<boolean>;
             constructor() {
                 this.overtimeNo = ko.observable(0);
                 this.breakdownItemNo = ko.observable(0);
                 this.premiumRate = ko.observable(0);
+                this.stashpremiumRate = ko.observable(0);
                 this.enableInput = ko.observable(true);
             }
 
@@ -457,6 +459,7 @@ module nts.uk.at.view.kmk010.a {
                 this.overtimeNo(dto.overtimeNo);
                 this.breakdownItemNo(dto.breakdownItemNo);
                 this.premiumRate(dto.premiumRate);
+                this.stashpremiumRate(dto.premiumRate);
             }
 
             updateInfo(breakdownItemNo: number, overtimeNo: number) {
@@ -471,8 +474,11 @@ module nts.uk.at.view.kmk010.a {
                 };
                 return dto;
             }
-            updateEnable(enableInput: boolean): void{
-               this.enableInput(enableInput); 
+            updateEnable(enableInput: boolean): void {
+                this.enableInput(enableInput);
+                if (!enableInput) {
+                    this.premiumRate(this.stashpremiumRate());
+                }
             }
             
         }

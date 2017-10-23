@@ -21,4 +21,8 @@ public enum ErrorFlag {
 	ErrorFlag(int type) {
 		this.value = type;
 	}
+	
+	public boolean isError() {
+		return this != NO_ERROR;
+	}
 }

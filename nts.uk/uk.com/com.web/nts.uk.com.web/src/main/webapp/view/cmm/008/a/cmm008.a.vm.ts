@@ -138,10 +138,7 @@ module nts.uk.com.view.cmm008.a {
                     blockUI.clear();
                     if (error.messageId == 'Msg_3') {
                         blockUI.clear();
-                        $('#empCode').ntsError('set', { messageId: "Msg_3" }).then(function() {
-                            
-                            $("#empCode").focus();
-                        });
+                        $('#empCode').ntsError('set', { messageId: "Msg_3" });
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }

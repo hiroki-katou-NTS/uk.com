@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lanlt
  *
  */
-@StringMaxLength(17)
+@StringMaxLength(30)
 public class ValueSettingName extends StringPrimitiveValue<ValueSettingName> {
 
 	public ValueSettingName(String rawValue) {

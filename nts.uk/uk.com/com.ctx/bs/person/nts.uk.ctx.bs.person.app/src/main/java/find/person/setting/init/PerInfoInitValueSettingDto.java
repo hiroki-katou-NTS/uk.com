@@ -1,9 +1,14 @@
 package find.person.setting.init;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 
-@Value
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PerInfoInitValueSettingDto {
 	private String companyId;
 	private String settingId;

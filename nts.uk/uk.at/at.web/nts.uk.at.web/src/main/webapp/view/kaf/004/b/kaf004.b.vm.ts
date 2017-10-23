@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             //check sendMail
             self.sendMail = ko.observable(true);
             //date editor
-            self.date = ko.observable("");
+            self.date = ko.observable(new Date());
             //time editor
             self.lateTime1 = ko.observable(null);
             self.lateTime2 = ko.observable(null);
@@ -146,6 +146,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         self.early2(null);
                         self.earlyTime1(null);
                         self.earlyTime2(null);
+                        self.appreason(null);
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res);

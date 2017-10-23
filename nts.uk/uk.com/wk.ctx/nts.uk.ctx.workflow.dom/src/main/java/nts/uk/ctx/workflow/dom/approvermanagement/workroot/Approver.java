@@ -60,4 +60,8 @@ public class Approver extends DomainObject{
 	public void updateApproverId(String approverId){
 		this.approverId = approverId;
 	}
+	
+	public boolean isConfirmer() {
+		return this.confirmPerson == ConfirmPerson.CONFIRM;
+	}
 }

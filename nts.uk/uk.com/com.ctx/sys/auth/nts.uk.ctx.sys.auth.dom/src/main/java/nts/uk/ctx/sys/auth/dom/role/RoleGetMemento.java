@@ -42,7 +42,7 @@ public interface RoleGetMemento {
 	 *
 	 * @return the name
 	 */
-	String getName();
+	RoleName getName();
 
 	/**
 	 * Gets the contract code.

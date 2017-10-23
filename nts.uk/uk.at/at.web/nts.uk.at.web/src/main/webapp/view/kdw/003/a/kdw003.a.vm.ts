@@ -242,28 +242,49 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnSetting_Click() {
             var container = $("#setting-content");
-            if (container.css("display") === 'none') {
-                container.css("display", "block");
+            if (container.css("visibility") === 'hidden') {
+                container.css("visibility", "visible");
+                container.css("top", "0px");
+                container.css("left", "0px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container
                 if (!container.is(e.target) && container.has(e.target).length === 0) {
-                    container.hide();
+                    container.css("visibility", "hidden");
+                    container.css("top", "-9999px");
+                    container.css("left", "-9999px");
                 }
             });
         }
 
         btnVacationRemaining_Click() {
             var container = $("#vacationRemaining-content");
-            if (container.css("display") === 'none') {
-                container.css("display", "block");
+            if (container.css("visibility") === 'hidden') {
+                container.css("visibility", "visible");
+                container.css("top", "0px");
+                container.css("left", "0px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container
                 if (!container.is(e.target) && container.has(e.target).length === 0) {
-                    container.hide();
+                    container.css("visibility", "hidden");
+                    container.css("top", "-9999px");
+                    container.css("left", "-99990px");
                 }
             });
+        }
+        
+        btnSaveColumnWidth_Click(){
+            var self = this;
+            let command = {
+                lstHeader: {}
+            };
+            _.forEach(self.headersGrid(), (header) => {
+                if(nts.uk.ntsNumber.isNumber(header.key)){
+                    command.lstHeader[header.key] = header.width.split("px")[0];
+                }   
+            });
+            service.saveColumnWidth(command);
         }
 
         extractionData() {

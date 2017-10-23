@@ -10,8 +10,6 @@ public interface PerInfoHistorySelectionRepository {
 
 	void remove(String selectionItemId);
 	
-	List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String companyId);
-	
 	Optional<PerInfoHistorySelection> getHistorySelectionItem(String histId);
 
 	List<PerInfoHistorySelection> historySelection(String selectionItemId);

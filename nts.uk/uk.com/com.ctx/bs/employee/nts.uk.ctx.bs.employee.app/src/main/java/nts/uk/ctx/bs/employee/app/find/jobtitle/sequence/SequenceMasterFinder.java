@@ -27,15 +27,6 @@ public class SequenceMasterFinder {
 	private SequenceMasterRepository repository;
 
 	/**
-	 * Find max order.
-	 *
-	 * @return the short
-	 */
-	public int findMaxOrder() {
-		return this.repository.findMaxOrder();
-	}
-
-	/**
 	 * Find all.
 	 *
 	 * @return the list
