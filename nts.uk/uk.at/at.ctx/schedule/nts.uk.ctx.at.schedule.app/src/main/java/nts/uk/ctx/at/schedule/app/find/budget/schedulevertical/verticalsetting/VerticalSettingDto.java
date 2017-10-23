@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,15 +29,22 @@ public class VerticalSettingDto {
     
     /*応援集計区分*/
     private int assistanceTabulationAtr;
+    
+    private List<VerticalCalItemDto> verticalCalItems;
 
     public static VerticalSettingDto fromDomain(VerticalCalSet domain){
+    	List<VerticalCalItemDto> items = domain.getVerticalCalItems().stream()
+				.map(x-> VerticalCalItemDto.fromDomain(x))
+				.collect(Collectors.toList());
+    	
 		return new VerticalSettingDto(
 				domain.getCompanyId(),
-				domain.getVerticalCalCd(),
-				domain.getVerticalCalName(),
+				domain.getVerticalCalCd().v(),
+				domain.getVerticalCalName().v(),
 				domain.getUnit().value,
 				domain.getUseAtr().value,
-				domain.getAssistanceTabulationAtr().value
+				domain.getAssistanceTabulationAtr().value,
+				items
 		);
 	}
 }

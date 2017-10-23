@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.DeleteVerticalSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.VerticalSettingCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.VerticalSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting.VerticalSettingDto;
@@ -28,6 +29,9 @@ public class VerticalSettingWebService {
 	@Inject
 	private VerticalSettingCommandHandler verticalSettingCommandHandler;
 	
+	@Inject
+	private DeleteVerticalSettingCommandHandler deleteVerticalSettingCommandHandler;
+	
 	/** Find all vertical cal set. */
 	@Path("findAllVerticalCalSet")
 	@POST
@@ -47,5 +51,12 @@ public class VerticalSettingWebService {
 	@POST
 	public void addVerticalCalSet(VerticalSettingCommand command) { 
 		this.verticalSettingCommandHandler.handle(command);
+	}
+	
+	/** Delete vertical cal set. */
+	@Path("deleteVerticalCalSet")
+	@POST
+	public void deleteVerticalCalSet(VerticalSettingCommand command) { 
+		this.deleteVerticalSettingCommandHandler.handle(command);
 	}
 }
