@@ -8,6 +8,10 @@ public class EmployeeFileManagementDto {
 	private String employeeId;
 	/**file id*/
 	private String fileId;
+	
+	/**file name*/
+	private String fileName;
+	
 	/**file type*/
 	private int fileType;
 	/** order document file*/
@@ -36,11 +40,12 @@ public class EmployeeFileManagementDto {
 		this.personInfoCategoryId = null;
 	}
 	
-	public EmployeeFileManagementDto(String sId, String fileId, Integer uploadOder, String perInfCtgId , String categoryName){
+	public EmployeeFileManagementDto(String sId, String fileId,String fileName , Integer uploadOder, String perInfCtgId , String categoryName){
 		this.employeeId = sId;
 		this.fileId = fileId;
 		this.categoryName = categoryName;
 		this.uploadOrder = uploadOder;
+		this.fileName = fileName;
 		this.personInfoCategoryId = perInfCtgId;
 	}
 }
