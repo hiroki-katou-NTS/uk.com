@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw001.d.main.css" />
+			<com:scriptfile path="kdw001.d.start.js" />
+			<com:scriptfile path="kdw001.d.vm.js" />
+			<com:scriptfile path="kdw001.d.service.js" />
+			
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				
+			</div>
+			<div id="contents-area">
+				<div id="label11" class="label">#{i18n.getText('KDW001_17')}</div>
+				
+				<div id="label12" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_18')}</div>
+				
+				<div id="panel13" class="panel panel-gray-bg">
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+					<div class="label">#{i18n.getText('KDW001_17')}</div>
+				</div>
+				
+				<div id="label15" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
+				
+				<div id="label16">
+					<div class="label">#{i18n.getText('KDW001_34')}</div>
+				</div><br></br>
+				
+				<div id="label19" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
+				
+				<div id="label110">
+					<div class="label">#{i18n.getText('KDW001_21')}</div>
+				</div><br></br>
+				
+				<div id="button112Area">
+					<button id="button112">#{i18n.getText('KDW001_93')}</button>
+				</div>
+				
+				<div id="button113Area">
+					<button id="button113" class="proceed">#{i18n.getText('KDW001_23')}</button>
+				</div>
+				
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

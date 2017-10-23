@@ -20,27 +20,32 @@ public class AdjustedApprovalPhases {
 
 		for (val phase : this.phases) {
 
+			val masterPhase = masterPhases.stream()
+					.filter(mp -> mp.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get();
+
+			// マスタに承認者が設定されているか
+			if (masterPhase.getApprovers().isEmpty()) {
+				continue;
+			}
+
 			errorFlag = phase.checkError();
 			if (errorFlag.isError()) {
 				return errorFlag;
 			}
 
+			// ドメインモデル「承認フェーズ」．承認形態が誰か一人(domain 「承認フェーズ」．承認形態 = 誰か一人)
 			if (!phase.isSingleApproved()) {
 				continue;
 			}
 
-			if (!phase.containsConfirmer()) {
+			// ドメインモデル「承認者」．確定者がtrue(domain「承認者」．確定者 = true)
+			if (!masterPhase.containsConfirmer()) {
 				continue;
 			}
 
-			// ↓この辺りの処理は仕様がよく分からないので、間違ってるかも＠＠
-
-			// 確定者あるドメインモデル「承認者」から変換した実際の承認者がいるかチェックする
-			val masterPhase = masterPhases.stream()
-					.filter(mp -> mp.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get();
-
-			if (!phase.containsAny(masterPhase.getApprovers())) {
-				return ErrorFlag.NO_CONFIRM_PERSON;
+			// 確定者あるドメインモデル「承認者」から変換した実際の承認者がいない場合
+			if (!phase.containsConfirmer()) {
+				continue;
 			}
 		}
 
