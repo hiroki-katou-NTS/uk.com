@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.job;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,13 +28,22 @@ public interface JobAutoCalSettingRepository {
     void add(JobAutoCalSetting jobAutoCalSetting);
 
 	/**
-	 * Gets the all job auto cal setting.
+	 * Gets the job auto cal setting.
 	 *
 	 * @param companyId the company id
 	 * @param jobId the job id
-	 * @return the all job auto cal setting
+	 * @return the job auto cal setting
 	 */
-    Optional<JobAutoCalSetting> getAllJobAutoCalSetting(String companyId, String jobId);
+    Optional<JobAutoCalSetting> getJobAutoCalSetting(String companyId, String jobId);
+    
+    
+    /**
+     * Gets the all job auto cal setting.
+     *
+     * @param companyId the company id
+     * @return the all job auto cal setting
+     */
+    List<JobAutoCalSetting> getAllJobAutoCalSetting(String companyId);
     
 	/**
 	 * Delete.

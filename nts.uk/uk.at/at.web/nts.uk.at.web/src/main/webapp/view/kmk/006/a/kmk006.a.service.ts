@@ -7,13 +7,20 @@ module nts.uk.at.view.kmk006.a {
             findEnumTimeLimitUpperLimitSetting: "ctx/at/shared/ot/autocal/find/autocaltimelimitsetting",
             getComAutoCal: "ctx/at/shared/ot/autocal/com/getautocalcom",
             saveComAutoCal: "ctx/at/shared/ot/autocal/com/save",
+            
             saveJobAutoCal: "ctx/at/shared/ot/autocal/job/save",
             saveWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/save",
             saveWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/save",
+            
+            getAllJobAutoCal: "ctx/at/shared/ot/autocal/job/getallautocaljob",
             getJobAutoCal: "ctx/at/shared/ot/autocal/job/getautocaljob",
+            
             getWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/getautocalwkp",
             getAllWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/getallautocalwkp",
+            
             getWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/getautocalwkpjob",
+            getAllWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/getallautocalwkpjob",
+            
             deleteJobAutoCal: "ctx/at/shared/ot/autocal/job/delete",
             deleteWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/delete",
             deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete",
@@ -80,11 +87,16 @@ module nts.uk.at.view.kmk006.a {
         export function getComAutoCal(): JQueryPromise<model.ComAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getComAutoCal);
         }
-
+        
+        // JobTittle get data
+        export function getAllJobAutoCal(): JQueryPromise<Array<model.JobAutoCalSettingDto>> {
+            return nts.uk.request.ajax("at", paths.getAllJobAutoCal);
+        }
         export function getJobAutoCal(jobId: string): JQueryPromise<model.JobAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getJobAutoCal + '/' + jobId);
         }
-
+        
+        // WorkPlace get data
         export function getWkpAutoCal(wkpId: string): JQueryPromise<model.WkpAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpAutoCal + '/' + wkpId);
         }
@@ -92,6 +104,10 @@ module nts.uk.at.view.kmk006.a {
             return nts.uk.request.ajax("at", paths.getAllWkpAutoCal);
         }
         
+        // getAllWplJobAutoCal
+        export function getAllWplJobAutoCal(): JQueryPromise<Array<model.WkpJobAutoCalSettingDto>> {
+            return nts.uk.request.ajax("at", paths.getAllWkpJobAutoCal);
+        }
         export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
         }
