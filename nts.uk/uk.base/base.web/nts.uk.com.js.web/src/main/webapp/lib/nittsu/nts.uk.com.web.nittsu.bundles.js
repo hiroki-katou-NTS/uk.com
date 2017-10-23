@@ -6931,10 +6931,11 @@ var nts;
                             container.igGrid("dataBind");
                         }
                         else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
+                            var sources_1 = options.slice();
                             var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
-                                var itemX = _.find(sources, function (s) {
-                                    return s[optionsValue] === item[optionsValue];
+                                var itemX = _.find(sources_1, function (s) {
+                                    return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
                                     filteredSource_2.push(itemX);
