@@ -36,12 +36,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " WHERE c.abolitionAtr = 0"
 			+ " AND c.perInfoCtgId =:perInfoCtgId";
 	// SONNLB
-	private final String SEL_ALL_INIT_ITEM = " SELECT c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue "
-			+ " FROM  PpemtPersonInitValueSettingItem b" + " LEFT JOIN PpemtPerInfoItem c"
-			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = b.settingItemPk.perInfoItemDefId "
-			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " WHERE c.abolitionAtr = 0"
-			+ " AND c.perInfoCtgId =:perInfoCtgId";
+	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue"
+			+ " FROM  PpemtPersonInitValueSettingItem b" 
+			+ " LEFT JOIN PpemtPerInfoItem c" + " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " LEFT JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd";
 
 	// SONNLB
 
@@ -159,9 +159,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	// sonnlb
 	@Override
-	public List<PerInfoInitValueSetItem> getAllInitItem(String perInfoCtgId) {
-		return this.queryProxy().query(SEL_ALL_INIT_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
-				.getList(c -> toInitDomain(c));
+	public List<PerInfoInitValueSetItem> getAllInitItem(String settingId, String categoryCd) {
+		return this.queryProxy().query(SEL_ALL_INIT_ITEM, Object[].class).setParameter("categoryCd", categoryCd)
+				.setParameter("settingId", settingId).getList(c -> toInitDomain(c));
 
 	}
 
@@ -187,17 +187,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
 
-		String saveDataType;
+		String saveDataType = entity[6] != null ? entity[6].toString().equals("0") ? "1" : entity[6].toString() : "1";
 
-		if (entity[6].toString().equals("0")) {
-			// return defaul value
-			saveDataType = "1";
-
-		} else {
-
-			saveDataType = entity[6].toString();
-
-		}
 		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 
 		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
@@ -205,12 +196,11 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		String dateValue;
 
-		if (entity[6].toString().equals("0")) {
+		if (saveDataType == "1") {
 			dateValue = "9999-12-21";
 
 		} else {
-			dateValue = entity[9].toString();
-
+			dateValue = entity[9] == null ? "9999-12-21" : entity[9].toString();
 		}
 
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));

@@ -251,9 +251,9 @@
 											<div id="combo-box"
 												data-bind="ntsComboBox: {
 													options: categoryList,
-													optionsValue: 'id',
+													optionsValue: 'code',
 													visibleItemsCount: 5,
-													value: categorySelectedId ,
+													value: categorySelectedCode ,
 													optionsText: 'name',
 													editable: false ,
 													enable: true,
@@ -266,71 +266,24 @@
 									</div>
 									<div class="div_line">
 										<div id="cover_table">
-											<table id="table_item">
-												<tbody>
+											<table id="table_item" data-bind="if:itemList().length>0">
+												<tr>
+													<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
+													<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
+												</tr>
+												<tbody data-bind="foreach:itemList">
 													<tr>
-														<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
-														<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
+														<td
+															data-bind="text: name , css:{requiredCell: isRequired  }"></td>
+														<com:ko-if bind="saveDataType ===1">
+															<td class="disabledCell" data-bind="text: stringValue "></td>
+														</com:ko-if>
+														<com:ko-if bind="saveDataType ===2">
+															<td class="disabledCell" data-bind="text: intValue "></td>
+														</com:ko-if>
+														<com:ko-if bind="saveDataType ===3">
+															<td class="disabledCell" data-bind="text: dateValue "></td>
+														</com:ko-if>
 													</tr>
 												</tbody>
 											</table>

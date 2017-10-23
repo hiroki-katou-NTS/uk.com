@@ -24,7 +24,7 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 			+ " LEFT JOIN PpemtPerInfoCtg pc" 
 			+ " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND pc.abolitionAtr=0" 
-			+ " LEFT JOIN PpemtPerInfoItem pi"
+			+ " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON ic.settingCtgPk.perInfoCtgId= pi.perInfoCtgId " 
 			+ " AND pi.abolitionAtr = 0"
 			+ " WHERE iv.companyId = :companyId" 

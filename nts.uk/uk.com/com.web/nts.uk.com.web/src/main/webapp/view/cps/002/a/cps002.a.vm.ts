@@ -28,13 +28,9 @@ module cps002.a.vm {
 
         enable: KnockoutObservable<boolean> = ko.observable(true);
 
-        selectedCode: KnockoutObservable<number> = ko.observable(1);
-
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
-        currentCode = ko.observable(1);
-
-        categorySelectedId: KnockoutObservable<string> = ko.observable('');
+        categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
         empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(new EmpRegHistory(null));
 
@@ -71,16 +67,17 @@ module cps002.a.vm {
             self.initValueSelectedCode.subscribe((newValue) => {
 
                 let selectedItem = _.find(self.initValueList(), item => {
-                    return item.itemCode = newValue;
+                    return item.itemCode == newValue;
                 });
 
                 service.getAllInitValueCtgSetting(selectedItem.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                    self.categoryList.removeAll();
                     if (result.length) {
                         self.categoryList(_.map(result, item => {
                             return new CategoryItem(item);
                         }));
-                        self.categorySelectedId(result[0].perInfoCtgId);
+                        self.categorySelectedCode(result[0].categoryCd);
+                    } else {
+                        self.categoryList.removeAll();
                     }
                 });
 
@@ -97,15 +94,16 @@ module cps002.a.vm {
 
             });
 
-            self.categorySelectedId.subscribe((newValue) => {
+            self.categorySelectedCode.subscribe((newValue) => {
 
                 if (self.isUseInitValue()) {
-                    service.getAllInitValueItemSetting(newValue).done((result: Array<Item>) => {
-                        self.itemList.removeAll();
+                    service.getAllInitValueItemSetting(self.currentItem().itemId, newValue).done((result: Array<Item>) => {
                         if (result.length) {
                             self.itemList(_.map(result, item => {
                                 return new Item(item);
                             }));
+                        } else {
+                            self.itemList.removeAll();
                         }
                     });
                 } else {
@@ -339,7 +337,7 @@ module cps002.a.vm {
                         return new CategoryItem(item);
                     }));
 
-                    self.categorySelectedId(result[0].id);
+                    self.categorySelectedCode(result[0].code);
                 }
 
             }).fail((error) => {
@@ -542,23 +540,23 @@ module cps002.a.vm {
 
     interface IInitValueCtgSetting {
 
-        perInfoCtgId: string;
+        categoryCd: string;
         categoryName: string;
 
     }
 
 
     interface ICopySetting {
-        id: string;
+        code: string;
         name: string;
 
     }
 
     class CategoryItem {
-        id: string;
+        code: string;
         name: string;
         constructor(param?: any) {
-            this.id = param ? param.perInfoCtgId ? param.perInfoCtgId : param.id : '';
+            this.code = param ? param.categoryCd ? param.categoryCd : param.code : '';
             this.name = param ? param.categoryName ? param.categoryName : param.name : '';
 
         }
@@ -567,9 +565,21 @@ module cps002.a.vm {
     class Item {
         id: string;
         name: string;
+        isRequired: number;
+        saveDataType: number;
+        refMethodType: number;
+        stringValue: string;
+        intValue: number;
+        dateValue: string;
         constructor(param?: any) {
-            this.id = param ? param.perInfoCtgId ? param.perInfoCtgId : param.id : '';
-            this.name = param ? param.categoryName ? param.categoryName : param.name : '';
+            this.id = param ? param.perInfoItemDefId ? param.perInfoItemDefId : param.id : '';
+            this.name = param ? param.itemName ? param.itemName : param.id : '';
+            this.isRequired = param ? param.isRequired ? param.isRequired : param.name : 0;
+            this.saveDataType = param ? param.saveDataType ? param.saveDataType : param.id : 0;
+            this.refMethodType = param ? param.refMethodType ? param.refMethodType : param.name : 0;
+            this.stringValue = param ? param.stringValue ? param.stringValue : param.id : '';
+            this.intValue = param ? param.intValue ? param.intValue : param.name : 0;
+            this.dateValue = param ? param.dateValue ? param.dateValue : param.name : '';
 
         }
     }
