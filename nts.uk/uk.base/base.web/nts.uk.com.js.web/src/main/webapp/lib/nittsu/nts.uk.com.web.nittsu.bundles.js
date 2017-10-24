@@ -1207,7 +1207,7 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
-                    if (nts.uk.util.isNullOrEmpty(source) || !isFinite(source)) {
+                    if (!isFinite(source)) {
                         return source;
                     }
                     var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
@@ -4129,6 +4129,11 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
+                function addError(errorBody, msg, id, idx) {
+                    var row = $("<tr/>");
+                    row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");
+                    row.appendTo(errorBody);
+                }
                 function bundledErrors(errors) {
                     var id = uk.util.randomId();
                     $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
@@ -4136,10 +4141,17 @@ var nts;
                     container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
                         "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
                     var errorBody = container.find("tbody");
+                    var idxCount = 0;
                     _.forEach(errors["messageId"], function (id, idx) {
-                        var row = $("<tr/>");
-                        row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");
-                        row.appendTo(errorBody);
+                        if ($.isArray(errors.messages[id])) {
+                            _.forEach(errors.messages[id], function (m) {
+                                addError(errorBody, m, id, idx + idxCount + 1);
+                                idxCount++;
+                            });
+                        }
+                        else {
+                            addError(errorBody, errors.messages[id], id, idx + idxCount + 1);
+                        }
                     });
                     var functionArea = container.find("#functions-area-bottom");
                     functionArea.append("<button class='ntsButton ntsClose large'/>");
