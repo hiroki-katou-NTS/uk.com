@@ -51,6 +51,8 @@ public class ImageEditorWebService extends WebService{
 		StoredFileInfo fileInfo = this.fileStorage.store(IdentifierUtil.randomUniqueId(),
 				tempFile.getPath(), query.getFileName(), query.getStereoType());
 		
+		tempFile.getPath().toFile().delete();
+		
 		return fileInfo;
 	}
 
