@@ -231,10 +231,11 @@ module nts.uk.ui.koExtentions {
                 container.igGrid('option', 'dataSource', currentSources);
                 container.igGrid("dataBind");        
             } else if(container.attr("filtered") === true || container.attr("filtered") === "true"){
+                let sources = options.slice();
                 let filteredSource = [];
                 _.forEach(currentSource, function(item){
                     let itemX = _.find(sources, function (s){
-                        return s[optionsValue] === item[optionsValue];        
+                        return s[optionValue] === item[optionValue];        
                     });
                     if(!nts.uk.util.isNullOrUndefined(itemX)){ 
                         filteredSource.push(itemX);
