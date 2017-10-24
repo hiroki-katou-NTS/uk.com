@@ -24,26 +24,27 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 	
 	/** The Constant SEARCH_QUERY_STRING. */
 	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsymtEmployee e "
-			+ "LEFT JOIN BpsmtPerson p ON e.personId = p.bpsmtPersonPk.pId "
-			+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsymtEmployeePk.sId"
-			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
+			+ " LEFT JOIN BpsmtPerson p ON e.personId = p.bpsmtPersonPk.pId "
+			+ " LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsymtEmployeePk.sId "
+			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate "
 			+ " AND h.endD >= :baseDate "
-			+ "LEFT JOIN BsymtWorkplaceInfo wp ON  wp.bsymtWorkplaceInfoPK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId"
+			+ " LEFT JOIN BsymtWorkplaceInfo wp ON wp.bsymtWorkplaceInfoPK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId "
 			+ " AND wp.bsymtWorkplaceInfoPK.cid = e.companyId "
-			+ " AND wp.bsymtWorkplaceHist.strD <= :baseDate"
-			+ " AND wp.bsymtWorkplaceHist.endD >= :baseDate "
-			+ "LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeePk.sId"
+			+ " LEFT JOIN BsymtWorkplaceHist wphist ON wp.bsymtWorkplaceInfoPK.historyId = wphist.bsymtWorkplaceHistPK.historyId "
+			+ " AND wphist.strD <= :baseDate "
+			+ " AND wphist.endD >= :baseDate "
+			+ " LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeePk.sId "
 			+ " AND ad.strD <= :baseDate"
 			+ " AND ad.endD >= :baseDate "
-			+ "LEFT JOIN BsymtDepartmentHist dh ON dh.bsymtDepartmentHistPK.depId = ad.depId "
-			+ " AND dh.strD <= :baseDate"
+			+ " LEFT JOIN BsymtDepartmentHist dh ON dh.bsymtDepartmentHistPK.depId = ad.depId "
+			+ " AND dh.strD <= :baseDate "
 			+ " AND dh.endD >= :baseDate "
 			+ " AND dh.bsymtDepartmentHistPK.cid = e.companyId "
-			+ "LEFT JOIN BsymtDepartmentInfo d ON d.bsymtDepartmentInfoPK.depId = dh.bsymtDepartmentHistPK.depId "
+			+ " LEFT JOIN BsymtDepartmentInfo d ON d.bsymtDepartmentInfoPK.depId = dh.bsymtDepartmentHistPK.depId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = e.companyId "
 			+ " AND d.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId "
-			+ "WHERE e.employeeCode = :empCode "
-			+ " AND e.companyId = :companyId";
+			+ " WHERE e.employeeCode = :empCode "
+			+ " AND e.companyId = :companyId ";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.screen.com.infra.query.employee.EmployeeSearchQueryRepository
