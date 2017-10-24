@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVac
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
-import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.Com60HVacationDto;
@@ -121,14 +121,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_EMPLOYMENT_BY_CLOSURE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT w FROM CwpmtWorkplace w JOIN ");
+		builderString.append("SELECT w FROM BsymtWorkplaceInfo w JOIN ");
 		builderString.append("KmnmtAffiliWorkplaceHist a ");
 		builderString.append("WHERE a.kmnmtAffiliWorkplaceHistPK.empId = :sId ");
 		builderString.append("AND a.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate ");
 		builderString.append("AND a.endD >= :baseDate ");
-		builderString.append("AND w.cwpmtWorkplacePK.wkpid = a.kmnmtAffiliWorkplaceHistPK.wkpId ");
-		builderString.append("AND w.cwpmtWorkplacePK.strD <= :baseDate ");
-		builderString.append("AND w.cwpmtWorkplacePK.endD >= :baseDate");
+		builderString.append("AND w.bsymtWorkplaceInfoPK.wkpid = a.kmnmtAffiliWorkplaceHistPK.wkpId ");
+		builderString.append("AND w.bsymtWorkplaceHist.strD <= :baseDate ");
+		builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -257,9 +257,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Map<String, String> getListWorkplace(String employeeId, DateRange dateRange) {
 		Map<String, String> lstWkp = new HashMap<>();
-		this.queryProxy().query(SEL_WORKPLACE, CwpmtWorkplace.class).setParameter("sId", employeeId)
+		this.queryProxy().query(SEL_WORKPLACE, BsymtWorkplaceInfo.class).setParameter("sId", employeeId)
 				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().forEach(w -> {
-					lstWkp.put(w.getCwpmtWorkplacePK().getWkpid(), w.getWkpname());
+					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
 		return lstWkp;
 	}

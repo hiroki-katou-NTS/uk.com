@@ -12,8 +12,8 @@ module nts.uk.com.view.cmm011.f {
             selectedValBox: KnockoutObservable<number>;
             
             enableRadioGroup: KnockoutObservable<boolean>;
-            isLess999Heirarchies: KnockoutObservable<boolean>;
-            isLessTenthHeirarchy: KnockoutObservable<boolean>;
+            isLess999Hierarchies: KnockoutObservable<boolean>;
+            isLessTenthHierarchy: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -22,13 +22,13 @@ module nts.uk.com.view.cmm011.f {
                 self.workplaceName = ko.observable(null);
                 
                 self.enableRadioGroup = ko.observable(true);
-                self.isLess999Heirarchies = ko.observable(true);
-                self.isLessTenthHeirarchy = ko.observable(true);
+                self.isLess999Hierarchies = ko.observable(true);
+                self.isLessTenthHierarchy = ko.observable(true);
                 
                 self.itemList = ko.observableArray([
-                    new BoxModel(CreationType.CREATE_ON_TOP, nts.uk.resource.getText("CMM011_33", ['Com_Workplace']), self.isLess999Heirarchies),
-                    new BoxModel(CreationType.CREATE_BELOW, nts.uk.resource.getText("CMM011_34", ['Com_Workplace']), self.isLess999Heirarchies),
-                    new BoxModel(CreationType.CREATE_TO_CHILD, nts.uk.resource.getText("CMM011_35", ['Com_Workplace']), self.isLessTenthHeirarchy)
+                    new BoxModel(CreationType.CREATE_ON_TOP, nts.uk.resource.getText("CMM011_33", ['Com_Workplace']), self.isLess999Hierarchies),
+                    new BoxModel(CreationType.CREATE_BELOW, nts.uk.resource.getText("CMM011_34", ['Com_Workplace']), self.isLess999Hierarchies),
+                    new BoxModel(CreationType.CREATE_TO_CHILD, nts.uk.resource.getText("CMM011_35", ['Com_Workplace']), self.isLessTenthHierarchy)
                 ]);
                 self.selectedValBox = ko.observable(1);
             }
@@ -44,8 +44,8 @@ module nts.uk.com.view.cmm011.f {
                 let objTransfer: any = nts.uk.ui.windows.getShared("ObjectTransfer");
                 self.workplaceCode(objTransfer.code);
                 self.workplaceCode(objTransfer.name);
-                self.isLess999Heirarchies(objTransfer.isLess999Heirarchies);
-                self.isLessTenthHeirarchy(objTransfer.isLessTenthHeirarchy);
+                self.isLess999Hierarchies(objTransfer.isLess999Hierarchies);
+                self.isLessTenthHierarchy(objTransfer.isLessTenthHierarchy);
                 
                 dfd.resolve();
                 

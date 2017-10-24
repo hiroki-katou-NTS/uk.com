@@ -46,7 +46,17 @@ public interface JobTitleInfoRepository {
 	 * @return the optional
 	 */
 	Optional<JobTitleInfo> find(String companyId, String jobTitleId, String historyId);
-	
+
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param jobTitleId the job title id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	Optional<JobTitleInfo> find(String companyId, String jobTitleId, GeneralDate baseDate);
+
 	/**
 	 * Find by job code.
 	 *
@@ -73,7 +83,7 @@ public interface JobTitleInfoRepository {
 	 * @return the list
 	 */
 	List<JobTitleInfo> findAll(String companyId, GeneralDate baseDate);
-	
+
 	/**
 	 * Checks if is job title code exist.
 	 *

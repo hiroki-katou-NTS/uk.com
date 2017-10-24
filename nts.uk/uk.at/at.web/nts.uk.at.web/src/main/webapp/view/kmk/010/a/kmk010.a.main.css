@@ -37,6 +37,10 @@
 }
 
 .overtime-border .overtime {
+	width: 50px;
+}
+
+.overtime-border .rate {
 	width: 35px;
 }
 

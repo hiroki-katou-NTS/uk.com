@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk002.d {
             formulaAtr: string;
             selectableFormulas: KnockoutObservableArray<FormulaDto>;
 
-            minusSegment: KnockoutObservable<number>;
+            minusSegment: KnockoutObservable<boolean>;
             operator: KnockoutObservable<number>;
             leftItem: FormulaSettingItem;
             rightItem: FormulaSettingItem;
@@ -69,7 +69,7 @@ module nts.uk.at.view.kmk002.d {
             operatorDatasource: KnockoutObservableArray<EnumConstantDto>;
 
             constructor() {
-                this.minusSegment = ko.observable(0);
+                this.minusSegment = ko.observable(false);
                 this.operator = ko.observable(0);
                 this.leftItem = new FormulaSettingItem();
                 this.rightItem = new FormulaSettingItem();
@@ -78,8 +78,6 @@ module nts.uk.at.view.kmk002.d {
                 // enable / disable flag
                 this.isFormulasEmpty = ko.computed(() => {
                     if (nts.uk.util.isNullOrEmpty(this.selectableFormulas())) {
-                        this.leftItem.settingMethod(1);
-                        this.rightItem.settingMethod(1);
                         return true;
                     }
                     return false;
@@ -214,7 +212,7 @@ module nts.uk.at.view.kmk002.d {
                 self.formulaId = dto.formulaId;
                 self.formulaName = dto.formulaName;
                 self.formulaAtr = dto.formulaAtr;
-                self.minusSegment(dto.formulaSetting.minusSegment);
+                self.minusSegment(dto.formulaSetting.minusSegment == 1 ? true: false);
                 self.operator(dto.formulaSetting.operator);
                 self.leftItem.fromDto(dto.formulaSetting.leftItem);
                 self.rightItem.fromDto(dto.formulaSetting.rightItem);
@@ -229,7 +227,7 @@ module nts.uk.at.view.kmk002.d {
                 let self = this;
                 let dto: FormulaSettingDto = <FormulaSettingDto>{};
 
-                dto.minusSegment = self.minusSegment();
+                dto.minusSegment = self.minusSegment() == true ? 1 : 0;
                 dto.operator = self.operator();
                 dto.leftItem = self.leftItem.toDto();
                 dto.rightItem = self.rightItem.toDto();

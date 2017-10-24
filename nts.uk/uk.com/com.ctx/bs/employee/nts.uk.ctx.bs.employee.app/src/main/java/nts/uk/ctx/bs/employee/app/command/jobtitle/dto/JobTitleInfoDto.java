@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 
 /**
  * The Class JobTitleInfoDto.

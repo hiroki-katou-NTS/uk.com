@@ -53,7 +53,7 @@
 											data-bind="name: '#[KMK002_63]',
 											checkedValue: 0,
 											checked: leftItem.settingMethod,
-											enable: !isFormulasEmpty()" />
+											enable: true" />
 										<span class="box"></span>
 										<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 									</label>
@@ -94,12 +94,13 @@
 									data-bind="name: '#[KMK002_63]',
 									checkedValue: 0,
 									checked: rightItem.settingMethod,
-									enable: !isFormulasEmpty()" />
+									enable: true" />
 									<span class="box"></span>
 									<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 								</label>
 								<div tabindex="6" id="cbb-right-item" class="width-200"
 									data-bind="ntsComboBox: {
+									name: '#[KMK002_66]',
 									options: selectableFormulas,
 									optionsValue: 'formulaId',
 									value: rightItem.formulaItemId,
