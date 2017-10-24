@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw001.b {
+module nts.uk.at.view.kdw001.j {
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);

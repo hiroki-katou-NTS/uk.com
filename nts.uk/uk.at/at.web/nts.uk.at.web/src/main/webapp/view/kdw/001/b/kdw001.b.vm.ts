@@ -3,6 +3,10 @@ module nts.uk.at.view.kdw001.b {
     
     export module viewmodel {
         export class ScreenModel {
+            //Declare import cScreenmodel, dScreenmodel
+            cScreenmodel: any;
+            dScreenmodel: any;
+            
             //Declare for checkBox area
             cbEnable: KnockoutObservable<boolean>;
             
@@ -34,6 +38,11 @@ module nts.uk.at.view.kdw001.b {
 
             constructor() {
                 var self = this;
+                
+                //import cScreenModel, dScreenModel
+                self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
+                self.dScreenmodel = new nts.uk.at.view.kdw001.d.viewmodel.ScreenModel();
+                
                 //Init for checkBox Area
                 self.cbEnable = ko.observable(true);
                 
@@ -76,12 +85,26 @@ module nts.uk.at.view.kdw001.b {
                     { content: '.step-2' },
                     { content: '.step-3' }
                 ];
-                self.activeStep = ko.observable(1);
+                self.activeStep = ko.observable(0);
+                
+                //Get activeStep value from a screen or c screen
+                __viewContext.transferred.ifPresent(data => {
+                    self.activeStep(data.activeStep);
+                });
+                
                 //self.stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
             }
-
+            
+            opendScreenD() {
+                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 2, "screenName": "B"});
+            }
+            
+            opendScreenC() {
+                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 0});
+            }
+            
             navigateView() {
-
+                nts.uk.request.jump("/view/kdw/001/a/index.xhtml");
             }
         }
     }
