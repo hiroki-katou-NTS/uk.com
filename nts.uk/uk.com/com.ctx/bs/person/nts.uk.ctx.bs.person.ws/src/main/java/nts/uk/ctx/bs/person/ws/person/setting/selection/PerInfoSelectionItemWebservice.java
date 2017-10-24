@@ -16,6 +16,8 @@ import command.person.setting.selectionitem.UpdateSelectionItemCommand;
 import command.person.setting.selectionitem.UpdateSelectionItemCommandHandler;
 import command.person.setting.selectionitem.selection.AddSelectionCommand;
 import command.person.setting.selectionitem.selection.AddSelectionCommandHandler;
+import command.person.setting.selectionitem.selection.UpdateSelectionCommand;
+import command.person.setting.selectionitem.selection.UpdateSelectionCommandHandler;
 import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
@@ -54,6 +56,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Add selection:
 	@Inject
 	private AddSelectionCommandHandler addSelectionCommandHandler;
+
+	// update Selection:
+	@Inject
+	private UpdateSelectionCommandHandler updateSelection;
 
 	@POST
 	@Path("findAll")
@@ -104,6 +110,13 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void AddSelection(AddSelectionCommand command) {
 		this.addSelectionCommandHandler.handle(command);
 
+	}
+
+	// Update Selection:
+	@POST
+	@Path("updateSelection")
+	public void UpdateSelection(UpdateSelectionCommand command) {
+		this.updateSelection.handle(command);
 	}
 
 }
