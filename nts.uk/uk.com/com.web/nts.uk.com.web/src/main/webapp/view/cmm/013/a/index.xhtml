@@ -52,6 +52,7 @@
 							</td>
 							<td data-bind="with: jobTitleHistoryModel">
 								<div id="list-box" tabindex="7" data-bind="ntsListBox: {
+									name: '#[CMM013_6]',
 									options: listJobTitleHistory,
 									optionsValue: 'historyId',
 									optionsText: 'textDisplay',
@@ -80,7 +81,7 @@
 							<td>
 								<input id="job-title-code" tabindex="11" data-bind="ntsTextEditor: {
 									value: jobTitleCode,
-									name: '#[CMM013_10]',
+									name: '#[CMM013_11]',
 									constraint: 'JobTitleCode',
 									option: {
 										width: '100px',

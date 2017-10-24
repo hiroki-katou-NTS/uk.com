@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KrcmtDailyAttendanceItem;
 
@@ -107,9 +108,9 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	 * DailyAttendanceItemRepository#findByAtr(java.lang.String, int)
 	 */
 	@Override
-	public List<DailyAttendanceItem> findByAtr(String companyId, int itemAtr) {
+	public List<DailyAttendanceItem> findByAtr(String companyId, DailyAttendanceAtr itemAtr) {
 		return this.queryProxy().query(FIND_BY_ATR, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyAttendanceAtr", itemAtr).getList(f -> toDomain(f));
+				.setParameter("dailyAttendanceAtr", itemAtr.value).getList(f -> toDomain(f));
 	}
 
 }

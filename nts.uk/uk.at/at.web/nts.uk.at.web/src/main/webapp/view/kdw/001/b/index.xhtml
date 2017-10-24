@@ -9,10 +9,25 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			
 			<com:stylefile path="kdw001.b.main.css" />
-			<com:scriptfile path="kdw001.b.start.js" />
 			<com:scriptfile path="kdw001.b.vm.js" />
 			<com:scriptfile path="kdw001.b.service.js" />
+			
+			<com:stylefile path="../c/kdw001.c.main.css" />
+			<com:scriptfile path="../c/kdw001.c.vm.js" />
+			<com:scriptfile path="../c/kdw001.c.service.js" />
+			
+			<com:stylefile path="../d/kdw001.d.main.css" />
+			<com:scriptfile path="../d/kdw001.d.vm.js" />
+			<com:scriptfile path="../d/kdw001.d.service.js" />
+			
+			<com:scriptfile path="kdw001.b.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -34,11 +49,19 @@
 						<div class="end step-3">#{i18n.getText('KDW001_8')}</div>
 					</div>
 					<div class="contents">
-						<div class="step-1">contents step1</div>
+						<div class="step-1">
+							<div data-bind="with: cScreenmodel">
+								<ui:include src="../c/index.xhtml" />
+							</div>
+						</div>
 						<div class="step-2">
 							<ui:include src="b.xhtml" />
 						</div>
-						<div class="step-3">contents step3</div>
+						<div class="step-3">
+							<div data-bind="with: dScreenmodel">
+								<ui:include src="../d/index.xhtml" />
+							</div>	
+						</div>
 					</div>
 				</div>
 			</div>

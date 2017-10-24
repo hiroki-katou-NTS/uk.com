@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSettingSetMement
 public class JobAutoCalSettingDto implements JobAutoCalSettingSetMemento{
 	
 	/** The job id. */
-	private JobTitleId jobId;
+	private String jobId;
 
 	/** The normal OT time. */
 	// 残業時間
@@ -61,7 +61,7 @@ public class JobAutoCalSettingDto implements JobAutoCalSettingSetMemento{
 	 */
 	@Override
 	public void setPositionId(JobTitleId positionId) {
-		this.jobId = positionId;
+		this.jobId = positionId.v();
 		
 	}
 

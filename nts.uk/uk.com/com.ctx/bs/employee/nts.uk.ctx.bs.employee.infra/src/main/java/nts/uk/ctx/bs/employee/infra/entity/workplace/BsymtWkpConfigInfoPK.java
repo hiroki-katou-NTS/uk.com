@@ -9,16 +9,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * The Class BsymtWkpConfigInfoPK.
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Embeddable
@@ -39,7 +35,9 @@ public class BsymtWkpConfigInfoPK implements Serializable {
 	@Column(name = "WKPID")
 	private String wkpid;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -52,7 +50,9 @@ public class BsymtWkpConfigInfoPK implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -80,6 +80,30 @@ public class BsymtWkpConfigInfoPK implements Serializable {
 		} else if (!wkpid.equals(other.wkpid))
 			return false;
 		return true;
+	}
+
+	/**
+	 * Instantiates a new bsymt wkp config info PK.
+	 */
+	public BsymtWkpConfigInfoPK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new bsymt wkp config info PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param historyId
+	 *            the history id
+	 * @param wkpid
+	 *            the wkpid
+	 */
+	public BsymtWkpConfigInfoPK(String cid, String historyId, String wkpid) {
+		super();
+		this.cid = cid;
+		this.historyId = historyId;
+		this.wkpid = wkpid;
 	}
 
 }

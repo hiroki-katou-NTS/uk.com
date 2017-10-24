@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.AuthenticationMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.EncryptionMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServer;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServerRepository;
+import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
 import nts.uk.shr.com.mail.SendMailSettingAdaptor;
 
 /**
@@ -52,8 +53,12 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		ServerLocator smtpServer = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 				mailServer.getSmtpInfo().getPort().v());
 		int secondsToTimeout = 60;
-		SendMailAuthenticationMethod authenticationMethod = this
-				.switchAuthenticationMethodEnum(mailServer.getAuthenticationMethod());
+		SendMailAuthenticationMethod authenticationMethod = SendMailAuthenticationMethod.NONE;
+		if (UseAuthentication.USE.equals(mailServer.getUseAuthentication())) {
+			authenticationMethod = this
+					.switchAuthenticationMethodEnum(mailServer.getAuthenticationMethod());
+		}
+
 		Optional<SendMailAuthenticationAccount> authenticationAccount = Optional
 				.of(new SendMailAuthenticationAccount(mailServer.getEmailAuthentication().v(),
 						mailServer.getPassword().v()));
@@ -64,7 +69,6 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		// Get info
 		switch (authenticationMethod) {
 		case POP_BEFORE_SMTP:
-			secondsToTimeout = 60;
 			serverLocator = new ServerLocator(mailServer.getPopInfo().getServer().v(),
 					mailServer.getPopInfo().getPort().v());
 			break;
@@ -75,7 +79,6 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 			break;
 
 		default:
-			secondsToTimeout = 60;
 			serverLocator = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 					mailServer.getSmtpInfo().getPort().v());
 			break;

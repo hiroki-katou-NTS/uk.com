@@ -24,19 +24,33 @@ import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfo
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkplaceConfigInfoWebService extends WebService {
 
-    /** The wkp config info finder. */
-    @Inject
-    private WorkplaceConfigInfoFinder wkpConfigInfoFinder;
-    
-    /**
-     * Wkp config info find.
-     *
-     * @param findObject the find object
-     * @return the list
-     */
-    @Path("find")
-    @POST
-    public List<WorkplaceHierarchyDto> wkpConfigInfoFind(WkpConfigInfoFindObject findObject) {
-        return this.wkpConfigInfoFinder.findAll(findObject.getBaseDate());
-    }
+	/** The wkp config info finder. */
+	@Inject
+	private WorkplaceConfigInfoFinder wkpConfigInfoFinder;
+
+	/**
+	 * Find all by start date.
+	 *
+	 * @param findObject
+	 *            the find object
+	 * @return the list
+	 */
+	@Path("find")
+	@POST
+	public List<WorkplaceHierarchyDto> findAllByStartDate(WkpConfigInfoFindObject findObject) {
+		return this.wkpConfigInfoFinder.findAllByStartDate(findObject.getBaseDate());
+	}
+
+	/**
+	 * Find all by base date.
+	 *
+	 * @param findObject
+	 *            the find object
+	 * @return the list
+	 */
+	@Path("findAll")
+	@POST
+	public List<WorkplaceHierarchyDto> findAllByBaseDate(WkpConfigInfoFindObject findObject) {
+		return this.wkpConfigInfoFinder.findAllByBaseDate(findObject.getBaseDate());
+	}
 }

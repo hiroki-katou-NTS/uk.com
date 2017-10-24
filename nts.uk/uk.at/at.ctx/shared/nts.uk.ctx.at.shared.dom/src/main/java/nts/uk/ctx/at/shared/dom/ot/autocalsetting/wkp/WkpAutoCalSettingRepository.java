@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,13 +28,21 @@ public interface WkpAutoCalSettingRepository {
 
 
 	/**
-	 * Gets the all wkp auto cal setting.
+	 * Gets the wkp auto cal setting.
 	 *
 	 * @param companyId the company id
 	 * @param wkpId the wkp id
-	 * @return the all wkp auto cal setting
+	 * @return the wkp auto cal setting
 	 */
-    Optional<WkpAutoCalSetting> getAllWkpAutoCalSetting(String companyId, String wkpId);
+    Optional<WkpAutoCalSetting> getWkpAutoCalSetting(String companyId, String wkpId);
+    
+    /**
+     * Gets the all wkp auto cal setting.
+     *
+     * @param companyId the company id
+     * @return the all wkp auto cal setting
+     */
+    List<WkpAutoCalSetting> getAllWkpAutoCalSetting(String companyId);
     
 	/**
 	 * Delete.

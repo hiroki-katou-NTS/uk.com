@@ -649,7 +649,7 @@ module kcp.share.tree {
 
         // Service paths.
         var servicePath = {
-            findWorkplaceTree: "bs/employee/workplace/config/info/find",
+            findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
         }
 
         /**
