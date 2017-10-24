@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KscstPeopleCalFuncPK implements Serializable {
+public class KscmtGenVertSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/*会社ID*/
@@ -21,8 +21,4 @@ public class KscstPeopleCalFuncPK implements Serializable {
 	/* コード */
 	@Column(name = "VERTICAL_CAL_CD")
 	public String verticalCalCd;
-	
-	/* 汎用縦計項目ID */
-	@Column(name = "VERTICAL_CAL_ITEM_ID")
-	public String verticalCalItemId;
 }

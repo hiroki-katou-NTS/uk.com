@@ -14,33 +14,43 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORMULA_ITEM")
-public class KscstFormulaItem extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FORM_BUILT")
+public class KscmtFormBuilt extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstFormulaItemPK kscstFormulaItemPK;
-
-	/* 縦計入力項目 */
-	@Column(name = "VERTICAL_INPUT_ITEM")
-	public int verticalInputItem;
+	public KscmtFormBuiltPK kscmtFormBuiltPK;
 	
 	/* 設定方法 */
-	@Column(name = "SETTING_METHOD")
-	public int settingMethod;
+	@Column(name = "SETTING_METHOD_1")
+	public int settingMethod1;
+	
+	@Column(name = "VERTICAL_CAL_ITEM_1")
+	public int verticalCalItem1;
+	
+	/* 縦計入力項目 */
+	@Column(name = "VERTICAL_INPUT_ITEM_1")
+	public int verticalInputItem1;
+	
+	/* 設定方法 */
+	@Column(name = "SETTING_METHOD_2")
+	public int settingMethod2;
+	
+	@Column(name = "VERTICAL_CAL_ITEM_2")
+	public int verticalCalItem2;
+	
+	/* 縦計入力項目 */
+	@Column(name = "VERTICAL_INPUT_ITEM_2")
+	public int verticalInputItem2;
 	
 	/* 演算子区分 */
 	@Column(name = "OPERATOR_ATR")
 	public int operatorAtr;
 	
-	/* 順番 */
-	@Column(name = "DISPORDER")
-	public int dispOrder;
-	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstFormulaItemPK;
+		return kscmtFormBuiltPK;
 	}
 }

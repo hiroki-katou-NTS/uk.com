@@ -14,13 +14,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_TIME_FUNC")
-public class KscstTimeFunc extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FORM_TIME_FUNC")
+public class KscmtFormTimeFunc extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstTimeFuncPK kscstTimeFuncPK;
+	public KscmtFormTimeFuncPK kscmtFormTimeFuncPK;
 
 	/* 外部予算実績項目コード */
 	@Column(name = "EXTERNAL_BUDGET_CD")
@@ -45,6 +45,6 @@ public class KscstTimeFunc extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstTimeFuncPK;
+		return kscmtFormTimeFuncPK;
 	}
 }
