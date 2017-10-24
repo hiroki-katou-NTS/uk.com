@@ -18,6 +18,8 @@ public interface AttendanceItemLinkingRepository {
 	 *
 	 * @param type the type
 	 * @return the by any item category
+	 * 
+	 * @author anhnm
 	 */
 	List<AttendanceItemLinking> getByAnyItemCategory(TypeOfItem type);
 }

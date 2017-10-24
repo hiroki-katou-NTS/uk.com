@@ -46,9 +46,10 @@
 								name: '#[FND_L_SEARCH_RELEASE]',
 								value: value,
 								constraint: 'SampleCode',
-								required: true,
+								required: required,
 								enable: enable,
 								readonly: readonly}" />
+							<span data-bind="ntsCheckBox: {checked: required}">Required</span>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<button data-bind="click: clear">Clear Error</button>

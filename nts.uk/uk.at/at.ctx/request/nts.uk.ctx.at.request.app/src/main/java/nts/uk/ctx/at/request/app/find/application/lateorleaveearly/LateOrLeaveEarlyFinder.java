@@ -11,7 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;

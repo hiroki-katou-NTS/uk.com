@@ -29,7 +29,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         appreason: KnockoutObservable<string>;
         time: KnockoutObservable<string>;
         //Show Screen
-        showScreen: string;
+        showScreen: KnockoutObservable<string>;
+        postAtr: number;
         
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
@@ -58,7 +59,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             //MultilineEditor 
             self.appreason = ko.observable('');
             //Show Screen
-            self.showScreen = __viewContext.transferred.value.showScreen;
+            self.showScreen = ko.observable('');
             self.startPage();
             self.applicantName = ko.observable("");
         }
@@ -81,6 +82,9 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.early2(data.lateOrLeaveEarlyDto.early2);
                 self.earlyTime1(data.lateOrLeaveEarlyDto.earlyTime1);
                 self.earlyTime2(data.lateOrLeaveEarlyDto.earlyTime2);
+                self.showScreen(data.lateOrLeaveEarlyDto.postAtr == 1 ? 'F' : '');
+                self.postAtr = data.lateOrLeaveEarlyDto.postAtr;
+                $("#inputdate").focus();
                 dfd.resolve();
             });
                
@@ -95,6 +99,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     appID: self.appID(),
                     appDate: self.date(),
+                    prePostAtr: self.postAtr,
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
                     lateTime1: self.lateTime1(),

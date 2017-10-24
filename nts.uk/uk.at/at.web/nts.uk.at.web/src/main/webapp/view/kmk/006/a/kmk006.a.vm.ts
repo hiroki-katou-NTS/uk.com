@@ -294,7 +294,7 @@ module nts.uk.at.view.kmk006.a {
             }
             
             //load workPlace-job already setting
-            public loadWplJobAlreadySettingList() : JQueryPromise<void> {
+            public loadWkpJobAlreadySettingList() : JQueryPromise<void> {
                 let _self = this;
                 var jobSettingList: any = [];
                 var wkpSettingList: any = [];
@@ -712,6 +712,7 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteJobAutoCal(self.selectedCurrentJob()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadJobAutoCal(self.selectedCurrentJob());
+                            self.loadJobAlreadySettingList();
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
@@ -735,6 +736,7 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteWkpAutoCal(self.selectedCurrentWkp()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadJobAutoCal(self.selectedCurrentWkp());
+                            self.loadWkpAlreadySettingList();
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
@@ -758,6 +760,7 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteWkpJobAutoCal(self.selectedCurrentWkp(), self.selectedCurrentJob()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp());
+                            self.loadWkpJobAlreadySettingList();
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
@@ -839,7 +842,7 @@ module nts.uk.at.view.kmk006.a {
                     self.totalSelectedCode(code);
                     self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId, code);
                      // load ready setting
-                    self.loadWplJobAlreadySettingList().done(function(){
+                    self.loadWkpJobAlreadySettingList().done(function(){
                         
                     });
                 });

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.requestofearch;
 
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 
 @Value
 public class AppConfigDetailDto {

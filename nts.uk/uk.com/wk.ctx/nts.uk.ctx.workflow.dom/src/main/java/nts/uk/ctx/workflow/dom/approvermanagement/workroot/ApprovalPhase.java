@@ -54,4 +54,8 @@ public class ApprovalPhase extends AggregateRoot{
 	public void addApproverList(List<Approver> approvers) {
 		this.approvers = approvers;
 	}
+
+	public boolean containsConfirmer() {
+		return this.approvers.stream().anyMatch(a -> a.isConfirmer());
+	}
 }

@@ -88,6 +88,7 @@ module nts.uk.at.view.kmk010.a {
                         });
                         self.updateEnableInputRate();
                         self.applyChangeEnableInputRate();
+                        self.updateLanguage();
                         nts.uk.ui.block.clear();
                         dfd.resolve(self);
                     });
@@ -267,9 +268,7 @@ module nts.uk.at.view.kmk010.a {
                 // check manage call service
                 service.checkManageSixtyHourVacationSetting().done(function(data){
                     self.isManage(data.manage);
-                    // call service export
-                    console.log(data.manage+' '+ self.isManage());
-                    
+                    // call service export                    
                     service.exportOutsideOTSettingExcel(self.languageId, self.isManage());
                 });
             }
@@ -293,6 +292,7 @@ module nts.uk.at.view.kmk010.a {
             overtimeNo: KnockoutObservable<number>;
             useClassification: KnockoutObservable<boolean>;
             superHoliday60HOccurs: KnockoutObservable<boolean>;
+            requiredText: KnockoutObservable<boolean>;
 
             constructor() {
                 this.name = ko.observable('');
@@ -301,6 +301,7 @@ module nts.uk.at.view.kmk010.a {
                 this.overtimeNo = ko.observable(0);
                 this.useClassification = ko.observable(true);
                 this.superHoliday60HOccurs = ko.observable(true);
+                this.requiredText = ko.observable(true);
             }
 
             updateData(dto: OvertimeDto) {
@@ -310,6 +311,22 @@ module nts.uk.at.view.kmk010.a {
                 this.overtimeNo(dto.overtimeNo);
                 this.useClassification(dto.useClassification);
                 this.superHoliday60HOccurs(dto.superHoliday60HOccurs);
+            }
+            updateEnableCheck(enableCheckbox: boolean) : void{
+                this.requiredText(this.useClassification() && enableCheckbox);
+            }
+            
+            setUpdateData(enableCheckbox: boolean): void {
+                var self = this;
+                self.useClassification.subscribe(function(use: boolean){
+                    self.requiredText(use && enableCheckbox);
+                    if (self.requiredText()) {
+                        $('#overtimeNo_' + self.overtimeNo()).ntsEditor("clear");
+                    } else {
+                        $('#overtimeNo_' + self.overtimeNo()).removeClass("error");
+                    }        
+                })
+                
             }
 
             toDto(): OvertimeDto {
@@ -322,6 +339,7 @@ module nts.uk.at.view.kmk010.a {
                 };
                 return dto;
             }
+            
         }
         
 
@@ -394,7 +412,13 @@ module nts.uk.at.view.kmk010.a {
                         nts.uk.ui.windows.setShared('SelectedAttendanceId', self.attendanceItemIds());
                         nts.uk.ui.windows.setShared('Multiple', true);
                         nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
-                            var lstDailyAttendanceId: number[] = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                            var resId: string[] = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                            var lstDailyAttendanceId: number[] = [];
+                            for (var res of resId) {
+                                if (res && res != '') {
+                                    lstDailyAttendanceId.push(parseInt(res));
+                                }
+                            }
                             self.attendanceItemIds(lstDailyAttendanceId);
                             var selectedName: string[] = [];
                             for (var item of dataAllItem) {

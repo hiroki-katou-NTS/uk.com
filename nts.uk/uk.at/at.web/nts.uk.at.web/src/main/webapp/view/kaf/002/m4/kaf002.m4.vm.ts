@@ -21,6 +21,10 @@ module nts.uk.at.view.kaf002.m4 {
                         a.push(new vmbase.StampCombination(index, item.name));        
                     });   
                     self.stampCombinationList(a);
+                    if(!nts.uk.util.isNullOrUndefined(appStampData)){
+                        self.appStamp().stampCombinationAtr(appStampData.stampCombinationAtr);
+                        self.appStamp().appTime(appStampData.appTime);
+                    }
                 }).fail(res => {
                     console.log(res);
                 });
@@ -87,18 +91,6 @@ module nts.uk.at.view.kaf002.m4 {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});    
                     }
                 });  
-            }
-            
-            convertToJS(appStamp: KnockoutObservable<vmbase.AppStampGoOutPermit>){
-                return {
-                    stampAtr: appStamp.stampAtr(),
-                    stampFrameNo: appStamp.stampFrameNo(),
-                    stampGoOutAtr: appStamp.stampGoOutAtr(),
-                    startTime: appStamp.startTime().value(),
-                    startLocation: appStamp.startLocation().code(),
-                    endTime: appStamp.endTime().value(),
-                    endLocation: appStamp.endLocation().code()    
-                }           
             }
         }
     }

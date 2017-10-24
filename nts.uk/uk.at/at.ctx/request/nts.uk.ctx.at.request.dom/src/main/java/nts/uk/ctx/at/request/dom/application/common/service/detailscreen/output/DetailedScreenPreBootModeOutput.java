@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 
 @Data

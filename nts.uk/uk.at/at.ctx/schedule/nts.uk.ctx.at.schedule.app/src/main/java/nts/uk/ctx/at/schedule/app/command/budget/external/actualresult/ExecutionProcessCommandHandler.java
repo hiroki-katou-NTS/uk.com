@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -63,16 +62,13 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudge
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExternalBudgetTimeZone;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExternalBudgetTimeZoneRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class ExecutionProcessCommandHandler.
  */
 @Stateful
 public class ExecutionProcessCommandHandler extends AsyncCommandHandler<ExecutionProcessCommand> {
-    
-    /** The internationalization. */
-    @Inject
-    private IInternationalization internationalization;
     
     /** The file check service. */
     @Inject
@@ -821,9 +817,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @return the item name by id
      */
     private String getItemNameById(String nameId) {
-        String itemName = nameId + " is not found.";
-        Optional<String> optional = this.internationalization.getItemName(nameId);
-        return optional.isPresent() ? optional.get() : itemName;
+        return TextResource.localize(nameId);
     }
     
     /**
@@ -834,18 +828,13 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @return the message by id
      */
     private String getMessageById(String messageId, String... parameters) {
-        String message = messageId + " is not found.";
-        
-        // initial optional
-        Optional<String> optional = Optional.empty();
-        
         // no parameter
         if (parameters.length <= DEFAULT_VALUE) {
-            optional = this.internationalization.getRawMessage(messageId);
-        } else {
-            optional = this.internationalization.getMessage(messageId, parameters);
-        }
-        return optional.isPresent() ? optional.get() : message;
+        	return TextResource.localize(messageId);
+        } 
+        
+        return TextResource.localize(messageId, parameters);
+        
     }
     
     /**

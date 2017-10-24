@@ -35,14 +35,14 @@ public class ApprovalRootOutput {
 	private Integer confirmationRootType;
 	/** 就業ルート区分 */
 	private int employmentRootAtr;
-	
-	private List<ApprovalPhase> beforeApprovers;
-	
-	private List<ApprovalPhaseOutput> afterApprovers;
-	
-	/** エラーフラグ*/
+
+	private List<ApprovalPhase> beforePhases;
+
+	private AdjustedApprovalPhases afterPhases;
+
+	/** エラーフラグ */
 	private ErrorFlag errorFlag;
-	
+
 	public ApprovalRootOutput(String companyId, String workplaceId, String approvalId, String employeeId,
 			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
 			String anyItemApplicationId, Integer confirmationRootType, int employmentRootAtr,
@@ -60,61 +60,35 @@ public class ApprovalRootOutput {
 		this.anyItemApplicationId = anyItemApplicationId;
 		this.confirmationRootType = confirmationRootType;
 		this.employmentRootAtr = employmentRootAtr;
-		this.beforeApprovers = beforeApprovers;
-		this.afterApprovers = afterApprovers;
+		this.beforePhases = beforeApprovers;
+		this.afterPhases = new AdjustedApprovalPhases(afterApprovers);
 	}
-	
+
 	public static ApprovalRootOutput convertFromPersonData(PersonApprovalRoot x) {
-		return new ApprovalRootOutput(
-				x.getCompanyId(),
-				null, 
-				x.getApprovalId(), 
-				x.getEmployeeId(), 
-				x.getHistoryId(), 
-				x.getApplicationType() == null ? null: x.getApplicationType().value, 
-				x.getPeriod().getStartDate(), 
-				x.getPeriod().getEndDate(), 
-				x.getBranchId(), 
-				x.getAnyItemApplicationId(), 
-				x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value, 
-				x.getEmploymentRootAtr().value, 
-				null,
-				null);
+		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), x.getEmployeeId(), x.getHistoryId(),
+				x.getApplicationType() == null ? null : x.getApplicationType().value, x.getPeriod().getStartDate(),
+				x.getPeriod().getEndDate(), x.getBranchId(), x.getAnyItemApplicationId(),
+				x.getConfirmationRootType() == null ? null : x.getConfirmationRootType().value,
+				x.getEmploymentRootAtr().value, null, null);
 	}
-	
+
 	public static ApprovalRootOutput convertFromWkpData(WorkplaceApprovalRoot x) {
-		return new ApprovalRootOutput(
-				x.getCompanyId(),
-				x.getWorkplaceId(), 
-				x.getApprovalId(), 
-				null, 
-				x.getHistoryId(), 
-				x.getApplicationType() == null ? null: x.getApplicationType().value, 
-				x.getPeriod().getStartDate(), 
-				x.getPeriod().getEndDate(), 
-				x.getBranchId(), 
-				x.getAnyItemApplicationId(), 
-				x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value, 
-				x.getEmploymentRootAtr().value, 
-				null,
-				null);
+		return new ApprovalRootOutput(x.getCompanyId(), x.getWorkplaceId(), x.getApprovalId(), null, x.getHistoryId(),
+				x.getApplicationType() == null ? null : x.getApplicationType().value, x.getPeriod().getStartDate(),
+				x.getPeriod().getEndDate(), x.getBranchId(), x.getAnyItemApplicationId(),
+				x.getConfirmationRootType() == null ? null : x.getConfirmationRootType().value,
+				x.getEmploymentRootAtr().value, null, null);
 	}
-	
+
 	public static ApprovalRootOutput convertFromCompanyData(CompanyApprovalRoot x) {
-		return new ApprovalRootOutput(
-				x.getCompanyId(),
-				null, 
-				x.getApprovalId(), 
-				null, 
-				x.getHistoryId(), 
-				x.getApplicationType() == null ? null: x.getApplicationType().value, 
-				x.getPeriod().getStartDate(), 
-				x.getPeriod().getEndDate(), 
-				x.getBranchId(), 
-				x.getAnyItemApplicationId(), 
-				x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value, 
-				x.getEmploymentRootAtr().value, 
-				null,
-				null);
+		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), null, x.getHistoryId(),
+				x.getApplicationType() == null ? null : x.getApplicationType().value, x.getPeriod().getStartDate(),
+				x.getPeriod().getEndDate(), x.getBranchId(), x.getAnyItemApplicationId(),
+				x.getConfirmationRootType() == null ? null : x.getConfirmationRootType().value,
+				x.getEmploymentRootAtr().value, null, null);
+	}
+
+	public void setAdjustedPhases(List<ApprovalPhaseOutput> phases) {
+		this.afterPhases = new AdjustedApprovalPhases(phases);
 	}
 }

@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 
 public interface GoBackDirectlyUpdateService {
