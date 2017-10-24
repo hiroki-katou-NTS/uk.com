@@ -429,6 +429,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         requireChangable: number;
         dispOrder: number;
         itemTypeState: any;
+        selectionItemRefType : any;
     }
 
     export class ItemInfoDef {
@@ -444,6 +445,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         requireChangable: number;
         dispOrder: number;
         itemTypeState: any;
+        selectionItemRefType : any;
 
         constructor(data: IItemInfoDef) {
 
@@ -459,6 +461,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             this.requireChangable = data ? data.requireChangable : 0;
             this.dispOrder = data ? data.dispOrder : 0;
             this.itemTypeState = data ? data.itemTypeState : null;
+            this.selectionItemRefType = data ? data.selectionItemRefType  : null;
 
         }
 
