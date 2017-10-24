@@ -290,9 +290,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             switch (self.currentItem().itemTypeState.dataTypeState.numericItemMinus) {
                 case 0:
-                    return getText('Enum_NumericItemMinus_NO');
+                    return getText('CPS006_55');
                 case 1:
-                    return getText('Enum_NumericItemMinus_YES');
+                    return getText('CPS006_54');
             }
         }
 
@@ -355,6 +355,13 @@ module nts.uk.com.view.cps006.b.viewmodel {
             }
 
             return disPlayOrderArray;
+        }
+        
+        genTime(time){
+            
+            return nts.uk.time.parseTime(time, false).format();
+            
+        
         }
 
         OpenCDL022Modal() {
