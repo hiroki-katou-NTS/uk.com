@@ -55,7 +55,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         formOne : number = 2; //誰か一人
         formAll: number = 1; //全員承認
         constructor(){
-            var self = this;            
+            var self = this;
             //設定対象
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
             //change 承認形態
@@ -250,7 +250,14 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             
             return dfd.promise();
         }//end start
-        
+        /**
+         * load data new when base date is changed 
+         */
+        applyDataSearch(): void {
+             let self = this;
+             self.treeGrid.baseDate(this.standardDate());
+             $('#tree-grid').ntsTreeComponent(self.treeGrid);
+         }
     }//end ScreenModel
     interface ITreeGrid {
             treeType: number;
