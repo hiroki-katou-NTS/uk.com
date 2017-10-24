@@ -75,10 +75,10 @@
 			<button id="helpButton" data-bind="ntsHelpButton: {image: 'image/image27.png', position: 'right top', enable: enable1 }">?</button><br></br>
 		</div>
 		<div id="button36Area">
-			<button id="button36">#{i18n.getText('KDW001_93')}</button>
+			<button id="button36" data-bind="click: opendScreenC">#{i18n.getText('KDW001_93')}</button>
 		</div>
 		<div id="button6Area">
-			<button id="button6" class="proceed">#{i18n.getText('KDW001_13')}</button>
+			<button id="button6" class="proceed" data-bind="click: opendScreenD">#{i18n.getText('KDW001_13')}</button>
 		</div>
 				
 	</ui:composition>

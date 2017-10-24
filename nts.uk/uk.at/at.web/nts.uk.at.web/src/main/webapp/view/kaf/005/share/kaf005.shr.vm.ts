@@ -1,108 +1,6 @@
 module nts.uk.at.view.kaf005.share {
     export module common {
         /**
-         * GoBackDirect item
-         */
-        export class GoBackDiretly {
-            selectedBack: any;
-            selectedGo: any;
-            timeStart1: KnockoutObservable<number>;
-            timeEnd1: KnockoutObservable<number>;
-            workLocationCD: KnockoutObservable<string>;
-            workLocationName: KnockoutObservable<string>;
-            //TIME LINE 2
-            selectedGo2: any;
-            selectedBack2: any;
-            timeStart2: KnockoutObservable<number>;
-            timeEnd2: KnockoutObservable<number>;
-            workLocationCD2: KnockoutObservable<string>;
-            workLocationName2: KnockoutObservable<string>;
-            //勤務種類
-            workTypeCd: KnockoutObservable<string>;
-            workTypeName: KnockoutObservable<string>;
-            //勤務種類
-            siftCD: KnockoutObservable<string>;
-            siftName: KnockoutObservable<string>;
-            constructor(
-                selectedBack: number,
-                selectedGo: number,
-                timeStart1: number,
-                timeEnd1: number,
-                workLocationCD: string,
-                workLocationName: string,
-                //LINE 2
-                selectedBack2: number,
-                selectedGo2: number,
-                timeStart2: number,
-                timeEnd2: number,
-                workLocationCD2: string,
-                workLocationName2: string,
-                workTypeCd:string,
-                workTypeName:string,
-                siftCD:string,
-                siftName:string) {
-                    let self = this;
-                    //LINE 1
-                    self.selectedGo = ko.observable(1);
-                    self.selectedBack = ko.observable(1);
-                    self.timeStart1 = ko.observable(0);
-                    self.timeEnd1 = ko.observable(0);
-                    self.workLocationCD = ko.observable('');
-                    self.workLocationName = ko.observable('');
-                    //LINE 2                   
-                    self.selectedGo2 = ko.observable(1);
-                    self.selectedBack2 = ko.observable(1);
-                    self.timeStart2 = ko.observable(0);
-                    self.timeEnd2 = ko.observable(0);
-                    self.workLocationCD2 = ko.observable('');
-                    self.workLocationName2 = ko.observable('');
-                    //
-                    self.workTypeCd = ko.observable('');
-                    self.workTypeName = ko.observable('');
-                    self.siftCD = ko.observable('');
-                    self.siftName = ko.observable('');
-            }
-        }
-        
-        
-        /**
-         * 
-         */
-        export class GoBackDiretlySetting {
-            //color, font Weight
-            //comment
-            commentGo1: KnockoutObservable<string>;
-            commentBack1: KnockoutObservable<string>;
-            //comment
-            commentGo2: KnockoutObservable<string>;
-            commentBack2: KnockoutObservable<string>;
-            colorGo: KnockoutObservable<string>;
-            colorBack: KnockoutObservable<string>;
-            fontWeightGo: KnockoutObservable<number>;
-            fontWeightBack: KnockoutObservable<number>;
-            constructor(
-                commentGo1: string,
-                commentBack1: string,
-                commentGo2: string,
-                commentBack2: string,
-                colorGo: string,
-                colorBack: string,
-                fontWeightGo: string,
-                fontWeightBack: string
-            ) {
-                let self = this;
-                self.commentGo1 = ko.observable('');
-                self.commentBack1 = ko.observable('');
-                self.commentGo2 = ko.observable('');
-                self.commentBack2 = ko.observable('');
-                self.colorGo = ko.observable('#000000');
-                self.colorBack = ko.observable('#000000');
-                self.fontWeightGo = ko.observable(0);
-                self.fontWeightBack = ko.observable(0);
-            }
-        }
-        
-        /**
          * 
          */
         export class Application {
@@ -131,65 +29,6 @@ module nts.uk.at.view.kaf005.share {
             }
         }
         /**
-         * Setting Data from Server 
-         */
-        export class CommonSetting {
-            sid: string;
-            employeeName: string;
-            goBackSettingDto: GoBackDirectSetting;
-            listReasonDto: Array<ReasonDto>;
-            //appCommonSettingDto : appCommonSettingDto; 
-            //.applicationSettingDto.requireAppReasonFlg
-            constructor(sid:string,employeeName: string, goBackSettingDto: GoBackDirectSetting, listReasonDto: Array<ReasonDto>) {
-                let self = this;
-                self.sid = sid;
-                self.employeeName = employeeName;
-                self.goBackSettingDto = goBackSettingDto;
-                self.listReasonDto = listReasonDto;
-            }
-        }
-        /**
-         * 
-         */
-        export interface AppCommonSettingDto{
-            
-        }
-        /**
-         * 直行直帰申請共通設定
-         */
-        export class GoBackDirectSetting {
-            workChangeFlg: number;
-            workChangeTimeAtr: number;
-            perfomanceDisplayAtr: number;
-            contraditionCheckAtr: number;
-            workType: number;
-            lateLeaveEarlySettingAtr: number;
-            commentContent1: string;
-            commentFontWeight1: number;
-            commentFontColor1: string;
-            commentContent2: string;
-            commentFontWeight2: number;
-            commentFontColor2: string;
-            constructor(workChangeFlg: number, workChangeTimeAtr: number, perfomanceDisplayAtr: number,
-                contraditionCheckAtr: number, workType: number, lateLeaveEarlySettingAtr: number, commentContent1: string,
-                commentFontWeight1: number, commentFontColor1: string, commentContent2: string, commentFontWeight2: number,
-                commentFontColor2: string) {
-                var self = this;
-                self.workChangeFlg = workChangeFlg;
-                self.workChangeTimeAtr = workChangeTimeAtr;
-                self.perfomanceDisplayAtr = perfomanceDisplayAtr;
-                self.contraditionCheckAtr = contraditionCheckAtr;
-                self.workType = workType;
-                self.lateLeaveEarlySettingAtr = lateLeaveEarlySettingAtr;
-                self.commentContent1 = commentContent1;
-                self.commentFontWeight1 = commentFontWeight1;
-                self.commentFontColor1 = commentFontColor1;
-                self.commentContent2 = commentContent2;
-                self.commentFontWeight2 = commentFontWeight2;
-                self.commentFontColor2 = commentFontColor2;
-            }
-        }
-        /**
          * 理由
          */
         export class ReasonDto {
@@ -215,68 +54,11 @@ module nts.uk.at.view.kaf005.share {
             reasonCode: number;
             reasonName: string;
             reasonId: string;
-
             constructor(reasonCode: number, reasonName: string, reasonId: string) {
                 this.reasonCode = reasonCode;
                 this.reasonName = reasonName;
                 this.reasonId = reasonId;
             }
-        }
-
-        /**
-         * 
-         * 直行直帰申請
-         */
-        export class GoBackDirectData {
-            appID: string;
-            workTypeCD: string;
-            siftCD: string;
-            workChangeAtr: number;
-            goWorkAtr1: number;
-            backHomeAtr1: number;
-            workTimeStart1: number;
-            workTimeEnd1: number;
-            workLocationCD1: string;
-            goWorkAtr2: number;
-            backHomeAtr2: number;
-            workTimeStart2: number;
-            workTimeEnd2: number;
-            workLocationCD2: string;
-            constructor(appID: string,
-                workTypeCD: string,
-                siftCD: string,
-                workChangeAtr: number,
-                goWorkAtr1: number,
-                backHomeAtr1: number,
-                workTimeStart1: number,
-                workTimeEnd1: number,
-                workLocationCD1: string,
-                goWorkAtr2: number,
-                backHomeAtr2: number,
-                workTimeStart2: number,
-                workTimeEnd2: number,
-                workLocationCD2: string) {
-                this.appID = appID;
-                this.siftCD = siftCD;
-                this.workChangeAtr = workChangeAtr;
-                this.goWorkAtr1 = goWorkAtr1;
-                this.backHomeAtr1 = backHomeAtr1;
-                this.workTimeStart1 = workTimeStart1;
-                this.workTimeEnd1 = workTimeEnd1;
-                this.workLocationCD1 = workLocationCD1;
-                this.goWorkAtr2 = goWorkAtr2;
-                this.backHomeAtr2 = backHomeAtr2;
-                this.workTimeStart2 = workTimeStart2;
-                this.workTimeEnd2 = workTimeEnd2;
-                this.workLocationCD2 = workLocationCD2;
-            }
-        }
-        /**
-         * 
-         */
-        export interface IWorkLocation {
-            workLocationCode: string;
-            workLocationName: string;
         }
         /**
          * Application detail
@@ -342,26 +124,6 @@ module nts.uk.at.view.kaf005.share {
         /**
          * 
          */
-        export class GoBackCommand {
-            version : number;
-            appDate: string;
-            appID: string;
-            workTypeCD: string;
-            siftCD: string;
-            workChangeAtr: number;
-            goWorkAtr1: number;
-            backHomeAtr1: number;
-            workTimeStart1: number;
-            workTimeEnd1: number;
-            workLocationCD1: string;
-            goWorkAtr2: number;
-            backHomeAtr2: number;
-            workTimeStart2: number;
-            workTimeEnd2: number;
-            workLocationCD2: string;
-        }
-        
-        
         export class AppApprovalPhase {
             phaseID: string;
             approvalForm: number;
@@ -376,7 +138,9 @@ module nts.uk.at.view.kaf005.share {
                 this.approvalFrameCmds = approvalFrameCmds;     
             }
         }
-        
+        /**
+         * 
+         */
         export class ApprovalFrame {
             frameID: string;
             dispOrder: number;
@@ -387,7 +151,9 @@ module nts.uk.at.view.kaf005.share {
                 this.approveAcceptedCmds = approveAcceptedCmds;   
             }     
         }
-        
+        /**
+         * 
+         */
         export class ApproveAccepted {
             appAcceptedID: string;
             approverSID: string;

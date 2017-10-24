@@ -26,6 +26,7 @@ module nts.uk.ui.koExtentions {
 
             var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
             var extColumns: Array<any> = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
+            let initialExpandDepth: number = ko.unwrap(data.initialExpandDepth);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
             let rows = ko.unwrap(data.rows);
@@ -113,7 +114,7 @@ module nts.uk.ui.koExtentions {
                 primaryKey: optionsValue,
                 columns: displayColumns,
                 childDataKey: optionsChild,
-                initialExpandDepth: 10,
+                initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
                 features: features
             });

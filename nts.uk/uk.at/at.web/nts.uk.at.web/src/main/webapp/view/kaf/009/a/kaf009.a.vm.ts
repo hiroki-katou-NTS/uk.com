@@ -126,7 +126,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 }
                 dfd.resolve();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                });
                 dfd.reject();
             });
             return dfd.promise();
@@ -147,8 +149,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         //clean Screen 
                         self.cleanScreen();
                     }).fail(function(res: any) {
-                        //$('#inpStartTime1').ntsError('set', {messageId:"Msg_297"});
-                        nts.uk.ui.dialog.alertError(res.messageId).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
                     }).then(function(){
                         nts.uk.ui.block.clear();    
                     })

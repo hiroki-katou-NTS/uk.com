@@ -21,15 +21,14 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsAppro
 @Stateless
 public class JpaPersonApprovalRootRepository extends JpaRepository implements PersonApprovalRootRepository{
 
-
 	 private final String FIND_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
 	 private final String FIN_BY_EMP = FIND_ALL
-	   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
-	   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
+			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
 	 private final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
-	   + " AND c.endDate = :endDate"
-	   + " AND c.employmentRootAtr = :employmentRootAtr"
-	   + " AND c.applicationType = :applicationType";
+			   + " AND c.endDate = :endDate"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " AND c.applicationType = :applicationType";
 	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
@@ -38,8 +37,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
-	 private final String FIND_BY_DATE = FIN_BY_EMP
-	   + " AND c.endDate = :endDate";
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
@@ -53,6 +50,18 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " ORDER BY c.wwfmtPsApprovalRootPK.employeeId";
+	 private final String FIND_BY_APP_TYPE = FIN_BY_EMP
+			   + " AND c.endDate = :endDate"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " AND c.applicationType = :applicationType";
+	 private final String SELECT_PSAPR_BY_APP_NULL = FIN_BY_EMP 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " AND c.applicationType IS NULL";
+	 private final String FIND_BY_CFR_TYPE = FIN_BY_EMP 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
 			 
 	/**
 	 * get all Person Approval Root
@@ -266,5 +275,41 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("baseDate", baseDate)
 				.getList(c->toDomainPsApR(c));
 		return data;
+	}
+	/**
+	 * get Person Approval Root By type
+	 * @param companyId
+	 * @param employeeId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	@Override
+	public List<PersonApprovalRoot> getPsApprovalRootByType(String companyId, String employeeId,
+			Integer applicationType, int employmentRootAtr) {
+		//common
+		if(employmentRootAtr == 0){
+			return this.queryProxy().query(SELECT_PSAPR_BY_APP_NULL, WwfmtPsApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employeeId", employeeId)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainPsApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(FIND_BY_CFR_TYPE, WwfmtPsApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employeeId", employeeId)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainPsApR(c));
+		}
+		//15 app type
+		return this.queryProxy().query(FIND_BY_APP_TYPE, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
+				.getList(c->toDomainPsApR(c));
 	}
 }

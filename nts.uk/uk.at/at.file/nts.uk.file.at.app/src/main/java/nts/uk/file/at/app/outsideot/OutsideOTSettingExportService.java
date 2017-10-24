@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.gul.collection.CollectionUtil;
@@ -34,6 +33,7 @@ import nts.uk.file.at.app.outsideot.data.OutsideOTSettingReport;
 import nts.uk.file.at.app.outsideot.data.OvertimeNameLanguageData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class OutsideOTSettingExportService.
@@ -41,10 +41,6 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class OutsideOTSettingExportService extends ExportService<OutsideOTSettingQuery> {
 	
-	/** The internationalization. */
-	@Inject
-	private IInternationalization internationalization;
-
     /** The generator. */
     @Inject
     private OutsideOTSettingExportGenerator generator;
@@ -386,37 +382,37 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 		
 		// add header
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A5_1, NUMBER_COLS_A5_1,
-				internationalization.getItemName(NAME_VALUE_A5_1).orElse(null)));
+				TextResource.localize(NAME_VALUE_A5_1)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_1, NUMBER_COLS_A7_1,
-				internationalization.getItemName(NAME_VALUE_A7_1).orElse(null)));
+				TextResource.localize(NAME_VALUE_A7_1)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_2, NUMBER_COLS_A7_2,
-				internationalization.getItemName(NAME_VALUE_A7_2).orElse(null)));
+				TextResource.localize(NAME_VALUE_A7_2)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_3, NUMBER_COLS_A7_3,
-				internationalization.getItemName(NAME_VALUE_A7_3).orElse(null)));
+				TextResource.localize(NAME_VALUE_A7_3)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_4, NUMBER_COLS_A7_4,
-				internationalization.getItemName(NAME_VALUE_A7_4).orElse(null)));
+				TextResource.localize(NAME_VALUE_A7_4)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_5, NUMBER_COLS_A7_5,
-				internationalization.getItemName(NAME_VALUE_A7_5).orElse(null)));
+				TextResource.localize(NAME_VALUE_A7_5)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_1, NUMBER_COLS_A9_1,
-				internationalization.getItemName(NAME_VALUE_A9_1).orElse(null)));
+				TextResource.localize(NAME_VALUE_A9_1)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_2, NUMBER_COLS_A9_2,
-				internationalization.getItemName(NAME_VALUE_A9_2).orElse(null)));
+				TextResource.localize(NAME_VALUE_A9_2)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_3, NUMBER_COLS_A9_3,
-				internationalization.getItemName(NAME_VALUE_A9_3).orElse(null)));
+				TextResource.localize(NAME_VALUE_A9_3)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_4, NUMBER_COLS_A9_4,
-				internationalization.getItemName(NAME_VALUE_A9_4).orElse(null)));
+				TextResource.localize(NAME_VALUE_A9_4)));
 		for (int index = START_COL; index <= TOTA_NUMBER_COLS_A9_5; index++) {
 			reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_5, NUMBER_COLS_A9_5 + index,
-					internationalization.getItemName(NAME_VALUE_A9_5).orElse(null) + index));
+					TextResource.localize(NAME_VALUE_A9_5) + index));
 		}
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_6, NUMBER_COLS_A9_6,
-				internationalization.getItemName(NAME_VALUE_A9_6).orElse(null)));
+				TextResource.localize(NAME_VALUE_A9_6)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A15_1, NUMBER_COLS_A15_1,
-				internationalization.getItemName(NAME_VALUE_A15_1).orElse(null)));
+				TextResource.localize(NAME_VALUE_A15_1)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A15_2, NUMBER_COLS_A15_2,
-				internationalization.getItemName(NAME_VALUE_A15_2).orElse(null)));
+				TextResource.localize(NAME_VALUE_A15_2)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A15_3, NUMBER_COLS_A15_3,
-				internationalization.getItemName(NAME_VALUE_A15_3).orElse(null)));
+				TextResource.localize(NAME_VALUE_A15_3)));
 
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A6_1, NUMBER_COLS_A6_1,
 				OutsideOTCalMed.valueOf(data.getSetting().getCalculationMethod()).nameId));

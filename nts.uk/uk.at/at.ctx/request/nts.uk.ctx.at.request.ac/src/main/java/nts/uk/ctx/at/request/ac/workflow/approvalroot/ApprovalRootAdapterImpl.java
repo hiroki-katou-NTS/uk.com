@@ -148,7 +148,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 				approverInfoExport.getJobId(), // jobID 
 				approverInfoExport.getSid(),
 				approverInfoExport.getApprovalPhaseId(),
-				approverInfoExport.isConfirmPerson(),
+				approverInfoExport.getIsConfirmPerson(),
 				approverInfoExport.getOrderNumber(),
 				approverInfoExport.getApprovalAtr() // int approvalAtr  = 0,1
 				);
@@ -161,29 +161,6 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		}
 		return temp;
 		
-	}
-	
-	
-
-	@Override
-	public List<ApprovalRootImport> adjustmentData(String cid, String sid, GeneralDate baseDate,
-			List<ApprovalRootImport> appDatas) {
-		appDatas.stream().map(x -> this.convertApprovalRootExport(x)).collect(Collectors.toList());
-		return this.approvalRootPub.adjustmentData(cid, sid, baseDate, 
-					appDatas.stream().map(x -> this.convertApprovalRootExport(x)).collect(Collectors.toList())
-				).stream()
-				.map(x -> this.convertApprovalRootImport(x)).collect(Collectors.toList());
-	}
-
-	@Override
-	public ErrorFlagImport checkError(List<ApprovalPhaseImport> beforeDatas, List<ApprovalPhaseImport> afterDatas) {
-		return  EnumAdaptor.valueOf(
-				this.approvalRootPub.checkError(
-				//list beforeDatas sau khi convert sang Export
-				beforeDatas.stream().map(x -> this.convertApprovalPhaseExport(x)).collect(Collectors.toList()),
-				//list afterDatas sau khi convert sang Export
-				afterDatas.stream().map(x -> this.convertApprovalPhaseExport(x)).collect(Collectors.toList())).value
-				, ErrorFlagImport.class);
 	}
 
 	@Override

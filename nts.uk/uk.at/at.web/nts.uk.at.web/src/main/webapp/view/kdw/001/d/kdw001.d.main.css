@@ -39,9 +39,11 @@
 }
 
 #panel13{
-	margin-left: 129px;
+	overflow-y: scroll;
+    margin-left: 129px;
     margin-top: -15px;
-    width: 300px;
+    width: 269px;
+    height: 199px;
 }
 
 #label12{

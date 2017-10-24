@@ -29,30 +29,6 @@ public interface ApprovalRootAdapter {
 			GeneralDate standardDate);
 	
 	/**
-	 * 2.承認ルートを整理する
-	 * 
-	 * @param cid
-	 *            会社ID
-	 * @param sid
-	 *            社員ID（申請本人の社員ID）
-	 * @param baseDate
-	 *            基準日
-	 * @param appPhases
-	 *            承認フーズ
-	 */
-	List<ApprovalRootImport> adjustmentData(String cid, String sid, GeneralDate baseDate,
-			List<ApprovalRootImport> appDatas);
-
-	/**
-	 * 7.承認ルートの異常チェック
-	 * 
-	 * @param beforeDatas
-	 * @param afterDatas
-	 * @return
-	 */
-	ErrorFlagImport checkError(List<ApprovalPhaseImport> beforeDatas, List<ApprovalPhaseImport> afterDatas);
-	
-	/**
 	 * 3.職位から承認者へ変換する
 	 * 
 	 * @param cid
