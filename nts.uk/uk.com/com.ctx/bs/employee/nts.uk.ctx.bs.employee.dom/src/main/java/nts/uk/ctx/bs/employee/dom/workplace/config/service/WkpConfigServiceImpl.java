@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -110,7 +109,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
      *            the new start date hist
      */
     private void progress(Workplace workplace, GeneralDate startDateHistCurrent, GeneralDate newStartDateHist) {
-        List<WorkplaceHistory> lstNewWkpHistory = new ArrayList<>();
+    	// TODO: check delete workplace history when update workplace config history.
         for (WorkplaceHistory wkpHistory : workplace.getWorkplaceHistory()) {
             GeneralDate startDateWkpHist = wkpHistory.getPeriod().start();
             // not equal
@@ -120,22 +119,21 @@ public class WkpConfigServiceImpl implements WkpConfigService {
             // find date range need to remove
             List<String> lstHistoryIdRemove = this.findExistedDateInRange(workplace.getWorkplaceHistory(),
                     newStartDateHist, startDateWkpHist);
-            if (!CollectionUtil.isEmpty(lstHistoryIdRemove)) {
+            if (CollectionUtil.isEmpty(lstHistoryIdRemove)) {
+            	// set start date.
+            	DatePeriod period = wkpHistory.getPeriod();
+                wkpHistory.setPeriod(period.newSpan(newStartDateHist, period.end()));
+            } else {
                 // remove workplace infor in date range
                 this.removeWorkplaceInfor(workplace.getCompanyId(), workplace.getWorkplaceId(), lstHistoryIdRemove);
+                
+                // set previous a day for end date
+                DatePeriod period = wkpHistory.getPeriod();
+                int dayOfAgo = -1;
+                wkpHistory.setPeriod(period.newSpan(period.start(), newStartDateHist.addDays(dayOfAgo)));
             }
-            startDateWkpHist = newStartDateHist;
-
-            lstNewWkpHistory = this.subListWkpHistory(workplace.getWorkplaceHistory(), newStartDateHist);
-            lstNewWkpHistory.add(wkpHistory);
             break;
         }
-        // empty list workplace history
-        workplace.getWorkplaceHistory().clear();
-
-        // add all new list workplace history
-        workplace.getWorkplaceHistory().addAll(lstNewWkpHistory);
-
         // update workplace
         this.workplaceRepo.update(workplace);
     }
@@ -154,8 +152,8 @@ public class WkpConfigServiceImpl implements WkpConfigService {
     private List<String> findExistedDateInRange(List<WorkplaceHistory> lstWkpHistory, GeneralDate startDate,
             GeneralDate endDate) {
         return lstWkpHistory.stream()
-                .filter(item -> item.getPeriod().start().afterOrEquals(startDate)
-                        && item.getPeriod().start().beforeOrEquals(endDate))
+                .filter(item -> item.getPeriod().start().after(startDate)
+                        && item.getPeriod().start().before(endDate))
                 .map(item -> item.getHistoryId())
                 .collect(Collectors.toList());
     }
@@ -174,29 +172,5 @@ public class WkpConfigServiceImpl implements WkpConfigService {
         lstHistoryIdRemove.forEach(historyId -> {
             this.workplaceInfoRepo.remove(companyId, workplaceId, historyId);
         });
-    }
-
-    /**
-     * Sub list wkp history.
-     *
-     * @param lstWorkplaceHistory
-     *            the lst workplace history
-     * @param newStartDateHist
-     *            the new start date hist
-     * @return the list
-     */
-    private List<WorkplaceHistory> subListWkpHistory(List<WorkplaceHistory> lstWorkplaceHistory,
-            GeneralDate newStartDateHist) {
-        List<WorkplaceHistory> subListWkpHistory = lstWorkplaceHistory.stream()
-                .filter(item -> item.getPeriod().start().before(newStartDateHist)).collect(Collectors.toList());
-
-        if (CollectionUtil.isEmpty(subListWkpHistory)) {
-            return new ArrayList<>();
-        }
-        // set previous a day for end date
-        DatePeriod period = subListWkpHistory.get(0).getPeriod();
-        subListWkpHistory.get(0).setPeriod(period.newSpan(period.start(), newStartDateHist.addDays(-1)));
-
-        return subListWkpHistory;
     }
 }
