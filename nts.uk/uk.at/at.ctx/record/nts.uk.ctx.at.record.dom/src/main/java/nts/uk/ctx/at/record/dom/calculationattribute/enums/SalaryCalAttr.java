@@ -5,11 +5,11 @@ import lombok.AllArgsConstructor;
 /**
  * 
  * @author nampt
- * 特定加給計算区分
+ * 加給計算区分
  *
  */
 @AllArgsConstructor
-public enum SpecificSalaryCalSetting {
+public enum SalaryCalAttr {
 	
 	// 0: 使用しない
 	NOT_USE(0),
@@ -17,5 +17,4 @@ public enum SpecificSalaryCalSetting {
 	USE(1);
 	
 	public final int value;
-
 }

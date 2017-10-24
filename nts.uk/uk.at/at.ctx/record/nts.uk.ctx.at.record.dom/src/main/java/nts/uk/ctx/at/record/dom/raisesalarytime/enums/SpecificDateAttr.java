@@ -1,16 +1,16 @@
-package nts.uk.ctx.at.record.dom.calculationattribute.enums;
+package nts.uk.ctx.at.record.dom.raisesalarytime.enums;
 
 import lombok.AllArgsConstructor;
 
 /**
  * 
  * @author nampt
- * 時間外の上限設定
+ * 早退
  *
  */
 @AllArgsConstructor
-public enum SalaryCalSetting {
-	
+public enum SpecificDateAttr {
+
 	// 0: 使用しない
 	NOT_USE(0),
 	// 1: 使用する

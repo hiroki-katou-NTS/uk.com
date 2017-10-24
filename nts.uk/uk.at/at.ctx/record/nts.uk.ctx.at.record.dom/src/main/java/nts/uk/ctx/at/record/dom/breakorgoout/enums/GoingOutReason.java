@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.breakorgoout.enums;
+package nts.uk.ctx.at.record.dom.breakorgoout.enums;
 
 import lombok.AllArgsConstructor;
 

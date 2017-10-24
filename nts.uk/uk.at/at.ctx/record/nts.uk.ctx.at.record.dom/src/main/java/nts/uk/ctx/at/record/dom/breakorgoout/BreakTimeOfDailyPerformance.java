@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.record.breakorgoout;
+package nts.uk.ctx.at.record.dom.breakorgoout;
 
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.breakorgoout.enums.BreakType;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 
 /**
  * 

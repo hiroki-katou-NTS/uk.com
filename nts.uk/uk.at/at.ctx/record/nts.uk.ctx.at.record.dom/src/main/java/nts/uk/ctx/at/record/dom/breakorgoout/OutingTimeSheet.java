@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.record.breakorgoout;
+package nts.uk.ctx.at.record.dom.breakorgoout;
 
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 
 /**
  * 
