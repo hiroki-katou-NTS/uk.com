@@ -11076,6 +11076,60 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsGrid;
                 (function (ntsGrid) {
+                    var storage;
+                    var dist;
+                    (function (dist) {
+                        dist.REMOTE = "Remote";
+                        function query(features) {
+                            storage = new Local();
+                            var store = feature.find(features, feature.STORAGE);
+                            if (!store)
+                                return;
+                            if (store.type === dist.REMOTE) {
+                                storage = new Remote(store.loadPath, store.savePath);
+                            }
+                        }
+                        dist.query = query;
+                        var Local = (function () {
+                            function Local() {
+                            }
+                            Local.prototype.getItem = function (key) {
+                                var dfd = $.Deferred();
+                                dfd.resolve(uk.localStorage.getItem(key));
+                                return dfd.promise();
+                            };
+                            Local.prototype.setItemAsJson = function (key, value) {
+                                var dfd = $.Deferred();
+                                uk.localStorage.setItemAsJson(key, value);
+                                dfd.resolve(true);
+                                return dfd.promise();
+                            };
+                            return Local;
+                        }());
+                        dist.Local = Local;
+                        var Remote = (function () {
+                            function Remote(loadPath, savePath) {
+                                this.loadPath = loadPath;
+                                this.savePath = savePath;
+                            }
+                            Remote.prototype.getItem = function (key) {
+                                var dfd = $.Deferred();
+                                uk.request.ajax(this.loadPath, { value: key }).done(function (widths) {
+                                    dfd.resolve(uk.util.optional.of(widths));
+                                });
+                                return dfd.promise();
+                            };
+                            Remote.prototype.setItemAsJson = function (key, value) {
+                                var dfd = $.Deferred();
+                                uk.request.ajax(this.savePath, { key: key, columns: value }).done(function (res) {
+                                    dfd.resolve(res);
+                                });
+                                return dfd.promise();
+                            };
+                            return Remote;
+                        }());
+                        dist.Remote = Remote;
+                    })(dist || (dist = {}));
                     $.fn.ntsGrid = function (options) {
                         var self = this;
                         if (typeof options === "string") {
@@ -11099,9 +11153,38 @@ var nts;
                         $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
+                        var cbHeaderColumns = [];
+                        var cbSelectionColumns = {};
                         var formatColumn = function (column) {
                             if (column.hidden)
                                 return column;
+                            if (column.showHeaderCheckbox) {
+                                column.headerText = ntsControls.createHeaderCheckbox({
+                                    controlDef: {
+                                        options: { value: 1, text: column.headerText },
+                                        optionsValue: 'value',
+                                        optionsText: 'text'
+                                    }
+                                }, column.key);
+                                cbHeaderColumns.push(column.key);
+                                cbSelectionColumns[column.key] = {
+                                    selectAll: false, quantity: 0,
+                                    onSelect: function (value) {
+                                        var fs = this;
+                                        if (value && ++fs.quantity === options.dataSource.length) {
+                                            fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
+                                            fs.selectAll = true;
+                                        }
+                                        else if (!value && fs.quantity > 0) {
+                                            fs.quantity--;
+                                            if (fs.selectAll) {
+                                                fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", false);
+                                                fs.selectAll = false;
+                                            }
+                                        }
+                                    }
+                                };
+                            }
                             if (!uk.util.isNullOrUndefined(column.group)) {
                                 var cols = _.map(column.group, formatColumn);
                                 column.group = cols;
@@ -11156,6 +11239,7 @@ var nts;
                                     deleteRow: deleteRow,
                                     initValue: value,
                                     rowObj: rowObj,
+                                    showHeaderCheckbox: column.showHeaderCheckbox,
                                     enable: isEnable
                                 };
                                 var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
@@ -11167,8 +11251,19 @@ var nts;
                                     var $gridCell = $self.igGrid("cellById", rowId, column.key);
                                     if (!$gridCell)
                                         return;
-                                    if ($($gridCell.children()[0]).children().length === 0)
-                                        $("." + controlCls).append(ntsControl.draw(data));
+                                    if ($($gridCell.children()[0]).children().length === 0) {
+                                        var $control = ntsControl.draw(data);
+                                        $("." + controlCls).append($control);
+                                        if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
+                                            var cbSelectCols = $self.data(internal.CB_SELECTED) || {};
+                                            var cbColConf_1 = cbSelectCols[column.key];
+                                            if (cbColConf_1) {
+                                                $control.on("change", function () {
+                                                    cbColConf_1.onSelect($(this).find("input[type='checkbox']").is(":checked"));
+                                                });
+                                            }
+                                        }
+                                    }
                                     ntsControl.$containedGrid = $self;
                                     var c = {
                                         id: rowId,
@@ -11186,10 +11281,12 @@ var nts;
                         options.columns = columns;
                         updating.addFeature(options);
                         options.autoCommit = true;
+                        dist.query(options.ntsFeatures);
                         events.onCellClick($(self));
                         copyPaste.ifOn($(self), options);
-                        events.afterRendered(options);
+                        events.afterRendered(options, cbSelectionColumns);
                         columnSize.init($(self), options.columns);
+                        ntsControls.bindCbHeaderColumns(options, cbHeaderColumns, cbSelectionColumns);
                         $(this).data(internal.CONTROL_TYPES, columnControlTypes);
                         $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
                         sheet.load.setup($(self), options);
@@ -11221,6 +11318,7 @@ var nts;
                         feature_1.HIDING = "Hiding";
                         feature_1.SHEET = "Sheet";
                         feature_1.DEMAND_LOAD = "LoadOnDemand";
+                        feature_1.STORAGE = "Storage";
                         function replaceBy(options, featureName, newFeature) {
                             var replaceId;
                             _.forEach(options.features, function (feature, id) {
@@ -11839,59 +11937,91 @@ var nts;
                     var columnSize;
                     (function (columnSize) {
                         function init($grid, columns) {
-                            if (initValueExists($grid))
-                                return;
-                            var columnWidths = {};
-                            _.forEach(columns, function (col, index) {
-                                columnWidths[col.key] = parseInt(col.width);
+                            initValueExists($grid).done(function (res) {
+                                if (res)
+                                    return;
+                                var columnWidths = {};
+                                _.forEach(columns, function (col, index) {
+                                    flat(col, columnWidths);
+                                });
+                                saveAll($grid, columnWidths);
                             });
-                            saveAll($grid, columnWidths);
                         }
                         columnSize.init = init;
+                        function flat(col, columnWidths) {
+                            if (col.group) {
+                                _.forEach(col.group, function (sCol) {
+                                    flat(sCol, columnWidths);
+                                });
+                                return;
+                            }
+                            columnWidths[col.key] = parseInt(col.width);
+                        }
                         function load($grid) {
                             var storeKey = getStorageKey($grid);
-                            uk.localStorage.getItem(storeKey).ifPresent(function (columns) {
-                                var widthColumns = JSON.parse(columns);
-                                setWidths($grid, widthColumns);
-                                return null;
+                            storage.getItem(storeKey).done(function (widths) {
+                                widths.ifPresent(function (columns) {
+                                    var widthColumns;
+                                    try {
+                                        widthColumns = JSON.parse(columns);
+                                    }
+                                    catch (e) {
+                                        widthColumns = columns;
+                                    }
+                                    setWidths($grid, widthColumns);
+                                    return null;
+                                });
                             });
                         }
                         columnSize.load = load;
                         function save($grid, columnKey, columnWidth) {
                             var storeKey = getStorageKey($grid);
-                            var columnsWidth = uk.localStorage.getItem(storeKey);
-                            var widths = {};
-                            if (columnsWidth.isPresent()) {
-                                widths = JSON.parse(columnsWidth.get());
-                                widths[columnKey] = columnWidth;
+                            if (storage instanceof dist.Local) {
+                                var columnsWidth = uk.localStorage.getItem(storeKey);
+                                var widths = {};
+                                if (columnsWidth.isPresent()) {
+                                    widths = JSON.parse(columnsWidth.get());
+                                    widths[columnKey] = columnWidth;
+                                }
+                                else {
+                                    widths[columnKey] = columnWidth;
+                                }
+                                uk.localStorage.setItemAsJson(storeKey, widths);
                             }
-                            else {
-                                widths[columnKey] = columnWidth;
+                            else if (storage instanceof dist.Remote) {
+                                var width = {};
+                                width[columnKey] = columnWidth;
+                                storage.setItemAsJson(storeKey, width);
                             }
-                            uk.localStorage.setItemAsJson(storeKey, widths);
                         }
                         columnSize.save = save;
                         function saveAll($grid, widths) {
                             var storeKey = getStorageKey($grid);
-                            var columnWidths = uk.localStorage.getItem(storeKey);
-                            if (!columnWidths.isPresent()) {
-                                uk.localStorage.setItemAsJson(storeKey, widths);
-                            }
+                            storage.getItem(storeKey).done(function (columnWidths) {
+                                if (!columnWidths.isPresent()) {
+                                    storage.setItemAsJson(storeKey, widths);
+                                }
+                            });
                         }
                         function initValueExists($grid) {
+                            var dfd = $.Deferred();
                             var storeKey = getStorageKey($grid);
-                            var columnWidths = uk.localStorage.getItem(storeKey);
-                            return columnWidths.isPresent();
+                            storage.getItem(storeKey).done(function (columnWidths) {
+                                dfd.resolve(columnWidths.isPresent());
+                            });
+                            return dfd.promise();
                         }
                         function getStorageKey($grid) {
                             return uk.request.location.current.rawUrl + "/" + $grid.attr("id");
                         }
                         function loadOne($grid, columnKey) {
                             var storeKey = getStorageKey($grid);
-                            uk.localStorage.getItem(storeKey).ifPresent(function (columns) {
-                                var widthColumns = JSON.parse(columns);
-                                setWidth($grid, columnKey, widthColumns[columnKey]);
-                                return null;
+                            storage.getItem(storeKey).done(function (widths) {
+                                widths.ifPresent(function (columns) {
+                                    var widthColumns = JSON.parse(columns);
+                                    setWidth($grid, columnKey, widthColumns[columnKey]);
+                                    return null;
+                                });
                             });
                         }
                         columnSize.loadOne = loadOne;
@@ -12113,6 +12243,49 @@ var nts;
                             };
                         }
                         ntsControls.drawLabel = drawLabel;
+                        function createHeaderCheckbox(data, key) {
+                            var defaultOptions = {
+                                update: $.noop,
+                                initValue: false,
+                                enable: true
+                            };
+                            var options = $.extend({}, defaultOptions, data);
+                            return new CheckBox().draw(options).addClass("nts-grid-header-control-" + key).prop("outerHTML");
+                        }
+                        ntsControls.createHeaderCheckbox = createHeaderCheckbox;
+                        function bindCbHeaderColumns(options, columns, selectionColumns) {
+                            options.headerCellRendered = function (evt, ui) {
+                                var $grid = $(ui.owner.element);
+                                var column = _.remove(columns, function (c) { return c === ui.columnKey; });
+                                if (!column || column.length === 0)
+                                    return;
+                                var columnConf = selectionColumns[column[0]];
+                                if (columnConf) {
+                                    selectionColumns[column[0]].th = ui.th;
+                                }
+                                $(ui.th).find(".nts-grid-header-control-" + column[0]).find("input[type='checkbox']")
+                                    .on("change", function () {
+                                    var $cb = $(this);
+                                    var selected = $cb.is(":checked");
+                                    _.forEach(options.dataSource, function (r) {
+                                        if (!r)
+                                            return;
+                                        updating.updateCell($grid, r[options.primaryKey], ui.columnKey, selected, undefined, true);
+                                    });
+                                    var cbSelectCols = $grid.data(internal.CB_SELECTED);
+                                    var cbSelectConf = cbSelectCols[column[0]];
+                                    if (!cbSelectConf)
+                                        return;
+                                    cbSelectConf.selectAll = selected;
+                                    if (selected) {
+                                        cbSelectConf.quantity = options.dataSource.length;
+                                        return;
+                                    }
+                                    cbSelectConf.quantity = 0;
+                                });
+                            };
+                        }
+                        ntsControls.bindCbHeaderColumns = bindCbHeaderColumns;
                         var NtsControlBase = (function () {
                             function NtsControlBase() {
                                 this.readOnly = false;
@@ -12150,7 +12323,7 @@ var nts;
                                 }).appendTo($checkBoxLabel);
                                 var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
                                 if (checkBoxText && checkBoxText.length > 0)
-                                    var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
+                                    var label = $("<span class='label'></span>").html(checkBoxText).appendTo($checkBoxLabel);
                                 $checkBoxLabel.appendTo($wrapper);
                                 var checked = initValue !== undefined ? initValue : true;
                                 $wrapper.data("readonly", this.readOnly);
@@ -13062,10 +13235,11 @@ var nts;
                             return Handler;
                         }());
                         events.Handler = Handler;
-                        function afterRendered(options) {
+                        function afterRendered(options, cbSelectionColumns) {
                             options.rendered = function (evt, ui) {
                                 var $grid = $(evt.target);
                                 events.Handler.pull($grid, options).turnOn();
+                                $(this).data(internal.CB_SELECTED, cbSelectionColumns);
                                 var $fixedTbl = fixedColumns.getFixedTable($grid);
                                 if ($fixedTbl.length > 0) {
                                     if (feature.isEnable(options.ntsFeatures, feature.COPY_PASTE))
@@ -13907,6 +14081,7 @@ var nts;
                     (function (internal) {
                         internal.CONTROL_TYPES = "ntsControlTypesGroup";
                         internal.COMBO_SELECTED = "ntsComboSelection";
+                        internal.CB_SELECTED = "ntsCheckboxSelection";
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
                         internal.SHEETS = "ntsGridSheets";
