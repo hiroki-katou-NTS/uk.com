@@ -49,12 +49,14 @@ public class SelectionFinder {
 
 			// xu ly neu item >0
 
-			String selectionId = selectionList.get(0).getSelectionID();
-
+			//String selectionId = selectionList.get(0).getSelectionID();
+			
+			String getByHisId = selectionList.get(0).getHistId();
+			
 			// step1 :lay thang OrderAndDefaultValuesOfOption va map no ve
 			// SelectionItemOrderDto
 
-			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(selectionId);
+			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(getByHisId);
 
 			if (!orderDomainlst.isEmpty()) {
 				orderList = orderDomainlst.stream().map(i -> {
