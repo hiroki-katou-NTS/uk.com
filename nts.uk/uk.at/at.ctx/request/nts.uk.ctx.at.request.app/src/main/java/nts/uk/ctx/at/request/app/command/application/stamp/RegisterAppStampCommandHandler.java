@@ -88,9 +88,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 								EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
 								x.getStampFrameNo(), 
 								EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
-								new TimeWithDayAttr(x.getStartTime()), 
+								x.getStartTime(), 
 								x.getStartLocation(), 
-								new TimeWithDayAttr(x.getEndTime()), 
+								x.getEndTime(), 
 								x.getEndLocation())
 					).collect(Collectors.toList()),
 					null,
