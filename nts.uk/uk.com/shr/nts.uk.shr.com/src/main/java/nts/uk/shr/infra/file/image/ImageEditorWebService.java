@@ -54,8 +54,8 @@ public class ImageEditorWebService extends WebService{
 	private BufferedImage getImageBuffer(ImageCropQuery query) throws IOException {
 		BufferedImage bfi = ImageIO.read(toImageInputStream(query.getFile()));
 		
-		int width = getMin(query.getWidth(), bfi.getWidth(), query.getX()), 
-			height = getMin(query.getHeight(), bfi.getHeight(), query.getY());
+		int width = getMin(query.getWidth(), bfi.getWidth() - query.getX()), 
+			height = getMin(query.getHeight(), bfi.getHeight() - query.getY());
 		
 		if(query.isCrop() && isCroppable(width, height)){
 			bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
@@ -65,7 +65,7 @@ public class ImageEditorWebService extends WebService{
 	}
 
 	private InputStream toImageInputStream(StringBuffer dataBase64) {
-		String string64 = dataBase64.substring(dataBase64.indexOf(",")+1);
+		String string64 = dataBase64.substring(dataBase64.indexOf(",") + 1);
 		
 		return new ByteArrayInputStream(Base64.getDecoder().decode(string64));
 	} 
@@ -74,7 +74,7 @@ public class ImageEditorWebService extends WebService{
 		return width > 0 && height > 0;
 	}
 	
-	private int getMin(int base, int max, int position){
-		return Math.min(base, max - position);
+	private int getMin(int base, int target){
+		return Math.min(base, target);
 	}
 }
