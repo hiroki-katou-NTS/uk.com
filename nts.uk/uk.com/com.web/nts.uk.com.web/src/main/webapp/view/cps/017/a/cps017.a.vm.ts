@@ -67,11 +67,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             //sub theo historyID:
             historySelection.histId.subscribe(x => {
-                service.getAllOrderItemSelection(x).done((_selectionID: ISelection) => {
-                    self.listSelection(_selectionID);
+                self.listSelection.removeAll();
+                service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {
+                    //self.listSelection(_selectionID);
                     // check !null
-                    if(self.listSelection(_selectionID)> 0 ){ // check lai
-                       self.selection().selectionID(self.listSelection()[0].selectionID);
+                    //                    if (_selectionID.selectionID > 0) { // check lai
+                    //                        self.selection().selectionID(self.listSelection()[0].selectionID);
+                    //                    }                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listSelection.push(x));
+                        self.selection().selectionID(self.listSelection()[0].selectionID);
+                    }else{
+                       self.registerData();     
                     }
                     
                 });
@@ -161,12 +167,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 currentItem: Selection = self.selection(),
                 listSelection: Array<Selection> = self.listSelection(),
-                _selectionCode = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
-                
-           currentItem.histId(self.historySelection().histId());
-                command = ko.toJS(currentItem);
+                _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
 
-            if (_selectionCode) {
+            currentItem.histId(self.historySelection().histId());
+            command = ko.toJS(currentItem);
+
+            if (_selectionCD) {
                 alertError({ messageId: "Msg_3" });
             } else {
                 service.saveDataSelection(command).done(function(selectionCD) {
