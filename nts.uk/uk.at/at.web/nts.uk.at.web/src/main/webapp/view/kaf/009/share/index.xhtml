@@ -91,7 +91,7 @@
 		<div class="valign-center control-group" data-bind="if: useMulti()">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitle" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div>
@@ -158,7 +158,7 @@
 						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
-					<button tabindex="18" class="workSelect" data-bind="enable: workChangeAtr, click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
+					<button tabindex="18" id="workSelect" data-bind="enable: workChangeAtr, click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<label class="lblWorkTypeCd"

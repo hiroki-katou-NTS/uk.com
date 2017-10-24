@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
+        isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
@@ -9,7 +10,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
-        workState : KnockoutObservable<boolean> = ko.observable(true);;
+        workState : KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
@@ -62,7 +63,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //Insert command
         command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
         //list Work Location 
-        locationData: Array<common.IWorkLocation>= [];;
+        locationData: Array<common.IWorkLocation>= [];
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : string ="";
@@ -102,10 +103,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     //申請制限設定.申請理由が必須
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
-                        //登録時にメールを送信する
+                        //登録時にメールを送信する Visible
+                        //申請表示設定.事前事後区分　＝　表示する　〇
+                        //申請表示設定.事前事後区分　＝　表示しない ×
                         self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
+                        
+                    }
+                    if(settingData.goBackSettingDto　!= undefined){
                         //事前事後区分 Enable
-                        self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);   
+                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
+                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
+                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == 1 ? true: false);   
                     }
                     //事前事後区分
                     self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
