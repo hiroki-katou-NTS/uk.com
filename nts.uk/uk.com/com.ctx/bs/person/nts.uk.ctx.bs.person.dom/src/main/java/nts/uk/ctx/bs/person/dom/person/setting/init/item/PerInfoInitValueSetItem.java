@@ -48,6 +48,10 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	// 日付
 	private GeneralDate dateValue;
 
+	private Integer dataType;
+
+	private Integer itemType;
+
 	/**
 	 * 
 	 * @param perInfoItemDefId
@@ -112,6 +116,39 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
 	}
 
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType, SaveDataType saveDataType, StringValue stringValue) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.stringValue = stringValue;
+	}
+
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType, SaveDataType saveDataType, IntValue intValue) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.intValue = intValue;
+	}
+
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType, SaveDataType saveDataType, GeneralDate date) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.dateValue = date;
+	}
+
 	/**
 	 * Constructor for diplay at screen A
 	 * 
@@ -137,6 +174,59 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new StringValue(stringValue),
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
 	}
+
+	/**
+	 * convert to String type
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param stringValue
+	 * @return
+	 */
+
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType, int saveDataType, String stringValue) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new StringValue(stringValue));
+	}
+
+	/**
+	 * convert to Int Type
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param intValue
+	 * @return
+	 */
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType, int saveDataType, Integer intValue) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(new BigDecimal(intValue)));
+	}
+
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType, int saveDataType, GeneralDate date) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), date);
+	}
+
+	/**
+	 * update settingId
+	 * 
+	 * @param settingId
+	 */
 
 	public void updateInitSetId(String settingId) {
 		this.settingId = settingId;

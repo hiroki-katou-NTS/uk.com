@@ -393,7 +393,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String perInfoCategoryId = String.valueOf(i[27]);
 
 		PersonInfoItemDefinition item = PersonInfoItemDefinition.createFromEntity(perInfoItemDefId, perInfoCategoryId,
-				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable);
+				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable, selectionItemRefType);
 		DataTypeState dataTypeState = null;
 
 		if (itemType == ItemType.SINGLE_ITEM.value) {
