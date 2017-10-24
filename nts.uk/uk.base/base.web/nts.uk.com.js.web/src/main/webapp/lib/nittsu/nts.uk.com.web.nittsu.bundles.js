@@ -21395,7 +21395,7 @@ var nts;
                                 "y": cropperData.y,
                                 "width": cropperData.width,
                                 "height": cropperData.height,
-                                "crop": nts.uk.util.isNullOrEmpty($element.data('checkbox')) ? false : $element.data('checkbox').checked()
+                                "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked()
                             };
                             nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
                                 if (data !== undefined && data.businessException) {
@@ -21405,7 +21405,7 @@ var nts;
                                     dfd.resolve(data);
                                 }
                             }).fail(function () {
-                                dfd.reject({ message: "Please check your network", messageId: "0" });
+                                dfd.reject({ message: "Please check your network", messageId: "1" });
                             });
                         }
                         else {
