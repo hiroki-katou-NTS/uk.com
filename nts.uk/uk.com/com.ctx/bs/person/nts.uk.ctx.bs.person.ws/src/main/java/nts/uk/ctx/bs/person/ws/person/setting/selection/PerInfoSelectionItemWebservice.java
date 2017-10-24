@@ -14,11 +14,12 @@ import command.person.setting.selectionitem.RemoveSelectionItemCommand;
 import command.person.setting.selectionitem.RemoveSelectionItemCommandHandler;
 import command.person.setting.selectionitem.UpdateSelectionItemCommand;
 import command.person.setting.selectionitem.UpdateSelectionItemCommandHandler;
+import command.person.setting.selectionitem.selection.AddSelectionCommand;
+import command.person.setting.selectionitem.selection.AddSelectionCommandHandler;
 import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
-import find.person.setting.selectionitem.selection.SelectionDto;
 import find.person.setting.selectionitem.selection.SelectionFinder;
 import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
@@ -43,12 +44,16 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// history:
 	@Inject
 	private PerInfoHistorySelectionFinder hisFinder;
-	
+
 	@Inject
 	private SelectionFinder selecFider;
-	
+
 	@Inject
 	private SelectionItemOrderFinder selecItemOrderFider;
+
+	// Add selection:
+	@Inject
+	private AddSelectionCommandHandler addSelectionCommandHandler;
 
 	@POST
 	@Path("findAll")
@@ -92,4 +97,13 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public List<SelectionItemOrderDto> getAllItemOrderSelection(@PathParam("histId") String histId) {
 		return this.selecFider.getHistIdSelection(histId);
 	}
+
+	// Addselection:
+	@POST
+	@Path("addSelection")
+	public void AddSelection(AddSelectionCommand command) {
+		this.addSelectionCommandHandler.handle(command);
+
+	}
+
 }

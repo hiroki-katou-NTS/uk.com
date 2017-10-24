@@ -25,7 +25,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	@Override
 	public void add(SelectionItemOrder selectionItemOrder) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insert(toEntity(selectionItemOrder));
 
 	}
 

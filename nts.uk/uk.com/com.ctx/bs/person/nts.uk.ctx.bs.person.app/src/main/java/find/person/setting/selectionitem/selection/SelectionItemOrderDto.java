@@ -18,7 +18,7 @@ public class SelectionItemOrderDto {
 	private int disporder;
 	private int initSelection;
 	private String selectionName;
-	private String selectionCode;
+	private String selectionCD;
 	private String externalCD;
 	private String memoSelection;
 

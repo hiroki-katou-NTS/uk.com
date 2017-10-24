@@ -14,4 +14,10 @@ public interface SelectionRepository {
 	List<Selection> getAllHistorySelection(String histId);
 
 	Optional<Selection> getHistSelection(String histId);
+	
+	Optional<Selection> getCheckBySelectionCD(String selectionCD);
+	
+//	List<String> geSelectionList(String selectionCD);
+
+	List<Selection> geSelectionList(String selectionCd, String histId);
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import entity.person.setting.selectionitem.PpemtHistorySelection;
 import entity.person.setting.selectionitem.selection.PpemtSelection;
 import entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -22,10 +23,12 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelection si";
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
+	private static final String SELECT_ALL_SELECTION_CD = SELECT_ALL
+			+ " WHERE si.selectionCd = :selectionCd AND si.histId = :histId";
 
 	@Override
 	public void add(Selection selection) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insert(toEntity(selection));
 
 	}
 
@@ -65,6 +68,21 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		PpemtSelectionPK key = new PpemtSelectionPK(domain.getSelectionID());
 		return new PpemtSelection(key, domain.getHistId(), domain.getSelectionCD().v(), domain.getSelectionName().v(),
 				domain.getExternalCD().v(), domain.getMemoSelection().v());
+
+	}
+
+	// check by selectionCD:
+	@Override
+	public Optional<Selection> getCheckBySelectionCD(String selectionCd) {
+
+		return this.queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
+				.setParameter("selectionCd", selectionCd).getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public List<Selection> geSelectionList(String selectionCd, String histId) {
+		return queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
+				.setParameter("selectionCd", selectionCd).setParameter("histId", histId).getList(c -> toDomain(c));
 
 	}
 
