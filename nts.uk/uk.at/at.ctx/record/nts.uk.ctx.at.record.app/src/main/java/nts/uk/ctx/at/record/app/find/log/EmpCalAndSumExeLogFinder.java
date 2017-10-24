@@ -23,13 +23,12 @@ public class EmpCalAndSumExeLogFinder {
 	private String employeeID = AppContexts.user().employeeId();
 	/**
 	 * get All EmpCalAndSumExeLog
-	 * @param operationCaseID
-	 * @param employeeID
+	 * 
 	 * @return list EmpCalAndSumExeLog
 	 */
-	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(String operationCaseID){
+	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(){
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
-				.getAllEmpCalAndSumExeLog(companyID, operationCaseID, employeeID)
+				.getAllEmpCalAndSumExeLog(companyID)
 				.stream()
 				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c))
 				.collect(Collectors.toList());
