@@ -30,37 +30,51 @@ public class ImageEditorWebService extends WebService{
 	@Path("/cropimage")
 	public StoredFileInfo cropImage(ImageCropQuery query) {
 		try {
-			String string64 = query.getFile().substring(query.getFile().indexOf(",")+1);
-			InputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(string64));
-			BufferedImage bfi = ImageIO.read(is);
-			int width = getWidth(query, bfi.getWidth()), height = getHeight(query, bfi.getHeight());
 			
-			if(query.isCrop() && isCroppable(width, height)){
-				bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
-			}
+			return storeFile(query, getImageBuffer(query));
 			
-			File file = new File(ServerSystemProperties.fileStoragePath() + query.getFileName());
-
-			ImageIO.write(bfi, query.getFormat(), file);
-
-			StoredFileInfo fileInfo = this.fileStorage.store(IdentifierUtil.randomUniqueId(),
-					file.toPath(), query.getFileName(), query.getStereoType());
-			file.delete();
-			return fileInfo;
 		} catch (IOException e) {
 			throw new RuntimeException("File is not a image.");
 		}
+	}
+
+	private StoredFileInfo storeFile(ImageCropQuery query, BufferedImage bfi) throws IOException {
+		File file = new File(ServerSystemProperties.fileStoragePath() + query.getFileName());
+
+		ImageIO.write(bfi, query.getFormat(), file);
+
+		StoredFileInfo fileInfo = this.fileStorage.store(IdentifierUtil.randomUniqueId(),
+				file.toPath(), query.getFileName(), query.getStereoType());
+		
+		file.delete();
+		
+		return fileInfo;
+	}
+
+	private BufferedImage getImageBuffer(ImageCropQuery query) throws IOException {
+		BufferedImage bfi = ImageIO.read(toImageInputStream(query.getFile()));
+		
+		int width = getMin(query.getWidth(), bfi.getWidth(), query.getX()), 
+			height = getMin(query.getHeight(), bfi.getHeight(), query.getY());
+		
+		if(query.isCrop() && isCroppable(width, height)){
+			bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
+		}
+		
+		return bfi;
+	}
+
+	private InputStream toImageInputStream(StringBuffer dataBase64) {
+		String string64 = dataBase64.substring(dataBase64.indexOf(",")+1);
+		
+		return new ByteArrayInputStream(Base64.getDecoder().decode(string64));
 	} 
 	
 	private boolean isCroppable(int width, int height){
 		return width > 0 && height > 0;
 	}
 	
-	private int getWidth(ImageCropQuery query, int width){
-		return Math.min(query.getWidth(), width - query.getX());
-	}
-	
-	private int getHeight(ImageCropQuery query, int height){
-		return Math.min(query.getHeight(), height - query.getY());
+	private int getMin(int base, int max, int position){
+		return Math.min(base, max - position);
 	}
 }
