@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 						
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode
-				nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName
+				nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode
+				nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName
 			</com:ValidatorScript>
 			
 			<script>
@@ -43,6 +43,7 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div id="list-data">
 						<table id="single-list" tabindex="5" data-bind="ntsGridList: {
+							name: '#[CMM013_45]',
 							width: 220,							
 							height: 340,											
 							dataSource: items,
