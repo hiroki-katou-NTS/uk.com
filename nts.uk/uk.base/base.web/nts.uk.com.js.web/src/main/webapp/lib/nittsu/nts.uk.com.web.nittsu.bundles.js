@@ -8656,6 +8656,7 @@ var nts;
                         var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
                         var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
                         var extColumns = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
+                        var initialExpandDepth = ko.unwrap(data.initialExpandDepth);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var rows = ko.unwrap(data.rows);
@@ -8733,7 +8734,7 @@ var nts;
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
-                            initialExpandDepth: 10,
+                            initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
                             features: features
                         });
@@ -21724,4 +21725,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
