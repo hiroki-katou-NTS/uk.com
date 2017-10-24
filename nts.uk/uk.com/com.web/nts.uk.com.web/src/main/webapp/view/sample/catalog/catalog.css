@@ -110,7 +110,7 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 .collapse-button {background-color:#fdf4d4;border-radius:50%;border:1px solid #c3d201;}*/
 /* Halloween */
 html, body{background: #000 url(images/bg-halloween-7.jpg) center top no-repeat; background-size: 100% auto; background-attachment: scroll;}
-#header {background-color:#5e3885; color:#197a32;}
+#header {background:#5e3885 url(images/halloween-decoration.png) repeat-x; background-size: auto 90%; color:#197a32;}
 #header .pumpkin {content:'';display:block;position:absolute;top:0;left:0;right:0;margin:auto;height:138px;width:138px;background:url(images/pumpkin.png) center top;background-size:100% 100%;z-index:3;}
 #header .pumpkin.changed {background:url(images/pumpkin-2.png) center top;background-size:100% 100%;}
 #master-content{position:relative;}
