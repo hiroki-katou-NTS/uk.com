@@ -13,8 +13,8 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL032_3"), prop: 'divReasonCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KDL032_4"), prop: 'divReasonContent', width: 150 }
+                { headerText: nts.uk.resource.getText("KDL032_3"), prop: 'divReasonCode', width: 40 },
+                { headerText: nts.uk.resource.getText("KDL032_4"), prop: 'divReasonContent', width: 210 }
 
             ]);
 
