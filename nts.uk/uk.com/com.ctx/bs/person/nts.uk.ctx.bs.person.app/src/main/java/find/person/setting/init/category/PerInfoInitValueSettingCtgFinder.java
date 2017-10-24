@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
