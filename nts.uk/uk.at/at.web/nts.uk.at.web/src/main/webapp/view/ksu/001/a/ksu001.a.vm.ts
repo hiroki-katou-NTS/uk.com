@@ -7,6 +7,10 @@ module ksu001.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        //tree-grid
+        itemsTree: KnockoutObservableArray<Node>;
+        selectedCodeTree: KnockoutObservableArray<Node>;
+        singleSelectedCodeTree: KnockoutObservable<Node>;
 
         empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
         dataSource: KnockoutObservableArray<BasicSchedule> = ko.observableArray([]);
@@ -75,6 +79,10 @@ module ksu001.a.viewmodel {
 
         constructor() {
             let self = this;
+            //Tree grid
+            self.itemsTree = ko.observableArray([]);
+            self.selectedCodeTree = ko.observableArray([]);
+            self.singleSelectedCodeTree = ko.observable(null);
 
             //Date time
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
@@ -123,8 +131,34 @@ module ksu001.a.viewmodel {
             self.selectedModeDisplay(1);
             self.initCCG001();
             self.initExTable();
+            self.initShiftCondition();
         }
+        /**
+         *shift condition  A2_4
+         */
+        initShiftCondition(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getShiftCondition().done(function(listShiftCondition) {
+                service.getShiftConditionCategory().done(function(listShiftCategory) {
+                    _.forEach(listShiftCategory, function(shiftCate) {
+                        let level1 = new Node(shiftCate.categoryNo, shiftCate.categoryName, []);
+                        _.forEach(listShiftCondition, function(shiftCon) {
+                            if (shiftCate.categoryNo == shiftCon.categoryNo) {
+                                let level2 = new Node(shiftCon.conditionNo, shiftCon.conditionName, []);
+                                level1.childs.push(level2);
+                            }
+                        });
+                        self.itemsTree.push(level1);
+                    });
+                });
+                dfd.resolve();
+            });
+            console.log(self.itemsTree());
+            return dfd.promise();
 
+
+        }
         /**
          * Get data Basic_Schedule
          */
@@ -833,7 +867,7 @@ module ksu001.a.viewmodel {
          * go to screen KML004
          */
         gotoKml004(): void {
-            nts.uk.request.jump("/view/kml/004/a/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/kml/004/a/index.xhtml");
         }
 
         /**
@@ -843,6 +877,21 @@ module ksu001.a.viewmodel {
             nts.uk.request.jump("/view/kml/002/a/index.xhtml");
         }
 
+    }
+    class Node {
+        code: string;
+        name: string;
+        nodeText: string;
+        custom: string;
+        childs: Array<Node>;
+        constructor(code: string, name: string, childs: Array<Node>) {
+            var self = this;
+            self.code = code;
+            self.name = name;
+            self.nodeText = self.code + ' ' + self.name;
+            self.childs = childs;
+            self.custom = 'Random' + new Date().getTime();
+        }
     }
 
     class BoxModel {
