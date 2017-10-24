@@ -14,33 +14,21 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_PEOPLE_CAL_FUNC")
-public class KscstPeopleCalFunc extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FORM_PEOPLE")
+public class KscmtFormPeople extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstPeopleCalFuncPK kscstPeopleCalFuncPK;
+	public KscmtFormPeoplePK kscmtFormPeoplePK;
 	
-	/* 外部予算実績項目コード */
-	@Column(name = "EXTERNAL_BUDGET_CD")
-	public String externalBudgetCd;
-	
-	/* カテゴリ区分 */
-	@Column(name = "CATEGORY_ATR")
-	public int categoryAtr;
-	
-	/* 演算子区分 */
-	@Column(name = "OPERATOR_ATR")
-	public int operatorAtr;
-	
-	/* 順番 */
-	@Column(name = "DISPORDER")
-	public int dispOrder;
+	/* 実績表示区分 */
+	@Column(name = "ACTUAL_DISPLAY_ATR")
+	public int actualDisplayAtr;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstPeopleCalFuncPK;
+		return kscmtFormPeoplePK;
 	}
 }

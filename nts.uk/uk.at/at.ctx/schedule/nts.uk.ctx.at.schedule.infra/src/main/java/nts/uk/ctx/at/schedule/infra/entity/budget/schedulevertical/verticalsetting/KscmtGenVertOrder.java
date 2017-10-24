@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_VERTICAL_ITEM_ORDER")
-public class KscstVerticalItemOrder extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_GEN_VERT_ORDER")
+public class KscmtGenVertOrder extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KscstVerticalItemOrderPK kscstVerticalItemOrderPK;
+	public KscmtGenVertOrderPK kscmtGenVertOrderPK;
 	
 	/* 並び順 */
 	@Column(name = "DISPORDER")
@@ -35,16 +35,16 @@ public class KscstVerticalItemOrder extends UkJpaEntity implements Serializable 
         @JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
         @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
     })
-	public KscstVerticalCalItem kscstVerticalCalItem;
+	public KscmtGenVertItem genVertItem;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstVerticalItemOrderPK;
+		return kscmtGenVertOrderPK;
 	}
 	
-	public KscstVerticalItemOrder(KscstVerticalItemOrderPK kscstVerticalItemOrderPK, int dispOrder) {
-		this.kscstVerticalItemOrderPK = kscstVerticalItemOrderPK;
+	public KscmtGenVertOrder(KscmtGenVertOrderPK kscmtGenVertOrderPK, int dispOrder) {
+		this.kscmtGenVertOrderPK = kscmtGenVertOrderPK;
 		this.dispOrder = dispOrder;
 	}
 }

@@ -67,8 +67,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.calculatorItems = ko.observableArray([]);
             
             self.cbxAttribute = ko.observableArray([
-                { attrCode: 0, attrName: "金額" },
-                { attrCode: 1, attrName: "時間" },
+                { attrCode: 0, attrName: "時間" },
+                { attrCode: 1, attrName: "金額" },                
                 { attrCode: 2, attrName: "人数" },
                 { attrCode: 3, attrName: "数値" },
                 { attrCode: 4, attrName: "平均単価" }
@@ -535,9 +535,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var attrValue = "";
             
             if(attribute == 0) {
-                attrValue = "金額";
-            } else if(attribute == 1) {
                 attrValue = "時間";
+            } else if(attribute == 1) {
+                attrValue = "金額";
             } else if(attribute == 2) {
                 attrValue = "人数";
             } else if(attribute == 3) {
@@ -546,11 +546,30 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attrValue = "平均単価";
             }
             
+            var verticalCalItems = new Array<VerticalCalItemDto>();
+            
+            for(var i = 0; i < itemCd - 1; i++) {
+                var item = {
+                    verticalCalCd: self.code(),
+                    itemId: self.calculatorItems()[i].itemCd(),
+                    itemName: self.calculatorItems()[i].itemName(),
+                    calculateAtr: self.calculatorItems()[i].settingMethod(),
+                    displayAtr: self.calculatorItems()[i].displayAtr(),
+                    cumulativeAtr: self.calculatorItems()[i].fraction(),
+                    attributes: self.calculatorItems()[i].attribute(),
+                    rounding: self.calculatorItems()[i].rounding(),
+                    dispOrder: self.calculatorItems()[i].order()
+                };
+                
+                verticalCalItems.push(item);
+            }
+            
             var data = {
                 verticalCalCd: self.code(),
                 itemId: itemCd,
                 attribute: attrValue,
-                itemName: itemName
+                itemName: itemName,
+                verticalItems: verticalCalItems
             };
             
             nts.uk.ui.windows.setShared("KML002_A_DATA", data);
@@ -561,21 +580,26 @@ module nts.uk.at.view.kml002.a.viewmodel {
          */
         openDialog(itemCd: number, settingMethod: number, attribute: number, itemName: string) {
             var self = this;
+            
+            if(itemName === "") {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return;
+            }
 
             if(settingMethod == 1) {
                 self.passDataToDialogs(itemCd, attribute, itemName);            
                 nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
-                    
+                    var data = nts.uk.ui.windows.getShared("KML002_B_DATA");
                 }); 
             } else {
                 if(attribute == 0) {
                     self.passDataToDialogs(itemCd, attribute, itemName);            
-                    nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
                         
                     }); 
                 } else if(attribute == 1) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
-                    nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
                     
                     }); 
                 } else if(attribute == 2) {
@@ -601,6 +625,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
     export class SettingItemModel {
         code: string;
         name: string;
+        
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;       

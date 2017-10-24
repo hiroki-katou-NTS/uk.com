@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_VERTICAL_CAL_SET")
-public class KscstVerticalCalSet extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_GEN_VERT_SET")
+public class KscmtGenVertSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstVerticalCalSetPK kscstVerticalCalSetPK;
+	public KscmtGenVertSetPK kscmtGenVertSetPK;
 	
 	/* 名称 */
 	@Column(name = "VERTICAL_CAL_NAME")
@@ -41,12 +41,12 @@ public class KscstVerticalCalSet extends UkJpaEntity implements Serializable {
 	@Column(name = "ASSISTANCE_TABULATION_ATR")
 	public int assistanceTabulationAtr;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="verticalCalSet", orphanRemoval = true)
-	public List<KscstVerticalCalItem> verticalCalItems;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="genVertSet", orphanRemoval = true)
+	public List<KscmtGenVertItem> genVertItems;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstVerticalCalSetPK;
+		return kscmtGenVertSetPK;
 	}
 }

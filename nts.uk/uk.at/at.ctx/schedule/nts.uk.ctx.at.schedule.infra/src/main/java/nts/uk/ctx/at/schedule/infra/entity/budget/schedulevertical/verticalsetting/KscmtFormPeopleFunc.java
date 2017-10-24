@@ -14,25 +14,33 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORMULA_TIME")
-public class KscstFormulaTime extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FORM_PEOPLE_FUNC")
+public class KscmtFormPeopleFunc extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstFormulaTimePK kscstFormulaTimePK;
-
+	public KscmtFormPeopleFuncPK kscmtFormPeopleFuncPK;
+	
+	/* 外部予算実績項目コード */
+	@Column(name = "EXTERNAL_BUDGET_CD")
+	public String externalBudgetCd;
+	
 	/* カテゴリ区分 */
 	@Column(name = "CATEGORY_ATR")
 	public int categoryAtr;
-    
-    /* 実績表示区分 */
-	@Column(name = "ACTUAL_DISPLAY_ATR")
-	public int actualDisplayAtr;
+	
+	/* 演算子区分 */
+	@Column(name = "OPERATOR_ATR")
+	public int operatorAtr;
+	
+	/* 順番 */
+	@Column(name = "DISPORDER")
+	public int dispOrder;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstFormulaTimePK;
+		return kscmtFormPeopleFuncPK;
 	}
 }

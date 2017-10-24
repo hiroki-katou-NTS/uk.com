@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KscstTimeFuncPK implements Serializable {
+public class KscmtFormPeopleFuncPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/*会社ID*/

@@ -15,15 +15,22 @@ public class FormulaItem {
     /* 汎用縦計項目ID */
     private String verticalCalItemId;
     
+    /* 設定方法 */
+    private SettingMethod settingMethod1;
+    
+    private int verticalCalItem1;
+    
     /* 縦計入力項目 */
-    private int verticalInputItem;
+    private int verticalInputItem1;
     
     /* 設定方法 */
-    private SettingMethod settingMethod;
+    private SettingMethod settingMethod2;
+    
+    private int verticalCalItem2;
+    
+    /* 縦計入力項目 */
+    private int verticalInputItem2;
     
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
-    
-    /* 順番 */
-    private int dispOrder;
 }

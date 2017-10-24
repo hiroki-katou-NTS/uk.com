@@ -14,21 +14,25 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORMULA_NUMOFPEOPLE")
-public class KscstFormulaNumOfPeople extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FORM_TIME")
+public class KscmtFormTime extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstFormulaNumOfPeoplePK kscstFormulaNumOfPeoplePK;
-	
-	/* 実績表示区分 */
+	public KscmtFormTimePK kscmtFormTimePK;
+
+	/* カテゴリ区分 */
+	@Column(name = "CATEGORY_ATR")
+	public int categoryAtr;
+    
+    /* 実績表示区分 */
 	@Column(name = "ACTUAL_DISPLAY_ATR")
 	public int actualDisplayAtr;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstFormulaNumOfPeoplePK;
+		return kscmtFormTimePK;
 	}
 }
