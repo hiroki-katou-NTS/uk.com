@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
+import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,9 +38,9 @@ public class EmpCalAndSumExeLogFinder {
 		return data;
 	}
 	
-	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogById(long empCalAndSumExecLogID,String operationCaseID){
+	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogById(InputEmpCalAndSum inputEmpCalAndSum){
 		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
-				.getEmpCalAndSumExeLogByID(companyID, empCalAndSumExecLogID, operationCaseID, employeeID)
+				.getEmpCalAndSumExeLogByID(companyID, inputEmpCalAndSum.getEmpCalAndSumExecLogID(), inputEmpCalAndSum.getOperationCaseID(), employeeID)
 				.map(c->EmpCalAndSumExeLogDto.fromDomain(c));
 			if(data.isPresent())
 				return data.get();

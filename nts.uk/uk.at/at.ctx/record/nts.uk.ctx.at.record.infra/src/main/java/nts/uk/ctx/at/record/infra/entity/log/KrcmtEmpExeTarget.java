@@ -30,10 +30,10 @@ public class KrcmtEmpExeTarget extends UkJpaEntity implements Serializable  {
 	public KrcmtEmpExeTargetPK krcmtEmpExeTargetPK;
 	
 	@Column(name = "EXECUTION_CONTENT")
-	public BigDecimal executionContent;
+	public int executionContent;
 
 	@Column(name = "EXECUTION_STATE")
-	public BigDecimal executionState;
+	public int executionState;
 
 	@Override
 	protected Object getKey() {

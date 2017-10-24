@@ -20,7 +20,6 @@ public class KrcmtExecutionLogPK implements Serializable {
 	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
 	public long empCalAndSumExecLogID;
-				  
 	
 	@Column(name = "OPERATION_CASE_ID")
 	public long caseSpecExeContentID;

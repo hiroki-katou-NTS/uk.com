@@ -10,12 +10,12 @@ package nts.uk.ctx.at.record.dom.workrecord.log.enums;
 public enum EmployeeExecutionStatus {
 
 	/**
-	 * 0 : complete
+	 * 0 : 完了
 	 */
 	COMPLETE(0),
 
 	/**
-	 * 1 : In complete
+	 * 1 : 未完了
 	 */
 	INCOMPLETE(1);
 
