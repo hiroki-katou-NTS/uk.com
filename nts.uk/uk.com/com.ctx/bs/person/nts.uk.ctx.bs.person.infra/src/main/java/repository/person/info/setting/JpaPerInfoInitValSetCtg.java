@@ -36,6 +36,10 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	private final String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE  c.settingCtgPk.settingId =:settingId";
+	
+	
+	private final String  SEL_CTG_BY_SETID_CTGID = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
+			+ " WHERE  c.settingCtgPk.settingId =:settingId AND c.settingCtgPk.perInfoCtgId =:perInfoCtgId";
 
 	private final String DELETE_BY_SETTING_ID = " DELETE FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE c.settingCtgPk.settingId =:settingId";
@@ -73,14 +77,17 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	// sonnlb
 
 	@Override
-	public PerInfoInitValSetCtg getDetailInitValSetCtg(String initValueSettingId, String initValueSettingCtgId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<PerInfoInitValSetCtg> getDetailInitValSetCtg(String settingId, String perInfoCtgId) {
+		return this.queryProxy().query(SEL_CTG_BY_SETID_CTGID, PpemtPersonInitValueSettingCtg.class)
+				.setParameter("settingId", settingId)
+				.setParameter("perInfoCtgId", perInfoCtgId)
+				.getSingle(c -> toDomain(c));
 	}
 
 	@Override
 	public void add(PerInfoInitValSetCtg domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override

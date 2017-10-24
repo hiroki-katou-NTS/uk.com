@@ -3,6 +3,7 @@ package repository.person.info.setting;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -30,17 +31,27 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
 
 	private final String SEL_ALL_ITEM = " SELECT c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue "
-			+ " FROM PpemtPerInfoItem c " + " LEFT JOIN PpemtPersonInitValueSettingItem b"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue, d.dataType, d.itemType , e.disporder  "
+			+ " FROM PpemtPerInfoItem c "
+			+ " INNER JOIN PpemtPerInfoItemCm d "
+			+ " ON c.itemCd = d.ppemtPerInfoItemCmPK.itemCd "
+			+ " INNER JOIN PpemtPerInfoItemOrder e "
+			+ " ON  c.ppemtPerInfoItemPK.perInfoItemDefId = e.ppemtPerInfoItemPK.perInfoItemDefId "
+			+ " AND c.perInfoCtgId = e.perInfoCtgId " + " LEFT JOIN PpemtPersonInitValueSettingItem b "
 			+ " ON b.settingItemPk.perInfoItemDefId = c.ppemtPerInfoItemPK.perInfoItemDefId "
-			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " WHERE c.abolitionAtr = 0"
-			+ " AND c.perInfoCtgId =:perInfoCtgId";
+			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " AND b.settingItemPk.settingId =:settingId "
+			+ " WHERE c.abolitionAtr = 0" + " AND c.perInfoCtgId =:perInfoCtgId"
+			+ " ORDER BY e.disporder";
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
 
 	private final String SEL_ALL_ITEM_BY_SETTINGID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
+
+	private final String SEL_A_ITEM = " SELECT c FROM PpemtPersonInitValueSettingItem c"
+			+ " WHERE c.settingItemPk.settingId =:settingId" + " AND c.settingItemPk.perInfoCtgId =:perInfoCtgId"
+			+ " AND c.settingItemPk.perInfoItemDefId =:perInfoItemDefId";
 
 	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
@@ -58,7 +69,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 				entity.saveDataType == null ? null : EnumAdaptor.valueOf(entity.saveDataType, SaveDataType.class));
 
 		domain.setStringValue(new StringValue(entity.stringValue == null ? "" : entity.stringValue.toString()));
-		domain.setIntValue(entity.intValue == null ? null : new IntValue(new BigDecimal(entity.intValue)));
+		domain.setIntValue(entity.intValue == null ? null : new IntValue(entity.intValue));
 
 		domain.setDateValue(entity.dateValue == null ? null
 				: GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
@@ -91,7 +102,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		String saveDataType;
 
-		if (entity[6].toString().equals("0")) {
+		if (entity[6] == null) {
 			// return defaul value
 			saveDataType = "1";
 
@@ -103,11 +114,11 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 
 		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
-		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "" : entity[8].toString())));
+		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
 		String dateValue;
 
-		if (entity[6].toString().equals("0")) {
+		if (entity[9] == null) {
 			dateValue = "9999-12-21";
 
 		} else {
@@ -116,6 +127,18 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
+		
+		if(entity[10] == null){
+			domain.setDataType(0);
+		}else{
+			domain.setDataType(Integer.valueOf(entity[10].toString()));
+		}
+		
+		if(entity[11] == null){
+			domain.setItemType(0);
+		}else{
+			domain.setItemType(Integer.valueOf(entity[11].toString()));
+		}
 
 		return domain;
 
@@ -135,23 +158,26 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		entity.refMethodAtr = domain.getRefMethodType().value;
 		entity.saveDataType = domain.getSaveDataType() == null ? null : domain.getSaveDataType().value;
 		entity.stringValue = domain.getStringValue() == null ? null : domain.getStringValue().v();
-		entity.intValue = domain.getIntValue() == null ? null : domain.getIntValue().v().intValue();
+		entity.intValue = domain.getIntValue() == null ? null : domain.getIntValue().v();
 		entity.dateValue = domain.getDateValue() == null ? null : domain.getDateValue().toString();
 		return entity;
 
 	}
 
 	@Override
-	public List<PerInfoInitValueSetItem> getAllItem(String perInfoCtgId) {
+	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
 		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
-				.getList(c -> toDomain(c));
+				.setParameter("settingId", settingId).getList(c -> toDomain(c));
 
 	}
 
 	@Override
-	public PerInfoInitValueSetItem getDetailItem(String initValueSettingCtgId, String perInfoItemDefId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<PerInfoInitValueSetItem> getDetailItem(String settingId, String perInfoCtgId,
+			String perInfoItemDefId) {
+		// SEL_A_ITEM
+		return this.queryProxy().query(SEL_A_ITEM, PpemtPersonInitValueSettingItem.class)
+				.setParameter("settingId", settingId).setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("perInfoItemDefId", perInfoItemDefId).getSingle(c -> toDomain(c));
 	}
 
 	@Override
@@ -197,7 +223,24 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	@Override
 	public List<PerInfoInitValueSetItem> getAllInitValueItem(String settingId) {
 		return this.queryProxy().query(SEL_ALL_ITEM_BY_SETTINGID, PpemtPersonInitValueSettingItem.class)
-				.setParameter("settingId", settingId)
-				.getList(c -> toDomain(c));
+				.setParameter("settingId", settingId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void addItem(PerInfoInitValueSetItem item) {
+		this.commandProxy().insert(toEntity(item));
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void update(PerInfoInitValueSetItem item) {
+		Optional<PpemtPersonInitValueSettingItem> itemSet = this.queryProxy()
+				.find(new PpemtPersonInitValueSettingItemPk(item.getPerInfoItemDefId(), item.getPerInfoCtgId(),
+						item.getSettingId()), PpemtPersonInitValueSettingItem.class);
+		if (itemSet.isPresent()) {
+			this.commandProxy().update(itemSet.get().updateFromDomain(item));
+		} else {
+			this.commandProxy().insert(toEntity(item));
+		}
 	}
 }
