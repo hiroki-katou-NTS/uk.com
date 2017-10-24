@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class FormulaNumOfPeople {
+public class FormPeople {
 	/* 会社ID */
     private String companyId;
     

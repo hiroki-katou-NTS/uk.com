@@ -55,7 +55,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false)
     })
-	public KscmtGenVertSet verticalCalSet;
+	public KscmtGenVertSet genVertSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="genVertItem", orphanRemoval = true)
 	public KscmtGenVertOrder genVertOrder;
