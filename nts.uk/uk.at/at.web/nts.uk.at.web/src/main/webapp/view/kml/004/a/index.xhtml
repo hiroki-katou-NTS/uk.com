@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 950,
+					height : 520
+				};
+			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode
 				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName
@@ -31,7 +37,7 @@
 					<button tabindex="3" id="DELETE_BTN" class="danger"
 						data-bind="click: remove, enable: lstCate().length >0 &amp; checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
-					<button tabindex="4" id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
+					<button tabindex="4" id="Close_BTN" data-bind="click: closeDialog">#{i18n.getText('KML004_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area">

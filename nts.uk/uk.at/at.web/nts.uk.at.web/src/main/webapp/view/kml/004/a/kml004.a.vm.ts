@@ -153,6 +153,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let array = [];
             service.getItem().done((lstItem) => {
                 if(lstItem.length == 0){
+                    lstItem = [];
                     nts.uk.ui.dialog.info({ messageId: "Msg_458" });    
                 } else {
                     let sortedData = _.orderBy(lstItem, ['totalItemNo'], ['asc']);
@@ -365,7 +366,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
         }
         
         /** click close button **/
-        close(){
+        closeDialog(){
             nts.uk.ui.windows.close();
             var t1 = performance.now();
         } 
