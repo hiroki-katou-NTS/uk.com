@@ -94,7 +94,7 @@ public class ApprovalRootOutput {
 				x.getPeriod().getEndDate(), 
 				x.getBranchId(), 
 				x.getAnyItemApplicationId(), 
-				x.getConfirmationRootType().value, 
+				x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value, 
 				x.getEmploymentRootAtr().value, 
 				null,
 				null);

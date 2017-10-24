@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	
 	@EmbeddedId
 	public KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK;
+	
+//	@Version
+//	@Column(name="EXCLUS_VER")
+//	public Long version;
 	
 	@Column(name="WORK_TYPE_CD")
 	public String workTypeCD;

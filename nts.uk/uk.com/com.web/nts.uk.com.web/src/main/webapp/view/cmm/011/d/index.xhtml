@@ -30,15 +30,15 @@
 
 				<div style="margin: 20px 30px;">
 					<div style="margin-right: 50px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23', ['Com_Workplace'])}</div>
-					<div id="start-date" tabindex="5"
+					<div id="start-date" tabindex="1"
 						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
 					<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span>
 					<span>#{i18n.getText('CMM011_27')}</span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="7" data-bind="click: execution">#{i18n.getText('CMM011_29')}</button>
-				<button class="large" tabindex="8" data-bind="click: close">#{i18n.getText('CMM011_30')}</button>
+				<button class="x-large proceed" tabindex="2" data-bind="click: execution">#{i18n.getText('CMM011_29')}</button>
+				<button class="large" tabindex="3" data-bind="click: close">#{i18n.getText('CMM011_30')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

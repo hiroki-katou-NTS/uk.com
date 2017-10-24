@@ -1,14 +1,17 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
+import nts.uk.ctx.bs.employee.infra.repository.workplace.info.IsManagerStatus;
 
 /**
  * The Class JpaJobTitleInfoSetMemento.
@@ -42,16 +45,16 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.HistoryId)
 	 */
 	@Override
-	public void setJobTitleHistoryId(HistoryId jobTitleHistoryId) {
-		this.entity.getBsymtJobInfoPK().setHistId(jobTitleHistoryId.v());
+	public void setJobTitleHistoryId(String jobTitleHistoryId) {
+		this.entity.getBsymtJobInfoPK().setHistId(jobTitleHistoryId);
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleId)
 	 */
 	@Override
-	public void setJobTitleId(JobTitleId jobTitleId) {
-		this.entity.getBsymtJobInfoPK().setJobId(jobTitleId.v());
+	public void setJobTitleId(String jobTitleId) {
+		this.entity.getBsymtJobInfoPK().setJobId(jobTitleId);
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +78,22 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	 */
 	@Override
 	public void setSequenceCode(SequenceCode sequenceCode) {
+		if (sequenceCode == null) {
+			this.entity.setSequenceCd(null);
+			return;
+		}
 		this.entity.setSequenceCd(sequenceCode.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setIsManager(boolean)
+	 */
+	@Override
+	public void setIsManager(boolean isManager) {
+		if (isManager) {
+			this.entity.setIsManager(IsManagerStatus.TRUE.value);
+		} else {
+			this.entity.setIsManager(IsManagerStatus.FALSE.value);
+		}		
+	}
 }

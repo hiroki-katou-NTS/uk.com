@@ -1,42 +1,43 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailserver;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
-/** POP�?報. */
+/**
+ * The Class PopInfo.
+ */
 @Getter
 @Setter
+// POP情報
 public class PopInfo extends DomainObject {
 	
-	/** IPバ�?�ジョン. */
-	private IpVersion ipVersion;
-	
-	/** サー�? . */
+	/** The server. */
+	// サーバ
 	private Server server;
 	
-	/** サーバ使用. */
+	/** The use server. */
+	// サーバ使用
 	private UseServer useServer;
 	
-	/** タイ�?アウト時�?. */
-	private TimeOut timeOut;
-	
-	/** ポ�?��?. */
+	/** The port. */
+	// ポート
 	private Port port;
 	
 	/**
-	 * 
-	 * @param ipVersion
-	 * @param server
-	 * @param useServer
-	 * @param timeOut
-	 * @param port
+	 * Instantiates a new pop info.
+	 *
+	 * @param server the server
+	 * @param useServer the use server
+	 * @param port the port
 	 */
-	public PopInfo(IpVersion ipVersion, Server server, UseServer useServer, TimeOut timeOut, Port port){
-		this.ipVersion = ipVersion;
+	public PopInfo(Server server, UseServer useServer, Port port){
 		this.server = server;
 		this.useServer = useServer;
-		this.timeOut = timeOut;
 		this.port = port;
 	}
 }

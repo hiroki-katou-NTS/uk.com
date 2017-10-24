@@ -7,7 +7,6 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace.config.info;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfo;
@@ -44,9 +43,9 @@ public class JpaWorkplaceConfigInfoGetMemento implements WorkplaceConfigInfoGetM
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoGetMemento#getHistoryId()
 	 */
 	@Override
-	public HistoryId getHistoryId() {
+	public String getHistoryId() {
 	    return this.lstEntity.stream()
-                .map(entity -> new HistoryId(entity.getBsymtWkpConfigInfoPK().getHistoryId()))
+                .map(entity -> entity.getBsymtWkpConfigInfoPK().getHistoryId())
                 .findFirst()
                 .get();
 	}

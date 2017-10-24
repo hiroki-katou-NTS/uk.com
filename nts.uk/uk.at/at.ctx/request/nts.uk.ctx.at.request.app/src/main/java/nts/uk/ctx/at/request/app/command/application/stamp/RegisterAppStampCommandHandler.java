@@ -51,9 +51,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						companyID, 
 						"", 
 						"", 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class), 
 						appApprovalPhaseCmd.dispOrder, 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
+						ApprovalAtr.UNAPPROVED, 
 						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyID, 
 								"", 

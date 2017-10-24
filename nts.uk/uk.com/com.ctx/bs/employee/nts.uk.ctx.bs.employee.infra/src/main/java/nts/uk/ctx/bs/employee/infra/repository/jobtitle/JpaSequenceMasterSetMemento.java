@@ -36,7 +36,7 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 * SequenceMasterSetMemento#setOrder(int)
 	 */
 	@Override
-	public void setOrder(short order) {
+	public void setOrder(int order) {
 		this.typeValue.setDisporder(order);
 	}
 

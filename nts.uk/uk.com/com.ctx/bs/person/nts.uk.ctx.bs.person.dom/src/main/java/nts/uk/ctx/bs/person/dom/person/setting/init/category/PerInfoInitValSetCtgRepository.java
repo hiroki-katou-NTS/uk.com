@@ -11,7 +11,7 @@ public interface PerInfoInitValSetCtgRepository {
 	 * @param initValueSettingId
 	 * @return List<PerInfoInitValSetCtg>
 	 */
-	List<PerInfoInitValueSettingCtg> getAllCategoryBySetId(String initValueSettingId);
+	List<InitValSettingCtg> getAllCategoryBySetId(String initValueSettingId);
 
 	// sonnlb
 

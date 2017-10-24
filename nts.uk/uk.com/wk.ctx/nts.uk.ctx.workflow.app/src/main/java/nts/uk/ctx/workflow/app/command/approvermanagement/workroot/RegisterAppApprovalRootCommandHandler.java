@@ -14,7 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApprovalPhaseDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApproverDto;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
@@ -46,7 +46,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	@Inject
 	private ApprovalBranchRepository repoBranch;
 	@Inject
-	private WorkplaceAdapter adapterWp;
+	private WorkplaceApproverAdapter adapterWp;
 	private final int COMPANY = 0;
 	private final int WORKPLACE = 1;
 	@Override

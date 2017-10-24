@@ -13,8 +13,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
-import nts.uk.ctx.at.record.dom.organization.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.organization.EmploymentImported;
+import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

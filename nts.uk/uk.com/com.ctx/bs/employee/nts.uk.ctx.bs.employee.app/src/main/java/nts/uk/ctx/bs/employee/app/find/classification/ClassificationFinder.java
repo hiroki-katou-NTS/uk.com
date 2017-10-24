@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.classification;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -27,7 +28,32 @@ public class ClassificationFinder {
 	private ClassificationRepository repository;
 	
 	/**
-	 * Find all.
+	 * Find classification.
+	 *
+	 * @return the 
+	 */
+	public ClassificationFindDto findClassificationByCode(String code){
+		
+		// get login info
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+
+		// get all management category
+		Optional<Classification> optClassification = this.repository.findClassification(companyId, code);
+		
+		if(!optClassification.isPresent()){
+			return null;
+		}
+		
+		ClassificationFindDto dto = new ClassificationFindDto();
+		optClassification.get().saveToMemento(dto);
+		
+		return dto;
+	}
+	
+	 /** Find all.
 	 *
 	 * @return the list
 	 */

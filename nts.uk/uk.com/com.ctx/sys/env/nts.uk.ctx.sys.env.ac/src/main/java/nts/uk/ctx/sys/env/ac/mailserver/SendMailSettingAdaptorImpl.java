@@ -51,7 +51,7 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		// Return data
 		ServerLocator smtpServer = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 				mailServer.getSmtpInfo().getPort().v());
-		int secondsToTimeout = mailServer.getSmtpInfo().getTimeOut().v();
+		int secondsToTimeout = 60;
 		SendMailAuthenticationMethod authenticationMethod = this
 				.switchAuthenticationMethodEnum(mailServer.getAuthenticationMethod());
 		Optional<SendMailAuthenticationAccount> authenticationAccount = Optional
@@ -64,20 +64,19 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		// Get info
 		switch (authenticationMethod) {
 		case POP_BEFORE_SMTP:
-			secondsToTimeout = mailServer.getPopInfo().getTimeOut().v();
+			secondsToTimeout = 60;
 			serverLocator = new ServerLocator(mailServer.getPopInfo().getServer().v(),
 					mailServer.getPopInfo().getPort().v());
 			break;
 
 		case IMAP_BEFORE_SMTP:
-			secondsToTimeout = mailServer.getImapInfo().getTimeOut().v();
 			serverLocator = new ServerLocator(mailServer.getImapInfo().getServer().v(),
 					mailServer.getImapInfo().getPort().v());
 			break;
 
 		default:
-			secondsToTimeout = mailServer.getSmtpInfo().getTimeOut().v();
-			smtpServer = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
+			secondsToTimeout = 60;
+			serverLocator = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 					mailServer.getSmtpInfo().getPort().v());
 			break;
 		}

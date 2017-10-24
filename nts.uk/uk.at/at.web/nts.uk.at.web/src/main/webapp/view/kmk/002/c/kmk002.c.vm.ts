@@ -1,6 +1,9 @@
 module nts.uk.at.view.kmk002.c {
     import DailyAttendanceItemDto = service.model.DailyAttendanceItemDto;
-    import SelectDailyAttendanceItemDto = service.model.SelectDailyAttendanceItemDto;
+    import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
+    import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
+    import ParamToC = nts.uk.at.view.kmk002.a.viewmodel.ParamToC;
+
     export module viewmodel {
         export class ScreenModel {
 
@@ -10,18 +13,19 @@ module nts.uk.at.view.kmk002.c {
             checkMul: KnockoutObservable<boolean>;
             columns: any;
             columnsRight: any;
-            lstSelectDailyAttendanceItem: KnockoutObservableArray<SelectDailyAttendanceItemDto>;
+            lstSelectDailyAttendanceItem: KnockoutObservableArray<AttendanceItemDto>;
             formulaAtr: string;
             formulaName: string;
 
             constructor() {
                 var self = this;
-                let param = nts.uk.ui.windows.getShared('paramToC');
-                self.formulaAtr = param.formulaAtr;
-                self.formulaName = param.formulaName;
                 self.checkSelectDailyAttendanceItem = ko.observable(0);
                 self.lstDailyAttendanceItem = ko.observableArray([]);
                 self.selectCodeDailyAttendanceItem = ko.observableArray([]);
+                self.lstSelectDailyAttendanceItem = ko.observableArray([]);
+                self.checkMul = ko.observable(false);
+
+                // data source
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
@@ -31,8 +35,12 @@ module nts.uk.at.view.kmk002.c {
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
-                self.lstSelectDailyAttendanceItem = ko.observableArray([]);
-                self.checkMul = ko.observable(true);
+
+                // Get param from parent screen
+                let param = nts.uk.ui.windows.getShared('paramToC');
+
+                // Set param to view model.
+                self.fromDto(param);
             }
 
             /**
@@ -48,6 +56,19 @@ module nts.uk.at.view.kmk002.c {
                 return dfd.promise();
             }
 
+            public submit(): void {
+                let self = this;
+
+                // set return value
+                let dto = <ItemSelectionDto>{};
+                dto.minusSegment = self.checkMul() == true ? 1 : 0;
+                dto.attendanceItems = self.lstSelectDailyAttendanceItem();
+                nts.uk.ui.windows.setShared('returnFromC', dto);
+
+                // close dialog.
+                self.close();
+            }
+
             /**
              * Close dialog.
              */
@@ -61,7 +82,7 @@ module nts.uk.at.view.kmk002.c {
             private addMethodAdd(): void {
                 var self = this;
                 var updateData: DailyAttendanceItemDto[] = [];
-                var selectData: SelectDailyAttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
+                var selectData: AttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
                 for (var item of self.lstDailyAttendanceItem()) {
                     var selected: boolean = false;
                     for (var itemSelect of self.selectCodeDailyAttendanceItem()) {
@@ -85,7 +106,7 @@ module nts.uk.at.view.kmk002.c {
             private addMethodSub(): void {
                 var self = this;
                 var updateData: DailyAttendanceItemDto[] = [];
-                var selectData: SelectDailyAttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
+                var selectData: AttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
                 for (var item of self.lstDailyAttendanceItem()) {
                     var selected: boolean = false;
                     for (var itemSelect of self.selectCodeDailyAttendanceItem()) {
@@ -109,7 +130,7 @@ module nts.uk.at.view.kmk002.c {
             private gobackSelectItem(): void {
                 var self = this;
                 var updateData: DailyAttendanceItemDto[] = self.lstDailyAttendanceItem();
-                var selectData: SelectDailyAttendanceItemDto[] = [];
+                var selectData: AttendanceItemDto[] = [];
                 for (var item of self.lstSelectDailyAttendanceItem()) {
                     if (item.attendanceItemId == self.checkSelectDailyAttendanceItem()) {
                         updateData.push(self.toBackDto(item));
@@ -123,9 +144,19 @@ module nts.uk.at.view.kmk002.c {
             }
 
             /**
+             * Convert dto to view model.
+             */
+            private fromDto(dto: ParamToC): void {
+                let self = this;
+                self.formulaAtr = dto.formulaAtr;
+                self.formulaName = dto.formulaName;
+                self.lstSelectDailyAttendanceItem(dto.itemSelection.attendanceItems);
+            }
+
+            /**
              * to select data object
              */
-            private toSelectDto(data: DailyAttendanceItemDto, method: number): SelectDailyAttendanceItemDto {
+            private toSelectDto(data: DailyAttendanceItemDto, method: number): AttendanceItemDto {
                 var operatorText: string = '';
                 if (method == AddSubOperator.ADD) {
                     operatorText = nts.uk.resource.getText('KMK002_56');
@@ -133,7 +164,7 @@ module nts.uk.at.view.kmk002.c {
                 else {
                     operatorText = nts.uk.resource.getText('KMK002_57');
                 }
-                var dto: SelectDailyAttendanceItemDto = {
+                var dto: AttendanceItemDto = {
                     operator: method,
                     operatorText: operatorText,
                     attendanceItemId: data.attendanceItemId,
@@ -145,7 +176,7 @@ module nts.uk.at.view.kmk002.c {
             /**
              * to back data object
              */
-            private toBackDto(data: SelectDailyAttendanceItemDto): DailyAttendanceItemDto {
+            private toBackDto(data: AttendanceItemDto): DailyAttendanceItemDto {
                 var dto: DailyAttendanceItemDto = {
                     attendanceItemId: data.attendanceItemId,
                     attendanceItemName: data.attendanceItemName

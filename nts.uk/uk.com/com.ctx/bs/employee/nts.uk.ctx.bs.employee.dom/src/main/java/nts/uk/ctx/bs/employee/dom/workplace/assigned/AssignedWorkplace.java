@@ -18,7 +18,7 @@ public class AssignedWorkplace extends AggregateRoot{
 	
 	/** The history id. */
 	//履歴ID
-	private HistoryId historyId;
+	private String historyId;
 
 	/** The period. */
 	//期間

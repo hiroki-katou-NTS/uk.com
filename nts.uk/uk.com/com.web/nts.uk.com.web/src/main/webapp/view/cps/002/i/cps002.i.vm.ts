@@ -24,12 +24,16 @@ module cps002.i.vm {
         upload(){
             let self = this;
             nts.uk.ui.block.grayout();
-            $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
-                self.imageId(data.id);
-                nts.uk.ui.block.clear();
-                setShared("imageId", self.imageId());
-                self.close();
-            });
+            let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            if(isImageLoaded.imgOnView){
+                $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
+                    self.imageId(data.id);
+                    nts.uk.ui.block.clear();
+                    setShared("imageId", self.imageId());
+                    self.close();
+                });
+            }else self.close();
+            
         }
         getImage(){
             let self = this;

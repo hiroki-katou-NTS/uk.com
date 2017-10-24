@@ -82,25 +82,16 @@ module nts.uk.com.view.cmm011.e {
             /**
              * validate
              */
-            private validate(): boolean {
+            private validate() {
                 let self = this;
-                
-                // clear all error
-                self.clearError();
-                
-                $('#start-date').ntsEditor('validate');
-                
-                if ($('.nts-input').ntsError('hasError')) {
-                    return false;
-                }
-                return true;
-            }
-            
-            /**
-             * clearError
-             */
-            private clearError() {
+
+                // clear error
                 $('#start-date').ntsError('clear');
+
+                // validate
+                $('#start-date').ntsEditor('validate');
+
+                return !$('.nts-input').ntsError('hasError');
             }
             
             /**

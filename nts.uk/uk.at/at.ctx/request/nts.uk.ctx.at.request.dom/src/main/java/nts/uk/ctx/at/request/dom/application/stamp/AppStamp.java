@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.logging.log4j.util.Strings;
@@ -87,8 +88,8 @@ public class AppStamp extends Application {
 				null, 
 				ReflectPlanPerState.NOTREFLECTED, 
 				ReflectPlanPerEnforce.NOTTODO, 
-				null,
-				null,
+				GeneralDate.today(),
+				GeneralDate.today(),
 				null,
 				stampRequestMode, 
 				appStampGoOutPermits, 
@@ -152,10 +153,9 @@ public class AppStamp extends Application {
 			
 			case STAMP_CANCEL: {
 				// すべての打刻取消申請が実績取消＝するしない区分.しない (#Msg_321#)
-				for(AppStampCancel appStampCancel : this.appStampCancels) {
-					if(appStampCancel.getCancelAtr()==0){
-						throw new BusinessException("Msg_321");
-					}
+				Boolean allFalse = this.appStampCancels.stream().allMatch(item -> item.getCancelAtr()==0);
+				if(allFalse){
+					throw new BusinessException("Msg_321");
 				}
 				break;
 			}
@@ -199,6 +199,17 @@ public class AppStamp extends Application {
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
 							(appStampWork.getStartTime() == null ||
 							Strings.isEmpty(appStampWork.getStartLocation()) || 
+							appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
+					
+					/*打刻申請詳細.打刻分類＝応援のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 終了時刻
+					- 応援カード*/
+					if(appStampWork.getStampAtr().equals(AppStampAtr.SUPPORT)&&
+							(appStampWork.getStartTime() == null ||
+							Strings.isBlank(appStampWork.getSupportCard()) || 
 							appStampWork.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
 					}

@@ -13,12 +13,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
@@ -108,8 +108,13 @@ public class ActualLockFinder1 {
 				// Set Dto
 				dto.setClosureId(ClosureId.valueOf(c.getClosureId()));
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
-				dto.setDailyLockState(actualLockOpt.get().getDailyLockState());
-				dto.setMonthlyLockState(actualLockOpt.get().getMonthlyLockState());
+//				dto.setDailyLockState(actualLockOpt.get().getDailyLockState());
+//				dto.setMonthlyLockState(actualLockOpt.get().getMonthlyLockState());
+				dto.setDailyLockState(
+						actualLockOpt.isPresent() ? actualLockOpt.get().getDailyLockState() : LockStatus.UNLOCK);
+				dto.setMonthlyLockState(
+						actualLockOpt.isPresent() ? actualLockOpt.get().getMonthlyLockState() : LockStatus.UNLOCK);
+				
 				// Add ActualLockFinderDto to Target List
 				actualList.add(dto);
 			});

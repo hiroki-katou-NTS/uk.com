@@ -42,10 +42,11 @@ public class PerInfoInitValueSettingCtgFinder {
 
 	// sonnlb
 
-	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(String settingId) {
+	public List<InitCtgDto> getAllCategoryBySetId(String settingId) {
 
-		List<PerInfoInitValueSettingCtgDto> settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream()
-				.map(c -> PerInfoInitValueSettingCtgDto.fromDomain(c)).collect(Collectors.toList());
+		List<InitCtgDto> settingList;
+		settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream().map(c -> InitCtgDto.fromDomain(c))
+				.collect(Collectors.toList());
 
 		return settingList;
 

@@ -32,6 +32,18 @@ public interface PerInfoInitValueSetItemRepository {
 	 */
 	List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId);
 
+	// sonnlb
+
+	/**
+	 * get all init value item: initvalueItem ^ itemDefined
+	 * 
+	 * @param perInfoCtgId
+	 * @return List<PerInfoInitValueSetItem>
+	 */
+	List<PerInfoInitValueSetItem> getAllInitItem(String settingId, String categoryCd);
+
+	// sonnlb
+
 	/**
 	 * get detail item
 	 * 

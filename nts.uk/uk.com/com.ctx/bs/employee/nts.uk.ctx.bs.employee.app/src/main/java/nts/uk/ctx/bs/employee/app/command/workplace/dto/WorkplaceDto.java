@@ -13,7 +13,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 
 /**
  * The Class WorkplaceDto.
@@ -81,12 +80,12 @@ public class WorkplaceDto {
          * getWorkplaceId()
          */
         @Override
-        public WorkplaceId getWorkplaceId() {
+        public String getWorkplaceId() {
             String wkpId = this.dto.workplaceId;
             if (StringUtil.isNullOrEmpty(this.dto.workplaceId, true)) {
                 wkpId = IdentifierUtil.randomUniqueId();
             }
-            return new WorkplaceId(wkpId);
+            return wkpId;
         }
 
         /*

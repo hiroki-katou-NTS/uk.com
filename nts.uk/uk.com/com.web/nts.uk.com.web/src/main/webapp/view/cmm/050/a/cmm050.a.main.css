@@ -6,7 +6,13 @@ input {
 td {
 	padding-top: 10px;
 	padding-bottom: 10px;
-	vertical-align: initial;
+}
+
+#mail_setting_register{
+    margin-left: 25px;
+}
+#right-content{
+	margin-left: 45px;
 }
 
 .input_002 {
@@ -21,6 +27,7 @@ td {
 }
 
 .method_info{
+	width: 650px;
 	margin-top: 50px;
 	border: 1px solid #cccccc;
 	border-radius: 6px;

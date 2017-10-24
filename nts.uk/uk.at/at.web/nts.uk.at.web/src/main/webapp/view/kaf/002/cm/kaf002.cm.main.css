@@ -1,3 +1,7 @@
+#cm-content {
+	margin-left: 39px;
+    margin-top: 10px;
+} 
 .cm-content-left {
 	display: inline-block;
 	margin-right: 20px;
@@ -27,7 +31,7 @@
 	width: 100px;
 }
 .cm-combo-box {
-	width: 130px;
+	width: 350px;
 }
 .cm-memo {
 	width: 550px;

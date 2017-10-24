@@ -6,8 +6,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.info;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 
 /**
  * The Class WorkplaceInfo.
@@ -22,11 +20,11 @@ public class WorkplaceInfo extends AggregateRoot {
 
 	/** The history id. */
 	//履歴ID
-	private HistoryId historyId;
+	private String historyId;
 
 	/** The workplace id. */
 	//職場ID
-	private WorkplaceId workplaceId;
+	private String workplaceId;
 
 	/** The workplace code. */
 	//職場コード
@@ -95,7 +93,7 @@ public class WorkplaceInfo extends AggregateRoot {
 	public WorkplaceInfo cloneWithHistId(String newHistoryId) {
 	    WorkplaceInfo newEntity = new WorkplaceInfo();
 	    newEntity.companyId = this.companyId;
-	    newEntity.historyId = new HistoryId(newHistoryId);
+	    newEntity.historyId = newHistoryId;
 	    newEntity.workplaceId = this.workplaceId;
 	    newEntity.workplaceCode = this.workplaceCode;
 	    newEntity.workplaceName = this.workplaceName;

@@ -1,6 +1,7 @@
 package nts.uk.file.com.app;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.EmployeeUnregisterApprovalRoot;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +23,9 @@ public class EmployeeUnregisterOutputExportService extends ExportService<General
 
 	@Inject
 	private EmployeeUnregisterApprovalRoot empUnregister;
+
+	@Inject
+	private CompanyAdapter company;
 
 	@Inject
 	private EmployeeUnregisterOutputGenerator employgenerator;
@@ -32,26 +38,24 @@ public class EmployeeUnregisterOutputExportService extends ExportService<General
 		// get query parameters
 		GeneralDate value = context.getQuery();
 
-		// create data source		
+		// create data source
 		List<EmployeeUnregisterOutput> items = this.empUnregister.lstEmployeeUnregister(companyId, value);
-		if(CollectionUtil.isEmpty(items)) {
+		if (CollectionUtil.isEmpty(items)) {
 			throw new BusinessException("Msg_7");
 		}
-		HeaderEmployeeUnregisterOutput header = this.setHeader();
+		HeaderEmployeeUnregisterOutput header = this.setHeader(items.get(0));
 		val dataSource = new EmployeeUnregisterOutputDataSoure(header, items);
 
 		// generate file
 		this.employgenerator.generate(context.getGeneratorContext(), dataSource);
 	}
 
-	private HeaderEmployeeUnregisterOutput setHeader() {
+	private HeaderEmployeeUnregisterOutput setHeader(EmployeeUnregisterOutput employee) {
 		HeaderEmployeeUnregisterOutput header = new HeaderEmployeeUnregisterOutput();
-		header.setNameCompany("A");
-		header.setTitle("承認ルート未登録社員一覧");
-		header.setEmployee("対象者");
-		header.setWorkplaceCode("所属職場コード");
-		header.setWorkplaceName("所属職場名");
-		header.setAppName("申請名");
+		Optional<CompanyInfor> companyInfo = this.company.getCurrentCompany();
+		if (companyInfo.isPresent()) {
+			header.setNameCompany(companyInfo.get().getCompanyName());
+		}
 		return header;
 	}
 

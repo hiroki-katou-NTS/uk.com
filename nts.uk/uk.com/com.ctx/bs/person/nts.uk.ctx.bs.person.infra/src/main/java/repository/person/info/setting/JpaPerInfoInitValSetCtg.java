@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingCtg;
 import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingCtgPk;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.init.category.InitValSettingCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
@@ -16,13 +17,15 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSet
 @Stateless
 public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoInitValSetCtgRepository {
 
-	private final String SEL_CTG_BY_SET_ID = "SELECT c FROM PpemtPersonInitValueSettingCtg c "
-			+ " INNER JOIN PpemtPerInfoCtg b" + " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoCtgCm cm " + " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder e"
+	// sonnlb
+	private final String SEL_CTG_BY_SET_ID = "SELECT b.categoryCd, b.categoryName "
+			+ " FROM PpemtPersonInitValueSettingCtg c " + " LEFT JOIN PpemtPerInfoCtg b"
+			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " LEFT JOIN PpemtPerInfoCtgCm cm "
+			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " LEFT JOIN PpemtPerInfoCtgOrder e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
+	// sonnlb
 	private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
 			+ " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "
@@ -68,10 +71,18 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	}
 
 	// sonnlb
+
+	private static InitValSettingCtg toValSettingDomain(Object[] entity) {
+		InitValSettingCtg domain = new InitValSettingCtg(String.valueOf(entity[0].toString()),
+				String.valueOf(entity[1].toString()));
+		return domain;
+
+	}
+
 	@Override
-	public List<PerInfoInitValueSettingCtg> getAllCategoryBySetId(String settingId) {
+	public List<InitValSettingCtg> getAllCategoryBySetId(String settingId) {
 		return this.queryProxy().query(SEL_CTG_BY_SET_ID, Object[].class).setParameter("settingId", settingId)
-				.getList(c -> toDomain(c));
+				.getList(c -> toValSettingDomain(c));
 	}
 
 	// sonnlb
@@ -130,7 +141,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	}
 
-	//hoatt
+	// hoatt
 	@Override
 	public void addAllCtg(List<PerInfoInitValSetCtg> lstCtg) {
 		List<PpemtPersonInitValueSettingCtg> lstEntity = new ArrayList<>();

@@ -131,10 +131,13 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
         cq.orderBy(criteriaBuilder.desc(root.get(BsymtWkpConfig_.strD)));
 
-        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream()
+        List<WorkplaceConfigHistory> lstWkpConfigHist = em.createQuery(cq).getResultList().stream()
                 .map(item -> this.toDomain(item))
                 .collect(Collectors.toList());
-        return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
+        if (lstWkpConfigHist.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWkpConfigHist)));
     }
 
     /*
@@ -146,7 +149,6 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
      */
     @Override
     public Optional<WorkplaceConfig> findByStartDate(String companyId, GeneralDate startDate) {
-        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
         // get entity manager
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -167,9 +169,13 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
         // exclude select
-        lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+        List<WorkplaceConfigHistory> lstWkpConfigHist = em.createQuery(cq).getResultList().stream()
+                .map(item -> this.toDomain(item))
                 .collect(Collectors.toList());
-        return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
+        if (lstWkpConfigHist.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWkpConfigHist)));
     }
 
     /**

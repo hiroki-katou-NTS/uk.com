@@ -56,6 +56,5 @@ public interface SequenceMasterRepository {
 	 *
 	 * @return the short
 	 */
-	short findMaxOrder();
-	
+	int findMaxOrder();
 }

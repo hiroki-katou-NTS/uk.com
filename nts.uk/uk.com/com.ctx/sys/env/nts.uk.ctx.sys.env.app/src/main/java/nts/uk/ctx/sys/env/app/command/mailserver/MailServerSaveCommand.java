@@ -9,14 +9,12 @@ import nts.uk.ctx.sys.env.dom.mailserver.AuthenticationMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.EmailAuthentication;
 import nts.uk.ctx.sys.env.dom.mailserver.EncryptionMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.ImapInfo;
-import nts.uk.ctx.sys.env.dom.mailserver.IpVersion;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServerGetMemento;
 import nts.uk.ctx.sys.env.dom.mailserver.Password;
 import nts.uk.ctx.sys.env.dom.mailserver.PopInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.Port;
 import nts.uk.ctx.sys.env.dom.mailserver.Server;
 import nts.uk.ctx.sys.env.dom.mailserver.SmtpInfo;
-import nts.uk.ctx.sys.env.dom.mailserver.TimeOut;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
 import nts.uk.ctx.sys.env.dom.mailserver.UseServer;
 import nts.uk.shr.com.context.AppContexts;
@@ -112,9 +110,8 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	@Override
 	public SmtpInfo getSmtpInfo() {
 		Server stmpServer = new Server(this.smtpDto.getSmtpServer());
-		TimeOut stmpTimeOut = new TimeOut(this.smtpDto.getSmtpTimeOut());
 		Port smtpPort = new Port(this.smtpDto.getSmtpPort());
-		return new SmtpInfo(IpVersion.valueOf(this.smtpDto.smtpIpVersion), stmpServer, stmpTimeOut, smtpPort );
+		return new SmtpInfo(stmpServer, smtpPort );
 	}
 
 	/* (non-Javadoc)
@@ -123,9 +120,8 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	@Override
 	public ImapInfo getImapInfo() {
 		Server imapServer = new Server(this.imapDto.getImapServer());
-		TimeOut imapTimeOut = new TimeOut(this.imapDto.getImapTimeOut());
 		Port imapPort = new Port(this.imapDto.getImapPort());
-		return new ImapInfo(IpVersion.valueOf(this.imapDto.getImapIpVersion()), imapServer, UseServer.valueOf(this.imapDto.getImapUseServer()) , imapTimeOut, imapPort);
+		return new ImapInfo(imapServer, UseServer.valueOf(this.imapDto.getImapUseServer()) , imapPort);
 	}
 
 	/* (non-Javadoc)
@@ -134,9 +130,8 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	@Override
 	public PopInfo getPopInfo() {
 		Server popServer = new Server(this.popDto.getPopServer());
-		TimeOut popTimeOut = new TimeOut(this.popDto.getPopTimeOut());
 		Port popPort = new Port(this.popDto.getPopPort());
-		return new PopInfo(IpVersion.valueOf(this.popDto.getPopIpVersion()), popServer, UseServer.valueOf(this.popDto.getPopUseServer()) , popTimeOut, popPort);
+		return new PopInfo(popServer, UseServer.valueOf(this.popDto.getPopUseServer()), popPort);
 	}
 	
 }

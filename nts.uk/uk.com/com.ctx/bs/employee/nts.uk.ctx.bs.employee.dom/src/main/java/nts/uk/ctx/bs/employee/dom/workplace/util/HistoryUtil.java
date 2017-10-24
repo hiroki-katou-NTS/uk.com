@@ -22,6 +22,21 @@ public class HistoryUtil {
     /** The Constant ELEMENT_FIRST. */
     private static final Integer ELEMENT_FIRST = 0;
     
+    /** The Constant DATE_FORMAT. */
+    private static final String DATE_FORMAT = "yyyy/MM/dd";
+    
+    /** The Constant MAX_DATE. */
+    private static final String MAX_DATE = "9999/12/31";
+    
+    /**
+     * Gets the max date.
+     *
+     * @return the max date
+     */
+    public static GeneralDate getMaxDate() {
+        return GeneralDate.fromString(MAX_DATE, DATE_FORMAT);
+    }
+    
     /**
      * Valid start date.
      *

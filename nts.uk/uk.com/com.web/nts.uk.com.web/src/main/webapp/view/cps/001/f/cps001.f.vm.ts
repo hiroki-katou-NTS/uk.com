@@ -17,24 +17,17 @@ module cps001.f.vm {
         asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         onchange: (filename) => void;
-        onfilenameclick: (filename) => void;
-
+        onfilenameclick: (fileId) => void;
 
         items: Array<GridItem> = [];
-        comboItems = [new ItemModel('1', '基本給'),
-            new ItemModel('2', '役職手当'),
-            new ItemModel('3', '基本給2')];
+        comboItems: Array<PersonCtg> = [];
 
-        comboColumns = [{ prop: 'code', length: 4 },
-            { prop: 'name', length: 8 }];
+        comboColumns = [{ prop: 'name', length: 12 }];
 
 
         constructor() {
             let self = this,
-                dto: IModelDto = getShared('CPS001B_PARAM') || {};
-            self.start();
-            console.log(self.items);
-            $("#grid2").ntsGrid('option', 'dataSource', self.items);
+                dto: any = getShared('CPS001B_PARAM') || {};
 
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
@@ -44,84 +37,169 @@ module cps001.f.vm {
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
             self.onchange = (filename) => {
+
             };
-            self.onfilenameclick = (filename) => {
-                alert(filename);
+            self.onfilenameclick = (fileId) => {
+                alert(fileId);
             };
 
         }
 
-        start() {
-            let self = this;
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            self.items = [];
+            var dfdGetData = service.getData("90000000-0000-0000-0000-000000000001");
+            var dfdGetInfoCategory = service.getInfoCatagory();
 
-
-            for (let i = 0; i < 5; i++) {
-                self.items.push(new GridItem(i));
-            }
-
-            service.getInfoCatagory().done((data: Array<IPerInfoCtgFullDto>) => {
-                console.log(data);
+            $.when(dfdGetData, dfdGetInfoCategory).done((datafile: Array<IEmpFileMana>, dataCategory: Array<IPersonCtg>) => {
+                _.forEach(datafile, function(item) {
+                    self.items.push(new GridItem(item));
+                });
+                _.forEach(dataCategory, function(item) {
+                    self.comboItems.push(new PersonCtg(item));
+                });
+                dfd.resolve();
             });
+            return dfd.promise();
         }
+
+
         pushData() {
             let self = this;
             // upload file 
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
                 self.fileId(res[0].id);
                 // save file to domain EmployeeFileManagement
-                service.savedata({ sid: '90000000-0000-0000-0000-000000000001', fileid: res[0].id }).done(() => {
-                    console.log("done");
-                });
-
+                if (self.items.length == 0) {
+                    service.savedata({
+                        sid: '90000000-0000-0000-0000-000000000001',
+                        fileid: res[0].id,
+                        personInfoCtgId: self.comboItems[0].id,
+                        uploadOrder: 1
+                    }).done(() => {
+                        self.restart();
+                        self.filename("");
+                    });
+                } else {
+                    service.savedata({
+                        sid: '90000000-0000-0000-0000-000000000001',
+                        fileid: res[0].id,
+                        personInfoCtgId: self.comboItems[0].id,
+                        uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
+                    }).done(() => {
+                        self.start().done(() => {
+                            self.restart();
+                            self.filename("");
+                        });
+                    });
+                }
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
             });
-            let fileid = self.fileId();
-
             setShared('CPS001B_VALUE', {});
+        }
+
+        deleteItem(rowItem: IEmpFileMana) {
+            let self = this;
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deletedata(rowItem.fileId).done(() => {
+                    self.restart();
+                });
+            }).ifCancel(() => {
+
+            });
+        }
+
+        updateCtgItem(rowItem: IEmpFileMana, comboBoxIdNew: any) {
+            let self = this;
+            if (rowItem.personInfoCategoryId != comboBoxIdNew) {
+                service.updateCtgdata({ fileId: rowItem.fileId, personInfoCategoryIdNew: comboBoxIdNew }).done(() => {
+                    self.restart();
+                });
+            }
+        }
+
+        restart() {
+            __viewContext['viewModel'] = new vm.ViewModel();
+
+            __viewContext['viewModel'].start().done(() => {
+                init();
+                __viewContext.bind(__viewContext['viewModel']);
+            });
         }
 
         close() {
             close();
         }
+
+
     }
 
-    interface IPerInfoCtgFullDto {
-        id: string;
-        categoryName: string;
-    }
-
-    class PerInfoCtgFullDto {
-        id: string;
-        categoryName: string;
-        constructor(param: IPerInfoCtgFullDto) {
-            this.id = param.id;
-            this.categoryName = param.categoryName;
-        }
-    }
 
     class GridItem {
-        id: number;
-        header2: string;
-        flag: boolean;
-        ruleCode: string;
+        id: string;
+        fileName: string;
+        fileId: string;
+        employeeId: string;
+        categoryName: string;
+        personInfoCategoryId: string;
+        open: string;
         combo: string;
-        constructor(index: number) {
-            this.id = index;
-            this.header2 = index.toString();
-            this.flag = index % 2 == 0;
-            this.ruleCode = String(index % 3 + 1);
-            this.combo = String(index % 3 + 1);
+        uploadOrder: number
+        constructor(param: IEmpFileMana) {
+            this.id = nts.uk.util.randomId();
+            this.fileName = param.fileName;
+            this.fileId = param.fileId;
+            this.employeeId = param.employeeId;
+            this.categoryName = param.categoryName;
+            this.personInfoCategoryId = param.personInfoCategoryId;
+            this.open = param.fileId;
+            this.uploadOrder = param.uploadOrder;
+            this.combo = param.personInfoCategoryId;
         }
     }
 
-    class ItemModel {
-        code: string;
-        name: string;
+    interface IEmpFileMana {
+        employeeId: string;
+        fileId: string;
+        fileName: string;
+        categoryName: string;
+        personInfoCategoryId: string;
+        uploadOrder: number;
+    }
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+    class EmpFileMana {
+        employeeId: string;
+        fileId: string;
+        categoryName: string;
+        personInfoCategoryId: string;
+        uploadOrder: number;
+        constructor(param: IEmpFileMana) {
+            this.employeeId = param.employeeId;
+            this.fileId = param.fileId;
+            this.categoryName = param.categoryName;
+            this.personInfoCategoryId = param.personInfoCategoryId;
+            this.uploadOrder = param.uploadOrder;
+        }
+    }
+
+    interface IPersonCtg {
+        id: string;
+        categoryCode: string;
+        categoryName: string;
+        personEmployeeType: number;
+        isAbolition: number;
+        categoryType: number;
+        isFixed: number;
+    }
+
+    class PersonCtg {
+        id: string;
+        name: string;
+        constructor(param: IPersonCtg) {
+            this.name = param.categoryName;
+            this.id = param.id;
         }
     }
 }

@@ -19,7 +19,7 @@ public interface AssignedWorkplaceMemento {
 	 * Get history id
 	 * @return history id
 	 * */
-	public HistoryId getHistoryId();
+	public String getHistoryId();
 	
 	/**
 	 * Get period
@@ -43,7 +43,7 @@ public interface AssignedWorkplaceMemento {
 	 * Set history id
 	 * @param history id
 	 * */
-	public void setHistoryId(HistoryId historyId);
+	public void setHistoryId(String historyId);
 	
 	/**
 	 * Set period
