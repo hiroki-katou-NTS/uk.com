@@ -130,14 +130,15 @@
 											<com:ko tag="foreach" bind="rateBRDItems">
 												<td>
 													<div>
-														<input class="rate" tabindex="11" 
-															data-bind="ntsNumberEditor: {name: '#[KMK010_21]',
+													<input class="rate" tabindex="11"
+														data-bind="ntsNumberEditor: {name: '#[KMK010_21]',
 															value: premiumRate,
 															constraint: 'PremiumRate',
+															option: { defaultValue: 0},
 															enable: enableInput,
 															required: true
 															}" />
-														<label>#{i18n.getText('KMK010_22')}</label>
+													<label>#{i18n.getText('KMK010_22')}</label>
 													</div>
 												</td>
 											</com:ko>

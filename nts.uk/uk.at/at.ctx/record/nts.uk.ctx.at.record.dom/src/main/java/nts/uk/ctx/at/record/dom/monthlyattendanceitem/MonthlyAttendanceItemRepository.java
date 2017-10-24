@@ -18,7 +18,7 @@ public interface MonthlyAttendanceItemRepository {
 	 * @param itemAtr the item atr
 	 * @return the list
 	 */
-	List<MonthlyAttendanceItem> findByAtr(String companyId, int itemAtr);
+	List<MonthlyAttendanceItem> findByAtr(String companyId, MonthlyAttendanceItemAtr itemAtr);
 
 	/**
 	 * Find all.
