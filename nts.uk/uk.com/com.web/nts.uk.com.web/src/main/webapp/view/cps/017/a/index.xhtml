@@ -15,6 +15,10 @@
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionNameLength
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionExternalCDLength
 					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.Memo
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionCD 
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionName
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.MemoSelection
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.ExternalCD
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
@@ -27,8 +31,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 
-				<button id="A1_001" tabindex="1">#{i18n.getText('CPS017_1')}</button>
-				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS017_2')}</button>
+				<button id="A1_001" tabindex="1" data-bind="click : registerData">#{i18n.getText('CPS017_1')}</button>
+				<button id="A1_002" class="proceed" tabindex="2" data-bind="click : addData, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3">#{i18n.getText('CPS017_4')}</button>
 
 				<button id="A1_008" tabindex="4">#{i18n.getText('CPS017_50')}</button>
@@ -126,7 +130,7 @@
 									columns: [
 						                { headerText: '', key: 'selectionID', width: 20 ,hidden:true},
 						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'initSelection', width: 100, formatter :makeIcon },
-						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCode', width: 120 },
+						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCD', width: 120 },
 						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 140}
 						            ],
 									multiple: false,
@@ -141,7 +145,7 @@
 				<div id="content-right" data-bind="with: selection">
 					<div class="row">
 						<div style="float: left;"
-							data-bind="ntsFormLabel: {required: true}" class='distane col1'>
+							data-bind="ntsFormLabel: {constraint: ['SelectionCD','SelectionName'], required: true}" class='distane col1'>
 							<label>#{i18n.getText('CPS017_20')}</label>
 						</div>
 					</div>
@@ -149,10 +153,10 @@
 					<div class="distance">
 						<input id="code" style="width: 100px"
 							data-bind="ntsTextEditor: { 
-								value: selectionCode,
+								value: selectionCD,
 								constraint: 'listSelection', 
 								required: true, 
-								enable: $parent.selection().selectionID() == undefined , 
+								enable: $parent.selection().selectionCD(), 
  								immediate: false}" />
 
 						<input id="name"
@@ -166,7 +170,7 @@
 
 					<div class="row">
 						<div class="coll"
-							data-bind="ntsFormLabel: {constraint: 'IntegrationCode', required: false }">#{i18n.getText('CPS017_23')}</div>
+							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">#{i18n.getText('CPS017_23')}</div>
 						<input style="width: 100px;"
 							data-bind="ntsTextEditor: {
 									value: externalCD,
@@ -177,16 +181,13 @@
 									readonly: false}" />
 					</div>
 
-
-
-					<!--  -->
 					<div>
 						<div
-							data-bind="ntsFormLabel: {constraint: 'Memo', required: false }">
+							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
 							<label>#{i18n.getText('CPS016_21')}</label>
 						</div>
 						<textarea style="width: 350px; height: 110px;"
-							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'Memo',required: false}" />
+							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'MemoSelection',required: false}" />
 					</div>
 
 

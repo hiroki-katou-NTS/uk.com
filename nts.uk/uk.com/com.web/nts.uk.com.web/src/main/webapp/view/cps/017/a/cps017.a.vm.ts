@@ -24,6 +24,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
         listOrderSelection: KnockoutObservableArray<IOrderSelection> = ko.observableArray([]);
         orderSelection: KnockoutObservable<OrderSelection> = ko.observable(new OrderSelection({ selectionID: '', histId: '' }));
 
+        //Check insert/upadte
+        checkCreate: KnockoutObservable<boolean>;
+
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -32,6 +35,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 //_selectId = _.find(listHistorySelection, x => x.selectionItemId == historySelection.selectionItemId),
                 //comand: HistorySelection = ko.toJS(historySelection)
                 selection: Selection = self.selection();
+
+            //check insert/update
+            self.checkCreate = ko.observable(true);
 
             //Subscribe: 項目変更→項目のID変更
             perInfoSelectionItem.selectionItemId.subscribe(x => {
@@ -56,13 +62,18 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.historySelection().histId(self.listHistorySelection()[0].histId);
                     });
                 }
+                // self.checkCreate(false);
             });
 
             //sub theo historyID:
             historySelection.histId.subscribe(x => {
                 service.getAllOrderItemSelection(x).done((_selectionID: ISelection) => {
                     self.listSelection(_selectionID);
-                    self.selection().selectionID(self.listSelection()[0].selectionID);
+                    // check !null
+                    if(self.listSelection(_selectionID)> 0 ){ // check lai
+                       self.selection().selectionID(self.listSelection()[0].selectionID);
+                    }
+                    
                 });
             });
 
@@ -72,11 +83,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let selectLists = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
                     });
-                    selection.selectionCode(selectLists.selectionCode);
+                    selection.selectionCD(selectLists.selectionCD);
                     selection.selectionName(selectLists.selectionName);
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                 }
+                self.checkCreate(false);
             });
 
         }
@@ -108,6 +120,78 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             return dfd.promise();
         }
+
+        //新規ボタン
+        registerData() {
+            let self = this,
+                selection: Selection = self.selection();
+            nts.uk.ui.errors.clearAll();
+            selection.selectionCD('');
+            selection.externalCD('');
+            //selection.selectionCode('');
+            selection.selectionName('');
+            selection.memoSelection('');
+            self.checkCreate(true);
+        }
+
+        //検証チェック 
+        validate() {
+            $(".nts-editor").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        }
+
+        //登録ボタン
+        addData() {
+            let self = this;
+            if (self.validate()) {
+                if (self.checkCreate() == true) {
+                    self.add();
+                } else {
+                    self.update();
+                }
+            }
+        }
+
+        //新規モード
+        add() {
+            //alert("insert!");
+            let self = this,
+                currentItem: Selection = self.selection(),
+                listSelection: Array<Selection> = self.listSelection(),
+                _selectionCode = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
+                
+           currentItem.histId(self.historySelection().histId());
+                command = ko.toJS(currentItem);
+
+            if (_selectionCode) {
+                alertError({ messageId: "Msg_3" });
+            } else {
+                service.saveDataSelection(command).done(function(selectionCD) {
+                    self.listSelection.removeAll();
+
+                    service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listSelection.push(x));
+                        }
+                    });
+                    self.listSelection.valueHasMutated();
+                    self.selection().selectionCD(selectionCD);
+
+                });
+
+                //alert("Test!");
+            }
+
+        }
+
+        //更新モード
+        update() {
+            alert("update!");
+        }
+
 
         //ダイアログC画面
         openDialogC() {
@@ -195,35 +279,35 @@ module nts.uk.com.view.cps017.a.viewmodel {
     interface ISelection {
         selectionID?: string;
         histId?: string;
-        selectionCode: string;
+        selectionCD: string;
         selectionName: string;
         externalCD: string;
         memoSelection: string;
-        
+
         initSelection: number;
     }
     class Selection {
         selectionID: KnockoutObservable<string> = ko.observable('');
         histId: KnockoutObservable<string> = ko.observable('');
-        selectionCode: KnockoutObservable<string> = ko.observable('');
+        selectionCD: KnockoutObservable<string> = ko.observable('');
         selectionName: KnockoutObservable<string> = ko.observable('');
         externalCD: KnockoutObservable<string> = ko.observable('');
         memoSelection: KnockoutObservable<string> = ko.observable('');
-        
+
         initSelection: KnockoutObservable<number> = ko.observable();
 
         constructor(param: ISelection) {
             let self = this;
             self.selectionID(param.selectionID || '');
             self.histId(param.histId || '');
-            self.selectionCode(param.selectionCode || '');
+            self.selectionCD(param.selectionCD || '');
             self.selectionName(param.selectionName || '');
             self.externalCD(param.externalCD || '');
             self.memoSelection(param.memoSelection || '');
-            
+
             //self.initSelection(param.initSelection === 1 ? true : false);
             self.initSelection(param.initSelection || '');
-            
+
         }
     }
 
