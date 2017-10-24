@@ -59,7 +59,7 @@ module nts.uk.ui.jqueryExtentions {
                         dfd.resolve(data);
                     }
                 }).fail(function() {
-                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                    dfd.reject({ message: "Please check your network", messageId: "1" });
                 });
             }
             else {
