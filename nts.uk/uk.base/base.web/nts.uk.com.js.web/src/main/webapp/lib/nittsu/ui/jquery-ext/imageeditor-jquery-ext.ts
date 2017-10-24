@@ -49,7 +49,7 @@ module nts.uk.ui.jqueryExtentions {
                         "y": cropperData.y,
                         "width": cropperData.width,
                         "height": cropperData.height,
-                        "crop": nts.uk.util.isNullOrEmpty($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
+                        "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {

@@ -1207,7 +1207,7 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
-                    if (nts.uk.util.isNullOrEmpty(source) || !isFinite(source)) {
+                    if (!isFinite(source)) {
                         return source;
                     }
                     var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
@@ -4699,16 +4699,9 @@ var nts;
                         var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
-                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
+                        var enable = ko.unwrap(data.enable);
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
-                        var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
-                        if (dropDownAttachedToBody === null) {
-                            if ($(element).closest(".ui-iggrid").length != 0)
-                                dropDownAttachedToBody = true;
-                            else
-                                dropDownAttachedToBody = false;
-                        }
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
                         var distanceColumns = '     ';
@@ -4767,7 +4760,7 @@ var nts;
                                 dataSource: options,
                                 valueKey: data.optionsValue,
                                 visibleItemsCount: visibleItemsCount,
-                                dropDownAttachedToBody: dropDownAttachedToBody,
+                                dropDownAttachedToBody: false,
                                 textKey: 'nts-combo-label',
                                 mode: comboMode,
                                 disabled: !enable,
@@ -7387,7 +7380,6 @@ var nts;
                                     component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                 }
                                 var srh = $container.data("searchObject");
-                                $input.val("");
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
@@ -8691,8 +8683,7 @@ var nts;
                                 }
                                 else {
                                     if (ko.isObservable(data.value)) {
-                                        data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
-                                        data.value.valueHasMutated();
+                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
                                     }
                                 }
                             }
@@ -14423,96 +14414,53 @@ var nts;
                 var ntsPopup;
                 (function (ntsPopup) {
                     var DATA_INSTANCE_NAME = 'nts-popup-panel';
-                    ;
-                    $.fn.ntsPopup = handler;
-                    function handler(action, option) {
-                        var $control = $(this);
-                        if (typeof action !== 'string') {
-                            handler.call(this, "init", action);
+                    $.fn.ntsPopup = function () {
+                        if (arguments.length === 1) {
+                            var p = arguments[0];
+                            if (_.isPlainObject(p)) {
+                                return init.apply(this, arguments);
+                            }
                         }
-                        switch (action) {
-                            case 'init':
-                                init($control, option);
-                                break;
+                        if (typeof arguments[0] === 'string') {
+                            return handleMethod.apply(this, arguments);
+                        }
+                    };
+                    function init(param) {
+                        var popup = new NtsPopupPanel($(this), param.position);
+                        var dismissible = param.dismissible === false;
+                        _.defer(function () {
+                            if (!dismissible) {
+                                $(window).mousedown(function (e) {
+                                    if ($(e.target).closest(popup.$panel).length === 0) {
+                                        popup.hide();
+                                    }
+                                });
+                            }
+                        });
+                        return popup.$panel;
+                    }
+                    function handleMethod() {
+                        var methodName = arguments[0];
+                        var popup = $(this).data(DATA_INSTANCE_NAME);
+                        switch (methodName) {
                             case 'show':
-                                show($control);
+                                popup.show();
                                 break;
                             case 'hide':
-                                hide($control);
+                                popup.hide();
                                 break;
                             case 'destroy':
-                                destroy($control);
+                                popup.hide();
+                                popup.destroy();
                                 break;
                             case 'toggle':
-                                toggle($control);
+                                popup.toggle();
                                 break;
                         }
                     }
-                    function init(control, option) {
-                        control.addClass("popup-panel").css("z-index", 100).show();
-                        var defaultoption = {
-                            trigger: "",
-                            position: {
-                                my: 'left top',
-                                at: 'left bottom',
-                                of: control.siblings('.show-popup')
-                            },
-                            showOnStart: false,
-                            dismissible: true
-                        };
-                        var setting = $.extend({}, defaultoption, option);
-                        control.data("option", setting);
-                        $(setting.trigger).on("click.popup", function (e) {
-                            show(control);
-                        });
-                        if (setting.dismissible) {
-                            $(window).on("mousedown.popup", function (e) {
-                                if (!$(e.target).is(control)
-                                    && control.has(e.target).length === 0
-                                    && !$(e.target).is(setting.trigger)) {
-                                    hide(control);
-                                }
-                            });
-                        }
-                        if (setting.showOnStart)
-                            show(control);
-                        else
-                            hide(control);
-                        return control;
-                    }
-                    function show(control) {
-                        control.css({
-                            visibility: 'visible',
-                        });
-                        control.position(control.data("option").position);
-                        return control;
-                    }
-                    function hide(control) {
-                        control.css({
-                            visibility: 'hidden',
-                            top: "-9999px",
-                            left: "-9999px"
-                        });
-                        return control;
-                    }
-                    function destroy(control) {
-                        hide(control);
-                        $(control.data("option").trigger).off("click.popup");
-                        $(window).off("click.popup");
-                        return control;
-                    }
-                    function toggle(control) {
-                        var isDisplaying = control.css("visibility");
-                        if (isDisplaying === 'hidden') {
-                            show(control);
-                        }
-                        else {
-                            hide(control);
-                        }
-                        return control;
-                    }
                     var NtsPopupPanel = (function () {
-                        function NtsPopupPanel($panel, option) {
+                        function NtsPopupPanel($panel, position) {
+                            this.position = position;
                             var parent = $panel.parent();
                             this.$panel = $panel
                                 .data(DATA_INSTANCE_NAME, this)
@@ -14520,9 +14468,37 @@ var nts;
                                 .appendTo(parent);
                             this.$panel.css("z-index", 100);
                         }
+                        NtsPopupPanel.prototype.show = function () {
+                            this.$panel
+                                .css({
+                                visibility: 'hidden',
+                                display: 'block'
+                            })
+                                .position(this.position)
+                                .css({
+                                visibility: 'visible'
+                            });
+                        };
+                        NtsPopupPanel.prototype.hide = function () {
+                            this.$panel.css({
+                                display: 'none'
+                            });
+                        };
+                        NtsPopupPanel.prototype.destroy = function () {
+                            this.$panel = null;
+                        };
+                        NtsPopupPanel.prototype.toggle = function () {
+                            var isDisplaying = this.$panel.css("display");
+                            if (isDisplaying === 'none') {
+                                this.show();
+                            }
+                            else {
+                                this.hide();
+                            }
+                        };
                         return NtsPopupPanel;
                     }());
-                })(ntsPopup = jqueryExtentions.ntsPopup || (jqueryExtentions.ntsPopup = {}));
+                })(ntsPopup || (ntsPopup = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21499,7 +21475,7 @@ var nts;
                                 "y": cropperData.y,
                                 "width": cropperData.width,
                                 "height": cropperData.height,
-                                "crop": nts.uk.util.isNullOrEmpty($element.data('checkbox')) ? false : $element.data('checkbox').checked()
+                                "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked()
                             };
                             nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
                                 if (data !== undefined && data.businessException) {
