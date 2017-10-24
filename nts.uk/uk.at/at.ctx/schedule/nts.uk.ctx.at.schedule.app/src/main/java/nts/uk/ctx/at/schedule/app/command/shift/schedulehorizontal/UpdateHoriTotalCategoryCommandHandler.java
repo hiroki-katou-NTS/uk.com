@@ -33,7 +33,7 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 			throw new BusinessException("Msg_3");
 		}
 		// check list 集計項目一覧 exsisted or not
-		if(data.getTotalEvalOrders() == null){
+		if(data.getTotalEvalOrders() == null || data.getTotalEvalOrders().size() == 0){
 			throw new BusinessException("Msg_363");
 		}
 		// get hori cal day set item
