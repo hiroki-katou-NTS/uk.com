@@ -14,9 +14,7 @@ $(function(){
     $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/nts.uk.com.web/view/sample/catalog/css/404.css'));
     $.getScript('/nts.uk.com.web/view/sample/catalog/script/404.js');
     $.getScript('/nts.uk.com.web/view/sample/catalog/script/particles.min.js', function() {
-        particlesJS.load('particles-js', '/nts.uk.com.web/view/sample/catalog/script/particlesjs-config.json', function() {
-          console.log('callback - particles.js config loaded');
-        });
+        particlesJS.load('particles-js', '/nts.uk.com.web/view/sample/catalog/script/particlesjs-config.json');
     });
         
     $("#side-menu").load("/nts.uk.com.web/view/sample/catalog/sidemenu.xhtml", function(){
