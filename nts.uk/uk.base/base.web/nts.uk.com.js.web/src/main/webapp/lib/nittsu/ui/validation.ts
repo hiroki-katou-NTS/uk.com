@@ -397,6 +397,8 @@ module nts.uk.ui.validation {
         valueType: string;
         mode: string;
         acceptJapaneseCalendar: boolean;
+        defaultValue: string;
+        
         constructor(name: string, primitiveValueName: string, option?: any) {
             this.name = name;
             this.constraint = getConstraint(primitiveValueName);
@@ -408,12 +410,15 @@ module nts.uk.ui.validation {
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
             this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
+            this.defaultValue = (option && option.defaultValue) ? option.defaultValue : true;
         }
 
         validate(inputText: string): any {
             var result = new ValidationResult();
             // Check required
-            if (util.isNullOrEmpty(inputText)) {
+            if(util.isNullOrEmpty(inputText) && !util.isNullOrEmpty(this.defaultValue)){
+                inputText = this.defaultValue;
+            } else if (util.isNullOrEmpty(inputText)) {
                 if (this.required === true) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
