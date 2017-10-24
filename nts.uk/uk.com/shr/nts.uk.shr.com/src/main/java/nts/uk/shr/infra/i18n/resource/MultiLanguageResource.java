@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.i18n.loading;
+package nts.uk.shr.infra.i18n.resource;
 
 import java.io.Serializable;
 import java.util.ArrayList;

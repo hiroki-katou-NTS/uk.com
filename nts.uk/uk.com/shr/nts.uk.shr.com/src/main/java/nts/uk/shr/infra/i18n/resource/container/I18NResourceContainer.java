@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -33,6 +34,12 @@ public class I18NResourceContainer<T extends I18NResourceItem> {
 	
 	public Optional<String> getContentOptional(String identifier) {
 		return this.contains(identifier) ? Optional.of(this.getContent(identifier)) : Optional.empty();
+	}
+	
+	public Map<String, String> createContentsMap() {
+		return this.items.entrySet().stream().collect(Collectors.toMap(
+				es -> es.getKey(),
+				es -> es.getValue().content()));
 	}
 	
 	@SuppressWarnings("unchecked")

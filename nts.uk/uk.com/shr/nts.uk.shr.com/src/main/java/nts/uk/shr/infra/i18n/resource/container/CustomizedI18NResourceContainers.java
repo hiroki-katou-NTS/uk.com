@@ -29,6 +29,11 @@ public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
 		return this.itemsEachCompany.getOrDefault(companyId, I18NResourceContainer.empty());
 	}
 	
+	public Map<String, String> createContentsMap(String companyId) {
+		val container = this.itemsEachCompany.getOrDefault(companyId, I18NResourceContainer.empty());
+		return container.createContentsMap();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T1 extends I18NResourceItem, T2 extends I18NResourceItem> CustomizedI18NResourceContainers<?> merge(
 			CustomizedI18NResourceContainers<T1> source1,

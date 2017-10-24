@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.val;
+import nts.uk.shr.com.i18n.LanguageConsts;
 import nts.uk.shr.infra.i18n.resource.container.CustomizedI18NResourceContainers;
 
 public class I18NResourcesCustomized {
@@ -24,5 +25,14 @@ public class I18NResourcesCustomized {
 	
 	public void put(String languageId, CustomizedI18NResourceContainers<?> containers) {
 		this.resources.put(languageId, containers);
+	}
+	
+	public Map<String, String> createContentsMap(String languageId, String companyId) {
+		val containers = this.resources.getOrDefault(languageId, this.forDefaultLanguage());
+		return containers.createContentsMap(companyId);
+	}
+	
+	public CustomizedI18NResourceContainers<?> forDefaultLanguage() {
+		return this.resources.get(LanguageConsts.DEFAULT_LANGUAGE_ID);
 	}
 }

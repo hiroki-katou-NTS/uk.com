@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
+import nts.uk.shr.infra.i18n.resource.web.webapi.I18NResourcesWebService;
 import nts.uk.shr.infra.web.component.env.ViewContextEnvWriter;
 
 @FacesComponent(tagName = "viewcontext", createTag = true)
@@ -51,7 +52,8 @@ public class ViewContext extends UIComponentBase {
 
 		CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
 		rw.write("</script>");
-		//rw.write("<script src='/nts.uk.com.web/webapi/loadresource'></script>");
+		
+		rw.write(I18NResourcesWebService.getHtmlToLoadResources());
 
 	}
 	

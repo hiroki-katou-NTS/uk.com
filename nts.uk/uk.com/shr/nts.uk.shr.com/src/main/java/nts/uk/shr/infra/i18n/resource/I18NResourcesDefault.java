@@ -29,6 +29,11 @@ public class I18NResourcesDefault {
 		this.resources.put(languageId, container);
 	}
 	
+	public Map<String, String> createContentsMap(String languageId) {
+		val container = this.resources.getOrDefault(languageId, this.defaultContainer());
+		return container.createContentsMap();
+	}
+	
 	private I18NResourceContainer<?> defaultContainer() {
 		return this.resources.get(LanguageConsts.DEFAULT_LANGUAGE_ID);
 	}
