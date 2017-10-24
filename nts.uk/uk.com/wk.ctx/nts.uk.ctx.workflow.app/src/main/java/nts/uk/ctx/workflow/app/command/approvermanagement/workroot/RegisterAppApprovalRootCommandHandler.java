@@ -86,7 +86,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		GeneralDate eDate = sDate.addDays(-1);
 		String endDateNew = eDate.toString().replace("/", "-");
 		String endDateS = "9999-12-31";
-		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
 		//loai bo nhung root chua duoc setting
 		for (CompanyAppRootADto commonRoot : root) {
@@ -116,8 +115,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					throw new BusinessException("Msg_156");
 				}
 				listCom.add(com);
-				//get root old by end date and type
-				List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByEdate(companyId, endDate, type, employRootAtr);
+				//find history by type and EmployRootAtr
+				List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, type, employRootAtr);
 				if(!comOld.isEmpty()){
 					//update ls cu
 					CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comOld.get(0), endDateNew);
@@ -174,7 +173,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		GeneralDate eDate = sDate.addDays(-1);
 		String endDateNew = eDate.toString().replace("/", "-");
 		String endDateS = "9999-12-31";
-		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
 		//loai bo nhung root chua duoc setting
 		for (CompanyAppRootADto commonRoot : root) {
@@ -207,7 +205,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					throw new BusinessException("Msg_156");
 				}
 				listWp.add(com);
-				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDate, type, employRootAtr);
+				//find history by type and 
+				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, type, employRootAtr);
 				if(!psOld.isEmpty()){
 					//update ls cu
 					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(psOld.get(0), endDateNew);
@@ -264,7 +263,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		GeneralDate eDate = sDate.addDays(-1);
 		String endDateNew = eDate.toString().replace("/", "-");
 		String endDateS = "9999-12-31";
-		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
 		//loai bo nhung root chua duoc setting
 		for (CompanyAppRootADto commonRoot : root) {
@@ -292,7 +290,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					throw new BusinessException("Msg_156");
 				}
 				listPs.add(com);
-				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDate, type, employRootAtr);
+				//find history by type and 
+				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, type, employRootAtr);
 				if(!psOld.isEmpty()){
 					//update ls cu
 					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psOld.get(0), endDateNew);
