@@ -2162,16 +2162,12 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   border: 0px transparent !important;
 }
-/* line 32, ../sass/components/_listbox.scss */
-.ntsListBox tbody tr .ui-iggrid-selectedcell {
-  background: #F39814 !important;
-}
 /* line 39, ../sass/components/_listbox.scss */
 .ntsListBox .nts-column {
   /* float: left; */
   padding: 0 2px;
-  height: 28px;
-  line-height: 28px;
+  height: 23px;
+  line-height: 23px;
   overflow: hidden;
   box-sizing: border-box;
 }
