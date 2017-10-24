@@ -3282,10 +3282,14 @@ var nts;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
                         this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
+                        this.defaultValue = (option && option.defaultValue) ? option.defaultValue : true;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText) && !util.isNullOrEmpty(this.defaultValue)) {
+                            inputText = this.defaultValue;
+                        }
+                        else if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
@@ -4409,6 +4413,7 @@ var nts;
                         this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+                        this.defaultValue = (option !== undefined && option.defaultValue !== undefined) ? option.defaultValue : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return TimeEditorOption;
@@ -5913,6 +5918,7 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.init = function ($input, data) {
+                        var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
@@ -5924,10 +5930,10 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        var validator = this.getValidator(data);
                         $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -5938,6 +5944,7 @@ var nts;
                         });
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -5948,6 +5955,7 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -5966,6 +5974,7 @@ var nts;
                             }
                         });
                         $input.on('validate', (function (e) {
+                            var validator = self.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -6137,6 +6146,10 @@ var nts;
                             var css = data.mode === "year" ? { "padding-right": "20px" } : { "padding-right": "35px" };
                             $input.css(css);
                         }
+                        if (!nts.uk.util.isNullOrEmpty(option.defaultValue)
+                            && nts.uk.util.isNullOrEmpty(data.value())) {
+                            data.value(option.defaultValue);
+                        }
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
@@ -6154,7 +6167,8 @@ var nts;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
                         var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-                        return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+                        var validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
+                        return new validation.TimeValidator(name, constraintName, validateOption);
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
