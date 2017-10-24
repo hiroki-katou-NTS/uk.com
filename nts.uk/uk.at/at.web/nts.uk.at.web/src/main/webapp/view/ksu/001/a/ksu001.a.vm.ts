@@ -829,11 +829,11 @@ module ksu001.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
         }
 
-        /**
+        /**  
          * go to screen KML004
          */
         gotoKml004(): void {
-            nts.uk.request.jump("/view/kml/004/a/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/kml/004/a/index.xhtml");
         }
 
         /**
