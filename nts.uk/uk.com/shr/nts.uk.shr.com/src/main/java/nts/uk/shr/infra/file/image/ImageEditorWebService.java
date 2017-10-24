@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
+import nts.arc.layer.infra.file.temp.ApplicationTemporaryFile;
+import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.ws.WebService;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.text.IdentifierUtil;
@@ -25,6 +27,9 @@ public class ImageEditorWebService extends WebService{
 	
 	@Inject
 	private FileStorage fileStorage;
+	
+	@Inject 
+	private ApplicationTemporaryFileFactory tempFileFactory;
 
 	@POST
 	@Path("/cropimage")
@@ -39,14 +44,12 @@ public class ImageEditorWebService extends WebService{
 	}
 
 	private StoredFileInfo storeFile(ImageCropQuery query, BufferedImage bfi) throws IOException {
-		File file = new File(ServerSystemProperties.fileStoragePath() + query.getFileName());
+		ApplicationTemporaryFile tempFile = tempFileFactory.createTempFile();
 
-		ImageIO.write(bfi, query.getFormat(), file);
+		ImageIO.write(bfi, query.getFormat(), tempFile.getPath().toFile());
 
 		StoredFileInfo fileInfo = this.fileStorage.store(IdentifierUtil.randomUniqueId(),
-				file.toPath(), query.getFileName(), query.getStereoType());
-		
-		file.delete();
+				tempFile.getPath(), query.getFileName(), query.getStereoType());
 		
 		return fileInfo;
 	}
