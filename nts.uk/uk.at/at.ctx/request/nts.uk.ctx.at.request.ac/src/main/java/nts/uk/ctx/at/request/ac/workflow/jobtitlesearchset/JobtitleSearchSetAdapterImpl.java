@@ -5,8 +5,8 @@ import java.util.Objects;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.JobtitleSearchSetAdapter;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
 import nts.uk.ctx.workflow.pub.jobtitlesearchset.JobtitleSearchSetExport;
 import nts.uk.ctx.workflow.pub.jobtitlesearchset.JobtitleSearchSetPub;
 

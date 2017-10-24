@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 
 @AllArgsConstructor
 public class AppTypeDiscreteSettingDto {

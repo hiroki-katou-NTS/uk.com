@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
-import nts.uk.ctx.at.request.dom.applicationapproval.application.common.service.other.output.OutputPhaseFrame;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OutputPhaseFrame;
 
 @Value
 public class OutputPhaseAndFrame {

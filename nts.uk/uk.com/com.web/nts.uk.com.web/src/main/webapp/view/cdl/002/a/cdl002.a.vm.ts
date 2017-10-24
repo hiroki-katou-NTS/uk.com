@@ -23,7 +23,7 @@ module nts.uk.com.view.cdl002.a {
                     self.selecType = ko.observable(params.selecType);
                 }
                 if (self.isMultiSelect()) {
-                    self.selectedMulEmployment(params.selectedCodes);
+                    self.selectedMulEmployment(params.selectedCodes ? params.selectedCodes : []);
                 }
                 else {
                     self.selectedSelEmployment(params.selectedCodes);
@@ -55,6 +55,7 @@ module nts.uk.com.view.cdl002.a {
              * Close dialog.
              */
             closeDialog(): void {
+                setShared('CDL002Cancel', true);
                 nts.uk.ui.windows.close();
             }
 
@@ -62,40 +63,24 @@ module nts.uk.com.view.cdl002.a {
              * Decide Employment
              */
             decideData = () => {
-                var self = this;
-                var selectedCode: any = null;
-                if (self.isMultiSelect()) {
-                    var dataSelected: string[] = [];
-                    for (var code of self.selectedMulEmployment()) {
-                        if (self.checkExistEmployment(code, $("#emp-component").getDataList())) {
-                            dataSelected.push(code);
-                        }
-                    }
-                    self.selectedMulEmployment(dataSelected);
-                    selectedCode = self.selectedMulEmployment();
-                    if (!selectedCode || selectedCode.length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
-                        return;
-                    }
-                } else {
-                    selectedCode = self.selectedSelEmployment();
-                    if (!self.checkExistEmployment(selectedCode, $("#emp-component").getDataList())) {
-                        selectedCode = '';
-                    }
-                    if (!selectedCode) {
-                        // Check if selected No select Row.
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
-                        return;
-                    }
+                let self = this;
+                if(self.isMultiSelect() && self.selectedMulEmployment().length == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
+                    return;
                 }
-                setShared('CDL002Output', selectedCode);
+                var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
+                if (!self.isMultiSelect() && !self.selectedSelEmployment() && !isNoSelectRowSelected) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
+                    return;
+                }
+                setShared('CDL002Output', self.isMultiSelect() ? self.selectedMulEmployment() : self.selectedSelEmployment());
                 close();
             }
             
             /**
              * function check employment
              */
-            private checkExistEmployment(code: string, data: UnitModel[]): boolean {
+            public checkExistEmployment(code: string, data: UnitModel[]): boolean {
                 for (var item of data) {
                     if (code === item.code) {
                         return true;

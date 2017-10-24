@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.setting.applicationreason;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.applicationapproval.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 
 /**
  * 申請定型理由

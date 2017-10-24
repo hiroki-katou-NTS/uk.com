@@ -104,7 +104,8 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
      * @param workplaceDatabase the workplace database
      */
     private void updateWkpHistory(String companyId, SaveWkpHistoryCommand command, Workplace workplaceDatabase) {
-        this.workplaceRepository.update(command.toDomain(companyId));
+        Workplace wkpCommand = command.toDomain(companyId);
+        this.workplaceRepository.update(wkpCommand);
         
         if (workplaceDatabase.getWorkplaceHistory().size() == MIN_SIZE) {
             return;
@@ -114,8 +115,7 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
         WorkplaceHistory prevWkpLatest = workplaceDatabase.getWorkplaceHistory().get(idxPrevLatestHist);
         
         // validate new start date of history
-        HistoryUtil.validStartDate(workplaceDatabase.getWkpHistoryLatest().getPeriod(), prevWkpLatest.getPeriod(),
-                command.getWorkplaceHistory().getPeriod().getStartDate());
+        HistoryUtil.validStartDate(wkpCommand.getWkpHistoryLatest().getPeriod(), prevWkpLatest.getPeriod());
 
         // set end date of previous history (below of history latest)
         int dayOfAgo = -1;

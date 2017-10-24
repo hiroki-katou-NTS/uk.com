@@ -79,6 +79,10 @@ module demo.a.viewmodel {
             }, true);
             
             nts.uk.ui.windows.sub.modal("/view/cdl/002/a/index.xhtml").onClosed(function() {
+                var isCancel = getShared('CDL002Cancel');
+                if (isCancel) {
+                    return;
+                }
                 var output = getShared('CDL002Output');
                 self.selectedItem(output);
                 self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);

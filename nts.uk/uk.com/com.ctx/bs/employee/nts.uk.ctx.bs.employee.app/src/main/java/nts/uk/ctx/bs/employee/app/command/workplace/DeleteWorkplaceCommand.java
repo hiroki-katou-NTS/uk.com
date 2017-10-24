@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
  * The Class DeleteWorkplaceCommand.
  */
-@Data
+@Setter
+@Getter
 public class DeleteWorkplaceCommand {
 
     /** The history id wkp config info. */

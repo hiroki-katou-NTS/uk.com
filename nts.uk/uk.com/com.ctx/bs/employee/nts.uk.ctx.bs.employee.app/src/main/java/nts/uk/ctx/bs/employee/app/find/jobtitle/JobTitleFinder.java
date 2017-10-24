@@ -28,10 +28,10 @@ public class JobTitleFinder {
 
 	/** The repository. */
 	@Inject
-	private JobTitleRepository repository;
+	private JobTitleRepository jobTitleRepository;
 
 	@Inject
-	private JobTitleInfoRepository infoRepository;
+	private JobTitleInfoRepository jobTitleInfoRepository;
 
 	/**
 	 * Find job history by job id.
@@ -42,7 +42,7 @@ public class JobTitleFinder {
 	 */
 	public JobTitleFindDto findJobHistoryByJobId(String jobTitleId) {
 		String companyId = AppContexts.user().companyId();
-		Optional<JobTitle> opJobTitle = this.repository.findByJobTitleId(companyId, jobTitleId);
+		Optional<JobTitle> opJobTitle = this.jobTitleRepository.findByJobTitleId(companyId, jobTitleId);
 
 		if (opJobTitle.isPresent()) {
 			JobTitleFindDto dto = new JobTitleFindDto();
@@ -59,11 +59,11 @@ public class JobTitleFinder {
 	 */
 	public List<JobTitleItemDto> findAll(GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
-		List<JobTitleInfo> jobs = infoRepository.findAll(companyId, baseDate);
+		List<JobTitleInfo> jobs = this.jobTitleInfoRepository.findAll(companyId, baseDate);
 
 		return jobs.stream()
 				.map(job -> JobTitleItemDto.builder().id(job.getJobTitleId())
-						.code(job.getJobTitleCode().v()).name(job.getJobTitleName().v()).build())
+				.code(job.getJobTitleCode().v()).name(job.getJobTitleName().v()).build())
 				.sorted((job1, job2) -> job1.getCode().compareTo(job2.getCode()))
 				.collect(Collectors.toList());
 	}

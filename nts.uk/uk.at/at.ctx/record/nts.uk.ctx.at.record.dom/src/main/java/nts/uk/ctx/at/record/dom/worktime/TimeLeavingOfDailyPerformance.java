@@ -20,6 +20,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	
 	private WorkTimes workTimes;
 	
+	// 1 ~ 2
 	private List<TimeLeavingWork> timeLeavingWorks;
 	
 	private GeneralDate ymd;

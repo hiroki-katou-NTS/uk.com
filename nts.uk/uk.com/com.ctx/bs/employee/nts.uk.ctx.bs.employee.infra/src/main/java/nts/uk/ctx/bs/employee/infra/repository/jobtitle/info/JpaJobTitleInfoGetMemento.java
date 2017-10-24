@@ -8,7 +8,7 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.repository.workplace.info.IsManagerStatus;
 
