@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.usecase;
+package nts.uk.ctx.at.record.dom.workrecord.log.enums;
 
 /**
  * @author danpv
@@ -9,11 +9,12 @@ package nts.uk.ctx.at.record.dom.workrecord.log.usecase;
  */
 public enum DailyRecreateClassification {
 	
-	//もう一度作り直す
-	Rebuild(0),
+	//0 :もう一度作り直す
+	REBUILD(0),
 
-	//一部修正
-	PartlyModified(1);
+	//1 :一部修正
+	PARTLY_MODIFIED(1);
+	
 	
 	public final int value;
 	

@@ -16,15 +16,16 @@ public class KrcmtEmpExecutionLogPK implements Serializable  {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "CID")
-	public String companyId;
+	public String companyID;
 	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
-	public String employmentExecutionLogId;
+	public long empCalAndSumExecLogID;
+				  
 	
 	@Column(name = "OPERATION_CASE_ID")
-	public String operationCaseId;
+	public long caseSpecExeContentID;
 	
 	@Column(name = "SID")
-	public String employeeId;
+	public String employeeID;
 
 }

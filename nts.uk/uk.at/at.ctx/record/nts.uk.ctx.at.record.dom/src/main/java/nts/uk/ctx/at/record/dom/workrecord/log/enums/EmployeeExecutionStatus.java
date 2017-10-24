@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.objectvalue;
+package nts.uk.ctx.at.record.dom.workrecord.log.enums;
 
 /**
  * @author danpv
@@ -9,9 +9,15 @@ package nts.uk.ctx.at.record.dom.workrecord.log.objectvalue;
  */
 public enum EmployeeExecutionStatus {
 
-	Complete(0),
+	/**
+	 * 0 : 完了
+	 */
+	COMPLETE(0),
 
-	Incomplete(1);
+	/**
+	 * 1 : 未完了
+	 */
+	INCOMPLETE(1);
 
 	public final int value;
 

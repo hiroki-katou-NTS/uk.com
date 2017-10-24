@@ -1,17 +1,21 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.log.usecase;
+package nts.uk.ctx.at.record.dom.workrecord.log;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionType;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * @author danpv
  * 計算実行設定情報
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CalExeSettingInfor {
 	
 	/**
