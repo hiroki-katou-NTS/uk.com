@@ -41,6 +41,7 @@
 										dataSource: items2,
 										value: singleSelectedCode,
 										columns: columns,
+										initialExpandDepth: 0,
 										primaryKey: 'code',
 										childDataKey: 'childs',
 										primaryText: 'nodeText',
@@ -220,6 +221,10 @@
 												<i>prop / key:</i> Property in data array for column<br /> <i>width:</i>
 												Width for column<br /> <b><i>(*): Can use other
 														properties of columns of tree</i></b></td>
+										</tr><tr>
+											<td>initialExpandDepth</td>
+											<td><b>Type:</b> number<br /> 
+												Set how many child are expanded when initial</td>
 										</tr>
 										<tr>
 											<td>multiple</td>
