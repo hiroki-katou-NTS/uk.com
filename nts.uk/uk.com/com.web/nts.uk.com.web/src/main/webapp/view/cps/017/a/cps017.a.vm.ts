@@ -76,10 +76,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //                    }                    if (itemList && itemList.length) {
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
-                    }else{
-                       self.registerData();     
-                    }
-                    
+                    } 
+
                 });
             });
 
@@ -132,9 +130,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 selection: Selection = self.selection();
             nts.uk.ui.errors.clearAll();
-            selection.selectionCD('');
+            selection.selectionID(undefined);
             selection.externalCD('');
-            //selection.selectionCode('');
+            selection.selectionCD('');
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreate(true);
@@ -175,27 +173,47 @@ module nts.uk.com.view.cps017.a.viewmodel {
             if (_selectionCD) {
                 alertError({ messageId: "Msg_3" });
             } else {
-                service.saveDataSelection(command).done(function(selectionCD) {
+                service.saveDataSelection(command).done(function() {
                     self.listSelection.removeAll();
 
                     service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listSelection.push(x));
+                            self.selection().selectionID(self.listSelection()[0].selectionID);
                         }
                     });
                     self.listSelection.valueHasMutated();
-                    self.selection().selectionCD(selectionCD);
+                    //self.selection().selectionCD(selectionCD);
 
                 });
-
-                //alert("Test!");
             }
 
         }
 
         //更新モード
         update() {
-            alert("update!");
+            let self = this,
+                currentItem: Selection = self.selection(),
+                listSelection: Array<Selection> = self.listSelection(),
+                _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());;
+            //oldIndex = _.findIndex(listSelection, x => x.)
+            currentItem.histId(self.historySelection().histId());
+            command = ko.toJS(currentItem);
+
+            service.updateDataSelection(command).done(function() {
+                self.listSelection.removeAll();
+                service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listSelection.push(x));
+                        self.selection().selectionID(self.listSelection()[0].selectionID);
+                    }
+                });
+                
+                self.listSelection.valueHasMutated();
+                //self.selection().selectionCD(selectionCD);
+
+
+            });
         }
 
 
