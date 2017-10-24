@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.init.category;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PerInfoInitValSetCtgRepository {
 	// sonnlb
@@ -35,12 +36,12 @@ public interface PerInfoInitValSetCtgRepository {
 	/**
 	 * getDetailInitValSetCtg
 	 * 
-	 * @param initValueSettingId
-	 * @param initValueSettingCtgId
+	 * @param settingId
+	 * @param perInfoCtgId
 	 * @return PerInfoInitValSetCtg
 	 */
 
-	PerInfoInitValSetCtg getDetailInitValSetCtg(String initValueSettingId, String initValueSettingCtgId);
+	Optional<PerInfoInitValSetCtg> getDetailInitValSetCtg(String settingId, String perInfoCtgId);
 
 	/**
 	 * add PerInfoInitValSetCtg
