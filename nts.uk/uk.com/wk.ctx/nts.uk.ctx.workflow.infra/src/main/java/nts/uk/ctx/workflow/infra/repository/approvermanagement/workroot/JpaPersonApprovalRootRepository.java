@@ -53,15 +53,18 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 private final String FIND_BY_APP_TYPE = FIN_BY_EMP
 			   + " AND c.endDate = :endDate"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType = :applicationType";
+			   + " AND c.applicationType = :applicationType"
+			   + " ORDER BY c.startDate DESC";
 	 private final String SELECT_PSAPR_BY_APP_NULL = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType IS NULL";
+			   + " AND c.applicationType IS NULL"
+			   + " ORDER BY c.startDate DESC";
 	 private final String FIND_BY_CFR_TYPE = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
-			   + " AND c.employmentRootAtr = :employmentRootAtr";
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
 			 
 	/**
 	 * get all Person Approval Root
