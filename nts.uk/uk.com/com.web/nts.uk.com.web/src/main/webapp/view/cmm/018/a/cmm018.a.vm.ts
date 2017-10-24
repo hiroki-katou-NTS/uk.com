@@ -1894,38 +1894,38 @@ module nts.uk.com.view.cmm018.a {
                 }
                 root.push(self.comRoot());
                 let history = self.findHist(self.singleSelectedCode(),self.tabSelectedB());
-                let listType = [];
+                let listType: vmbase.ApplicationType = [];
                 let startDate = ''
                 let endDate = '';
                 if(self.tabSelectedB() == 0){
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(history.lstAppType[0]);
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
                     }else{
                         endDate = history.company.endDate;
                         startDate = history.company.startDate;
-                        listType.push(history.company.applicationType);
+                        listType.push(new vmbase.ApplicationType(history.company.applicationType,'', history.company.employmentRootAtr));
                     }
                 }else if(self.tabSelectedB() == 1){
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(history.lstAppType[0]);
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
                     }else{
                         endDate = history.workplace.endDate;
                         startDate = history.workplace.startDate;
-                        listType.push(history.workplace.applicationType);
+                        listType.push(new vmbase.ApplicationType(history.workplace.applicationType,'', history.workplace.employmentRootAtr));
                     }
                 }else{
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(history.lstAppType[0]);
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
                     }else{
                         endDate = history.person.endDate;
                         startDate = history.person.startDate;
-                        listType.push(history.person.applicationType);
+                        listType.push(new vmbase.ApplicationType(history.person.applicationType,'', history.person.employmentRootAtr));
                     }
                 }
                 let data: vmbase.DataResigterDto = new vmbase.DataResigterDto(self.tabSelectedB(),
