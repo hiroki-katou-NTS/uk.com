@@ -1,6 +1,9 @@
 .control-group.valign-center>* {
 	vertical-align: middle;
 }
+#workSelect{
+	margin-left: 20px;
+}
 
 .valign-center.control-group {
 	margin: 5px 0px 0px 40px;
