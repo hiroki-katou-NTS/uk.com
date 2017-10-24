@@ -14,7 +14,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KrcdtActualLockHist_ {
 
 	/** The krcmt actual lock PK. */
-	public static volatile SingularAttribute<KrcdtActualLockHist, KrcdtActualLockHistPK> krcmtActualLockPK;
+	public static volatile SingularAttribute<KrcdtActualLockHist, KrcdtActualLockHistPK> krcdtActualLockHistPK;
 	
 	/** The target month. */
 	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> targetMonth;

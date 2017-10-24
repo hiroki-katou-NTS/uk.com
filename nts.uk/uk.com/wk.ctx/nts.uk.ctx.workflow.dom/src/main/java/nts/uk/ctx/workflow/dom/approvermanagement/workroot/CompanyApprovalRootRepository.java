@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,9 +31,10 @@ public interface CompanyApprovalRootRepository {
 	 * @param companyId
 	 * @param endDate
 	 * @param applicationType
+	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType);
+	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * add Company Approval Root
@@ -98,4 +98,12 @@ public interface CompanyApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate);
+	/**
+	 * get Company Approval Root By type
+	 * @param companyId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType, int employmentRootAtr);
 }

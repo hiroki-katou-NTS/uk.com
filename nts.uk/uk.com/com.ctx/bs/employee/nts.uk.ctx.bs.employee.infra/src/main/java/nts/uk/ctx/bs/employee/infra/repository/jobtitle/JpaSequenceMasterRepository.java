@@ -22,8 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK_;
@@ -191,7 +191,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();		
-		CriteriaQuery<Short> cq = criteriaBuilder.createQuery(Short.class);
+		CriteriaQuery<Integer> cq = criteriaBuilder.createQuery(Integer.class);
 		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
 		
 		// Build query

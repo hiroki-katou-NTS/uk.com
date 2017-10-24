@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -87,9 +88,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 								EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
 								x.getStampFrameNo(), 
 								EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
-								x.getStartTime(), 
+								new TimeWithDayAttr(x.getStartTime()), 
 								x.getStartLocation(), 
-								x.getEndTime(), 
+								new TimeWithDayAttr(x.getEndTime()), 
 								x.getEndLocation())
 					).collect(Collectors.toList()),
 					null,

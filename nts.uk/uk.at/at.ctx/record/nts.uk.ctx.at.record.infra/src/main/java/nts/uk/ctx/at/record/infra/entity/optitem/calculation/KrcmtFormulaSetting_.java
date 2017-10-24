@@ -19,16 +19,16 @@ public class KrcmtFormulaSetting_ {
 	public static volatile SingularAttribute<KrcmtFormulaSetting, KrcmtFormulaSettingPK> krcmtFormulaSettingPK;
 
 	/** The calc atr. */
-	public static volatile SingularAttribute<KrcmtFormulaSetting, Short> calcAtr;
+	public static volatile SingularAttribute<KrcmtFormulaSetting, Integer> calcAtr;
 
 	/** The minus segment. */
-	public static volatile SingularAttribute<KrcmtFormulaSetting, Short> minusSegment;
+	public static volatile SingularAttribute<KrcmtFormulaSetting, Integer> minusSegment;
 
 	/** The operator. */
-	public static volatile SingularAttribute<KrcmtFormulaSetting, Short> operator;
+	public static volatile SingularAttribute<KrcmtFormulaSetting, Integer> operator;
 
 	/** The left set method. */
-	public static volatile SingularAttribute<KrcmtFormulaSetting, Short> leftSetMethod;
+	public static volatile SingularAttribute<KrcmtFormulaSetting, Integer> leftSetMethod;
 
 	/** The left input val. */
 	public static volatile SingularAttribute<KrcmtFormulaSetting, BigDecimal> leftInputVal;
@@ -37,7 +37,7 @@ public class KrcmtFormulaSetting_ {
 	public static volatile SingularAttribute<KrcmtFormulaSetting, String> leftFormulaItemId;
 
 	/** The right set method. */
-	public static volatile SingularAttribute<KrcmtFormulaSetting, Short> rightSetMethod;
+	public static volatile SingularAttribute<KrcmtFormulaSetting, Integer> rightSetMethod;
 
 	/** The right input val. */
 	public static volatile SingularAttribute<KrcmtFormulaSetting, BigDecimal> rightInputVal;

@@ -34,6 +34,7 @@ public class EmpConditionFinder {
 	/**
 	 * Find.
 	 *
+	 * @param itemNo the item no
 	 * @return the emp condition dto
 	 */
 	public EmpConditionDto find(String itemNo) {
@@ -48,8 +49,7 @@ public class EmpConditionFinder {
 			dom.get().saveToMemento(dto);
 
 			// Set employment name.
-			//dto.getEmpConditions().forEach(item -> item.setEmpName(employments.get(item.getEmpCd())));
-			dto.getEmpConditions().forEach(item -> item.setEmpName("mock data")); //mock data
+			dto.getEmpConditions().forEach(item -> item.setEmpName(employments.get(item.getEmpCd())));
 		}
 		return dto;
 	}

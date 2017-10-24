@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 
 /**
  * The Interface JobTitleInfoSetMemento.

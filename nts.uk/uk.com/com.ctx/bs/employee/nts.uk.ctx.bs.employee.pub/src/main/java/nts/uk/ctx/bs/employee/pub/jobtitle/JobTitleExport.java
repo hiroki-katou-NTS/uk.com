@@ -18,14 +18,14 @@ public class JobTitleExport {
 	/** The company id. */
 	private String companyId;
 
-	/** The position id. */
-	private String positionId;
+	/** The job title id. */
+	private String jobTitleId;
 
-	/** The position code. */
-	private String positionCode;
+	/** The job title code. */
+	private String jobTitleCode;
 
-	/** The position name. */
-	private String positionName;
+	/** The job title name. */
+	private String jobTitleName;
 
 	/** The sequence code. */
 	private String sequenceCode;

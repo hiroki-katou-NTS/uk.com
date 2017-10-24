@@ -4,7 +4,7 @@ module test.viewmodel {
         deviationTimeID: KnockoutObservable<string>;
         constructor() {
             var self = this;
-            self.reasonCD = ko.observable("001");
+            self.reasonCD = ko.observable("");
             self.divergenceTimeID = ko.observable("");
         }
 
@@ -26,13 +26,13 @@ module test.viewmodel {
             nts.uk.ui.windows.setShared('KDL032', dataSetShare );
             nts.uk.ui.windows.sub.modal("/view/kdl/032/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                 var self = this;
-                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                if (returnWorkLocationCD !== undefined) {
-                    self.workLocationCD(returnWorkLocationCD);
+                var returnData = nts.uk.ui.windows.getShared("ReturnData");
+                if (returnData !== undefined) {
+                    self.reasonCD();
                     nts.uk.ui.block.clear(); 
                 }
                 else{
-                    self.workLocationCD = ko.observable("");
+                    self.reasonCD = ko.observable("");
                     nts.uk.ui.block.clear();}
             }); 
         }

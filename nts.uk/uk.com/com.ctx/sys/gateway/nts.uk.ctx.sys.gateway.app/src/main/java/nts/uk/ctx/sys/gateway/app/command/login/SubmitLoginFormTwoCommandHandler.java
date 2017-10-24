@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
@@ -31,7 +30,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
  * The Class SubmitLoginFormTwoCommandHandler.
  */
 @Stateless
-public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLoginFormTwoCommand> {
+public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommand<SubmitLoginFormTwoCommand> {
 
 	/** The user repository. */
 	@Inject
@@ -53,7 +52,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
+	protected void internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
 		SubmitLoginFormTwoCommand command = context.getCommand();
 		String companyCode = command.getCompanyCode();
@@ -80,6 +79,12 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		this.compareHashPassword(user, password);
 		// check time limit
 		this.checkLimitTime(user);
+
+//		//set info to session
+//		this.setLoggedInfo(user.get());
+//		
+//		//set role Id for LoginUserContextManager
+//		this.setRoleId(user.get().getUserId());
 	}
 
 	/**

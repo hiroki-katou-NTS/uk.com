@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.ot.autocalsetting;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,15 +34,14 @@ public class WkpAutoCalWS {
 	@Inject
 	private SaveWkpAutoCalSetCommandHandler saveWkpAutoCalSetCommandHandler;
 
-	/** The remove job auto cal set command handler. */
+	/** The remove wkp auto cal set command handler. */
 	@Inject
 	private RemoveWkpAutoCalSetCommandHandler removeWkpAutoCalSetCommandHandler;
 
 	/**
 	 * Gets the wkp auto cal setting dto.
 	 *
-	 * @param wkpId
-	 *            the wkp id
+	 * @param wkpId the wkp id
 	 * @return the wkp auto cal setting dto
 	 */
 	@POST
@@ -48,12 +49,22 @@ public class WkpAutoCalWS {
 	public WkpAutoCalSettingDto getWkpAutoCalSettingDto(@PathParam("wkpId") String wkpId) {
 		return this.wkpAutoCalSetFinder.getWkpAutoCalSetting(wkpId);
 	}
-
+	
+	/**
+	 * Gets the all cal setting.
+	 *
+	 * @return the all cal setting
+	 */
+	@POST
+	@Path("getallautocalwkp")
+	public List<WkpAutoCalSettingDto> getAllCalSetting(){
+		return this.wkpAutoCalSetFinder.getAllWkpAutoCalSetting();
+	}
+	
 	/**
 	 * Save.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("save")
@@ -64,8 +75,7 @@ public class WkpAutoCalWS {
 	/**
 	 * Deledte.
 	 *
-	 * @param wkpId
-	 *            the wkp id
+	 * @param command the command
 	 */
 	@POST
 	@Path("delete")

@@ -41,6 +41,7 @@ public class ActualLockWebService extends WebService {
 	private ActualLockFinder1 lockFinder;
 	
 	/** The actual lock save handle. */
+	@Inject
 	private ActualLockSaveCommandHandler actualLockSaveHandle;
 
 	/** The lock hist save handle. */
@@ -70,6 +71,13 @@ public class ActualLockWebService extends WebService {
 	public List<ActualLockHistFindDto> findHistByTargetYM(@PathParam("closureId") int closureId,
 			@PathParam("targetYM") Integer targetYM) {
 		return this.lockFinder.findHistByTargetYM(closureId, targetYM);
+	}
+	
+	@POST
+	@Path("findHistByClosure/{closureId}/{targetYM}")
+	public List<ActualLockHistFindDto> findHistByClosure(@PathParam("closureId") int closureId,
+			@PathParam("targetYM") Integer targetYM) {
+		return this.lockFinder.findHistByClosure(closureId, targetYM);
 	}
 
 	/**

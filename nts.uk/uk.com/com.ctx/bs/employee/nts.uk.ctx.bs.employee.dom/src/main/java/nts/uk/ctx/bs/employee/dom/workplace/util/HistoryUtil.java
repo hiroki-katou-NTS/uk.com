@@ -57,23 +57,24 @@ public class HistoryUtil {
     /**
      * Valid start date.
      *
-     * @param latestPeriod the latest period
+     * @param newPeriod the latest period
      * @param prevPeriod the prev period
      * @param newStartDate the new start date
      */
-    public static void validStartDate(DatePeriod latestPeriod, DatePeriod prevPeriod, GeneralDate newStartDate) {
+    public static void validStartDate(DatePeriod newPeriod, DatePeriod prevPeriod) {
         boolean isHasError = false;
         BundledBusinessException exceptions = BundledBusinessException.newInstance();
         
-        if (newStartDate.beforeOrEquals(prevPeriod.start())) {
+        if (newPeriod.start().before(prevPeriod.start())) {
             exceptions.addMessage("Msg_127");
             isHasError = true;
         }
-        if (latestPeriod.end().beforeOrEquals(newStartDate)) {
+        if (newPeriod.end().before(newPeriod.start())) {
             exceptions.addMessage("Msg_667");
             isHasError = true;
         }
-        if (latestPeriod.end().beforeOrEquals(prevPeriod.end())) {
+        // TODO: not understand, wait for explain
+        if (newPeriod.end().beforeOrEquals(prevPeriod.end())) {
             exceptions.addMessage("Msg_666");
             isHasError = true;
         }

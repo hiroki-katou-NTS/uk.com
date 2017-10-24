@@ -63,8 +63,11 @@
 	z-index: 2;
 	background-color: white;
 	margin-left: -293px;
+	margin-top: 34px;
 	padding: 15px;
-	display: none;
+	visibility: visible;
+	top: -9999px;
+	left: -9999px;
 }
 
 #cbCursorMoveDirection {
@@ -88,9 +91,11 @@
 	z-index: 2;
 	background-color: white;
 	margin-left: -50px;
+	margin-top: 34px;
 	padding: 15px;
-	margin-top: 2px;
-	display: none;
+	visibility: hidden;
+	top: -9999px;
+	left: -9999px;
 }
 
 #vacationRemaining-content button {

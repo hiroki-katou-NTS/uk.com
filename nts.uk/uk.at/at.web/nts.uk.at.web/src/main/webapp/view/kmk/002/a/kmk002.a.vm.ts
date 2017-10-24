@@ -33,6 +33,9 @@ module nts.uk.at.view.kmk002.a {
                 // init formula sorter.
                 FormulaSorter.initSorter();
 
+                // set ntsFixedTable style
+                $("#tbl-calc-formula").ntsFixedTable({ height: 300 });
+
                 // Load data.
                 self.loadEnum()
                     .done(() => {
@@ -273,6 +276,57 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Checks whether an item of a nonexistent line is set in a formula
+             */
+            public findInvalidFormula(): Formula {
+                let self = this;
+
+                // find invalid formula
+                 return _.find(self.calcFormulas(), item => {
+
+                     // only check formula of type 'formula setting'
+                     if (item.isTypeOfFormulaSetting()) {
+                         let leftItem  = item.formulaSetting.leftItem;
+                         let rightItem = item.formulaSetting.rightItem;
+
+                         // check whether left item is a nonexistent formula
+                         // only check item selection setting method
+                         if (item.isSettingMethodOfItemSelection(leftItem)) {
+                             // if formula not found => invalid setting
+                             if (!self.isFormulaExist(leftItem.formulaItemId)) {
+                                 return true;
+                             }
+                         }
+
+                         // check whether right item is a nonexistent formula
+                         // only check item selection setting method
+                         if (item.isSettingMethodOfItemSelection(rightItem)) {
+                             // if formula not found => invalid setting
+                             if (!self.isFormulaExist(rightItem.formulaItemId)) {
+                                 return true;
+                             }
+                         }
+                     }
+
+                     // setting is valid
+                     return false;
+                 });
+
+            }
+
+            /**
+             * Check a formula's existent
+             */
+            private isFormulaExist(id: string): boolean {
+                let self = this;
+                let found = _.find(self.calcFormulas(), item => item.formulaId == id);
+                if (found) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
              * Add formula above
              */
             public addFormulaAbove(): void {
@@ -347,7 +401,7 @@ module nts.uk.at.view.kmk002.a {
                 f.orderNo = order;
 
                 // Set symbol
-                f.symbolValue = 'a';
+                f.symbolValue = 'A';
                 let lastSymbol = self.getLastSymbol();
                 if (lastSymbol) {
                     f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
@@ -492,7 +546,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private hasReachedZZ(): boolean {
                 let self = this;
-                if (self.getLastSymbol() == 'zz') {
+                if (self.getLastSymbol() == 'ZZ') {
                     return true;
                 }
                 return false;
@@ -560,7 +614,7 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
                 if (self.isInUse()) {
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_113' });
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_113' });
                     // TODO:
                     // 警告メッセージ(Msg_113,削除する行の記号,使用している行の記号)を表示する
                     // (Hiển thị message cảnh báo (Msg_113, ký hiệu của dòng xóa, ký hiệu của dòng đang sử dụng))
@@ -692,15 +746,18 @@ module nts.uk.at.view.kmk002.a {
                     return formula;
                 });
 
-                // set list formula.
+                // clear current list formula
+                self.calcFormulas([]);
+
+                // set new mapped list formula.
                 self.calcFormulas(mapped);
 
                 // set formula setting result
                 _.each(self.calcFormulas(), formula => {
-                    if (formula.calcAtr() == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.calcAtr)) {
-                        formula.setItemSelectionResult(formula.itemSelection);
-                    } else {
+                    if (formula.isTypeOfFormulaSetting()) {
                         formula.setFormulaSettingResult(formula.formulaSetting);
+                    } else {
+                        formula.setItemSelectionResult(formula.itemSelection);
                     }
                 });
 
@@ -754,7 +811,7 @@ module nts.uk.at.view.kmk002.a {
                 };
 
                 // find the last symbol.
-                let lastSymbol = 'a';
+                let lastSymbol = 'A';
                 self.calcFormulas().forEach(item => {
                     // Check two string's length first
                     // Because z > aa using localeCompare
@@ -899,10 +956,24 @@ module nts.uk.at.view.kmk002.a {
 
                 self.selectedCode = ko.observable('');
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 50 },
+                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100 },
-                    { headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 50 },
-                    { headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50 }
+                    { headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 75,
+                        formatter: atr => {
+                            if (atr == 0) {
+                                return nts.uk.resource.getText("KMK002_23");
+                            }
+                            return nts.uk.resource.getText("KMK002_22")
+                        }
+                    },
+                    { headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50,
+                        formatter: used => {
+                            if (used == 1) {
+                                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                            }
+                            return '';
+                        }
+                    }
                 ]);
 
             }
@@ -1001,24 +1072,13 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 // validate list formula
-                if (!self.isListFormulaValid()) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_111' });
+                let invalid = self.optionalItem.findInvalidFormula();
+                if (invalid) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_111', messageParams: [invalid.orderNo] });
                     return false;
                 };
 
                 return true;
-            }
-
-            /**
-             * Checks whether an item of a nonexistent line is set in a formula
-             */
-            private isListFormulaValid(): boolean {
-                // TODO chi toi dong bi loi.
-                // xem lai 計算式登録時チェック処理 trong EA.
-                if (1 == 1) {
-                    return true;
-                }
-                return false;
             }
 
             /**
@@ -1266,6 +1326,28 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Check whether calculation attribute is formula setting or not.
+             */
+            public isTypeOfFormulaSetting(): boolean {
+                let self = this;
+                if (self.calcAtr() == EnumAdaptor.valueOf('FORMULA_SETTING', Enums.ENUM_OPT_ITEM.calcAtr)) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Check whether the setting method is item selection or not
+             */
+            public isSettingMethodOfItemSelection(settingItem: SettingItemDto): boolean {
+                let self = this;
+                if (settingItem.settingMethod == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.settingMethod)) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
              * Clear formula setting
              */
             private clearFormulaSetting(): void {
@@ -1431,7 +1513,6 @@ module nts.uk.at.view.kmk002.a {
                 let dto = self.toDto();
                 let param = <ParamToD>{};
                 param.formulaId = dto.formulaId;
-                param.performanceAtr = 1; //TODO ??
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = self.formulaSetting;
@@ -1463,18 +1544,17 @@ module nts.uk.at.view.kmk002.a {
                 let rightItem;
 
                 // get item selection enum value.
-                let itemSelectionMethod: number = EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.settingMethod);
                 let operator: string = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_OPT_ITEM.operatorAtr);
 
                 // set left item
-                if (dto.leftItem.settingMethod == itemSelectionMethod) {
+                if (self.isSettingMethodOfItemSelection(dto.leftItem)) {
                     leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
                 } else {
                     leftItem = dto.leftItem.inputValue;
                 }
 
                 // set right item
-                if (dto.rightItem.settingMethod == itemSelectionMethod) {
+                if (self.isSettingMethodOfItemSelection(dto.rightItem)) {
                     rightItem = self.getSymbolById(dto.rightItem.formulaItemId);
                 } else {
                     rightItem = dto.rightItem.inputValue;
@@ -1483,6 +1563,9 @@ module nts.uk.at.view.kmk002.a {
                 // set result
                 result = leftItem + ' ' + operator + ' ' + rightItem;
                 self.settingResult(result);
+
+                // clear error
+                $('#settingResult' + (self.orderNo - 1)).ntsEditor('validate');
             }
 
             /**
@@ -1601,13 +1684,13 @@ module nts.uk.at.view.kmk002.a {
                 let arr = new Array<Sorter>();
                 let order = 1;
 
-                for (let i = 97; i <= 122; i++) {
+                for (let i = 65; i <= 90; i++) {
                     arr.push({ order: order, value: String.fromCharCode(i) });
                     order++;
                 }
 
-                for (let i = 97; i <= 122; i++) {
-                    for (let j = 97; j <= 122; j++) {
+                for (let i = 65; i <= 90; i++) {
+                    for (let j = 65; j <= 90; j++) {
                         arr.push({ order: order, value: String.fromCharCode(i) + String.fromCharCode(j) });
                         order++;
                     }
@@ -1664,7 +1747,6 @@ module nts.uk.at.view.kmk002.a {
             formulaId: string;
             formulaName: string;
             formulaAtr: string;
-            performanceAtr: number;
             formulaSetting: FormulaSettingDto;
             operatorDatasource: Array<EnumConstantDto>;
             selectableFormulas: Array<FormulaDto>;

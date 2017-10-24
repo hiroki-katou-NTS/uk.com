@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**

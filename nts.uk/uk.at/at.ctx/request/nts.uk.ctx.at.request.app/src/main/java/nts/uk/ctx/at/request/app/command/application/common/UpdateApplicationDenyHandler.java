@@ -9,7 +9,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.CheckApprover;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
-import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterDenialProcess;
 @Stateless
 @Transactional

@@ -75,13 +75,14 @@ module nts.uk.com.view.cdl008.a {
                 if (!self.isMultiple) {
                     selectedCode = self.selectedSelWorkplace();
                 }
-                nts.uk.ui.windows.setShared('outputCDL008', { selectedCode: selectedCode });
+                nts.uk.ui.windows.setShared('outputCDL008',  selectedCode);
                 nts.uk.ui.windows.close();    
             }
             /**
              * close windows
              */
             private closeWindows(): void{
+                nts.uk.ui.windows.setShared('CDL008Cancel', true);
                 nts.uk.ui.windows.close();  
             }
         }

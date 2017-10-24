@@ -19,6 +19,6 @@ public class KrcmtEmpExeTargetPK implements Serializable {
 	public String employeeId;
 	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
-	public String employmentExecutionLogId;
+	public long empCalAndSumExecLogID;
 
 }

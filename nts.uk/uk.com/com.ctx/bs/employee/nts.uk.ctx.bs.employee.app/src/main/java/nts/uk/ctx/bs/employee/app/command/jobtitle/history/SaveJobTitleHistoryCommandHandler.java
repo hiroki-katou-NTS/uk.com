@@ -64,9 +64,6 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		final String companyId = AppContexts.user().companyId();
 
 		Optional<JobTitle> opJobTitle = this.jobTitleRepository.findByJobTitleId(companyId, command.getJobTitleId());
-		if (!opJobTitle.isPresent()) {
-			throw new RuntimeException(String.format("Job title %s not found!", command.getJobTitleId()));
-		}
 		JobTitle jobTitle = opJobTitle.get();
 
 		if (command.getIsCreateMode()) {
