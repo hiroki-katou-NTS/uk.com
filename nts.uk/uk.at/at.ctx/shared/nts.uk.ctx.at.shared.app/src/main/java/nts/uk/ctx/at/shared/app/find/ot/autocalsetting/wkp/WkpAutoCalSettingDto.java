@@ -17,23 +17,12 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingSetMement
  * The Class WkpAutoCalSettingDto.
  */
 
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
 @Setter
 public class WkpAutoCalSettingDto implements WkpAutoCalSettingSetMemento{
 	
 	/** The wkp id. */
-	private WorkplaceId wkpId;
+	private String wkpId;
 
 	/** The normal OT time. */
 	// 残業時間
@@ -61,7 +50,7 @@ public class WkpAutoCalSettingDto implements WkpAutoCalSettingSetMemento{
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		this.wkpId = workplaceId;
+		this.wkpId = workplaceId.v();
 		
 	}
 

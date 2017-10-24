@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
         isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
+        isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
@@ -97,6 +98,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
+            let initialSelection = 1; //1:申請時に決める（初期選択：勤務を変更する）
+            let notChange = 2; //2:変更しない
+            let change = 3; //3:変更する
+            
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: any) {
                 if(!nts.uk.util.isNullOrEmpty(settingData)){
@@ -104,19 +110,40 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
                         //登録時にメールを送信する Visible
-                        //申請表示設定.事前事後区分　＝　表示する　〇
-                        //申請表示設定.事前事後区分　＝　表示しない ×
                         self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
                         
                     }
+                    //事前事後区分 ※A１
+                    //申請表示設定.事前事後区分　＝　表示する　〇
+                    //申請表示設定.事前事後区分　＝　表示しない ×
+                    self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
                     if(settingData.goBackSettingDto　!= undefined){
-                        //事前事後区分 Enable
+                        //事前事後区分 Enable ※A２
                         //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
                         //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
-                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == 1 ? true: false);   
+                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                        if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
+                          || settingData.goBackSettingDto.workChangeFlg == initialSelection){
+                            self.isWorkChange(true);
+                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
+                                self.workChangeAtr(false);
+                            }else{
+                                self.workChangeAtr(true);
+                            }
+                            
+                        }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
+                            self.isWorkChange(false);
+                            self.workChangeAtr(false);
+                        }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
+                            self.workChangeAtr(true);
+                            self.isWorkChange(true);
+                            self.workState(false);
+                        }
+                        
                     }
-                    //事前事後区分
-                    self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+                    
                     //共通設定.複数回勤務
                     self.useMulti(settingData.dutiesMulti);
                     //場所選択
@@ -124,7 +151,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     //申請者 ID
                     self.employeeID = settingData.sid;
                     //勤務を変更する
-                    self.workChangeAtr(settingData.goBackSettingDto.workChangeFlg == 1 ? true : false);
+                    //self.workChangeAtr(settingData.goBackSettingDto.workChangeFlg == 1 ? true : false);
                     //定型理由
                     self.setReasonControl(settingData.listReasonDto);
                     //申請者

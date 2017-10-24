@@ -79,7 +79,7 @@ module nts.uk.ui.gridlist {
 //                            enter: 'right',
                             columns: [
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                                { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
+                                { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                                 { headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '290px', ntsControl: 'SwitchButtons' },
                                 { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
                                 { headerText: 'Text', key: 'text1', dataType: 'string', width: '120px' },

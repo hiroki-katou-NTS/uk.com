@@ -190,6 +190,8 @@ module nts.uk.com.view.cmm013.a {
                             _self.jobTitleIsManager(data.manager);
                             _self.sequenceCode(data.sequenceCode);
                             _self.sequenceName(data.sequenceName);
+                            // Set focus
+                            $('#job-title-name').focus();
                         }
                     })
                     .fail((res: any) => {
@@ -202,7 +204,7 @@ module nts.uk.com.view.cmm013.a {
              */
             public changeMode(newValue: boolean): void {
                 let _self = this;
-
+                
                 if (newValue) {
                     let defaultHistory: History[] = [];
                     defaultHistory.push(_self.createHistory());
@@ -357,9 +359,10 @@ module nts.uk.com.view.cmm013.a {
                                 .done(() => {
                                     nts.uk.ui.block.clear();
                                     // Show message
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                                    // Reload list
-                                    _self.reloadComponent();
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                        // Reload list
+                                        _self.reloadComponent();
+                                    });                                   
                                 })
                                 .fail((res: any) => {
                                     nts.uk.ui.block.clear();

@@ -19,6 +19,7 @@ module nts.uk.at.view.kaf002.c {
             }
             
             startPage(appID: string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 var dfdCommonSet = service.newScreenFind();

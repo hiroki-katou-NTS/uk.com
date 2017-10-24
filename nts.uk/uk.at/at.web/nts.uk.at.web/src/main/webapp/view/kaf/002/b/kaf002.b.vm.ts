@@ -46,6 +46,7 @@ module nts.uk.at.view.kaf002.b {
             }
             
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 service.newScreenFind()

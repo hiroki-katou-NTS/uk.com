@@ -31,6 +31,8 @@ module nts.uk.at.view.kmk010.b {
                    for (var dto of data) {
                        var model: OvertimeModel = new OvertimeModel();
                        model.updateData(dto);
+                       model.updateEnableCheck(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
+                       model.setUpdateData(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
                        self.lstOvertimeModel.push(model);
                    }
                    // equal language id 
@@ -65,6 +67,9 @@ module nts.uk.at.view.kmk010.b {
              */
             private saveOvertime(): void{
                 var self = this;
+                if (self.validateDomainSave()) {
+                    return;
+                }
                 if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
                     // convert model to dto
                     var overtimes: OvertimeDto[] = [];
@@ -99,6 +104,27 @@ module nts.uk.at.view.kmk010.b {
                         nts.uk.ui.dialog.alertError(error);
                     });
                 }
+
+            }
+            /**
+             * function validate domain save
+             */
+            private validateDomainSave(): boolean {
+                var self = this;
+                for (var model of self.lstOvertimeModel) {
+                    $('#overtimeNo_' + model.overtimeNo()).ntsEditor("clear");
+                }
+                for (var model of self.lstOvertimeModel) {
+                    if (model.requiredText()) {
+                        $('#overtimeNo_' + model.overtimeNo()).ntsEditor("validate");
+                    }
+                }
+                for (var model of self.lstOvertimeModel) {
+                    if (model.requiredText() && $('#overtimeNo_' + model.overtimeNo()).ntsError('hasError')) {
+                        return true;
+                    }
+                }
+                return false;
 
             }
             /**

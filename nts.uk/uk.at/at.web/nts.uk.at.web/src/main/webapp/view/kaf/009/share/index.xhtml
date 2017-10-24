@@ -146,7 +146,7 @@
 		</div>
 		<!--勤務を変更する -->
 		<!--Work Change-->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind ="visible: isWorkChange">
 			<div tabindex="17" data-bind="visible: workState(), ntsCheckBox: { checked: workChangeAtr , enable: workState(), text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<HR data-bind="visible : typeSiftVisible()" />
 			<div class="table" data-bind="visible : typeSiftVisible()">

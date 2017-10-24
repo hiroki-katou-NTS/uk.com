@@ -10,9 +10,7 @@ module nts.uk.at.view.kaf002.m5 {
             stampAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
-            constructor(){
-                var self = this; 
-            }
+            displayItemNo: number = 5;
             
             start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
                 var self = this;    
@@ -49,8 +47,36 @@ module nts.uk.at.view.kaf002.m5 {
                     });
                 }
                 self.stampAtr.subscribe((value)=>{ 
-                    self.refreshData();
+                    switch(value){
+                        case 0: {
+                            self.displayItemNo = 5; 
+                            self.refreshData(); 
+                            break;
+                        }
+                        case 1: {
+                            self.displayItemNo = 10; 
+                            self.refreshData(); 
+                            break;
+                        }
+                        case 2: {
+                            self.displayItemNo = 2; 
+                            self.refreshData(); 
+                            break;
+                        }
+                        case 3: {
+                            self.displayItemNo = 2; 
+                            self.refreshData(); 
+                            break;
+                        }
+                        case 4: {
+                            self.displayItemNo = 10; 
+                            self.refreshData(); 
+                            break;
+                        }
+                        default: break;      
+                    }
                 });
+                nts.uk.ui.block.clear();
             }
             
             refreshData(){
@@ -58,7 +84,7 @@ module nts.uk.at.view.kaf002.m5 {
                 let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
                 self.appStampList.removeAll();
                 let a = [];
-                for(let i=1;i<=self.supFrameNo;i++){
+                for(let i=1;i<=self.displayItemNo;i++){
                     a.push(
                         new vmbase.AppStampWork(
                             self.stampAtr(),
@@ -66,9 +92,9 @@ module nts.uk.at.view.kaf002.m5 {
                             stampGoOutAtr,
                             new vmbase.CheckBoxLocation('','',true,false),
                             new vmbase.CheckBoxLocation('','',true,false),
-                            new vmbase.CheckBoxTime(0,true,false),
+                            new vmbase.CheckBoxTime(null,true,false),
                             new vmbase.CheckBoxLocation('','',true,false),
-                            new vmbase.CheckBoxTime(0,true,false),
+                            new vmbase.CheckBoxTime(null,true,false),
                             new vmbase.CheckBoxLocation('','',true,false))
                     );    
                 };
@@ -86,6 +112,7 @@ module nts.uk.at.view.kaf002.m5 {
             }
             
             register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
                     appID: "",
@@ -105,6 +132,7 @@ module nts.uk.at.view.kaf002.m5 {
                 service.insert(command)
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                         $('.cm-memo').focus();
                         nts.uk.ui.block.clear();
                     });     
@@ -115,6 +143,7 @@ module nts.uk.at.view.kaf002.m5 {
             }
             
             update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
                     version: application.version,
@@ -135,6 +164,7 @@ module nts.uk.at.view.kaf002.m5 {
                 service.update(command)
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                         $('.cm-memo').focus();
                         nts.uk.ui.block.clear();
                     });     

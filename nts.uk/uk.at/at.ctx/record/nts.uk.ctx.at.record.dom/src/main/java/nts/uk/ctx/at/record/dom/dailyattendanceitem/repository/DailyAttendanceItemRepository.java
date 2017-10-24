@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 
 public interface DailyAttendanceItemRepository {
 	
@@ -29,6 +30,6 @@ public interface DailyAttendanceItemRepository {
 	 * @param itemAtr the item atr
 	 * @return the list
 	 */
-	List<DailyAttendanceItem> findByAtr(String companyId, int itemAtr);
+	List<DailyAttendanceItem> findByAtr(String companyId, DailyAttendanceAtr itemAtr);
 
 }

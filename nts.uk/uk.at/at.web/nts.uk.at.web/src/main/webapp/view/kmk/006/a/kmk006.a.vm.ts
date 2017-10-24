@@ -15,6 +15,7 @@ module nts.uk.at.view.kmk006.a {
     export module viewmodel {
 
         export class ScreenModel {
+            totalSelectedWorkplaceId: KnockoutObservable<string>;
             multiSelectedWorkplaceId: KnockoutObservable<string>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             treeGrid: TreeComponentOption;
@@ -50,6 +51,7 @@ module nts.uk.at.view.kmk006.a {
             listComponentOption: any;
             listComponentOptionTotal: any;
             selectedCode: KnockoutObservable<string>;
+            totalSelectedCode: KnockoutObservableArray<string>;
             multiSelectedCode: KnockoutObservableArray<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
             isDialog: KnockoutObservable<boolean>;
@@ -96,28 +98,29 @@ module nts.uk.at.view.kmk006.a {
                 ]);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
+                self.totalSelectedWorkplaceId = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
                 self.treeGrid = {
                     isShowAlreadySet: true,
-                    isMultiSelect: self.isMultiSelectKcp(),
+                    isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDate,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
-                    isShowSelectButton: true,
-                    isDialog: true,
+                    isShowSelectButton: false,
+                    isDialog: false,
                     alreadySettingList: self.alreadySettingList,
                     maxRows: 10
                 };
                 self.treeGridTotal = {
                     isShowAlreadySet: true,
-                    isMultiSelect: true,
+                    isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
-                    selectedWorkplaceId: self.multiSelectedWorkplaceId,
+                    selectedWorkplaceId: self.totalSelectedWorkplaceId,
                     baseDate: self.baseDate,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
-                    isShowSelectButton: true,
-                    isDialog: true,
+                    isShowSelectButton: false,
+                    isDialog: false,
                     alreadySettingList: self.alreadySettingList,
                     maxRows: 10
                 };
@@ -150,43 +153,40 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumResLatLi = ko.observable(2);
                 self.valueEnumResLatAtr = ko.observable(2);
 
-                self.selectedCode = ko.observable('1');
+                self.selectedCode = ko.observable('');
+                self.totalSelectedCode = ko.observable('');
                 self.selectedCurrentJob = ko.observable('');
                 self.selectedCurrentWkp = ko.observable('');
                 self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 self.isShowAlreadySet = ko.observable(false);
-                self.alreadySettingList = ko.observableArray([
-                    { code: '1', isAlreadySetting: true },
-                    { code: '2', isAlreadySetting: true }
-                ]);
+                self.alreadySettingList_ = ko.observableArray([]);
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
-                self.isMultiSelect = ko.observable(false);
                 self.treeItemName = ko.observable('');
                 self.componentItemName = ko.observable('');
                 self.treeItemCode = ko.observable('');
                 self.componentItemCode = ko.observable('');
                 self.listComponentOption = {
+                    isShowAlreadySet: true,
                     baseDate: self.baseDate,
-                    isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: self.isMultiSelect(),
+                    isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList
+                    alreadySettingList: self.alreadySettingList_
                 };
                 self.listComponentOptionTotal = {
-                    baseDate: self.baseDate,
                     isShowAlreadySet: true,
-                    isMultiSelect: true,
+                    baseDate: self.baseDate,
+                    isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList
+                    alreadySettingList: self.alreadySettingList_
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
@@ -202,6 +202,32 @@ module nts.uk.at.view.kmk006.a {
                             self.treeItemCode(ent.code);
                         }
                     }
+                });
+                
+                //subscribe 
+                self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
+                    self.selectedCurrentWkp(codeChanged);
+                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode);
+                    let data = $('#tree-grid').getDataList();
+                    for (let ent of data) {
+                        if (ent.workplaceId == codeChanged) {
+                            self.treeItemName(ent.name);
+                            self.treeItemCode(ent.code);
+                        }
+                    }
+                });
+                
+                //subscribe 
+                self.totalSelectedCode.subscribe(function(codeChanged) {
+                     self.selectedCurrentJob(codeChanged);
+                     self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId() ,codeChanged);
+                     let data = $('#jobtitles').getDataList();
+                     for (let ent of data) {
+                        if (ent.id == codeChanged) {
+                            self.componentItemName(ent.name);
+                            self.componentItemCode(ent.code);
+                        }
+                     }
                 });
 
                 //subscribe 
@@ -258,11 +284,66 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();
 
                 // Initial settings.
-                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), _self.loadAutoCalAtrOvertimeEnum(), _self.loadUseUnitAutoCalSettingModel()).done(function() {
+                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), _self.loadAutoCalAtrOvertimeEnum(), 
+                            _self.loadUseUnitAutoCalSettingModel()).done(function() {
                     _self.onSelectCompany();
                     dfd.resolve(_self);
                 });
 
+                return dfd.promise();
+            }
+            
+            //load workPlace-job already setting
+            public loadWkpJobAlreadySettingList() : JQueryPromise<void> {
+                let _self = this;
+                var jobSettingList: any = [];
+                var wkpSettingList: any = [];
+                var dfd = $.Deferred<any>();
+                
+                service.getAllWplJobAutoCal().done(function(data){
+                    data.forEach(c => {
+                        let job_item : JobAlreadySettingModel = {id: c.jobId, isAlreadySetting: true};
+                        let wkp_item : UnitAlreadySettingModel = {workplaceId: c.wkpId, isAlreadySetting: true};
+                        wkpSettingList.push(wkp_item);
+                        jobSettingList.push(job_item);
+                    });
+                    _self.alreadySettingList(wkpSettingList);
+                    _self.alreadySettingList_(jobSettingList);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            //load job already setting
+            public loadJobAlreadySettingList() : JQueryPromise<void> {
+                let _self = this;
+                var settingList: any = [];
+                var dfd = $.Deferred<any>();
+                service.getAllJobAutoCal().done(function(data){
+                    data.forEach(c => {
+                        let item : JobAlreadySettingModel = {id: c.jobId, isAlreadySetting: true};
+                        settingList.push(item);
+                    });
+                    _self.alreadySettingList_(settingList);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            
+            //load workPlace already setting
+            public loadWkpAlreadySettingList() : JQueryPromise<void> {
+                let _self = this;
+                var settingList: any = [];
+                var dfd = $.Deferred<any>();
+                service.getAllWkpAutoCal().done(function(data){
+                    data.forEach(c => {
+                        let item : UnitAlreadySettingModel = {workplaceId: c.wkpId, isAlreadySetting: true};
+                        settingList.push(item);
+                    });
+                    _self.alreadySettingList(settingList);
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -273,7 +354,7 @@ module nts.uk.at.view.kmk006.a {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 nts.uk.at.view.kmk006.e.service.getUseUnitAutoCal().done(function(data) {
-                    self.useUnitAutoCalSettingModel(new UnitAutoCalSettingView(data.useWkpSet, data.useJobSet, data.useJobwkpSetdata));
+                    self.useUnitAutoCalSettingModel(new UnitAutoCalSettingView(data.useWkpSet, data.useJobSet, data.useJobwkpSet));
                     dfd.resolve();
                 }).fail(res => {
                     nts.uk.ui.dialog.alertError(res);
@@ -537,6 +618,7 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    
                         self.loadJobAutoCal(jobId);
+                        self.loadJobAlreadySettingList();
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -573,6 +655,7 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    
                         self.loadWkpAutoCal(wkpId);
+                        self.loadWkpAlreadySettingList();
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -629,6 +712,7 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteJobAutoCal(self.selectedCurrentJob()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadJobAutoCal(self.selectedCurrentJob());
+                            self.loadJobAlreadySettingList();
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
@@ -652,6 +736,7 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteWkpAutoCal(self.selectedCurrentWkp()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadJobAutoCal(self.selectedCurrentWkp());
+                            self.loadWkpAlreadySettingList();
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
@@ -675,6 +760,7 @@ module nts.uk.at.view.kmk006.a {
                     service.deleteWkpJobAutoCal(self.selectedCurrentWkp(), self.selectedCurrentJob()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp());
+                            self.loadWkpJobAlreadySettingList();
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
@@ -709,10 +795,14 @@ module nts.uk.at.view.kmk006.a {
                 $('.nts-input').ntsError('clear');
                 var self = this;
 
-                self.loadJobAutoCal();
-
                 self.isLoading(true);
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                
+                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function(){
+                    let code = $('#component-items-list').getDataList()[0].id;
+                    self.selectedCode(code);
+                    self.loadJobAutoCal(code);
+                    self.loadJobAlreadySettingList();
+                });
 
             }
 
@@ -724,27 +814,39 @@ module nts.uk.at.view.kmk006.a {
                 $('.nts-input').ntsError('clear');
                 var self = this;
 
-                self.loadWkpAutoCal();
-
                 // Update flags.
                 self.isLoading(true);
+                
                 $('#tree-grid-srcc').ntsTreeComponent(self.treeGrid).done(function() {
+                    self.loadWkpAutoCal(self.multiSelectedWorkplaceId);
+                    self.loadWkpAlreadySettingList().done(function(){
+                          
+                    });
                 });
             }
 
             public onSelectWkpJob(): void {
                 $('.nts-input').ntsError('clear');
                 var self = this;
-                var dfd = $.Deferred<any>();
+               
                 // Update flags.
-                //                self.isMultiSelect(true);
-                //                self.isMultiSelectKcp(true);
                 self.isLoading(true);
-                $('#jobtitles').ntsListComponent(self.listComponentOption);
-                $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function() {
-                    dfd.resolve();
+                
+                //load grid          
+                $('#tree-grid').ntsTreeComponent(self.treeGridTotal).done(function() {
+                   
                 });
-
+                
+                $('#jobtitles').ntsListComponent(self.listComponentOptionTotal).done(function(){
+                    let code = $('#jobtitles').getDataList()[0].id;
+                    self.totalSelectedCode(code);
+                    self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId, code);
+                     // load ready setting
+                    self.loadWkpJobAlreadySettingList().done(function(){
+                        
+                    });
+                });
+               
             }
 
             /**
@@ -1106,7 +1208,12 @@ module nts.uk.at.view.kmk006.a {
         }
 
         export interface UnitAlreadySettingModel {
-            code: string;
+            workplaceId: string;
+            isAlreadySetting: boolean;
+        }
+        
+        export interface JobAlreadySettingModel {
+            id: string;
             isAlreadySetting: boolean;
         }
 

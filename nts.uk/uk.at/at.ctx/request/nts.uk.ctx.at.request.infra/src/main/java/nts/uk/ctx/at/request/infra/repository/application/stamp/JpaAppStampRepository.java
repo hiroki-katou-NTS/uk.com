@@ -95,9 +95,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				for(int i=0;i<appStamp.getAppStampWorks().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportCard = appStamp.getAppStampWorks().get(i).getSupportCard();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportLocationCD = appStamp.getAppStampWorks().get(i).getSupportLocationCD();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
@@ -116,9 +116,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				for(int i=0;i<appStamp.getAppStampWorks().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportCard = appStamp.getAppStampWorks().get(i).getSupportCard();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportLocationCD = appStamp.getAppStampWorks().get(i).getSupportLocationCD();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
@@ -144,9 +144,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class), 
 							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
 							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
-							new TimeWithDayAttr(krqdtAppStampDetail.startTime), 
+							krqdtAppStampDetail.startTime, 
 							krqdtAppStampDetail.startLocationCD, 
-							new TimeWithDayAttr(krqdtAppStampDetail.endTime), 
+							krqdtAppStampDetail.endTime, 
 							krqdtAppStampDetail.endLocationCD);
 					appStampGoOutPermits.add(appStampGoOutPermit);
 				}
@@ -299,9 +299,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStampWork.getStampFrameNo()),
 							appStamp.getVersion(),
 							appStampWork.getStampGoOutAtr().value, 
-							appStampWork.getStartTime(), 
+							appStampWork.getStartTime().v(), 
 							appStampWork.getStartLocation(), 
-							appStampWork.getEndTime(), 
+							appStampWork.getEndTime().v(), 
 							appStampWork.getEndLocation(), 
 							appStampWork.getSupportCard(), 
 							appStampWork.getSupportLocationCD(), 
@@ -347,9 +347,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStampWork.getStampFrameNo()),
 							appStamp.getVersion(),
 							appStampWork.getStampGoOutAtr().value, 
-							appStampWork.getStartTime(), 
+							appStampWork.getStartTime().v(), 
 							appStampWork.getStartLocation(), 
-							appStampWork.getEndTime(), 
+							appStampWork.getEndTime().v(), 
 							appStampWork.getEndLocation(), 
 							appStampWork.getSupportCard(), 
 							appStampWork.getSupportLocationCD(), 

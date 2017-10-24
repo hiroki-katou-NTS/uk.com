@@ -1,9 +1,12 @@
 module nts.uk.at.view.kdw001.c {
     import getText = nts.uk.resource.getText;
-
+    
     export module viewmodel {
         export class ScreenModel {
-
+            
+            //Declare screenName flag to forward screen B or screen C
+            screenName: string;
+            
             //Declare kcp005 list properties
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
@@ -34,10 +37,15 @@ module nts.uk.at.view.kdw001.c {
             constructor() {
 
                 var self = this;
-
+                
+                //Get screenName value from a screen
+                __viewContext.transferred.ifPresent(data => {
+                    self.screenName = data.screenName;
+                });
+                
                 //Init kcp005 properties
                 self.baseDate = ko.observable(new Date());
-                self.selectedCode = ko.observable('1');
+                self.selectedCode = ko.observable('2');
                 self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 self.isShowAlreadySet = ko.observable(false);
                 self.alreadySettingList = ko.observableArray([
@@ -46,7 +54,7 @@ module nts.uk.at.view.kdw001.c {
                 ]);
                 self.isDialog = ko.observable(true);
                 self.isShowNoSelectRow = ko.observable(false);
-                self.isMultiSelect = ko.observable(true);
+                self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
 
@@ -54,7 +62,7 @@ module nts.uk.at.view.kdw001.c {
                 
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: self.isMultiSelect(),
+                    isMultiSelect: false,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -66,7 +74,7 @@ module nts.uk.at.view.kdw001.c {
                     isShowSelectAllButton: self.isShowSelectAllButton()
                 };
 
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+             
 
                 //Init time range input
                 self.enable = ko.observable(true);
@@ -158,8 +166,22 @@ module nts.uk.at.view.kdw001.c {
 
                 }
 
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
+            }
+            
+            opendScreenBorJ() {
+                let self = this;
+                if(self.screenName == "B"){
+                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 1});    
+                }else{
+                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"activeStep": 1});
+                }        
+            }
+            
+            start() {
+                var self = this;
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent); 
+                $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
 
         }

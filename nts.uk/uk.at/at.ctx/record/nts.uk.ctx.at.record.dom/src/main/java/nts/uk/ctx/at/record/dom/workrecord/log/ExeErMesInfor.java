@@ -3,15 +3,16 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
-import lombok.Data;
-import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.SysErClass;
+import lombok.Getter;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.SysErClass;
 
 /**
  * 実行エラーメッセージ情報
+ * 
  * @author tutk
  *
  */
-@Data
+@Getter
 public class ExeErMesInfor {
 	/**
 	 * エラーメッセージ
@@ -25,5 +26,12 @@ public class ExeErMesInfor {
 	 * 就業計算と集計実行ログID
 	 */
 	private long empCalAndSumExecLogId;
-	
+
+	public ExeErMesInfor(String errorMessage, SysErClass sysErrorType, long empCalAndSumExecLogId) {
+		super();
+		this.errorMessage = errorMessage;
+		this.sysErrorType = sysErrorType;
+		this.empCalAndSumExecLogId = empCalAndSumExecLogId;
+	}
+
 }
