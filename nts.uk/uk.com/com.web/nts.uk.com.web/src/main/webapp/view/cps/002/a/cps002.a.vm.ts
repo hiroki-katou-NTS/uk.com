@@ -75,6 +75,8 @@ module cps002.a.vm {
                         self.categoryList(_.map(result, item => {
                             return new CategoryItem(item);
                         }));
+
+                        self.categorySelectedCode('');
                         self.categorySelectedCode(result[0].categoryCd);
                     } else {
                         self.categoryList.removeAll();
@@ -85,16 +87,13 @@ module cps002.a.vm {
 
             });
 
-            self.currentItem.subscribe((newItem) => {
-
-                if (!self.isUseInitValue()) {
-                    // service.      
-                }
-
-
-            });
+           
 
             self.categorySelectedCode.subscribe((newValue) => {
+
+                if (newValue == '') {
+                    return;
+                }
 
                 if (self.isUseInitValue()) {
                     service.getAllInitValueItemSetting(self.currentItem().itemId, newValue).done((result: Array<Item>) => {

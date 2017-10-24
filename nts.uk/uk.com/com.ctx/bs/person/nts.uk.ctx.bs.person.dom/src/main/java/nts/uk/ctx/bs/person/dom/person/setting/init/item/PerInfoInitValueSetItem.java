@@ -92,6 +92,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	/**
 	 * Constructor as domain
+	 * 
 	 * @param perInfoItemDefId
 	 * @param settingId
 	 * @param perInfoCtgId
@@ -113,6 +114,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	/**
 	 * Constructor for diplay at screen A
+	 * 
 	 * @param perInfoItemDefId
 	 * @param settingId
 	 * @param perInfoCtgId
@@ -136,7 +138,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
 	}
 
-	public void updateInitSetId(String settingId){
+	public void updateInitSetId(String settingId) {
 		this.settingId = settingId;
 	}
 }

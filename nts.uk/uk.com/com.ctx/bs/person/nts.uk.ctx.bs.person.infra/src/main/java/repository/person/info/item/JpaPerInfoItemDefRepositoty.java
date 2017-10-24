@@ -538,7 +538,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				numericItemMinusAtr, numericItemDecimalPart, numericItemIntegerPart, selectionItemRefType,
 				selectionItemRefCode);
 	}
-	// Sonnlb Code
+	// Sonnlb Code start
 
 	@Override
 	public void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef) {
@@ -598,7 +598,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				});
 	}
 
-	// Sonnlb Code
+	// Sonnlb Code end
 
 	// vinhpx start
 	@Override
