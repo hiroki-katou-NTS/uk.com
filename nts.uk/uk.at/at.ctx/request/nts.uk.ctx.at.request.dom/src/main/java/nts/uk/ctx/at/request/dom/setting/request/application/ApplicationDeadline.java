@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.common.UseAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 
 /**
  * 申請締切設定

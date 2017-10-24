@@ -23,8 +23,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -108,31 +108,15 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 			}
 		}		
 		
-		// Check JobTitle
-		Optional<JobTitleInfo> opJobTitleInfo = this.jobTitleInfoRepository.find(
-				companyId,
-				command.getJobTitleInfo().getJobTitleId(), 
-				command.getJobTitleInfo().getJobTitleHistoryId());
+		// Check JobTitle	
 		if (command.getIsCreateMode()) {
-			// Add
-			if (opJobTitleInfo.isPresent()) {
-				// Throw RuntimeException - Duplicated JobTitle
-				throw new RuntimeException(
-						String.format("Job title %s exist!", command.getJobTitleInfo().getJobTitleId()));
-			}	
+			// Add			
 			if (this.jobTitleInfoRepository.isJobTitleCodeExist(companyId, command.getJobTitleInfo().getJobTitleCode())) {
 				// Throw Exception - Duplicated JobTitleCode
 				isError = true;
 				exceptions.addMessage("Msg_3");
 			}
-		} else {
-			// Update
-			if (!opJobTitleInfo.isPresent()) {
-				// Throw RuntimeException - JobTitle not found
-				throw new RuntimeException(
-						String.format("Job title %s not found!", command.getJobTitleInfo().getJobTitleId()));
-			}
-		}	
+		} 
 		
 		// Has error, throws message
 		if (isError) {

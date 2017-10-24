@@ -244,7 +244,7 @@ module nts.uk.com.view.cmm013.f {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                     .ifYes(() => { 
                         // Get item behind removed item
-                        let selectedCode: string = null;                    
+                        let nextCode: string = null;                    
                         //let currentIndex: number = _self.items().findIndex(item => item.sequenceCode == _self.currentCode()); // ES6 only :(      
                         let currentIndex: number = null;     
                         for (let item of _self.items()) {
@@ -254,7 +254,7 @@ module nts.uk.com.view.cmm013.f {
                         }
                         
                         if (currentIndex && _self.items()[currentIndex + 1]) {
-                            selectedCode = _self.items()[currentIndex + 1].sequenceCode;
+                            nextCode = _self.items()[currentIndex + 1].sequenceCode;
                         } 
                         
                         nts.uk.ui.block.grayout();
@@ -268,8 +268,8 @@ module nts.uk.com.view.cmm013.f {
                                                 // Update mode
                                                 _self.createMode(false);
                                                 _self.items(dataList);                                   
-                                                if (selectedCode) { 
-                                                    _self.currentCode(selectedCode);
+                                                if (nextCode) { 
+                                                    _self.currentCode(nextCode);
                                                 } else {
                                                     _self.currentCode(dataList[dataList.length - 1].sequenceCode);  
                                                 }                                

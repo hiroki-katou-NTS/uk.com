@@ -134,9 +134,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		//TH: update history old
 		else{
 			List<AppType> lstAppTypeDb = data.getLstAppType();
-			List<Integer> lstAppTypeUi = new ArrayList<>();
+			List<AppType> lstAppTypeUi = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : rootInsert) {
-				lstAppTypeUi.add(commonRoot.getAppTypeValue());
+				lstAppTypeUi.add(new AppType(commonRoot.getAppTypeValue(), commonRoot.getEmployRootAtr()));
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
@@ -224,9 +224,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		//TH: update history old
 		else{
 			List<AppType> lstAppTypeDb = data.getLstAppType();
-			List<Integer> lstAppTypeUi = new ArrayList<>();
+			List<AppType> lstAppTypeUi = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : rootInsert) {
-				lstAppTypeUi.add(commonRoot.getAppTypeValue());
+				lstAppTypeUi.add(new AppType(commonRoot.getAppTypeValue(), commonRoot.getEmployRootAtr()));
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
@@ -309,9 +309,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		//TH: update history old
 		else{
 			List<AppType> lstAppTypeDb = data.getLstAppType();
-			List<Integer> lstAppTypeUi = new ArrayList<>();
+			List<AppType> lstAppTypeUi = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : rootInsert) {
-				lstAppTypeUi.add(commonRoot.getAppTypeValue());
+				lstAppTypeUi.add(new AppType(commonRoot.getAppTypeValue(),commonRoot.getEmployRootAtr()));
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
@@ -384,9 +384,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * TH: update
 	 * update root display in screen
 	 */
-	private void updateRoot(List<Integer> lstAppTypeUi, List<CompanyAppRootADto> root){
+	private void updateRoot(List<AppType> lstAppTypeUi, List<CompanyAppRootADto> root){
 		//update root display in screen
-		for (Integer type : lstAppTypeUi) {
+		for (AppType type : lstAppTypeUi) {
 			CompanyAppRootADto commonRoot = findRoot(root, type);
 			String branchId = commonRoot.getBranchId();
 			//xoa app Phase
@@ -466,9 +466,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * @param appTypeValue
 	 * @return
 	 */
-	private CompanyAppRootADto findRoot(List<CompanyAppRootADto> root, Integer appTypeValue){
+	private CompanyAppRootADto findRoot(List<CompanyAppRootADto> root, AppType appTypeValue){
 		for (CompanyAppRootADto companyAppRootADto : root) {
-			if(companyAppRootADto.getAppTypeValue() == appTypeValue){
+			if(companyAppRootADto.getAppTypeValue() == appTypeValue.getValue() && companyAppRootADto.getEmployRootAtr() == appTypeValue.getEmployRootAtr()){
 				return companyAppRootADto;
 			}
 		}

@@ -1513,7 +1513,6 @@ module nts.uk.at.view.kmk002.a {
                 let dto = self.toDto();
                 let param = <ParamToD>{};
                 param.formulaId = dto.formulaId;
-                param.performanceAtr = 1; //TODO ??
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = self.formulaSetting;
@@ -1748,7 +1747,6 @@ module nts.uk.at.view.kmk002.a {
             formulaId: string;
             formulaName: string;
             formulaAtr: string;
-            performanceAtr: number;
             formulaSetting: FormulaSettingDto;
             operatorDatasource: Array<EnumConstantDto>;
             selectableFormulas: Array<FormulaDto>;
