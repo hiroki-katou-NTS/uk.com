@@ -1,8 +1,10 @@
 #cm-content {
+	min-width: 1390px;
 	margin-left: 39px;
     margin-top: 10px;
 } 
 .cm-content-left {
+	min-width: 800px;
 	display: inline-block;
 	margin-right: 20px;
 }
@@ -29,9 +31,6 @@
 }
 .cm-time-editor {
 	width: 100px;
-}
-.cm-combo-box {
-	width: 350px;
 }
 .cm-memo {
 	width: 550px;

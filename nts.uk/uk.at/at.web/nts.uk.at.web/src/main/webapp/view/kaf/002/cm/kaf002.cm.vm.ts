@@ -81,7 +81,9 @@ module nts.uk.at.view.kaf002.cm {
                 } else {
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
-                    self.currentReason(_.first(self.inputReasons()).id);
+                    if(self.inputReasonsDisp() == 1 && self.inputReasons().length != 0){
+                        self.currentReason(_.first(self.inputReasons()).id);
+                    }
                 }
                 _.forEach(approvalList, appPhase => {
                     _.forEach(appPhase.approverDtos, appFrame => {
@@ -95,9 +97,7 @@ module nts.uk.at.view.kaf002.cm {
             
             register(){
                 var self = this;
-                if(self.inputReasonsDisp()==1) {
-                    self.application().titleReason(_.find(self.inputReasons(), o => o.id = self.currentReason()).id);
-                }
+                self.application().titleReason(self.currentReason());
                 switch(self.stampRequestMode()){
                     case 0: self.m1.register(self.application(), self.approvalList);break;    
                     case 1: self.m2.register(self.application(), self.approvalList);break;  
@@ -110,11 +110,7 @@ module nts.uk.at.view.kaf002.cm {
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                if(self.inputReasonsDisp()==1) {
-                    self.application().titleReason(self.currentReason());
-                } else {
-                    self.application().titleReason('');    
-                }
+                self.application().titleReason(self.currentReason());
                 switch(self.stampRequestMode()){
                     case 0: self.m1.update(self.application(), approvalList);break;    
                     case 1: self.m2.update(self.application(), approvalList);break;  
