@@ -3457,6 +3457,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid tr td.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-state-hover {
   background-color: aqua;
+  border-color: #AAB7B8;
 }
 
 /* line 18, ../sass/components/_ntsgrid.scss */
