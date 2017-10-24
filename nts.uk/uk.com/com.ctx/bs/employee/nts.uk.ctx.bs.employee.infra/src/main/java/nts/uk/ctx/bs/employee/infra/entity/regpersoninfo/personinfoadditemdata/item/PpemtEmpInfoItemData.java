@@ -1,4 +1,4 @@
-package entity.person.info.data.item;
+package nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.item;
 
 import java.io.Serializable;
 
@@ -17,12 +17,12 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEMT_EMP_INFO_ITEM_DATA")
-public class BsydtEmpInfoItemData extends JpaEntity implements Serializable {
+public class PpemtEmpInfoItemData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BsydtEmpInfoItemDataPk bsydtEmpInfoItemDataPk;
+	public PpemtEmpInfoItemDataPk ppemtEmpInfoItemDataPk;
 
 	@Basic(optional = false)
 	@Column(name = "PER_INFO_CTG_ID")
@@ -47,7 +47,7 @@ public class BsydtEmpInfoItemData extends JpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 
-		return bsydtEmpInfoItemDataPk;
+		return ppemtEmpInfoItemDataPk;
 	}
 
 }

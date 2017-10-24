@@ -1,4 +1,4 @@
-package entity.person.info.data.item;
+package nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.item;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsydtEmpInfoItemDataPk implements Serializable {
+public class PpemtEmpInfoItemDataPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

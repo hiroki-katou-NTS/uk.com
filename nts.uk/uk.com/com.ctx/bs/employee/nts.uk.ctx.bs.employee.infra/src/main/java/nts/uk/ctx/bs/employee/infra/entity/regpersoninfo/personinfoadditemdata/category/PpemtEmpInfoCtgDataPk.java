@@ -1,4 +1,4 @@
-package entity.person.info.data.category;
+package nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.category;
 
 import java.io.Serializable;
 
