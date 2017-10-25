@@ -64,7 +64,7 @@ public class BsymtFamilySocialInsurance extends UkJpaEntity implements Serializa
 
 	@Override
 	protected Object getKey() {
-		return this.bsymtFamilySocialInsurance;
+		return this.bsymtFamilySocialInsurancePK;
 	}
 
 }
