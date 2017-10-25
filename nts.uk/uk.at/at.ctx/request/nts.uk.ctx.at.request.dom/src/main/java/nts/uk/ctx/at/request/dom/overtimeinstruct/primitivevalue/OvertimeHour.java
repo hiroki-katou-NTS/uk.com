@@ -1,22 +1,23 @@
-package nts.uk.ctx.at.request.dom.application.overtime.primitivevalue;
+package nts.uk.ctx.at.request.dom.overtimeinstruct.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * @author loivt
- * 勤務時刻
+ * 残業時間
  */
-@IntegerRange(min = 1, max = 9999)
-public class WorkClock extends IntegerPrimitiveValue<WorkClock>{
+@IntegerRange(min = 0, max = 2880)
+public class OvertimeHour extends IntegerPrimitiveValue<OvertimeHour> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WorkClock(Integer rawValue) {
+	public OvertimeHour(Integer rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
+
 }
