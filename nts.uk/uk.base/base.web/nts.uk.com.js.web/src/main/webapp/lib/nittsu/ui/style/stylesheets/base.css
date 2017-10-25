@@ -2153,9 +2153,15 @@ button.nts-switch-button[disabled]:hover {
   background: #F39814;
   color: white;
 }
+/* line 22, ../sass/components/_listbox.scss */
+.ntsListBox tbody tr {
+  /* .ui-iggrid-selectedcell{ 
+  	background: #007fff !important;
+  } */
+}
 /* line 23, ../sass/components/_listbox.scss */
 .ntsListBox tbody tr td {
-  height: 28px;
+  /* height: 28px; */
   overflow: hidden;
   user-select: none;
   cursor: default;
@@ -3456,7 +3462,7 @@ button.nts-switch-button[disabled]:hover {
   border-color: #AAB7B8;
 }
 
-/* line 18, ../sass/components/_ntsgrid.scss */
+/* line 19, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-disable.ui-state-hover,
@@ -3469,12 +3475,12 @@ button.nts-switch-button[disabled]:hover {
   color: gray;
 }
 
-/* line 29, ../sass/components/_ntsgrid.scss */
+/* line 30, ../sass/components/_ntsgrid.scss */
 .ui-iggrid .ui-iggrid-tablebody td {
   height: 21px;
 }
 
-/* line 32, ../sass/components/_ntsgrid.scss */
+/* line 33, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
@@ -3490,7 +3496,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: purple;
 }
 
-/* line 47, ../sass/components/_ntsgrid.scss */
+/* line 48, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3510,7 +3516,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: green;
 }
 
-/* line 66, ../sass/components/_ntsgrid.scss */
+/* line 67, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3534,7 +3540,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: orange;
 }
 
-/* line 89, ../sass/components/_ntsgrid.scss */
+/* line 90, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3562,7 +3568,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: pink;
 }
 
-/* line 116, ../sass/components/_ntsgrid.scss */
+/* line 117, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3594,7 +3600,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: yellow;
 }
 
-/* line 147, ../sass/components/_ntsgrid.scss */
+/* line 148, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3630,7 +3636,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: red;
 }
 
-/* line 182, ../sass/components/_ntsgrid.scss */
+/* line 183, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3670,18 +3676,18 @@ button.nts-switch-button[disabled]:hover {
   background-color: #007fff;
 }
 
-/* line 221, ../sass/components/_ntsgrid.scss */
+/* line 222, ../sass/components/_ntsgrid.scss */
 .nts-image-container {
   height: 100%;
   text-align: center;
 }
 
-/* line 230, ../sass/components/_ntsgrid.scss */
+/* line 231, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 238, ../sass/components/_ntsgrid.scss */
+/* line 239, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }
@@ -3899,6 +3905,7 @@ div .ex-area-line.x-stay {
   background: #ffc;
   border: solid 1px #b85;
   padding: 5px;
+  z-index: 120100;
 }
 
 /* line 1, ../sass/components/_legendbutton.scss */
@@ -4207,60 +4214,83 @@ div .ex-area-line.x-stay {
   top: 10px;
 }
 
+/* line 1, ../sass/components/_imagepreview.scss */
 .image-holder {
-	width: 600px;
-	height: 600px;
-}
-.image-preview {
-	width: 100%;
-	height: 100%;
-}
-.inline-container{
-	float: left;
-	padding: 5px 10px;
-}
-.info-label{
-	display: block;
-}
-.checkbox-holder{
-	padding: 10px 10px;
-}
-.crop-icon{
-	border: 1px red solid;
-    height: 15px;
-    width: 25px;
-}
-.crop-description {
-	padding: 5px 5px;
-}
-.mouse-icon{
-    height: 15px;
-    width: 15px;
-    background-image: url("../images/mouse-128.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    padding: 5px 5px;
-}
-.mouse-description-text{
-    padding: 5px 0px;
-}
-.cropper-line{
- 	background-color: red !important;
-}
-.cropper-point {
-    background-color: red !important;
-}
-.cropper-crop-box{
-    outline-color: rgba(255, 0, 0, 0.75) !important;
-    outline: 1px solid red !important;
+  width: 600px;
+  height: 600px;
 }
 
-/* line 48, ../sass/base.scss */
+/* line 5, ../sass/components/_imagepreview.scss */
+.image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 9, ../sass/components/_imagepreview.scss */
+.inline-container {
+  float: left;
+  padding: 5px 10px;
+}
+
+/* line 13, ../sass/components/_imagepreview.scss */
+.info-label {
+  display: block;
+}
+
+/* line 16, ../sass/components/_imagepreview.scss */
+.checkbox-holder {
+  padding: 10px 10px;
+}
+
+/* line 19, ../sass/components/_imagepreview.scss */
+.crop-icon {
+  border: 1px red solid;
+  height: 15px;
+  width: 25px;
+}
+
+/* line 24, ../sass/components/_imagepreview.scss */
+.crop-description {
+  padding: 5px 5px;
+}
+
+/* line 27, ../sass/components/_imagepreview.scss */
+.mouse-icon {
+  height: 15px;
+  width: 15px;
+  background-image: url("../images/mouse-128.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 5px 5px;
+}
+
+/* line 35, ../sass/components/_imagepreview.scss */
+.mouse-description-text {
+  padding: 5px 0px;
+}
+
+/* line 38, ../sass/components/_imagepreview.scss */
+.cropper-line {
+  background-color: red !important;
+}
+
+/* line 41, ../sass/components/_imagepreview.scss */
+.cropper-point {
+  background-color: red !important;
+}
+
+/* line 44, ../sass/components/_imagepreview.scss */
+.cropper-crop-box {
+  outline-color: rgba(255, 0, 0, 0.75) !important;
+  outline: 1px solid red !important;
+}
+
+/* line 49, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 52, ../sass/base.scss */
+/* line 53, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
