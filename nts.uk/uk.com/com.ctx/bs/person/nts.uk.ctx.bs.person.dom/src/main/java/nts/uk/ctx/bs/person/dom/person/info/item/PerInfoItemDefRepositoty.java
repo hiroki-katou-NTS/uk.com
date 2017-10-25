@@ -60,6 +60,8 @@ public interface PerInfoItemDefRepositoty {
 	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
+	
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId, String contractCd);
 
 	void removePerInfoItemInCopySetting(String perInforCtgId, String companyId);
 

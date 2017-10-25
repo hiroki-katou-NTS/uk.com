@@ -16,11 +16,15 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	private AutoCalculationSetting flexExcessTime;
 	
 	//加給
-	private AutoCalRasingSalarySetting rasingSalarySetting;
+	private AutoCalRaisingSalarySetting rasingSalarySetting;
 	
 	//休出時間
 	private AutoCalHolidaySetting holidayTimeSetting;
 	
 	//残業時間
+	private AutoCalOfOverTime overtimeSetting;
+	
+	//遅刻早退
+	private AutoCalOfLeaveEarlySetting leaveEarlySetting;
 	
 }

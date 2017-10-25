@@ -14,5 +14,8 @@ public class AddEmpDocumentFileCommand {
 	private String fileid;
 	
 	/** The personInfoCategoryId  */
-	private String personInfoCtg;
+	private String personInfoCtgId;
+	
+	/** The upload order*/
+	private int uploadOrder;
 }

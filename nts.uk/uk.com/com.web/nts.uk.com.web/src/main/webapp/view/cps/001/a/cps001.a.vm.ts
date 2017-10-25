@@ -110,13 +110,13 @@ module cps001.a.vm {
                                         x.items.push({ code: m.itemCode, value: ko.observable('xxxx') });
                                     });
                                 } else {
-                                    _.each(Array(3), (_x, i) => {
+                                    /*_.each(Array(3), (_x, i) => {
                                         let rows = [];
                                         _.each(x.listItemDf, (m, j) => {
                                             rows.push({ row: i, col: j, code: m.itemCode, value: ko.observable('xxxx') });
                                         });
                                         x.items.push(rows);
-                                    });
+                                    });*/
                                 }
                             }
                         });

@@ -407,7 +407,7 @@ __viewContext.ready(function () {
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowXOccupation: 120,
+            windowXOccupation: 170,
             windowYOccupation: 300,
             updateMode: "stick",
             pasteOverWrite: true,
@@ -638,7 +638,7 @@ __viewContext.ready(function () {
         });
     
         $("#open-dialog").click(function() {
-            nts.uk.ui.windows.sub.modal("/view/sample/extable/dialog/sample.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/sample/component/extable/dialog/sample.xhtml");
         });
     
     let newVertSumColumns = [

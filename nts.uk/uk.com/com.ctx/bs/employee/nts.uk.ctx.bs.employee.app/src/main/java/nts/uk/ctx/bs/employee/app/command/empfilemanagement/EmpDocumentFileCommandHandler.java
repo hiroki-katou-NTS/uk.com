@@ -37,8 +37,8 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 			
 		}else {
 			// insert
-			EmployeeFileManagement domain = new EmployeeFileManagement(commad.getSid(), commad.getFileid(),2,0,"");
-			
+			EmployeeFileManagement domain = new EmployeeFileManagement(commad.getSid(), commad.getFileid(),2,commad.getUploadOrder(),commad.getPersonInfoCtgId());
+			empFileManagementRepo.insert(domain);
 		}
 	}
 
