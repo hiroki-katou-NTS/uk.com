@@ -12,11 +12,11 @@ module cps001.e.service {
     };
 
     export function getAvatar(sid) {
-        return ajax(format(parentPath + paths.getAvaOrMap, sid, 0));
+        return ajax(format(parentPath + paths.getAvaOrMap, sid, 1));
     }
     
     export function checkEmpFileMnExist(sid) {
-        return ajax(format(parentPath + paths.checkEmpFileMnExist, sid, 0));
+        return ajax(format(parentPath + paths.checkEmpFileMnExist, sid, 1));
     }
     
     export function insertAvaOrMap(command){

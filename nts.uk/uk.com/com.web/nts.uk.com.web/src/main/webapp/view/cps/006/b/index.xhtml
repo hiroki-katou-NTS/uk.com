@@ -33,7 +33,7 @@
 			<div id="contents-area" class="cf">
 				<div id="content_main">
 					<div id="content-left"
-						data-bind="ntsPanel:{width: '270px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+						data-bind="ntsPanel:{width: '260px', height: '490px', direction: 'right', showIcon: true, visible: true}">
 
 						<div class="div_line">
 							<div data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
@@ -168,7 +168,7 @@
 									<div class="div_line">
 
 										<div class="line_col_1">
-											<div id="B2_14" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_31')}</div>
+											<div id="B2_14" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_31')}</div>
 										</div>
 
 										<div class="line_col_2">
@@ -191,11 +191,18 @@
 											<div id="B2_20" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_32')}</div>
 										</div>
 
+										<com:ko-if bind="currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
 										<div class="line_col_2">
-											<span id="B2_21"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemAmount"></span>
+											<span id="B2_21">#{i18n.getText('CPS006_52')}</span>
 										</div>
-
+										</com:ko-if>
+										
+										<com:ko-if bind="currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">
+										<div class="line_col_2">
+											<span id="B2_21">#{i18n.getText('CPS006_53')}</span>
+										</div>
+										</com:ko-if>
+										
 									</div>
 
 									<div class="div_line">
@@ -203,7 +210,7 @@
 										<div class="line_col_1">
 											<div id="B2_22" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_33')}</div>
 										</div>
-
+										
 										<div class="line_col_2">
 											<span id="B2_23"
 												data-bind="text:genStringNumericItemMinusText()">roleCode</span>
@@ -264,9 +271,10 @@
 
 										<div class="line_col_2">
 											<span id="B2_33"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.min"></span>
-											<span id="B2_34">~</span> <span id="B2_35"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.max"></span>
+												data-bind="text: genTime(currentItem().itemTypeState.dataTypeState.min) "></span>
+											<span id="B2_34">~</span> 
+											<span id="B2_35"
+												data-bind="text: genTime(currentItem().itemTypeState.dataTypeState.max)"></span>
 										</div>
 
 									</div>
@@ -283,9 +291,9 @@
 
 										<div class="line_col_2">
 											<span id="B2_38"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMin"></span>
+												data-bind="text: genTime(currentItem().itemTypeState.dataTypeState.timePointItemMin)"></span>
 											<span id="B2_39">~</span> <span id="B2_40"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMax"></span>
+												data-bind="text: genTime(currentItem().itemTypeState.dataTypeState.timePointItemMax)"></span>
 										</div>
 
 									</div>
@@ -294,20 +302,21 @@
 
 								<com:ko-if bind="dataType() === 6">
 
-									<div class="div_line">
-
-										<div class="line_col_1">
-											<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS006_43')}</div>
+									<com:ko-if bind="currentItem().selectionItemRefType === 2">
+										<div class="div_line">
+	
+											<div class="line_col_1">
+												<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS006_43')}</div>
+											</div>
+	
+											<div class="line_col_2">
+												<span id="B2_43"></span>
+											</div>
+	
+											<button id="B2_44">#{i18n.getText('CPS006_44')}</button>
+	
 										</div>
-
-										<div class="line_col_2">
-											<span id="B2_43"></span>
-										</div>
-
-										<button id="B2_44">#{i18n.getText('CPS006_44')}</button>
-
-									</div>
-
+									</com:ko-if>
 								</com:ko-if>
 							</div>
 						</div>

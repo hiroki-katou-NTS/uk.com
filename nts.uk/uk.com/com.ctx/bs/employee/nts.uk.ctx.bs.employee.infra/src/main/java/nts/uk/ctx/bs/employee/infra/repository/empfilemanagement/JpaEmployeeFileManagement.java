@@ -3,17 +3,16 @@ package nts.uk.ctx.bs.employee.infra.repository.empfilemanagement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
-import entity.employeeinfo.BsymtEmployee;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagement;
+import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagementPK;
 import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagement;
 import nts.uk.ctx.bs.employee.infra.entity.empfilemanagement.BsymtEmpFileManagementPK;
 
@@ -27,11 +26,13 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BsymtEmpFileManagement c WHERE c.sid = :sid AND c.filetype = :filetype";
 	
 	public final String GET_BY_FILEID = "SELECT c FROM BsymtEmpFileManagement c WHERE c.bsymtEmpFileManagementPK.fileid = :fileid ";
+	
+	//public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM BsymtEmpFileManagement c  WHERE c.bsymtEmpFileManagementPK.fileid = :fileid";
 
 
-	public final String GET_ALL_DOCUMENT_FILE = "SELECT c, d.categoryName FROM BsymtEmpFileManagement c "
-			+" JOIN PpemtPerInfoCtg d ON c.personInfoctgId =  d.ppemtPerInfoCtgPK.perInfoCtgI"
-			+ " WHERE c.sid = :sid AND c.filetype = :filetype ";
+	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.sid , c.bsymtEmpFileManagementPK.fileid , c.disPOrder , c.personInfoctgId ,d.categoryName FROM BsymtEmpFileManagement c "
+			+" JOIN PpemtPerInfoCtg d ON c.personInfoctgId =  d.ppemtPerInfoCtgPK.perInfoCtgId "
+			+" WHERE c.sid = :sid AND c.filetype = :filetype ORDER BY c.disPOrder ASC";
 	
 	private EmployeeFileManagement toDomainEmpFileManagement(BsymtEmpFileManagement entity) {
 		val domain = EmployeeFileManagement.createFromJavaType(entity.sid,
@@ -93,8 +94,8 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 
 	@Override
-	public List<Object> getListDocumentFile(String employeeId, int filetype) {
-		List<Object> listFile = this.queryProxy().query(GET_ALL_DOCUMENT_FILE, Object.class)
+	public List<Object[]> getListDocumentFile(String employeeId, int filetype) {
+		List<Object[]> listFile = this.queryProxy().query(GET_ALL_DOCUMENT_FILE, Object[].class)
 				.setParameter("sid", employeeId)
 				.setParameter("filetype", filetype)
 				.getList();
@@ -121,7 +122,12 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 
 	@Override
 	public void update(EmployeeFileManagement domain) {
-		//
+		String fileid = domain.getFileID();
+		BsymtEmpFileManagement entity = this.queryProxy().query(GET_BY_FILEID, BsymtEmpFileManagement.class)
+				.setParameter("fileid", fileid).getSingleOrNull();
+		
+		entity.personInfoctgId = domain.getPersonInfoCategoryId();
+		this.commandProxy().update(entity);
 		
 	}
 
@@ -136,6 +142,13 @@ public class JpaEmployeeFileManagement  extends JpaRepository implements EmpFile
 		else{
 			return count.get().intValue() > 0;
 		}
+	}
+
+
+	@Override
+	public void removebyFileId(String fileId) {
+		BsymtEmpFileManagementPK pk = new BsymtEmpFileManagementPK(fileId);
+		this.commandProxy().remove(BsymtEmpFileManagement.class , pk);
 	}
 
 

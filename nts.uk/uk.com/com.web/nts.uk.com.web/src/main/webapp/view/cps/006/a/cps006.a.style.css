@@ -2,15 +2,20 @@
 	float: right !important;
 }
 
+#content{
+	width: 1200px;
+	margin-bottom: 20px;
+}
+
 #content-left {
-	width: 315px;
+	width: 330px;
 	height: 590px;
 	float: left;
 }
 
 #content-right {
 	float: left;
-	width: 500px;
+	width: 800px;
 	margin-left: 10px;
 }
 
@@ -42,7 +47,7 @@ input.ntsSearchBox {
 	margin-bottom: 5px;
 }
 #ctgName{
-	width: 200px;
+	width: 200px !important;
 
 }
 #col1{
