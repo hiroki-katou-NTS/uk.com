@@ -91,6 +91,9 @@ module nts.uk.at.view.kmk002.a {
             perfClsDatasource: KnockoutObservableArray<any>;
             atrDataSource: EnumConstantDto[];
 
+            // function
+            getOptItemNoAbove: () => Array<string>;
+
             // flag
             hasChanged: boolean;
             isUsed: KnockoutObservable<boolean>;
@@ -396,6 +399,7 @@ module nts.uk.at.view.kmk002.a {
                 f.getSymbolById = self.getSymbolById.bind(self);
                 f.setApplyFormula = self.setApplyFormula.bind(self);
                 f.getSelectableFormulas = self.getSelectableFormulas.bind(self);
+                f.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
 
                 // Set order
                 f.orderNo = order;
@@ -736,6 +740,7 @@ module nts.uk.at.view.kmk002.a {
                     formula.getSymbolById = self.getSymbolById.bind(self);
                     formula.setApplyFormula = self.setApplyFormula.bind(self);
                     formula.getSelectableFormulas = self.getSelectableFormulas.bind(self);
+                    formula.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
 
                     // convert dto to viewmodel
                     formula.fromDto(item);
@@ -988,9 +993,6 @@ module nts.uk.at.view.kmk002.a {
 
                 self.loadOptionalItemDetail(itemNo).done(() => {
 
-                    // resolve
-                    dfd.resolve();
-
                     // init usageAtr subscribe.
                     self.optionalItem.usageAtr.subscribe(vl => {
                         if (vl === 1) {
@@ -1011,6 +1013,9 @@ module nts.uk.at.view.kmk002.a {
                             $('.nts-editor').ntsError('clear');
                         }
                     });
+
+                    // resolve
+                    dfd.resolve();
                 });
 
                 return dfd.promise();
@@ -1120,9 +1125,24 @@ module nts.uk.at.view.kmk002.a {
                         // convert dto to view model.
                         self.optionalItem.fromDto(res);
                         dfd.resolve();
+
+                        // bind function
+                        self.optionalItem.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+
                     }).always(() => nts.uk.ui.block.clear()); // clear block ui.
 
                 return dfd.promise();
+            }
+
+            /**
+             * Get list optional item above of selected optional item.
+             */
+            private getOptItemNoAbove(): Array<string> {
+                let self = this;
+                let selectedNo = parseInt(self.selectedCode());
+                return self.optionalItemHeaders()
+                    .filter(item => parseInt(item.itemNo) < selectedNo)
+                    .map(item => item.itemNo);
             }
         }
 
@@ -1168,6 +1188,7 @@ module nts.uk.at.view.kmk002.a {
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
+            getOptItemNoAbove: () => Array<string>;
             getSelectableFormulas: (orderNo: number) => Array<FormulaDto>;
 
             // Enums datasource
@@ -1482,9 +1503,11 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
                 param.performanceAtr = Formula.performanceAtr;
-                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
+                param.formulaAtr = self.formulaAtr();
+                param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = self.itemSelection;
+                param.selectableOptItemNos = self.getOptItemNoAbove();
                 nts.uk.ui.windows.setShared('paramToC', param);
 
                 // Open dialog.
@@ -1736,9 +1759,11 @@ module nts.uk.at.view.kmk002.a {
         export interface ParamToC {
             formulaId: string;
             performanceAtr: number;
-            formulaAtr: string;
+            formulaAtr: number;
+            formulaAtrName: string;
             formulaName: string;
             itemSelection: ItemSelectionDto;
+            selectableOptItemNos: Array<string>;
         }
         export interface ParamToD {
             formulaId: string;
