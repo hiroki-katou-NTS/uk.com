@@ -27,7 +27,7 @@ module ksu001.a {
         });
 
         $('.create').click(function() {
-            $('#popup-area2').toggle();
+            $('#popup-area2').ntsPopup("toggle");
         });
 
         //popup 2
@@ -40,7 +40,7 @@ module ksu001.a {
         });
 
         $('.check').click(function() {
-            $('#popup-area3').toggle();
+            $('#popup-area3').ntsPopup("toggle");
         });
 
         //popup 3
@@ -53,7 +53,7 @@ module ksu001.a {
         });
 
         $('.vacation').click(function() {
-            $('#popup-area4').toggle();
+            $('#popup-area4').ntsPopup("toggle");
         });
 
         //popup 4
@@ -66,7 +66,7 @@ module ksu001.a {
         });
 
         $('.setting').click(function() {
-            $('#popup-area5').toggle();
+            $('#popup-area5').ntsPopup("toggle");
         });
 
         //popup A3-20
@@ -79,7 +79,7 @@ module ksu001.a {
         });
 
         $('.setting-button').click(function() {
-            $('#popup-area6').toggle();
+            $('#popup-area6').ntsPopup("toggle");
         });
 
         //popup A2-2
@@ -92,7 +92,7 @@ module ksu001.a {
         });
 
         $('.done').click(function() {
-            $('#popup-area7').toggle();
+            $('#popup-area7').ntsPopup("toggle");
         });
 
 
@@ -106,7 +106,7 @@ module ksu001.a {
         });
 
         $('.color-button').click(function() {
-            $('#popup-area9').toggle();
+            $('#popup-area9').ntsPopup("toggle");
         });
 
     }
