@@ -1894,14 +1894,14 @@ module nts.uk.com.view.cmm018.a {
                 }
                 root.push(self.comRoot());
                 let history = self.findHist(self.singleSelectedCode(),self.tabSelectedB());
-                let listType: vmbase.ApplicationType = [];
+                let listType: Array<vmbase.ApplicationType> = [];
                 let startDate = ''
                 let endDate = '';
                 if(self.tabSelectedB() == 0){
                     if(self.singleSelectedCode() == -1){
                         endDate = self.ENDDATE_LATEST;
                         startDate = history.startDate;
-                        listType.push(new vmbase.ApplicationType(history.lstAppType[0],'',history.employRootAtr));
+                        listType.push(new vmbase.ApplicationType(history.lstAppType[0].value,'',history.lstAppType[0].employRootAtr));
                     }else{
                         endDate = history.company.endDate;
                         startDate = history.company.startDate;
@@ -2202,7 +2202,7 @@ module nts.uk.com.view.cmm018.a {
                         startDate = history.company.startDate;
                         endDate = history.company.endDate;
                         appType = history.company.applicationType;
-                        employRootAtr = history.company.confirmationRootType;
+                        employRootAtr = history.company.employmentRootAtr;
                         name = history.company.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }else if(self.tabSelectedB() == 1){
@@ -2213,7 +2213,7 @@ module nts.uk.com.view.cmm018.a {
                         startDate = history.workplace.startDate;
                         endDate = history.workplace.endDate;
                         appType = history.workplace.applicationType;
-                        employRootAtr = history.workplace.confirmationRootType;
+                        employRootAtr = history.workplace.employmentRootAtr;
                         name = history.workplace.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }else{
@@ -2224,7 +2224,7 @@ module nts.uk.com.view.cmm018.a {
                         startDate = history.person.startDate;
                         endDate = history.person.endDate;
                         appType = history.person.applicationType;
-                        employRootAtr = history.person.confirmationRootType;
+                        employRootAtr = history.person.employmentRootAtr;
                         name = history.person.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }
