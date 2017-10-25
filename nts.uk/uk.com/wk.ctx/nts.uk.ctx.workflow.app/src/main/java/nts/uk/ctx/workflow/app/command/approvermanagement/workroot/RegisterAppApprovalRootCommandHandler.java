@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApprovalPhaseDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApproverDto;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
@@ -123,7 +124,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					listComPre.add(comPre);
 				}
 				//Add approval
-				addApproval(commonRoot, 0, branchId, checkAddHist);
+				addApproval(commonRoot, branchId);
 			}
 			//Add ls new, update ls old, add branch
 			repoCom.addAllComApprovalRoot(listCom);
@@ -150,8 +151,29 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					}
 				}
 			}
+			List<CompanyApprovalRoot> listCom = new ArrayList<>();
+			for (AppType type : lstAppTypeUi) {
+				CompanyAppRootADto commonRoot = findRoot(root, type);
+				String branchId = commonRoot.getBranchId();
+				if(StringUtil.isNullOrEmpty(branchId, true)){
+					branchId = UUID.randomUUID().toString();
+					Integer typeCom = commonRoot.getAppTypeValue();
+					int employRootAtr = commonRoot.getEmployRootAtr();
+					//root right
+					CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
+										UUID.randomUUID().toString(), historyId, type.getValue(), startDate, endDateOld,
+										branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? typeCom : null, employRootAtr);
+					if(!CompanyApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
+						throw new BusinessException("Msg_156");
+					}
+					listCom.add(com);
+					addApproval(commonRoot,branchId);
+				}
+			}
+			//Add ls new
+			repoCom.addAllComApprovalRoot(listCom);
 			//update root display in screen
-			updateRoot(lstAppTypeUi, root);
+			updateRoot(lstAppTypeUi, rootInsert);
 		}
 	}
 	/**
@@ -180,13 +202,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				rootInsert.add(commonRoot);
 			}
 		}
+		if(workplaceId.compareTo("") == 0){
+			GeneralDate baseDate = GeneralDate.today();
+			WorkplaceImport workplace = adapterWp.findBySid(AppContexts.user().employeeId(), baseDate);
+			workplaceId = workplace.getWkpId();
+		}
 		//TH: create history new
 		if(checkAddHist){
-			if(workplaceId.compareTo("") == 0){
-				GeneralDate baseDate = GeneralDate.today();
-				WorkplaceImport workplace = adapterWp.findBySid(AppContexts.user().employeeId(), baseDate);
-				workplaceId = workplace.getWkpId();
-			}
 			//Tạo root có ls mới với appType ở dữ liệu bên phải.
 			//Update root có ls trước đó của những root mới được tạo ở trên.
 			List<WorkplaceApprovalRoot> listWp = new ArrayList<>();
@@ -213,7 +235,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					listWpPre.add(psPre);
 				}
 				//Add approval
-				addApproval(commonRoot, 0, branchId, checkAddHist);
+				addApproval(commonRoot, branchId);
 			}
 			//Add ls new, update ls old, add branch
 			repoWorkplace.addAllWpApprovalRoot(listWp);
@@ -236,10 +258,30 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						//==========
 						deleteAppPh(wp.getBranchId());
 						//=======
-						repoCom.deleteComApprovalRoot(companyId, wp.getApprovalId(), wp.getHistoryId());
+						repoWorkplace.deleteWpApprovalRoot(companyId, wp.getApprovalId(), workplaceId, wp.getHistoryId());
 					}
 				}
 			}
+			List<WorkplaceApprovalRoot> listWp = new ArrayList<>();
+			for (AppType type : lstAppTypeUi) {
+				CompanyAppRootADto commonRoot = findRoot(root, type);
+				String branchId = commonRoot.getBranchId();
+				if(StringUtil.isNullOrEmpty(branchId, true)){
+					branchId = UUID.randomUUID().toString();
+					int employRootAtr = commonRoot.getEmployRootAtr();
+					//root right
+					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, UUID.randomUUID().toString(),workplaceId,
+							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
+							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr);
+					if(!WorkplaceApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
+						throw new BusinessException("Msg_156");
+					}
+					listWp.add(wp);
+					addApproval(commonRoot,branchId);
+				}
+			}
+			//Add ls new
+			repoWorkplace.addAllWpApprovalRoot(listWp);
 			//update root display in screen
 			updateRoot(lstAppTypeUi, root);
 		}
@@ -298,7 +340,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					listPsPre.add(psPre);
 				}
 				//Add approval
-				addApproval(commonRoot, 0, branchId, checkAddHist);
+				addApproval(commonRoot, branchId);
 			}
 			//Add ls new, update ls old, add branch
 			repoPerson.addAllPsApprovalRoot(listPs);
@@ -321,10 +363,30 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						//==========
 						deleteAppPh(ps.getBranchId());
 						//=======
-						repoCom.deleteComApprovalRoot(companyId, ps.getApprovalId(), ps.getHistoryId());
+						repoPerson.deletePsApprovalRoot(companyId, ps.getApprovalId(),employeeId, ps.getHistoryId());
 					}
 				}
 			}
+			List<PersonApprovalRoot> listPs = new ArrayList<>();
+			for (AppType type : lstAppTypeUi) {
+				CompanyAppRootADto commonRoot = findRoot(root, type);
+				String branchId = commonRoot.getBranchId();
+				if(StringUtil.isNullOrEmpty(branchId, true)){
+					branchId = UUID.randomUUID().toString();
+					int employRootAtr = commonRoot.getEmployRootAtr();
+					//root right
+					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, UUID.randomUUID().toString(),employeeId,
+							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
+							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr);
+					if(!PersonApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
+						throw new BusinessException("Msg_156");
+					}
+					listPs.add(ps);
+					addApproval(commonRoot,branchId);
+				}
+			}
+			//Add ls new
+			repoPerson.addAllPsApprovalRoot(listPs);
 			//update root display in screen
 			updateRoot(lstAppTypeUi, root);
 		}
@@ -338,7 +400,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * @param endDate
 	 * @param branchId
 	 */
-	private void addApproval(CompanyAppRootADto commonRoot, int rootType, String branchId, boolean checkAddHist){
+	private void addApproval(CompanyAppRootADto commonRoot, String branchId){
 		if(commonRoot == null){
 			return;
 		}
@@ -388,6 +450,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		for (AppType type : lstAppTypeUi) {
 			CompanyAppRootADto commonRoot = findRoot(root, type);
 			String branchId = commonRoot.getBranchId();
+			if(StringUtil.isNullOrEmpty(branchId, true)){
+				continue;
+			}
 			//xoa app Phase
 			deleteAppPh(branchId);
 			ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), branchId);
