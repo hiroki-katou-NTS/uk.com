@@ -281,11 +281,11 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Checks whether an item of a nonexistent line is set in a formula
              */
-            public findInvalidFormula(): Formula {
+            public findInvalidFormula(): Formula[] {
                 let self = this;
 
-                // find invalid formula
-                 return _.find(self.calcFormulas(), item => {
+                // find invalid formulas
+                 return _.filter(self.calcFormulas(), item => {
 
                      // only check formula of type 'formula setting'
                      if (item.isTypeOfFormulaSetting()) {
@@ -1074,9 +1074,13 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 // validate list formula
-                let invalid = self.optionalItem.findInvalidFormula();
-                if (invalid) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_111', messageParams: [invalid.orderNo] });
+                let invalidFormulas = self.optionalItem.findInvalidFormula();
+                if (!nts.uk.util.isNullOrEmpty(invalidFormulas)) {
+                    let messages = { Msg_111: []};
+                    _.each(invalidFormulas, formula => {
+                        messages.Msg_111.push(nts.uk.resource.getMessage('Msg_111', [formula.orderNo]));
+                    });
+                    nts.uk.ui.dialog.bundledErrors({ messageId: ['Msg_111'], messages: messages});
                     return false;
                 };
 
@@ -1122,12 +1126,14 @@ module nts.uk.at.view.kmk002.a {
                         // clear selected formula
                         OptionalItem.selectedFormulas([]);
 
-                        // convert dto to view model.
-                        self.optionalItem.fromDto(res);
-                        dfd.resolve();
-
                         // bind function
                         self.optionalItem.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+
+                        // convert dto to view model.
+                        self.optionalItem.fromDto(res);
+
+
+                        dfd.resolve();
 
                     }).always(() => nts.uk.ui.block.clear()); // clear block ui.
 
