@@ -339,8 +339,7 @@ module nts.uk.at.view.kmk002.a {
                 // if zz is used
                 // or list formula has at least 1 item and no formula checked
                 // => show error message and return
-                if (!self.canAddFormula() && self.isFormulaSet()) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
+                if (self.isFormulaSet() && self.canNotAddFormula()) {
                     return;
                 }
 
@@ -516,8 +515,7 @@ module nts.uk.at.view.kmk002.a {
                 // if zz is used
                 // or list formula has at least 1 item and no formula checked
                 // => show error message and return
-                if (!self.canAddFormula() && self.isFormulaSet()) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
+                if (self.isFormulaSet() && self.canNotAddFormula()) {
                     return;
                 }
 
@@ -535,13 +533,24 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Confirm the check status of calculation formula
+             * Check whether a formula can be added 
              */
-            private canAddFormula(): boolean {
+            private canNotAddFormula(): boolean {
                 let self = this;
-                if (self.hasSelectedFormula() && !self.hasReachedZZ()) {
+
+                // symbol has reached ZZ or no formula selected
+                if (!self.hasSelectedFormula() || self.hasReachedZZ()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return true;
                 }
+
+                // Optional item's maximum number of formula is 50
+                if (self.calcFormulas().length > 50) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_762' });
+                    return true;
+                }
+
+                // can add formula.
                 return false;
             }
 
