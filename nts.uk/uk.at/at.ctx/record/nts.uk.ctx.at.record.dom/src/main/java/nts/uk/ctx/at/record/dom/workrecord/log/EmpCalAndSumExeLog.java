@@ -83,8 +83,8 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	
 	public static EmpCalAndSumExeLog createFromJavaType(
 			String companyID,
-			long empCalAndSumExecLogID,
-			long caseSpecExeContentID,
+			String empCalAndSumExecLogID,
+			String caseSpecExeContentID,
 			String employeeID,
 			int executedMenu,
 			int executionStatus,
@@ -96,8 +96,8 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 		
 		return new  EmpCalAndSumExeLog(
 				companyID,
-				empCalAndSumExecLogID,
-				caseSpecExeContentID,
+			Long.parseLong(empCalAndSumExecLogID),
+			Long.parseLong(caseSpecExeContentID),
 				employeeID,
 				EnumAdaptor.valueOf(executedMenu,ExecutedMenu.class),
 				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),

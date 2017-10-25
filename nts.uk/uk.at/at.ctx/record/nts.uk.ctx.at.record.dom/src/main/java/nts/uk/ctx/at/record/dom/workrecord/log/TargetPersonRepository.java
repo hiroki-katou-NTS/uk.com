@@ -17,4 +17,8 @@ public interface TargetPersonRepository {
 	 * @return
 	 */
 	Optional<TargetPerson> getTargetPersonByID(String employeeID,String empCalAndSumExecLogId);
+	
+	List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID);
+	
+	
 }

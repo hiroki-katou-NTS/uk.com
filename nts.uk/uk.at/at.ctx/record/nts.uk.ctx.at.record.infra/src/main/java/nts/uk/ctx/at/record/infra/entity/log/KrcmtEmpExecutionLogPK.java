@@ -19,11 +19,11 @@ public class KrcmtEmpExecutionLogPK implements Serializable  {
 	public String companyID;
 	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
-	public long empCalAndSumExecLogID;
+	public String empCalAndSumExecLogID;
 				  
 	
 	@Column(name = "OPERATION_CASE_ID")
-	public long caseSpecExeContentID;
+	public String caseSpecExeContentID;
 	
 	@Column(name = "SID")
 	public String employeeID;
