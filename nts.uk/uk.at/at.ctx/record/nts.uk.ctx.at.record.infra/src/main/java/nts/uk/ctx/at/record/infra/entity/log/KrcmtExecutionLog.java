@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EMP_EXECUTION_LOG")
+@Table(name = "KRCMT_EXECUTION_LOG")
 public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -83,8 +83,8 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 		return new KrcmtExecutionLog(
 				 new KrcmtExecutionLogPK(
 					 domain.getCompanyID(),
-					domain.getEmpCalAndSumExecLogID(),
-					domain.getCaseSpecExeContentID(),
+					 String.valueOf(domain.getEmpCalAndSumExecLogID()),
+					 String.valueOf(domain.getCaseSpecExeContentID()),
 					domain.getEmployeeID(),
 				     domain.getExecutedLogID()
 					),
