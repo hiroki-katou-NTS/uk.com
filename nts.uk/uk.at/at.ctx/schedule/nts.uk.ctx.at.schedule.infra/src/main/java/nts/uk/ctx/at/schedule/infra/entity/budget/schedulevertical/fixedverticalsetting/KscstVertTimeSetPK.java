@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KscstFixedVerticalSetPK implements Serializable{
+public class KscstVertTimeSetPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/*会社ID*/
@@ -21,4 +21,9 @@ public class KscstFixedVerticalSetPK implements Serializable{
 	/* 付与基準日 */
 	@Column(name = "FIXED_ITEM_ATR")
 	public int fixedItemAtr;
+	
+	@Column(name = "VERTICAL_TIME_NO")
+	public int verticalTimeNo;
+	
+
 }

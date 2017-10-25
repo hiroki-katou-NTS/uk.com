@@ -14,7 +14,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedItemAtr;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVertical;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalDetailedSettings;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.UseAtr;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -48,11 +47,10 @@ public class FixedVerticalSettingFinder {
 				paramName = internationalization.getItemName(item.paramNameId).get();
 			} 
 			String name = internationalization.getItemName(item.nameId, paramName).get();
-			FixedVerticalSettingDto verticalDto = new FixedVerticalSettingDto(companyId, item.value, name, UseAtr.DO_NOT_USE.value,  VerticalDetailedSettings.DO_NOT_USE.value);
+			FixedVerticalSettingDto verticalDto = new FixedVerticalSettingDto(companyId, item.value, name, UseAtr.DO_NOT_USE.value);
 			FixedVertical fixedVerticalDb = fixedVerticalItemMap.get(item.value);
 			if (fixedVerticalDb != null) {
 				verticalDto.setUseAtr(fixedVerticalDb.getUseAtr().value);
-				verticalDto.setVerticalDetailedSettings(fixedVerticalDb.getVerticalDetailedSettings().value);
 			}
 			result.add(verticalDto);
 		}
@@ -65,7 +63,6 @@ public class FixedVerticalSettingFinder {
 		verticalSettingDto.setCompanyId(fixedVertical.getCompanyId());
 		verticalSettingDto.setFixedItemAtr(fixedVertical.getFixedItemAtr().value);
 		verticalSettingDto.setUseAtr(fixedVertical.getUseAtr().value);
-		verticalSettingDto.setVerticalDetailedSettings(fixedVertical.getVerticalDetailedSettings().value);
 
 		return verticalSettingDto;
 	}

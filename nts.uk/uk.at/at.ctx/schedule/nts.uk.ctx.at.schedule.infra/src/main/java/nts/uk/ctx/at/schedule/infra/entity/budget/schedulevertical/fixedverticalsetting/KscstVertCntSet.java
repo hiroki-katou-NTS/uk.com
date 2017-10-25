@@ -13,14 +13,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_VERTICAL_CNT_SET")
+@Table(name = "KSCST_VERT_CNT_SET")
 
-public class KscstVerticalCntSet extends UkJpaEntity implements Serializable {
+public class KscstVertCntSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstVerticalCntSetPK kscstVerticalCntSetPK;
+	public KscstVertCntSetPK kscstVerticalCntSetPK;
 	
 	protected Object getKey() {
 		// TODO Auto-generated method stub

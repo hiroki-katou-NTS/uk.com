@@ -14,26 +14,27 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FIXED_VERTICAL_SET")
+@Table(name = "KSCST_VERT_TIME_SET")
 
-public class KscstFixedVerticalSet extends UkJpaEntity implements Serializable {
+public class KscstVertTimeSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscstFixedVerticalSetPK kscstFixedVerticalSetPK;
+	public KscstVertTimeSetPK kscstVerticalTimeSetPK;
 	
-	/* 付与基準日 */
-	@Column(name = "USE_ATR")
-	public int useAtr;
+	/* 表示区分 */
+	@Column(name = "DISPLAY_ATR")
+	public int displayAtr;
 	
-	/* 付与基準日 */
-	@Column(name = "VERTICAL_DETAILED_SET")
-	public int verticalDetailedSet;
+	/* 時刻 */
+	@Column(name = "START_CLOCK")
+	public int startClock;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstFixedVerticalSetPK;
+		return kscstVerticalTimeSetPK;
 	}
 }
+

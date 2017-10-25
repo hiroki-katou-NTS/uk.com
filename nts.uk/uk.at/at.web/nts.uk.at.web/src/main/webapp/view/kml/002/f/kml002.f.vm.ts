@@ -1,4 +1,4 @@
-module nts.uk.at.view.kml002.f.viewmodel {
+ module nts.uk.at.view.kml002.f.viewmodel {
     export class ScreenModel {
         columns: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
