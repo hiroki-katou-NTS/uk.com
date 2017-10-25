@@ -20,7 +20,7 @@ public class RegisterAppApprovalRootCommand {
 	/**ls is selected*/
 	private AddHistoryDto addHist;
 	//list db
-	private List<Integer> lstAppType;
+	private List<AppType> lstAppType;
 	private String startDate;
 	private String endDate;
 }

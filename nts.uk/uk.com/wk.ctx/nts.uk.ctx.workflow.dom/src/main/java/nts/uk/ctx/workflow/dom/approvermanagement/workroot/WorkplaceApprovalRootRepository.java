@@ -35,10 +35,11 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param workplaceId
 	 * @param endDate
 	 * @param applicationType
+	 * @param employmentRootAtr
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate,
-			Integer applicationType);
+			Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(就業ルート区分(申請か、確認か、任意項目か))
@@ -102,4 +103,13 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate);
+	/**
+	 * get Work place Approval Root By type
+	 * @param companyId
+	 * @param workplaceId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType, int employmentRootAtr);
 }

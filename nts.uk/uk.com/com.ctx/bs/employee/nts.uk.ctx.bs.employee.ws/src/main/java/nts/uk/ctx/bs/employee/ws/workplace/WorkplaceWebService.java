@@ -16,10 +16,10 @@ import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWorkplaceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.SaveWorkplaceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.SaveWorkplaceCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.history.DeleteWkpHistoryCommand;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.history.DeleteWkpHistoryCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.history.SaveWkpHistoryCommand;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.history.SaveWkpHistoryCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.history.DeleteWkpHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.history.DeleteWkpHistoryCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.history.SaveWkpHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.history.SaveWkpHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.BSWorkplaceFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
 

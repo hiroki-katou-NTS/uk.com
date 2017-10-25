@@ -79,7 +79,10 @@ export module viewmodel {
                 let items : ItemModel[] = [];
                 items.push( new ItemModel("",  "共通ルート"));
                 _.forEach(data, function(value: any){
-                    items.push(new ItemModel(value.value, value.localizedName));
+                    if(value.value !== 14){
+                        items.push(new ItemModel(value.value, value.localizedName));
+                    }
+                    
                 })
                 
                 self.applicationType(items);

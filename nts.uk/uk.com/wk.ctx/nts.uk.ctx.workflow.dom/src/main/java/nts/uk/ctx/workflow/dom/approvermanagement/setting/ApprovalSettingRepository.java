@@ -1,10 +1,12 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.setting;
 
+import java.util.Optional;
+
 public interface ApprovalSettingRepository {
 	/**
 	 * get principal by companyId
 	 * @param companyId
 	 * @return
 	 */
-	PrincipalApprovalFlg getPrincipalByCompanyId(String companyId);
+	Optional<PrincipalApprovalFlg> getPrincipalByCompanyId(String companyId);
 }

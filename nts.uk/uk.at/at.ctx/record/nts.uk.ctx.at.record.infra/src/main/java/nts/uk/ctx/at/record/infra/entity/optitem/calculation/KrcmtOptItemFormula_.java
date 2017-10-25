@@ -20,7 +20,10 @@ public class KrcmtOptItemFormula_ {
 	public static volatile SingularAttribute<KrcmtOptItemFormula, String> formulaName;
 
 	/** The formula atr. */
-	public static volatile SingularAttribute<KrcmtOptItemFormula, Short> formulaAtr;
+	public static volatile SingularAttribute<KrcmtOptItemFormula, Integer> formulaAtr;
+
+	/** The calc atr. */
+	public static volatile SingularAttribute<KrcmtOptItemFormula, Integer> calcAtr;
 
 	/** The symbol. */
 	public static volatile SingularAttribute<KrcmtOptItemFormula, String> symbol;

@@ -9,14 +9,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * The Class BsymtWorkplaceInfoPK.
  */
-@Data
 @Getter
 @Setter
 @Embeddable
@@ -29,32 +27,37 @@ public class BsymtWorkplaceInfoPK implements Serializable {
 	@Column(name = "CID")
 	private String cid;
 
-	/** The history id. */
-	@Column(name = "HISTORY_ID")
-	private String historyId;
-
 	/** The wkpid. */
 	@Column(name = "WKPID")
 	private String wkpid;
 
+	/** The history id. */
+	@Column(name = "HISTORY_ID")
+	private String historyId;
+
 	/**
 	 * Instantiates a new bsymt workplace info PK.
 	 */
-	public BsymtWorkplaceInfoPK() {}
-	
+	public BsymtWorkplaceInfoPK() {
+		super();
+	}
+
 	/**
 	 * Instantiates a new bsymt workplace info PK.
 	 *
-	 * @param companyId the company id
-	 * @param workplaceId the workplace id
-	 * @param historyId the history id
+	 * @param companyId
+	 *            the company id
+	 * @param workplaceId
+	 *            the workplace id
+	 * @param historyId
+	 *            the history id
 	 */
 	public BsymtWorkplaceInfoPK(String companyId, String workplaceId, String historyId) {
-	    this.cid = companyId;
-	    this.wkpid = workplaceId;
-	    this.historyId = historyId;
+		this.cid = companyId;
+		this.wkpid = workplaceId;
+		this.historyId = historyId;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

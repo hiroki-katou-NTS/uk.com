@@ -20,7 +20,7 @@ module nts.uk.com.view.cmm011.a {
          * findLstWorkPlace
          */
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-            return nts.uk.request.ajax(servicePath.findLstWorkPlace, { startDate: baseDate });
+            return nts.uk.request.ajax(servicePath.findLstWorkPlace, { baseDate: baseDate });
         }
         
         /**
@@ -71,12 +71,12 @@ module nts.uk.com.view.cmm011.a {
         export function findLstWkpConfigHistory(): JQueryPromise<Array<base.IHistory>> {
             let dfd = $.Deferred<Array<base.IHistory>>();
             nts.uk.request.ajax(servicePath.getListWkpConfigHistory).done((res: any) => {
-                let list: Array<base.IHistory> = _.map(res.wkpConfigHistory, function(item: any) {
+                let list: Array<base.IHistory> = _.map(res ? res.wkpConfigHistory : [], function(item: any) {
                     return {
                         workplaceId: "",
                         historyId: item.historyId,
-                        startDate: item.period.startDate,
-                        endDate: item.period.endDate
+                        startDate: item.startDate,
+                        endDate: item.endDate
                     };
                 });
                 dfd.resolve(list);

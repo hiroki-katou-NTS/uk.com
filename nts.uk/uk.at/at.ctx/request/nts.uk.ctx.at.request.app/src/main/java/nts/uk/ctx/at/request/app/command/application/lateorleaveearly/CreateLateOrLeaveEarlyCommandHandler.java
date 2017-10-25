@@ -16,8 +16,8 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -30,7 +30,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
-
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -45,17 +44,13 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 
 	@Inject
-	private NewBeforeRegister newBeforeProcessRegisterSerivce;
+	private NewAfterRegister newAfterRegister;
 
 	@Inject
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Inject
-	private NewAfterRegister newAfterRegister;
-
-	@Inject
-	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
-
+	private NewBeforeRegister newBeforeRegister;
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -78,12 +73,14 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(appID,
-				command.getApplicationDate(), command.getReasonTemp() + ":" + command.getAppReason(), appApprovalPhases,
+				command.getApplicationDate(), command.getPrePostAtr(), command.getReasonTemp() + ":" + command.getAppReason(), appApprovalPhases,
 				command.getEarly1(), command.getEarlyTime1(), command.getLate1(), command.getLateTime1(),
 				command.getEarly2(), command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
-
-		// 2-1.譁ｰ隕冗判髱｢逋ｻ骭ｲ蜑阪蜃ｦ逅縲
-		// TODO: Change GeneralDate.today() to StartDate and EndDate
+		domainLateOrLeaveEarly.setListPhase(appApprovalPhases);
+		domainLateOrLeaveEarly.setStartDate(domainLateOrLeaveEarly.getApplicationDate());
+		domainLateOrLeaveEarly.setEndDate(domainLateOrLeaveEarly.getApplicationDate());
+		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する (Thực thi 共通アルゴリズム「2-1.新規画面登録前の処理」)
+		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly);
 
 		// newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
 		// AppContexts.user().employeeId(), GeneralDate.today(),
@@ -102,7 +99,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 		 * @param appID
 		 *            逕ｳ隲紀D
 		 */
-		// newAfterRegister.processAfterRegister(domainLateOrLeaveEarly);
+		newAfterRegister.processAfterRegister(domainLateOrLeaveEarly);
 
 		/*
 		 * Optional<ApplicationSetting> applicationSetting =

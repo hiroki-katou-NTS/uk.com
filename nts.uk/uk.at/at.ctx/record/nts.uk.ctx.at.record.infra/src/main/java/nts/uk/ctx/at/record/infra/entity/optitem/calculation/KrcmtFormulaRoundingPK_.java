@@ -23,6 +23,6 @@ public class KrcmtFormulaRoundingPK_ {
 	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, String> formulaId;
 
 	/** The rounding atr. */
-	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, Short> roundingAtr;
+	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, Integer> roundingAtr;
 
 }

@@ -7,14 +7,12 @@ package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.export;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.gul.collection.CollectionUtil;
@@ -22,6 +20,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.error.dto.Ex
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class ExtBudgetErrorExportService.
@@ -36,10 +35,6 @@ public class ExtBudgetErrorExportService extends ExportService<String> {
     /** The error repo. */
     @Inject
     private ExternalBudgetErrorRepository errorRepo;
-
-    /** The internationalization. */
-    @Inject
-    private IInternationalization internationalization;
 
     /** The Constant LST_NAME_ID. */
     private static final List<String> LST_NAME_ID_HEADER = Arrays.asList("KSU006_210", "KSU006_211", "KSU006_207",
@@ -90,11 +85,7 @@ public class ExtBudgetErrorExportService extends ExportService<String> {
     private List<String> finHeader() {
         List<String> lstHeader = new ArrayList<>();
         for (String nameId : LST_NAME_ID_HEADER) {
-            Optional<String> optional = this.internationalization.getItemName(nameId);
-            if (!optional.isPresent()) {
-                throw new RuntimeException("NameId of header not found.");
-            }
-            lstHeader.add(optional.get());
+            lstHeader.add(TextResource.localize(nameId));
         }
         return lstHeader;
     }

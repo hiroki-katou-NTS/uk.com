@@ -24,7 +24,7 @@ public class Workplace extends AggregateRoot{
 
 	/** The workplace id. */
 	//職場ID
-	private WorkplaceId workplaceId;
+	private String workplaceId;
 	
 	/** The workplace history. */
 	//履歴
@@ -67,6 +67,9 @@ public class Workplace extends AggregateRoot{
 	 */
 	public WorkplaceHistory getWkpHistoryLatest() {
         int indexLatestHist = 0;
+        if (this.workplaceHistory.size() > 1) {
+            System.out.println();
+        }
         return this.workplaceHistory.get(indexLatestHist);
     }
 

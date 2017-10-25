@@ -1,10 +1,13 @@
 package repository.person.info.setting;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItem;
+import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItemPk;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -33,6 +36,37 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " WHERE c.abolitionAtr = 0"
 			+ " AND c.perInfoCtgId =:perInfoCtgId";
 
+	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
+			+ " WHERE c.settingItemPk.perInfoCtgId =:perInfoCtgId AND c.settingItemPk.settingId =:settingId";
+
+	private final String SEL_ALL_ITEM_BY_SETTINGID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
+			+ " WHERE c.settingItemPk.settingId =:settingId";
+
+	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
+			+ " WHERE c.settingItemPk.settingId =:settingId";
+
+	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
+		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
+		domain.setPerInfoItemDefId(entity.settingItemPk.perInfoItemDefId);
+		domain.setPerInfoCtgId(entity.settingItemPk.perInfoCtgId);
+		domain.setSettingId(entity.settingItemPk.settingId);
+		domain.setItemName("");
+		domain.setIsRequired(EnumAdaptor.valueOf(0, IsRequired.class));
+
+		domain.setRefMethodType(EnumAdaptor.valueOf(entity.refMethodAtr, ReferenceMethodType.class));
+		domain.setSaveDataType(
+				entity.saveDataType == null ? null : EnumAdaptor.valueOf(entity.saveDataType, SaveDataType.class));
+
+		domain.setStringValue(new StringValue(entity.stringValue == null ? "" : entity.stringValue.toString()));
+		domain.setIntValue(entity.intValue == null ? null : new IntValue(new BigDecimal(entity.intValue)));
+
+		domain.setDateValue(entity.dateValue == null ? null
+				: GeneralDate.fromString(String.valueOf(entity.dateValue), "yyyy-MM-dd"));
+
+		return domain;
+
+	}
+
 	private static PerInfoInitValueSetItem toDomain(Object[] entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
 		domain.setPerInfoItemDefId(entity[0].toString());
@@ -40,31 +74,39 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setItemName(entity[2] == null ? "" : entity[2].toString());
 		domain.setIsRequired(EnumAdaptor.valueOf(Integer.valueOf(entity[3].toString()), IsRequired.class));
 		domain.setSettingId(entity[4] == null ? "" : entity[4].toString());
-		
+
 		String refMethod;
+
 		if (entity[5].toString().equals("0")) {
-			
-			refMethod = "8";
+			// return No setting type
+			refMethod = "1";
 
 		} else {
+
 			refMethod = entity[5].toString();
 
 		}
+
 		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
 
 		String saveDataType;
+
 		if (entity[6].toString().equals("0")) {
+			// return defaul value
 			saveDataType = "1";
 
 		} else {
+
 			saveDataType = entity[6].toString();
 
 		}
 		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
+
 		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "" : entity[8].toString())));
 
 		String dateValue;
+
 		if (entity[6].toString().equals("0")) {
 			dateValue = "9999-12-21";
 
@@ -74,7 +116,28 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
+
 		return domain;
+
+	}
+
+	/**
+	 * convert from domain PerInfoInitValueSetItem to entity
+	 * PpemtPersonInitValueSettingItem
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	private static PpemtPersonInitValueSettingItem toEntity(PerInfoInitValueSetItem domain) {
+		PpemtPersonInitValueSettingItem entity = new PpemtPersonInitValueSettingItem();
+		entity.settingItemPk = new PpemtPersonInitValueSettingItemPk(domain.getPerInfoItemDefId(),
+				domain.getPerInfoCtgId(), domain.getSettingId());
+		entity.refMethodAtr = domain.getRefMethodType().value;
+		entity.saveDataType = domain.getSaveDataType() == null ? null : domain.getSaveDataType().value;
+		entity.stringValue = domain.getStringValue() == null ? null : domain.getStringValue().v();
+		entity.intValue = domain.getIntValue() == null ? null : domain.getIntValue().v().intValue();
+		entity.dateValue = domain.getDateValue() == null ? null : domain.getDateValue().toString();
+		return entity;
 
 	}
 
@@ -102,4 +165,39 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		return true;
 	}
 
+	@Override
+	public void delete(String perInfoItemDefId, String perInfoCtgId, String settingId) {
+		this.commandProxy().remove(PpemtPersonInitValueSettingItem.class,
+				new PpemtPersonInitValueSettingItemPk(perInfoItemDefId, perInfoCtgId, settingId));
+
+	}
+
+	@Override
+	public List<PerInfoInitValueSetItem> getAllInitValueItem(String perInfoCtgId, String settingId) {
+		return this.queryProxy().query(SEL_ALL_ITEM_BY_CTG_ID, PpemtPersonInitValueSettingItem.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("settingId", settingId)
+				.getList(c -> toDomain(c));
+	}
+
+	// hoatt
+	@Override
+	public void deleteAllBySetId(String settingId) {
+		this.getEntityManager().createQuery(DELETE_ALL_ITEM_BY_ID).setParameter("settingId", settingId).executeUpdate();
+	}
+
+	@Override
+	public void addAllItem(List<PerInfoInitValueSetItem> lstItem) {
+		List<PpemtPersonInitValueSettingItem> lstEntity = new ArrayList<>();
+		for (PerInfoInitValueSetItem perSetItem : lstItem) {
+			lstEntity.add(toEntity(perSetItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+
+	@Override
+	public List<PerInfoInitValueSetItem> getAllInitValueItem(String settingId) {
+		return this.queryProxy().query(SEL_ALL_ITEM_BY_SETTINGID, PpemtPersonInitValueSettingItem.class)
+				.setParameter("settingId", settingId)
+				.getList(c -> toDomain(c));
+	}
 }

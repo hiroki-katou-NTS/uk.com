@@ -684,6 +684,11 @@ project (':com.web:nts.uk.com.web') {
 		runtime project(':shr:nts.uk.shr.ws')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 
@@ -764,6 +769,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
+		
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws')
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'

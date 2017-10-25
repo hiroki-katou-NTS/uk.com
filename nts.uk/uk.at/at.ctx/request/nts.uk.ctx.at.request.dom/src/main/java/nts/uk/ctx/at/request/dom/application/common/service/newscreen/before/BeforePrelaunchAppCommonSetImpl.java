@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -17,10 +17,10 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompany;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplace;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompany;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplace;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
 
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {

@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 
@@ -39,9 +39,6 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class WorkTimeFinder {
 
 	@Inject
-	IInternationalization internationalization;
-
-	@Inject
 	private WorkTimeRepository workTimeRepository;
 
 	@Inject
@@ -52,19 +49,19 @@ public class WorkTimeFinder {
 	@PostConstruct
 	private void loadInitialData() {
 
-		timeDayAtr[0] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_PreviousDay.name()).get();
-		timeDayAtr[1] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_Day.name()).get();
-		timeDayAtr[2] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_NextDay.name()).get();
-		timeDayAtr[3] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_SkipDay.name()).get();
+		timeDayAtr[0] = TextResource.localize(TimeDayAtr.Enum_DayAtr_PreviousDay.name());
+		timeDayAtr[1] = TextResource.localize(TimeDayAtr.Enum_DayAtr_Day.name());
+		timeDayAtr[2] = TextResource.localize(TimeDayAtr.Enum_DayAtr_NextDay.name());
+		timeDayAtr[3] = TextResource.localize(TimeDayAtr.Enum_DayAtr_SkipDay.name());
 
 		// workTimeMethodSet[0] =
 		// internationalization.getItemName(WorkTimeMethodSet.Enum_Fixed_Work.name()).get();
 		// workTimeMethodSet[1] =
 		// internationalization.getItemName(WorkTimeMethodSet.Enum_Jogging_Time.name()).get();
-		workTimeMethodSet[0] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
-		workTimeMethodSet[1] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
-		workTimeMethodSet[2] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
-		workTimeMethodSet[3] = internationalization.getItemName(WorkTimeMethodSet.Enum_Fluid_Work.name()).get();
+		workTimeMethodSet[0] = TextResource.localize(WorkTimeMethodSet.Enum_Overtime_Work.name());
+		workTimeMethodSet[1] = TextResource.localize(WorkTimeMethodSet.Enum_Overtime_Work.name());
+		workTimeMethodSet[2] = TextResource.localize(WorkTimeMethodSet.Enum_Overtime_Work.name());
+		workTimeMethodSet[3] = TextResource.localize(WorkTimeMethodSet.Enum_Fluid_Work.name());
 	}
 
 	/**

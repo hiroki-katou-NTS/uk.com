@@ -31,4 +31,13 @@ public class DPSheetDto {
 	public void addColumn(String columnName) {
 		this.columns.add(columnName);
 	}
+	
+	public boolean isExistColumn(String key){
+		for(String column: this.columns){
+			if(column.equals(key)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

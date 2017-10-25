@@ -136,4 +136,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
 	}
 
+	public void updateInitSetId(String settingId){
+		this.settingId = settingId;
+	}
 }

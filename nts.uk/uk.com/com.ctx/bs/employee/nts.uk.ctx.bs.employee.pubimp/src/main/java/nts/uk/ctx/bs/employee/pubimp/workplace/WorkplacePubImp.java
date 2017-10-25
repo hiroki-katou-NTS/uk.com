@@ -49,7 +49,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	public List<String> findWpkIdsByWkpCode(String companyId, String wpkCode,
 			GeneralDate baseDate) {
 		return workplaceInfoRepository.findByWkpCd(companyId, wpkCode, baseDate).stream()
-				.map(item -> item.getWorkplaceId().v()).collect(Collectors.toList());
+				.map(item -> item.getWorkplaceId()).collect(Collectors.toList());
 	}
 
 	/*
@@ -153,9 +153,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		// Return workplace id
 		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
 		return Optional.of(SWkpHistExport.builder()
-				.dateRange(affWorkplaceHistory.getPeriod())
-				.employeeId(employeeId)
-				.workplaceId(wkpInfo.getWorkplaceId().v())
 				.workplaceCode(wkpInfo.getWorkplaceCode().v())
 				.workplaceName(wkpInfo.getWorkplaceName().v())
 				.wkpDisplayName(wkpInfo.getWkpDisplayName().v())

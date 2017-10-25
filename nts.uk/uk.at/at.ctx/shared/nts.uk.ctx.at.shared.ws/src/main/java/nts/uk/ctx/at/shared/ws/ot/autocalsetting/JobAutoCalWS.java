@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.ot.autocalsetting;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,12 +38,23 @@ public class JobAutoCalWS extends WebService {
 	/** The remove job auto cal set command handler. */
 	@Inject
 	private RemoveJobAutoCalSetCommandHandler removeJobAutoCalSetCommandHandler;
+	
+	
+	/**
+	 * Gets the all job auto cal set finder.
+	 *
+	 * @return the all job auto cal set finder
+	 */
+	@POST
+	@Path("getallautocaljob")
+	public List<JobAutoCalSettingDto> getAllJobAutoCalSetFinder(){
+		return this.jobAutoCalSetFinder.getAllJobAutoCalSetting();
+	}
 
 	/**
 	 * Gets the job auto cal set finder.
 	 *
-	 * @param jobId
-	 *            the job id
+	 * @param jobId the job id
 	 * @return the job auto cal set finder
 	 */
 	@POST
@@ -53,8 +66,7 @@ public class JobAutoCalWS extends WebService {
 	/**
 	 * Save.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("save")
@@ -65,8 +77,7 @@ public class JobAutoCalWS extends WebService {
 	/**
 	 * Deledte.
 	 *
-	 * @param jobId
-	 *            the job id
+	 * @param command the command
 	 */
 	@POST
 	@Path("delete")

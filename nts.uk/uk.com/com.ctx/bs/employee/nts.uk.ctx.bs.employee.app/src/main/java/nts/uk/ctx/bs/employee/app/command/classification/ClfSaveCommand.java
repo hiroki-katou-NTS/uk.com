@@ -31,6 +31,9 @@ public class ClfSaveCommand implements ClassificationGetMemento {
 	/** The classification memo. */
 	private String memo;
 	
+	/** The is update mode. */
+	private Boolean isUpdateMode;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationGetMemento#getCompanyId()
 	 */

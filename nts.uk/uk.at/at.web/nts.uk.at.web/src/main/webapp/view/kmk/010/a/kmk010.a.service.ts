@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk010.a {
             findAllAttendanceItemOvertime: "ctx/at/shared/outsideot/setting/findAll/attendanceItem",
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
             findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
+            findAllOvertimeRoundingSub: "ctx/at/shared/outsideot/setting/findAll/roundingsub",
             findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
             findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/holiday/findAll/premiumExtra",
             findByIdSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/findById",
@@ -40,6 +41,12 @@ module nts.uk.at.view.kmk010.a {
          */
         export function findAllOvertimeRounding(): JQueryPromise<model.EnumConstantDto[]> {
             return nts.uk.request.ajax(paths.findAllOvertimeRounding);
+        }
+        /**
+         * find all data overtime rounding
+         */
+        export function findAllOvertimeRoundingSub(): JQueryPromise<model.EnumConstantDto[]> {
+            return nts.uk.request.ajax(paths.findAllOvertimeRoundingSub);
         }
 
         /**

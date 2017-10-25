@@ -1,266 +1,300 @@
-module nts.uk.com.view.cmm014.a.viewmodel {
-    
-    import ClassificationModel = service.model.ClassificationFindDto; 
+module nts.uk.com.view.cmm014.a {
+    import ClassificationDto = service.model.ClassificationFindDto;
     import blockUI = nts.uk.ui.block;
-        
-    export class ScreenModel {
-        
-        classificationTableColumns: KnockoutObservableArray<any>;//nts.uk.ui.NtsGridListColumn
-        
-        listClassification: KnockoutObservableArray<ClassificationModel>;
-        currentSelectedRow: KnockoutObservable<any>;
-        
-        currentClassification: KnockoutObservable<viewmodel.model.ClassificationView>;
-        
-        isEnableDeleteButton: KnockoutObservable<boolean>;
-        
-        constructor() {
-            let _self = this;
+
+    export module viewmodel {
+        export class ScreenModel {
+            enableDelete: KnockoutObservable<boolean>;
+            classificationModel: KnockoutObservable<ClassificationModel>;
+            selectedCode: KnockoutObservable<string>;
+            listComponentOption: any;
+            clfList: KnockoutObservableArray<ItemModel>;
+            enableClfCode: KnockoutObservable<boolean>;
+            isUpdateMode: KnockoutObservable<boolean>;
             
-            _self.classificationTableColumns = ko.observableArray([
-                    { headerText: 'コード', key: 'code', width: 100 },
-                    { headerText: '名称', key: 'name', width: 80 }
-                ]);
-           
-            _self.listClassification = ko.observableArray([]);
-            _self.currentSelectedRow = ko.observable(null);
-              
-            _self.currentClassification = ko.observable(new viewmodel.model.ClassificationView(new ClassificationModel(), true));
-            
-            _self.isEnableDeleteButton = ko.observable(true);
-            
-            _self.currentSelectedRow.subscribe(function(clfCode) {
-                if(clfCode == null){
-                    return;
-                }else{
-                    _self.currentClassification().classificationCode(_self.findObj(clfCode).code);
-                    _self.currentClassification().classificationName(_self.findObj(clfCode).name);
-                    _self.currentClassification().memo(_self.findObj(clfCode).memo);
-                    _self.currentClassification().inputClfCodeEnable(false);
-                }
-            });
-        }
-        
-        /**
-         * find classification in list by code
-         */
-        public findObj(code: any): any {
-            let _self = this;
-            var itemModel: ClassificationModel = null;
-            _.find(_self.listClassification(), (obj: ClassificationModel) => {
-                if (obj.code == code) {
-                    itemModel = obj;
-                }
-            })
-            return itemModel;
-        }
-        
-        /**
-         * init register
-         */
-        public initRegisterClassification() {
-            let _self = this;
-            _self.currentSelectedRow(null);
-            _self.currentClassification().refresh();
-            _self.isEnableDeleteButton(false);
-        }
-        
-        /**
-         * register new classification
-         */
-        public registerClassification(): void {
-            let _self = this;
-            
-            // Validate
-            if (_self.hasError()) {
-                return;
-            }
-            
-            blockUI.invisible()
-            
-            var command = {
-                classificationCode: _self.currentClassification().classificationCode(),
-                classificationName: _self.currentClassification().classificationName(),
-                memo: _self.currentClassification().memo()
-            };
-            
-            _self.saveClassificationInfo(command).done(function(){
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    
-                    //reload data in table
-                   _self.getClassificationList().done(function(data: Array<ClassificationModel>) {
-                        _self.listClassification(data);
-                        _self.currentSelectedRow(command.classificationCode);
-                        
-                        _self.currentClassification().classificationCode(_self.findObj(command.classificationCode).code);
-                        _self.currentClassification().classificationName(_self.findObj(command.classificationCode).name);
-                        _self.currentClassification().memo(_self.findObj(command.classificationCode).memo);
-                        _self.currentClassification().inputClfCodeEnable(false);
-                  });
-                  _self.isEnableDeleteButton(true);
-                });   
-                blockUI.clear();
-            }).fail(error => {
-                if (error.messageId == 'Msg_3') {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_3" }).then(function() {
-                        $("#empCode").focus();
-                    });
-                } else {
-                    nts.uk.ui.dialog.alertError(error);
-                }
-                blockUI.clear();
-            });
-            
-        }
-        
-        /**
-         * delete a classification
-         */
-        public deleteClassification(): void {
-            let _self = this;
-            
-            // Validate
-            if (_self.hasError()) {
-                return;
-            }
-            
-            // Remove
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+            constructor() {
+                var self = this;
+                self.isUpdateMode = ko.observable(false);
+                self.enableDelete = ko.observable(true);
+                self.classificationModel = ko.observable(new ClassificationModel);
+                self.selectedCode = ko.observable("");
+                self.selectedCode.subscribe(function(clfCode) {
+                    if (clfCode) {
+                        self.clearErrors();
+                        self.loadClassification(clfCode);
+                    } else {
+                        self.clearData();
+                    }
+                });
                 
-                let command = {
-                    classificationCode: _self.currentClassification().classificationCode()
+                // Initial listComponentOption
+                self.listComponentOption = {
+                    isMultiSelect: false,
+                    listType: ListType.Classification,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCode,
+                    isDialog: false,
+                    tabindex: 5
                 };
+
+                self.clfList = ko.observableArray<ItemModel>([]);
+                self.enableClfCode = ko.observable(false);
+            }
+
+            /**
+             * Start Page
+             */
+            public startPage(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                var self = this;
                 blockUI.invisible();
-                service.removeClassification(command).done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                        // Reload Component
-                        _self.getClassificationList().done(function(data: Array<ClassificationModel>) {
-                            let index = _self.listClassification().indexOf(_self.findObj(command.classificationCode));
-                             _self.listClassification(data);
-                            if (index == (_self.listClassification().length)) {
-                                _self.currentSelectedRow(_self.listClassification()[index - 1].code);
-                            } else {
-                                _self.currentSelectedRow(_self.listClassification()[index].code);
-                            }
-                            
+                
+                // Load Component
+                $('#clf-component').ntsListComponent(self.listComponentOption).done(function() {
+
+                    // Get Data List
+                    if (($('#clf-component').getDataList() == undefined) || ($('#clf-component').getDataList().length <= 0)) {
+                        self.clearData();
+                    }
+                    else {
+                        // Get Classification List after Load Component
+                        self.clfList($('#clf-component').getDataList());
+
+                        // Select first Item in Classification List
+                        self.selectedCode(self.clfList()[0].code);
+
+                        // Find and bind selected Classification
+                        self.loadClassification(self.selectedCode());
+                    }
+                    blockUI.clear();
+                });
+                dfd.resolve();
+                return dfd.promise();
+            }
+
+            /**
+             * load Classification
+             */
+            private loadClassification(code: string): void {
+                let self = this;
+                service.findClassification(code).done(function(classification: any) {
+                    if (classification) {
+                        self.selectedCode(classification.code);
+                        self.classificationModel().updateData(classification);
+                        self.classificationModel().isEnableCode(false);
+                        self.enableDelete(true);
+                        self.isUpdateMode(true);
+                        $('#clfName').focus();
+                    }
+                });
+            }
+
+            /**
+             * Clear Data
+             */
+            private clearData(): void {
+                let self = this;
+                self.selectedCode("");
+                self.classificationModel().resetData();
+                self.enableDelete(false);
+                self.clearErrors();
+                self.isUpdateMode(false);
+                $('#clfCode').focus();
+            }
+
+            /**
+             * Create Employment
+             */
+            private createClassification(): void {
+                let self = this;
+                // Validate
+                if (self.hasError()) {
+                    return;
+                }
+                let command: any = {};
+                    command.classificationCode = self.classificationModel().classificationCode();
+                    command.classificationName = self.classificationModel().classificationName();
+                    command.memo = self.classificationModel().memo();
+                    command.isUpdateMode = self.isUpdateMode();
+                
+                service.saveClassification(command).done(() => {
+                    blockUI.invisible();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        
+                        // ReLoad Component
+                        $('#clf-component').ntsListComponent(self.listComponentOption).done(function() {
+                            // Get Classification List after Load Component
+                            self.clfList($('#clf-component').getDataList());
+                            self.enableDelete(true);
+                            self.classificationModel().isEnableCode(false);
+                            self.selectedCode(self.classificationModel().classificationCode());
+                            $('#clfName').focus();
                         });
                     });
                     
                     blockUI.clear();
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
-                    
+                }).fail(error => {
+                    $('#clfCode').ntsError('set', {messageId: error.messageId});
                 });
-            }).ifNo(function() {
-                blockUI.clear();
-            });
-        }
-        
-        /**
-         * prepare data when page started
-         */
-        public start(): JQueryPromise<any> {
-            let _self = this;
-            var dfd = $.Deferred<any>();
-            
-            _self.getClassificationList().done(function(data: Array<ClassificationModel>) {
-                _self.listClassification(data);
-                _self.currentSelectedRow(data[0].code);
-                
-                _self.currentClassification().classificationCode(data[0].code);
-                _self.currentClassification().classificationName(data[0].name);
-                _self.currentClassification().memo(data[0].memo);
-                _self.currentClassification().inputClfCodeEnable(false);
-                
-                dfd.resolve();
-            }).fail(function(error: any) {
-                alert(error.message);
-            })
-            
-            return dfd.promise();
-        }
-        
-        /**
-         * Check Errors all input.
-         */
-        private hasError(): boolean {
-            let _self = this;
-            _self.clearErrors();
-            $('#clfCode').ntsEditor("validate");
-            $('#clfName').ntsEditor("validate");
-            if ($('.nts-input').ntsError('hasError')) {
-                return true;
             }
-            return false;
+
+            /**
+             * Delete Classification
+             */
+            private deleteClassification(): void {
+                let self = this;
+                // Validate
+                if (self.hasError()) {
+                    return;
+                }
+                
+                // Remove
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    
+                    let command = {
+                        classificationCode: self.classificationModel().classificationCode()
+                    }
+                    blockUI.invisible();
+                    service.removeClassification(command).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            // Reload Component
+                            $('#clf-component').ntsListComponent(self.listComponentOption).done(function() {
+                                // Filter selected Item
+                                var existItem = self.clfList().filter((item) => {
+                                    return item.code == self.classificationModel().classificationCode();
+                                })[0];
+
+                                // Check Data List
+                                if (($('#clf-component').getDataList() == undefined) || ($('#clf-component').getDataList().length <= 0)) {
+                                    self.clearData();
+                                }
+                                else {
+                                    self.enableDelete(true);
+                                    let index = self.clfList().indexOf(existItem);
+                                    // Get Classification List after Load Component
+                                    self.clfList($('#clf-component').getDataList());
+                                    let emplistLength = self.clfList().length;
+                                    if (index == (self.clfList().length)) {
+                                        self.selectedCode(self.clfList()[index - 1].code);
+                                    } else {
+                                        self.selectedCode(self.clfList()[index].code);
+                                    }
+                                }
+                            });
+                        });
+                        
+                        
+                        blockUI.clear();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
+                        
+                    });
+                }).ifNo(function() {
+                    blockUI.clear();
+                    $('#clfName').focus();
+                });
+            }
+
+            /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                var self = this;
+                self.clearErrors();
+                $('#clfCode').ntsEditor("validate");
+                $('#clfName').ntsEditor("validate");
+                 $('#memo').ntsEditor("validate");
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+                var self = this;
+                //                // Clear errors
+                $('#clfCode').ntsError('clear');
+                $('#clfName').ntsError('clear');
+ 
+                $('#memo').ntsError('clear');
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
+            }
+
         }
 
         /**
-         * Clear Errors
+         * ClassificationModel
          */
-        private clearErrors(): void {
-            // Clear errors
-            $('#clfCode').ntsError('clear');
-            $('#clfName').ntsError('clear');
-            $('#memo').ntsError('clear');
-            // Clear error inputs
-            $('.nts-input').ntsError('clear');
-        }
-        
-        /**
-         * call service list classification
-         */
-        private getClassificationList(): JQueryPromise<any> {
-            let _self = this;
-            var dfd = $.Deferred<Array<ClassificationModel>>();
-            service.findAllClassification().done(function(data: Array<ClassificationModel>) {
-                dfd.resolve(data);
-            }).fail(function() {
-                alert('error');
-            });
-            return dfd.promise();
-        }
-        
-        /**
-         * call service save classification
-         */
-        private saveClassificationInfo(data: any): JQueryPromise<any> {
-            let _self = this;
-            var dfd = $.Deferred<void>();
-            
-            service.saveClassification(data).done(function(){
-                dfd.resolve(); 
-            });
-            
-            return dfd.promise();
-        }
-    }     
-    
-    /**
-    * Model namespace.
-    */
-    export module model {
-        
-        export class ClassificationView {
-            inputClfCodeEnable: KnockoutObservable<boolean>;
+        export class ClassificationModel {
             classificationCode: KnockoutObservable<string>;
             classificationName: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
-        
-            constructor(classification: ClassificationModel, enable: boolean) {
-                this.classificationCode = ko.observable(null);
-                this.classificationName = ko.observable(null);
-                this.memo = ko.observable(null);
-                this.inputClfCodeEnable = ko.observable(enable);
+            isEnableCode: KnockoutObservable<boolean>;
+            
+            constructor() {
+                this.classificationCode = ko.observable("");
+                this.classificationName = ko.observable("");
+                this.memo = ko.observable("");
+                this.isEnableCode = ko.observable(true);
+            }
+            /**
+             * Reset Data
+             */
+            resetData() {
+                this.classificationCode('');
+                this.classificationName('');
+                
+                this.memo('');
+                this.isEnableCode(true);
+                this.classificationCode.subscribe(function() {
+                    
+                });
             }
             
-            refresh() {
-                let _self = this;
-                _self.inputClfCodeEnable(true);
-                _self.classificationCode("");
-                _self.classificationName("");
-                _self.memo("");
+            /**
+             * update Data
+             */
+            updateData(dto: ClassificationDto) {
+                this.classificationCode(dto.code);
+                this.classificationName(dto.name);
+                this.memo(dto.memo);
             }
         }
+        
+        /**
+        * List Type
+        */
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
 
-    }    
+        /**
+         * SelectType
+         */
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+
+        /**
+         * Class ItemModel
+         */
+        class ItemModel {
+            code: string;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+    }
 }

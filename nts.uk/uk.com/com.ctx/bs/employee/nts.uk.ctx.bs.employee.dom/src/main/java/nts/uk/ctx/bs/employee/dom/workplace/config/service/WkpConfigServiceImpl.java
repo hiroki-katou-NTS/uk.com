@@ -89,13 +89,14 @@ public class WkpConfigServiceImpl implements WkpConfigService {
         }
         // find all workplace by historyId
         List<String> lstWkpId = optionalWkpConfigInfo.get().getLstWkpHierarchy().stream()
-                .map(item -> item.getWorkplaceId().v()).collect(Collectors.toList());
+                .map(item -> item.getWorkplaceId()).collect(Collectors.toList());
 
         // check date of workplace
         List<Workplace> lstWorkplace = this.workplaceRepo.findByWkpIds(lstWkpId);
-        for (Workplace workplace : lstWorkplace) {
+        
+        lstWorkplace.forEach(workplace -> {
             this.progress(workplace, latestWkpConfigHist.getPeriod().start(), newHistStartDate);
-        }
+        });
     }
 
     /**
@@ -121,7 +122,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
                     newStartDateHist, startDateWkpHist);
             if (!CollectionUtil.isEmpty(lstHistoryIdRemove)) {
                 // remove workplace infor in date range
-                this.removeWorkplaceInfor(workplace.getCompanyId(), workplace.getWorkplaceId().v(), lstHistoryIdRemove);
+                this.removeWorkplaceInfor(workplace.getCompanyId(), workplace.getWorkplaceId(), lstHistoryIdRemove);
             }
             startDateWkpHist = newStartDateHist;
 
@@ -155,7 +156,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
         return lstWkpHistory.stream()
                 .filter(item -> item.getPeriod().start().afterOrEquals(startDate)
                         && item.getPeriod().start().beforeOrEquals(endDate))
-                .map(item -> item.getHistoryId().v())
+                .map(item -> item.getHistoryId())
                 .collect(Collectors.toList());
     }
 

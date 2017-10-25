@@ -25,6 +25,15 @@ public class DPControlDisplayItem {
 		this.lstHeader = new ArrayList<>();
 	}
 	
+	private boolean isExistHeader(DPHeaderDto header) {
+		for(DPHeaderDto exstHeader : this.lstHeader){
+			if(exstHeader.getKey().equals(header.getKey())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private boolean isExistSheet(DPSheetDto sheet){
 		for(DPSheetDto exstSheet : this.lstSheet){
 			if(exstSheet.getName().equals(sheet.getName())){
@@ -32,6 +41,14 @@ public class DPControlDisplayItem {
 			}
 		}
 		return false;
+	}
+	
+	public void setLstHeader(List<DPHeaderDto> lstHeader) {
+		for(DPHeaderDto header : lstHeader){
+			if(!isExistHeader(header)){
+				this.lstHeader.add(header);
+			}
+		}
 	}
 
 	public void createSheets(List<DPSheetDto> lstSheet) {
@@ -45,7 +62,7 @@ public class DPControlDisplayItem {
 	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat) {
 		lstFormat.forEach(f -> {
 			this.lstSheet.forEach(s -> {
-				if (f.getSheetNo().equals(s.getName())) {
+				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
 					s.addColumn(String.valueOf(f.getAttendanceItemId()));
 				}
 			});

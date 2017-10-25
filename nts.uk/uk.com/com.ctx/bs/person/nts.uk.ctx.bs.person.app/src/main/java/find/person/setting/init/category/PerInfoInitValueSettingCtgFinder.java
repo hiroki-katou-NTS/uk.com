@@ -28,10 +28,10 @@ public class PerInfoInitValueSettingCtgFinder {
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
-	public List<PerInfoInitValueSettingCtg> getAllCategory() {
+	public List<PerInfoInitValueSettingCtg> getAllCategory(String settingId) {
 		String companyId = AppContexts.user().companyId();
 
-		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId);
+		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId);
 
 		if (ctgLst.size() > 0) {
 

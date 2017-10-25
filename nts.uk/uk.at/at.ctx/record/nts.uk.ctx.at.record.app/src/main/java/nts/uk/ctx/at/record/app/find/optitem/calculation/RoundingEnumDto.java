@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.i18n.custom.IInternationalization;
 
 /**
  * The Class RoundingEnumDto.
@@ -29,11 +30,11 @@ public class RoundingEnumDto {
 	 *
 	 * @return the rounding enum dto
 	 */
-	public static RoundingEnumDto amount() {
+	public static RoundingEnumDto amount(IInternationalization i18n) {
 		RoundingEnumDto dto = new RoundingEnumDto();
 		dto.setRounding(
-				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
-		dto.setUnit(EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class));
+				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class, i18n));
+		dto.setUnit(EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class, i18n));
 		return dto;
 	}
 
@@ -42,11 +43,11 @@ public class RoundingEnumDto {
 	 *
 	 * @return the rounding enum dto
 	 */
-	public static RoundingEnumDto number() {
+	public static RoundingEnumDto number(IInternationalization i18n) {
 		RoundingEnumDto dto = new RoundingEnumDto();
 		dto.setRounding(
-				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding.class));
-		dto.setUnit(EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.numberrounding.Unit.class));
+				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding.class, i18n));
+		dto.setUnit(EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.numberrounding.Unit.class, i18n));
 		return dto;
 	}
 
@@ -55,11 +56,11 @@ public class RoundingEnumDto {
 	 *
 	 * @return the rounding enum dto
 	 */
-	public static RoundingEnumDto time() {
+	public static RoundingEnumDto time(IInternationalization i18n) {
 		RoundingEnumDto dto = new RoundingEnumDto();
 		dto.setRounding(
-				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
-		dto.setUnit(EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class));
+				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class, i18n));
+		dto.setUnit(EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class, i18n));
 		return dto;
 	}
 }

@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-
 /**
  * The Interface WorkHierarchySetMemento.
  */
@@ -16,7 +14,7 @@ public interface WorkplaceHierarchySetMemento {
 	 *
 	 * @param workplaceId the new workplace id
 	 */
-	void setWorkplaceId(WorkplaceId workplaceId);
+	void setWorkplaceId(String workplaceId);
 
 	/**
 	 * Sets the hierarchy code.

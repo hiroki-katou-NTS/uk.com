@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
 
 import lombok.Data;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -14,26 +13,34 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Data
 public class JobTitleHistoryFindDto implements JobTitleHistorySetMemento {
-	
-	/** The history id. */
-    public String historyId;
 
-    /** The period. */
-    public PeriodFindDto period;
-    
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento#setHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
+	/** The history id. */
+	private String historyId;
+
+	/** The period. */
+	private PeriodFindDto period;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento#
+	 * setHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
 	 */
 	@Override
-	public void setHistoryId(HistoryId historyId) {
-		this.historyId = historyId.v();
+	public void setHistoryId(String historyId) {
+		this.historyId = historyId;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento#setPeriod(nts.uk.ctx.bs.employee.dom.jobtitle.history.Period)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento#
+	 * setPeriod(nts.uk.ctx.bs.employee.dom.jobtitle.history.Period)
 	 */
 	@Override
 	public void setPeriod(DatePeriod period) {
-		this.period = new PeriodFindDto(period.start(), period.end());		
+		this.period = new PeriodFindDto(period.start(), period.end());
 	}
 }
