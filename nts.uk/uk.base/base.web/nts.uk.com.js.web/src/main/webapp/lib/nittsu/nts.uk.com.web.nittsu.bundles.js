@@ -4428,6 +4428,11 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
+                function addError(errorBody, msg, id, idx) {
+                    var row = $("<tr/>");
+                    row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");
+                    row.appendTo(errorBody);
+                }
                 function bundledErrors(errors) {
                     var id = uk.util.randomId();
                     $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
@@ -4435,10 +4440,17 @@ var nts;
                     container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
                         "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
                     var errorBody = container.find("tbody");
+                    var idxCount = 0;
                     _.forEach(errors["messageId"], function (id, idx) {
-                        var row = $("<tr/>");
-                        row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");
-                        row.appendTo(errorBody);
+                        if ($.isArray(errors.messages[id])) {
+                            _.forEach(errors.messages[id], function (m) {
+                                addError(errorBody, m, id, idx + idxCount + 1);
+                                idxCount++;
+                            });
+                        }
+                        else {
+                            addError(errorBody, errors.messages[id], id, idx + idxCount + 1);
+                        }
                     });
                     var functionArea = container.find("#functions-area-bottom");
                     functionArea.append("<button class='ntsButton ntsClose large'/>");
@@ -6345,6 +6357,7 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.init = function ($input, data) {
+                        var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
@@ -6356,10 +6369,10 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        var validator = this.getValidator(data);
                         $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -6371,6 +6384,7 @@ var nts;
                         // Format on blur
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -6381,6 +6395,7 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -6399,6 +6414,7 @@ var nts;
                             }
                         });
                         $input.on('validate', (function (e) {
+                            var validator = self.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -6582,6 +6598,10 @@ var nts;
                             var css = data.mode === "year" ? { "padding-right": "20px" } : { "padding-right": "35px" };
                             $input.css(css);
                         }
+                        if (!nts.uk.util.isNullOrEmpty(option.defaultValue)
+                            && nts.uk.util.isNullOrEmpty(data.value())) {
+                            data.value(option.defaultValue);
+                        }
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
@@ -6599,7 +6619,8 @@ var nts;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
                         var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-                        return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+                        var validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
+                        return new validation.TimeValidator(name, constraintName, validateOption);
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -6621,10 +6642,20 @@ var nts;
                                 return;
                             }
                             var selectionTypeOnFocusing = document.getSelection().type;
+<<<<<<< HEAD
                             var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
                             $input.val(timeWithDayAttr.shortText);
                             // If focusing is caused by Tab key, select text
                             // this code is needed because removing separator deselects.
+=======
+                            if (!nts.uk.util.isNullOrEmpty(data.value())) {
+                                var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
+                                $input.val(timeWithDayAttr.shortText);
+                            }
+                            else {
+                                $input.val("");
+                            }
+>>>>>>> origin/kiban-feature/imageeditor
                             if (selectionTypeOnFocusing === 'Range') {
                                 $input.select();
                             }
@@ -7496,10 +7527,11 @@ var nts;
                             container.igGrid("dataBind");
                         }
                         else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
+                            var sources_1 = options.slice();
                             var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
-                                var itemX = _.find(sources, function (s) {
-                                    return s[optionsValue] === item[optionsValue];
+                                var itemX = _.find(sources_1, function (s) {
+                                    return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
                                     filteredSource_2.push(itemX);
@@ -9369,6 +9401,7 @@ var nts;
                         var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
                         var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
                         var extColumns = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
+                        var initialExpandDepth = ko.unwrap(data.initialExpandDepth);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var rows = ko.unwrap(data.rows);
@@ -9448,7 +9481,7 @@ var nts;
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
-                            initialExpandDepth: 10,
+                            initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
                             features: features
                         });
@@ -10119,7 +10152,10 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+<<<<<<< HEAD
 /// <reference path="../../reference.ts"/>
+=======
+>>>>>>> origin/kiban-feature/imageeditor
 var nts;
 (function (nts) {
     var uk;
@@ -12109,9 +12145,12 @@ var nts;
                     var dist;
                     (function (dist) {
                         dist.REMOTE = "Remote";
+<<<<<<< HEAD
                         /**
                          * Query.
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function query(features) {
                             storage = new Local();
                             var store = feature.find(features, feature.STORAGE);
@@ -12125,17 +12164,23 @@ var nts;
                         var Local = (function () {
                             function Local() {
                             }
+<<<<<<< HEAD
                             /**
                              * Get item.
                              */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                             Local.prototype.getItem = function (key) {
                                 var dfd = $.Deferred();
                                 dfd.resolve(uk.localStorage.getItem(key));
                                 return dfd.promise();
                             };
+<<<<<<< HEAD
                             /**
                              * Set item.
                              */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                             Local.prototype.setItemAsJson = function (key, value) {
                                 var dfd = $.Deferred();
                                 uk.localStorage.setItemAsJson(key, value);
@@ -12150,9 +12195,12 @@ var nts;
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
                             }
+<<<<<<< HEAD
                             /**
                              * Get item.
                              */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                             Remote.prototype.getItem = function (key) {
                                 var dfd = $.Deferred();
                                 uk.request.ajax(this.loadPath, { value: key }).done(function (widths) {
@@ -12160,9 +12208,12 @@ var nts;
                                 });
                                 return dfd.promise();
                             };
+<<<<<<< HEAD
                             /**
                              * Set item.
                              */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                             Remote.prototype.setItemAsJson = function (key, value) {
                                 var dfd = $.Deferred();
                                 uk.request.ajax(this.savePath, { key: key, columns: value }).done(function (res) {
@@ -12230,7 +12281,10 @@ var nts;
                                     }
                                 };
                             }
+<<<<<<< HEAD
                             // Have column group
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                             if (!uk.util.isNullOrUndefined(column.group)) {
                                 var cols = _.map(column.group, formatColumn);
                                 column.group = cols;
@@ -12336,14 +12390,20 @@ var nts;
                         updating.addFeature(options);
                         options.autoCommit = true;
                         dist.query(options.ntsFeatures);
+<<<<<<< HEAD
                         // Decorate editor border
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         events.onCellClick($(self));
                         // Copy&Paste
                         copyPaste.ifOn($(self), options);
                         events.afterRendered(options, cbSelectionColumns);
                         columnSize.init($(self), options.columns);
                         ntsControls.bindCbHeaderColumns(options, cbHeaderColumns, cbSelectionColumns);
+<<<<<<< HEAD
                         // Group column key and its control type 
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         $(this).data(internal.CONTROL_TYPES, columnControlTypes);
                         // Group column key and its special type
                         $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
@@ -12380,9 +12440,12 @@ var nts;
                         feature_1.SHEET = "Sheet";
                         feature_1.DEMAND_LOAD = "LoadOnDemand";
                         feature_1.STORAGE = "Storage";
+<<<<<<< HEAD
                         /**
                          * Replace feature
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function replaceBy(options, featureName, newFeature) {
                             var replaceId;
                             _.forEach(options.features, function (feature, id) {
@@ -13098,9 +13161,12 @@ var nts;
                             });
                         }
                         columnSize.init = init;
+<<<<<<< HEAD
                         /**
                          * Flat.
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function flat(col, columnWidths) {
                             if (col.group) {
                                 _.forEach(col.group, function (sCol) {
@@ -13110,9 +13176,12 @@ var nts;
                             }
                             columnWidths[col.key] = parseInt(col.width);
                         }
+<<<<<<< HEAD
                         /**
                          * Load data
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function load($grid) {
                             var storeKey = getStorageKey($grid);
                             storage.getItem(storeKey).done(function (widths) {
@@ -13450,9 +13519,12 @@ var nts;
                             };
                         }
                         ntsControls.drawLabel = drawLabel;
+<<<<<<< HEAD
                         /**
                          * Create header checkbox.
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function createHeaderCheckbox(data, key) {
                             var defaultOptions = {
                                 update: $.noop,
@@ -13463,9 +13535,12 @@ var nts;
                             return new CheckBox().draw(options).addClass("nts-grid-header-control-" + key).prop("outerHTML");
                         }
                         ntsControls.createHeaderCheckbox = createHeaderCheckbox;
+<<<<<<< HEAD
                         /**
                          * Bind cb header columns.
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function bindCbHeaderColumns(options, columns, selectionColumns) {
                             options.headerCellRendered = function (evt, ui) {
                                 var $grid = $(ui.owner.element);
@@ -14529,15 +14604,21 @@ var nts;
                             return Handler;
                         }());
                         events.Handler = Handler;
+<<<<<<< HEAD
                         /**
                          * Post render process
                          */
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         function afterRendered(options, cbSelectionColumns) {
                             options.rendered = function (evt, ui) {
                                 var $grid = $(evt.target);
                                 events.Handler.pull($grid, options).turnOn();
                                 $(this).data(internal.CB_SELECTED, cbSelectionColumns);
+<<<<<<< HEAD
                                 // Bind events for fixed table part
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                                 var $fixedTbl = fixedColumns.getFixedTable($grid);
                                 if ($fixedTbl.length > 0) {
                                     if (feature.isEnable(options.ntsFeatures, feature.COPY_PASTE))
@@ -15485,7 +15566,10 @@ var nts;
                         internal.CONTROL_TYPES = "ntsControlTypesGroup";
                         internal.COMBO_SELECTED = "ntsComboSelection";
                         internal.CB_SELECTED = "ntsCheckboxSelection";
+<<<<<<< HEAD
                         // Full columns options
+=======
+>>>>>>> origin/kiban-feature/imageeditor
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
                         internal.SHEETS = "ntsGridSheets";
@@ -23882,7 +23966,7 @@ var nts;
                                 });
                             }
                         });
-                        container.mouseleave(function (evt, ui) {
+                        container.mouseleave(function (evt) {
                             var current = header.find(".function-item");
                             itemAreas.find(".function-item-container").hide("fast", function () {
                                 current.data("dbClick", true);
@@ -24040,7 +24124,9 @@ var nts;
                     }
                     function clear($element) {
                         var cropper = $element.data("cropper");
-                        cropper.clear();
+                        if (!isNotNull(cropper)) {
+                            cropper.clear();
+                        }
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
@@ -24254,6 +24340,32 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 <<<<<<< HEAD
+<<<<<<< HEAD
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
 =======
 >>>>>>> origin/kiban-feature/editor
+=======
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLetBindingHandler = (function () {
+                    function NtsLetBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+                            return { controlsDescendantBindings: true };
+                        };
+                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
+                    }
+                    return NtsLetBindingHandler;
+                }());
+                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+>>>>>>> origin/kiban-feature/imageeditor
