@@ -10,7 +10,7 @@ module nts.uk.at.view.kmw005.a {
 
         export class ScreenModel {
             actualLockList: KnockoutObservableArray<ActualLockFind>;
-            selectedClosure: KnockoutObservable<number>;
+//            selectedClosure: KnockoutObservable<number>;
             actualLockColumn: KnockoutObservableArray<any>;
             actualLock: ActualLock;
             dailyActualLockOpt: KnockoutObservableArray<any>;
@@ -23,10 +23,10 @@ module nts.uk.at.view.kmw005.a {
                 var self = this;
                 self.actualLock = new ActualLock();
                 self.actualLockList = ko.observableArray<ActualLockFind>([]);
-                self.selectedClosure = ko.observable(1);
-                self.selectedClosure.subscribe(function(data: number) {
-                    self.bindActualLock(data);
-                });
+//                self.selectedClosure = ko.observable(1);
+//                self.selectedClosure.subscribe(function(data: number) {
+//                    self.bindActualLock(data);
+//                });
                 self.actualLock.closureId.subscribe(function(data: number) {
                     self.bindActualLock(data);
                 });
@@ -157,7 +157,6 @@ module nts.uk.at.view.kmw005.a {
                         self.addLockIcon();
 //                        self.actualLock.closureId(data[0].closureId);
                     })
-                    // 
                     blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
@@ -194,6 +193,9 @@ module nts.uk.at.view.kmw005.a {
             }
         }
 
+        /**
+         * lockIcon
+         */
         function lockIcon(value, row) {
             if (value == '1')
                 return "<i class='icon icon-2'></i>";
@@ -209,6 +211,9 @@ module nts.uk.at.view.kmw005.a {
         
         
 
+        /**
+         * class ActualLockFind
+         */
         export class ActualLockFind {
             /** The closure id. */
             closureId: number;
@@ -240,6 +245,9 @@ module nts.uk.at.view.kmw005.a {
             }
         }
 
+        /**
+         * class ClosureDto
+         */
         export class ClosureDto {
             closureId: number;
             closureName: string;
@@ -250,6 +258,9 @@ module nts.uk.at.view.kmw005.a {
             }
         }
         
+        /**
+         * class ActualLock
+         */
         export class ActualLock {
             closureId: KnockoutObservable<number>;
             dailyLockState: KnockoutObservable<number>;
@@ -262,7 +273,7 @@ module nts.uk.at.view.kmw005.a {
             }
 
             updateLock(dto: ActualLockFindDto): void {
-                this.closureId(dto.closureId);
+//                this.closureId(dto.closureId);
                 this.dailyLockState(dto.dailyLockState);
                 this.monthlyLockState(dto.monthlyLockState);
             }
