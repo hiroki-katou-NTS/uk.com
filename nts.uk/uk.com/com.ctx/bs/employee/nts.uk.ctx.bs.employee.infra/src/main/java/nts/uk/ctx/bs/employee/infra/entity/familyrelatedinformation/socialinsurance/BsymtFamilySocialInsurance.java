@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -24,7 +24,7 @@ public class BsymtFamilySocialInsurance extends UkJpaEntity implements Serializa
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Embedded
+	@EmbeddedId
 	private BsymtFamilySocialInsurancePK bsymtFamilySocialInsurancePK;
 	
 	/** The sid. */
@@ -63,7 +63,7 @@ public class BsymtFamilySocialInsurance extends UkJpaEntity implements Serializa
 
 	@Override
 	protected Object getKey() {
-		return this.bsymtFamilySocialInsurance;
+		return this.bsymtFamilySocialInsurancePK;
 	}
 
 }

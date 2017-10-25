@@ -9,6 +9,12 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.adapter.SubJobPosAdapter;
 import nts.uk.ctx.bs.person.dom.person.adapter.SubJobPosImport;
+import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familycare.FamilyCareAdapter;
+import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familycare.FamilyCareImport;
+import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familysocialinsurance.FamilySocialInsuranceAdapter;
+import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familysocialinsurance.FamilySocialInsuranceImport;
+import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.incometax.IncomeTaxAdapter;
+import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.incometax.IncomeTaxImport;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
@@ -35,6 +41,16 @@ public class PerInfoCtgDomainService {
 	 
 	@Inject
 	private SubJobPosAdapter subJobPosAdapter;
+	
+	@Inject 
+	private IncomeTaxAdapter incomeTaxAdapter;
+	
+	@Inject 
+	private FamilySocialInsuranceAdapter familySocialInsuranceAdapter;
+	
+	
+	@Inject 
+	private FamilyCareAdapter familyCareAdapter;
 	
 
 	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {
@@ -82,6 +98,15 @@ public class PerInfoCtgDomainService {
 		lstResult.add(parrentPerInfoDef);
 		if(paramObject.getPersonInfoCategory().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
 			switch(paramObject.getPersonInfoCategory().getCategoryCode().v()){
+				case "CS00005":
+					IncomeTaxImport incomeTax  = incomeTaxAdapter.getInComeTaxById(paramObject.getParentInfoId()).get();
+					break;
+				case "CS00006":
+					FamilySocialInsuranceImport familySocialInsurance = familySocialInsuranceAdapter.getFamilySocialInseById(paramObject.getParentInfoId()).get();
+					break;
+				case "CS00007":
+					FamilyCareImport familyCare = familyCareAdapter.getFamilyCareByid(paramObject.getParentInfoId()).get();
+					break;
 				case "CS00013":
 					List<SubJobPosImport> lstSubJobPos = subJobPosAdapter.getSubJobPosByDeptId(paramObject.getParentInfoId());
 					break;

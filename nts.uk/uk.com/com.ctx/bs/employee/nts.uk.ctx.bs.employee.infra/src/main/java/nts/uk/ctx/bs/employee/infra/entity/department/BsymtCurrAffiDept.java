@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -34,7 +34,7 @@ public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/**the current affi dept id*/
-	@Embedded
+	@EmbeddedId
 	private BsymtCurrAffiDeptPK bsymtCurrAffiDeptPK;
 	
 	/** The sid. */

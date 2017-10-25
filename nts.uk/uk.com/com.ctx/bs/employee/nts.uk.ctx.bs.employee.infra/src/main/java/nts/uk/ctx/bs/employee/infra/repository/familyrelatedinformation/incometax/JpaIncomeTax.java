@@ -2,12 +2,15 @@ package nts.uk.ctx.bs.employee.infra.repository.familyrelatedinformation.incomet
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax.IncomeTax;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax.IncomeTaxRepository;
 import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.incometax.BsymtIncomeTax;
 
+@Stateless
 public class JpaIncomeTax extends JpaRepository implements IncomeTaxRepository{
 
 	private static final String SELECT_INCOME_TAX_BY_ID = "SELECT i FROM BsymtIncomeTax i"

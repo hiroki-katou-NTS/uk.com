@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -30,7 +30,7 @@ public class BsymtSubJobPosition extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**the sub job position id*/
-	@Embedded
+	@EmbeddedId
 	private BsymtSubJobPositionPK bsymtSubJobPositionPK;
 	
 	/** The dep id. */

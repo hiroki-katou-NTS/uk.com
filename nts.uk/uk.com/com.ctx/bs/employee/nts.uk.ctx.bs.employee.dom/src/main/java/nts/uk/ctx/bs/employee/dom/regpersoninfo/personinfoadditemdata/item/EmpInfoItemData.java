@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 
 @NoArgsConstructor
 @Getter
@@ -22,10 +23,12 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private String itemName;
 
+	private IsRequired isRequired;
+
 	private DataState dataState;
 
 	public EmpInfoItemData(String perInfoDefId, String recordId, String perInfoCtgId, String itemName,
-			DataState dataState) {
+			IsRequired isRequired, DataState dataState) {
 		super();
 		this.perInfoDefId = perInfoDefId;
 		this.recordId = recordId;
@@ -35,10 +38,12 @@ public class EmpInfoItemData extends AggregateRoot {
 	}
 
 	public static EmpInfoItemData createFromJavaType(String perInfoDefId, String recordId, String perInfoCtgId,
-			String itemName, int dataStateType, String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+			String itemName, int isRequired, int dataStateType, String stringValue, BigDecimal intValue,
+			GeneralDate dateValue) {
 
-		return new EmpInfoItemData(perInfoDefId, recordId, perInfoCtgId, itemName, createDataState(
-				EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
+		return new EmpInfoItemData(perInfoDefId, recordId, perInfoCtgId, itemName,
+				EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
+						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
 
 	}
 

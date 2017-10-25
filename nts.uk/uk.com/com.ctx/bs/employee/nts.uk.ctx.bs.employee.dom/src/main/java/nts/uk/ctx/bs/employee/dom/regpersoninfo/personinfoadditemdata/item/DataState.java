@@ -10,9 +10,24 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datas
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.StringValue;
 
 public class DataState extends AggregateRoot {
-
+	
 	@Getter
 	protected DataStateType dataStateType;
+	
+	public String getStringValue(){
+		StringValue sValue = (StringValue) this;
+		return sValue.value;
+	}
+
+	public GeneralDate getDateValue(){
+		DateValue dateValue = (DateValue) this;
+		return dateValue.value;
+	}
+	
+	public BigDecimal getNumberValue(){
+		NumberValue numberValue = (NumberValue) this;
+		return numberValue.value;
+	}
 
 	public static DataState createFromStringValue(String value) {
 
@@ -27,5 +42,6 @@ public class DataState extends AggregateRoot {
 	public static DataState createFromNumberValue(BigDecimal value) {
 		return NumberValue.createFromJavaType(value);
 	}
+	
 
 }
