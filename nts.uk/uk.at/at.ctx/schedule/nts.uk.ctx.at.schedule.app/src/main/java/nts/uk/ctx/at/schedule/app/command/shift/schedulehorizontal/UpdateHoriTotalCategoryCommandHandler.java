@@ -28,10 +28,6 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 		UpdateHoriTotalCategoryCommand data = context.getCommand();
 		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, data.getCategoryCode());
 		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
-		// get total eval order list
-		if(!horiOld.isPresent()){
-			throw new BusinessException("Msg_3");
-		}
 		// check list 集計項目一覧 exsisted or not
 		if(data.getTotalEvalOrders() == null || data.getTotalEvalOrders().size() == 0){
 			throw new BusinessException("Msg_363");
