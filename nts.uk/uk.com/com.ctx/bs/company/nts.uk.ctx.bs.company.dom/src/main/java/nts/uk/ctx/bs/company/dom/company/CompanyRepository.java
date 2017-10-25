@@ -23,5 +23,13 @@ public interface CompanyRepository {
 	
 	List<Company>  getAllCompany();
 	
+	/**
+	 * RequestList #108.
+	 *
+	 * @param companyId the company id
+	 * @return the comany
+	 */
+	Optional<Company> getComanyInfoByCid(String cid);
+	
 }
 
