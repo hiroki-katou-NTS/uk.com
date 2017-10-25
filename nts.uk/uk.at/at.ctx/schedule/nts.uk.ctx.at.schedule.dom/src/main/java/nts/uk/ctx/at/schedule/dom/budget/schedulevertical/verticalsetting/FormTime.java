@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class FormulaTime {
+public class FormTime {
 	/* 会社ID */
     private String companyId;
     
@@ -16,7 +16,7 @@ public class FormulaTime {
     private String verticalCalItemId;
     
     /* カテゴリ区分 */
-    private CategoryAtr categoryAtr;
+    private CategoryIndicator categoryIndicator;
     
     /* 実績表示区分 */
     private ActualDisplayAtr actualDisplayAtr;

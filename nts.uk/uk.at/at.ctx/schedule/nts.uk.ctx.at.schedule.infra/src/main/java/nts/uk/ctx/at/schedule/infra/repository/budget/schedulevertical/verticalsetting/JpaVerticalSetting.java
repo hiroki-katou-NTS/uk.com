@@ -32,15 +32,15 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetti
 @Stateless
 public class JpaVerticalSetting extends JpaRepository implements VerticalSettingRepository {
 	
-	private static final String SELECT_ALL_VERTICAL_CAL_SET;
+	private static final String SELECT_ALL_GEN_VERT_SET;
 	
 	static {
 
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstVerticalCalSet e");
-		builderString.append(" WHERE e.kscstVerticalCalSetPK.companyId = :companyId");
-		SELECT_ALL_VERTICAL_CAL_SET = builderString.toString();
+		builderString.append(" FROM KscmtGenVertSet e");
+		builderString.append(" WHERE e.kscmtGenVertSetPK.companyId = :companyId");
+		SELECT_ALL_GEN_VERT_SET = builderString.toString();
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public List<VerticalCalSet> findAllVerticalCalSet(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_VERTICAL_CAL_SET, KscmtGenVertSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_ALL_GEN_VERT_SET, KscmtGenVertSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomainVcs(c));
 	}
 

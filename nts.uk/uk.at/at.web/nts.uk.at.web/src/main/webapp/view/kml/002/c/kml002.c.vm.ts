@@ -35,7 +35,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
             ]);
             
             self.rightItemcolumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML002_36"), prop: 'adOrSub', width: 80 },
+                { headerText: nts.uk.resource.getText("KML002_36"), prop: 'operatorAtr', width: 80 },
                 { headerText: nts.uk.resource.getText("KML002_7"), prop: 'name', width: 160, formatter: _.escape }
             ]);
             
@@ -59,14 +59,47 @@ module nts.uk.at.view.kml002.c.viewmodel {
             return dfd.promise();
         }
         
-        submit() {
+        /**
+         * Addition function.
+         */
+        addition() {
             var self = this;
+            
             
         }
         
-        cancel() {
+        /**
+         * Subtraction function.
+         */
+        subtraction() {
             var self = this;
             
+            
+        }
+        
+        /**
+         * Return items.
+         */
+        returnItems() {
+            var self = this;
+            
+            
+        }
+        
+        /**
+         * Submit data to A screen.
+         */
+        submit() {
+            var self = this;
+            
+            nts.uk.ui.windows.close();
+        }
+        
+        /**
+         * Close dialog.
+         */
+        cancel() {
+            nts.uk.ui.windows.close();
         }
     }
     
@@ -81,11 +114,11 @@ module nts.uk.at.view.kml002.c.viewmodel {
     
     class NewItemModel {
         code: string;
-        adOrSub: string;
+        operatorAtr: string;
         name: string;
-        constructor(code: string, adOrSub: string, name: string) {
+        constructor(code: string, operatorAtr: string, name: string) {
             this.code = code;
-            this.adOrSub = adOrSub;
+            this.operatorAtr = operatorAtr;
             this.name = name;       
         }
     } 

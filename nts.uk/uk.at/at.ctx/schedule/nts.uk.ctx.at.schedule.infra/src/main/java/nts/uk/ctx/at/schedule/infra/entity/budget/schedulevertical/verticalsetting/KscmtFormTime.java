@@ -23,8 +23,8 @@ public class KscmtFormTime extends UkJpaEntity implements Serializable {
 	public KscmtFormTimePK kscmtFormTimePK;
 
 	/* カテゴリ区分 */
-	@Column(name = "CATEGORY_ATR")
-	public int categoryAtr;
+	@Column(name = "CATEGORY_INDICATOR")
+	public int categoryIndicator;
     
     /* 実績表示区分 */
 	@Column(name = "ACTUAL_DISPLAY_ATR")

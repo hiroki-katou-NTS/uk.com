@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class FormulaItem {
+public class FormBuilt {
 	/* 会社ID */
     private String companyId;
     

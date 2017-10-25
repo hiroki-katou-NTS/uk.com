@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class TimeFunc {
+public class FormTimeFunc {
 	/* 会社ID */
     private String companyId;
     
@@ -14,9 +14,6 @@ public class TimeFunc {
     
     /* 汎用縦計項目ID */
     private String verticalCalItemId;
-    
-    /* 順番 */
-    private int dispOrder;
     
     /* 予定項目ID */
     private String presetItemId;
@@ -29,4 +26,7 @@ public class TimeFunc {
     
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
+    
+    /* 順番 */
+    private int dispOrder;
 }
