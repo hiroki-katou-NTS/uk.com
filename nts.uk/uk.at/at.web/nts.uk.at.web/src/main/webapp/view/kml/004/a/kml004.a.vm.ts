@@ -110,7 +110,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     self.selectedOption().totalEvalOrders(foundItem.totalEvalOrders);
                     // right grid
                     var totalItemOrders = [];
-                    _.forEach(foundItem.totalEvalOrders, function(item: IEvalOrder) {
+                    let sortedData = _.orderBy(foundItem.totalEvalOrders, ['dispOrder'], ['asc']);    
+                    _.forEach(sortedData, function(item: IEvalOrder) {
                         let foundItemOrder: IEvalOrder = _.find(self.listEval(), (itemDB: IEvalOrder) => {
                             return itemDB.totalItemNo == item.totalItemNo;
                         });  
@@ -196,6 +197,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let array=[];
+            let sortedData = [];
             $.when(self.getCal(), self.getCNT(), self.getEvalItem(), self.getData()).done(function(){
                 if(self.checkUpdate() == true){
                     
@@ -212,7 +214,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             memo: item.memo,
                             totalEvalOrders: item.totalEvalOrders
                         });
-                    }); 
+                    });
                     self.lstCate(array);
                 }
                 dfd.resolve();
@@ -279,7 +281,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                                  $("#nameCtg").focus(); 
                             });
                         }).fail(function(res){
-                            $('#code-text').ntsError('set', res);
+                            nts.uk.ui.dialog.alertError(res.message);
                         });
                     }
                 }
