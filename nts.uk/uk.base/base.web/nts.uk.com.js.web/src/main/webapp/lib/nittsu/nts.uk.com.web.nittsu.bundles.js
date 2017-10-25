@@ -6080,8 +6080,12 @@ var nts;
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
                         var $dialog = $("<div id='ntsErrorDialog'></div>");
+<<<<<<< HEAD
                         parent.$('body').append($dialog);
                         // Create Buttons
+=======
+                        $(parent).find('body').append($dialog);
+>>>>>>> origin/kiban-feature/wizard-disable-navigate-keyboard
                         var dialogbuttons = [];
                         var _loop_2 = function(button) {
                             dialogbuttons.push({
@@ -6140,7 +6144,7 @@ var nts;
                         //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
-                        var $dialog = parent.$("#ntsErrorDialog");
+                        var $dialog = $(parent).find("#ntsErrorDialog");
                         if (show == true) {
                             // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
@@ -7511,7 +7515,7 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        if (!((container.attr("filtered") === true || container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
+                        if (!((String(container.attr("filtered")) === "true") || container.data("ui-changed") === true)) {
                             var currentSources = options.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -9900,6 +9904,7 @@ var nts;
                             enablePagination: false,
                             enableFinishButton: false,
                             autoFocus: false,
+                            enableKeyNavigation: false,
                             onStepChanged: function () {
                                 // Remove old class.
                                 container.children('.steps').children('ul').children('li').removeClass('step-current');
@@ -11724,6 +11729,29 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLetBindingHandler = (function () {
+                    function NtsLetBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+                            return { controlsDescendantBindings: true };
+                        };
+                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
+                    }
+                    return NtsLetBindingHandler;
+                }());
+                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 var nts;
 (function (nts) {
     var uk;
@@ -24341,6 +24369,7 @@ var nts;
 })(nts || (nts = {}));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
 =======
 >>>>>>> origin/kiban-feature/editor
@@ -24369,3 +24398,6 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 >>>>>>> origin/kiban-feature/imageeditor
+=======
+//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
+>>>>>>> origin/kiban-feature/wizard-disable-navigate-keyboard
