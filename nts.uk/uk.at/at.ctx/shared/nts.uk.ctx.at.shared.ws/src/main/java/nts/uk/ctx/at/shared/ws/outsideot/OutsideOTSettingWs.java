@@ -73,6 +73,24 @@ public class OutsideOTSettingWs extends WebService {
 	}
 	
 	/**
+	 * Find all unit.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/roundingsub")
+	public List<EnumConstant> findAllRoundingSub() {
+		List<EnumConstant> roundings = EnumAdaptor.convertToValueNameList(Rounding.class);
+		for (EnumConstant enumof : roundings) {
+			if (enumof.getValue() == Rounding.ROUNDING_DOWN_OVER.value) {
+				roundings.remove(enumof);
+				break;
+			}
+		}
+		return roundings;
+	}
+	
+	/**
 	 * Find all attendance item.
 	 *
 	 * @return the list

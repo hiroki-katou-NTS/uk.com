@@ -31,7 +31,7 @@ public class Role extends AggregateRoot {
 
 	/** The name. */
 	// ロール名称
-	private String name;
+	private RoleName name;
 
 	/** The contract code. */
 	// 契約コード

@@ -8,7 +8,7 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
 import nts.uk.ctx.bs.employee.infra.repository.workplace.info.IsManagerStatus;
@@ -50,7 +50,7 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleId)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
 	public void setJobTitleId(String jobTitleId) {

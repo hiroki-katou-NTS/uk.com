@@ -15,8 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -58,14 +58,11 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 				// Throw Exception - Duplicated
 				throw new BusinessException("Msg_3");
 			}
+			final int newOrder = this.repository.findMaxOrder() + 1;
+			command.setOrder(newOrder);
 			this.repository.add(command.toDomain(companyId));
 		} else {
 			// Update
-			if (!opSequenceMaster.isPresent()) {
-				// Throw Exception - Sequence not found
-				throw new RuntimeException(String.format("Sequence code %s not found!", command.getSequenceCode()));
-			}
-
 			// Sequence code + order is not changable
 			SequenceMaster oldDomain = opSequenceMaster.get();
 			command.setOrder(oldDomain.getOrder());

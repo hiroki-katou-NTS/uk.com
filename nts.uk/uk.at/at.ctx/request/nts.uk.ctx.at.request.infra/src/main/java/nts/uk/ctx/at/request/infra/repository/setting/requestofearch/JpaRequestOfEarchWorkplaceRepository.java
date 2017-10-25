@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestAppDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplace;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.SelectionFlg;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplace;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.SelectionFlg;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstWpAppConfig;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstWpAppConfigDetail;
 @Stateless

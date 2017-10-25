@@ -75,14 +75,11 @@ module nts.uk.com.view.cmm011.a {
                     });
                 });
                 self.workplaceName.subscribe((newValue: string) => {
-                    let obj: any = self.treeWorkplace().findPathNameByWkpIdSelected();
-                    let wkpDisplayName: string = "";
-                    let wkpFullName: string = "";
-                    if (obj) {
-                        wkpDisplayName = obj.wkpDisplayName + " ";
-                        wkpFullName = obj.wkpFullName + " ";
+                    let wkpFullName: string = self.treeWorkplace().findPathNameByWkpIdSelected();
+                    if (!wkpFullName) {
+                        wkpFullName = "";
                     }
-                    self.wkpDisplayName(wkpDisplayName + newValue);
+                    self.wkpDisplayName(newValue);
                     self.wkpFullName(wkpFullName + newValue);
                 });
                 self.isDeleteWkpConfigHistory.subscribe(newValue => {
@@ -264,7 +261,7 @@ module nts.uk.com.view.cmm011.a {
                     objTransfer.code = self.workplaceCode();
                     objTransfer.name = self.workplaceName();
                     objTransfer.isLess999Heirarchies = res.isLessMaxSiblings;
-                    objTransfer.isLessTenthHeirarchy = res.isLessMaxHierarchy;
+                    objTransfer.isLessTenthHierarchy = res.isLessMaxHierarchy;
                     nts.uk.ui.windows.setShared("ObjectTransfer", objTransfer);
 
                     nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
@@ -349,7 +346,7 @@ module nts.uk.com.view.cmm011.a {
 
             parentModel: ScreenModel;
 
-            treeColumns: KnockoutObservableArray<any>;
+            treeColumns: Array<any>;
             lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
             selectedWpkId: KnockoutObservable<string>;
 
@@ -366,10 +363,7 @@ module nts.uk.com.view.cmm011.a {
                 self.selectedWpkId = ko.observable(null);
                 self.treeArray = ko.observableArray([]);
                 
-                self.treeColumns = ko.observableArray([
-                    { headerText: "", key: 'workplaceId', dataType: "string", hidden: true, width: 0 },
-                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string" }
-                ]);
+                self.treeColumns = [];
 
                 // subscribe
                 self.lstWorkplace.subscribe(dataList => {
@@ -396,13 +390,13 @@ module nts.uk.com.view.cmm011.a {
                 //subscribe selected wkp Id
                 self.selectedWpkId.subscribe(newValue => {
                     self.parentModel.isNewMode(false);
-                    self.selectedHierarchyCd = self.getSelectedHeirarchyCd();
+                    self.selectedHierarchyCd = self.getSelectedHierarchyCd();
 
                     // get wkp list hist by wkpId
                     self.parentModel.workplaceHistory().loadWkpHistoryByWkpId(newValue);
                 });
                 self.treeArray.subscribe(newArray => {
-                    self.mapHierarchy = self.convertMapHeirarchy();
+                    self.mapHierarchy = self.convertMapHierarchy();
                 });
             }
 
@@ -448,22 +442,19 @@ module nts.uk.com.view.cmm011.a {
             /**
              * findPathNameByWkpIdSelected
              */
-            public findPathNameByWkpIdSelected(): any {
+            public findPathNameByWkpIdSelected(): string {
                 let self = this;
-                let obj: any = {};
                 let index: number = 3;
                 let wkpFullName: string = "";
                 if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)) {
                     return null;
                 }
                 while (index <= self.selectedHierarchyCd.length) {
-                    let parentHeirarchyCd: string = self.selectedHierarchyCd.substr(0, index);
-                    wkpFullName += " " + self.mapHierarchy[parentHeirarchyCd];
+                    let parentHierarchyCd: string = self.selectedHierarchyCd.substr(0, index);
+                    wkpFullName += " " + self.mapHierarchy[parentHierarchyCd];
                     index += 3;
                 }
-                obj.wkpFullName = wkpFullName.trim();
-                obj.wkpDisplayName = self.mapHierarchy[self.selectedHierarchyCd];
-                return obj;
+                return wkpFullName.trim();
             }
 
             /**
@@ -497,9 +488,9 @@ module nts.uk.com.view.cmm011.a {
             }
 
             /**
-             * getSelectedHeirarchyCd
+             * getSelectedHierarchyCd
              */
-            private getSelectedHeirarchyCd(): string {
+            private getSelectedHierarchyCd(): string {
                 let self = this;
                 let hierarchyCode: string = "";
                 for (let item of self.treeArray()) {
@@ -517,7 +508,13 @@ module nts.uk.com.view.cmm011.a {
             private calWidthColText() {
                 let self = this;
                 let maxSizeNameCol: number = Math.max(self.getMaxSizeOfTextList(self.lstWorkplace()), 250);
-                self.treeColumns()[1].width = maxSizeNameCol;
+                self.treeColumns = [
+                    { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
+                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
+                ];
+                let $treeGrid: any = $("#single-tree-grid");
+                ko.cleanNode($treeGrid[0]);
+                ko.applyBindings(self, $treeGrid[0]);
             }
 
             /**
@@ -547,9 +544,9 @@ module nts.uk.com.view.cmm011.a {
             }
 
             /**
-             * convertMapHeirarchy
+             * convertMapHierarchy
              */
-            private convertMapHeirarchy(): any {
+            private convertMapHierarchy(): any {
                 let self = this;
                 return _.reduce(self.treeArray(), function(hash: any, value: any) {
                     let key: any = value['hierarchyCode'];

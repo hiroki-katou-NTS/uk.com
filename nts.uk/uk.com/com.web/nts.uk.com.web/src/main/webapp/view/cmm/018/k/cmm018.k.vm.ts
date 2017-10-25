@@ -6,6 +6,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import shrVm = cmm018.shr.vmbase;
     import service = cmm018.k.service;
     export class ScreenModel{
+        //enable list workplace
+        enableListWp: KnockoutObservable<boolean> = ko.observable(true);
         appType: KnockoutObservable<String> = ko.observable('');
         standardDate: KnockoutObservable<Date> = ko.observable(new Date());
         //承認者指定種類
@@ -65,7 +67,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     //承認形態が全員承認を選択する場合
                     self.cbbEnable(false);    
                 }
-            });           
+            });
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appTypeName);
@@ -139,6 +141,12 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.approverList.removeAll();
                 self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
+                if(newValue == 0){
+                    self.enableListWp(true);
+                    $('#tree-grid').ntsTreeComponent(self.treeGrid);
+                }else{
+                    self.enableListWp(false);
+                }
             })
             //職場リスト            
             self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){

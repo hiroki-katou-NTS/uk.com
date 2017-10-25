@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.pub.approvalroot.export;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -21,13 +20,13 @@ public class ApproverInfoExport {
 	/** 承認フェーズID */
 	private String approvalPhaseId;
 	/** 確定者 */
-	private boolean isConfirmPerson;
+	private Boolean isConfirmPerson;
 	/** 順序 */
-	private int orderNumber;
+	private Integer orderNumber;
 
 	private String name;
 	/**確定者*/
-	private int approvalAtr;
+	private Integer approvalAtr;
 
 	public ApproverInfoExport(String jobId,String sid, String approvalPhaseId, boolean isConfirmPerson, int orderNumber,int approvalAtr) {
 		super();

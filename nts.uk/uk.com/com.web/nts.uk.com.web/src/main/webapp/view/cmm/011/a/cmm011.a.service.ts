@@ -20,7 +20,7 @@ module nts.uk.com.view.cmm011.a {
          * findLstWorkPlace
          */
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-            return nts.uk.request.ajax(servicePath.findLstWorkPlace, { startDate: baseDate });
+            return nts.uk.request.ajax(servicePath.findLstWorkPlace, { baseDate: baseDate });
         }
         
         /**

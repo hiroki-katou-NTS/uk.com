@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCommon;
 /**
  * 
  * @author Doan Duy Hung

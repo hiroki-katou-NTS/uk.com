@@ -20,15 +20,15 @@ public class KrcstOptionalItem_ {
 	public static volatile SingularAttribute<KrcstOptionalItem, String> optionalItemName;
 
 	/** The optional item atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Short> optionalItemAtr;
+	public static volatile SingularAttribute<KrcstOptionalItem, Integer> optionalItemAtr;
 
 	/** The usage atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Short> usageAtr;
+	public static volatile SingularAttribute<KrcstOptionalItem, Integer> usageAtr;
 
 	/** The performance atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Short> performanceAtr;
+	public static volatile SingularAttribute<KrcstOptionalItem, Integer> performanceAtr;
 
 	/** The emp condition atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Short> empConditionAtr;
+	public static volatile SingularAttribute<KrcstOptionalItem, Integer> empConditionAtr;
 
 }

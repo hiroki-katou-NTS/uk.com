@@ -617,7 +617,7 @@
             }
 
             format(source: any): string {
-                if (!isFinite(source)) {
+                if (nts.uk.util.isNullOrEmpty(source) || !isFinite(source)) {
                     return source;
                 }
                 let timeWithDayAttr = time.minutesBased.clock.dayattr.create(source);

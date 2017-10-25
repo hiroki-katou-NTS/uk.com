@@ -45,27 +45,27 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 
 	/** The upper time range. */
 	@Column(name = "UPPER_TIME_RANGE")
-	private Integer upperTimeRange;
+	private int upperTimeRange;
 
 	/** The lower time range. */
 	@Column(name = "LOWER_TIME_RANGE")
-	private Integer lowerTimeRange;
+	private int lowerTimeRange;
 
 	/** The upper number range. */
 	@Column(name = "UPPER_NUMBER_RANGE")
-	private Integer upperNumberRange;
+	private int upperNumberRange;
 
 	/** The lower number range. */
 	@Column(name = "LOWER_NUMBER_RANGE")
-	private Integer lowerNumberRange;
+	private int lowerNumberRange;
 
 	/** The upper amount range. */
 	@Column(name = "UPPER_AMOUNT_RANGE")
-	private Integer upperAmountRange;
+	private int upperAmountRange;
 
 	/** The lower amount range. */
 	@Column(name = "LOWER_AMOUNT_RANGE")
-	private Integer lowerAmountRange;
+	private int lowerAmountRange;
 
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),

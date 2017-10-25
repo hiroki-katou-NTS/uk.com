@@ -3,7 +3,6 @@ module nts.uk.at.view.kaf002.cm {
         import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
         import service = nts.uk.at.view.kaf002.shr.service;
         import kaf002 = nts.uk.at.view.kaf002;
-        let __viewContext: any = window["__viewContext"] || {};
         export class ScreenModel {
             m1: kaf002.m1.viewmodel.ScreenModel;
             m2: kaf002.m2.viewmodel.ScreenModel;
@@ -13,7 +12,7 @@ module nts.uk.at.view.kaf002.cm {
             stampRequestMode: KnockoutObservable<number> = ko.observable(0);
             screenMode: KnockoutObservable<number> = ko.observable(0);
             resultDisplay: KnockoutObservable<number> = ko.observable(0);
-            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/20"),'',moment(new Date()).format("YYYY/MM/20"),'','','',0));
+            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/DD"),'',moment(new Date()).format("YYYY/MM/DD"),'','','',0));
             inputReasons: KnockoutObservableArray<vmbase.InputReason> = ko.observableArray([new vmbase.InputReason('','')]);
             currentReason: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
