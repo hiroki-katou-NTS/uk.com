@@ -6,25 +6,27 @@ package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface WorkplaceConfigInfoRepository.
  */
 public interface WorkplaceConfigInfoRepository {
-	
+
 	/**
 	 * Adds the.
 	 *
 	 * @param wkpConfigInfo the wkp config info
 	 */
 	void add(WorkplaceConfigInfo wkpConfigInfo);
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param wkpConfigInfo the wkp config info
 	 */
 	void update(WorkplaceConfigInfo wkpConfigInfo);
-	
+
 	/**
 	 * Removes the wkp hierarchy.
 	 *
@@ -33,7 +35,7 @@ public interface WorkplaceConfigInfoRepository {
 	 * @param wkpId the wkp id
 	 */
 	void removeWkpHierarchy(String companyId, String historyId, String wkpId);
-	
+
 	/**
 	 * Find.
 	 *
@@ -42,7 +44,7 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfigInfo> find(String companyId, String historyId);
-	
+
 	/**
 	 * Find.
 	 *
@@ -52,4 +54,24 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfigInfo> find(String companyId, String historyId, String wkpId);
+
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpId the wkp id
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate, String wkpId);
+
+	/**
+	 * Find with child.
+	 *
+	 * @param companyId the company id
+	 * @param historyId the history id
+	 * @param wkpId the wkp id
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfigInfo> findAllByParentWkpId(String companyId, GeneralDate baseDate, String parentWkpId);
 }

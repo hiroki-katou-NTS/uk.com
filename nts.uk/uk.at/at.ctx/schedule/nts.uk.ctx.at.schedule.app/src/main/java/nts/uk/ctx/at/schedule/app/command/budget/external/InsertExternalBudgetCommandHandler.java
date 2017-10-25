@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
@@ -20,8 +19,6 @@ public class InsertExternalBudgetCommandHandler extends CommandHandler<InsertExt
 
 	@Inject
 	private ExternalBudgetRepository budgetRepo;
-	@Inject
-	private IInternationalization internationalization;
 
 	@Override
 	protected void handle(CommandHandlerContext<InsertExternalBudgetCommand> context) {

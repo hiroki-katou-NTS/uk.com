@@ -33,17 +33,6 @@ public class SequenceMasterWebService extends WebService {
 	private RemoveSequenceCommandHandler removeSequenceCommandHandler;
 	
 	/**
-	 * Find max order.
-	 *
-	 * @return the short
-	 */
-	@Path("findMaxOrder")
-	@POST
-	public short findMaxOrder() {
-		return this.sequenceMasterFinder.findMaxOrder();
-	}
-	
-	/**
 	 * Find all sequence.
 	 *
 	 * @return the list

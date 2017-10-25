@@ -10,11 +10,10 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.info.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.app.command.workplace.dto.WorkplaceDto;
+import nts.uk.ctx.bs.employee.app.command.workplace.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.app.command.workplace.dto.WorkplaceInfoDto;
 import nts.uk.ctx.bs.employee.dom.workplace.CreateWorkpceType;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -116,8 +115,8 @@ public class SaveWorkplaceCommand {
          * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoGetMemento#getHistoryId()
          */
         @Override
-        public HistoryId getHistoryId() {
-            return new HistoryId(this.historyId);
+        public String getHistoryId() {
+            return this.historyId;
         }
 
         /* (non-Javadoc)

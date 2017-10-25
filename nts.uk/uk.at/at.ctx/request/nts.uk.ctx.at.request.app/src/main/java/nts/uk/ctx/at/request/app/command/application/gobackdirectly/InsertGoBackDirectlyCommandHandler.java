@@ -11,8 +11,8 @@ import javax.transaction.Transactional;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -38,7 +38,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyId, 
-						"", 
+						appApprovalPhaseCmd.getAppID(), 
 						UUID.randomUUID().toString(), 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
@@ -103,7 +103,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		
-		//登録ボタンをクリックする
+		//直行直帰登録
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
 	}
 }

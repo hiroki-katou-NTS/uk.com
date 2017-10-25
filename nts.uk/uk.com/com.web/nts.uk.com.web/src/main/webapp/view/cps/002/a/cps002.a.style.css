@@ -172,3 +172,6 @@
 	overflow: unset !important;
 }
 /* step 2 */
+.textLabel {
+	line-height: 37px;
+}

@@ -8,11 +8,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
-        prePostSelected: KnockoutObservable<number> = ko.observable(1);
+        prePostSelected: KnockoutObservable<number> = ko.observable(0);
         workState : KnockoutObservable<boolean> = ko.observable(true);;
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
+        appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(0);
         timeEnd1: KnockoutObservable<number> = ko.observable(0);   
@@ -126,25 +126,30 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 }
                 dfd.resolve();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                });
                 dfd.reject();
             });
             return dfd.promise();
         }
         /**
-         * insert
+         * insert//登録ボタンをクリックする
          */
         insert() {
             let self = this;
+            //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
+            //直行直帰するチェック
             var promiseResult = self.checkBeforeInsert();
             promiseResult.done((result) => {
                 if (result) {
                     nts.uk.ui.block.invisible();
                     service.insertGoBackDirect(self.getCommand()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }).fail(function(res) {
-                        //$('#inpStartTime1').ntsError('set', {messageId:"Msg_297"});
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                        //clean Screen 
+                        self.cleanScreen();
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
                     }).then(function(){
                         nts.uk.ui.block.clear();    
                     })
@@ -153,7 +158,30 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         }
         
         /**
-         * 
+         * Clean Screen
+         */
+        cleanScreen(){
+            let self = this;
+            self.prePostSelected(0);
+            self.appDate(moment().format('YYYY/MM/DD'));
+            self.timeStart1(0);   
+            self.timeEnd1(0);
+            self.timeStart2(0);
+            self.timeEnd2(0);
+            self.workLocationCD('');
+            self.workLocationName('');
+            self.workLocationCD2('');
+            self.workLocationName2('');
+            self.siftCD('');
+            self.siftName(''); 
+            self.workTypeCd('');
+            self.workTypeName('');
+            self.selectedReason(null);
+            self.multilContent('');
+        }
+        /**
+         * //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
+            //直行直帰するチェック
          */
         checkBeforeInsert(): JQueryPromise<boolean> {
             let self = this;
@@ -162,7 +190,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
            if(self.checkUse()){
                service.checkInsertGoBackDirect(self.getCommand()).done(function(){
                    dfd.resolve(true);
-                }).fail(function(res){
+                }).fail(function(res: any){
                     if(res.messageId =="Msg_297"){
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
                            dfd.resolve(true);
@@ -191,7 +219,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         checkUse(){
             let self = this;
-            if (self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0) {
+            if ((self.selectedGo() == 0 && self.selectedBack()== 0) 
+                || (self.selectedGo2() == 0 && self.selectedBack2()== 0)) {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
                     return true;
                 }).ifNo(function() {
@@ -280,8 +309,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             if (!nts.uk.util.isNullOrUndefined(data)) {
                 self.commentGo1(data.commentContent1);
-                self.commentGo2(data.commentContent2);
-                self.commentBack1(data.commentContent1);
+                self.commentGo2(data.commentContent1);
+                self.commentBack1(data.commentContent2);
                 self.commentBack2(data.commentContent2);
                 self.colorGo(data.commentFontColor1);
                 self.colorBack(data.commentFontColor2);

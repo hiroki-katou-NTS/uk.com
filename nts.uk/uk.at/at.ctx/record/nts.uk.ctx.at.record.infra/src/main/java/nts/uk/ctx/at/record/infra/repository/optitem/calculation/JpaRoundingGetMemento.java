@@ -39,7 +39,7 @@ public class JpaRoundingGetMemento implements RoundingGetMemento {
 		nts.uk.ctx.at.shared.dom.common.numberrounding.Unit unit = nts.uk.ctx.at.shared.dom.common.numberrounding.Unit
 				.valueOf(this.entity.getNumberRoundingUnit());
 		nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding rounding = nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding
-				.valueOf(this.entity.getNumberRoundingUnit());
+				.valueOf(this.entity.getNumberRounding());
 
 		return new NumberRounding(unit, rounding);
 	}

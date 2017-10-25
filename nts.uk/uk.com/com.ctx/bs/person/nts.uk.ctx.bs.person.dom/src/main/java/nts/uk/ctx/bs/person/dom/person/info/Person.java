@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.person.dom.person.info;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.person.PersonGetMemento;
@@ -19,6 +20,7 @@ import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
  */
 // 個人
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Person extends AggregateRoot {

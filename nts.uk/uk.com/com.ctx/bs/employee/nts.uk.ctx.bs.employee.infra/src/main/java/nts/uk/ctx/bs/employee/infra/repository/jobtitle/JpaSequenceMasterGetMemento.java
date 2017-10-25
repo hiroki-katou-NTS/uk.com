@@ -5,9 +5,9 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterGetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 
 /**
@@ -34,7 +34,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 * SequenceMasterGetMemento#getOrder()
 	 */
 	@Override
-	public short getOrder() {
+	public int getOrder() {
 		return this.typeValue.getDisporder();
 	}
 

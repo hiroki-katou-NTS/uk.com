@@ -28,12 +28,11 @@ module nts.uk.com.view.cps009.d.viewmodel {
                 copyObj = {
                     itemCode: self.currentInitVal().itemCode(),
                     itemName: self.currentInitVal().itemName()
-                }
+                };
             service.add(copyObj).done(function(data) {
-                  close();
-            }).fail(functions(res: any){
-                alert(res.message);
-
+                dialog.info({ messageId: "Msg_20" }).then(function() {
+                    close();
+                });
             });
         }
 

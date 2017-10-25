@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
@@ -40,8 +39,8 @@ public class JobTitleFindDto implements JobTitleSetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
-	public void setJobTitleId(JobTitleId jobTitleId) {
-		this.jobTitleId = jobTitleId.v();
+	public void setJobTitleId(String jobTitleId) {
+		this.jobTitleId = jobTitleId;
 	}
 
 	/* (non-Javadoc)

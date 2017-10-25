@@ -1,10 +1,14 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 
 /**
  * 承認フェーズDto
@@ -42,5 +46,30 @@ public class ApprovalPhaseOutput {
 	
 	public void addApproverList(List<ApproverInfo> approvers) {
 		this.approvers = approvers;
+	}
+	
+	public ErrorFlag checkError() {
+		if (this.approvers.size() > 10) {
+			return ErrorFlag.APPROVER_UP_10;
+		}
+		
+		if (this.approvers.isEmpty()) {
+			return ErrorFlag.NO_APPROVER;
+		}
+		
+		return ErrorFlag.NO_ERROR;
+	}
+	
+	public boolean isSingleApproved() {
+		return this.approvalForm == ApprovalForm.SINGLE_APPROVED.value;
+	}
+	
+	public boolean containsConfirmer() {
+		return this.approvers.stream().anyMatch(a -> a.getIsConfirmPerson());
+	}
+	
+	public boolean containsAny(List<Approver> masterApprovers) {
+		Set<String> masterApproverIds = masterApprovers.stream().map(a -> a.getApproverId()).collect(Collectors.toSet());
+		return this.approvers.stream().anyMatch(a -> masterApproverIds.contains(a.getSid()));
 	}
 }

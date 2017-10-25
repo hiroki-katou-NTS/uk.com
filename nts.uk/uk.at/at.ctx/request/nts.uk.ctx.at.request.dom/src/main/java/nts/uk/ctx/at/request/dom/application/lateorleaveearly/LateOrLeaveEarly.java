@@ -6,20 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**
  * 
  * @author hieult
- *
+ *遅刻早退取消申請
  */
 @Getter
 public class LateOrLeaveEarly extends Application {

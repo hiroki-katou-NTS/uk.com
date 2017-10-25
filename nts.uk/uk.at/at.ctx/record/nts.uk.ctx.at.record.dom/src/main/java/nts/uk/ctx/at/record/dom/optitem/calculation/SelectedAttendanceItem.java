@@ -16,7 +16,7 @@ public class SelectedAttendanceItem extends DomainObject {
 
 	/** The attendance item id. */
 	// 勤怠項目ID
-	private String attendanceItemId;
+	private int attendanceItemId;
 
 	/** The operator. */
 	// 演算子

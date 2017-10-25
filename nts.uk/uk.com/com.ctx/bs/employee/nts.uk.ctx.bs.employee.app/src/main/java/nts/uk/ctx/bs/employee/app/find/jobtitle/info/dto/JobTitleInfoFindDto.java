@@ -6,14 +6,12 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.info.dto;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterSetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
 
 /**
  * The Class JobTitleInfoFindDto.
@@ -22,28 +20,31 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
 public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMasterSetMemento {
 	
 	/** The company id. */
-	public String companyId;
+	private String companyId;
 
 	/** The job title id. */
-	public String jobTitleId;
+	private String jobTitleId;
 	
 	/** The job title history id. */
-	public String jobTitleHistoryId;
+	private String jobTitleHistoryId;
+	
+	/** The is manager. */
+	private boolean isManager;
 	
 	/** The job title code. */
-	public String jobTitleCode;
+	private String jobTitleCode;
 	
 	/** The job title name. */
-	public String jobTitleName;
+	private String jobTitleName;
 	
 	/** The sequence code. */
-	public String sequenceCode;
+	private String sequenceCode;
 	
 	/** The sequence name. */
-	public String sequenceName;
+	private String sequenceName;
 
 	/** The order. */
-	public short order;
+	private int order;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
@@ -54,19 +55,27 @@ public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMast
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
-	 */
-	@Override
-	public void setJobTitleHistoryId(HistoryId jobTitleHistoryId) {
-		this.jobTitleHistoryId = jobTitleHistoryId.v();
-	}
-
-	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
-	public void setJobTitleId(JobTitleId jobTitleId) {
-		this.jobTitleId = jobTitleId.v();
+	public void setJobTitleId(String jobTitleId) {
+		this.jobTitleId = jobTitleId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setJobTitleHistoryId(nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId)
+	 */
+	@Override
+	public void setJobTitleHistoryId(String jobTitleHistoryId) {
+		this.jobTitleHistoryId = jobTitleHistoryId;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoSetMemento#setIsManager(boolean)
+	 */
+	@Override
+	public void setIsManager(boolean isManager) {
+		this.isManager = isManager;
 	}
 
 	/* (non-Javadoc)
@@ -90,6 +99,9 @@ public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMast
 	 */
 	@Override
 	public void setSequenceCode(SequenceCode sequenceCode) {
+		if (sequenceCode == null) {
+			return;
+		}
 		this.sequenceCode = sequenceCode.v();
 	}
 
@@ -97,7 +109,7 @@ public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMast
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento#setOrder(short)
 	 */
 	@Override
-	public void setOrder(short order) {
+	public void setOrder(int order) {
 		this.order = order;
 	}
 

@@ -48,7 +48,7 @@ public class FormulaSetting extends DomainObject {
 		if (this.isBothItemInput()) {
 			throw new BusinessException("Msg_420");
 		}
-		if (this.isDivideByZero()) {
+		if (this.rightItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT && this.isDivideByZero()) {
 			throw new BusinessException("Msg_638");
 		}
 	}

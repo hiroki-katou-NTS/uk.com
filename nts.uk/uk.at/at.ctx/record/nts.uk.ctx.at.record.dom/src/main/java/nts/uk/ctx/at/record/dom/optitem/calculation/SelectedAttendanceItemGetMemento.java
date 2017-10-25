@@ -14,7 +14,7 @@ public interface SelectedAttendanceItemGetMemento {
 	 *
 	 * @return the att item id
 	 */
-	String getAttItemId();
+	int getAttItemId();
 
 	/**
 	 * Gets the operator.

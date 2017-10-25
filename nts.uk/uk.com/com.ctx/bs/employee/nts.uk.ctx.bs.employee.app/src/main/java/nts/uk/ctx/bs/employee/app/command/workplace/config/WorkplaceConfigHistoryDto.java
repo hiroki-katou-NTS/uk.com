@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.config;
 
-import java.util.UUID;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.app.command.workplace.dto.PeriodDto;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
@@ -61,7 +60,7 @@ public class WorkplaceConfigHistoryDto {
 		@Override
 		public String getHistoryId() {
 			if (StringUtil.isNullOrEmpty(this.workplaceConfigHistoryDto.getHistoryId(), true)) {
-				return UUID.randomUUID().toString();
+				return IdentifierUtil.randomUniqueId();
 			}
 			return this.workplaceConfigHistoryDto.getHistoryId();
 		}

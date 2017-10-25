@@ -23,29 +23,18 @@
 					<div id="content" class="cf">
 						<h1>ComboBox</h1>
 						<h2>Overview</h2>
-						<div>
-							<input data-bind="value: itemName"></input>
-							<button data-bind="click: addOptions">Add Item</button>
-						</div>
-						<br />
-						<div>
-							<input data-bind="ntsTextEditor: { value: defaultValue }"></input>
-							<button data-bind="click: setDefault">Reset</button>
-						</div>
-						<br />
 						<div class="control-group valign-center">
-							<div id="combo-box" data-bind="ntsComboBox: {options: itemListCbb1,
-												optionsValue: 'codeCbb1',
+							<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
+												optionsValue: 'code',
 												visibleItemsCount: 5,
 												value: selectedCode,
-												optionsText: 'nameCbb1',
+												optionsText: 'name',
 												editable: isEditable,
 												enable: isEnable,
 												columns: [
-														{ prop: 'codeCbb1', length: 4 },
-														{ prop: 'nameCbb1', length: 10 },
+														{ prop: 'code', length: 4 },
+														{ prop: 'name', length: 10 },
 													]}"></div>
-							<button data-bind="click: removeByCode">Remove Item</button>
 						</div>
 						<div class="status">
 							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
@@ -54,72 +43,6 @@
 						<div>
 							Your selected code: <span data-bind="text:selectedCode"></span>
 						</div>
-						<div>
-						<table class="tableRight">
-							<tr>
-								<td>
-									<div id="A_LBL_008" data-bind="ntsFormLabel: { required: true }">必須項目見出し
-									</div>
-								</td>
-								<td><button>設定</button></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td><div id="A_SEL_001"
-											data-bind="ntsComboBox: {
-													options: itemListCbb1,
-													optionsValue: 'codeCbb1',
-													value: selectedCodeCbb1,
-													optionsText: 'nameCbb1',
-													editable: isEditableCbb1,
-													enable: isEnableCbb1,
-													columns: [
-														{ prop: 'codeCbb1', length: 4 },
-														{ prop: 'nameCbb1', length: 10 },
-													]}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div id="A_LBL_009"
-										data-bind="ntsFormLabel: { required: true }">改ページ
-									</div>
-								</td>
-								<td class="flex valign-center">
-									<div id="A_SEL_002"
-											data-bind="ntsComboBox: {
-													options: itemListCbb2,
-													optionsValue: 'nameCbb2',
-													value: selectedCodeCbb2,
-													optionsText: 'nameCbb2',
-													editable: isEditableCbb2,
-													enable: isEnableCbb2,
-													columns: [
-														{ prop: 'nameCbb2', length: 4 }
-													]}">
-									</div>
-									<div>
-										<span id="A_LBL_010" class="label" style="margin-bottom: 5px;">階層指定
-										</span>
-									</div> 
-								<div id="A_SEL_003"
-											data-bind="ntsComboBox: {
-													options: itemListCbb3,
-													optionsValue: 'codeCbb3',
-													value: selectedCodeCbb3,
-													optionsText: 'nameCbb3',
-													editable: isEditableCbb3,
-													enable: isEnableCbb3,
-													columns: [
-														{ prop: 'codeCbb3', length: 4 },
-														{ prop: 'nameCbb3', length: 10 }
-													]}">
-								</div>
-								</td>
-							</tr>
-						</table>
-					</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -144,14 +67,55 @@
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10 },
 	]}"></div>]]></pre>
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    itemList: KnockoutObservableArray<ItemModel>;
+    selectedCode: KnockoutObservable<string>;
+    isEnable: KnockoutObservable<boolean>;
+    isEditable: KnockoutObservable<boolean>;
+
+    /**
+     * Constructor.
+     */
+    constructor() {
+        var self = this;
+        self.itemList = ko.observableArray([
+            new ItemModel('1', '基本給'),
+            new ItemModel('2', '役職手当'),
+            new ItemModel('3', '基本給')
+        ]);
+
+        self.selectedCode = ko.observable('1');
+        self.isEnable = ko.observable(true);
+        self.isEditable = ko.observable(true);
+    }
+
+    setDefault() {
+        var self = this;
+        nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
+    }
+
+};
+
+class ItemModel {
+    code: string;
+    name: string;
+
+    constructor(code: string, name: string) {
+        this.code = code;
+        this.name = name;
+    }
+}]]></pre>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
 									<h2>API</h2>
-									<table>
+									<table class="table">
 										<colgroup>
 											<col width="200px" />
 										</colgroup>
 										<thead>
 											<tr>
-												<th><h4>Binding</h4></th>
+												<th><h4>Name</h4></th>
 												<th><h4>Description</h4></th>
 											</tr>
 										</thead>
@@ -217,78 +181,17 @@
 													Max visible item. If over, scroll is displayed. Default: 5 
 												</td>
 											</tr>
+											<tr>
+												<td>dropDownAttachedToBody<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													If set to true, the container of the drop-down list is appended to the body.<br/>
+													If set to false, it is appended to the parent element of the combo.
+												</td>
+											</tr>
 										</tbody>
 									</table>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-									<h2>TypeScript</h2>
-<pre><![CDATA[class ScreenModel {
-    itemList: KnockoutObservableArray<ItemModel>;
-    itemName: KnockoutObservable<string>;
-    currentCode: KnockoutObservable<number>
-    selectedCode: KnockoutObservable<string>;
-    isEnable: KnockoutObservable<boolean>;
-    isEditable: KnockoutObservable<boolean>;
-    /**
-     * Constructor.
-     */
-    constructor() {
-        var self = this;
-        self.itemList = ko.observableArray([
-            new ItemModel('基本給1', '基本給'),
-            new ItemModel('基本給2', '役職手当'),
-            new ItemModel('0003', '基本給')
-        ]);
-        self.itemName = ko.observable('');
-        self.currentCode = ko.observable(3);
-        self.selectedCode = ko.observable('0002')
-        self.isEnable = ko.observable(true);
-        self.isEditable = ko.observable(true);
-    }
-
-    /**
-     * Add options.
-     */
-    addOptions() {
-        var self = this;
-        var newCode = self.currentCode() + 1;
-        var itemCode = newCode.toString();
-        var codeLength = itemCode.length;
-        while (codeLength < 4) {
-            itemCode = '0' + itemCode;
-            codeLength++;
-        }
-        self.itemList.push(new ItemModel(itemCode, self.itemName()));
-        self.currentCode(newCode);
-    }
-    
-    /**
-     * Clear options.
-     */
-    clearOptions() {
-        this.itemList([]);
-    }
-    
-    /**
-     * Remove item by code;
-     */
-    removeByCode() {
-        var self = this;
-        var selected: ItemModel = self.itemList().filter(item => item.code == self.selectedCode())[0];
-        self.itemList.remove(selected);
-    }
-};
-
-class ItemModel {
-    code: string;
-    name: string;
-    label: string;
-    
-    constructor(code: string, name: string) {
-        this.code = code;
-        this.name = name;
-    }
-}]]></pre>
 								</div>
 							</div>
 						</article>

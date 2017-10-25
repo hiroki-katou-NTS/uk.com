@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 310,
+					width : 350,
 					height :600
 				};
 			</script>
@@ -27,22 +27,22 @@
 						<div data-bind="ntsFormLabel: {}" class='distane'>
 							<label id="ctg">#{i18n.getText('CPS009_31')}</label>
 						</div>
-						<label id="ctgName">AAAAAAA</label>
+						<label id="ctgName" style = "margin-top: 10px;" data-bind="text: categoryName"></label>
 					</div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>
 						<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
 					</div>
 				</div>
 				<div id="itemLst">
-					<table id="grid"
-						data-bind="ntsGridList: {
+					<table id="grid_B">
+<!-- 						data-bind="ntsGridList: {
 						height: 300,
 						options: itemInitLst,
 						optionsValue: 'id',
 						columns: itemColumns,
 						multiple: true,
-						value: currentIdLst
-				    }"></table>
+						value: currentIdLst 
+				    }"--></table>
 				</div>
 				<div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>

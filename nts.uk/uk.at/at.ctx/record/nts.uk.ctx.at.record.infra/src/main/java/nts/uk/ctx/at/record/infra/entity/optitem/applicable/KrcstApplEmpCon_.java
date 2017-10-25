@@ -17,6 +17,6 @@ public class KrcstApplEmpCon_ {
 	public static volatile SingularAttribute<KrcstApplEmpCon, KrcstApplEmpConPK> krcstApplEmpConPK;
 
 	/** The emp appl atr. */
-	public static volatile SingularAttribute<KrcstApplEmpCon, Short> empApplAtr;
+	public static volatile SingularAttribute<KrcstApplEmpCon, Integer> empApplAtr;
 
 }

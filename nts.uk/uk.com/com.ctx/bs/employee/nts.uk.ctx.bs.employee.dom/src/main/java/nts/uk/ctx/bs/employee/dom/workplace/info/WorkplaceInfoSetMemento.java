@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-
 /**
  * The Interface WorkplaceInfoSetMemento.
  */
@@ -24,14 +21,14 @@ public interface WorkplaceInfoSetMemento {
      *
      * @param historyId the new history id
      */
-    public void setHistoryId(HistoryId historyId);
+    public void setHistoryId(String historyId);
 
 	/**
      * Sets the workplace id.
      *
      * @param workplaceId the new workplace id
      */
-    public void setWorkplaceId(WorkplaceId workplaceId);
+    public void setWorkplaceId(String workplaceId);
 
 	/**
      * Sets the workplace code.

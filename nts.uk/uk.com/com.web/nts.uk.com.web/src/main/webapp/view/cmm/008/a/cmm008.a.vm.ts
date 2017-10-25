@@ -34,6 +34,7 @@ module nts.uk.com.view.cmm008.a {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
                     isDialog: false,
+                    tabindex: 6
                 };
 
                 self.empList = ko.observableArray<ItemModel>([]);
@@ -134,14 +135,14 @@ module nts.uk.com.view.cmm008.a {
                     
                     blockUI.clear();
                 }).fail(error => {
+                    blockUI.clear();
                     if (error.messageId == 'Msg_3') {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_3" }).then(function() {
-                            $("#empCode").focus();
-                        });
+                        blockUI.clear();
+                        $('#empCode').ntsError('set', { messageId: "Msg_3" });
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }
-                    blockUI.clear();
+                    
                 });
             }
 
