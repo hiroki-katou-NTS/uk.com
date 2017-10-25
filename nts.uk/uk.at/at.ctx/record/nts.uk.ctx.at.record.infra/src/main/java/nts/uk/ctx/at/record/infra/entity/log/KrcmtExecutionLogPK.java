@@ -15,10 +15,20 @@ public class KrcmtExecutionLogPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "EXECUTED_LOG_ID")
-	public String executedLogId;
-
+	@Column(name = "CID")
+	public String companyID;
+	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
-	public String employmentExecutionLogId;
+	public long empCalAndSumExecLogID;
+	
+	@Column(name = "OPERATION_CASE_ID")
+	public long caseSpecExeContentID;
+	
+	@Column(name = "SID")
+	public String employeeID;
+	
+	@Column(name = "EXECUTED_LOG_ID")
+	public String executedLogID;
+
 
 }
