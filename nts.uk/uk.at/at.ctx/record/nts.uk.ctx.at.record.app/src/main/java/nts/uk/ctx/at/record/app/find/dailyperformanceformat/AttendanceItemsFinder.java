@@ -133,6 +133,12 @@ public class AttendanceItemsFinder {
 	 * @author anhnm
 	 */
 	public List<FrameNoAdapterDto> findByAnyItem(AttdItemLinkRequest request) {
+
+		// in case list anyItemNos is empty.
+		if (request.getAnyItemNos().isEmpty()) {
+			return this.getAttendaneItemLinks(request.getPerformanceAtr());
+		}
+
 		// find list optional item by attribute
 		Map<String, String> filteredByAtr = this.optItemRepo
 				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
@@ -144,9 +150,21 @@ public class AttendanceItemsFinder {
 				.collect(Collectors.toMap(i -> Integer.parseInt(i), i -> Integer.parseInt(i)));
 
 		// return list AttendanceItemLinking after filtered by list optional item.
-		return this.frameAdapter.getByAnyItem(convertToFrameType(request.getPerformanceAtr())).stream()
+		return this.getAttendaneItemLinks(request.getPerformanceAtr()).stream()
 				.filter(item -> filteredBySelectableList.containsKey(item.getFrameNo())).collect(Collectors.toList());
 
+	}
+
+	/**
+	 * Gets the attendane item links.
+	 *
+	 * @param performanceAtr the performance atr
+	 * @return the attendane item links
+	 * 
+	 * @author anhnm
+	 */
+	private List<FrameNoAdapterDto> getAttendaneItemLinks(int performanceAtr) {
+		return this.frameAdapter.getByAnyItem(convertToFrameType(performanceAtr));
 	}
 
 	/**
