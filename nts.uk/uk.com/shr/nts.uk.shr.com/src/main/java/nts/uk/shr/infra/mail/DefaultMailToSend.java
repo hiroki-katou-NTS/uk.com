@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.mail;
+/*package nts.uk.shr.infra.mail;
 
 import lombok.Value;
 import nts.gul.mail.send.MailContents;
@@ -28,3 +28,4 @@ public class DefaultMailToSend implements MailToSend {
 		return this.contents;
 	}
 }
+*/

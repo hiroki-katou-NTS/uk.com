@@ -91,7 +91,6 @@ public class PerInfoItemDefFinder {
 
 		String itemDefaultName = this.pernfoItemDefRep.getItemDefaultName(ctgDto.getCategoryCode(),
 				itemDefDto.getItemCode());
-
 		return mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0);
 	};
 
@@ -102,6 +101,7 @@ public class PerInfoItemDefFinder {
 		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
 				itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
 				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
+				itemDefDto.getSelectionItemRefType(),
 				itemDefDto.getItemTypeState(), selectionItemRefTypes);
 	}
 
@@ -192,7 +192,9 @@ public class PerInfoItemDefFinder {
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
-				itemDef.getRequireChangable().value, dispOrder, createItemTypeStateDto(itemDef.getItemTypeState()),
+				itemDef.getRequireChangable().value, dispOrder, 
+				itemDef.getSelectionItemRefType(),
+				createItemTypeStateDto(itemDef.getItemTypeState()),
 				selectionItemRefTypes);
 	}
 

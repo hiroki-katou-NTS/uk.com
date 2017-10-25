@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.init.item;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PerInfoInitValueSetItemRepository {
 
@@ -29,16 +30,28 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param perInfoCtgId
 	 * @return List<PerInfoInitValueSetItem>
 	 */
-	List<PerInfoInitValueSetItem> getAllItem(String perInfoCtgId);
+	List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId);
+
+	// sonnlb
+
+	/**
+	 * get all init value item: initvalueItem ^ itemDefined
+	 * 
+	 * @param perInfoCtgId
+	 * @return List<PerInfoInitValueSetItem>
+	 */
+	List<PerInfoInitValueSetItem> getAllInitItem(String settingId, String categoryCd);
+
+	// sonnlb
 
 	/**
 	 * get detail item
 	 * 
 	 * @param perInfoCtgId
 	 * @param perInfoItemDefId
-	 * @return
+	 * @return Optional<PerInfoInitValueSetItem>
 	 */
-	PerInfoInitValueSetItem getDetailItem(String perInfoCtgId, String perInfoItemDefId);
+	Optional<PerInfoInitValueSetItem> getDetailItem(String settingId, String perInfoCtgId, String perInfoItemDefId);
 
 	/**
 	 * delete by perInfoItemDefId, perInfoCtgId, settingId
@@ -70,4 +83,13 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param lstItem
 	 */
 	void addAllItem(List<PerInfoInitValueSetItem> lstItem);
+	
+	/**
+	 * addItem
+	 * @param item
+	 */
+	void addItem(PerInfoInitValueSetItem item);
+	
+	
+	void update(PerInfoInitValueSetItem item);
 }

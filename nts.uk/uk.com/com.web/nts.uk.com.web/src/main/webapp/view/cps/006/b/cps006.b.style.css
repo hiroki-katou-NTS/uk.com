@@ -15,7 +15,7 @@
 }
 
 #content-right {
-	margin-left: 30px;
+	margin-left: 20px;
 	float: left;
 	width: 530px;
 }
@@ -30,4 +30,8 @@
 
 #B1_3 tr>td:NTH-CHILD(2) {
 	text-align: center;
+}
+
+#B_3 {
+	margin-left: 130px !important;
 }
