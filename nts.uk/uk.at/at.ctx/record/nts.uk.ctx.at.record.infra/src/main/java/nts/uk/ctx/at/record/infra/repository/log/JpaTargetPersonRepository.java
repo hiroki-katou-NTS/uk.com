@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.log;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

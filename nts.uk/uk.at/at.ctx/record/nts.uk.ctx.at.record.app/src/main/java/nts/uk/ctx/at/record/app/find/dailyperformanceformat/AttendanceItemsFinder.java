@@ -8,11 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -24,7 +26,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AttendanceItemsFinder {
-	
+
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 
@@ -50,12 +52,15 @@ public class AttendanceItemsFinder {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attendanceItemIds);
-		
-//		List<AttendanceItemDto> attendanceItemDtoResult = dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
-//			return new AttendanceItemDto(f.getAttendanceItemId(), f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
-//		}).collect(Collectors.toList());
-		
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(attendanceItemIds);
+
+		// List<AttendanceItemDto> attendanceItemDtoResult =
+		// dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
+		// return new AttendanceItemDto(f.getAttendanceItemId(),
+		// f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
+		// }).collect(Collectors.toList());
+
 		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
 			AttendanceItemDto attendanceItemDto = new AttendanceItemDto();
 			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
@@ -85,13 +90,12 @@ public class AttendanceItemsFinder {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attendanceItemIds);
-		
-		
-		Map<Integer, DailyAttendanceItem> dailyAttendanceItemMap =
-				dailyAttendanceItems.stream().collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, c -> c));
-			
-		
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(attendanceItemIds);
+
+		Map<Integer, DailyAttendanceItem> dailyAttendanceItemMap = dailyAttendanceItems.stream()
+				.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, c -> c));
+
 		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
 			AttdItemDto attendanceItemDto = new AttdItemDto();
 			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
@@ -105,6 +109,23 @@ public class AttendanceItemsFinder {
 
 		return attendanceItemDtos;
 	}
+
+	public List<AttdItemDto> findListByAttendanceAtr(int dailyAttendanceAtr) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = this.dailyAttendanceItemRepository
+				.findByAtr(companyId, EnumAdaptor.valueOf(dailyAttendanceAtr, DailyAttendanceAtr.class)).stream()
+				.map(f -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemDisplayNumber(f.getDisplayNumber());
+					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
+					attdItemDto.setDailyAttendanceAtr(f.getDailyAttendanceAtr().value);
+					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		return attendanceItemDtos;
+	}
 }
-
-

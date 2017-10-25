@@ -21,13 +21,12 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	private EmpCalAndSumExeLogFinder empCalAndSumExeLogFinder;
 	/**
 	 * get all EmpCalAndSumExeLog
-	 * @param operationCaseID
 	 * @return
 	 */
 	@POST
-	@Path("getall/{operationCaseID}")
-	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(@PathParam("operationCaseID") String operationCaseID){
-		return this.empCalAndSumExeLogFinder.getAllEmpCalAndSumExeLog(operationCaseID);
+	@Path("getall")
+	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(){
+		return this.empCalAndSumExeLogFinder.getAllEmpCalAndSumExeLog();
 	}
 	/**
 	 * get EmpCalAndSumExeLog by code
