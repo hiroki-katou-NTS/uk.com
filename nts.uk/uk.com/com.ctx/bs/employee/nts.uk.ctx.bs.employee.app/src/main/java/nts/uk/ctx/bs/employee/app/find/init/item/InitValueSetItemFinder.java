@@ -73,43 +73,9 @@ public class InitValueSetItemFinder {
 
 	private InitValueSettingItemDto fromInfoItemtoDto(EmpInfoItemData domain) {
 
-		DataStateType dataStateType = domain.getDataState().getDataStateType();
-
-		GeneralDate dateValue = null;
-
-		BigDecimal intValue = null;
-
-		String stringValue = null;
-
-		switch (dataStateType) {
-		case Date:
-
-			DateValue dateState = (DateValue) domain.getDataState();
-
-			dateValue = dateState.value;
-
-			break;
-
-		case Numeric:
-
-			NumberValue numberState = (NumberValue) domain.getDataState();
-
-			intValue = numberState.value;
-
-			break;
-
-		case String:
-
-			StringValue stringState = (StringValue) domain.getDataState();
-
-			stringValue = stringState.value;
-
-			break;
-
-		}
-
-		return InitValueSettingItemDto.createFromJavaType(domain.getItemName(), 0,
-				domain.getDataState().getDataStateType().value, dateValue, intValue, stringValue);
+		return InitValueSettingItemDto.createFromJavaType(domain.getItemName(), domain.getIsRequired().value,
+				domain.getDataState().getDataStateType().value, domain.getDataState().getDateValue(),
+				domain.getDataState().getNumberValue(), domain.getDataState().getStringValue());
 	}
 
 	private boolean hasItemSameAsLogin(List<PerInfoInitValueSetItem> listItem) {
