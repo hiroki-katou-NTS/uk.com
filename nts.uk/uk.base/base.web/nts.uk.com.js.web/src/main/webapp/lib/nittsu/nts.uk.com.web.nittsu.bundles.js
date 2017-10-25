@@ -1207,7 +1207,7 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
-                    if (!isFinite(source)) {
+                    if (nts.uk.util.isNullOrEmpty(source) || !isFinite(source)) {
                         return source;
                     }
                     var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
@@ -3282,10 +3282,14 @@ var nts;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
                         this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
+                        this.defaultValue = (option && option.defaultValue) ? option.defaultValue : "";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText) && !util.isNullOrEmpty(this.defaultValue)) {
+                            inputText = this.defaultValue;
+                        }
+                        else if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
@@ -4409,6 +4413,7 @@ var nts;
                         this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+                        this.defaultValue = (option !== undefined && option.defaultValue !== undefined) ? option.defaultValue : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return TimeEditorOption;
@@ -4711,9 +4716,16 @@ var nts;
                         var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
-                        var enable = ko.unwrap(data.enable);
+                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
+                        var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
+                        if (dropDownAttachedToBody === null) {
+                            if ($(element).closest(".ui-iggrid").length != 0)
+                                dropDownAttachedToBody = true;
+                            else
+                                dropDownAttachedToBody = false;
+                        }
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
                         var distanceColumns = '     ';
@@ -4772,7 +4784,7 @@ var nts;
                                 dataSource: options,
                                 valueKey: data.optionsValue,
                                 visibleItemsCount: visibleItemsCount,
-                                dropDownAttachedToBody: false,
+                                dropDownAttachedToBody: dropDownAttachedToBody,
                                 textKey: 'nts-combo-label',
                                 mode: comboMode,
                                 disabled: !enable,
@@ -6175,13 +6187,8 @@ var nts;
                                 return;
                             }
                             var selectionTypeOnFocusing = document.getSelection().type;
-                            if (!nts.uk.util.isNullOrEmpty(data.value())) {
-                                var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
-                                $input.val(timeWithDayAttr.shortText);
-                            }
-                            else {
-                                $input.val("");
-                            }
+                            var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
+                            $input.val(timeWithDayAttr.shortText);
                             if (selectionTypeOnFocusing === 'Range') {
                                 $input.select();
                             }
@@ -7407,6 +7414,7 @@ var nts;
                                     component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                 }
                                 var srh = $container.data("searchObject");
+                                $input.val("");
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
@@ -10684,6 +10692,29 @@ var nts;
                     return NtsFileUploadBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFileUpload'] = new NtsFileUploadBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLetBindingHandler = (function () {
+                    function NtsLetBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+                            return { controlsDescendantBindings: true };
+                        };
+                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
+                    }
+                    return NtsLetBindingHandler;
+                }());
+                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -14486,53 +14517,96 @@ var nts;
                 var ntsPopup;
                 (function (ntsPopup) {
                     var DATA_INSTANCE_NAME = 'nts-popup-panel';
-                    $.fn.ntsPopup = function () {
-                        if (arguments.length === 1) {
-                            var p = arguments[0];
-                            if (_.isPlainObject(p)) {
-                                return init.apply(this, arguments);
-                            }
+                    ;
+                    $.fn.ntsPopup = handler;
+                    function handler(action, option) {
+                        var $control = $(this);
+                        if (typeof action !== 'string') {
+                            handler.call(this, "init", action);
                         }
-                        if (typeof arguments[0] === 'string') {
-                            return handleMethod.apply(this, arguments);
-                        }
-                    };
-                    function init(param) {
-                        var popup = new NtsPopupPanel($(this), param.position);
-                        var dismissible = param.dismissible === false;
-                        _.defer(function () {
-                            if (!dismissible) {
-                                $(window).mousedown(function (e) {
-                                    if ($(e.target).closest(popup.$panel).length === 0) {
-                                        popup.hide();
-                                    }
-                                });
-                            }
-                        });
-                        return popup.$panel;
-                    }
-                    function handleMethod() {
-                        var methodName = arguments[0];
-                        var popup = $(this).data(DATA_INSTANCE_NAME);
-                        switch (methodName) {
+                        switch (action) {
+                            case 'init':
+                                init($control, option);
+                                break;
                             case 'show':
-                                popup.show();
+                                show($control);
                                 break;
                             case 'hide':
-                                popup.hide();
+                                hide($control);
                                 break;
                             case 'destroy':
-                                popup.hide();
-                                popup.destroy();
+                                destroy($control);
                                 break;
                             case 'toggle':
-                                popup.toggle();
+                                toggle($control);
                                 break;
                         }
                     }
+                    function init(control, option) {
+                        control.addClass("popup-panel").css("z-index", 100).show();
+                        var defaultoption = {
+                            trigger: "",
+                            position: {
+                                my: 'left top',
+                                at: 'left bottom',
+                                of: control.siblings('.show-popup')
+                            },
+                            showOnStart: false,
+                            dismissible: true
+                        };
+                        var setting = $.extend({}, defaultoption, option);
+                        control.data("option", setting);
+                        $(setting.trigger).on("click.popup", function (e) {
+                            show(control);
+                        });
+                        if (setting.dismissible) {
+                            $(window).on("mousedown.popup", function (e) {
+                                if (!$(e.target).is(control)
+                                    && control.has(e.target).length === 0
+                                    && !$(e.target).is(setting.trigger)) {
+                                    hide(control);
+                                }
+                            });
+                        }
+                        if (setting.showOnStart)
+                            show(control);
+                        else
+                            hide(control);
+                        return control;
+                    }
+                    function show(control) {
+                        control.css({
+                            visibility: 'visible',
+                        });
+                        control.position(control.data("option").position);
+                        return control;
+                    }
+                    function hide(control) {
+                        control.css({
+                            visibility: 'hidden',
+                            top: "-9999px",
+                            left: "-9999px"
+                        });
+                        return control;
+                    }
+                    function destroy(control) {
+                        hide(control);
+                        $(control.data("option").trigger).off("click.popup");
+                        $(window).off("click.popup");
+                        return control;
+                    }
+                    function toggle(control) {
+                        var isDisplaying = control.css("visibility");
+                        if (isDisplaying === 'hidden') {
+                            show(control);
+                        }
+                        else {
+                            hide(control);
+                        }
+                        return control;
+                    }
                     var NtsPopupPanel = (function () {
-                        function NtsPopupPanel($panel, position) {
-                            this.position = position;
+                        function NtsPopupPanel($panel, option) {
                             var parent = $panel.parent();
                             this.$panel = $panel
                                 .data(DATA_INSTANCE_NAME, this)
@@ -14540,37 +14614,9 @@ var nts;
                                 .appendTo(parent);
                             this.$panel.css("z-index", 100);
                         }
-                        NtsPopupPanel.prototype.show = function () {
-                            this.$panel
-                                .css({
-                                visibility: 'hidden',
-                                display: 'block'
-                            })
-                                .position(this.position)
-                                .css({
-                                visibility: 'visible'
-                            });
-                        };
-                        NtsPopupPanel.prototype.hide = function () {
-                            this.$panel.css({
-                                display: 'none'
-                            });
-                        };
-                        NtsPopupPanel.prototype.destroy = function () {
-                            this.$panel = null;
-                        };
-                        NtsPopupPanel.prototype.toggle = function () {
-                            var isDisplaying = this.$panel.css("display");
-                            if (isDisplaying === 'none') {
-                                this.show();
-                            }
-                            else {
-                                this.hide();
-                            }
-                        };
                         return NtsPopupPanel;
                     }());
-                })(ntsPopup || (ntsPopup = {}));
+                })(ntsPopup = jqueryExtentions.ntsPopup || (jqueryExtentions.ntsPopup = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21769,29 +21815,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsLetBindingHandler = (function () {
-                    function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
-                            return { controlsDescendantBindings: true };
-                        };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
-                    }
-                    return NtsLetBindingHandler;
-                }());
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

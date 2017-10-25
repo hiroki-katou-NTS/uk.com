@@ -410,7 +410,7 @@ module nts.uk.ui.validation {
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
             this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
-            this.defaultValue = (option && option.defaultValue) ? option.defaultValue : true;
+            this.defaultValue = (option && option.defaultValue) ? option.defaultValue : ""; 
         }
 
         validate(inputText: string): any {
