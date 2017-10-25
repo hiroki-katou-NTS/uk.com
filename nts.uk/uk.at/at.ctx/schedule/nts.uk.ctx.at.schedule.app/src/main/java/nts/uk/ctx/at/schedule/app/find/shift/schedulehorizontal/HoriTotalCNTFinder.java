@@ -38,7 +38,7 @@ public class HoriTotalCNTFinder {
 	
 	/**
 	 *  find all hori total cnt set list 
-	 * @param param
+	 * @param ParamExternalBudget
 	 * @return
 	 */
 	public List<HoriTotalCNTSetDto> finderAll(){

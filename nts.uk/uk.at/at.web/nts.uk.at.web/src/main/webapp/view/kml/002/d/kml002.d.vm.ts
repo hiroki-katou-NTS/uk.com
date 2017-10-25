@@ -43,10 +43,14 @@ module nts.uk.at.view.kml002.d.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            
-            
-            
-            dfd.resolve();
+            let param = {
+                budgetAtr: 1,
+                unitAtr: 0
+            }
+            service.getByAtr(param).done((lst) => {     
+                console.log(lst);    
+                dfd.resolve();
+            })
             return dfd.promise();
         }
         
