@@ -3,12 +3,15 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPosition;
 
+@Stateless
 public class JpaSubJobPosition extends JpaRepository implements SubJobPosRepository{
 
 	private static final String SELECT_SUB_JOB_POS_BY_DEPT_ID = "SELECT s FROM BsymtSubJobPosition s"

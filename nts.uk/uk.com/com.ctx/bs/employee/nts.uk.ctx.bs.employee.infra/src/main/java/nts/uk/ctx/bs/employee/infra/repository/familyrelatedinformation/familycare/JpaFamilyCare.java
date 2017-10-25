@@ -2,12 +2,15 @@ package nts.uk.ctx.bs.employee.infra.repository.familyrelatedinformation.familyc
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
 import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.care.BsymtFamilyCare;
 
+@Stateless
 public class JpaFamilyCare extends JpaRepository implements FamilyCareRepository{
 
 	private static final String SELECT_FAMILY_CARE_BY_ID = "SELECT f FROM BsymtFamilyCare f"

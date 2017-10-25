@@ -2,12 +2,15 @@ package nts.uk.ctx.bs.employee.infra.repository.familyrelatedinformation.sociali
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsurance;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsuranceRepository;
 import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.socialinsurance.BsymtFamilySocialInsurance;
 
+@Stateless
 public class JpaFamilySocialInsurance extends JpaRepository implements FamilySocialInsuranceRepository{
 
 	private static final String SELECT_FAMILY_SOCIAL_INS_BY_ID= "SELECT f FROM BsymtFamilySocialInsurance"
