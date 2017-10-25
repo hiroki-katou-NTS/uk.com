@@ -10,12 +10,12 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.F
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalCnt;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVerticalSet;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVerticalSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalCntSet;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalCntSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalTimeSet;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVerticalTimeSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVertSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVertSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVertCntSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVertCntSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVertTimeSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVertTimeSetPK;
 
 
 /**
@@ -40,33 +40,33 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstFixedVerticalSet e");
+		builderString.append(" FROM KscstFixedVertSet e");
 		builderString.append(" WHERE e.kscstFixedVerticalSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstVerticalTimeSet e");
+		builderString.append(" FROM KscstVertTimeSet e");
 		builderString.append(" WHERE e.kscstVerticalTimeSetPK.companyId = :companyId");
 		builderString.append(" AND e.kscstVerticalTimeSetPK.fixedItemAtr = :fixedItemAtr");
 		builderString.append(" ORDER BY e.startClock ASC");
 		SELECT_TIME_BY_CID = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("DELETE FROM KscstVerticalTimeSet e");
+		builderString.append("DELETE FROM KscstVertTimeSet e");
 		builderString.append(" WHERE e.kscstVerticalTimeSetPK.companyId = :companyId");
 		builderString.append(" AND e.kscstVerticalTimeSetPK.fixedItemAtr = :fixedItemAtr");
 		REMOVE_TIME_BY_CID = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("DELETE FROM KscstVerticalCntSet e");
+		builderString.append("DELETE FROM KscstVertCntSet e");
 		builderString.append(" WHERE e.kscstVerticalCntSetPK.companyId = :companyId");
 		builderString.append(" AND e.kscstVerticalCntSetPK.fixedItemAtr = :fixedItemAtr");
 		REMOVE_COUNT_BY_CID = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstVerticalCntSet e");
+		builderString.append(" FROM KscstVertCntSet e");
 		builderString.append(" WHERE e.kscstVerticalCntSetPK.companyId = :companyId");
 		builderString.append(" AND e.kscstVerticalCntSetPK.fixedItemAtr = :fixedItemAtr");
 		SELECT_CNT_BY_CID = builderString.toString();
@@ -77,12 +77,11 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 * @param kFixedVerticalSet
 	 * @return
 	 */
-	private FixedVertical convertToDomain(KscstFixedVerticalSet kFixedVerticalSet) {
+	private FixedVertical convertToDomain(KscstFixedVertSet kFixedVerticalSet) {
 		FixedVertical fixedVertical = FixedVertical.createFromJavaType(
 				kFixedVerticalSet.kscstFixedVerticalSetPK.companyId,
 				kFixedVerticalSet.kscstFixedVerticalSetPK.fixedItemAtr, 
-				kFixedVerticalSet.useAtr,
-				kFixedVerticalSet.verticalDetailedSet);
+				kFixedVerticalSet.useAtr);
 		return fixedVertical;
 	}
 
@@ -91,7 +90,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 * @param kVerticalTimeSet
 	 * @return
 	 */
-	private VerticalTime convertToDomainTime(KscstVerticalTimeSet kVerticalTimeSet) {
+	private VerticalTime convertToDomainTime(KscstVertTimeSet kVerticalTimeSet) {
 		VerticalTime verticalTime = VerticalTime.createFromJavaType(kVerticalTimeSet.kscstVerticalTimeSetPK.companyId,
 				kVerticalTimeSet.kscstVerticalTimeSetPK.fixedItemAtr,
 				kVerticalTimeSet.kscstVerticalTimeSetPK.verticalTimeNo,
@@ -105,7 +104,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 * @param kVerticalTimeSet
 	 * @return
 	 */
-	private VerticalCnt convertToDomainCnt(KscstVerticalCntSet kVerticalCntSet) {
+	private VerticalCnt convertToDomainCnt(KscstVertCntSet kVerticalCntSet) {
 		VerticalCnt verticalCnt = VerticalCnt.createFromJavaType(kVerticalCntSet.kscstVerticalCntSetPK.companyId,
 				kVerticalCntSet.kscstVerticalCntSetPK.fixedItemAtr,
 				kVerticalCntSet.kscstVerticalCntSetPK.verticalCountNo);
@@ -117,7 +116,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	@Override
 	public List<FixedVertical> findAll(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KscstFixedVerticalSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KscstFixedVertSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 	
@@ -127,7 +126,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	
 	@Override
 	public List<VerticalCnt> findAllCnt(String companyId, int fixedItemAtr) {
-		return this.queryProxy().query(SELECT_CNT_BY_CID, KscstVerticalCntSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_CNT_BY_CID, KscstVertCntSet.class).setParameter("companyId", companyId)
 				.setParameter("fixedItemAtr", fixedItemAtr)
 				.getList(c -> convertToDomainCnt(c));
 	}
@@ -137,21 +136,20 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 * @param fVertical
 	 * @return
 	 */
-	private KscstFixedVerticalSet convertToDbType(FixedVertical fVertical) {
-		KscstFixedVerticalSet kVerticalSet = new KscstFixedVerticalSet();
-		KscstFixedVerticalSetPK kVerticalSetPK = new KscstFixedVerticalSetPK(
+	private KscstFixedVertSet convertToDbType(FixedVertical fVertical) {
+		KscstFixedVertSet kVerticalSet = new KscstFixedVertSet();
+		KscstFixedVertSetPK kVerticalSetPK = new KscstFixedVertSetPK(
 				fVertical.getCompanyId(),
 				fVertical.getFixedItemAtr().value);
 				kVerticalSet.useAtr = fVertical.getUseAtr().value;
-				kVerticalSet.verticalDetailedSet = fVertical.getVerticalDetailedSettings().value;
 				kVerticalSet.kscstFixedVerticalSetPK = kVerticalSetPK;
 		return kVerticalSet;
 	}
 	
 	@Override
 	public Optional<FixedVertical> find(String companyId, int fixedItemAtr) {
-		KscstFixedVerticalSetPK primaryKey = new KscstFixedVerticalSetPK(companyId,fixedItemAtr);
-		return this.queryProxy().find(primaryKey, KscstFixedVerticalSet.class)
+		KscstFixedVertSetPK primaryKey = new KscstFixedVertSetPK(companyId,fixedItemAtr);
+		return this.queryProxy().find(primaryKey, KscstFixedVertSet.class)
 				.map(x -> convertToDomain(x));
 	}
 	
@@ -168,10 +166,9 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	@Override
 	public void updateFixedVertical(FixedVertical fixedVertical) {
-		KscstFixedVerticalSetPK kVerticalSetPK = new KscstFixedVerticalSetPK(fixedVertical.getCompanyId(), fixedVertical.getFixedItemAtr().value);
-		KscstFixedVerticalSet kVerticalSet = this.queryProxy().find(kVerticalSetPK, KscstFixedVerticalSet.class).get();
+		KscstFixedVertSetPK kVerticalSetPK = new KscstFixedVertSetPK(fixedVertical.getCompanyId(), fixedVertical.getFixedItemAtr().value);
+		KscstFixedVertSet kVerticalSet = this.queryProxy().find(kVerticalSetPK, KscstFixedVertSet.class).get();
 		kVerticalSet.useAtr = fixedVertical.getUseAtr().value;
-		kVerticalSet.verticalDetailedSet = fixedVertical.getVerticalDetailedSettings().value;
 		this.commandProxy().update(kVerticalSet);	
 	}
 
@@ -180,7 +177,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	@Override
 	public List<VerticalTime> findAllVerticalTime(String companyId, int fixedItemAtr) {
-		return this.queryProxy().query(SELECT_TIME_BY_CID, KscstVerticalTimeSet.class)
+		return this.queryProxy().query(SELECT_TIME_BY_CID, KscstVertTimeSet.class)
 				.setParameter("companyId", companyId).setParameter("fixedItemAtr", fixedItemAtr)
 				.getList(c -> convertToDomainTime(c));
 	}
@@ -190,9 +187,9 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 * @param verticalTime
 	 * @return
 	 */
-	private KscstVerticalTimeSet convertToDbTypeTime(VerticalTime verticalTime) {
-		KscstVerticalTimeSet kTimeSet = new KscstVerticalTimeSet();
-		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(
+	private KscstVertTimeSet convertToDbTypeTime(VerticalTime verticalTime) {
+		KscstVertTimeSet kTimeSet = new KscstVertTimeSet();
+		KscstVertTimeSetPK kVerticalSetPK = new KscstVertTimeSetPK(
 				verticalTime.getCompanyId(),
 				verticalTime.getFixedItemAtr().value,
 				verticalTime.getVerticalTimeNo());
@@ -215,9 +212,9 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 * @param verticalCnt
 	 * @return
 	 */
-	private KscstVerticalCntSet convertToDbTypeCnt(VerticalCnt verticalCnt) {
-		KscstVerticalCntSet kCntSet= new KscstVerticalCntSet();
-		KscstVerticalCntSetPK kVerticalSetPK = new KscstVerticalCntSetPK(
+	private KscstVertCntSet convertToDbTypeCnt(VerticalCnt verticalCnt) {
+		KscstVertCntSet kCntSet= new KscstVertCntSet();
+		KscstVertCntSetPK kVerticalSetPK = new KscstVertCntSetPK(
 				verticalCnt.getCompanyId(),
 				verticalCnt.getFixedItemAtr(),
 				verticalCnt.getVerticalCountNo());
@@ -238,8 +235,8 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	@Override
 	public void updateVerticalTime(VerticalTime verticalTime) {
-		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(verticalTime.getCompanyId(), verticalTime.getFixedItemAtr().value,verticalTime.getVerticalTimeNo());
-		KscstVerticalTimeSet kTimeSet = this.queryProxy().find(kVerticalSetPK, KscstVerticalTimeSet.class).get();
+		KscstVertTimeSetPK kVerticalSetPK = new KscstVertTimeSetPK(verticalTime.getCompanyId(), verticalTime.getFixedItemAtr().value,verticalTime.getVerticalTimeNo());
+		KscstVertTimeSet kTimeSet = this.queryProxy().find(kVerticalSetPK, KscstVertTimeSet.class).get();
 		kTimeSet.displayAtr = verticalTime.getDisplayAtr().value;
 		this.commandProxy().update(kTimeSet);	
 	}

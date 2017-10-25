@@ -21,7 +21,5 @@ public class FixedVerticalSettingDto {
 	/** 利用区分 **/
 	private int useAtr;
 	
-	/** 縦計詳細設定 **/
-	private int verticalDetailedSettings;
 	
 }

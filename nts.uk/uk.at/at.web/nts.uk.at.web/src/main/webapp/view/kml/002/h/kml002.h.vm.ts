@@ -103,8 +103,8 @@ module nts.uk.at.view.kml002 {
                 var self = this;
 
                 self.useCls = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KML002_100") },
-                    { code: 1, name: nts.uk.resource.getText("KML002_99") }
+                    { code: 0, name: nts.uk.resource.getText("KML002_99") },
+                    { code: 1, name: nts.uk.resource.getText("KML002_100") }
                 ]);
                 self.items = ko.observableArray([]);
             }
@@ -132,7 +132,7 @@ module nts.uk.at.view.kml002 {
                 }
             }
             openIDialog(fixItemNo: number) {
-                let self = this;
+                let self = this;  
                 nts.uk.ui.windows.setShared('KML002H_VERTICAL_ID', fixItemNo);
                 nts.uk.ui.windows.sub.modal('/view/kml/002/i/index.xhtml').onClosed(function(): any {
                     
@@ -148,6 +148,7 @@ module nts.uk.at.view.kml002 {
             openMDialog() {
                 let self = this;
             }
+            
             getAllFixedVertical(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -169,7 +170,7 @@ module nts.uk.at.view.kml002 {
                 var self = this;
                 var dfd = $.Deferred();
                 service.addFixedVertical(ko.toJS(self.items())).done(function(any) {
-
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                 });
                 return dfd.promise();
             }
