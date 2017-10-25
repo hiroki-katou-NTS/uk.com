@@ -63,12 +63,12 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
@@ -78,7 +78,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;;
+import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.TimeWithDayAttr;;
 
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
@@ -206,6 +207,12 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/** The Constant MUL_MONTH. */
 	public static  final int MUL_MONTH = 100;
+	
+	/** The Constant SHIFT1. */
+	public static  final int SHIFT1 = 1;
+	
+	/** The Constant SHIFT2. */
+	public static  final int SHIFT2 = 2;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -652,23 +659,98 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @return the half day working hours
 	 */
 	// 午前または午後の勤務時間帯を取得
-	private void getHalfDayWorkingHours(String worktypeCode, String worktimeCode){
-		Optional<WorkTimeSet> optionalWorkTimeSet = this.workTimeSetRepository.findByCode(companyId, worktimeCode);
-		if (optionalWorkTimeSet.isPresent()) {
-			WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
-			WorkStyle workStyle = this.basicScheduleService.checkWorkDay(worktypeCode);
-
-			// equal morning work 
-			if(workStyle.equals(WorkStyle.MORNING_WORK)){
-				
-				// check use work day 2 and am_start < 
-				if(workTimeSet.getWorkTimeDay2().getUse_atr().equals(UseSetting.UseAtr_Use)){
-					
-				}
-			}
+	private Optional<Object> getHalfDayWorkingHours(String worktypeCode, String worktimeCode) {
+		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(worktypeCode);
+		switch (workStyle) {
+		case ONE_DAY_REST:
+			break;
+		case ONE_DAY_WORK:
+			return Optional.of(this.workTimeSetRepository.findByCode(companyId, worktimeCode));
+		default:
+			return this.getTimeZone(worktimeCode,workStyle);
 		}
+		return Optional.empty();
 	}
 		
+	//変換した時間帯を返す
+	private Optional<Object> getTimeZone(String worktimeCode, WorkStyle workStyle){
+
+		//所定時間帯を取得する
+		WorkTimeSet workTimeSet = this.workTimeSetRepository.findByCode(companyId, worktimeCode).get();
+		//TODO 出勤休日区分を判断(kiểm tra thông tin 出勤休日区分)
+		
+		//check workstyle
+		if (workStyle.equals(WorkStyle.MORNING_WORK)) {
+			if (this.isUseSecondWork(workTimeSet)) {
+				workTimeSet = this.updateTimeMorning(workTimeSet);
+			} else {
+				// chuyen gio ket thuc ca 1 thanh gio ket thuc buoi sang
+				workTimeSet.updateEndTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime());
+				workTimeSet.removeShift2();
+			}
+		} else {//if AFTERNOON_WORK
+			if (this.isUseSecondWork(workTimeSet)) {
+				workTimeSet = this.updateTimeAfternoon(workTimeSet);
+			} else {
+				// chuyen gio bat dau ca 1 thanh gio bat dau buoi chieu
+				workTimeSet.updateStartTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
+				workTimeSet.removeShift2();
+			}
+		}
+		return Optional.of(workTimeSet);
+	}
+	
+	private boolean checkEndInShift2(WorkTimeSet workTimeSet) {
+		int morningEndTime = workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime().getDayTime();
+		Timezone shift2 = workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
+				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+		int startTimeShift2 = shift2.getStart().getDayTime();
+		if (morningEndTime <= startTimeShift2) {
+			return true;
+		}
+		return false;
+	}
+	
+	private WorkTimeSet updateTimeMorning(WorkTimeSet workTimeSet) {
+		if (this.checkEndInShift2(workTimeSet)) {
+			workTimeSet.updateEndTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime());
+			workTimeSet.removeShift2();
+		} else {
+			workTimeSet.updateEndTimeShift2(workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime());
+		}
+		return workTimeSet;
+	}
+	
+	private boolean checkStartInShift1(WorkTimeSet workTimeSet) {
+		int afternoonStartTime = workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime().getDayTime();
+		Timezone shift1 = workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
+				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+		int endTimeShift1 = shift1.getEnd().getDayTime();
+		if (afternoonStartTime <= endTimeShift1) {
+			return true;
+		}
+		return false;
+	}
+	
+	private WorkTimeSet updateTimeAfternoon(WorkTimeSet workTimeSet) {
+		if (this.checkStartInShift1(workTimeSet)) {
+			workTimeSet.updateStartTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
+		} else {
+			workTimeSet.updateStartTimeShift2(workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
+			workTimeSet.removeShift1();
+		}
+		return workTimeSet;
+	}
+	
+	private boolean isUseSecondWork(WorkTimeSet workTimeSet) {
+		List<Timezone> timezones = workTimeSet.getPrescribedTimezoneSetting().getTimezone();
+		for (Timezone item : timezones) {
+			if (item.getWorkNo() == SHIFT2) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Find level work place.
 	 *
