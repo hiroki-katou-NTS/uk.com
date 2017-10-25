@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employee;
@@ -33,4 +33,13 @@ public interface SyEmployeePub {
 	 */
 	// RequestList #77
 	List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
+	
+	/**
+	 * Find by list id.
+	 *
+	 * @param companyId the company id
+	 * @param empIdList the emp id list
+	 * @return the list
+	 */
+	List<EmployeeExport> findByListId(String companyId, List<String> empIdList);
 }

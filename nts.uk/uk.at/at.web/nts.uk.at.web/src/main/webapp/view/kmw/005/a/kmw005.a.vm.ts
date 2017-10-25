@@ -33,7 +33,7 @@ module nts.uk.at.view.kmw005.a {
                 self.actualLockColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
                     { headerText: getText('KMW005_3'), key: 'closureName', width: 100 },
-                    { headerText: getText('KMW005_4'), key: 'period', width: 180 },
+                    { headerText: getText('KMW005_4'), key: 'period', width: 200 },
                     { headerText: getText('KMW005_5'), key: 'dailyLockState', width: 90, formatter: lockIcon },
                     { headerText: getText('KMW005_6'), key: 'monthlyLockState', width: 90, formatter: lockIcon }
                 ]);
@@ -129,13 +129,14 @@ module nts.uk.at.view.kmw005.a {
                 command.monthlyLockState = self.actualLock.monthlyLockState();
                 
                 blockUI.invisible();
-                service.saveActualLock(command).done(function() {
-                    service.saveActualLockHist(command).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                service.saveActualLock(command).done(function(res) {
+                    if (!res) {
                         blockUI.clear();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
-                    });
+                        return;
+                    }
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    blockUI.clear();
+                    
 //                    self.bindActualLock(self.actualLock.closureId());
                     // Reload Page
                     blockUI.invisible();
@@ -178,7 +179,6 @@ module nts.uk.at.view.kmw005.a {
 
                 nts.uk.ui.windows.sub.modal("/view/kmw/005/b/index.xhtml").onClosed(function() {
                     var output = getShared('childData');
-//                    self.selectedItem(output);
                 });
             }
 
