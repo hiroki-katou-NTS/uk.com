@@ -34,12 +34,13 @@ public interface SyEmployeePub {
 	// RequestList #77
 	List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
 	
+	
 	/**
-	 * Find by list id.
+	 * Find by emp id.
 	 *
-	 * @param companyId the company id
-	 * @param empIdList the emp id list
-	 * @return the list
+	 * @param empId the emp id
+	 * @return the employee export
 	 */
-	List<EmployeeExport> findByListId(String companyId, List<String> empIdList);
+	// RequestList #1-2
+	EmployeeBasicInfoExport findByEmpId(String empId);
 }

@@ -189,20 +189,20 @@ module nts.uk.at.view.kmw005.a {
                 // Add icon to column already setting.
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                    .mergeRelativePath('/view/kmw/005/a/images/72.png').serialize();
-                $('.icon-72').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 27px;")
+                    .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
+                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 27px;")
             }
         }
 
         function lockIcon(value, row) {
             if (value == '1')
-                return "<i class='icon icon-72'></i>";
+                return "<i class='icon icon-2'></i>";
             return '';
         }
 
         //        function lockIcon1 (isLock: string) {
         //            if (isLock == '1') {
-        //                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-72"></i></div>';
+        //                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-2"></i></div>';
         //            }
         //         return '';
         //        }

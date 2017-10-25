@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.ac.employee;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -16,7 +14,7 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	private SyEmployeePub employeePub;
 
 	@Override
-	public List<EmployeeImported> findByListId(String companyId, List<String> empIdList) {
+	public EmployeeImported findByEmpId(String empId) {
 //		List<EmployeeImported> empDto = employeePub
 		return null;
 	}

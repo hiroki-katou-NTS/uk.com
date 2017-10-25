@@ -4,19 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.employee;
 
-import java.util.List;
-
 /**
  * The Interface EmpEmployeeAdapter.
  */
 public interface EmpEmployeeAdapter {
 
 	/**
-	 * Find by list id.
+	 * Find by emp id.
 	 *
-	 * @param companyId the company id
-	 * @param empIdList the emp id list
-	 * @return the list
+	 * @param empId the emp id
+	 * @return the employee imported
 	 */
-	List<EmployeeImported> findByListId(String companyId, List<String> empIdList);
+	EmployeeImported findByEmpId(String empId);
 }
