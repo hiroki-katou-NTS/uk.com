@@ -22,6 +22,12 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			+ " AND c.krcmtEmpExecutionLogPK.employeeID = :employeeID "
 			+ " AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 	
+	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcmtEmpExecutionLog empl JOIN KrcmtExecutionLog el "
+			+ " ON empl.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcmtExecutionLogPK.empCalAndSumExecLogID " 
+			+ " WHERE "
+			+ ".krcmtEmpExecutionLogPK.companyID = :companyID "
+			+ " AND el.executionContent = 0";
+	
 	/**
 	 * get all EmpCalAndSumExeLog
 	 */
@@ -46,5 +52,15 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.getSingle(c -> c.toDomain());
 		return data;
+	}
+
+	@Override
+	public List<EmpCalAndSumExeLog> getListByExecutionContent(long empCalAndSumExecLogID, int executionContent) {
+		List<EmpCalAndSumExeLog> list = this.queryProxy().query(SELECT_BY_EXECUTION_LOG, KrcmtEmpExecutionLog.class)
+				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
+				.setParameter("executionContent", executionContent)
+				.getList(f -> f.toDomain());
+		
+		return list;
 	}
 }

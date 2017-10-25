@@ -11,8 +11,6 @@ public interface EmpCalAndSumExeLogRepository {
 	/**
 	 * get all  EmpCalAndSumExeLog
 	 * @param companyID
-	 * @param operationCaseId
-	 * @param employeeId
 	 * @return
 	 */
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID);
@@ -25,6 +23,8 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, long empCalAndSumExecLogID,String operationCaseID,String employeeID  );
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, long empCalAndSumExecLogID, String operationCaseID,String employeeID);
+	
+	List<EmpCalAndSumExeLog> getListByExecutionContent(long empCalAndSumExecLogID, int executionContent);
 
 }
