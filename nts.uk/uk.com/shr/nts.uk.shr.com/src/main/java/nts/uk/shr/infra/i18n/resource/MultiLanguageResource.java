@@ -23,12 +23,6 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import nts.arc.i18n.custom.ICompanyResourceBundle;
-import nts.arc.i18n.custom.IInternationalization;
-import nts.arc.i18n.custom.ISessionLocale;
-import nts.arc.i18n.custom.ISystemResourceBundle;
-import nts.arc.i18n.custom.ResourceItem;
-import nts.arc.i18n.custom.ResourceType;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;

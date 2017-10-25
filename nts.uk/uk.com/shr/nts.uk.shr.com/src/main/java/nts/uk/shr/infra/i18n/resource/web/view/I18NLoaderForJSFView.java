@@ -9,7 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.i18n.I18NResources;
 import nts.gul.text.StringUtil;
 
 @ApplicationScoped
@@ -17,14 +17,14 @@ import nts.gul.text.StringUtil;
 public class I18NLoaderForJSFView {
 	
 	@Inject
-	IInternationalization internationalization;
+	private I18NResources resources;
 	
 	public String getText(String itemId, List<String> params) {
 		if (StringUtil.isNullOrEmpty(itemId, true)) {
 			return "not found";
 		}
 		
-		return this.internationalization.getItemName(itemId,params.toArray(new String[params.size()]))
+		return this.resources.localize(itemId,params.toArray(new String[params.size()]))
 				.orElse(itemId);
 	}
 	

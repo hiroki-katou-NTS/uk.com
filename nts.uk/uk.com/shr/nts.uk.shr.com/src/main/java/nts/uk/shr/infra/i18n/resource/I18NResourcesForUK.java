@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.i18n.I18NResources;
-import nts.arc.i18n.Locale;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
 import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
@@ -65,7 +65,20 @@ public class I18NResourcesForUK implements I18NResources {
 	@Override
 	public Optional<String> localize(String resourceId, List<String> params) {
 		return this.getRawContent(resourceId)
-				.map(content -> this.contentProcessor.process(Locale.JA, content, params));
+				.map(content -> this.contentProcessor.process(LanguageConsts.DEFAULT_LANGUAGE_ID, content, params));
+	}
+	
+	public Map<String, String> loadAllForUser() {
+		
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		
+		if (AppContexts.user().hasLoggedIn()) {
+			languageId = AppContexts.user().language().basicLanguageId();
+			companyId = AppContexts.user().companyId();
+		}
+		
+		return this.loadAllForUser(languageId, companyId);
 	}
 	
 	public Map<String, String> loadAllForUser(String languageId, String companyId) {

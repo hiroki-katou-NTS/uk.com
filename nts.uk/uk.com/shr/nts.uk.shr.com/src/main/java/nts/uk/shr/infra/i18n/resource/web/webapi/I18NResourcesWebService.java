@@ -17,7 +17,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;

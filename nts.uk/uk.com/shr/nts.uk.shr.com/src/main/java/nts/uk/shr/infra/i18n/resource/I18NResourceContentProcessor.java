@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import nts.arc.i18n.Locale;
 import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
 
 /**
@@ -28,12 +27,12 @@ public class I18NResourceContentProcessor {
 
 	private final Function<String, String> localizer;
 	
-	public String process(Locale locale, String content, List<String> params) {
+	public String process(String languageId, String content, List<String> params) {
 		
 		String nestProcessed = this.processNestedResource(new ProcessingContext(content));
 		
 		return this.processParameters(
-				locale,
+				languageId,
 				nestProcessed,
 				params.stream().map(p -> this.processParam(p)).collect(Collectors.toList()));
 	}
@@ -56,7 +55,7 @@ public class I18NResourceContentProcessor {
 		return sb.toString();
 	}
 	
-	private String processParameters(Locale locale, String content, List<String> params) {
+	private String processParameters(String languageId, String content, List<String> params) {
 		if (params == null || params.size() == 0)
 			return content;
 
@@ -74,7 +73,7 @@ public class I18NResourceContentProcessor {
 			
 			String param;
 			if (format != null) {
-				val transcoder = DateTimeFormatProvider.LocaleTranscoderMap.get(locale);
+				val transcoder = DateTimeFormatProvider.LocaleTranscoderMap.get(languageId);
 				param = transcoder.create().get(format.substring(1)).apply(params.get(paramIndex));
 			} else {
 				param = this.getArgument(params.get(paramIndex));

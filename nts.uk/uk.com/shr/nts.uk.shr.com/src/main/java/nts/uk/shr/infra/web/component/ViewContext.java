@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
-import nts.arc.i18n.custom.IInternationalization;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
 import nts.uk.shr.infra.i18n.resource.web.webapi.I18NResourcesWebService;
@@ -65,8 +65,7 @@ public class ViewContext extends UIComponentBase {
 		ProgramsManager.find(webApi, requestedPath).ifPresent(pr -> {
 			builder.append("webapi: '" + pr.getAppId().name + "', ");
 			builder.append("programId: '" + pr.getPId() + "', ");
-			IInternationalization internationalization = CDI.current().select(IInternationalization.class).get();
-			String programName = internationalization.getItemName(pr.getPName()).orElse(pr.getPName());
+			String programName = TextResource.localize(pr.getPName());
 			builder.append("programName: '" + programName + "', ");
 			builder.append("path: '" + pr.getPPath() + "'");
 		});
