@@ -105,45 +105,47 @@
 									<!-- A3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
+								<div id="table-wrapper">
+  								<div id="table-scroll">
 								<table class="contents-header">
 									<thead>
-										<tr>
+										<tr >
 											<!-- A3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<td rowspan="2" class="name text">#{i18n.getText('CMM018_24')}</td>
 											<!-- A3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<td colspan="2" class = "text">#{i18n.getText('CMM018_30')}</td>
 											<!-- A3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<td colspan="2" class="input-units text">#{i18n.getText('CMM018_31')}</td>
 											<!-- A3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<td colspan="2" class="input-units text">#{i18n.getText('CMM018_32')}</td>
 											<!-- A3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<td colspan="2" class="input-units text">#{i18n.getText('CMM018_33')}</td>
 											<!-- A3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<td colspan="2" class="base-date text">#{i18n.getText('CMM018_34')}</td>
 											<!-- A3_29: クリア（見出し） -->
-											<td rowspan="2" class="allow-pay">#{i18n.getText('CMM018_95')}</td>
+											<td rowspan="2" class="allow-pay text">#{i18n.getText('CMM018_95')}</td>
 										</tr>
 										<tr>
 											<!-- A3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
 											<!-- A3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
@@ -164,7 +166,7 @@
 											<!-- A3_16: -->
 											<td class="approver"><div>
 												<div data-bind="foreach: appPhase1.approver">
-													<div data-bind="text: name"> <div data-bind = "if: true"><div data-bind = " text: 'KKS'"></div></div>
+													<div data-bind="text: name + confirmName">
 													<br /></div>
 												</div>
 											</div></td>
@@ -177,7 +179,7 @@
 											<!-- A3_19: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase2.approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
@@ -189,7 +191,7 @@
 											<!-- A3_22: -->										
 											<td class="approver">
 												<div data-bind="foreach: appPhase3.approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
@@ -200,7 +202,7 @@
 											<!-- A3_25: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase4.approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
@@ -212,7 +214,7 @@
 											<!-- A3_28: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase5.approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -225,6 +227,7 @@
 										</tr>
 									</tbody>
 								</table>
+								</div></div>
 							</div>
 						</div>
 						<!-- SCREEN B -->
@@ -321,7 +324,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -333,7 +336,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -345,7 +348,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -356,7 +359,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -368,7 +371,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -506,7 +509,7 @@
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
@@ -518,7 +521,7 @@
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
@@ -530,7 +533,7 @@
 											<!-- A3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
@@ -541,7 +544,7 @@
 											<!-- A3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
@@ -553,7 +556,7 @@
 											<!-- A3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -662,7 +665,7 @@
 											<!-- D3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -674,7 +677,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- D3_20: -->
@@ -686,7 +689,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -697,7 +700,7 @@
 											<!-- D3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- D3_26: -->
@@ -709,7 +712,7 @@
 											<!-- D3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -851,7 +854,7 @@
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- E3_17: -->
@@ -863,7 +866,7 @@
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
@@ -875,7 +878,7 @@
 											<!-- E3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- E3_23: -->
 											<td class="button_phase">
@@ -886,7 +889,7 @@
 											<!-- E3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- E3_26: -->
@@ -898,7 +901,7 @@
 											<!-- E3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- E3_29: Button delete -->
@@ -1007,7 +1010,7 @@
 											<!-- F3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- F3_17: -->
@@ -1019,7 +1022,7 @@
 											<!-- F3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- F3_20: -->
@@ -1031,7 +1034,7 @@
 											<!-- F3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- F3_23: -->
 											<td class="button_phase">
@@ -1042,7 +1045,7 @@
 											<!-- F3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- F3_26: -->
@@ -1054,7 +1057,7 @@
 											<!-- F3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name"> <br /></div>
+													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 										</tr>
