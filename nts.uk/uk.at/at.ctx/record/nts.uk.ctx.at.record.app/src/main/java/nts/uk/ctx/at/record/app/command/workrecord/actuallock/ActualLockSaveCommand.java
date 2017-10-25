@@ -8,15 +8,13 @@ import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Instantiates a new actual lock save command.
  */
 @Data
 public class ActualLockSaveCommand implements ActualLockGetMemento {
-	
-	/** The company id. */
-	private String companyId;
 	
 	/** The closure id. */
 	private int closureId;
@@ -27,12 +25,13 @@ public class ActualLockSaveCommand implements ActualLockGetMemento {
 	/** The monthly lock state. */
 	private int monthlyLockState;
 	
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		return AppContexts.user().companyId();
 	}
 
 	/* (non-Javadoc)

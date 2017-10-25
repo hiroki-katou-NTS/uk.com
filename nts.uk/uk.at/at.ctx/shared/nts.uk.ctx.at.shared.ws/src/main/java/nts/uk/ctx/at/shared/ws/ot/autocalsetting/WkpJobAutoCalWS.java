@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.ot.autocalsetting;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,9 +34,21 @@ public class WkpJobAutoCalWS {
 	@Inject
 	private SaveWkpJobAutoCalSetCommandHandler saveWkpJobAutoCalSetCommandHandler;
 	
-	/** The remove job auto cal set command handler. */
+	/** The remove wkp job auto cal set command handler. */
 	@Inject
 	private RemoveWkpJobAutoCalSetCommandHandler removeWkpJobAutoCalSetCommandHandler;
+	
+	
+	/**
+	 * Gets the all wkp job auto cal set finder.
+	 *
+	 * @return the all wkp job auto cal set finder
+	 */
+	@POST
+	@Path("getallautocalwkpjob")
+	public List<WkpJobAutoCalSettingDto> getAllWkpJobAutoCalSetFinder(){
+		return this.wkpJobAutoCalSetFinder.getAllWkpJobAutoCalSetting();
+	}
 
 
 	/**
@@ -65,8 +79,7 @@ public class WkpJobAutoCalWS {
 	/**
 	 * Deledte.
 	 *
-	 * @param wkpId the wkp id
-	 * @param jobId the job id
+	 * @param command the command
 	 */
 	@POST
 	@Path("delete")

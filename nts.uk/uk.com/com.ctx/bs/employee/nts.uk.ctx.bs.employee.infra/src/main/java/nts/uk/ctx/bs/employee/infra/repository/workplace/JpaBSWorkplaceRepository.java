@@ -76,7 +76,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 					BsymtWorkplaceHistPK pk = new BsymtWorkplaceHistPK();
 					pk.setCid(companyId);
 					pk.setWkpid(workplaceId);
-					pk.setHistoryId(item.getHistoryId().v());
+					pk.setHistoryId(item.getHistoryId());
 					return pk;
 				}).collect(Collectors.toList());
 		this.commandProxy().removeAll(BsymtWorkplaceHist.class, lstPrimaryKey);
@@ -220,13 +220,13 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 	 */
 	private List<BsymtWorkplaceHist> toEntity(Workplace workplace) {
 		String companyId = workplace.getCompanyId();
-		String workplaceId = workplace.getWorkplaceId().v();
+		String workplaceId = workplace.getWorkplaceId();
 
 		List<BsymtWorkplaceHist> lstEntity = new ArrayList<>();
 
 		for (WorkplaceHistory wkpHistory : workplace.getWorkplaceHistory()) {
 			BsymtWorkplaceHistPK pk = new BsymtWorkplaceHistPK(companyId, workplaceId,
-					wkpHistory.getHistoryId().v());
+					wkpHistory.getHistoryId());
 			BsymtWorkplaceHist entity = this.queryProxy().find(pk, BsymtWorkplaceHist.class)
 					.orElse(new BsymtWorkplaceHist());
 			entity.setBsymtWorkplaceHistPK(pk);

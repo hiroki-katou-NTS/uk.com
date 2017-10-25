@@ -130,8 +130,7 @@ public class MailServerDto implements MailServerSetMemento {
 	 */
 	@Override
 	public void setSmtpInfo(SmtpInfo smtpInfo) {
-		this.smtpDto = new SmtpInfoDto(smtpInfo.getIpVersion().value, smtpInfo.getServer().v(),
-				smtpInfo.getTimeOut().v(), smtpInfo.getPort().v());
+		this.smtpDto = new SmtpInfoDto(smtpInfo.getServer().v(), smtpInfo.getPort().v());
 	}
 
 	/*
@@ -143,8 +142,8 @@ public class MailServerDto implements MailServerSetMemento {
 	 */
 	@Override
 	public void setImapInfo(ImapInfo imapInfo) {
-		this.imapDto = new ImapInfoDto(imapInfo.getIpVersion().value, imapInfo.getServer().v(),
-				imapInfo.getUseServer().value, imapInfo.getTimeOut().v(), imapInfo.getPort().v());
+		this.imapDto = new ImapInfoDto(imapInfo.getServer().v(),
+				imapInfo.getUseServer().value, imapInfo.getPort().v());
 	}
 
 	/*
@@ -156,8 +155,8 @@ public class MailServerDto implements MailServerSetMemento {
 	 */
 	@Override
 	public void setPopInfo(PopInfo popInfo) {
-		this.popDto = new PopInfoDto(popInfo.getIpVersion().value, popInfo.getServer().v(),
-				popInfo.getUseServer().value, popInfo.getTimeOut().v(), popInfo.getPort().v());
+		this.popDto = new PopInfoDto(popInfo.getServer().v(),
+				popInfo.getUseServer().value, popInfo.getPort().v());
 	}
 
 }

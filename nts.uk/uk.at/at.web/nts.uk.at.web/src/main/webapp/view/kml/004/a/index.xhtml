@@ -35,7 +35,7 @@
 						data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KML004_2')}</button>
 					<!-- A1_3 -->
 					<button tabindex="3" id="DELETE_BTN" class="danger"
-						data-bind="click: remove, enable: lstCate().length >0 &amp; checkUpdate()">#{i18n.getText('KML004_3')}</button>
+						data-bind="click: remove, enable: lstCate().length >0 &amp; !checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
 					<button tabindex="4" id="Close_BTN" data-bind="click: closeDialog">#{i18n.getText('KML004_4')}</button>
 				</div>
@@ -66,7 +66,7 @@
 						<!-- A3_2 -->
 						<span><input tabindex="6" id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.check, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
+							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.checkUpdate, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
 						<!-- A3_3 -->
 						<span><input tabindex="7" id="nameCtg" style="width: 180px"
 							data-bind="ntsTextEditor: {value: categoryName, constraint:'CategoryName' , required: true, name: '#[KML004_10]'}" /></span>

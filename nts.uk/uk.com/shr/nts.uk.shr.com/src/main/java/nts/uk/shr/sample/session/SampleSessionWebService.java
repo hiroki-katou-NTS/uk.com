@@ -12,6 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Path("/sample/session")
 @Produces("application/json")
@@ -29,6 +30,7 @@ public class SampleSessionWebService extends WebService {
 	@POST
 	@Path("getvalue")
 	public JavaTypeResult<String> getValue() {
+		TextResource.localize("Msg_691", "#Msg_1");
 		return new JavaTypeResult<>((String)SessionContextProvider.get().get("SAMPLE_SESSION"));
 	}
 	

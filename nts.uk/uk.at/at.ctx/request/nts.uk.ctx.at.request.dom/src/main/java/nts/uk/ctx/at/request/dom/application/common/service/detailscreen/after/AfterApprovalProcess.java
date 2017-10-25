@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.List;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;

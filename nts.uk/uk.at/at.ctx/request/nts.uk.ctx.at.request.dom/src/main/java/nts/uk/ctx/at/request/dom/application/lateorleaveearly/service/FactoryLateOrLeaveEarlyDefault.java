@@ -16,11 +16,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class FactoryLateOrLeaveEarlyDefault implements FactoryLateOrLeaveEarly {
 
 	@Override
-	public LateOrLeaveEarly buildLateOrLeaveEarly(String appID, GeneralDate applicationDate, String applicationReason,
+	public LateOrLeaveEarly buildLateOrLeaveEarly(String appID, GeneralDate applicationDate, int prePostAtr, String applicationReason,
 			List<AppApprovalPhase> listAppApprovalPhase,
 			int early1, int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2, int late2,
 			int lateTime2) {
-		return new LateOrLeaveEarly(AppContexts.user().companyId(), appID, 0, GeneralDate.today(),
+		return new LateOrLeaveEarly(AppContexts.user().companyId(), appID, prePostAtr, GeneralDate.today(),
 				AppContexts.user().personId(), "", applicationDate, applicationReason, 9,
 				AppContexts.user().employeeId(), 0, null, 0, 0, 0, null, 0, 0, null, null,
 				listAppApprovalPhase,

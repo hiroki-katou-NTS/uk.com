@@ -7,18 +7,19 @@ package nts.uk.ctx.bs.employee.app.command.workplace.dto;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 
 /**
  * The Class WorkplaceDto.
  */
-@Data
+@Setter
+@Getter
 public class WorkplaceDto {
 
     /** The workplace id. */
@@ -81,12 +82,12 @@ public class WorkplaceDto {
          * getWorkplaceId()
          */
         @Override
-        public WorkplaceId getWorkplaceId() {
+        public String getWorkplaceId() {
             String wkpId = this.dto.workplaceId;
             if (StringUtil.isNullOrEmpty(this.dto.workplaceId, true)) {
                 wkpId = IdentifierUtil.randomUniqueId();
             }
-            return new WorkplaceId(wkpId);
+            return wkpId;
         }
 
         /*

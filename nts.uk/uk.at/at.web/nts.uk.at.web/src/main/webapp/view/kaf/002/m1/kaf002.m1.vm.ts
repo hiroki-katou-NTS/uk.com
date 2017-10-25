@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf002.m1 {
                 if(data.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
                 if(data.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
                 let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
-                self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'));
+                self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31')));
                 self.appStampList.removeAll();
                 for(let i=1;i<=self.supFrameNo;i++) {
                     self.appStampList.push(
@@ -92,9 +92,9 @@ module nts.uk.at.view.kaf002.m1 {
                                 new vmbase.CheckBoxLocation('','',true,false)));    
                     } 
                     switch(value){
-                        case 1: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31')); break;
-                        case 2: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_32')); break;
-                        case 3: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_33')); break;
+                        case 1: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'))); break;
+                        case 2: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_32'))); break;
+                        case 3: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_33'))); break;
                         default: break;    
                     }
                 });

@@ -16,7 +16,7 @@ public interface JobTitleHistorySetMemento {
 	 *
 	 * @param historyId the new history id
 	 */
-	public void setHistoryId(HistoryId historyId);
+	public void setHistoryId(String historyId);
 
 	/**
 	 * Sets the period.

@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
+import java.util.List;
+
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 
 @Value
 public class UpdateLateOrLeaveEarlyCommand {
@@ -13,6 +16,8 @@ public class UpdateLateOrLeaveEarlyCommand {
 	
    /** 申請日*/
 	private GeneralDate applicationDate;
+	
+	private int prePostAtr;
 
 	/** 実績取消区分 */
 	private int actualCancelAtr;
@@ -49,6 +54,6 @@ public class UpdateLateOrLeaveEarlyCommand {
 	
 	private String appReason;
 	
-	
+	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 
 }

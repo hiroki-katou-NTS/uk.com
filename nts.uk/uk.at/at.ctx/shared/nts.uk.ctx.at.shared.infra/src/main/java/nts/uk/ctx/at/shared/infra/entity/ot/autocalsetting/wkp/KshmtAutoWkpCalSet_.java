@@ -14,5 +14,5 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KshmtAutoWkpCalSet_ {
 	
 	/** The kshmt auto wkp cal set. */
-    public static volatile SingularAttribute<KshmtAutoWkpCalSet, KshmtAutoWkpCalSetPK> kshmtAutoWkpCalSet;
+    public static volatile SingularAttribute<KshmtAutoWkpCalSet, KshmtAutoWkpCalSetPK> kshmtAutoWkpCalSetPK;
 }

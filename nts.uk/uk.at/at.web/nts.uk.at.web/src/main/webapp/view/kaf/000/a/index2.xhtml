@@ -7,7 +7,7 @@
 <body>
 	<ui:composition>
 <!-- 			<div class="contents-area cf" data-bind="if: approvalRoot().length != 0"> -->
-			<div class="contents-area cf" data-bind="">
+			<div class="contents-area cf" style ="padding-top: 20px;" data-bind="">
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
@@ -29,7 +29,7 @@
 										</td>
 									</com:ko>
 									<td class="bg-green">
-										承認者<label data-bind="text: $data.orderNumber"></label>
+										承認者<label data-bind="text: ($data.orderNumber + 1)"></label>
 									</td>
 									<td>
 										<label data-bind="text: $data.name"></label>
@@ -39,9 +39,6 @@
 						</tbody> 
 					</table>
 				</div>
-			</div>
-			<div>
-			
 			</div>
 	</ui:composition>
 </body>

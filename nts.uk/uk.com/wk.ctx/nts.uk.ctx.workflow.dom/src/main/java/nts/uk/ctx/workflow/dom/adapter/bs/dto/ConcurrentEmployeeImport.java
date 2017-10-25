@@ -34,5 +34,8 @@ public class ConcurrentEmployeeImport {
 	/** The job cls. */
 	// 本務兼務区分
 	private Integer jobCls;
-
+	
+	public boolean isConcurrent() {
+		return this.jobCls == 1;
+	}
 }

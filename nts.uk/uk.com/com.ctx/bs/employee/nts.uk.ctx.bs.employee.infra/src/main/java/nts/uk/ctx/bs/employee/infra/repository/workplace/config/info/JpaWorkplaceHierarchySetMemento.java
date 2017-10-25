@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.config.info;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchySetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfo;
@@ -32,8 +31,8 @@ public class JpaWorkplaceHierarchySetMemento implements WorkplaceHierarchySetMem
      * @param workplaceId the new workplace id
      */
     @Override
-    public void setWorkplaceId(WorkplaceId workplaceId) {
-        this.entity.getBsymtWkpConfigInfoPK().setWkpid(workplaceId.v());
+    public void setWorkplaceId(String workplaceId) {
+        this.entity.getBsymtWkpConfigInfoPK().setWkpid(workplaceId);
     }
 
     /**

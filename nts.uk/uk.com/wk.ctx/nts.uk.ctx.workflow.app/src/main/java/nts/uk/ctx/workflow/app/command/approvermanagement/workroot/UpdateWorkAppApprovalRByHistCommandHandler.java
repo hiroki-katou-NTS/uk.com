@@ -1,7 +1,8 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<UpdateWorkAppApprovalRByHistCommand>{
 	@Inject
-	private PersonApprovalRootRepository repo;
+	private PersonApprovalRootRepository repoPerson;
 	@Inject
 	private CompanyApprovalRootRepository repoCom;
 	@Inject
@@ -48,7 +49,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		if(objUpdateItem.getCheck() == COMPANY){
 			this.updateHistoryCom(objUpdateItem);
 		}
-		//TH: workplace - domain 職場別就業承認ルート
+		//TH: work place - domain 職場別就業承認ルート
 		else if(objUpdateItem.getCheck() == WORKPLACE){
 			this.updateHistoryWorkplace(objUpdateItem);
 		}
@@ -71,21 +72,17 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		GeneralDate eDate = sDate.addDays(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String endDateUpdate = eDate.localDate().format(formatter);//Edate: edit
-		//history previous
-		String startDatePrevious = objUpdateItem.getStartDatePrevious();
-		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
-		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous 
 		String endDateDelete = "9999-12-31";//Edate: delete
 		for (UpdateHistoryDto updateItem : lstHist) {
+			//find history by type and 
+			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, updateItem.getApplicationType(), updateItem.getEmployRootAtr());
 			Optional<CompanyApprovalRoot> comAppRootDb = repoCom.getComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 			if(!comAppRootDb.isPresent()){
 				continue;
 			}
 			//item update (New)
 			CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.updateSdate(comAppRootDb.get(), startDate.replace("/","-"));
-			//find history previous
-			List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, eDatePrevious, comAppRoot.getApplicationType()== null ? null : comAppRoot.getApplicationType().value);
-			if(lstOld.isEmpty()){// history previous is not exist
+			if(lstComByApp.isEmpty()){// history previous is not exist
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					repoCom.updateComApprovalRoot(comAppRoot);
 				}else{//TH: delete
@@ -101,11 +98,15 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 				}
 			}else{// history previous is exist
-				CompanyApprovalRoot com = lstOld.get(0);
+				List<CompanyApprovalRoot> lstSortBy = this.sortCompany(lstComByApp);
+				int length = lstSortBy.size()-1;
+				String sDatePre = lstSortBy.get(length).getPeriod().getStartDate().toString();
 				//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
-				if(!checkStartDate(com.getPeriod().getStartDate().toString(),objUpdateItem.getStartDate())){
+				if(startDate.compareTo(sDatePre) <= 0){
+					//エラーメッセージ(Msg_156)(error message (Msg_156))
 					throw new BusinessException("Msg_156");
 				}
+				CompanyApprovalRoot com = lstSortBy.get(length);
 				if(objUpdateItem.getEditOrDelete()==1){//edit
 					//history previous 
 					CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(com, endDateUpdate);
@@ -148,20 +149,17 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		GeneralDate eDate = sDate.addDays(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String endDateUpdate = eDate.localDate().format(formatter);//Edate: edit
-		//history previous
-		String startDatePrevious = objUpdateItem.getStartDatePrevious();
-		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
-		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous 
 		String endDateDelete = "9999-12-31";//Edate: delete
 		for (UpdateHistoryDto updateItem : lstHist) {
+			//find history by type and 
+			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), updateItem.getApplicationType(), updateItem.getEmployRootAtr());
+			//find history current
 			Optional<WorkplaceApprovalRoot> wpAppRootDb = repoWorkplace.getWpApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getWorkplaceId(), updateItem.getHistoryId());
 			if(!wpAppRootDb.isPresent()){
 				continue;
 			}
 			WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.updateSdate(wpAppRootDb.get(), startDate.replace("/","-"));
-			//find history previous
-			List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious, wpAppRoot.getApplicationType() == null ? null : wpAppRoot.getApplicationType().value);
-			if(lstOld.isEmpty()){// history previous is not exist
+			if(lstWpByApp.isEmpty()){// history previous is not exist
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					repoWorkplace.updateWpApprovalRoot(wpAppRoot);
 				}else{//TH: delete
@@ -180,11 +178,16 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 				}
 			}else{// history previous is exist
-				WorkplaceApprovalRoot wp = lstOld.get(0);
+				List<WorkplaceApprovalRoot> lstSortBy = this.sortWorkplace(lstWpByApp);
+				int length = lstSortBy.size()-1;
+				String sDatePre = lstSortBy.get(length).getPeriod().getStartDate().toString();
 				//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
-				if(!checkStartDate(wp.getPeriod().getStartDate().toString(),objUpdateItem.getStartDate())){
+				if(startDate.compareTo(sDatePre) <= 0){
+					//エラーメッセージ(Msg_156)(error message (Msg_156))
 					throw new BusinessException("Msg_156");
 				}
+				//history previous
+				WorkplaceApprovalRoot wp = lstWpByApp.get(length);
 				if(objUpdateItem.getEditOrDelete()==1){//edit
 					//history previous 
 					WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateEdate(wp, endDateUpdate);
@@ -227,23 +230,19 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		GeneralDate eDate = sDate.addDays(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String endDateUpdate = eDate.localDate().format(formatter);//Edate: edit
-		//history previous
-		String startDatePrevious = objUpdateItem.getStartDatePrevious();
-		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
-		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous 
 		String endDateDelete = "9999-12-31";//Edate: delete
 		for (UpdateHistoryDto updateItem : lstHist) {
-			Optional<PersonApprovalRoot> psAppRootDb = repo.getPsApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getEmployeeId(), updateItem.getHistoryId());
+			//find history by type and 
+			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), updateItem.getApplicationType(), updateItem.getEmployRootAtr());
+			//find history current
+			Optional<PersonApprovalRoot> psAppRootDb = repoPerson.getPsApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getEmployeeId(), updateItem.getHistoryId());
 			if(!psAppRootDb.isPresent()){
 				continue;
 			}
 			PersonApprovalRoot psAppRoot = PersonApprovalRoot.updateSdate(psAppRootDb.get(), startDate.replace("/","-"));
-			//find history previous
-			List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, psAppRoot.getApplicationType() == null ? null : psAppRoot.getApplicationType().value);
-			if(lstOld.isEmpty()){// history previous is not exist
+			if(lstPsByApp.isEmpty()){// history previous is not exist
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
-					
-					repo.updatePsApprovalRoot(psAppRoot);
+					repoPerson.updatePsApprovalRoot(psAppRoot);
 				}else{//TH: delete
 					//get all  ApprovalPhase by BranchId
 					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getBranchId());
@@ -257,25 +256,30 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
 					}
 					//delete PsApprovalRoot
-					repo.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
+					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
 				}
 			}else{// history previous is exist
-				PersonApprovalRoot ps = lstOld.get(0);
+				List<PersonApprovalRoot> lstSortBy = this.sortPerson(lstPsByApp);
+				int length = lstSortBy.size()-1;
+				String sDatePre = lstSortBy.get(length).getPeriod().getStartDate().toString();
 				//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
-				if(!checkStartDate(ps.getPeriod().getStartDate().toString(),objUpdateItem.getStartDate())){
+				if(startDate.compareTo(sDatePre) <= 0){
+					//エラーメッセージ(Msg_156)(error message (Msg_156))
 					throw new BusinessException("Msg_156");
 				}
+				//history previous
+				PersonApprovalRoot ps = lstPsByApp.get(length);
 				if(objUpdateItem.getEditOrDelete()==1){//edit
 					//history previous 
 					PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateEdate(ps,  endDateUpdate);
 					//update history previous
-					repo.updatePsApprovalRoot(psAppRootUpdate);
+					repoPerson.updatePsApprovalRoot(psAppRootUpdate);
 					//update history current
-					repo.updatePsApprovalRoot(psAppRoot);
+					repoPerson.updatePsApprovalRoot(psAppRoot);
 				}else{//delete 
 					PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateEdate(ps, endDateDelete);
 					//update history previous
-					repo.updatePsApprovalRoot(psAppRootUpdate);
+					repoPerson.updatePsApprovalRoot(psAppRootUpdate);
 					//get all  ApprovalPhase by BranchId
 					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getBranchId());
 					//check: if data(lstAPhase) > 0: delete
@@ -288,7 +292,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
 					}
 					//delete history current
-					repo.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getHistoryId());
+					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getHistoryId());
 				}
 			}
 		}
@@ -304,5 +308,44 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * sort list company root by start date (asc)
+	 * @param lstCom
+	 * @return
+	 */
+	private List<CompanyApprovalRoot> sortCompany(List<CompanyApprovalRoot> lstCom){
+		Collections.sort(lstCom, new Comparator<CompanyApprovalRoot>(){
+		  public int compare(CompanyApprovalRoot p1, CompanyApprovalRoot p2){
+		    return p1.getPeriod().getStartDate().compareTo(p2.getPeriod().getStartDate());
+		  }
+		});
+		return lstCom;
+	}
+	/**
+	 * sort list company root by start date (asc)
+	 * @param lstCom
+	 * @return
+	 */
+	private List<WorkplaceApprovalRoot> sortWorkplace(List<WorkplaceApprovalRoot> lstWorkplace){
+		Collections.sort(lstWorkplace, new Comparator<WorkplaceApprovalRoot>(){
+		  public int compare(WorkplaceApprovalRoot p1, WorkplaceApprovalRoot p2){
+		    return p1.getPeriod().getStartDate().compareTo(p2.getPeriod().getStartDate());
+		  }
+		});
+		return lstWorkplace;
+	}
+	/**
+	 * sort list person root by start date (asc)
+	 * @param lstCom
+	 * @return
+	 */
+	private List<PersonApprovalRoot> sortPerson(List<PersonApprovalRoot> lstPerson){
+		Collections.sort(lstPerson, new Comparator<PersonApprovalRoot>(){
+		  public int compare(PersonApprovalRoot p1, PersonApprovalRoot p2){
+		    return p1.getPeriod().getStartDate().compareTo(p2.getPeriod().getStartDate());
+		  }
+		});
+		return lstPerson;
 	}
 }

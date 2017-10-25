@@ -980,6 +980,12 @@ public class ProgramsManager {
 	
 	public static final Program KDW003B = new Program(WebAppId.AT, ProgramIdConsts.KDW003B, "KDW003_16",
 			"/view/kdw/003/b/index.xhtml");
+	
+	public static final Program CMM018A = new Program(WebAppId.COM, ProgramIdConsts.CMM018A, "CMM018_1",
+			"/view/cmm/018/a/index.xhtml");
+	
+	public static final Program CMM018J = new Program(WebAppId.COM, ProgramIdConsts.CMM018J, "CMM018_10",
+			"/view/cmm/018/j/index.xhtml");
 
 	// TODO: Define new programs here.
 

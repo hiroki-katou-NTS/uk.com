@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
@@ -37,8 +37,6 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 @Stateless
 @DomainID(value = "WorkType")
 public class WorkTypeExportImpl implements MasterListData {
-	@Inject
-	private IInternationalization internationalization;
 
 	@Inject
 	private WorkTypeReportRepository workTypeReportRepository;
@@ -53,85 +51,85 @@ public class WorkTypeExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
 
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", internationalization.getItemName("KMK007_66").get(),
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KMK007_66"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("名称", internationalization.getItemName("KMK007_67").get(),
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KMK007_67"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("略名", internationalization.getItemName("KMK007_68").get(),
+		columns.add(new MasterHeaderColumn("略名", TextResource.localize("KMK007_68"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("記号", internationalization.getItemName("KMK007_69").get(),
+		columns.add(new MasterHeaderColumn("記号", TextResource.localize("KMK007_69"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("備考", internationalization.getItemName("KMK007_70").get(),
+		columns.add(new MasterHeaderColumn("備考", TextResource.localize("KMK007_70"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("廃止区分", internationalization.getItemName("KMK007_71").get(),
+		columns.add(new MasterHeaderColumn("廃止区分", TextResource.localize("KMK007_71"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("出勤率の計算方法", internationalization.getItemName("KMK007_72").get(),
+		columns.add(new MasterHeaderColumn("出勤率の計算方法", TextResource.localize("KMK007_72"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("対象範囲", internationalization.getItemName("KMK007_73").get(),
+		columns.add(new MasterHeaderColumn("対象範囲", TextResource.localize("KMK007_73"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日", internationalization.getItemName("KMK007_74").get(),
+		columns.add(new MasterHeaderColumn("1日", TextResource.localize("KMK007_74"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前", internationalization.getItemName("KMK007_75").get(),
+		columns.add(new MasterHeaderColumn("午前", TextResource.localize("KMK007_75"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後", internationalization.getItemName("KMK007_76").get(),
-				ColumnTextAlign.CENTER, "", true));
-
-		columns.add(new MasterHeaderColumn("１日の休日区分", internationalization.getItemName("KMK007_77").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の日勤・夜勤時間を求める", internationalization.getItemName("KMK007_78").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の出勤時刻を直行とする", internationalization.getItemName("KMK007_79").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の退勤時刻を直帰とする", internationalization.getItemName("KMK007_80").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の公休を消化する", internationalization.getItemName("KMK007_81").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の代休を発生させる", internationalization.getItemName("KMK007_82").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の欠勤の集計枠", internationalization.getItemName("KMK007_83").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の特別休暇の集計枠", internationalization.getItemName("KMK007_84").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("1日の休業区分", internationalization.getItemName("KMK007_85").get(),
+		columns.add(new MasterHeaderColumn("午後", TextResource.localize("KMK007_76"),
 				ColumnTextAlign.CENTER, "", true));
 
-		columns.add(new MasterHeaderColumn("午前の日勤・夜勤時間を求める", internationalization.getItemName("KMK007_86").get(),
+		columns.add(new MasterHeaderColumn("１日の休日区分", TextResource.localize("KMK007_77"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の出勤時刻を直行とする", internationalization.getItemName("KMK007_87").get(),
+		columns.add(new MasterHeaderColumn("1日の日勤・夜勤時間を求める", TextResource.localize("KMK007_78"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の退勤時刻を直帰とする", internationalization.getItemName("KMK007_88").get(),
+		columns.add(new MasterHeaderColumn("1日の出勤時刻を直行とする", TextResource.localize("KMK007_79"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の休日日数を数える", internationalization.getItemName("KMK007_89").get(),
+		columns.add(new MasterHeaderColumn("1日の退勤時刻を直帰とする", TextResource.localize("KMK007_80"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の公休を消化する", internationalization.getItemName("KMK007_90").get(),
+		columns.add(new MasterHeaderColumn("1日の公休を消化する", TextResource.localize("KMK007_81"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の代休を発生させる", internationalization.getItemName("KMK007_91").get(),
+		columns.add(new MasterHeaderColumn("1日の代休を発生させる", TextResource.localize("KMK007_82"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の欠勤の集計枠", internationalization.getItemName("KMK007_92").get(),
+		columns.add(new MasterHeaderColumn("1日の欠勤の集計枠", TextResource.localize("KMK007_83"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午前の特別休暇の集計枠", internationalization.getItemName("KMK007_93").get(),
+		columns.add(new MasterHeaderColumn("1日の特別休暇の集計枠", TextResource.localize("KMK007_84"),
 				ColumnTextAlign.CENTER, "", true));
-
-		columns.add(new MasterHeaderColumn("午後の日勤・夜勤時間を求める", internationalization.getItemName("KMK007_94").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の出勤時刻を直行とする", internationalization.getItemName("KMK007_95").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の退勤時刻を直帰とする", internationalization.getItemName("KMK007_96").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の休日日数を数える", internationalization.getItemName("KMK007_97").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の公休を消化する", internationalization.getItemName("KMK007_98").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の代休を発生させる", internationalization.getItemName("KMK007_99").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の欠勤の集計枠", internationalization.getItemName("KMK007_100").get(),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("午後の特別休暇の集計枠", internationalization.getItemName("KMK007_101").get(),
+		columns.add(new MasterHeaderColumn("1日の休業区分", TextResource.localize("KMK007_85"),
 				ColumnTextAlign.CENTER, "", true));
 
-		columns.add(new MasterHeaderColumn("他言語名称", internationalization.getItemName("KMK007_102").get(),
+		columns.add(new MasterHeaderColumn("午前の日勤・夜勤時間を求める", TextResource.localize("KMK007_86"),
 				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("他言語略名", internationalization.getItemName("KMK007_103").get(),
+		columns.add(new MasterHeaderColumn("午前の出勤時刻を直行とする", TextResource.localize("KMK007_87"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午前の退勤時刻を直帰とする", TextResource.localize("KMK007_88"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午前の休日日数を数える", TextResource.localize("KMK007_89"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午前の公休を消化する", TextResource.localize("KMK007_90"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午前の代休を発生させる", TextResource.localize("KMK007_91"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午前の欠勤の集計枠", TextResource.localize("KMK007_92"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午前の特別休暇の集計枠", TextResource.localize("KMK007_93"),
+				ColumnTextAlign.CENTER, "", true));
+
+		columns.add(new MasterHeaderColumn("午後の日勤・夜勤時間を求める", TextResource.localize("KMK007_94"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の出勤時刻を直行とする", TextResource.localize("KMK007_95"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の退勤時刻を直帰とする", TextResource.localize("KMK007_96"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の休日日数を数える", TextResource.localize("KMK007_97"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の公休を消化する", TextResource.localize("KMK007_98"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の代休を発生させる", TextResource.localize("KMK007_99"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の欠勤の集計枠", TextResource.localize("KMK007_100"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("午後の特別休暇の集計枠", TextResource.localize("KMK007_101"),
+				ColumnTextAlign.CENTER, "", true));
+
+		columns.add(new MasterHeaderColumn("他言語名称", TextResource.localize("KMK007_102"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("他言語略名", TextResource.localize("KMK007_103"),
 				ColumnTextAlign.CENTER, "", true));
 		return columns;
 	}
@@ -170,13 +168,13 @@ public class WorkTypeExportImpl implements MasterListData {
 				} else {
 					data.put("廃止区分", "");
 				}
-				data.put("出勤率の計算方法", internationalization.getItemName(c.getCalculateMethod().nameId).get());
-				data.put("対象範囲", internationalization.getItemName(c.getWorkAtr().nameId).get());
+				data.put("出勤率の計算方法", TextResource.localize(c.getCalculateMethod().nameId));
+				data.put("対象範囲", TextResource.localize(c.getWorkAtr().nameId));
 				if (c.getWorkAtr() == WorkTypeUnit.OneDay) {
-					data.put("1日", internationalization.getItemName(c.getOneDayCls().nameId).get());
+					data.put("1日", TextResource.localize(c.getOneDayCls().nameId));
 					if (c.getOneDayCls() == WorkTypeClassification.HolidayWork
 							|| c.getOneDayCls() == WorkTypeClassification.Holiday) {
-						data.put("１日の休日区分", internationalization.getItemName(c.getOneDayHolidayAtr().nameId).get());
+						data.put("１日の休日区分", TextResource.localize(c.getOneDayHolidayAtr().nameId));
 					} else {
 						data.put("１日の休日区分", "");
 					}
@@ -196,15 +194,15 @@ public class WorkTypeExportImpl implements MasterListData {
 					}
 
 					if (c.getAfternoonCls() == WorkTypeClassification.Closure) {
-						data.put("1日の休業区分", internationalization.getItemName(c.getOneDaycloseAtr().nameId).get());
+						data.put("1日の休業区分", TextResource.localize(c.getOneDaycloseAtr().nameId));
 					} else {
 						data.put("1日の休業区分", "");
 					}
 					workTypeSetOneDayPrint(data, c);
 					workTypeSetHalfDayPrint(data, c);
 				} else {
-					data.put("午前", internationalization.getItemName(c.getMorningCls().nameId).get());
-					data.put("午後", internationalization.getItemName(c.getAfternoonCls().nameId).get());
+					data.put("午前", TextResource.localize(c.getMorningCls().nameId));
+					data.put("午後", TextResource.localize(c.getAfternoonCls().nameId));
 					if (c.getMorningCls() == WorkTypeClassification.Absence) {
 						AbsenceFrame absenceFrameMorning = datasAbsenceFrameMap.get(c.getMorningSumAbsenseNo());
 						data.put("午前の欠勤の集計枠", absenceFrameMorning.getAbsenceFrameName());

@@ -10,14 +10,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 /**
  * 
@@ -103,7 +103,7 @@ public class AppStamp extends Application {
 			case STAMP_GO_OUT_PERMIT: {
 				for(AppStampGoOutPermit appStampGoOutPermit : this.appStampGoOutPermits){
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampGoOutPermit.getStartTime()>=appStampGoOutPermit.getEndTime()){
+					if(appStampGoOutPermit.getStartTime().greaterThanOrEqualTo(appStampGoOutPermit.getEndTime())){
 						throw new BusinessException("Msg_307");
 					}
 					

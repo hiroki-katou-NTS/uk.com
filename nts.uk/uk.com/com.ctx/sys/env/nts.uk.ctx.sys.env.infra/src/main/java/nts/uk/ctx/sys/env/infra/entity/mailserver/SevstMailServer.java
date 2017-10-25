@@ -89,25 +89,13 @@ public class SevstMailServer implements Serializable {
     private String password;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "SMTP_IP_VER")
-    private short smtpIpVer;
-    @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "SMTP_SERVER")
     private String smtpServer;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "STMT_TIME_OUT")
-    private short stmtTimeOut;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "STMT_PORT")
     private int stmtPort;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "POP_IP_VER")
-    private short popIpVer;
     @Basic(optional = false)
     @NotNull
     @Column(name = "POP_USE")
@@ -119,16 +107,8 @@ public class SevstMailServer implements Serializable {
     private String popServer;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "POP_TIME_OUT")
-    private short popTimeOut;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "POP_PORT")
     private int popPort;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IMAP_IP_VER")
-    private short imapIpVer;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IMAP_USE")
@@ -138,10 +118,6 @@ public class SevstMailServer implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "IMAP_SERVER")
     private String imapServer;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IMAP_TIME_OUT")
-    private short imapTimeOut;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IMAP_PORT")
@@ -154,7 +130,7 @@ public class SevstMailServer implements Serializable {
         this.cid = cid;
     }
 
-    public SevstMailServer(String cid, String updPg, int exclusVer, short useAuth, short encryptMethod, short authMethod, String emailAuth, short smtpIpVer, String smtpServer, short stmtTimeOut, int stmtPort, short popIpVer, short popUse, String popServer, short popTimeOut, int popPort, short imapIpVer, short imapUse, String imapServer, short imapTimeOut, int imapPort) {
+    public SevstMailServer(String cid, String updPg, int exclusVer, short useAuth, short encryptMethod, short authMethod, String emailAuth, String smtpServer, int stmtPort, short popUse, String popServer, int popPort, short imapUse, String imapServer, int imapPort) {
         this.cid = cid;
         this.updPg = updPg;
         this.exclusVer = exclusVer;
@@ -162,19 +138,13 @@ public class SevstMailServer implements Serializable {
         this.encryptMethod = encryptMethod;
         this.authMethod = authMethod;
         this.emailAuth = emailAuth;
-        this.smtpIpVer = smtpIpVer;
         this.smtpServer = smtpServer;
-        this.stmtTimeOut = stmtTimeOut;
         this.stmtPort = stmtPort;
-        this.popIpVer = popIpVer;
         this.popUse = popUse;
         this.popServer = popServer;
-        this.popTimeOut = popTimeOut;
         this.popPort = popPort;
-        this.imapIpVer = imapIpVer;
         this.imapUse = imapUse;
         this.imapServer = imapServer;
-        this.imapTimeOut = imapTimeOut;
         this.imapPort = imapPort;
     }
 

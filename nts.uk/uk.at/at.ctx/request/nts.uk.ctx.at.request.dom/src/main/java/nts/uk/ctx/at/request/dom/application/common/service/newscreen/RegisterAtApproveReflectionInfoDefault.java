@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -111,18 +112,15 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 					//ログイン者社員が返す結果の承認代行者リストに存在するかチェックする(người login có trong list người đại diện xác nhận trả về hay không)
 					if (agency.getListRepresenterSID().contains(loginEmp)) {
 						//(ドメインモデル「承認枠」)承認区分=「承認済」、承認者=空、代行者=ログイン者の社員ID
-						lstApprover.stream().filter(x -> x.getApproverSID().equals(loginEmp)).forEach(y -> {
-							//insert them 1 ban ghi vao bang KRQDT_APPROVE_ACCEPTED (ko co trong EAP)
-							ApproveAccepted approveAccepted = ApproveAccepted.createFromJavaType(companyID,
-									UUID.randomUUID().toString(),
-									"", 
-									ApprovalAtr.APPROVED.value, 
-									ConfirmAtr.USEATR_USE.value, //can xem lai
-									GeneralDate.today(),
-									approverMemo, 
-									loginEmp);
-							approveAcceptedRepo.createApproverAccepted(approveAccepted, frame.getFrameID());
-						});
+						ApproveAccepted representer = new ApproveAccepted(companyID,
+								UUID.randomUUID().toString(),
+								"", 
+								ApprovalAtr.APPROVED, 
+								ConfirmAtr.USEATR_NOTUSE, 
+								GeneralDate.today(),
+								new Reason(approverMemo), 
+								loginEmp);
+						lstApprover.add(representer);
 					}
 				}
 				

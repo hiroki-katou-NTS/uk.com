@@ -12,14 +12,8 @@ import lombok.Data;
 @Data
 public class SmtpInfoDto {
 	
-	/** The smtp ip version. */
-	public int smtpIpVersion;
-	
 	/** The smtp server. */
 	public String smtpServer;
-	
-	/** The smtp time out. */
-	public int smtpTimeOut;
 	
 	/** The smtp port. */
 	public int smtpPort;
@@ -32,10 +26,8 @@ public class SmtpInfoDto {
 	 * @param smtpTimeOut the smtp time out
 	 * @param smtpPort the smtp port
 	 */
-	public SmtpInfoDto(int smtpIpVersions, String smtpServer, int smtpTimeOut, int smtpPort){
-		this.smtpIpVersion = smtpIpVersions;
+	public SmtpInfoDto(String smtpServer, int smtpPort){
 		this.smtpServer = smtpServer;
-		this.smtpTimeOut = smtpTimeOut;
 		this.smtpPort = smtpPort;
 	}
 

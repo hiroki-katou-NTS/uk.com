@@ -9,13 +9,7 @@
 	
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
-			<style>
-				.popup-parent {
-					min-height: 160px;
-				}				
-			</style>
-
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../../catalog/catalog.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="../../catalog/catalog.js" />
@@ -27,66 +21,68 @@
 				<div id="content" class="cf">
 					<h1>Popup</h1>
 					<h2>Overview</h2>
-					<div class="popup-parent">
-						<h3>Popup 1</h3>
-						<button id="show-popup" class="show-popup">Show Popup</button>
-						<button id="toggle-popup" class="toggle-popup">Toggle the popup</button>
-						<button id="reset-popup" class="reset-popup">Reset Popup</button>
-						<div id="popup-area" class="popup-area" style="display: none;">
-							<h2>Popup 1!</h2>
-							<input
-								data-bind="ntsTextEditor:{value: ko.observable('DEEP BLUE')}" /><br />
-							<br />
-							<button class="proceed close-popup">Save</button>
-							<button class="close-popup">Cancel</button>
-							<button id="destroy-popup" class="destroy-popup">Destroy This Popup!</button>
+					<h3>Dismissible</h3>
+					<button class="show-popup1">Show Popup</button>
+					<button class="destroy-popup1">Destroy This Popup!</button>
+					<div class="popup-area1">
+						<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							value: selectedCode,
+							optionsText: 'name',
+							columns: [
+									{ prop: 'name', length: 4 },
+							]}">
 						</div>
+						<h2>Popup 1!</h2>
+						<input data-bind="ntsTextEditor:{value: ko.observable('DEEP BLUE')}" /><br />
+						<br/>
+						<button class="proceed close-popup">Save</button>
+						<button class="close-popup">Cancel</button>
 					</div>
-					<div class="popup-parent">
-						<h3>Popup 2</h3>
-						<button id="show-popup2" class="show-popup">Show Popup</button>
-						<button id="toggle-popup2" class="toggle-popup">Toggle the popup</button>
-						<button id="reset-popup2" class="reset-popup">Reset Popup</button>
-						<div id="popup-area2" class="popup-area" style="display: none;">
-							<h2>Popup 2!</h2>
-							<input
-								data-bind="ntsTextEditor:{value: ko.observable('ALPHA GO')}" /><br />
-							<br />
-							<button class="proceed close-popup">Save</button>
-							<button class="close-popup">Cancel</button>
-							<button id="destroy-popup2" class="destroy-popup">Destroy This Popup!</button>
-						</div>
+					<br/><br/>
+					<h3>Un-dismissible</h3>
+					<button class="show-popup2">Show Popup</button>
+					<button class="toggle-popup2">Toggle the popup</button>
+					<div class="popup-area2">
+						<h2>Popup 2!</h2>
+						<input data-bind="ntsTextEditor:{value: ko.observable('ALPHA GO')}" /><br />
+						<br/>
+						<button class="proceed close-popup">Save</button>
+						<button class="close-popup">Cancel</button>
 					</div>
 					<article class="cf">
 						<div class="tabs">
 							<ol>
-								<li><a href="#tabs-call">Javascript Call</a></li>
+								<li><a href="#tabs-call">Usage</a></li>
 								<li><a href="#tabs-api">API</a></li>
 							</ol>
 							<div id="tabs-call" class="cf">
-								<pre>
-									<![CDATA[// Setting up
-$('#popup-area').ntsPopup({
+							<h3>HTML</h3>
+<pre><![CDATA[<div class="popup-area1">
+	<h2>Popup 1!</h2>
+	<p>Any content go here</p>
+</div>]]></pre>
+							<h3>TypeScript</h3>
+<pre><![CDATA[// Init
+$(".popup-area1").ntsPopup({
+    trigger: ".show-popup1",
     position: {
-        my: 'left top',
-        at: 'left bottom',
-        of: $('#show-popup')
+        my: "left top",
+        at: "left bottom",
+        of: ".show-popup1"
     },
-    //optional: put false to force click button to dismiss
-    dismissible: false
+    showOnStart: false,
+    dismissible: true
 });
-
 // Show
-$('#show-popup').click(function () {
-    $('#popup-area').ntsPopup('show');
-});
-
+$(".popup-area1").ntsPopup("show");
 // Hide
-$('.close-popup').click(function(){
-    $('#popup-area').ntsPopup('hide');
-});
-]]>
-								</pre>
+$(".popup-area1").ntsPopup("hide");
+// Toggle
+$(".popup-area1").ntsPopup("toggle");
+// Destroy
+$(".popup-area1").ntsPopup("destroy");]]></pre>
 							</div>
 							<div id="tabs-api" class="cf">
 								<article>
@@ -97,9 +93,9 @@ $('.close-popup').click(function(){
 								<br />
 								<article>
 									<h2>API</h2>
-									<table>
+									<table class="table">
 										<colgroup>
-											<col width="200px" />
+											<col width="250px" />
 										</colgroup>
 										<thead>
 											<tr>
@@ -109,38 +105,99 @@ $('.close-popup').click(function(){
 										</thead>
 										<tbody>
 											<tr>
-												<td>$.ntsError({position})</td>
-												<td><b>Return:</b> $popupPanel<br /> <b class="color">position:
-														object</b> Set position for popup, using <a target="_blank"
-													href="http://api.jqueryui.com/position/">JqueryUI
-														Position</a><br /> Init a popup with given position<br /></td>
-											</tr>
-											<tr>
-												<td>$.ntsError('show')</td>
-												<td><b>Return:</b> void<br /> Show popup<br /></td>
-											</tr>
-											<tr>
-												<td>$.ntsError('hide')</td>
-												<td><b>Return:</b> void<br /> Hide popup<br /></td>
-											</tr>
-											<tr>
-												<td>$.ntsError('toggle')</td>
 												<td>
-													<h3>Not implement yet!</h3> <b>Return:</b> void<br />
-													Toggle show/hide popup<br />
+													$(".selector").ntsPopup(option)<br/>
+													$(".selector").ntsPopup("init", option)
+												</td>
+												<td>
+													<b>Return:</b> <i>JQuery</i><br/>
+													<b>Agruments:</b><br/>
+													<i>option: PopupSetting (optional)</i><br/>
+													<div class="catalog-accordion">
+														<a href="#">PopupSetting</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th>Name</th>
+																	<th>Description</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>trigger<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		<b>Default:</b> ""<br/>
+																		JQuery selector to show popup
+																	</td>
+																</tr>
+																<tr>
+																	<td>position<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> JQueryPosition<br/>
+																		<b>Default:</b> {<br/>
+														                    my: 'left top',<br/>
+														                    at: 'left bottom',<br/>
+														                    of: control.siblings('.show-popup')<br/>
+														                }<br/>
+																		Position to display popup
+																	</td>
+																</tr>
+																<tr>
+																	<td>showOnStart<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> boolean<br/>
+																		<b>Default:</b> false<br/>
+																		Show popup on start page
+																	</td>
+																</tr>
+																<tr>
+																	<td>dismissible<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> boolean<br/>
+																		<b>Default:</b> false<br/>
+																		Hide popup when click outside
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
 												</td>
 											</tr>
 											<tr>
-												<td>$.ntsError('destroy')</td>
+												<td>$(".selector").ntsPopup('show')</td>
 												<td>
-													<h3>Not implement yet!</h3> <b>Return:</b> void<br /> Hide
-													and remove popup<br />
+													<b>Return:</b> <i>JQuery</i><br/>
+													Show popup
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsPopup('hide')</td>
+												<td>
+													<b>Return:</b> <i>JQuery</i><br/>
+													Hide popup
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsPopup('toggle')</td>
+												<td>
+													<b>Return:</b> <i>JQuery</i><br/>
+													Toggle show/hide popup
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsPopup('destroy')</td>
+												<td>
+													<b>Return:</b> <i>JQuery</i><br/>
+													Destroy popup
 												</td>
 											</tr>
 										</tbody>
 									</table>
 								</article>
-								<br />
 							</div>
 						</div>
 					</article>
