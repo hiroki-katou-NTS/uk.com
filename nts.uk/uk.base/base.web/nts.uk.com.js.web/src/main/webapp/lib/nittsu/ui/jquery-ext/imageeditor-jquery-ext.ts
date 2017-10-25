@@ -79,7 +79,9 @@ module nts.uk.ui.jqueryExtentions {
             
         function clear($element: JQuery){
             let cropper = $element.data("cropper");
-            cropper.clear();
+            if (!isNotNull(cropper)) {
+                cropper.clear();    
+            }
         }   
     }
 }
