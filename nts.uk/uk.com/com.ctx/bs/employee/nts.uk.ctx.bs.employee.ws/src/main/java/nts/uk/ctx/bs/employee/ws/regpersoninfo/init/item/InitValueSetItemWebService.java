@@ -10,15 +10,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item.InitValueSetItemFinder;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item.InitValueSettingItemDto;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item.PerInfoInitValueSetItemFinder;
 
 @Path("regpersoninfo/init/item")
 @Produces(MediaType.APPLICATION_JSON)
-public class PerInfoInitValueSetItemWebService extends WebService {
+public class InitValueSetItemWebService extends WebService {
 
 	@Inject
-	private PerInfoInitValueSetItemFinder finder;
+	private InitValueSetItemFinder finder;
 
 	@POST
 	@Path("findInit/{settingId}/{categoryCd}")

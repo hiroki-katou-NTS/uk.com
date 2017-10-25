@@ -87,7 +87,7 @@ module cps002.a.vm {
 
             });
 
-           
+
 
             self.categorySelectedCode.subscribe((newValue) => {
 
@@ -562,24 +562,13 @@ module cps002.a.vm {
     }
 
     class Item {
-        id: string;
-        name: string;
+        itemName: string;
         isRequired: number;
-        saveDataType: number;
-        refMethodType: number;
-        stringValue: string;
-        intValue: number;
-        dateValue: string;
+        saveData: any;
         constructor(param?: any) {
-            this.id = param ? param.perInfoItemDefId ? param.perInfoItemDefId : param.id : '';
-            this.name = param ? param.itemName ? param.itemName : param.id : '';
+            this.itemName = param ? param.itemName ? param.itemName : param.id : '';
             this.isRequired = param ? param.isRequired ? param.isRequired : param.name : 0;
-            this.saveDataType = param ? param.saveDataType ? param.saveDataType : param.id : 0;
-            this.refMethodType = param ? param.refMethodType ? param.refMethodType : param.name : 0;
-            this.stringValue = param ? param.stringValue ? param.stringValue : param.id : '';
-            this.intValue = param ? param.intValue ? param.intValue : param.name : 0;
-            this.dateValue = param ? param.dateValue ? param.dateValue : param.name : '';
-
+            this.saveData = param ? param.saveData ? param.saveData : param.id : 0;
         }
     }
 

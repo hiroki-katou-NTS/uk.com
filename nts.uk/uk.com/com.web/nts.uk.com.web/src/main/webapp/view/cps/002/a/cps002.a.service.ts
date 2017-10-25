@@ -13,7 +13,7 @@ module cps002.a.service {
         'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
         'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
-        'getAllInitValueItemSetting': 'ctx/bs/person/info/setting/init/item/findInit/{0}/{1}',
+        'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}',
         'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
 
     };

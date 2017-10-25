@@ -275,15 +275,7 @@
 													<tr>
 														<td
 															data-bind="text: name , css:{requiredCell: isRequired  }"></td>
-														<com:ko-if bind="saveDataType ===1">
-															<td class="disabledCell" data-bind="text: stringValue "></td>
-														</com:ko-if>
-														<com:ko-if bind="saveDataType ===2">
-															<td class="disabledCell" data-bind="text: intValue "></td>
-														</com:ko-if>
-														<com:ko-if bind="saveDataType ===3">
-															<td class="disabledCell" data-bind="text: dateValue "></td>
-														</com:ko-if>
+															<td class="disabledCell" data-bind="text: saveData.value "></td>
 													</tr>
 												</tbody>
 											</table>

@@ -16,7 +16,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
  *
  */
 @Stateless
-public class PerInfoInitValueSetItemFinder {
+public class InitValueSetItemFinder {
 
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
