@@ -40,7 +40,8 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void remove(String selectionId) {
-		// TODO Auto-generated method stub
+		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
+		this.commandProxy().remove(PpemtSelection.class, pk);
 
 	}
 

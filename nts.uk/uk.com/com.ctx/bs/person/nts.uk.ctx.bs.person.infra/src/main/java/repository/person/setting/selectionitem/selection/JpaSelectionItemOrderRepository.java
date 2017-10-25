@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import entity.person.setting.selectionitem.PpemtSelectionItem;
 import entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
 import entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
-import entity.person.setting.selectionitem.selection.PpemtSelection;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
@@ -30,8 +30,9 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	}
 
 	@Override
-	public void remove(SelectionItemOrder selectionItemOrder) {
-		// TODO Auto-generated method stub
+	public void remove(String selectionItemOrder) {
+		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionItemOrder);
+		this.commandProxy().remove(PpemtSelItemOrder.class, pk);
 
 	}
 
