@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item;
+package nts.uk.ctx.bs.employee.app.find.init.item;
 
 import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;

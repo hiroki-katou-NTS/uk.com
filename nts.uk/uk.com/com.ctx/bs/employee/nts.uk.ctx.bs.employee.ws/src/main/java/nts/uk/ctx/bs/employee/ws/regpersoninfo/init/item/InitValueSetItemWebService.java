@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item.InitValueSetItemFinder;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item.InitValueSettingItemDto;
+import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSetItemFinder;
+import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSettingItemDto;
 
 @Path("regpersoninfo/init/item")
 @Produces(MediaType.APPLICATION_JSON)

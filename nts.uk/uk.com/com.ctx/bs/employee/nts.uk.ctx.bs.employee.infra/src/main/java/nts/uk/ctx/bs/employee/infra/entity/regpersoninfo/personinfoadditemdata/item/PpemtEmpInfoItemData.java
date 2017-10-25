@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.item;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -30,7 +31,7 @@ public class PpemtEmpInfoItemData extends JpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "DATA_STATE_ATR")
-	public int dataState;
+	public int dataStateType;
 
 	@Basic(optional = false)
 	@Column(name = "STRING_VAL")
@@ -38,7 +39,7 @@ public class PpemtEmpInfoItemData extends JpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "INT_VAL")
-	public int intValue;
+	public BigDecimal intValue;
 
 	@Basic(optional = false)
 	@Column(name = "DATE_VAL")

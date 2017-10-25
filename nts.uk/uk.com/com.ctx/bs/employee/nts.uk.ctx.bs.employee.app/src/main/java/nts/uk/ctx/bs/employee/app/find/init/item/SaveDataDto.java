@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.regpersoninfo.init.item;
+package nts.uk.ctx.bs.employee.app.find.init.item;
 
 import nts.arc.time.GeneralDate;
 

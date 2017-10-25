@@ -14,7 +14,7 @@ public class DateValue extends DataState {
 		this.value = value;
 	}
 
-	public DateValue createFromJavaType(GeneralDate value) {
+	public static DateValue createFromJavaType(GeneralDate value) {
 
 		return new DateValue(value);
 

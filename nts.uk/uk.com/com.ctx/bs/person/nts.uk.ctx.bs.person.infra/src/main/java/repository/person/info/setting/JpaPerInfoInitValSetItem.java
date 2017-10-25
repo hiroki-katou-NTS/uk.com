@@ -14,14 +14,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveData;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.StringValue;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoInitValueSetItemRepository {
