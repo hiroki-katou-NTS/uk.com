@@ -10,5 +10,5 @@ public interface PerInfoCtgByCompanyRepositoty{
 	void addPerCtgOrder(PersonInfoCtgOrder domain);
 	void update(PersonInfoCategory domain);
 	void deleteByCompanyId(String companyId);
-	List<String> checkCtgNameIsUnique(String companyId, String newCtgName); 
+	boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId);
 }

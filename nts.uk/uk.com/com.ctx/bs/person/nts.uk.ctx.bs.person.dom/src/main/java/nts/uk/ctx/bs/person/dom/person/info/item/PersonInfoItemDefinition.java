@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.info.item;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -20,6 +22,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private SystemRequired systemRequired;
 	private RequireChangable requireChangable;
 	private ItemTypeState itemTypeState;
+    private BigDecimal  selectionItemRefType;
 
 	public static String ROOT_CONTRACT_CODE = "000000000000";
 
@@ -38,6 +41,25 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.requireChangable = RequireChangable.NONE_REQUIRED;
 	}
 
+	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
+			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
+			int requireChangable, BigDecimal  selectionItemRefType) {
+		super();
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.perInfoCategoryId = perInfoCategoryId;
+		this.itemCode = new ItemCode(itemCode);
+		this.itemParentCode = new ItemCode(itemParentCode);
+		this.itemName = new ItemName(itemName);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
+		this.systemRequired = EnumAdaptor.valueOf(systemRequired, SystemRequired.class);
+		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
+		this.selectionItemRefType = selectionItemRefType;
+	}
+	
+	
+	//lanlt
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
 			int requireChangable) {
@@ -94,6 +116,13 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			int systemRequired, int requireChangable) {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemCode, itemParentCode, itemName,
 				isAbolition, isFixed, isRequired, systemRequired, requireChangable);
+	}
+	 //lanlt
+	public static PersonInfoItemDefinition createFromEntity(String perInfoItemDefId, String perInfoCategoryId,
+			String itemCode, String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired,
+			int systemRequired, int requireChangable, BigDecimal selectionItemRefType ) {
+		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemCode, itemParentCode, itemName,
+				isAbolition, isFixed, isRequired, systemRequired, requireChangable, selectionItemRefType);
 	}
 
 	public static PersonInfoItemDefinition createForAddItem(String perInfoCategoryId, String itemCode,

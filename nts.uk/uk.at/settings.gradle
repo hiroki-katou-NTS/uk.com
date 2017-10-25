@@ -1,5 +1,13 @@
 include 'at.web:nts.uk.at.web'
 
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.ac'
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.app'
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.dom'
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.infra'
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.ws'
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.pub'
+include 'at.ctx:at.auth:nts.uk.ctx.at.auth.pubimp'
+
 include 'at.ctx:shared:nts.uk.ctx.at.shared.ac'
 include 'at.ctx:shared:nts.uk.ctx.at.shared.app'
 include 'at.ctx:shared:nts.uk.ctx.at.shared.dom'

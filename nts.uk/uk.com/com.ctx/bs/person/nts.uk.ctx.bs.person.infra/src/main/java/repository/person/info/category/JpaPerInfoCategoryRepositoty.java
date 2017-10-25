@@ -74,6 +74,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
 			+ " AND ca.categoryName LIKE CONCAT('%', :categoryName, '%') ORDER BY po.disporder";
 
+	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
+			+ " WHERE e.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -255,15 +258,21 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				});
 	}
 	
-	
 	@Override
 	public List<PersonInfoCategory> getPerInfoCtgByParentId(String parentCtgCd, String contractCd) {
-		// TODO Auto-generated method stub
 		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD, Object[].class).setParameter("contractCd", contractCd)
 				.setParameter("parentCd", parentCtgCd).getList(c -> {
 					return createDomainFromEntity(c);
 					});
 	}
+
+	@Override
+	public DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId) {
+		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).getSingleOrNull();
+		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+	}
+	
+	
 	// vinhpx: end
 
 	

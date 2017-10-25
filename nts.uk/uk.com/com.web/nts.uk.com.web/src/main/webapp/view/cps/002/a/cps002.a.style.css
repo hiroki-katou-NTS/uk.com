@@ -154,7 +154,6 @@
 
 #cover_table {
 	width: 453px;
-	height: 487px;
 	overflow: auto;
 }
 
@@ -174,4 +173,12 @@
 /* step 2 */
 .textLabel {
 	line-height: 37px;
+}
+
+.requiredCell {
+	background-color: #FAEC82;
+}
+
+.disabledCell {
+	background-color: #d9d9d9;
 }
