@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.arc.time.GeneralDate;
 
 @Entity
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "P_INFO_CTG_ID")
-	public GeneralDate personInfoCtgId;
+	public String personInfoCtgId;
 
 	@Basic(optional = false)
 	@Column(name = "S_ID")
