@@ -30,8 +30,8 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtAttendanceLink a ");
-		builderString.append("WHERE a.kfnmtAttendanceLinkPK.typeOfItem = :typeOfItem");
-		builderString.append("WHERE a.kfnmtAttendanceLinkPK.frameCategory = 8"); //任意項目
+		builderString.append("WHERE a.kfnmtAttendanceLinkPK.typeOfItem = :typeOfItem ");
+		builderString.append("AND a.kfnmtAttendanceLinkPK.frameCategory = 8"); //任意項目
 		FIND_BY_ANY_ITEM = builderString.toString();
 	}
 
