@@ -7,7 +7,8 @@ module nts.uk.com.view.cps017.a.service {
         getAllPerInfoHistorySelection: "ctx/bs/person/info/setting/selection/findAllHistSelection/{0}",
         getAllOrderItemSelection: "ctx/bs/person/info/setting/selection/findAllSelection/{0}",
         saveDataSelection: "ctx/bs/person/info/setting/selection/addSelection",
-        updateDataSelection: "ctx/bs/person/info/setting/selection/updateSelection"
+        updateDataSelection: "ctx/bs/person/info/setting/selection/updateSelection",
+        removeDataSelection: "ctx/bs/person/info/setting/selection/removeSelection"
     }
 
     export function getAllSelectionItems() {
@@ -42,7 +43,12 @@ module nts.uk.com.view.cps017.a.service {
     // update data Selection:
     export function updateDataSelection(command) {
         return ajax(paths.updateDataSelection, command);
-    }    
+    }
+
+    // remove data selection:
+    export function removeDataSelection(command) {
+        return ajax(paths.removeDataSelection, command);
+    }
 }
 
 

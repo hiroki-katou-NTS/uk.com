@@ -76,7 +76,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //                    }                    if (itemList && itemList.length) {
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
-                    } 
+                    }else{
+                        self.registerData();    
+                    }
 
                 });
             });
@@ -116,6 +118,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                 } else {
                     alertError({ messageId: "Msg_455" });
+                    self.registerData();
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -195,20 +198,21 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this,
                 currentItem: Selection = self.selection(),
                 listSelection: Array<Selection> = self.listSelection(),
-                _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());;
+                _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
             //oldIndex = _.findIndex(listSelection, x => x.)
             currentItem.histId(self.historySelection().histId());
             command = ko.toJS(currentItem);
 
             service.updateDataSelection(command).done(function() {
                 self.listSelection.removeAll();
+                
                 service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listSelection.push(x));
                         self.selection().selectionID(self.listSelection()[0].selectionID);
                     }
                 });
-                
+
                 self.listSelection.valueHasMutated();
                 //self.selection().selectionCD(selectionCD);
 
@@ -216,6 +220,49 @@ module nts.uk.com.view.cps017.a.viewmodel {
             });
         }
 
+        //削除ボタン
+        remove() {
+            //alert('remove');  
+            let self = this,
+                items = ko.unwrap(self.listSelection),
+                currentItem: Selection = self.selection(),
+                listSelection: Array<Selection> = self.listSelection();
+
+            currentItem.histId(self.historySelection().histId());
+            command = ko.toJS(currentItem);
+            oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
+            lastIndex = items.length - 1;
+
+            if (items.length > 0) {
+                confirm({ messageId: "Msg_551" }).ifYes(() => {
+                    service.removeDataSelection(command).done(function() {
+                        self.listSelection.removeAll();
+
+                        service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
+                            if (itemList && itemList.length) {
+                                itemList.forEach(x => self.listSelection.push(x));
+                                //self.selection().selectionID(self.listSelection()[0].selectionID);
+                                if (oldIndex == lastIndex) {
+                                    oldIndex--;
+                                }
+                                let newItem = itemList[oldIndex];
+                                currentItem.selectionID(newItem.selectionID);
+                            }
+                        });
+                        self.listItems.valueHasMutated();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+
+                    });
+
+                }).ifNo(() => {
+                    self.listItems.valueHasMutated();
+                    return;
+                })
+            } else {
+                alertError({ messageId: "Msg_521" });
+                self.registerDataSelectioItem();
+            }
+        }
 
         //ダイアログC画面
         openDialogC() {
