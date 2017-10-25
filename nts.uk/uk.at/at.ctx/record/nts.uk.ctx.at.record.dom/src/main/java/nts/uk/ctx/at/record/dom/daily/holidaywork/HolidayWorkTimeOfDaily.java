@@ -19,10 +19,12 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverDayEnd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -36,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
+	private HolidayMidnightWork holidayMidNightWork;
 	
 	private HolidayWorkTimeOfDaily(List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet,List<HolidayWorkFrameTime> holidayWorkFrameTime) {
 		this.holidayWorkFrameTimeSheet = holidayWorkFrameTimeSheet;
@@ -60,12 +63,13 @@ public class HolidayWorkTimeOfDaily {
 			/*計算範囲の判断*/
 			timeSpan = attendanceLeaveSheet.getDuplicatedWith(holidayTimeSheet.getHours().getSpan());
 			/*控除時間帯を分割*/
+			/*控除時間帯を保持(控除時間帯を分割で取得したListに対してmapを使う)*/
+			
 			/*遅刻早退処理*/
 		//	if(/*遅刻早退どっちの設定を見てもOKなので、どちらかの休出の場合でも計算するを見る*/) {
-				
 		//	}
-			/*休出時間帯の作成*/
 			
+			/*休出時間帯の作成*/
 			holidayWorkTimeSheetList.add(new HolidayWorkFrameTimeSheet());
 		}
 		/*0時跨ぎ*/
@@ -122,11 +126,11 @@ public class HolidayWorkTimeOfDaily {
 	 * @return
 	 */
 	public void calcMidNightTimeIncludeHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
-		int totalTime = 0;
+		EachStatutoryHolidayWorkTime eachTime;
 		for(HolidayWorkFrameTimeSheet  frameTime : holidayWorkFrameTimeSheet) {
-			totalTime += frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification());
+			eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
 		}
-		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
+		return new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getTimeBaseOnAtr())));
 	}
 	
 	/**

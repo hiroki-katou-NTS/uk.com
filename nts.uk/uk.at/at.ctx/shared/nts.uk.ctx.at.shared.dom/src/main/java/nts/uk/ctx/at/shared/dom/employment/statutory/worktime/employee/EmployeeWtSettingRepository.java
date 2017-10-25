@@ -37,4 +37,12 @@ public interface EmployeeWtSettingRepository {
 	 * @return the employee setting
 	 */
 	EmployeeWtSetting find(String companyId);
+	
+	/**
+	 * Find By employeeId
+	 * @param companyId  companyId the company id 
+	 * @param employeeId
+	 * @return
+	 */
+	EmployeeWtSetting findByEmployeeId(String companyId, String employeeId);
 }

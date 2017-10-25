@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeSheetOfDailyWork;
 import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
@@ -44,9 +45,11 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class DeductionTimeSheet {
 	@Getter
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
+	@Getter
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 	@Getter
 	private final BreakManagement breakTimeSheet;
+	private WithinStatutoryAtr withinStatutoryAtr;
 	
 	public void devideDeductionsBy(ActualWorkingTimeSheet actualWorkingTimeSheet,BreakManagement breakTimeSheet) {
 
@@ -341,7 +344,7 @@ public class DeductionTimeSheet {
 	
 
 	/**
-	 * 法定内・外、総裁時間から合計時間算出
+	 * 法定内・外、相殺時間から合計時間算出
 	 * @param deductionTimeSheetList　
 	 * @return
 	 */
@@ -357,6 +360,12 @@ public class DeductionTimeSheet {
 															,new AttendanceTime(excessOfStatutoryTotalTime)));
 	}
 	
+	public void calcCoreDuplicateWithDeductionTime() {
+		
+	}
+	
+	
+	
 	/**
 	 * 計算を行う範囲に存在する控除時間帯の抽出
 	 * @param workTimeSpan 計算範囲
@@ -365,6 +374,21 @@ public class DeductionTimeSheet {
 	public List<TimeSheetOfDeductionItem> getCalcRange(TimeSpanForCalc workTimeSpan){
 		return forDeductionTimeZoneList.stream().filter(tc -> workTimeSpan.contains(tc.calcrange.getSpan())).collect(Collectors.toList());
 	}	
+	
+	
+	/**
+	 * 流動休憩開始までの間にある外出分、休憩をずらす
+	 */
+	public void includeUntilFluidBreakTimeStart() {
+		
+	}
+	
+	/**
+	 * 法定内区分を法定内から法定外へ変更する
+	 */
+	public void replaceStatutoryAtr() {
+		this.withinStatutoryAtr = WithinStatutoryAtr.ExcessOfStatutory;
+	}
 	
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
@@ -395,7 +419,7 @@ public class DeductionTimeSheet {
 				case ConbineMasterWithStamp:
 				
 				//参照せずに打刻する	
-				case StampWithoutReference:
+				//case StampWithoutReference:
 			
 			}
 		}
@@ -460,5 +484,7 @@ public class DeductionTimeSheet {
 		//控除時間帯をソート
 		
 	}
+	
+	
 	
 }

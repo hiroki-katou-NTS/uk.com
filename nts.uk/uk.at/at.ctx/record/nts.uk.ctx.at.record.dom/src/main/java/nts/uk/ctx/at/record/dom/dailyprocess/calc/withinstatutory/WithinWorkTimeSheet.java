@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.gul.util.value.Finally;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
@@ -42,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSetList;
+import nts.uk.ctx.at.shared.dom.worktime.flexworkset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -52,16 +55,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class WithinWorkTimeSheet implements {
 
 	//必要になったら追加
 	//private WorkingHours
 	//private RaisingSalaryTime
-	
+	//private Optional<> flexTimeSheet;
 	private final List<WithinWorkTimeFrame> withinWorkTimeFrame;
 	private final List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock;
 	private final List<LateDecisionClock> lateDecisionClock;
+	private final FlexWithinWorkTimeSheet flexTimeSheet;
 	
 	/**
 	 * 就業時間内時間帯の作成
@@ -96,9 +100,8 @@ public class WithinWorkTimeSheet implements {
 			List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet = new ArrayList<>();
 			Optional<MidNightTimeSheet> midNightTimeSheet;
 			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
-				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(),duplicateTimeSheet.getTimeSpan(),Collections.emptyList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
-				/*控除時間を分割する
-				 * */
+				DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
+				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(),duplicateTimeSheet.getTimeSpan(),deductionTimeSheet.getForDeductionTimeZoneList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
 				/*加給*/
 				bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimeSpan());
 				specifiedBonusPayTimeSheet = bonusPaySetting.createDuplicationSpecifyBonusPay(duplicateTimeSheet.getTimeSpan());
@@ -140,7 +143,7 @@ public class WithinWorkTimeSheet implements {
 	 * @param fixedWorkSetting 固定勤務設定クラス
 	 * @return 所定時間と重複している時間帯
 	 */
-	private static List<WorkTimeOfTimeSheetSet> createWorkingHourSet(WorkType workType, PredetermineTimeSet predetermineTimeSet,
+	public static List<WorkTimeOfTimeSheetSet> createWorkingHourSet(WorkType workType, PredetermineTimeSet predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting) {
 		
 		val attendanceHolidayAttr = workType.getAttendanceHolidayAttr();
@@ -198,13 +201,64 @@ public class WithinWorkTimeSheet implements {
 		return clockList.get(0);
 	}
 	
+	/**
+	 * コアタイムのセット
+	 * @param coreTimeSetting コアタイム時間設定
+	 */
+	public WithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
+		List<FlexWithinWorkTimeSheet> duplicateCoreTimeList = new ArrayList<>();
+		for(WithinWorkTimeFrame workTimeFrame : this.withinWorkTimeFrame) {
+			Optional<TimeSpanForCalc> duplicateSpan = workTimeFrame.getCalcrange().getDuplicatedWith(coreTimeSetting.getCoreTime().getSpan()); 
+			if(duplicateSpan.isPresent()) {
+				duplicateCoreTimeList.add(new FlexWithinWorkTimeSheet(duplicateSpan.get().getSpan()));
+			}
+		}
+		TimeSpanForCalc coreTime = new TimeSpanForCalc(new TimeWithDayAttr(),new TimeWithDayAttr())
+		/*フレックス時間帯に入れる*/
+		return new WithinWorkTimeSheet(this.withinWorkTimeFrame,this.leaveEarlyDecisionClock,this.lateDecisionClock,new FlexWithinWorkTimeSheet());
+	}
+	
+	/**
+	 * 就業時間の計算(控除時間差し引いた後)
+	 * @return 就業時間
+	 */
+	public int calcWorkTime(CalculationByActualTimeAtr  calcActualTime,DeductionTimeSheet dedTimeSheet) {
+		
+		HolidayAdditionAtr holidayAddition = HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime);
+		
+		int workTime = calcWorkTimeBeforeDeductPremium(holidayAddition ,dedTimeSheet);
+		if(holidayAddition.isHolidayAddition()) {
+			/*休暇加算時間を計算*/
+			/*休暇加算時間を加算*/
+			if(/*時間休暇加算時間*/) {
+				
+			}
+		}
+		return workTime;
+	}
+	
+	/**
+	 * 就業時間内時間枠の全枠分の就業時間を算出する
+	 * (所定内割増時間を差し引く前)
+	 * @return 就業時間
+	 */
+	public int calcWorkTimeBeforeDeductPremium(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
+		int workTime = 0;
+		for(WithinWorkTimeFrame copyItem: withinWorkTimeFrame) {
+			workTime += copyItem.calcActualWorkTimeAndWorkTime(holidayAdditionAtr,dedTimeSheet);
+		}
+		return workTime;
+	}
+	
 	
 	/**
 	 * 日別計算の遅刻早退時間の計算
 	 * @return
 	 */
 	public int calcLateLeaveEarlyinWithinWorkTime() {
-		
+		for(WithinWorkTimeFrame workTimeFrame : withinWorkTimeFrame) {
+			workTimeFrame.correctTimeSheet(dailyWork, timeSheet, predetermineTimeSetForCalc);
+		}
 	}
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	

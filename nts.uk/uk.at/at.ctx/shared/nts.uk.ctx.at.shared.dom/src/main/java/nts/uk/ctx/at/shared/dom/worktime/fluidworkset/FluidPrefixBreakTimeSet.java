@@ -12,5 +12,6 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPre
 public class FluidPrefixBreakTimeSet {
 	private boolean isReferToBreakClockFromMaster;
 	private FluidPrefixBreakTimeOfCalcMethod CalcMethod;
-	private boolean conbineStamp;
+	private boolean privateGoOutTreatBreakTime;
+	private boolean unionGoOutTreatBreakTime;
 }

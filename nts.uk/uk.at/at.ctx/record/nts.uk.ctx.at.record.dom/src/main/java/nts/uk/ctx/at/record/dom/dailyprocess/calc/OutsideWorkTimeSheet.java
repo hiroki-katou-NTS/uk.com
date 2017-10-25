@@ -2,11 +2,15 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Optional;
 
+import lombok.Getter;
+import lombok.Value;
+
 /**
  * 就業時間外時間帯
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class OutsideWorkTimeSheet {
 	private Optional<OverTimeWorkSheet> overTimeWorkSheet;
 	

@@ -1,19 +1,16 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
-import lombok.Value;
-
 /**
  * 休憩種類
  * 
  * @author keisuke_hoshina
  *
  */
-public enum BreakCategory {
+public enum BreakType {
 	ReferenceFromWorkTime,
 	ReferenceFromSchedule,
-	ReferenceFromBreakStamp
 	;
-	public BreakCategory is() {
+	public BreakType is() {
 		return this;
 	}
 	
@@ -31,13 +28,5 @@ public enum BreakCategory {
 	 */
 	public boolean isReferenceFromSchedule() {
 		return ReferenceFromSchedule.equals(this);
-	}
-	
-	/**
-	 * 休憩打刻から参照であるか判定する
-	 * @return　休憩打刻から参照である
-	 */
-	public boolean isReferenceFromBreakStamp() {
-		return ReferenceFromBreakStamp.equals(this);
 	}
 }

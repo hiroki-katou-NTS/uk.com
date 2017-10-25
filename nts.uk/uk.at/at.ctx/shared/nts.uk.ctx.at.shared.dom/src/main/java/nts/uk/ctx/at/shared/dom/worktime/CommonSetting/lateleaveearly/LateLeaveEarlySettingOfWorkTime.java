@@ -9,21 +9,9 @@ import lombok.Value;
  */
 @Value
 public class LateLeaveEarlySettingOfWorkTime {
-
-	private LateLeaveEarlyClassification lateLeaveEarlyClassification;
-	private GraceTimeSetting graceTimeSetting;
-	private boolean isCalculatedAtHolidayWork; 
-	
-	/**
-	 * パラメータが遅刻早退区分と一致しているか返す
-	 * @param t　遅刻早退区分
-	 * @return　一致している場合：true　一致していない場合：false
-	 */
-	public boolean lateLeaveEarlyDecision(LateLeaveEarlyClassification t) {
-		
-		return this.lateLeaveEarlyClassification.equals(t);
-	}
-	
+	private LateLeaveEarlyEachSettingOfWorkTime lateSettingOfWorkTime;
+	private LateLeaveEarlyEachSettingOfWorkTime leaveEarlyEachSettingOfWorkTime;
+	private LateLeaveEarlyCommonSettingOfWorkTime commonSetting;
 }
 
 

@@ -81,9 +81,15 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static OverTimeWorkFrameTimeSheet createOverWorkFramTimeSheet(OverTimeHourSet overTimeHourSet,TimeSpanForCalc timeSpan) {
+		
+		DeductionTimeSheet deductionTimeSheet = /*実働時間の時間帯を跨いだ控除時間帯を分割する*/;
+		deductionTimeSheet.getForRecordTimeZoneList();/*法定内区分の置き換え*/
+		deductionTimeSheet.getForDeductionTimeZoneList();/*法定内区分の置き換え*/
+		
+		
 		return new OverTimeWorkFrameTimeSheet(overTimeHourSet.getTimeSpan(),
 											  timeSpan,
-											  Collections.emptyList(),
+											  deductionTimeSheet.getForDeductionTimeZoneList().stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  Collections.emptyList(),
 											  Collections.emptyList(),
 											  Optional.empty(),

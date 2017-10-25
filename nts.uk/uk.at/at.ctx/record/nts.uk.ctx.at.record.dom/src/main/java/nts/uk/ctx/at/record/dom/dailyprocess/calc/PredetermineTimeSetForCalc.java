@@ -5,10 +5,12 @@ import java.util.List;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.HasTimeSpanList;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.SetAdditionToWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting.TimeSheetList;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
@@ -24,11 +26,13 @@ public class PredetermineTimeSetForCalc {
 	
 	private final TimeSheetList timeSheets;
 
+	private final SetAdditionToWorkTime attendanceTime;
+	
 	private final TimeWithDayAttr AMEndTime;
 
 	private final TimeWithDayAttr PMStartTime;
 	
-	private SetAdditionToWorkTime additionSet;
+	private PredetermineTime additionSet;
 
 	/**
 	 * 所定時間帯の時間を更新する
@@ -110,5 +114,24 @@ public class PredetermineTimeSetForCalc {
 			}
 		}		
 	}
+	
+	/**
+	 * 所定時間の取得
+	 * @return
+	 */
+	public AttendanceTime getpredetermineTime(DailyWork dailyWork) {
+		AttendanceTime returnTime;
+		switch(dailyWork.getAttendanceHolidayAttr()) {
+		case FULL_TIME:
+			returnTime = new AttendanceTime();
+		case MORNING:
+			returnTime = new AttendanceTime();
+		case AFTERNOON:
+			returnTime = new AttendanceTime();
+		default:
+			returnTime = new AttendanceTime(0);
+		}
+	}
+	
 	
 }
