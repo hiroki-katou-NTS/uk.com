@@ -23,6 +23,9 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 	private final String SELECT_TARGET_BY_ID =SELECT_ALL_TARGET
 			+ " AND c.krcmtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 	
+	private final String SELECT_BY_LOG_ID = SELECT_FROM_TARGET 
+			+ "WHERE c.krcmtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
+	
 	private TargetPerson toDomain(KrcmtEmpExeTarget entity) {
 		return new TargetPerson(
 			entity.krcmtEmpExeTargetPK.employeeId,
@@ -49,6 +52,15 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 				.setParameter("employeeId", employeeID)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId)
 				.getSingle(c -> toDomain(c));
+		return data;
+	}
+
+
+	@Override
+	public List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID) {
+		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID , KrcmtEmpExeTarget.class)
+				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
+				.getList(c -> toDomain(c));
 		return data;
 	}
 

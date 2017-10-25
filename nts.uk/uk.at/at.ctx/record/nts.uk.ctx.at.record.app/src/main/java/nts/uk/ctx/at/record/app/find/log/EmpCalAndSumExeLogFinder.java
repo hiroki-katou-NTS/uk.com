@@ -47,5 +47,13 @@ public class EmpCalAndSumExeLogFinder {
 		
 	}
 	
+	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
+		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID).stream()
+				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c))
+				.collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+	}
 
 }
