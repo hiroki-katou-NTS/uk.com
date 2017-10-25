@@ -24,34 +24,33 @@ public interface WorkTimeSetRepository {
 	public List<WorkTimeSet> findByCodeList(String companyID, List<String> siftCDs);
 	
 	/**
-	 * get Work Time Set List by company ID, work time set code list, start day attribute and start time
+	 * get Work Time Set List by company ID, work time set code list, start day attribute and start time.
+	 *
 	 * @param companyID company ID
-	 * @param workTimeSetCDs work time set code list
-	 * @param startAtr start day attribute
-	 * @param startTime start time
+	 * @param siftCDs the sift C ds
+	 * @param startClock the start clock
 	 * @return Work Time Set List
 	 */
-	public List<WorkTimeSet> findByStart(String companyID, List<String> siftCDs, int startAtr, int startClock);
+	public List<WorkTimeSet> findByStart(String companyID, List<String> siftCDs, int startClock);
 	
 	/**
-	 * get Work Time Set List by company ID, work time set code list, end day attribute and end time
+	 * get Work Time Set List by company ID, work time set code list, end day attribute and end time.
+	 *
 	 * @param companyID company ID
-	 * @param workTimeSetCDs work time set code list
-	 * @param endAtr end day attribute
-	 * @param endTime end time
+	 * @param siftCDs the sift C ds
+	 * @param endClock the end clock
 	 * @return Work Time Set List
 	 */
-	public List<WorkTimeSet> findByEnd(String companyID, List<String> siftCDs, int endAtr, int endClock);
+	public List<WorkTimeSet> findByEnd(String companyID, List<String> siftCDs, int endClock);
 	
 	/**
-	 * get Work Time Set List by company ID, work time set code list, start day attribute, start time, end day attribute and end time
+	 * get Work Time Set List by company ID, work time set code list, start day attribute, start time, end day attribute and end time.
+	 *
 	 * @param companyID company ID
-	 * @param workTimeSetCDs work time set code list
-	 * @param startAtr start day attribute
-	 * @param startTime start time
-	 * @param endAtr end day attribute
-	 * @param endTime end time
+	 * @param siftCDs the sift C ds
+	 * @param startClock the start clock
+	 * @param endClock the end clock
 	 * @return Work Time Set List
 	 */
-	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> siftCDs, int startAtr, int startClock, int endAtr, int endClock);
+	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> siftCDs, int startClock, int endClock);
 }
