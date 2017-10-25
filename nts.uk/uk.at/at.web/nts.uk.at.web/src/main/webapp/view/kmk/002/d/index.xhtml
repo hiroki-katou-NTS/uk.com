@@ -54,20 +54,21 @@
 											checkedValue: 0,
 											checked: leftItem.settingMethod,
 											enable: true" />
-										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
+										<span class="box"></span>
+										<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 									</label>
 									<div tabindex="2" id="cbb-left-item" class="width-200"
 										data-bind="ntsComboBox: {
 										name: '#[KMK002_66]',
 										options: selectableFormulas,
-										optionsValue: 'code',
-										value: selectedItemLeft,
-										optionsText: 'name',
+										optionsValue: 'formulaId',
+										value: leftItem.formulaItemId,
+										optionsText: 'formulaName',
 										editable: false,
-										enable: !leftItem.isInputValue(),
+										enable: isLeftCbbEnable,
 										columns: [
-											{ prop: 'code', length: 1 },
-											{ prop: 'name', length: 10 },
+											{ prop: 'symbolValue', length: 1 },
+											{ prop: 'formulaName', length: 10 },
 										]}">
 									</div>
 								</div>
@@ -77,32 +78,38 @@
 									data-bind="ntsComboBox: {
 									name: '#[KMK002_68]',
 									options: operatorDatasource,
-									optionsValue: 'code',
+									optionsValue: 'value',
 									value: operator,
-									optionsText: 'name',
+									optionsText: 'localizedName',
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'name', length: 1 }
+										{ prop: 'localizedName', length: 1 }
 									]}">
 								</div>
 							</td>
 							<td>
 								<label id="radio-right-selection" tabindex="5" class="ntsRadioBox">
-									<input type="radio" name="radio-right-item" data-bind="name: '#[KMK002_63]', checkedValue: 0, checked: rightItem.settingMethod, enable: true" />
-									<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
+									<input type="radio" name="radio-right-item"
+									data-bind="name: '#[KMK002_63]',
+									checkedValue: 0,
+									checked: rightItem.settingMethod,
+									enable: true" />
+									<span class="box"></span>
+									<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 								</label>
 								<div tabindex="6" id="cbb-right-item" class="width-200"
 									data-bind="ntsComboBox: {
+									name: '#[KMK002_66]',
 									options: selectableFormulas,
-									optionsValue: 'code',
-									value: selectedItemRight,
-									optionsText: 'name',
+									optionsValue: 'formulaId',
+									value: rightItem.formulaItemId,
+									optionsText: 'formulaName',
 									editable: false,
-									enable: !rightItem.isInputValue(),
+									enable: isRightCbbEnable,
 									columns: [
-										{ prop: 'code', length: 1 },
-										{ prop: 'name', length: 10 },
+										{ prop: 'symbolValue', length: 1 },
+										{ prop: 'formulaName', length: 10 },
 									]}">
 								</div>
 							</td>
@@ -116,7 +123,8 @@
 											checkedValue: 1,
 											checked: leftItem.settingMethod,
 											enable: true" />
-										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
+										<span class="box"></span>
+										<span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
 									</label>
 									<input tabindex="3" class="inputNumberic"
 										id="inp-left-item"
@@ -132,8 +140,13 @@
 							<td>
 								<div>
 									<label id="radio-right-input" tabindex="5" class="ntsRadioBox">
-										<input type="radio" name="radio-right-item" data-bind="name: '#[KMK002_63]', checkedValue: 1, checked: rightItem.settingMethod, enable: true" />
-										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
+										<input type="radio" name="radio-right-item"
+											data-bind="name: '#[KMK002_63]',
+											checkedValue: 1,
+											checked: rightItem.settingMethod,
+											enable: true" />
+										<span class="box"></span>
+										<span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
 									</label>
 									<input tabindex="7" id="inp-right-item" class="inputNumberic"
 										data-bind="ntsNumberEditor: {
@@ -148,7 +161,10 @@
 							<td>
 								<hr/>
 								<div tabindex="8"
-											data-bind="ntsCheckBox: { checked: minusSegment, enable: true, text: nts.uk.resource.getText('KMK002_59') }"></div>
+									data-bind="ntsCheckBox: {
+									checked: minusSegment,
+									enable: true,
+									text: nts.uk.resource.getText('KMK002_59') }"></div>
 							</td>
 						</tr>
 					</tbody>

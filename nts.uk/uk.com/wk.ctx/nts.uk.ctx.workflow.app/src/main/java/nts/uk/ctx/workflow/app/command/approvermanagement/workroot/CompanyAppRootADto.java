@@ -5,6 +5,8 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApprovalPhaseDto
 @Value
 public class CompanyAppRootADto {
 
+	private boolean color;
+	private int employRootAtr;
 	private boolean common;
 	private Integer appTypeValue;
 	private String appTypeName;

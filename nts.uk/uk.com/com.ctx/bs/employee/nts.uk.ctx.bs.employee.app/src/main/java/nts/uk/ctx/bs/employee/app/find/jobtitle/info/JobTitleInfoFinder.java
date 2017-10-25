@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.info.dto.JobTitleInfoFindDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,7 +47,33 @@ public class JobTitleInfoFinder {
 
 			// Get sequence info
 			Optional<SequenceMaster> opSequenceMaster = this.sequenceMasterRepository.findBySequenceCode(companyId,
-					dto.sequenceCode);
+					dto.getSequenceCode());
+			if (opSequenceMaster.isPresent()) {
+				opSequenceMaster.get().saveToMemento(dto);
+			}
+
+			return dto;
+		}
+		return null;
+	}
+	
+	/**
+	 * Find by job code.
+	 *
+	 * @param jobTitleCode the job title code
+	 * @return the job title info find dto
+	 */
+	public JobTitleInfoFindDto findByJobCode(String jobTitleCode) {
+		String companyId = AppContexts.user().companyId();
+		Optional<JobTitleInfo> opJobTitleInfo = this.jobTitleInfoRepository.findByJobCode(companyId, jobTitleCode);
+		
+		if (opJobTitleInfo.isPresent()) {
+			JobTitleInfoFindDto dto = new JobTitleInfoFindDto();
+			opJobTitleInfo.get().saveToMemento(dto);
+
+			// Get sequence info
+			Optional<SequenceMaster> opSequenceMaster = this.sequenceMasterRepository.findBySequenceCode(companyId,
+					dto.getSequenceCode());
 			if (opSequenceMaster.isPresent()) {
 				opSequenceMaster.get().saveToMemento(dto);
 			}

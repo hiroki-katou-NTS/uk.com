@@ -451,7 +451,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					firstRow = firstRow + max;
 
 				} else {
-
+					// TODO
 					for (int k = 0; k < appLst.size(); k++) {
 
 						ApproverAsApplicationInforOutput app = appLst.get(k);
@@ -518,8 +518,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 							a++;
 
 						}
-						
-						if(j <= 12){
+
+						if (j <= 12) {
 							j = j + 2;
 						}
 
@@ -586,69 +586,144 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 				int j = 4;
 
-				// IN RA CỘT THỨ 4 CỦA PHRASE I
-				for (ApproverAsApplicationInforOutput app : appLst) {
+				// đoạn này xử lý có bao nhiêu phrase để set style
+				if (appLst.size() < 5) {
+					// IN RA CỘT THỨ 4 CỦA PHRASE I
+					for (ApproverAsApplicationInforOutput app : appLst) {
 
-					if (app.getPhaseNumber() == 0) {
+						if (app.getPhaseNumber() == 0) {
 
-						printEachPhrase(cells, firstRow, max, app, j);
-						if ((j + 2) < 14) {
-							j = j + 2;
-						}
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
 
-					} else if (app.getPhaseNumber() == 1) {
+						} else if (app.getPhaseNumber() == 1) {
 
-						printEachPhrase(cells, firstRow, max, app, j);
-						if ((j + 2) < 14) {
-							j = j + 2;
-						}
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
 
-					} else if (app.getPhaseNumber() == 2) {
+						} else if (app.getPhaseNumber() == 2) {
 
-						printEachPhrase(cells, firstRow, max, app, j);
-						if ((j + 2) < 14) {
-							j = j + 2;
-						}
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
 
-					} else if (app.getPhaseNumber() == 3) {
+						} else if (app.getPhaseNumber() == 3) {
 
-						printEachPhrase(cells, firstRow, max, app, j);
-						if ((j + 2) < 14) {
-							j = j + 2;
-						}
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
 
-					} else if (app.getPhaseNumber() == 4) {
+						} else if (app.getPhaseNumber() == 4) {
 
-						printEachPhrase(cells, firstRow, max, app, j);
-						if ((j + 2) < 14) {
-							j = j + 2;
-						}
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
 
-					} else if (app.getPhaseNumber() == 5) {
+						} else if (app.getPhaseNumber() == 5) {
 
-						printEachPhrase(cells, firstRow, max, app, j);
-						if ((j + 2) < 14) {
-							j = j + 2;
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
 						}
 
 					}
 
-				}
-
-				if (max > 1) {
-					cells.merge(firstRow, 14, max, 1);
-				}
-				Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-				notice.setValue("");
-				for (int i = 0; i < max; i++) {
-					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
-					if (i == (max - 1)) {
-						setTitleStyle(style_Form);
-					} else {
-						setTitleStyleMerge(style_Form);
+					for (int k = appLst.size(); k < 5; k++) {
+						printEachPhrase(cells, firstRow, max, null, j);
+						if ((j + 2) < 14) {
+							j = j + 2;
+						}
 					}
+
+					if (max > 1) {
+						cells.merge(firstRow, 14, max, 1);
+					}
+					Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
+					notice.setValue("");
+					for (int i = 0; i < max; i++) {
+						Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
+						if (i == (max - 1)) {
+							setTitleStyle(style_Form);
+						} else {
+							setTitleStyleMerge(style_Form);
+						}
+					}
+					firstRow = firstRow + max;
+				} else {
+					// IN RA CỘT THỨ 4 CỦA PHRASE I
+					for (ApproverAsApplicationInforOutput app : appLst) {
+
+						if (app.getPhaseNumber() == 0) {
+
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
+						} else if (app.getPhaseNumber() == 1) {
+
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
+						} else if (app.getPhaseNumber() == 2) {
+
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
+						} else if (app.getPhaseNumber() == 3) {
+
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
+						} else if (app.getPhaseNumber() == 4) {
+
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
+						} else if (app.getPhaseNumber() == 5) {
+
+							printEachPhrase(cells, firstRow, max, app, j);
+							if ((j + 2) < 14) {
+								j = j + 2;
+							}
+
+						}
+
+					}
+
+					if (max > 1) {
+						cells.merge(firstRow, 14, max, 1);
+					}
+					Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
+					notice.setValue("");
+					for (int i = 0; i < max; i++) {
+						Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
+						if (i == (max - 1)) {
+							setTitleStyle(style_Form);
+						} else {
+							setTitleStyleMerge(style_Form);
+						}
+					}
+					firstRow = firstRow + max;
+
 				}
-				firstRow = firstRow + max;
 
 			}
 		}
@@ -657,28 +732,81 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 	}
 
 	private void printEachPhrase(Cells cells, int firstRow, int max, ApproverAsApplicationInforOutput app, int j) {
-		if (max > 1) {
-			cells.merge(firstRow, j, max, 1, true);
-		}
-		Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
-		appPhrase.setValue(app.getApprovalForm());
-		// SET STYLE
-		for (int i = 0; i < max; i++) {
-			Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
-			if (i == (max - 1)) {
-				setTitleStyle(style_Form);
-			} else {
-				setTitleStyleMerge(style_Form);
+		if (app != null) {
+			if (max > 1) {
+				cells.merge(firstRow, j, max, 1, true);
 			}
-		}
-		// IN RA CỘT THỨ 5 CỦA PHRASE I
-		List<EmployeeOrderApproverAsAppOutput> employeelst = app.getLstEmpInfo();
-		int i = 0;
-		for (EmployeeOrderApproverAsAppOutput eName : employeelst) {
-			Cell em_name = cells.get(firstRow + i, COLUMN_INDEX[j + 1]);
-			em_name.setValue(eName.getEmployeeName());
-			setTitleStyle(em_name);
-			i++;
+			Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
+			appPhrase.setValue(app.getApprovalForm());
+			// SET STYLE
+			for (int i = 0; i < max; i++) {
+				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
+				if (i == (max - 1)) {
+					setTitleStyle(style_Form);
+				} else {
+					setTitleStyleMerge(style_Form);
+				}
+			}
+			// IN RA CỘT THỨ 5 CỦA PHRASE I
+			if (!CollectionUtil.isEmpty(app.getLstEmpInfo()) || app.getLstEmpInfo() != null) {
+				List<EmployeeOrderApproverAsAppOutput> employeelst = app.getLstEmpInfo();
+				int i = 0;
+				for (EmployeeOrderApproverAsAppOutput eName : employeelst) {
+					Cell em_name = cells.get(firstRow + i, COLUMN_INDEX[j + 1]);
+					em_name.setValue(eName.getEmployeeName());
+					setTitleStyle(em_name);
+					i++;
+
+				}
+			} else {
+				if (max > 1) {
+					for (int i = 0; i < max; i++) {
+						Cell em_name = cells.get(firstRow + i, COLUMN_INDEX[j + 1]);
+						em_name.setValue("");
+						setTitleStyle(em_name);
+
+					}
+
+				} else {
+					Cell em_name = cells.get(firstRow, COLUMN_INDEX[j + 1]);
+					em_name.setValue("");
+					setTitleStyle(em_name);
+
+				}
+
+			}
+
+		} else {
+
+			if (max > 1) {
+				cells.merge(firstRow, j, max, 1, true);
+			}
+			Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
+			appPhrase.setValue("");
+			// SET STYLE
+			for (int i = 0; i < max; i++) {
+				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
+				if (i == (max - 1)) {
+					setTitleStyle(style_Form);
+				} else {
+					setTitleStyleMerge(style_Form);
+				}
+			}
+			// IN RA CỘT THỨ 5 CỦA PHRASE I{
+			if (max > 1) {
+				for (int i = 0; i < max; i++) {
+					Cell em_name = cells.get(firstRow + i, COLUMN_INDEX[j + 1]);
+					em_name.setValue("");
+					setTitleStyle(em_name);
+
+				}
+
+			} else {
+				Cell em_name = cells.get(firstRow, COLUMN_INDEX[j + 1]);
+				em_name.setValue("");
+				setTitleStyle(em_name);
+
+			}
 
 		}
 

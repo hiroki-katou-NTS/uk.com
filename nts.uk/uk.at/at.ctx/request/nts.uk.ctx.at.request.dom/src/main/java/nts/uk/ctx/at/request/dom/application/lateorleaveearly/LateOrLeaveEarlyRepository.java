@@ -2,8 +2,8 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 
 /**

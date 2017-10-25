@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum CumulativeAtr {
-	/** 0- 累計する **/
-	ACCUMULATE(0),
-	/** 1- 累計しない **/
-	NOT_ACCUMULATE(1);
+	/** 0- 累計しない **/
+	NOT_ACCUMULATE(0),
+	/** 1- 累計する **/
+	ACCUMULATE(1);
 	
 	public final int value;
 }

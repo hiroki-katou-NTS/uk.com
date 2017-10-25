@@ -4,12 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.dto;
 
-import java.util.UUID;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -57,12 +55,12 @@ public class WorkplaceHistoryDto {
          * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento#getHistoryId()
          */
         @Override
-        public HistoryId getHistoryId() {
+        public String getHistoryId() {
             String historyId = this.workplaceHistoryDto.getHistoryId();
             if (StringUtil.isNullOrEmpty(this.workplaceHistoryDto.historyId, true)) {
-                historyId = UUID.randomUUID().toString();
+                historyId = IdentifierUtil.randomUniqueId();
             }
-            return new HistoryId(historyId);
+            return historyId;
         }
 
         /* (non-Javadoc)

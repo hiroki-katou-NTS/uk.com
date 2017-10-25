@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 /**
@@ -83,5 +84,11 @@ public class CompanyApprovalRoot extends AggregateRoot {
 		CompanyApprovalRoot com = comApprovalRoot;
 		com.period.updateStrartDate(startDate);
 		return com;
+	}
+	public static boolean checkValidate(String startDate, String endDate){
+		if(startDate.compareTo(endDate) < 0){
+			return true;
+		}
+		return false;
 	}
 }

@@ -12,7 +12,7 @@ module cps002.a.vm {
 
         date: KnockoutObservable<Date> = ko.observable(new Date());
 
-        itemList: KnockoutObservableArray<any> = ko.observableArray([
+        createTypeList: KnockoutObservableArray<any> = ko.observableArray([
             new BoxModel(1, text('CPS002_26')),
             new BoxModel(2, text('CPS002_27')),
             new BoxModel(3, text('CPS002_28'))
@@ -20,7 +20,9 @@ module cps002.a.vm {
 
         categoryList: KnockoutObservableArray<CategoryItem> = ko.observableArray([]);
 
-        initValueList: KnockoutObservableArray<InitValueSetting> = ko.observableArray([]);
+        initValueList: KnockoutObservableArray<SelectedItem> = ko.observableArray([]);
+
+        itemList: KnockoutObservableArray<Item> = ko.observableArray([]);
 
         selectedId: KnockoutObservable<number> = ko.observable(1);
 
@@ -38,32 +40,25 @@ module cps002.a.vm {
 
         currentStep: KnockoutObservable<number> = ko.observable(0);
 
-        initValueSelectedId: KnockoutObservable<string> = ko.observable('');
+        initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
+
+        currentItem: KnockoutObservable<SelectedItem> = ko.observable(new SelectedItem(null));;
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
-            isQuickSearchTab: ko.observable(true),
-            isAdvancedSearchTab: ko.observable(true),
-            isAllReferableEmployee: ko.observable(true),
-            isOnlyMe: ko.observable(true),
-            isEmployeeOfWorkplace: ko.observable(true),
-            isEmployeeWorkplaceFollow: ko.observable(true),
-            isMutipleCheck: ko.observable(true),
-            isSelectAllEmployee: ko.observable(true),
-            onSearchAllClicked: (dataList: Array<any>) => {
-                let self = this;
-            },
-            onSearchOnlyClicked: (data: any) => {
-                let self = this;
-            },
-            onSearchOfWorkplaceClicked: (dataList: Array<any>) => {
-                let self = this;
-            },
-            onSearchWorkplaceChildClicked: (dataList: Array<any>) => {
-                let self = this;
-            },
+            isQuickSearchTab: true,
+            isAdvancedSearchTab: true,
+            isAllReferableEmployee: true,
+            isOnlyMe: true,
+            isEmployeeOfWorkplace: true,
+            isEmployeeWorkplaceFollow: true,
+            isMutipleCheck: false,
+            isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
+
+
                 let self = this;
+                self.currentItem(new SelectedItem(dataEmployee[0]));
             }
         };
 
@@ -75,26 +70,48 @@ module cps002.a.vm {
 
             });
 
-            self.initValueSelectedId.subscribe((newValue) => {
+            self.initValueSelectedCode.subscribe((newValue) => {
+
+
+
+                service.getAllInitValueCtgSetting(newValue).done((result: Array<IInitValueCtgSetting>) => {
+                    self.categoryList.removeAll();
+                    if (result.length) {
+                        self.categoryList(_.map(result, item => {
+                            return new CategoryItem(item);
+                        }));
+                        self.categorySelectedId(result[0].perInfoCtgId);
+
+                    }
+
+                });
+
+                self.currentItem(_.find(self.initValueList(), item => {
+                    return item.itemCode = newValue;
+                }));
+
+            });
+
+            self.categorySelectedId.subscribe((newValue) => {
 
                 if (self.isUseInitValue()) {
-
-                    service.getAllInitValueCtgSetting(self.initValueSelectedId()).done((result: Array<IInitValueCtgSetting>) => {
-                        self.categoryList.removeAll();
+                    service.getAllInitValueItemSetting(newValue).done((result: Array<Item>) => {
+                        self.itemList.removeAll();
                         if (result.length) {
-                            self.categoryList(_.map(result, item => {
-                                return new CategoryItem(item);
+                            self.itemList(_.map(result, item => {
+                                return new Item(item);
                             }));
-                            self.categorySelectedId(result[0].perInfoCtgId);
-
-                        } else {
-
-
-
                         }
-
                     });
+                } else {
+
                 }
+            });
+
+            self.currentEmployee().avatarId.subscribe((newValue) => {
+
+                //set avatar
+                //  $("#employeeAvatar").ntsImageEditor("selectByFileId", newValue);
 
             });
 
@@ -220,6 +237,7 @@ module cps002.a.vm {
                     } else {
 
                         if (self.selectedId() === 3) {
+
                             self.gotoStep3();
                             return;
                         }
@@ -236,11 +254,23 @@ module cps002.a.vm {
 
         gotoStep1() {
 
-            $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+            let self = this;
+
+            self.currentStep(0);
         }
 
         gotoStep3() {
-            $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+
+            let self = this;
+
+            self.currentStep(2);
+            service.getSelfRoleAuth().done((result: IRoleAuth) => {
+
+                if (result.allowAvatarUpload) {
+                    //if allowAvatarUpload
+                }
+
+            });
 
 
         }
@@ -248,13 +278,13 @@ module cps002.a.vm {
 
         completeStep2() {
             let self = this;
-            if (self.currentEmployee().employeeId) {
+            if (!self.currentEmployee().employeeId && !self.isUseInitValue()) {
 
-                dialog({ messageId: "Msg_344" });
+                dialog({ messageId: "Msg_349" });
 
             } else {
 
-                $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+                self.gotoStep3();
 
             }
         }
@@ -267,54 +297,82 @@ module cps002.a.vm {
 
         gotoStep2() {
             let self = this;
-            $('#emp_reg_info_wizard').ntsWizard("goto", 1);
 
-            //start Screen B
-            if (!self.isUseInitValue()) {
-
-                $('#search_panel').hide();
+            self.currentStep(1);
 
 
-                service.getCopySetting().done((result: Array<ICopySetting>) => {
-                    self.categoryList.removeAll();
-                    if (result.length) {
-                        self.categoryList(_.map(result, item => {
-                            return new CategoryItem(item);
-                        }));
+            if (self.isUseInitValue()) {
 
-                        self.categorySelectedId(result[0].id);
-                    }
-                    $('#emp_reg_info_wizard').ntsWizard("goto", 1);
-                }).fail((error) => {
-
-                    dialog({ messageId: error.message });
-
-                });
-
-            } else {
                 //start Screen C
 
                 $('#search_panel').show();
 
-                service.getAllInitValueSetting().done((result: Array<IInitValueSetting>) => {
-                    if (result.length) {
-                        self.initValueList(_.map(result, item => {
-                            return new InitValueSetting(item);
-                        }));
+                self.loadInitValueData();
 
-                        self.initValueSelectedId(result[0].settingId);
-                    }
-                }).fail((error) => {
-                    dialog({ messageId: error.message }).then(() => {
-                        self.gotoStep1()
-                    });
+            } else {
 
-                });
+                //start Screen B
 
+                $('#search_panel').hide();
 
+                self.loadCopySettingData();
 
             }
 
+
+        }
+
+        loadCopySettingData() {
+
+            let self = this;
+
+            service.getCopySetting().done((result: Array<ICopySetting>) => {
+                self.categoryList.removeAll();
+                if (result.length) {
+                    self.categoryList(_.map(result, item => {
+                        return new CategoryItem(item);
+                    }));
+
+                    self.categorySelectedId(result[0].id);
+                }
+
+            }).fail((error) => {
+
+                dialog({ messageId: error.message }).then(() => {
+
+                    // self.gotoStep1();
+
+                });
+
+            });
+
+        }
+
+        loadInitValueData() {
+
+            let self = this;
+            service.getAllInitValueSetting().done((result: Array<IInitValueSetting>) => {
+                if (result.length) {
+                    self.initValueList(_.map(result, item => {
+                        return new SelectedItem(item);
+                    }));
+
+                    let lastValueItem = _.find(result, (item) => {
+
+                        return item.settingCode == self.currentEmployee().initvalueCode;
+                    });
+
+
+                    self.initValueSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
+
+
+                }
+            }).fail((error) => {
+                dialog({ messageId: error.message }).then(() => {
+                    //   self.gotoStep1();
+                });
+
+            });
 
         }
 
@@ -333,8 +391,14 @@ module cps002.a.vm {
 
             let self = this;
 
-            nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(function(): any {
-                $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+            nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                if (getShared('isContinue')) {
+
+                    self.gotoStep1();
+
+                } else {
+                    jump('/view/cps/001/a/index.xhtml');
+                }
             });
         }
 
@@ -342,7 +406,7 @@ module cps002.a.vm {
 
             let self = __viewContext['viewModel'];
             setShared("cardNoMode", param === 'true' ? true : false);
-            subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(function(): any {
+            subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
                     currentEmp = self.currentEmployee();
@@ -355,10 +419,7 @@ module cps002.a.vm {
 
             let self = this;
 
-            subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(function(): any {
-
-
-
+            subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(() => {
 
             });
         }
@@ -367,9 +428,9 @@ module cps002.a.vm {
 
             let self = this;
 
-            subModal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(function(): any {
+            subModal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(() => {
 
-                if (true) {
+                if (getShared("userSettingStatus")) {
                     service.getUserSetting().done((result: IUserSetting) => {
 
                         self.getLastRegHistory(result);
@@ -379,6 +440,22 @@ module cps002.a.vm {
                 }
 
             });
+        }
+
+        OpenIModal() {
+            let self = this;
+            setShared("imageId", self.currentEmployee().avatarId());
+
+            subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
+
+                let imageResult = getShared("imageId");
+
+                if (imageResult) {
+                    self.currentEmployee().avatarId(imageResult);
+                }
+
+            });
+
         }
 
 
@@ -407,6 +484,8 @@ module cps002.a.vm {
         hireDate: KnockoutObservable<Date> = ko.observable(new Date());
         cardNo: KnockoutObservable<string> = ko.observable("");
         employeeId: string;
+        initvalueCode: string;
+        avatarId: KnockoutObservable<string> = ko.observable("");
 
         constructor(param?) {
         }
@@ -437,20 +516,23 @@ module cps002.a.vm {
 
     }
 
-    class InitValueSetting {
+    class SelectedItem {
 
-        settingId: string;
-        settingCode: string;
-        settingName: string;
+        itemId: string = '';
+        itemCode: string = '';
+        itemName: string = '';
 
-        constructor(param?: IInitValueSetting) {
+        constructor(param?: any) {
 
-            this.settingId = param ? param.settingId : '';
-            this.settingCode = param ? param.settingCode : '';
-            this.settingName = param ? param.settingName : '';
+            this.itemId = param ? param.settingId ? param.settingId : param.employeeId : '';
+            this.itemCode = param ? param.settingCode ? param.settingCode : param.employeeCode : '';
+            this.itemName = param ? param.settingName ? param.settingName : param.employeeName : '';
         }
 
     }
+
+
+
 
     interface IInitValueCtgSetting {
 
@@ -476,6 +558,16 @@ module cps002.a.vm {
         }
     }
 
+    class Item {
+        id: string;
+        name: string;
+        constructor(param?: any) {
+            this.id = param ? param.perInfoCtgId ? param.perInfoCtgId : param.id : '';
+            this.name = param ? param.categoryName ? param.categoryName : param.name : '';
+
+        }
+    }
+
     class EmpRegHistory {
 
         registeredEmployeeID: string;
@@ -489,6 +581,16 @@ module cps002.a.vm {
             this.lastRegEmployeeID = param ? param.lastRegEmployeeID : '';
 
         }
+    }
+
+    interface IRoleAuth {
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
+
     }
 
 

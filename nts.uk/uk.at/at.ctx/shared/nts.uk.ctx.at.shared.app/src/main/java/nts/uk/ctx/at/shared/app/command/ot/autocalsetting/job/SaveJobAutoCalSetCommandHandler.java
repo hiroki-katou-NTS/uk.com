@@ -39,7 +39,7 @@ public class SaveJobAutoCalSetCommandHandler extends CommandHandler<JobAutoCalSe
         JobAutoCalSetCommand command = context.getCommand();
         
         // Find details
-        Optional<JobAutoCalSetting> result = this.jobAutoCalSettingRepo.getAllJobAutoCalSetting(companyId, command.getJobId());
+        Optional<JobAutoCalSetting> result = this.jobAutoCalSettingRepo.getJobAutoCalSetting(companyId, command.getJobId());
 
         // Convert to domain
         JobAutoCalSetting jobAutoCalSetting = command.toDomain(companyId);

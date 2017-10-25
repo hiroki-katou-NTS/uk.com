@@ -3,8 +3,8 @@ module cps001.b.service {
     import format = nts.uk.text.format;
 
     let paths : any = {
-        'getDetails': 'basic/organization/employee/getemployeetodelete/{0}',
-        'deleteEmp': 'basic/organization/employee/deleteemployee',
+        'getDetails': 'basic/organization/deleteempmanagement/getemployeetodelete/{0}',
+        'deleteEmp': 'basic/organization/deleteempmanagement/deleteemployee',
     };
 
 

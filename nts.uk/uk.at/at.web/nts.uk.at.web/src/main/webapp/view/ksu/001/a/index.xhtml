@@ -60,7 +60,7 @@
 				<div id="popup-area3" class="popup-area popup-panel"
 					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 280px">
 					<span id="alarm-check-explanation">#{i18n.getText('KSU001_18')}</span>
-					<table tabindex="8" id="multi-list"
+					<!-- <table tabindex="8" id="multi-list"
 						data-bind="ntsGridList: {
 							height: 385,
 							options: items,
@@ -68,7 +68,20 @@
 							columns: columns,
 							multiple: true,
 							value: currentCodeList}">
-					</table>
+					</table> -->
+					<table id="treegrid"
+						data-bind="ntsTreeGridView:{
+							width: 300,
+							height: 390,
+							options: itemsTree,
+							selectedValues: selectedCodeTree,
+							optionsValue: 'code',
+							optionsChild: 'childs',
+							optionsText: 'nodeText',
+							multiple: true,
+							enable: true,
+							showCheckBox: true}">
+					</table>	
 					<button tabindex="9" class="proceed execution-popup3"
 						data-bind="click: openDialogC">#{i18n.getText('KSU001_21')}</button>
 				</div>

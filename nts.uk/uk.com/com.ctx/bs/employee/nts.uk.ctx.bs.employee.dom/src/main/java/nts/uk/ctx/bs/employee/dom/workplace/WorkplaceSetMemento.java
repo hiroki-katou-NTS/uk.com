@@ -23,7 +23,7 @@ public interface WorkplaceSetMemento {
 	 *
 	 * @param workplaceId the new workplace id
 	 */
-	public void setWorkplaceId(WorkplaceId workplaceId);
+	public void setWorkplaceId(String workplaceId);
 	
 	/**
 	 * Sets the workplace history.

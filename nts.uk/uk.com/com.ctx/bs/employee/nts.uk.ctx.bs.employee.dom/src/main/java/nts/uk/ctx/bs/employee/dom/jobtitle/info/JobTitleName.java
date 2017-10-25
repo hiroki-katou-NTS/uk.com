@@ -11,6 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class PositionName.
  */
 @StringMaxLength(20)
+// 職位名称
 public class JobTitleName extends StringPrimitiveValue<JobTitleName> {
 
 	/** The Constant serialVersionUID. */

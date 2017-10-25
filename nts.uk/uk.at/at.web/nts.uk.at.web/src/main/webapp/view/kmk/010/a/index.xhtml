@@ -18,6 +18,7 @@
 					nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote
 					nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumRate
 					nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHDOccUnit
+					nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeValue
 				</com:ValidatorScript>
 			</ui:define>
 	
@@ -75,7 +76,7 @@
 													mode: 'time',
 													required: true,
 													enable: $parents[1].isEditable,
-													constraint: 'MonthlyEstimateTime'}" />
+													constraint: 'OvertimeValue'}" />
 												<label>#{i18n.getText('KMK010_14')}</label>
 											</div>
 										</td>
@@ -101,8 +102,8 @@
 								<tr class="bg-dark-green">
 									<com:ko tag="if" bind="$parent.isManage()">
 										<com:ko tag="foreach" bind="overtimes">
-											<td>
-												<div tabindex="10" data-bind="ntsCheckBox: { checked: superHoliday60HOccurs,name: '#[KMK010_20]' }">#{i18n.getText('KMK010_20')}</div>
+											<td class="selectionVaction">
+												<div tabindex="10" data-bind="ntsCheckBox: { checked: superHoliday60HOccurs,name: '#[KMK010_20]' }"><label>#{i18n.getText('KMK010_20')}</label></div>
 											</td>
 										</com:ko>
 									</com:ko>
@@ -129,14 +130,15 @@
 											<com:ko tag="foreach" bind="rateBRDItems">
 												<td>
 													<div>
-														<input class="overtime" tabindex="11" 
-															data-bind="ntsNumberEditor: {name: '#[KMK010_21]',
+													<input class="rate" tabindex="11"
+														data-bind="ntsNumberEditor: {name: '#[KMK010_21]',
 															value: premiumRate,
 															constraint: 'PremiumRate',
+															option: { defaultValue: 0},
 															enable: enableInput,
 															required: true
 															}" />
-														<label>#{i18n.getText('KMK010_22')}</label>
+													<label>#{i18n.getText('KMK010_22')}</label>
 													</div>
 												</td>
 											</com:ko>
@@ -177,7 +179,7 @@
 										]}"></div>
 										
 										<div tabindex="13" class="selectRounding" data-bind="ntsComboBox: {
-										options: $parent.lstRounding,
+										options: $parent.lstRoundingSet,
 										optionsValue: 'value',
 										visibleItemsCount: 10,
 										value: $parent.superHD60HConMedModel.rounding,

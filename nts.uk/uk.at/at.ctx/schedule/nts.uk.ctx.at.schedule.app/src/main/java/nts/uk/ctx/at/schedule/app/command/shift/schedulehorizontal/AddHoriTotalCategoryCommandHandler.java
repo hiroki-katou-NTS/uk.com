@@ -34,7 +34,7 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 			throw new BusinessException("Msg_3");
 		}
 		// check list 集計項目一覧 exsisted or not
-		if(data.getTotalEvalOrders() == null){
+		if(data.getTotalEvalOrders() == null || data.getTotalEvalOrders().size() == 0){
 			throw new BusinessException("Msg_363");
 		}
 		// get total eval order list

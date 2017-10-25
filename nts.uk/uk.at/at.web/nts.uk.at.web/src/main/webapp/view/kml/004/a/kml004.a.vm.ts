@@ -11,12 +11,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
         selectedCode: KnockoutObservable<string>;
         // selected item
         selectedOption: KnockoutObservable<TotalCategory>;    
-        // check new mode or not
-        check: KnockoutObservable<boolean>;
-        // check update or insert
+        // check update or insert true: insert, false: update
         checkUpdate: KnockoutObservable<boolean>;
-        // check enable delete button
-        checkDelete: KnockoutObservable<boolean>;
         // list eval item in the left
         items: KnockoutObservableArray<IEvalOrder>;
         // column order in the right
@@ -50,19 +46,19 @@ module nts.uk.at.view.kml004.a.viewmodel {
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_6"), key: 'categoryCode', width: 50 },
+                { headerText: nts.uk.resource.getText("KML004_6"), key: 'categoryCode', width: 50},
                 { headerText: nts.uk.resource.getText("KML004_7"), key: 'categoryName', width: 250, formatter: _.escape}
             ]);
             
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 70 },
+                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 70},
                 { headerText: nts.uk.resource.getText("KML004_15"), key: 'totalItemName', width: 150, formatter: _.escape}
             ]);
             
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 70 },
-                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 150},
-                { headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 90, unbound: true, dataType: "string", 
+                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 70},
+                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 150, formatter: _.escape},
+                { headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 90, unbound: true, dataType: "string",
                      template : '{{if ${totalItemNo} == "3" || ${totalItemNo} == "21" || ${totalItemNo} == "22"}} <button class="setting" onclick="openDlg(this)" data-code="${totalItemNo}" data-name="${totalItemName}" style="margin-left: 7px;">設定</button> {{/if}}',    
                 }
             ]);   
@@ -76,9 +72,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 totalEvalOrders: [],
             }
             self.selectedOption = ko.observable(new TotalCategory(param));
-            self.check = ko.observable(false);
-            self.checkUpdate = ko.observable(true);
-            self.checkDelete = ko.observable(true);
+            self.checkUpdate = ko.observable(false);
             self.calSetObject = ko.observable(null);  
             self.items = ko.observableArray([]);
             self.currentCodeList = ko.observableArray([]);  
@@ -92,9 +86,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.cntSetls = ko.observableArray(null);
             self.cntReceived = ko.observableArray([]);
             self.cntSetAll = ko.observableArray([]);
-            
             self.selectedCode.subscribe((value) => {
-                var t0 = performance.now(); 
                 self.list([]);
                 self.items([]);
                 let lstTemp = [];
@@ -103,15 +95,15 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         return item.categoryCode == value;
                     });
                     nts.uk.ui.errors.clearAll();
-                    self.checkUpdate(true);
-                    self.checkDelete(true);
-                    self.check(false);
-
-                    self.selectedOption(new TotalCategory(foundItem));
-                    
+                    self.checkUpdate(false);
+                    self.selectedOption().categoryCode(foundItem.categoryCode);
+                    self.selectedOption().categoryName(foundItem.categoryName);
+                    self.selectedOption().memo(foundItem.memo);
+                    self.selectedOption().totalEvalOrders(foundItem.totalEvalOrders);
                     // right grid
                     var totalItemOrders = [];
-                    _.forEach(foundItem.totalEvalOrders, function(item: IEvalOrder) {
+                    let sortedData = _.orderBy(foundItem.totalEvalOrders, ['dispOrder'], ['asc']);    
+                    _.forEach(sortedData, function(item: IEvalOrder) {
                         let foundItemOrder: IEvalOrder = _.find(self.listEval(), (itemDB: IEvalOrder) => {
                             return itemDB.totalItemNo == item.totalItemNo;
                         });  
@@ -126,48 +118,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     self.items(_.filter(self.evalItems(), function(item) {
                        return _.indexOf(totalItemNoList, item.totalItemNo) < 0;   
                     }));
-                    
-//                    self.newItems(self.selectedOption().totalEvalOrders());
-//                    for(let k = 0; k<self.newItems().length; k++){
-//                        if(self.newItems()[k] != undefined){
-//                            for(let i = 0; i<self.listEval().length; i++){
-//                                if(self.newItems()[k].totalItemNo == self.listEval()[i].totalItemNo){
-//                                    self.list().push(self.listEval()[i]);    
-//                                }  
-//                            }
-//                        }
-//                    }
-//                    self.newItems(self.list());
-//                    var totalItemNoList = _.map(self.newItems(), function(item) { return item.totalItemNo; });
-//                    self.items(_.filter(self.evalItems(), function(item) {
-//                       return _.indexOf(totalItemNoList, item.totalItemNo) < 0;   
-//                    }));
-//                    self.check(false);
-//                    self.calSetObject(_.find(self.calDaySetList(), function(a){
-//                        return (a.categoryCode == self.selectedOption().categoryCode() && a.totalItemNo == 3);
-//                    }));
-//                    
-//                    self.id2122(_.filter(self.cntSetAll(), function(obj){
-//                        return (obj.categoryCode == self.selectedOption().categoryCode() && (obj.totalItemNo == 21 || obj.totalItemNo == 22));
-//                    }))
-//                    
-//                    _.map(foundItem.totalEvalOrders, function(item){
-//                         if(item != undefined){
-//                            lstTemp.push({
-//                                categoryCode: item.categoryCode,
-//                                totalItemNo: item.totalItemNo,
-//                                dispOrder: item.dispOrder,
-//                                horiCalDaysSet: self.calSetObject(),                            
-//                                cntSetls: self.id2122(), 
-//                            }) 
-//                         } 
-//                    })
-//                    foundItem.totalEvalOrders = lstTemp;
-//                    self.selectedOption(new TotalCategory(foundItem));
-//                    foundItem.totalEvalOrders.horiCalDaysSet = self.calSetObject();
                 }
-                var t1 = performance.now();
-                console.log("Selection process " + (t1 - t0) + " milliseconds.");
+                $("#nameCtg").focus();
             });
         }
 
@@ -195,6 +147,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let array = [];
             service.getItem().done((lstItem) => {
                 if(lstItem.length == 0){
+                    lstItem = [];
                     nts.uk.ui.dialog.info({ messageId: "Msg_458" });    
                 } else {
                     let sortedData = _.orderBy(lstItem, ['totalItemNo'], ['asc']);
@@ -233,16 +186,14 @@ module nts.uk.at.view.kml004.a.viewmodel {
         
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
             let array=[];
+            let sortedData = [];
             $.when(self.getCal(), self.getCNT(), self.getEvalItem(), self.getData()).done(function(){
-                if(self.checkUpdate() == true){
-                    
-                }
                 if(self.lstCate().length == 0){
                     self.clearForm();
-                    self.checkDelete(false);  
                 }else{
                     self.selectedCode(self.lstCate()[0].categoryCode);
                     _.map(self.lstCate(), function(item) {
@@ -252,9 +203,10 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             memo: item.memo,
                             totalEvalOrders: item.totalEvalOrders
                         });
-                    }); 
-                    self.lstCate(array); 
+                    });
+                    self.lstCate(array);
                 }
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();    
@@ -264,6 +216,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
         
         /** update or insert data when click button register **/
         register() {
+            nts.uk.ui.block.invisible();
             let self = this;
             let code = "";  
             let temp = [];
@@ -272,111 +225,72 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let pic = null;
             $("#code-text").trigger("validate");
             $("#nameCtg").trigger("validate");
-            
-//            for(let i = 0; i < self.newItems().length; i++){
-//                self.newItems()[i].dispOrder = i;
-//                let tam = self.selectedOption().totalEvalOrders();
-//                if(self.cntSetls().length > 0){
-//                    for(let k = 0; k < self.cntSetls().length; k ++){
-//                        if(self.cntSetls()[k].totalItemNo == self.newItems()[i].totalItemNo){
-//                            array.push(self.cntSetls()[k]);
-//                        }    
-//                    }
-//                    self.newItems()[i].cntSetls = array;
-//                    if(tam != null && tam.length > 0){
-//                        tam[i].cntcntSetls = array;
-//                        self.newItems(tam);
-//                    }
-//                    array =[];
-//                    if(self.calSetReceive() != null && (self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo)){
-//                        self.newItems()[i].horiCalDaysSet = self.calSetReceive();   
-//                    } 
-//                }
-//                else if(self.calSetReceive() != null && (self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo)){
-//                    self.newItems()[i].horiCalDaysSet = self.calSetReceive();   
-//                    if(self.cntSetls().length > 0){
-//                        for(let k = 0; k < self.cntSetls().length; k ++){
-//                            if(self.cntSetls()[k].totalItemNo == self.newItems()[i].totalItemNo){
-//                                array.push(self.cntSetls()[k]);
-//                            }    
-//                        }
-//                        self.newItems()[i].cntSetls = array;
-//                        if(tam != null && tam.length > 0){
-//                            tam[i].cntcntSetls = array;
-//                            self.newItems(tam);
-//                        }
-//                        array =[];
-//                        if(self.calSetReceive() != null && (self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo)){
-//                            self.newItems()[i].horiCalDaysSet = self.calSetReceive();   
-//                        } 
-//                    }
-//                } 
-//                else {
-//                    self.newItems(self.selectedOption().totalEvalOrders()); 
-//                }
-//            }
-//            
-            _.map(self.selectedOption().totalEvalOrders(), function(item) {
+            var i = 0;
+            _.forEach(self.selectedOption().totalEvalOrders(), function(item) {
                 part.push({
                     categoryCode: self.selectedOption().categoryCode(),
                     totalItemNo: item.totalItemNo,
                     totalItemName: item.totalItemName,
-                    dispOrder: 0,
+                    dispOrder: i,
                     horiCalDaysSet: item.horiCalDaysSet,
                     cntSetls: item.cntSetls,   
                 });
+                i = i + 1;
             });
             self.selectedOption().totalEvalOrders(part);
-            for(let i = 0; i < self.selectedOption().totalEvalOrders().length; i++){
-                self.selectedOption().totalEvalOrders()[i].dispOrder = i;    
-            }
             let param: ITotalCategory ={
                 categoryCode: self.selectedOption().categoryCode(),
                 categoryName: self.selectedOption().categoryName(),
                 memo: self.selectedOption().memo(),
                 totalEvalOrders: ko.toJS(self.selectedOption().totalEvalOrders()),
             }
+            if(nts.uk.ui.errors.hasError()){
+                return;    
+            }
             _.defer(() => {
-                if (nts.uk.ui.errors.hasError() === false) {
-                    // update item to list  
-                    if(self.checkUpdate() == true){
-                        service.update(ko.toJS(param)).done(function(){
-                            self.lstCate([]);
-                            self.getData().done(function(){
-                                self.selectedCode(null);
-                                self.selectedCode(param.categoryCode);
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
-                                 $("#nameCtg").focus();
-                            });
-                        }).fail(function(res){
-                            nts.uk.ui.dialog.alertError(res.message);
+                // update item to list  
+                if(self.checkUpdate() == false){
+                    service.update(ko.toJS(param)).done(function(){
+                        self.lstCate([]);
+                        self.getData().done(function(){
+                            self.selectedCode(null);
+                            self.selectedCode(param.categoryCode);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
+                             $("#nameCtg").focus();
+                            nts.uk.ui.block.clear(); 
                         });
-                    }
-                    else{
-                        // insert item to list
-                        service.add(ko.toJS(param)).done(function(){
-                            self.lstCate([]);
-                            self.getData().done(function(){
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                                self.selectedCode(null);
-                                self.selectedCode(param.categoryCode); 
-                                 $("#nameCtg").focus(); 
-                            });
-                        }).fail(function(res){
-                            $('#code-text').ntsError('set', res);
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.block.clear(); 
+                    });
+                }
+                else{
+                    // insert item to list
+                    service.add(ko.toJS(param)).done(function(){
+                        self.lstCate([]);
+                        self.getData().done(function(){
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.selectedCode(null);
+                            self.selectedCode(param.categoryCode); 
+                             $("#nameCtg").focus(); 
+                            nts.uk.ui.block.clear(); 
                         });
-                    }
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.block.clear(); 
+                    });
                 }
             });    
-            self.cntReceived([]);     
+            self.cntReceived([]); 
+               
         } 
         //  new mode  
-        newMode(){               
+        newMode(){    
+            nts.uk.ui.block.invisible();           
             let self = this;
             let dfd = $.Deferred();
             $("#code-text").ntsError('clear');  
             self.clearForm();
-            self.checkDelete(false);
             self.items(self.items());
             self.newItems([]);
             service.getItem().done((lstItem) => {
@@ -389,9 +303,11 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         self.items.push(item);
                     });
                 }
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
+            
         }
         
         clearForm() {
@@ -400,8 +316,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.selectedOption().categoryName("");
             self.selectedOption().memo("");
             self.selectedOption().totalEvalOrders([]);
-            self.check(true);
-            self.checkUpdate(false);
+            self.checkUpdate(true);
             self.selectedCode("");
             $("#code-text").focus(); 
             nts.uk.ui.errors.clearAll();                 
@@ -409,6 +324,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
         
         /** remove item from list **/
         remove(){
+            nts.uk.ui.block.invisible();
             let self = this;
             let count = 0;
             for (let i = 0; i <= self.lstCate().length; i++){
@@ -424,7 +340,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         // if number of item from list after delete == 0 
                         if(self.lstCate().length==0){
                             self.newMode();
-                            self.checkDelete(false);
                             return;
                         }
                         // delete the last item
@@ -443,26 +358,25 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             return;
                         }
                     })
-                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.block.clear();
                 })
-            }).ifCancel(() => {     
+            }).ifCancel(() => {  
+                nts.uk.ui.block.clear();   
             }); 
             $("#code-text").focus();
         }
         
         /** click close button **/
-        close(){
-            var t0 = performance.now();               
+        closeDialog(){
             nts.uk.ui.windows.close();
             var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         } 
         
         /** click 設定 button **/
         openBDialog(itemNo: number) {
             let self = this;
             var horiCalDaysSet: CalDaySet = null;
-            
             var currentEvalOrder: EvalOrder = _.find(self.selectedOption().totalEvalOrders(), function(item) {
                 return item.totalItemNo == itemNo;  
             });
@@ -533,32 +447,13 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     totalEvalOrders.push(evalOrder);
                });
                self.selectedOption().totalEvalOrders(totalEvalOrders);
-                
-//                for (let k = 0; k< self.cntReceived().length; k++){
-//                    for(let a = 0; a < sets.length; a++){
-//                        _.remove(self.cntReceived(), function(n){
-//                            return (n.categoryCode == sets[a].categoryCode && n.totalItemNo == sets[a].totalItemNo); 
-//                        });     
-//                    }
-//                }
-//                for(let i = 0; i < sets.length; i ++){
-//                    self.cntReceived().push(sets[i]);    
-//                }
-//                self.cntSetls([]);
-//                _.map(self.cntReceived(), function(item) {
-//                    self.cntSetls.push({
-//                        categoryCode: item.categoryCode,
-//                        totalItemNo: item.totalItemNo,
-//                        totalTimeNo: item.totalTimeNo     
-//                    });
-//                });    
             });
         }    
         
         openDialog(id, name) {
             var self = this;
             if ("3" == id) {
-                self.openBDialog(id);
+                self.openBDialog(id);  
             } else if("21" == id || "22" == id) {
                 self.openDDialog(id);
             }

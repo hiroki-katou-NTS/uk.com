@@ -14,13 +14,13 @@ public enum OperatorAtr {
 	ADD(0, "Enum_OperatorAtr_ADD", "+"),
 
 	/** The subtract. */
-	SUBTRACT(1, "Enum_OperatorAtr_ADD", "-"),
+	SUBTRACT(1, "Enum_OperatorAtr_SUBTRACT", "-"),
 
 	/** The multiply. */
-	MULTIPLY(2, "Enum_OperatorAtr_ADD", "*"),
+	MULTIPLY(2, "Enum_OperatorAtr_MULTIPLY", "*"),
 
 	/** The divide. */
-	DIVIDE(3, "Enum_OperatorAtr_ADD", "/");
+	DIVIDE(3, "Enum_OperatorAtr_DIVIDE", "/");
 
 	/** The value. */
 	public int value;

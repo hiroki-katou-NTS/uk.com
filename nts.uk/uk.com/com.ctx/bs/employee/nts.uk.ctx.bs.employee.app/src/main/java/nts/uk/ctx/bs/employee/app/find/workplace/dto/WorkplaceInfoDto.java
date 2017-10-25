@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
@@ -70,8 +68,8 @@ public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
      * (nts.uk.ctx.bs.employee.dom.workplace.HistoryId)
      */
     @Override
-    public void setHistoryId(HistoryId historyId) {
-        this.historyId = historyId.v();
+    public void setHistoryId(String historyId) {
+        this.historyId = historyId;
     }
 
     /*
@@ -81,8 +79,8 @@ public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
      * setWorkplaceId(nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId)
      */
     @Override
-    public void setWorkplaceId(WorkplaceId workplaceId) {
-        this.workplaceId = workplaceId.v();
+    public void setWorkplaceId(String workplaceId) {
+        this.workplaceId = workplaceId;
     }
 
     /*

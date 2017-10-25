@@ -33,7 +33,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		AddItemCommand addItemCommand = context.getCommand();
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(addItemCommand.getPerInfoCtgId(), addItemCommand.getItemName(), "")) {
-			throw new BusinessException(new RawErrorMessage("Msg_215"));
+			throw new BusinessException(new RawErrorMessage("Msg_358"));
 		}
 		PersonInfoCategory perInfoCtg = this.perInfoCtgRep
 				.getPerInfoCategory(addItemCommand.getPerInfoCtgId(), contractCd).orElse(null);

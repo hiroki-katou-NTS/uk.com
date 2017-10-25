@@ -15,6 +15,6 @@ import nts.arc.time.GeneralDate;
 @Setter
 public class WkpConfigInfoFindObject {
 
-	/** The start date. */
-	private GeneralDate startDate;
+	/** The base date. */
+	private GeneralDate baseDate;
 }

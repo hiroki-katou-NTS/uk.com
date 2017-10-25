@@ -13,12 +13,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
@@ -70,7 +70,7 @@ public class ActualLockFinder1 {
 		// FindAll Closure
 		List<Closure> closureList = this.closureRepo.findAll(companyId);
 		
-		closureList.stream().filter(closure -> {
+		List<Closure> filtedList = closureList.stream().filter(closure -> {
 			Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
 					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
 			// Check exist
@@ -78,24 +78,14 @@ public class ActualLockFinder1 {
 				return false;
 			} else {
 				return (closure.getUseClassification().value == UseClassification.UseClass_Use.value);
-				// Get ClosureHistory
-//				ClosureHistory closureHistory = closureHistOpt.get();
-//				int startYM = closureHistory.getStartYearMonth().v();
-//				int endYM = closureHistory.getEndYearMonth().v();
-//				int currentYM = closure.getClosureMonth().getProcessingYm().v();
-//				if (!(startYM <= currentYM && currentYM <= endYM)) {
-//					return false;
-//				} else {
-//					return (closure.getUseClassification().value == UseClassification.USE.value);
-//				}
 			}
 		}).collect(Collectors.toList());
 		
 		// Check isEmpty
-		if (CollectionUtil.isEmpty(closureList)) {
+		if (CollectionUtil.isEmpty(filtedList)) {
 			throw new BusinessException("Msg_183");
 		} else {
-			closureList.stream().forEach(c -> {
+			filtedList.stream().forEach(c -> {
 				ActualLockFinderDto dto = new ActualLockFinderDto();
 				// Find ClosureHistory
 				Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
@@ -108,8 +98,13 @@ public class ActualLockFinder1 {
 				// Set Dto
 				dto.setClosureId(ClosureId.valueOf(c.getClosureId()));
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
-				dto.setDailyLockState(actualLockOpt.get().getDailyLockState());
-				dto.setMonthlyLockState(actualLockOpt.get().getMonthlyLockState());
+//				dto.setDailyLockState(actualLockOpt.get().getDailyLockState());
+//				dto.setMonthlyLockState(actualLockOpt.get().getMonthlyLockState());
+				dto.setDailyLockState(
+						actualLockOpt.isPresent() ? actualLockOpt.get().getDailyLockState() : LockStatus.UNLOCK);
+				dto.setMonthlyLockState(
+						actualLockOpt.isPresent() ? actualLockOpt.get().getMonthlyLockState() : LockStatus.UNLOCK);
+				
 				// Add ActualLockFinderDto to Target List
 				actualList.add(dto);
 			});
@@ -168,6 +163,26 @@ public class ActualLockFinder1 {
 		
 		// Convert to Dto
 		return filtedList.stream().map(actualLockHist -> {
+			ActualLockHistFindDto dto = new ActualLockHistFindDto();
+			actualLockHist.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+
+	}
+	
+	public List<ActualLockHistFindDto> findHistByClosure(int closureId, int targetMonth) {
+		// Get LoginUserContext
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// CompanyId
+		String companyId = loginUserContext.companyId();
+		
+		// FindAll ActualLock By ClosureId
+		List<ActualLockHistory> actualLockHistList = this.actualLockHistRepo.findByTargetMonth(companyId, closureId,
+				targetMonth);
+		
+		// Convert to Dto
+		return actualLockHistList.stream().map(actualLockHist -> {
 			ActualLockHistFindDto dto = new ActualLockHistFindDto();
 			actualLockHist.saveToMemento(dto);
 			return dto;

@@ -6,8 +6,6 @@ package nts.uk.ctx.bs.employee.app.command.workplace.info;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
@@ -90,16 +88,16 @@ public class RegisterWorkplaceInfoCommand {
 		 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoGetMemento#getHistoryId()
 		 */
 		@Override
-		public HistoryId getHistoryId() {
-			return new HistoryId(this.workplaceInfoCommand.getHistoryId());
+		public String getHistoryId() {
+			return this.workplaceInfoCommand.getHistoryId();
 		}
 
 		/* (non-Javadoc)
 		 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoGetMemento#getWorkplaceId()
 		 */
 		@Override
-		public WorkplaceId getWorkplaceId() {
-			return new WorkplaceId(this.workplaceInfoCommand.getWorkplaceId());
+		public String getWorkplaceId() {
+			return this.workplaceInfoCommand.getWorkplaceId();
 		}
 
 		/* (non-Javadoc)

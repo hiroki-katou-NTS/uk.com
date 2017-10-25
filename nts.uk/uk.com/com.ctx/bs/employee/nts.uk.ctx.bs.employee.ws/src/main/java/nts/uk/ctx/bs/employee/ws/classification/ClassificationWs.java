@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -23,7 +24,7 @@ import nts.uk.ctx.bs.employee.app.find.classification.dto.ClassificationFindDto;
 /**
  * The Class ManagementCategoryWs.
  */
-@Path("basic/employee/classification")
+@Path("bs/employee/classification")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClassificationWs extends WebService{
 
@@ -39,6 +40,7 @@ public class ClassificationWs extends WebService{
 	@Inject
 	private ClfRemoveCommandHandler removeHandler;
 	
+	
 	/**
 	 * Find all.
 	 *
@@ -48,6 +50,17 @@ public class ClassificationWs extends WebService{
 	@POST
 	public List<ClassificationFindDto> findAll() {
 		return this.finder.findAll();
+	}
+	
+	/**
+	 * Find classification.
+	 *
+	 * @return the item
+	 */
+	@Path("find/{classificationCode}")
+	@POST
+	public ClassificationFindDto findByCode(@PathParam("classificationCode") String code) {
+		return this.finder.findClassificationByCode(code);
 	}
 	
 	/**

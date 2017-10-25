@@ -13,11 +13,29 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 @AllArgsConstructor
 public class ShiftCondition extends AggregateRoot {
+	/**
+	 * 会社ID
+	 */
 	private String companyId;
+	/**
+	 * カテゴリNO
+	 */
 	private int categoryNo;
+	/**
+	 * 条件NO
+	 */
 	private int conditionNo;
+	/**
+	 * 条件エラーメッセージ
+	 */
 	private ShiftConditionErrorMessage conditionErrorMessage;
+	/**
+	 * 条件名称
+	 */
 	private ShiftConditionName conditionName;
+	/**
+	 * 条件詳細NO
+	 */
 	private int conditionDetailsNo;
 
 	public static ShiftCondition createFromJavaType(String companyId, int categoryNo, int conditionNo,

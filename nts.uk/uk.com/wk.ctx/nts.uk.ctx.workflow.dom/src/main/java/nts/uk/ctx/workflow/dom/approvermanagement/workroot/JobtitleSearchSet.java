@@ -26,4 +26,8 @@ public class JobtitleSearchSet extends AggregateRoot{
 				jobId,
 				EnumAdaptor.valueOf(searchSetFlg, SearchSetFlg.class));
 	}
+	
+	public boolean needsSearch() {
+		return this.searchSetFlg == SearchSetFlg.TODO;
+	}
 }

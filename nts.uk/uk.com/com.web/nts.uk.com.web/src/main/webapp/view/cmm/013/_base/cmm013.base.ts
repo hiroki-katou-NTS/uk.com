@@ -6,6 +6,8 @@ module nts.uk.com.view.cmm013 {
          * Constants
          */
         export class Constants {           
+            public static SHARE_IN_DIALOG_REMOVE_JOB: string = "SHARE_IN_DIALOG_REMOVE_JOB";
+            public static SHARE_OUT_DIALOG_REMOVE_JOB: string = "SHARE_OUT_DIALOG_REMOVE_JOB"; 
             public static SHARE_IN_DIALOG_SELECT_SEQUENCE: string = "SHARE_IN_DIALOG_SELECT_SEQUENCE";
             public static SHARE_OUT_DIALOG_SELECT_SEQUENCE: string = "SHARE_OUT_DIALOG_SELECT_SEQUENCE"; 
             public static SHARE_IN_DIALOG_ADD_HISTORY: string = "SHARE_IN_DIALOG_ADD_HISTORY"; 
@@ -28,7 +30,7 @@ module nts.uk.com.view.cmm013 {
                 _self.selectedHistoryId = ko.observable(null);
                 
                 _self.listJobTitleHistory.subscribe((newListHistory) => {
-                    _self.fillTextDisplay();
+                    _self.fillTextDisplay();               
                 });
             }
             

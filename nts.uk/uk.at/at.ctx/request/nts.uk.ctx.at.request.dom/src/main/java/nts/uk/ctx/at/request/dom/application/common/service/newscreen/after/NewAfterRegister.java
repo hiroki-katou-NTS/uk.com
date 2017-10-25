@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
 import java.util.List;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.Application;
 
 /**
  * 

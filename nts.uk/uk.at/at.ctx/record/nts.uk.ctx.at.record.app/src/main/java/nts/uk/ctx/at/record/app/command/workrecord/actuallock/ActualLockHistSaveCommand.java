@@ -10,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Instantiates a new actual lock history save command.
@@ -17,14 +18,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @Data
 public class ActualLockHistSaveCommand implements ActualLockHistoryGetMemento {
 	
-	/** The company id. */
-	private String companyId;
-	
 	/** The closure id. */
 	private int closureId;
-	
-	/** The lock date time. */
-	private GeneralDateTime lockDateTime;
 	
 	/** The daily lock state. */
 	private int dailyLockState;
@@ -32,18 +27,13 @@ public class ActualLockHistSaveCommand implements ActualLockHistoryGetMemento {
 	/** The monthly lock state. */
 	private int monthlyLockState;
 	
-	/** The target month. */
-	private int targetMonth; 
-	
-	/** The updater. */
-	private String updater;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		return AppContexts.user().companyId();
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +65,7 @@ public class ActualLockHistSaveCommand implements ActualLockHistoryGetMemento {
 	 */
 	@Override
 	public YearMonth getTargetMonth() {
-		return YearMonth.of(this.targetMonth);
+		return GeneralDateTime.now().yearMonth();
 	}
 
 	/* (non-Javadoc)
@@ -83,7 +73,7 @@ public class ActualLockHistSaveCommand implements ActualLockHistoryGetMemento {
 	 */
 	@Override
 	public GeneralDateTime getLockDateTime() {
-		return this.lockDateTime;
+		return GeneralDateTime.now();
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +81,7 @@ public class ActualLockHistSaveCommand implements ActualLockHistoryGetMemento {
 	 */
 	@Override
 	public String getUpdater() {
-		return this.updater;
+		return AppContexts.user().employeeId();
 	}
 
 }

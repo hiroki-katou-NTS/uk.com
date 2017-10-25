@@ -35,5 +35,9 @@ public class JobTitleImport {
 
 	/** The end date. */
 	private GeneralDate endDate;
+	
+	public boolean isGreaterThan(JobTitleImport compared) {
+		return this.getSequenceCode().compareTo(compared.getSequenceCode()) > 0;
+	}
 
 }

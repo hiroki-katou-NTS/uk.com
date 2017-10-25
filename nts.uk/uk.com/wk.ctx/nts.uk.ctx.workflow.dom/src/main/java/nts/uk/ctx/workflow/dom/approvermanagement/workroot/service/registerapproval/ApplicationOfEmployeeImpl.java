@@ -197,12 +197,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								"", 
 								x.getWorkplaceId(),
 								x.getHistoryId(),
-								x.getApplicationType() == null ? null: x.getApplicationType().value, 
+								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
 								x.getPeriod().getStartDate(),
 								x.getPeriod().getEndDate(),
 								x.getBranchId(),
 								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+								x.getConfirmationRootType() == null ? 0: x.getConfirmationRootType().value,
 								x.getEmploymentRootAtr().value))
 						.collect(Collectors.toList());
 				return rootOutputs;
@@ -210,7 +210,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		}
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain「会社別就業承認ルート」): 就業ルート区分(共通)
 		List<CompanyApprovalRoot> lstComRoots = lstCompanyRootInfor.stream()
-				.filter(x -> x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON && x.getCompanyId().equals(companyID))
+				.filter(x -> x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON 
+						&& x.getApplicationType().equals(ApplicationType.APPLICATION_36)
+						&& x.getCompanyId().equals(companyID))
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)
 		if(!CollectionUtil.isEmpty(lstComRoots)) {
@@ -221,12 +223,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							"", 
 							"",
 							x.getHistoryId(),
-							x.getApplicationType() == null ? null: x.getApplicationType().value, 
+							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
 							x.getPeriod().getStartDate(),
 							x.getPeriod().getEndDate(),
 							x.getBranchId(),
 							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+							x.getConfirmationRootType() == null ? 5: x.getConfirmationRootType().value,
 							x.getEmploymentRootAtr().value))
 					.collect(Collectors.toList());
 			return rootOutputs;

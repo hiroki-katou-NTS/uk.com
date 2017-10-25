@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,9 +26,15 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	   + " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
 	private final String FIND_BY_DATE = FIND_BY_CID 
 	   + " AND c.endDate = :endDate"
-	   + " AND c.applicationType = :applicationType";;
+	   + " AND c.applicationType = :applicationType"
+	   + " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String FIND_BY_DATE_CFR = FIND_BY_CID 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	private final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
 				   + " AND c.endDate = :endDate"
+				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL";
 	private final String FIND_BY_BASEDATE = FIND_BY_CID
 				+ " AND c.startDate <= :baseDate"
@@ -44,6 +49,15 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate";
+	private final String FIND_BY_APP_TYPE = FIND_BY_CID 
+			   + " AND c.applicationType = :applicationType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String FIND_BY_CFR_TYPE = FIND_BY_CID 
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String SELECT_COM_APR_APP_NULL = FIND_BY_CID 
+				   + " AND c.employmentRootAtr = :employmentRootAtr"
+				   + " AND c.applicationType IS NULL";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -74,12 +88,22 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return
 	 */
 	@Override
-	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType) {
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr) {
 		//common
-		if(applicationType == null){
+		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_COM_APR_BY_DATE_APP_NULL, WwfmtComApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("endDate", endDate)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(FIND_BY_DATE_CFR, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("endDate", endDate)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainComApR(c));
 		}
 		//15 app type
@@ -87,6 +111,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("companyId", companyId)
 				.setParameter("endDate", endDate)
 				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainComApR(c));
 	}
 	
@@ -233,6 +258,38 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		return this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainComApR(c));
+	}
+	/**
+	 * get Company Approval Root By type
+	 * @param companyId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	@Override
+	public List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType,
+			int employmentRootAtr) {
+		//common
+		if(employmentRootAtr == 0){
+			return this.queryProxy().query(SELECT_COM_APR_APP_NULL, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(FIND_BY_CFR_TYPE, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//15 app type
+		return this.queryProxy().query(FIND_BY_APP_TYPE, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainComApR(c));
 	}
 }

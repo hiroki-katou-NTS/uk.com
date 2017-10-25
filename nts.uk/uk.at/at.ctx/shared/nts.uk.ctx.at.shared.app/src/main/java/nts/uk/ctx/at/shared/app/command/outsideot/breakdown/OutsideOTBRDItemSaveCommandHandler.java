@@ -61,6 +61,10 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 			throw new BusinessException("Msg_485");
 		}
 		
+		if(this.checkOverlapProductNumber(domains)){
+			throw new BusinessException("Msg_490");
+		}
+		
 		// save all list overtime breakdown item
 		this.repository.saveAllBRDItem(domains, companyId);
 	}
@@ -75,6 +79,23 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 			if (breakdownItem
 					.getUseClassification().value == UseClassification.UseClass_Use.value) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check overlap product number.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkOverlapProductNumber(List<OutsideOTBRDItem> domains) {
+		for (OutsideOTBRDItem breakdownItem1 : domains) {
+			for (OutsideOTBRDItem breakdownItem2 : domains) {
+				if (breakdownItem1.getBreakdownItemNo().value != breakdownItem2.getBreakdownItemNo().value
+						&& breakdownItem1.getProductNumber().value == breakdownItem2.getProductNumber().value) {
+					return true;
+				}
 			}
 		}
 		return false;
