@@ -28,9 +28,6 @@ module nts.uk.com.view.cmm011.a {
             isWkpHistoryLatest: KnockoutObservable<boolean>;
             isWkpConfigHistLatest: KnockoutObservable<boolean>;
             
-            // when delete workplace config history (screen B)
-            isDeleteWkpConfigHistory: KnockoutObservable<boolean>;
-
             constructor() {
                 let self = this;
 
@@ -54,7 +51,6 @@ module nts.uk.com.view.cmm011.a {
                     return self.workplaceHistory().isSelectedLatestHistory();
                 });
                 self.isWkpConfigHistLatest = ko.observable(false);
-                self.isDeleteWkpConfigHistory =  ko.observable(false);
                 
                 // subscribe
                 self.strDWorkplace.subscribe((newValue) => {
@@ -68,26 +64,26 @@ module nts.uk.com.view.cmm011.a {
                             
                             // reload workplace history
                             if (self.treeWorkplace().lstWorkplace()[0].workplaceId == self.treeWorkplace().selectedWpkId()) {
-                                self.isDeleteWkpConfigHistory.valueHasMutated;
+                                self.treeWorkplace().selectedWpkId.valueHasMutated();
                             }
                             self.treeWorkplace().selectFirst();
                         }
                     });
                 });
                 self.workplaceName.subscribe((newValue: string) => {
+                    
+                    // set workplace name, workplace full name
                     let wkpFullName: string = self.treeWorkplace().findPathNameByWkpIdSelected();
-                    if (!wkpFullName) {
-                        wkpFullName = "";
+                    if (wkpFullName) {
+                        wkpFullName += " " + newValue;
+                    } else {
+                        wkpFullName = newValue;
                     }
                     self.wkpDisplayName(newValue);
-                    self.wkpFullName(wkpFullName + newValue);
-                });
-                self.isDeleteWkpConfigHistory.subscribe(newValue => {
-                    if (!newValue) {
-                        return;
-                    }
-                    // reload workplace history
-                    self.treeWorkplace().selectedWpkId.valueHasMutated();
+                    self.wkpFullName(wkpFullName);
+                    
+                    // clear error
+                    self.clearError();
                 });
             }
 
@@ -236,7 +232,6 @@ module nts.uk.com.view.cmm011.a {
                     if (!dialogData) {
                         return;
                     }
-                    self.isDeleteWkpConfigHistory(dialogData.isDeletionMode);
                     self.isWkpConfigHistLatest(dialogData.isWkpConfigHistLatest);
                     self.wkpConfigHistId = dialogData.historyId;
                     self.strDWorkplace(dialogData.startDate);

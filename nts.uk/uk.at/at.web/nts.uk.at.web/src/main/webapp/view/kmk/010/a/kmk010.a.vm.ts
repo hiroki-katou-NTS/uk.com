@@ -318,15 +318,12 @@ module nts.uk.at.view.kmk010.a {
             
             setUpdateData(enableCheckbox: boolean): void {
                 var self = this;
-                self.useClassification.subscribe(function(use: boolean){
+                self.useClassification.subscribe(function(use: boolean) {
                     self.requiredText(use && enableCheckbox);
-                    if (self.requiredText()) {
-                        $('#overtimeNo_' + self.overtimeNo()).ntsEditor("clear");
-                    } else {
-                        $('#overtimeNo_' + self.overtimeNo()).removeClass("error");
-                    }        
-                })
-                
+                });
+                self.requiredText.subscribe(function(use: boolean) {
+                    $('#overtimeNo_' + self.overtimeNo()).ntsError("clear");
+                });
             }
 
             toDto(): OvertimeDto {
@@ -352,6 +349,7 @@ module nts.uk.at.view.kmk010.a {
             rateBRDItems: KnockoutObservableArray<PremiumExtra60HRateModel>;
             attendanceItemIds: KnockoutObservableArray<number>;
             attendanceItemName: KnockoutObservable<string>;
+            requiredText: KnockoutObservable<boolean>;
 
             constructor() {
                 this.useClassification = ko.observable(true);
@@ -362,6 +360,7 @@ module nts.uk.at.view.kmk010.a {
                 this.rateBRDItems = ko.observableArray([]);
                 this.attendanceItemIds = ko.observableArray([]);
                 this.attendanceItemName = ko.observable('');
+                this.requiredText = ko.observable(true);
             }
 
            public updateData(dto: OutsideOTBRDItemDto) {
@@ -433,6 +432,19 @@ module nts.uk.at.view.kmk010.a {
                     });
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError(error);
+                });
+            }
+            updateEnableCheck(enableCheckbox: boolean): void {
+                this.requiredText(this.useClassification() && enableCheckbox);
+            }
+
+            setUpdateData(enableCheckbox: boolean): void {
+                var self = this;
+                self.useClassification.subscribe(function(use: boolean) {
+                    self.requiredText(use && enableCheckbox);
+                });
+                self.requiredText.subscribe(function(use: boolean) {
+                    $('#breakdownItemNo_' + self.breakdownItemNo()).ntsError("clear");
                 });
             }
         }
