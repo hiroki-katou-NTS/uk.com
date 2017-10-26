@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class CisctI18NResourcePK {
+public class CismtI18NResourceCusPK {
 
 	/**
 	 * @see: SystemProperties ,if is used for all program it will be "SYSTEM"
 	 */
 	public static final String CLASS_ID_FOR_ALL = "SYSTEM";
+	
+	@Column(name = "CID")
+	public String companyId;
 	
 	@Column(name = "LANGUAGE_ID")
 	public String languageId;
@@ -30,7 +33,8 @@ public class CisctI18NResourcePK {
 	@Column(name = "RESOURCE_ID")
 	public String resourceId;
 	
-	public static CisctI18NResourcePK createForAllPrograms(String languageId, String systemId, String resourceId) {
-		return new CisctI18NResourcePK(languageId, systemId, CLASS_ID_FOR_ALL, resourceId);
+	public static CismtI18NResourceCusPK createForAllPrograms(
+			String companyId, String languageId, String systemId, String resourceId) {
+		return new CismtI18NResourceCusPK(companyId, languageId, systemId, CLASS_ID_FOR_ALL, resourceId);
 	}
 }

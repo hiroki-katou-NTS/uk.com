@@ -12,11 +12,11 @@ import nts.uk.shr.infra.i18n.resource.container.MessageResourceItem;
 import nts.uk.shr.infra.i18n.resource.container.ProgramResourceItem;
 
 @Entity
-@Table(name = "CISCT_I18N_RESOURCE")
-public class CisctI18NResource {
+@Table(name = "CISMT_I18N_RESOURCE_CUS")
+public class CismtI18NResourceCus {
 	
 	@EmbeddedId
-	public CisctI18NResourcePK pk;
+	public CismtI18NResourceCusPK pk;
 
 	@Column(name = "CONTENT")
 	public String content;
