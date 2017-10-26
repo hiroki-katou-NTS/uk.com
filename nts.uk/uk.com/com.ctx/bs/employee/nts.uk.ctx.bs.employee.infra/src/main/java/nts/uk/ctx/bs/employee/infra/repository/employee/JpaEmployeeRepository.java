@@ -94,6 +94,11 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId "
 			+ " WHERE a.bsymtDeleteEmpManagementPK.sid = :sid";
+	
+	public final String SELECT_BY_SID_CID_SYSTEMDATE = "SELECT c FROM BsymtEmployee c "
+			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " WHERE c.companyId = :companyId " + " AND c.personId = :personId"
+			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :systemDate" + " AND d.retireDate >= :systemDate";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -326,6 +331,24 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	@Override
 	public void updateEmployee(Employee domain) {
 		this.commandProxy().update(toEntityEmployee(domain));
+	}
+
+	@Override
+	public Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate) {
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID_CID_SYSTEMDATE, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("personId", personId)
+				.setParameter("systemDate", systemDate).getSingleOrNull();
+
+		Employee emp = new Employee();
+		if (entity != null) {
+			emp = toDomainEmployee(entity);
+
+			if (!entity.listEntryHist.isEmpty()) {
+				emp.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(emp);
 	}
 
 }

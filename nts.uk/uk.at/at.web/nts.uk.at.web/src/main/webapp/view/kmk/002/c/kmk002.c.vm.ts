@@ -1,5 +1,6 @@
 module nts.uk.at.view.kmk002.c {
     import DailyAttendanceItemDto = service.model.DailyAttendanceItemDto;
+    import AttdItemLinkRequest = service.model.AttdItemLinkRequest;
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
     import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
     import ParamToC = nts.uk.at.view.kmk002.a.viewmodel.ParamToC;
@@ -36,26 +37,37 @@ module nts.uk.at.view.kmk002.c {
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
 
-                // Get param from parent screen
-                let param = nts.uk.ui.windows.getShared('paramToC');
-
-                // Set param to view model.
-                self.fromDto(param);
             }
 
             /**
              * Start page.
              */
             public startPage(): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                service.findAllDailyAttendanceItem().done(function(data) {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                // Get param from parent screen
+                let param: ParamToC = nts.uk.ui.windows.getShared('paramToC');
+
+                // Set param to view model.
+                self.fromDto(param);
+
+                // create request object
+                let request = <AttdItemLinkRequest>{};
+                request.anyItemNos = param.selectableOptItemNos;
+                request.formulaAtr = param.formulaAtr;
+                request.performanceAtr = param.performanceAtr;
+
+                service.findByAnyItem(request).done(data => {
                     self.lstDailyAttendanceItem(data);
+                    dfd.resolve();
                 });
-                dfd.resolve();
                 return dfd.promise();
             }
 
+            /**
+             * Submit and close dialog.
+             */
             public submit(): void {
                 let self = this;
 
@@ -148,7 +160,7 @@ module nts.uk.at.view.kmk002.c {
              */
             private fromDto(dto: ParamToC): void {
                 let self = this;
-                self.formulaAtr = dto.formulaAtr;
+                self.formulaAtr = dto.formulaAtrName;
                 self.formulaName = dto.formulaName;
                 self.lstSelectDailyAttendanceItem(dto.itemSelection.attendanceItems);
                 self.checkMul(dto.itemSelection.minusSegment == 1 ? true : false);

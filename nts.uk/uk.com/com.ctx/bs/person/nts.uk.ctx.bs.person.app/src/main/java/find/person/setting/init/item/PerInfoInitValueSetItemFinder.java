@@ -14,10 +14,12 @@ public class PerInfoInitValueSetItemFinder {
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
-	public List<PerInfoInitValueSettingItemDto> getAllItem(String perInfoCtgId) {
+	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 
-		return this.settingItemRepo.getAllItem(perInfoCtgId).stream()
+		return this.settingItemRepo.getAllItem(settingId, perInfoCtgId).stream()
 				.map(c -> PerInfoInitValueSettingItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
+
+	
 
 }

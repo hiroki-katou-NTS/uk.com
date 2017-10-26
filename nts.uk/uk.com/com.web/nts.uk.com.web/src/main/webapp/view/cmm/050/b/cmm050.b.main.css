@@ -8,4 +8,5 @@
 
 .form-input > .input{
 	display: inline-block;
+	vertical-align: top;
 }

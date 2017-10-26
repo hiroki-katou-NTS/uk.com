@@ -87,8 +87,8 @@ public class ExecutionLog {
 	private ObjectPeriod objectPeriod;
 	
 	public static ExecutionLog createFromJavaType(String companyID,
-			long empCalAndSumExecLogID,
-			long caseSpecExeContentID,
+			String empCalAndSumExecLogID,
+			String caseSpecExeContentID,
 			String employeeID,
 			String executedLogID,int existenceError,
 			int executeContenByCaseID,int executionContent,GeneralDate startExecutionTime,GeneralDate endExecutionTime,
@@ -96,8 +96,8 @@ public class ExecutionLog {
 		
 		return new ExecutionLog(
 				companyID,
-				empCalAndSumExecLogID,
-				caseSpecExeContentID,
+				Long.parseLong(empCalAndSumExecLogID),
+				Long.parseLong(caseSpecExeContentID),
 				employeeID,
 				executedLogID,
 				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
