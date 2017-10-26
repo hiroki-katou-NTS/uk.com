@@ -13,7 +13,10 @@ import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpAvaOrMapComman
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpDocumentFileCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpDocumentFileCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveDocumentFileEmpCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateCtgDocFileCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateCtgDocFileDocumentFileCommand;
 import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
@@ -36,6 +39,12 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@Inject
 	RemoveEmpAvaOrMapCommandHandler removeEmpAvaOrMapCommandHandler;
+	
+	@Inject
+	RemoveDocumentFileEmpCommandHandler removeDocFileCommandHandler;
+	
+	@Inject
+	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;;
 	/**
 	 * Gets employee file management by employeeId.
 	 *
@@ -75,7 +84,7 @@ public class EmpFileManagementWebService extends WebService {
 
 	@POST
 	@Path("getlistdocfile/{employeeId}")
-	public List<Object> getListDocumentFile(@PathParam("employeeId") String employeeId) {
+	public List<EmployeeFileManagementDto> getListDocumentFile(@PathParam("employeeId") String employeeId) {
 		return this.employeeFileManagementFinder.getListDocumentFile(employeeId);
 	}
 
@@ -83,5 +92,24 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("savedocfile")
 	public void saveDocumentFile(AddEmpDocumentFileCommand command) {
 		this.empDocumentFileCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updatedata")
+	public void updateDocumentFile(AddEmpDocumentFileCommand command) {
+		this.empDocumentFileCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("deletedata/{fileid}")
+	public void deleteDocumentFile(@PathParam("fileid") String fileid) {
+		this.removeDocFileCommandHandler.handle(fileid);
+	}
+	
+	@POST
+	@Path("updatectgdocfile")
+	public void updateCtgForDocFile(UpdateCtgDocFileDocumentFileCommand command) {
+		this.updateCtgDocumentFile.handle(command);
+		System.out.println(command);
 	}
 }

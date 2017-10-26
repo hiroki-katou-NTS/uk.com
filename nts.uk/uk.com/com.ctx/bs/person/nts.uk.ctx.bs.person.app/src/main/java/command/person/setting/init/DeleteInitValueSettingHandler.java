@@ -30,10 +30,10 @@ public class DeleteInitValueSettingHandler extends CommandHandler<DeleteInitValu
 	private PerInfoInitValueSettingRepository settingRepo;
 
 	@Inject
-	private PerInfoInitValueSetItemRepository itemRepo;
-
-	@Inject
 	private PerInfoInitValSetCtgRepository ctgRepo;
+	
+	@Inject
+	private PerInfoInitValueSetItemRepository itemRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteInitValueSettingCommand> context) {
@@ -45,9 +45,9 @@ public class DeleteInitValueSettingHandler extends CommandHandler<DeleteInitValu
 		List<PerInfoInitValueSetItem> itemLst = this.itemRepo.getAllInitValueItem(command.getSettingId());
 		if (isDelete.isPresent()) {
 			this.settingRepo.delete(companyId, command.getSettingId(), command.getSettingCode());
-			if (!CollectionUtil.isEmpty(ctgLst)) {
+			if (!CollectionUtil.isEmpty(ctgLst) || ctgLst != null) {
 				this.ctgRepo.delete(command.getSettingId());
-				if (!CollectionUtil.isEmpty(itemLst)) {
+				if (!CollectionUtil.isEmpty(itemLst) || itemLst !=null) {
 					this.itemRepo.deleteAllBySetId(command.getSettingId());
 				}
 			}
