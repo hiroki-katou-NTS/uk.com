@@ -21,8 +21,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	//勤務予定時間
 	private WorkScheduleTimeOfDaily workScheduleTimeOfDaily;
 	
-	//実働時間
-	
+	//実働時間 
+	private ActualWorkingTimeOfDaily actualWorkingTimeOfDaily;
 	
 	//滞在時間
 	private AttendanceTime stayingTime;

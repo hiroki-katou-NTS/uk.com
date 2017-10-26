@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
 
 /**
  * 
@@ -14,14 +16,17 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 @Getter
 public class OutingTimeSheet {
 	
-	//外出枠NO - primitive value
-	private String outingFrameNo;
+	//外出枠NO
+	private OutingFrameNo outingFrameNo;
 	
 	// 勤怠打刻(実打刻付き) - primitive value
 	private BigDecimal goOut;
 	
-	//計算付き時間 - primitive value
-	private BigDecimal goOutTime;
+	//外出時間.計算時間
+	private AttendanceTime outingTimeCalculation;
+	
+	//外出時間.時間
+	private AttendanceTime outingTime;
 	
 	private GoingOutReason reasonForGoOut;
 	
