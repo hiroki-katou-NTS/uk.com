@@ -8,7 +8,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import lombok.val;
-import nts.arc.i18n.Locale;
+import nts.uk.shr.com.i18n.LanguageConsts;
 
 public class I18NResourceContentProcessorTest {
 
@@ -16,7 +16,7 @@ public class I18NResourceContentProcessorTest {
 	public void noNestNoParam() {
 		val target = new I18NResourceContentProcessor(id -> localize(id));
 		
-		String result = target.process(Locale.JA, "TEXT1", Arrays.asList());
+		String result = target.process(LanguageConsts.DEFAULT_LANGUAGE_ID, "TEXT1", Arrays.asList());
 		assertThat(result, is("TEXT1"));
 	}
 
@@ -24,7 +24,7 @@ public class I18NResourceContentProcessorTest {
 	public void nestedNoParam() {
 		val target = new I18NResourceContentProcessor(id -> localize(id));
 		
-		String result = target.process(Locale.JA, "TEXT2 has {#T1}!!", Arrays.asList());
+		String result = target.process(LanguageConsts.DEFAULT_LANGUAGE_ID, "TEXT2 has {#T1}!!", Arrays.asList());
 		assertThat(result, is("TEXT2 has TEXT1!!"));
 	}
 
@@ -32,7 +32,7 @@ public class I18NResourceContentProcessorTest {
 	public void nestedNoParam2() {
 		val target = new I18NResourceContentProcessor(id -> localize(id));
 		
-		String result = target.process(Locale.JA, "<{#T2}>", Arrays.asList());
+		String result = target.process(LanguageConsts.DEFAULT_LANGUAGE_ID, "<{#T2}>", Arrays.asList());
 		assertThat(result, is("<TEXT2 has TEXT1!!>"));
 	}
 
@@ -40,7 +40,7 @@ public class I18NResourceContentProcessorTest {
 	public void param2() {
 		val target = new I18NResourceContentProcessor(id -> localize(id));
 		
-		String result = target.process(Locale.JA, "test {0} - {1}", Arrays.asList("ABC", "hello"));
+		String result = target.process(LanguageConsts.DEFAULT_LANGUAGE_ID, "test {0} - {1}", Arrays.asList("ABC", "hello"));
 		assertThat(result, is("test ABC - hello"));
 	}
 	
@@ -48,7 +48,7 @@ public class I18NResourceContentProcessorTest {
 	public void param3_resourced_param() {
 		val target = new I18NResourceContentProcessor(id -> localize(id));
 		
-		String result = target.process(Locale.JA, "test {2} - {0} - {1}", Arrays.asList("ABC", "<{#T1}>", "にほんご"));
+		String result = target.process(LanguageConsts.DEFAULT_LANGUAGE_ID, "test {2} - {0} - {1}", Arrays.asList("ABC", "<{#T1}>", "にほんご"));
 		assertThat(result, is("test にほんご - ABC - <TEXT1>"));
 	}
 	
