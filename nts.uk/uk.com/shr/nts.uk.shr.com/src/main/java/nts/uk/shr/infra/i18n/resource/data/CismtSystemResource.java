@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.i18n.entity;
+package nts.uk.shr.infra.i18n.resource.data;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -7,26 +7,22 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.arc.i18n.custom.ResourceType;
+import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 
 @Entity
 @Table(name = "CISMT_SYSTEM_RESOURCE")
-@Getter
-@Setter
-public class SystemResource {
+public class CismtSystemResource {
+	
 	@EmbeddedId
-	private SystemResourcePK pk;
+	public CismtSystemResourcePK pk;
 
 	@Column(name = "ITEM_CONTENT")
-	private String content;
+	public String content;
 
-	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "RESOURCE_TYPE")
-	private ResourceType type;
+	public int resourceType;
 
 	// use for 予約
 	@Column
-	private boolean customizable;
+	public boolean customizable;
 }

@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.i18n.entity;
+package nts.uk.shr.infra.i18n.resource.data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Embeddable
 @Setter
 @Getter
-public class CompanyResourcePK {
+public class CmnmtResourcePK {
 	@Column(name = "CID")
 	private String companyID;
 	@Column(name = "CODE")
