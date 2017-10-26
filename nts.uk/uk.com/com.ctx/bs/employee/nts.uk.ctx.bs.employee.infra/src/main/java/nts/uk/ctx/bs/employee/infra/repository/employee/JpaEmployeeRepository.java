@@ -97,7 +97,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	
 	public final String SELECT_BY_SID_CID_SYSTEMDATE = "SELECT c FROM BsymtEmployee c "
 			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
-			+ " WHERE c.companyId = :companyId " + " AND c.bsymtEmployeePk.sId = :sid"
+			+ " WHERE c.companyId = :companyId " + " AND c.personId = :personId"
 			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :systemDate" + " AND d.retireDate >= :systemDate";
 
 	/**
@@ -334,9 +334,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	}
 
 	@Override
-	public Optional<Employee> findBySidCidSystemDate(String companyId, String employeeId, GeneralDate systemDate) {
+	public Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate) {
 		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID_CID_SYSTEMDATE, BsymtEmployee.class)
-				.setParameter("companyId", companyId).setParameter("sid", employeeId)
+				.setParameter("companyId", companyId).setParameter("personId", personId)
 				.setParameter("systemDate", systemDate).getSingleOrNull();
 
 		Employee emp = new Employee();

@@ -26,12 +26,8 @@ public class PpemtEmpInfoItemData extends JpaEntity implements Serializable {
 	public PpemtEmpInfoItemDataPk ppemtEmpInfoItemDataPk;
 
 	@Basic(optional = false)
-	@Column(name = "PER_INFO_CTG_ID")
-	public String perInfoCtgId;
-
-	@Basic(optional = false)
-	@Column(name = "DATA_STATE_ATR")
-	public int dataStateType;
+	@Column(name = "SAVE_DATA_ATR")
+	public int saveDataType;
 
 	@Basic(optional = false)
 	@Column(name = "STRING_VAL")
