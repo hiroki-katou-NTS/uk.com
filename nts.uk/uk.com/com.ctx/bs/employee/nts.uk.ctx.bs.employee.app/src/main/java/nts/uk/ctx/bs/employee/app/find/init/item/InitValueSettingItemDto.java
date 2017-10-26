@@ -49,4 +49,23 @@ public class InitValueSettingItemDto {
 
 	}
 
+	public static InitValueSettingItemDto createFromJavaType(String itemName, int isRequired, GeneralDate dateValue) {
+
+		return new InitValueSettingItemDto(itemName, isRequired, SaveDataDto.CreateDateDataDto(dateValue));
+
+	}
+
+	public static InitValueSettingItemDto createFromJavaType(String itemName, int isRequired, BigDecimal intValue) {
+
+		return new InitValueSettingItemDto(itemName, isRequired,
+				SaveDataDto.CreateNumberDataDto(intValue.intValueExact()));
+
+	}
+
+	public static InitValueSettingItemDto createFromJavaType(String itemName, int isRequired, String stringValue) {
+
+		return new InitValueSettingItemDto(itemName, isRequired, SaveDataDto.CreateStringDataDto(stringValue));
+
+	}
+
 }

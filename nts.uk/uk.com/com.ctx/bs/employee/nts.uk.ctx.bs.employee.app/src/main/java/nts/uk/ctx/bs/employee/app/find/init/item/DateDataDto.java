@@ -15,7 +15,7 @@ public class DateDataDto extends SaveDataDto {
 
 	private DateDataDto(GeneralDate value) {
 		super();
-		this.saveDataType = SaveDataType.DATE.value;
+		this.saveDataType = SaveDataType.DATE;
 		this.value = value;
 	}
 

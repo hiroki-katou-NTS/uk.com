@@ -14,7 +14,7 @@ public class NumberDataDto extends SaveDataDto {
 	private NumberDataDto(int value) {
 		super();
 		this.value = value;
-		this.saveDataType = SaveDataType.NUMBERIC.value;
+		this.saveDataType = SaveDataType.NUMBERIC;
 	}
 
 	public static NumberDataDto createFromJavaType(int value) {
