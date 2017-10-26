@@ -13,6 +13,6 @@ import java.util.List;
  */
 public interface CreateDailyResultDomainService {
 
-	boolean createDailyResult(List<String> emloyeeIds, int reCreateAttr, BigDecimal startDate, BigDecimal endDate, int executionAttr, long empCalAndSumExecLogID);
+	boolean createDailyResult(List<String> emloyeeIds, int reCreateAttr, BigDecimal startDate, BigDecimal endDate, int executionAttr, String empCalAndSumExecLogID);
 	
 }

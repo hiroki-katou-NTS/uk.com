@@ -25,11 +25,11 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, long empCalAndSumExecLogID, String operationCaseID,String employeeID);
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID, String operationCaseID,String employeeID);
 	
-	List<EmpCalAndSumExeLog> getListByExecutionContent(long empCalAndSumExecLogID, int executionContent);	
+	List<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent);	
 	
-	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (long empCalAndSumExecLogID);
+	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 
 
 

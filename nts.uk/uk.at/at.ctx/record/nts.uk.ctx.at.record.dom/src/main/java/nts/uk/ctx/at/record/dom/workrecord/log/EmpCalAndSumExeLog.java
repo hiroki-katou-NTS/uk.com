@@ -2,8 +2,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import java.util.List;
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -32,12 +30,12 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	/**
 	 * ID
 	 */
-	private long empCalAndSumExecLogID;
+	private String empCalAndSumExecLogID;
 
 	/**
 	 * 運用ケース
 	 */
-	private long caseSpecExeContentID;
+	private String caseSpecExeContentID;
 	
 	/**
 	 * 実行社員ID
@@ -96,8 +94,8 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 		
 		return new  EmpCalAndSumExeLog(
 				companyID,
-			Long.parseLong(empCalAndSumExecLogID),
-			Long.parseLong(caseSpecExeContentID),
+				empCalAndSumExecLogID,
+				caseSpecExeContentID,
 				employeeID,
 				EnumAdaptor.valueOf(executedMenu,ExecutedMenu.class),
 				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),

@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.log.dto.ImplementationResultFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
+import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 
 /**
  * 
@@ -25,7 +26,7 @@ public class ImplementationResultWebService extends WebService{
 	@POST
 	@Path("findByEmpCalAndSumExecLogID")
 	
-	public ScreenImplementationResultDto getByEmpCalAndSumExecLogID(long empCalAndSumExecLogID){
+	public ScreenImplementationResultDto getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
 		ScreenImplementationResultDto data  = 	implementationResultFinder.getScreenImplementationResult(empCalAndSumExecLogID);
 		return data;
 	}

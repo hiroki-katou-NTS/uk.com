@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSumByDate;
@@ -53,7 +52,7 @@ public class EmpCalAndSumExeLogFinder {
 	}
 	
 
-	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(long empCalAndSumExecLogID){
+	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID).stream()
 				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c))
 				.collect(Collectors.toList());
