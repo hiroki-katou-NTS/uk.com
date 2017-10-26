@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemPolicy;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
@@ -27,6 +28,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemSaveCommand> {
+
+	@Inject
+	private OptionalItemPolicy optItemSv;
 
 	@Inject
 	private OptionalItemRepository optItemRepo;
@@ -48,17 +52,14 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<OptionalItemSaveCommand> context) {
+		// get company id
+		String companyId = AppContexts.user().companyId();
+
 		// Get command.
 		OptionalItemSaveCommand command = context.getCommand();
 
 		// Map to optionaItem domain
 		OptionalItem dom = new OptionalItem(command);
-
-		// update optional item.
-		this.optItemRepo.update(dom);
-
-		// get company id
-		String companyId = AppContexts.user().companyId();
 
 		// Get optional item no
 		String optionalItemNo = command.getOptionalItemNo().v();
@@ -73,13 +74,20 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 			return new FormulaDispOrder(item);
 		}).collect(Collectors.toList());
 
-		// Remove all existing formulas
-		this.formulaRepo.remove(companyId, optionalItemNo);
-		this.orderRepo.remove(companyId, optionalItemNo);
+		if (this.optItemSv.canRegisterListFormula(formulas)) {
 
-		// Insert new formulas
-		this.formulaRepo.create(formulas);
-		this.orderRepo.create(dispOrders);
+			// update optional item.
+			this.optItemRepo.update(dom);
+
+			// Remove all existing formulas
+			this.formulaRepo.remove(companyId, optionalItemNo);
+			this.orderRepo.remove(companyId, optionalItemNo);
+
+			// Insert new formulas
+			this.formulaRepo.create(formulas);
+			this.orderRepo.create(dispOrders);
+
+		}
 
 	}
 

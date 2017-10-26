@@ -7,11 +7,10 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 600, height: 800 };</script>
+				<script>var dialogSize = { width: 350, height: 450 };</script>
 				<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
-				<com:stylefile path="kdl032.a.style.css" />
 				<com:scriptfile path="kdl032.a.service.js" />
 				<com:scriptfile path="kdl032.a.start.js" />
 				<com:scriptfile path="kdl032.a.vm.js" />
@@ -21,20 +20,20 @@
 			<ui:define name="content">
 				
 				<div id="contents-area">
-				<label> #{i18n.getText('KDL032_2')}</label>
-
-				<table id="single-list"
+				<label style ="margin-left: 10px;"> #{i18n.getText('KDL032_2')}</label>
+				<div style = "margin-top: 20px;margin-left: 30px;">
+				<table id="single-list" tabindex="1"
 					data-bind="ntsGridList: {								
-					height: 350,
+					height: 255,
 					dataSource: deviationTimeList,
 					primaryKey: 'divReasonCode',
 					columns: columns,
 					value: selectCode
-					}"></table>	
+					}"></table>	</div>
 			</div>
 			<div id= "functions-area-bottom">
-					<button class="proceed x-large" id="save" data-bind = "click : submit">#{i18n.getText('KDL032_5')}</button>
-					<button id="cancel" data-bind = "click: cancel_Dialog">#{i18n.getText('KDL032_6')}</button>
+					<button tabindex="2" class="proceed x-large" id="save" data-bind = "click : submit">#{i18n.getText('KDL032_5')}</button>
+					<button tabindex="3" id="cancel" data-bind = "click: cancel_Dialog">#{i18n.getText('KDL032_6')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>

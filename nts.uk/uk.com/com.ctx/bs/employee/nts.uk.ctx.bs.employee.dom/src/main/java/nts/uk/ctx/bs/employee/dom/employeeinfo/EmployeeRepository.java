@@ -119,4 +119,13 @@ public interface EmployeeRepository {
 	 * @param domain
 	 */
 	void updateEmployee(Employee domain);
+	
+	/**
+	 * @param employeeId
+	 * @param companyId
+	 * @param systemDate
+	 * RequestList #101
+	 * @return the optional
+	 */
+	Optional<Employee> findBySidCidSystemDate(String companyId, String employeeId , GeneralDate systemDate);
 }

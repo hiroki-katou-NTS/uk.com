@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk010.b {
             private validateDomainSave(): boolean {
                 var self = this;
                 for (var model of self.lstOvertimeModel) {
-                    $('#overtimeNo_' + model.overtimeNo()).ntsEditor("clear");
+                    $('#overtimeNo_' + model.overtimeNo()).ntsError("clear");
                 }
                 for (var model of self.lstOvertimeModel) {
                     if (model.requiredText()) {

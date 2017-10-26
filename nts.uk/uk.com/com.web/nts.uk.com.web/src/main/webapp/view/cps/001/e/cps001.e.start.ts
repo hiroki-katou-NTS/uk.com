@@ -3,8 +3,6 @@ module cps001.e {
     __viewContext.ready(function() {
         __viewContext['viewModel'] = new vm.ViewModel();
         __viewContext.bind(__viewContext['viewModel']);
-        
-        // focus to first input textbox
-        $('input:first').focus();
+         __viewContext['viewModel'].start();
     });
 }
