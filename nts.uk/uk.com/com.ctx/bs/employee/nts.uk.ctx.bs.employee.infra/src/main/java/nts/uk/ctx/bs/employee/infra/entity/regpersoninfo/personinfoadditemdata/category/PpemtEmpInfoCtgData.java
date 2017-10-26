@@ -24,7 +24,7 @@ public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 	public PpemtEmpInfoCtgDataPk ppemtEmpInfoCtgDataPk;
 
 	@Basic(optional = false)
-	@Column(name = "P_INFO_CTG_ID")
+	@Column(name = "PER_INFO_CTG_ID")
 	public String personInfoCtgId;
 
 	@Basic(optional = false)

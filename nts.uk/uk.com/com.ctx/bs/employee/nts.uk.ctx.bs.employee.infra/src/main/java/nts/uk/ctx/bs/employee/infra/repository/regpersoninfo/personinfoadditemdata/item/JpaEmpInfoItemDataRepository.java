@@ -11,12 +11,15 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpIn
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 
 @Stateless
-public class JPAEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
+public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = "SELECT id,pi.requiredAtr,pi.itemName FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON id.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtEmpInfoCtgData ic"
+			+ " ON id.ppemtEmpInfoItemDataPk.recordId = ic.ppemtEmpInfoCtgDataPk.recordId"
+			+ " INNER JOIN PpemtPerInfoCtg pc" 
+			+ " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd";
 
 	@Override
