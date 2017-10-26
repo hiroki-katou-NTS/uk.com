@@ -18,7 +18,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.service.WorkplaceService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,10 +35,6 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
     /** The wkp service. */
     @Inject
     private WorkplaceService wkpService;
-    
-    /** The wkp info repo. */
-    @Inject
-    private WorkplaceInfoRepository wkpInfoRepo;
     
     /** The wkp config info repo. */
     @Inject
@@ -61,23 +56,16 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
         GeneralDate startDWkpHistLatest = workplace.getWkpHistoryLatest().getPeriod().start();
         
         if (command.getStartDWkpConfigInfo().equals(startDWkpHistLatest)) {
-            // delete workplace infor
-            this.wkpInfoRepo.remove(companyId, command.getWkpIdSelected(),
+            // remove workplace history and workplace infor
+            this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(),
                     workplace.getWkpHistoryLatest().getHistoryId());
-            
-            // delete workplace
-//            this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(),
-//                    workplace.getWkpHistoryLatest().getHistoryId());
         } else {
             if (command.getStartDWkpConfigInfo().before(startDWkpHistLatest)) {
                 List<String> lstHistIdRemove = this.findHistory(workplace, command.getStartDWkpConfigInfo());
                 // remove workplace after start date of workplace config history.
                 lstHistIdRemove.forEach(historyId -> {
-                    // delete workplace infor
-                    this.wkpInfoRepo.remove(companyId, command.getWkpIdSelected(), historyId);
-                    
-                    // delete workplace
-//                    this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(), historyId);
+                    // remove workplace history and workplace infor
+                    this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(), historyId);
                 });
             }
             int dayOfAgo = -1;

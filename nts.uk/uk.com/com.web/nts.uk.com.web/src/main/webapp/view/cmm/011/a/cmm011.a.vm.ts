@@ -71,12 +71,19 @@ module nts.uk.com.view.cmm011.a {
                     });
                 });
                 self.workplaceName.subscribe((newValue: string) => {
+                    
+                    // set workplace name, workplace full name
                     let wkpFullName: string = self.treeWorkplace().findPathNameByWkpIdSelected();
-                    if (!wkpFullName) {
-                        wkpFullName = "";
+                    if (wkpFullName) {
+                        wkpFullName += " " + newValue;
+                    } else {
+                        wkpFullName = newValue;
                     }
                     self.wkpDisplayName(newValue);
-                    self.wkpFullName(wkpFullName + newValue);
+                    self.wkpFullName(wkpFullName);
+                    
+                    // clear error
+                    self.clearError();
                 });
             }
 
