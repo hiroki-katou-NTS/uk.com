@@ -45,13 +45,15 @@ public class HistoryUtil {
      * @param newStartDate the new start date
      */
     public static void validStartDate(boolean isAddMode, GeneralDate currentStartDate, GeneralDate newStartDate) {
-        String messageId = "Msg_127";
-        if (isAddMode) {
-            messageId = "Msg_102";
-        }
-        if (currentStartDate.afterOrEquals(newStartDate)) {
-            throw new BusinessException(messageId);
-        }
+    	BundledBusinessException exceptions = BundledBusinessException.newInstance();
+		String messageId = "Msg_127";
+		if (isAddMode) {
+			messageId = "Msg_102";
+		}
+		if (currentStartDate.afterOrEquals(newStartDate)) {
+			exceptions.addMessage(messageId);
+			exceptions.throwExceptions();
+		}
     }
     
     /**
@@ -71,11 +73,6 @@ public class HistoryUtil {
         }
         if (newPeriod.end().before(newPeriod.start())) {
             exceptions.addMessage("Msg_667");
-            isHasError = true;
-        }
-        // TODO: not understand, wait for explain
-        if (newPeriod.end().beforeOrEquals(prevPeriod.end())) {
-            exceptions.addMessage("Msg_666");
             isHasError = true;
         }
         // has error, throws message

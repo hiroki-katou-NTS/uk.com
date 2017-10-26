@@ -42,7 +42,7 @@ public class Workplace extends AggregateRoot{
 		this.workplaceId = memento.getWorkplaceId();
 		this.workplaceHistory = memento.getWorkplaceHistory();
 		
-		// sort by start date desc 
+		// sort by end date, start date desc 
         Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
             @Override
             public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
