@@ -37,9 +37,9 @@ public class AppStampWorkDto {
 				appStampWork.getStampGoOutAtr().value,
 				appStampWork.getSupportCard(),
 				appStampWork.getSupportLocationCD(),
-				appStampWork.getStartTime(), 
+				appStampWork.getStartTime().v(), 
 				appStampWork.getStartLocation(), 
-				appStampWork.getEndTime(), 
+				appStampWork.getEndTime().v(), 
 				appStampWork.getEndLocation());
 	}
 }

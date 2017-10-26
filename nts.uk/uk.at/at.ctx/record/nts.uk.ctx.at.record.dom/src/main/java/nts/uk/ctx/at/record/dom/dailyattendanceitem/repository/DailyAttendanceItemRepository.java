@@ -31,5 +31,13 @@ public interface DailyAttendanceItemRepository {
 	 * @return the list
 	 */
 	List<DailyAttendanceItem> findByAtr(String companyId, DailyAttendanceAtr itemAtr);
-
+	
+	/**
+	 * Find by atr.
+	 *
+	 * @param companyId the company id
+	 * @param itemAtr daily attendance attribute (勤怠項目属性)
+	 * @return the list
+	 */
+	List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs);
 }
