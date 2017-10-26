@@ -16,7 +16,7 @@ module nts.uk.com.view.cmm011.e {
                 self.wkpId = null;
                 self.historyId = null;
                 self.startDate = ko.observable(null);
-                self.endDate = ko.observable("9999/12/31");//TODO: nts.uk.resource.getText("CMM011_27")
+                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
             }
             
             /**

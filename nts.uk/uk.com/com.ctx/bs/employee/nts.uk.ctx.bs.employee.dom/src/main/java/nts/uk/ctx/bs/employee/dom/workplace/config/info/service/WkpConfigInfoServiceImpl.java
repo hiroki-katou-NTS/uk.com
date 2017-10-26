@@ -171,20 +171,20 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
             String newWkpId) {
         String hierarchyCdSelected = wkpHierarchySelected.getHierarchyCode().v();
 
-        Optional<WorkplaceHierarchy> optional = lstWkpHierarchy.stream()
+        Optional<WorkplaceHierarchy> opWkpHierarchyChildLast = lstWkpHierarchy.stream()
                 .filter(wkpHierarchy -> {
                     String hierarchyCd = wkpHierarchy.getHierarchyCode().v();
                     return hierarchyCd.startsWith(hierarchyCdSelected)
-                            && hierarchyCd.length() + HIERARCHY_LENGTH == hierarchyCdSelected.length();
+                            && hierarchyCd.length() - hierarchyCdSelected.length() == HIERARCHY_LENGTH;
                 })
                 .sorted((item1, item2) -> item2.getHierarchyCode().v().compareTo(item1.getHierarchyCode().v()))
                 .findFirst();
 
         String newHierarchyCd = Strings.EMPTY;
-        if (!optional.isPresent()) {
+        if (!opWkpHierarchyChildLast.isPresent()) {
             newHierarchyCd = hierarchyCdSelected.concat(HIERARCHY_ORIGIN);
         } else {
-            newHierarchyCd = this.getNewHierarchyCd(optional.get().getHierarchyCode().v());
+            newHierarchyCd = this.getNewHierarchyCd(opWkpHierarchyChildLast.get().getHierarchyCode().v());
         }
         WorkplaceHierarchy newWkpHierarchy = WorkplaceHierarchy.newInstance(newWkpId, newHierarchyCd);
         lstWkpHierarchy.add(newWkpHierarchy);
