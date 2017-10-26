@@ -51,13 +51,16 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			+ " AND c.endDate >= :baseDate";
 	private final String FIND_BY_APP_TYPE = FIND_BY_CID 
 			   + " AND c.applicationType = :applicationType"
-			   + " AND c.employmentRootAtr = :employmentRootAtr";
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
 	private final String FIND_BY_CFR_TYPE = FIND_BY_CID 
 			   + " AND c.confirmationRootType = :confirmationRootType"
-			   + " AND c.employmentRootAtr = :employmentRootAtr";
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
 	private final String SELECT_COM_APR_APP_NULL = FIND_BY_CID 
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
-				   + " AND c.applicationType IS NULL";
+				   + " AND c.applicationType IS NULL"
+				   + " ORDER BY c.startDate DESC";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId

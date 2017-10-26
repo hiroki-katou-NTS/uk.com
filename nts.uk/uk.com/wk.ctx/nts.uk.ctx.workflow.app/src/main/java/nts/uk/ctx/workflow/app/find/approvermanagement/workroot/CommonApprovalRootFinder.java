@@ -21,6 +21,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -257,7 +258,8 @@ public class CommonApprovalRootFinder {
 								String name = c.getApprovalAtr().value == 0 ? 
 										getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
 										getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
-								return ApproverDto.fromDomain(c,name);
+								String confirmName = c.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
+								return ApproverDto.fromDomain(c,name, confirmName);
 								})
 							.collect(Collectors.toList());
 				//lst (ApprovalPhase + lst Approver)
@@ -306,7 +308,8 @@ public class CommonApprovalRootFinder {
 							String name = c.getApprovalAtr().value == 0 ? 
 									getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
 									getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
-							return ApproverDto.fromDomain(c,name);
+							String confirmName = c.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
+							return ApproverDto.fromDomain(c,name,confirmName);
 							})
 						.collect(Collectors.toList());
 				//lst (ApprovalPhase + lst Approver)
@@ -348,7 +351,8 @@ public class CommonApprovalRootFinder {
 							String name = c.getApprovalAtr().value == 0 ? 
 									getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
 									getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
-							return ApproverDto.fromDomain(c,name);
+							String confirmName = c.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
+							return ApproverDto.fromDomain(c,name,confirmName);
 							})
 						.collect(Collectors.toList());
 				//lst (ApprovalPhase + lst Approver)

@@ -52,13 +52,16 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " ORDER BY  c.wwfmtWpApprovalRootPK.workplaceId ";
 	private final String FIND_BY_APP_TYPE = FIND_BY_WKPID
 			+ " AND c.employmentRootAtr = :employmentRootAtr"
-			+ " AND c.applicationType = :applicationType";
+			+ " AND c.applicationType = :applicationType"
+			+ " ORDER BY c.startDate DESC";
 	private final String SELECT_WPAPR_BY_APP_NULL = FIND_BY_WKPID
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType IS NULL";
+			   + " AND c.applicationType IS NULL"
+			   + " ORDER BY c.startDate DESC";
 	private final String FIND_BY_CFR_TYPE = FIND_BY_WKPID
 			   + " AND c.confirmationRootType = :confirmationRootType"
-			   + " AND c.employmentRootAtr = :employmentRootAtr";
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
 
 	/**
 	 * get All Workplace Approval Root

@@ -1,6 +1,9 @@
 .control-group.valign-center>* {
 	vertical-align: middle;
 }
+#workSelect{
+	margin-left: 20px;
+}
 
 .valign-center.control-group {
 	margin: 5px 0px 0px 40px;
@@ -21,11 +24,11 @@
 }
 /*Set margin button */
 .location-button {
-	margin: 5px 0px 0px -45px;
+	margin: 5px 0px 0px -150px;
 }
 
 .link-label {
-	margin-left: 55px;
+	margin-left: 70px;
 }
 /*Set Width*/
 input.nts-editor.nts-input.reset-element {
@@ -110,8 +113,6 @@ div.form-label.broken {
 }
 
 .lstApprover {
-	margin-left: 20px;
-	margin-top: 730px;
 }
 /*workType, Sift */
 .lblSiftCd, .lblWorkTypeCd {
@@ -120,5 +121,5 @@ div.form-label.broken {
 }
 /*div cover label of comment*/
 .lblComment {
-	width: 230px;
+	width: 255px;
 }

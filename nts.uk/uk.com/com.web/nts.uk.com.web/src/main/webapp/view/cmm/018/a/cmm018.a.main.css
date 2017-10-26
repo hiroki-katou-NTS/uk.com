@@ -11,37 +11,23 @@
 	width: 260px;
 	height: 680px;
 }
-thead {
-	background-color: #c7f391;
-}
 
-tr {
-	height: 10px;
-}
 .contents-header td {
-    border: 1px solid #CCC;
-    text-align: center;
-    height: 20px;
     padding: 5px 3px;
 }
 .contents-header {
 	width: 920px;
-	margin-top: 20px;
 }
 .td-first-bg{
 	background-color:#E0F59E !important;
-}
-table.contents-header tbody {
-	height: 200px;
-	overflow-y: scroll;
-    overflow-x: hiden;
 }
 table.contents-header td.name {
 	width: 100px;
 }
 
 table.contents-header td.button_phase {
-	width: 80px;
+	 text-align: center;
+     padding: 5px 5px;
 }
 
 table.contents-header td.approver {
@@ -54,4 +40,24 @@ table.contents-header td.base-date {
 
 table.contents-header td.allow-pay {
 	width: 45px;
+	text-align: center;
+}
+table.contents-header thead tr th{
+	text-align: center;
+}
+
+.modeB{
+    color: #000;
+    background-color: #CFF1A5;	
+    padding: 0 2px;
+    border: 1px solid #CCC;
+}
+table#fixed-tableB tbody td{
+	border: 1px solid #CCC;
+}
+table#fixed-tableWpB tbody td{
+	border: 1px solid #CCC;
+}
+table#fixed-tablePsB tbody td{
+	border: 1px solid #CCC;
 }

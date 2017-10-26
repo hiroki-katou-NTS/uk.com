@@ -21,7 +21,8 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 
 	private final String SELECT_FROM_APPROVER = "SELECT c FROM WwfmtAppover c"
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
-			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
+			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId"
+			+ " ORDER BY c.displayOrder ASC";
 	private static final String DELETE_APPROVER_BY_APHASEID = "DELETE from WwfmtAppover c "
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
