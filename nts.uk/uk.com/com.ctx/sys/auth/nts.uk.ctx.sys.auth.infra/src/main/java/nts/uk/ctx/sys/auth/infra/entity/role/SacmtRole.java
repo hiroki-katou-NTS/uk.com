@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.auth.infra.entity.grant;
+package nts.uk.ctx.sys.auth.infra.entity.role;
 
 import java.io.Serializable;
 
@@ -46,7 +46,7 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 	private String contractCode;
 
 	@Column(name = "ASSIGN_ATR")
-	private short assignAtr;
+	private int assignAtr;
 
 	public SacmtRole() {
 	}
@@ -56,7 +56,7 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 	}
 
 	public SacmtRole(String id, int exclusVer, String code, Integer roleType, Integer referenceRange, String name,
-			String contractCode, short assignAtr) {
+			String contractCode, int assignAtr) {
 		this.id = id;
 		this.code = code;
 		this.roleType = roleType;
