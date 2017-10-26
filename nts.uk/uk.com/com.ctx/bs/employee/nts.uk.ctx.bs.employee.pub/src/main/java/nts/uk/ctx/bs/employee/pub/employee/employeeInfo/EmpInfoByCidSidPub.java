@@ -6,5 +6,5 @@ public interface EmpInfoByCidSidPub {
 	 * Find EmployeeInFo by companyId,employeeId For request No.101
 	 *
 	 */
-	EmpInfoByCidSidExport getEmpInfoBySidCid(String sid, String cid);
+	EmpInfoByCidSidExport getEmpInfoBySidCid(String pid, String cid);
 }

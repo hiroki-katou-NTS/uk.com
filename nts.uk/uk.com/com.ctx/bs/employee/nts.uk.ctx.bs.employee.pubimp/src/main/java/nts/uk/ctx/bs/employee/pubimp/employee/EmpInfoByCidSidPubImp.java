@@ -24,7 +24,7 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 	private PersonRepository perRepo;
 
 	@Override
-	public EmpInfoByCidSidExport getEmpInfoBySidCid(String sid, String cid) {
+	public EmpInfoByCidSidExport getEmpInfoBySidCid(String pid, String cid) {
 
 		EmpInfoByCidSidExport result = new EmpInfoByCidSidExport();
 
@@ -32,7 +32,7 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(new Date(sdf.format(date)));
 
-		Optional<Employee> empOpt = empRepo.findBySidCidSystemDate(cid, sid, systemDate);
+		Optional<Employee> empOpt = empRepo.findBySidCidSystemDate(cid, pid, systemDate);
 
 		if (empOpt.isPresent()) {
 			Employee employee = empOpt.get();

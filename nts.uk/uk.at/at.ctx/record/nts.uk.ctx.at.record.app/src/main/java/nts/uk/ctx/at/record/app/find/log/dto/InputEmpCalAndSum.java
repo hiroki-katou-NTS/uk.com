@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InputEmpCalAndSum {
 	
-	long empCalAndSumExecLogID;
+	String empCalAndSumExecLogID;
 	
 	String operationCaseID;
 }

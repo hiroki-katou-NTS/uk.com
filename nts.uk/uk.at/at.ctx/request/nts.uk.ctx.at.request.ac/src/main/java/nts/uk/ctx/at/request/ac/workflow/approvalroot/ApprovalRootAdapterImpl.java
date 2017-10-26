@@ -156,7 +156,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 			temp.addEmployeeName(employeeAdapter.getEmployeeName(approverInfoExport.getSid()));
 		}
 		if(approverInfoExport.getApprovalAtr() ==1) {
-			temp.addEmployeeName(syJobTitlePub.findByJobId(companyID, approverInfoExport.getJobId(), GeneralDate.today()).get().getPositionName());
+			temp.addEmployeeName(syJobTitlePub.findByJobId(companyID, approverInfoExport.getJobId(), GeneralDate.today()).get().getJobTitleName());
 
 		}
 		return temp;

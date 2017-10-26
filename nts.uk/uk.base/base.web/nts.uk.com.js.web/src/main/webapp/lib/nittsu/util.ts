@@ -667,8 +667,12 @@
             }
         }
     }
+     
+    
     export module resource {
-
+        
+        var names = window['names'] || {};
+        var messages = window['messages'] || {};
 
         export function getText(code: string, params?: string[]): string {
             let text = names[code];
@@ -684,7 +688,7 @@
             let message = messages[messageId];
             if (!message) {
                 let responseText="";
-                nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function(res) {
+                nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function(res) {
                     responseText=res;
                 }).fail(function() {
                 });
@@ -692,6 +696,7 @@
                     return messageId;
                 }
                 message = responseText;
+                messages[messageId] = message;
             }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);

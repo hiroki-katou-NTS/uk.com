@@ -22,7 +22,7 @@ public class ErrMessageInfoDto {
 	/**
 	 * 就業計算と集計実行ログID
 	 */
-	private long empCalAndSumExecLogID;
+	private String empCalAndSumExecLogID;
 	/**
 	 * リソースID
 	 */

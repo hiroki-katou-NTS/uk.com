@@ -13,6 +13,6 @@ import java.math.BigDecimal;
 public interface ProcessFlowOfDailyCreationDomainService {
 	
 	//日別作成の処理の流れ
-	boolean processFlowOfDailyCreation(int executionAttr, BigDecimal startDate, BigDecimal endDate, String executionID, long empCalAndSumExecLogID);
+	boolean processFlowOfDailyCreation(int executionAttr, BigDecimal startDate, BigDecimal endDate, String executionID, String empCalAndSumExecLogID);
 
 }
