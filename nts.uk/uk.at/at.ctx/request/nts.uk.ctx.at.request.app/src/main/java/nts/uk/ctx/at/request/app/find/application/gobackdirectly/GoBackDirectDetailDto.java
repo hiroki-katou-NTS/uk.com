@@ -30,6 +30,8 @@ public class GoBackDirectDetailDto {
 	String appReason;
 	//申請日
 	String appDate;
+	
+	String employeeName;
 	//AppCommonSettingDto appCommonSetting;
 	DetailedScreenPreBootModeDto detailedScreenPreBootModeDto;
 	
@@ -55,6 +57,7 @@ public class GoBackDirectDetailDto {
 				domain.getAppReasonId(), 
 				domain.getAppReason(),
 				domain.getAppDate(), 
+				domain.getEmployeeName(),
 				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
 				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
 				domain.getDetailScreenInitModeOutput().getOutputMode().value
