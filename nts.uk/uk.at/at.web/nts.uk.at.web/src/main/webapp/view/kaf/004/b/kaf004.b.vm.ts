@@ -130,12 +130,12 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         /** Clear screen after Registry*/
                         self.date(moment().format('YYYY/MM/DD'));
-                        self.late1(null);
-                        self.late2(null);
+                        self.late1(false);
+                        self.late2(false);
                         self.lateTime1(null);
                         self.lateTime2(null);
-                        self.early1(null);
-                        self.early2(null);
+                        self.early1(false);
+                        self.early2(false);
                         self.earlyTime1(null);
                         self.earlyTime2(null);
                         self.appreason(null);

@@ -3,65 +3,39 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     import service = nts.uk.at.view.kaf004.b.service;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // applicantName
-        applicantName: KnockoutObservable<string>;
+        applicantName: KnockoutObservable<string> = ko.observable("");
         // date editor
-        date: KnockoutObservable<string>;
+        date: KnockoutObservable<string>  = ko.observable(moment().format('YYYY/MM/DD'));
         //latetime editor
-        lateTime1: KnockoutObservable<number>;
-        lateTime2: KnockoutObservable<number>;
+        lateTime1: KnockoutObservable<number> = ko.observable(0);
+        lateTime2: KnockoutObservable<number> = ko.observable(0);
         //check send mail
-        sendMail: KnockoutObservable<boolean>;
+        sendMail: KnockoutObservable<boolean> = ko.observable(true);
         //check late
-        late1: KnockoutObservable<boolean>;
-        late2: KnockoutObservable<boolean>;
+        late1: KnockoutObservable<boolean> = ko.observable(false);
+        late2: KnockoutObservable<boolean> = ko.observable(false);
         //check early
-        early1: KnockoutObservable<boolean>;
-        early2: KnockoutObservable<boolean>;
+        early1: KnockoutObservable<boolean> = ko.observable(false);
+        early2: KnockoutObservable<boolean> = ko.observable(false);
         //labor time
-        earlyTime1: KnockoutObservable<number>;
-        earlyTime2: KnockoutObservable<number>;
+        earlyTime1: KnockoutObservable<number> = ko.observable(0);
+        earlyTime2: KnockoutObservable<number> = ko.observable(0);
         //combobox
-        ListTypeReason: KnockoutObservableArray<TypeReason>;
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
+        ListTypeReason: KnockoutObservableArray<TypeReason> = ko.observableArray([]);
+        itemName: KnockoutObservable<string> = ko.observable('');
+        currentCode: KnockoutObservable<number> = ko.observable(3);
+        selectedCode: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
-        appreason: KnockoutObservable<string>;
-        time: KnockoutObservable<string>;
+        appreason: KnockoutObservable<string> = ko.observable('');
         //Show Screen
-        showScreen: KnockoutObservable<string>;
-        postAtr: number;
+        showScreen: KnockoutObservable<string> = ko.observable('');
+        postAtr: KnockoutObservable<number> = ko.observable(0);
         
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
-            //check sendMail
-            self.sendMail = ko.observable(true);
-            //date editor
-            self.date = ko.observable(new Date());
-            //time editor
-            self.lateTime1 = ko.observable(0);
-            self.lateTime2 = ko.observable(0);
-            //check late
-            self.late1 = ko.observable(false);
-            self.late2 = ko.observable(false);
-            // check early
-            self.early1 = ko.observable(false);
-            self.early2 = ko.observable(false);
-            //labor time 
-            self.earlyTime1 = ko.observable(0);
-            self.earlyTime2 = ko.observable(0);
-            //combobox
-            self.ListTypeReason = ko.observableArray([]);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable('0002');
-            //MultilineEditor 
-            self.appreason = ko.observable('');
             //Show Screen
-            self.showScreen = ko.observable('');
             self.startPage();
-            self.applicantName = ko.observable("");
         }
 
         startPage(): JQueryPromise<any> {
