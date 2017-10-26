@@ -1,4 +1,4 @@
-/*package nts.uk.shr.infra.mail;
+package nts.uk.shr.infra.mail;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,4 +41,3 @@ public class DefaultMailSender implements MailSender {
 	
 	
 }
-*/
