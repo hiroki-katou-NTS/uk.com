@@ -84,7 +84,7 @@ public class WithinWorkTimeSheet implements {
 			) {
 		
 
-		predetermineTimeSet.getSpecifiedTimeSheet().correctPredetermineTimeSheet(workType.getDailyWork());
+		PredetermineTimeSetForCalc predetermineTimeForSet = predetermineTimeSet.getSpecifiedTimeSheet().correctPredetermineTimeSheet(workType.getDailyWork());
 
 		//遅刻猶予時間の取得
 		val lateGraceTime = workTimeCommonSet.getLateSetting().getGraceTimeSetting();//引数でworkTimeCommonSet毎渡すように修正予定
@@ -93,14 +93,14 @@ public class WithinWorkTimeSheet implements {
 						
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		WithinWorkTimeFrame timeFrame;
-		val workingHourSet = createWorkingHourSet(workType, predetermineTimeSet, fixedWorkSetting);
+		val workingHourSet = createWorkingHourSet(workType, predetermineTimeForSet , fixedWorkSetting);
 		
 		for (int frameNo = 0; frameNo < workingHourSet.toArray().length; frameNo++) {
 			List<BonusPayTimesheet> bonusPayTimeSheet = new ArrayList<>();
 			List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet = new ArrayList<>();
 			Optional<MidNightTimeSheet> midNightTimeSheet;
 			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
-				DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
+				//DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
 				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(),duplicateTimeSheet.getTimeSpan(),deductionTimeSheet.getForDeductionTimeZoneList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
 				/*加給*/
 				bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimeSpan());
@@ -143,13 +143,13 @@ public class WithinWorkTimeSheet implements {
 	 * @param fixedWorkSetting 固定勤務設定クラス
 	 * @return 所定時間と重複している時間帯
 	 */
-	public static List<WorkTimeOfTimeSheetSet> createWorkingHourSet(WorkType workType, PredetermineTimeSet predetermineTimeSet,
+	public static List<WorkTimeOfTimeSheetSet> createWorkingHourSet(WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting) {
 		
 		val attendanceHolidayAttr = workType.getAttendanceHolidayAttr();
 		return getWorkingHourSetByAmPmClass(fixedWorkSetting, attendanceHolidayAttr).extractBetween(
-				predetermineTimeSet.getDateStartTime(),
-				new TimeWithDayAttr(predetermineTimeSet.getPredetermineEndTime()));
+				new TimeWithDayAttr(predetermineTimeSet.getStartOneDayTime().valueAsMinutes()),
+				new TimeWithDayAttr(predetermineTimeSet.getStartOneDayTime().valueAsMinutes() + predetermineTimeSet.getOneDayRange().valueAsMinutes()));
 	}
 
 	/**

@@ -8,10 +8,10 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.HasTimeSpanList;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.SetAdditionToWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetList;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting.TimeSheetList;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -25,14 +25,16 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class PredetermineTimeSetForCalc {
 	
 	private final TimeSheetList timeSheets;
-
-	private final SetAdditionToWorkTime attendanceTime;
 	
 	private final TimeWithDayAttr AMEndTime;
 
 	private final TimeWithDayAttr PMStartTime;
 	
 	private PredetermineTime additionSet;
+	
+	private AttendanceTime oneDayRange;
+	
+	private TimeWithDayAttr startOneDayTime;
 
 	/**
 	 * 所定時間帯の時間を更新する
@@ -43,25 +45,34 @@ public class PredetermineTimeSetForCalc {
 	 * @param timeSheets
 	 */
 	public PredetermineTimeSetForCalc(
-			SetAdditionToWorkTime additionSet,
 			TimeSheetList timeSheets,
 			TimeWithDayAttr AMEndTime,
-			TimeWithDayAttr PMStartTime) {
+			TimeWithDayAttr PMStartTime,
+			PredetermineTime addtionSet) {
 		this.timeSheets = timeSheets;
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
-		this.additionSet = additionSet;	
+		this.additionSet = addtionSet;
 	}
 	
+	/**
+	 * Aggregateの所定時間から計算用所定時間クラスへの変換
+	 */
+	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetermineTimeSet predetermineTimeSet){
+		return new PredetermineTimeSetForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets()
+											  ,predetermineTimeSet.getSpecifiedTimeSheet().getAMEndTime()
+											  ,predetermineTimeSet.getSpecifiedTimeSheet().getPMStartTime()
+											  ,predetermineTimeSet.getAdditionSet());
+	}
 	
 	/**
 	 * 勤務の単位を基に時間帯の開始、終了を補正
 	 * @param dailyWork 1日の勤務
 	 */
-	public void correctPredetermineTimeSheet(DailyWork dailyWork) {
+	public void correctPredetermineTimeSheet(DailyWork dailyWork,int workNo) {
 		
 		if (dailyWork.getAttendanceHolidayAttr().isHalfDayWorking()) {
-			val workingTimeSheet = this.getHalfDayWorkingTimeSheetOf(dailyWork.getAttendanceHolidayAttr());
+			val workingTimeSheet = this.getHalfDayWorkingTimeSheetOf(dailyWork.getAttendanceHolidayAttr(),workNo);
 			this.timeSheets.correctTimeSheet(workingTimeSheet.getStart(), workingTimeSheet.getEnd());
 		}
 	}
@@ -71,48 +82,18 @@ public class PredetermineTimeSetForCalc {
 	 * @param attr
 	 * @return
 	 */
-	private TimeSpanForCalc getHalfDayWorkingTimeSheetOf(AttendanceHolidayAttr attr) {
+	private TimeSpanForCalc getHalfDayWorkingTimeSheetOf(AttendanceHolidayAttr attr,int workNo) {
 		switch (attr) {
 		case MORNING:
-			return new TimeSpanForCalc(this.timeSheets.startOfDay(), this.AMEndTime);
+			return new TimeSpanForCalc(this.timeSheets.startOfDay(workNo), this.AMEndTime);
 		case AFTERNOON:
-			return new TimeSpanForCalc(this.PMStartTime, this.timeSheets.endOfDay());
+			return new TimeSpanForCalc(this.PMStartTime, this.timeSheets.endOfDay(workNo));
+		case FULL_TIME:
+		case HOLIDAY:
+			return new TimeSpanForCalc(this.timeSheets.startOfDay(workNo),this.timeSheets.endOfDay(workNo));
 		default:
-			throw new RuntimeException("半日専用のメソッドです: " + attr);
+			throw new RuntimeException("unknown attr:" + attr);
 		}
-	}
-	
-	
-	private static class TimeSheetList implements HasTimeSpanList<TimeSheetWithUseAtr> {
-
-		private final List<TimeSheetWithUseAtr> timeSheets;
-		
-		public TimeSheetList(List<TimeSheetWithUseAtr> timeSheets) {
-			this.timeSheets = new ArrayList<>(timeSheets);
-		}
-		
-		@Override
-		public List<TimeSheetWithUseAtr> getTimeSpanList() {
-			return this.timeSheets;
-		}
-		
-		public void correctTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end) {
-			val corrected = this.extractBetween(start, end);
-			this.timeSheets.clear();
-			this.timeSheets.addAll(corrected);
-		}
-		
-		public TimeWithDayAttr startOfDay() {
-			return this.timeSheets.get(0).getStartTime();
-		}
-		
-		public TimeWithDayAttr endOfDay() {
-			if (this.timeSheets.size() == 1) {
-				return this.timeSheets.get(0).getEndTime();
-			} else {
-				return this.timeSheets.get(1).getEndTime();
-			}
-		}		
 	}
 	
 	/**

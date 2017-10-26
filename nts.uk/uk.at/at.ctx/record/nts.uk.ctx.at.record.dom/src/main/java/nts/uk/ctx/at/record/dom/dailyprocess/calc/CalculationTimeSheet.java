@@ -290,9 +290,9 @@ public abstract class CalculationTimeSheet {
 	 */
 	public Optional<MidNightTimeSheet> createMidNightTimeSheet() {
 		if(midNightTimeSheet.isPresent()) {
-			if(calcrange.checkDuplication(midNightTimeSheet.get().calcrange).isDuplicated()) { ここは計算範囲と深夜時間帯がもつ時間帯の比較のがよい？
+			if(calcrange.checkDuplication(midNightTimeSheet.get().calcrange).isDuplicated()) { 
 				return Optional.of(new MidNightTimeSheet(timeSheet,
-										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),　ここは計算範囲と深夜時間帯がもつ計算時間帯の比較のがよい？
+										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
 										 bonusPayTimeSheet,
 										 midNightTimeSheet,
@@ -314,16 +314,18 @@ public abstract class CalculationTimeSheet {
 			if(midNightTimeSheet.isPresent()) {
 				Optional<TimeSpanForCalc> duplicateSpan = midNightTimeSheet.get().calcrange.getDuplicatedWith(deductionTimeSheet.calcrange);
 				if(duplicateSpan.isPresent()) {
-					returnList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(deductionTimeSheet.timeSheet
-																					  ,duplicateSpan.get()
-																					  ,deductionTimeSheet.deductionTimeSheets
-																					  ,deductionTimeSheet.bonusPayTimeSheet
-																					  ,deductionTimeSheet.midNightTimeSheet
-																					  ,deductionTimeSheet.getGoOutReason()
-																					  ,deductionTimeSheet.getBreakAtr()
-																					  ,deductionTimeSheet.getDeductionAtr()
-																					  ,deductionTimeSheet.getWithinStatutoryAtr()
-																					));
+					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+																								deductionTimeSheet.timeSheet
+																							   ,deductionTimeSheet.calcrange
+																							   ,deductionTimeSheet.deductionTimeSheets
+																							   ,deductionTimeSheet.bonusPayTimeSheet
+																							   ,deductionTimeSheet.specifiedBonusPayTimeSheet
+																							   ,deductionTimeSheet.midNightTimeSheet
+																							   ,deductionTimeSheet.getGoOutReason()
+																							   ,deductionTimeSheet.getBreakAtr()
+																							   ,deductionTimeSheet.getDeductionAtr()
+																							   ,deductionTimeSheet.getWithinStatutoryAtr()
+																							   ));
 				}
 			}
 		}
@@ -386,7 +388,7 @@ public abstract class CalculationTimeSheet {
 														new TimeSpanForCalc(new TimeWithDayAttr(specifiedBonusPayTimeSheet.getStart().valueAsMinutes())
 																		   ,new TimeWithDayAttr(specifiedBonusPayTimeSheet.getEnd().valueAsMinutes())));
 				if(newSpan.isPresent()) {
-					this.specifiedBonusPayTimeSheet.add(new SpecifiedbonusPayTimeSheet(new AttendanceClock(newSpan.get().getStart()), new AttendanceClock(newSpan.get().getEnd()), specifiedBonusPayTimeSheet.getSpecifiedItemNo()));
+					this.specifiedBonusPayTimeSheet.add(new SpecifiedbonusPayTimeSheet(new AttendanceClock(newSpan.get().getStart().valueAsMinutes()), new AttendanceClock(newSpan.get().getEnd().valueAsMinutes()), specifiedBonusPayTimeSheet.getSpecifiedItemNo()));
 				}
 			}
 		}

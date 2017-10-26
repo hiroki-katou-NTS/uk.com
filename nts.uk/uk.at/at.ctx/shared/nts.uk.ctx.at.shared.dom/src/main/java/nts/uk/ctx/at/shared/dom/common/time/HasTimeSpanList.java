@@ -14,7 +14,7 @@ public interface HasTimeSpanList<T extends HasTimeSpanForCalc<T>> {
 		val targetSpan = new TimeSpanForCalc(start, end);
 		
 		List<T> result = new ArrayList<>();
-		this.getTimeSpanList().forEach(source -> {
+		this.getTimeSpanList().stream().forEach(source -> {
 			source.getTimeSpan().getDuplicatedWith(targetSpan).ifPresent(duplicated -> {
 				result.add(source.newSpanWith(duplicated.getStart(), duplicated.getEnd()));
 			});

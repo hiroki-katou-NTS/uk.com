@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -71,6 +72,15 @@ public class CalculationRangeOfOneDay extends CalculationTimeSheet{
 	
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
 	
+	public CalculationRangeOfOneDay(FixWeekdayWorkTime fixWeekDayWorkTime,
+	WorkTime workTime,
+	WorkType workType,
+	WithinWorkTimeSheet withinWorkingTimeSheet,
+	OutsideWorkTimeSheet outsideWorkTimeSheet,
+	TimeSpanForCalc oneDayOfRange,
+	AttendanceLeavingWorkOfDaily attendanceLeavingWork,PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
+		super();
+	}
 	
 	/**
 	 * 就業時間帯の作成
