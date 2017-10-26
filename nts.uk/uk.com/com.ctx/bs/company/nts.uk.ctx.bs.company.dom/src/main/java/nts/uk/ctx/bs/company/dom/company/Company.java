@@ -31,6 +31,9 @@ public class Company extends AggregateRoot {
 	// 廃止区分
 	private IsAbolition isAbolition;
 
+	/** システム利用設定 - System Use Setting */
+	private SystemUseSetting systemUseSetting;
+
 	/**
 	 * Instantiates a new company.
 	 *
@@ -43,6 +46,8 @@ public class Company extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.startMonth = memento.getStartMonth();
 	}
+	
+	
 
 	/**
 	 * Save to memento.
@@ -65,17 +70,28 @@ public class Company extends AggregateRoot {
 	 * @param companyId
 	 * @param isAbolition
 	 */
-	public Company(CompanyCode companyCode, CompanyName companyName, CompanyId companyId, IsAbolition isAbolition) {
+	public Company(CompanyCode companyCode, CompanyName companyName, CompanyId companyId, IsAbolition isAbolition,
+			SystemUseSetting systemUseSetting) {
 		super();
 		this.companyCode = companyCode;
 		this.companyName = companyName;
 		this.companyId = companyId;
 		this.isAbolition = isAbolition;
+		this.systemUseSetting = systemUseSetting;
 	}
 
-	public static Company createFromJavaType(String companyCode, String companyName, String companyId,
-			int isAbolition) {
-		return new Company(new CompanyCode(companyCode), new CompanyName(companyName), new CompanyId(companyId),
-				EnumAdaptor.valueOf(isAbolition, IsAbolition.class));
+	public static Company createFromJavaType(String companyCode, String companyName, String companyId, int isAbolition,
+			int personSystem, int employmentSystem, int payrollSystem) {
+		return new Company(new CompanyCode(companyCode), 
+				           new CompanyName(companyName), 
+				           new CompanyId(companyId),
+				           EnumAdaptor.valueOf(isAbolition, IsAbolition.class),
+				           new SystemUseSetting(EnumAdaptor.valueOf(personSystem, SystemUseClassification.class),
+						   EnumAdaptor.valueOf(employmentSystem, SystemUseClassification.class),
+						   EnumAdaptor.valueOf(payrollSystem, SystemUseClassification.class)));
+	}
+
+	public Company() {
+		super();
 	}
 }

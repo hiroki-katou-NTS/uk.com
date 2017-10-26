@@ -6,41 +6,41 @@ import lombok.AllArgsConstructor;
 public enum StampSourceInfo {
 	
 	/* タイムレコーダー*/
-	Time_Recorder(0),
+	TIME_RECORDER(0),
 	/* 打刻申請*/
-	Stamp_Application(1),
+	STAMP_APPLICATION(1),
 	/* 打刻申請(NR)*/
-	Stamp_Application_NR(2),
+	STAMP_APPLICATION_NR(2),
 	/* 直行直帰 */
-	Go_Straight(3),
+	GO_STRAIGHT(3),
 	/* 直行直帰申請*/
-	Go_Straight_Application(4),
+	GO_STRAIGHT_APPLICATION(4),
 	/* 直行直帰(ボタン)*/
-	Go_Straight_Application_Button(5),
+	GO_STRAIGHT_APPLICATION_BUTTON(5),
 	/* 手修正(本人) */
-	Hand_Correction_By_Myself(6),
+	HAND_CORRECTION_BY_MYSELF(6),
 	/* 手修正(他人) */
-	Hand_Correction_By_Another(7),
+	HAND_CORRECTION_BY_ANOTHER(7),
 	/* 打刻自動セット(個人情報) */
-	Stamp_Auto_Set_Personal_Info(8),
+	STAMP_AUTO_SET_PERSONAL_INFO(8),
 	/* 修正画面一括設定 */
-	Correction_Record_Set(9),
+	CORRECTION_RECORD_SET(9),
 	/* タイムレコーダ(ID入力) */
-	Time_Recorder_Id_Input(10),
+	TIME_RECORDER_ID_INPUT(10),
 	/* Web打刻入力 */
-	Wed_Stamp_Input(11),
+	WEB_STAMP_INPUT(11),
 	/* タイムレコーダ(磁気カード) */
-	Time_Recorder_Magnet_Card(12),
+	TIME_RECORDER_MAGNET_CARD(12),
 	/* タイムレコーダ(ICカード) */
-	Time_Recorder_Ic_Card(13),
+	TIME_RECORDER_Ic_CARD(13),
 	/* タイムレコーダ(指紋打刻) */
-	Time_Recorder_Finger_Stamp(14),
+	TIME_RECORDER_FINGER_STAMP(14),
 	/* モバイル打刻 */
-	Mobile_Stamp(15),
+	MOBILE_STAMP(15),
 	/* モバイル打刻(エリア外)*/
-	Mobile_Stamp_Outside(16),
+	MOBILE_STAMP_OUTSIDE(16),
 	/* 打刻漏れ補正 */
-	Stamp_Leakage_Correction(17);
+	STAMP_LEAKAGE_CORRECTION(17);
 	
 	public final int value;
 
