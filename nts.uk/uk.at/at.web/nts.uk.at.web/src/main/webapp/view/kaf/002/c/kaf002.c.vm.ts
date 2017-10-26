@@ -25,13 +25,9 @@ module nts.uk.at.view.kaf002.c {
                 var dfdCommonSet = service.newScreenFind();
                 var dfdAppStamp = service.findByAppID(appID);
                 $.when(dfdCommonSet, dfdAppStamp).done((commonSetData, appStampData) => {
-                    if(nts.uk.util.isNullOrEmpty(self.approvalList)){
-                        nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
-                    } else {
-                        self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
-                        self.cm.start(commonSetData, appStampData, self.approvalList);   
-                        dfd.resolve();    
-                    }
+                    self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
+                    self.cm.start(commonSetData, appStampData, self.approvalList);   
+                    dfd.resolve(); 
                 })
                 .fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){
