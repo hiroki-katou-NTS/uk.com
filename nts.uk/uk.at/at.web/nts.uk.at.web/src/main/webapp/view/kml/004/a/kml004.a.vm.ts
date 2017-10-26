@@ -244,7 +244,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let self = this;
             $("#code-text").ntsError('clear');
             self.clearForm();
-            self.items(self.evalItemList);
+            self.items(_.clone(self.evalItemList));
         }
 
         clearForm() {
