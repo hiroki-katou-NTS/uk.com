@@ -59,9 +59,9 @@ module nts.uk.com.view.cmm018.j {
                             close();
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            block.clear();
-                        });       
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")}).then(function(res){
+                                block.clear();
+                        });      
                     });
                 } else {//TH: delete
                     //削除する期間が最新なのかチェックする (Check history the last)

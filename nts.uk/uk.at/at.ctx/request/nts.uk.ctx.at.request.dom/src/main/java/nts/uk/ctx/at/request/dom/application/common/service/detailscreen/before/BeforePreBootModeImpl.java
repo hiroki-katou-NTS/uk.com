@@ -84,7 +84,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				employeeID, baseDate);
 		GeneralDate startDate = listDate.getStartDate();
 		// 締め開始日 >  ドメインモデル「申請」．申請日 がtrue
-		if (startDate.after(applicationData.getApplicationDate()) == true) {
+		if (startDate.after(applicationData.getApplicationDate())) {
 			//ステータス = 過去申請(status= 過去申請)
 			outputData.setReflectPlanState(ReflectPlanPerState.PASTAPP);
 		} else {
@@ -99,7 +99,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		if (decideByApprover(applicationData)) {
 			//ログイン者が申請本人かチェックする(Check xem login có phải là 申請本人 không)
 			//ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
-			if (applicationData.getApplicantSID() == employeeID) {
+			if (applicationData.getApplicantSID().equals(employeeID)) {
 				//利用者 = 申請本人&承認者
 				outputData.setUser(User.APPLICANT_APPROVER);
 				
@@ -109,7 +109,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			}
 		} else {//承認者フラグがfalse
 			//ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
-			if (applicationData.getApplicantSID() == employeeID) {
+			if (applicationData.getApplicantSID().equals(employeeID)) {
 				//利用者 = 申請本人
 				outputData.setUser(User.APPLICANT);
 			} else {//ドメインモデル「申請」．申請者 = ログイン者社員ID がfalse
@@ -137,10 +137,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		//承認区分 = 未承認、承認できるフラグ = false、代行期限切れフラグ = false(初期化)
 		CanBeApprovedOutput outputData =  new CanBeApprovedOutput(false, ApprovalAtr.UNAPPROVED, false);
 		// ステータスが否認、反映待ち、未反映、差し戻し(status = 否認、反映待ち、未反映、差し戻し)
-		if (status == ReflectPlanPerState.DENIAL 
-				|| status == ReflectPlanPerState.WAITREFLECTION
-				|| status == ReflectPlanPerState.NOTREFLECTED 
-				|| status == ReflectPlanPerState.REMAND) {
+		if (status.equals(ReflectPlanPerState.DENIAL) 
+				|| status.equals(ReflectPlanPerState.WAITREFLECTION)
+				|| status.equals(ReflectPlanPerState.NOTREFLECTED)
+				|| status.equals(ReflectPlanPerState.REMAND)) {
 			List<AppApprovalPhase> listAppApprovalPhase = applicationData.getListPhase();
 			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
 				// アルゴリズム「承認者一覧を取得する」を実行する
@@ -155,16 +155,16 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				if(checkApprovalProgressPhase(applicationData, appApprovalPhase.getDispOrder())) {
 					//ループ中のドメインモデル「承認フェーズ」．承認区分をチェックする
 					//ループ中のドメインモデル「承認フェーズ」．承認区分が差し戻し
-					if(appApprovalPhase.getApprovalATR() == ApprovalAtr.REMAND) {
+					if(appApprovalPhase.getApprovalATR().equals(ApprovalAtr.REMAND)) {
 						//2.承認状況の判断(差し戻し)
 						outputData = approvedRemand(appApprovalPhase);						
-					}else if(appApprovalPhase.getApprovalATR() == ApprovalAtr.APPROVED) {//ループ中のドメインモデル「承認フェーズ」．承認区分が承認済
+					}else if(appApprovalPhase.getApprovalATR().equals(ApprovalAtr.APPROVED)) {//ループ中のドメインモデル「承認フェーズ」．承認区分が承認済
 						//1.承認状況の判断(承認済)
 						outputData = approvedApproved(appApprovalPhase);
-					}else if(appApprovalPhase.getApprovalATR() == ApprovalAtr.DENIAL) {//ループ中のドメインモデル「承認フェーズ」．承認区分が否認
+					}else if(appApprovalPhase.getApprovalATR().equals(ApprovalAtr.DENIAL)) {//ループ中のドメインモデル「承認フェーズ」．承認区分が否認
 						//3.承認状況の判断(否認)
 						outputData = approvedDential(appApprovalPhase);
-					}else if (appApprovalPhase.getApprovalATR() == ApprovalAtr.UNAPPROVED) {//ループ中のドメインモデル「承認フェーズ」．承認区分が未承認
+					}else if (appApprovalPhase.getApprovalATR().equals(ApprovalAtr.UNAPPROVED)) {//ループ中のドメインモデル「承認フェーズ」．承認区分が未承認
 						//4.承認状況の判断(未承認)
 						outputData = approvedUnapproved(appApprovalPhase);						
 					}
@@ -225,7 +225,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		List<ApprovalFrame> listApprovalFrame = appApprovalPhase.getListFrame();
 		//「承認フェーズ」．承認形態をチェックする
 		//「承認フェーズ」．承認形態が全員承認		
-		if (appApprovalPhase.getApprovalForm() == ApprovalForm.EVERYONEAPPROVED) {
+		if (appApprovalPhase.getApprovalForm().equals(ApprovalForm.EVERYONEAPPROVED)) {
 			for (ApprovalFrame approvalFrame : listApprovalFrame) {				
 				List<ApproveAccepted> listApprovers = approvalFrame.getListApproveAccepted();
 				List<String> approvers = new ArrayList<>();
@@ -260,10 +260,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				List<ApproveAccepted> listApproveAccepted = approvalFrame.getListApproveAccepted();			
 				//ループ中の承認枠．確定区分をチェックする
 				List<ApproveAccepted> someoneApprovalConfirm = listApproveAccepted.stream()
-						.filter(f -> f.getConfirmATR() == ConfirmAtr.USEATR_USE).collect(Collectors.toList());
+						.filter(f -> f.getConfirmATR().equals(ConfirmAtr.USEATR_USE)).collect(Collectors.toList());
 				//「承認枠」(承認区分=承認済)
 				List<String> approveds = listApproveAccepted.stream()
-						.filter(x -> x.getApprovalATR() == ApprovalAtr.APPROVED)
+						.filter(x -> x.getApprovalATR().equals(ApprovalAtr.APPROVED))
 						.map(y -> y.getApproverSID()).collect(Collectors.toList());
 				//確定者設定＝true
 				if (!CollectionUtil.isEmpty(someoneApprovalConfirm)) {
@@ -296,8 +296,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				}
 				//ログイン者が承認者として承認を行ったかチェックする
 				for(ApproveAccepted approver: listApproveAccepted) {
-					if(approver.getApprovalATR() == ApprovalAtr.APPROVED
-							&& approver.getApproverSID() == employeeID) {
+					if(approver.getApprovalATR().equals(ApprovalAtr.APPROVED)
+							&& approver.getApproverSID().equals(employeeID)) {
 						//承認区分 = 承認済、承認できるフラグ = true、代行期限切れフラグ = false
 						outputData.setApprovalATR(ApprovalAtr.APPROVED);
 						outputData.setAuthorizableFlags(true);
@@ -305,7 +305,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						return outputData;
 					}else {
 						//ログイン者が代行者として承認を行ったかチェックする
-						if(approver.getRepresenterSID() == employeeID) {
+						if(approver.getRepresenterSID().equals(employeeID)) {
 							//承認区分 = 承認済、承認できるフラグ = true
 							outputData.setApprovalATR(ApprovalAtr.APPROVED);
 							outputData.setAuthorizableFlags(true);
@@ -448,7 +448,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				//「承認枠」．承認区分が否認
 				if (approveAccepted.getApprovalATR() == ApprovalAtr.DENIAL) {
 					//ログイン者が承認者として否認を行ったかチェックする (login employee ID)
-					if (approveAccepted.getApproverSID() == employeeID) {
+					if (approveAccepted.getApproverSID().equals(employeeID)) {
 						//承認区分 = 否認、承認できるフラグ = true、代行期限切れフラグ = false
 						outputData.setApprovalATR(ApprovalAtr.DENIAL);
 						outputData.setAuthorizableFlags(true);
@@ -456,7 +456,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						return outputData;
 					} else {
 						//ログイン者が代行承認者として否認を行ったかチェックする
-						if(approveAccepted.getRepresenterSID() == employeeID) {
+						if(approveAccepted.getRepresenterSID().equals(employeeID)) {
 							//承認区分 = 否認、承認できるフラグ = true
 							outputData.setApprovalATR(ApprovalAtr.DENIAL);
 							outputData.setAuthorizableFlags(true);
@@ -490,11 +490,11 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			for (ApproveAccepted approveAccepted : listApproveAccepted) {
 				// 「承認枠」．承認区分が未承認
 				// "Approval frame".Approval ATR =Not Approved
-				if (approveAccepted.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+				if (approveAccepted.getApprovalATR().equals(ApprovalAtr.UNAPPROVED)) {
 					// 「承認枠」．承認者リスト. Contains(ログイン者社員ID)
 					// "Approval frame". Approver list. Contains (login employee
 					// ID)
-					if (approveAccepted.getApproverSID() == employeeID) {
+					if (approveAccepted.getApproverSID().equals(employeeID)) {
 						//承認区分 = 未承認、承認できるフラグ = true、代行期限切れフラグ = false
 						outputData.setApprovalATR(ApprovalAtr.UNAPPROVED);
 						outputData.setAuthorizableFlags(true);
@@ -513,10 +513,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 							return outputData;
 						}
 					}
-				} else if(approveAccepted.getApprovalATR() == ApprovalAtr.APPROVED) {//「承認枠」．承認区分が承認済 "Approval frame". Approval ATR  Approved
+				} else if(approveAccepted.getApprovalATR().equals(ApprovalAtr.APPROVED)) {//「承認枠」．承認区分が承認済 "Approval frame". Approval ATR  Approved
 					// ログイン者が承認者として承認を行ったかチェックする
 					// "Approval frame".Approver == Login Employee ID
-					if (approveAccepted.getApproverSID() == employeeID) {
+					if (approveAccepted.getApproverSID().equals(employeeID)) {
 						//承認区分 = 承認済、承認できるフラグ = true、代行期限切れフラグ = false
 						outputData.setApprovalATR(ApprovalAtr.APPROVED);
 						outputData.setAuthorizableFlags(true);
