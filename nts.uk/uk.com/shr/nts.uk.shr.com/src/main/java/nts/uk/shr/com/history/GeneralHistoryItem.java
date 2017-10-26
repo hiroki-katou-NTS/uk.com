@@ -45,7 +45,7 @@ public abstract class GeneralHistoryItem<S extends GeneralHistoryItem<S, R, T>,
 
 	@Override
 	public R span() {
-		return this.span();
+		return this.span;
 	}
 
 	@Override

@@ -585,6 +585,8 @@ var nts;
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
+            var names = window['names'] || {};
+            var messages = window['messages'] || {};
             function getText(code, params) {
                 var text = names[code];
                 if (text) {
@@ -599,7 +601,7 @@ var nts;
                 var message = messages[messageId];
                 if (!message) {
                     var responseText_1 = "";
-                    nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function (res) {
+                    nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function (res) {
                         responseText_1 = res;
                     }).fail(function () {
                     });
@@ -607,6 +609,7 @@ var nts;
                         return messageId;
                     }
                     message = responseText_1;
+                    messages[messageId] = message;
                 }
                 message = formatParams(message, params);
                 message = formatCompCustomizeResource(message);
