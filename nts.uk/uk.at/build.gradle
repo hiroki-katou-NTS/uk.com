@@ -110,8 +110,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.37'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.48'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.37.1'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.48.1'
 		
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.9'
 	}
@@ -511,6 +511,9 @@ project (':at.web:nts.uk.at.web') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		
+		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
+		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
 		
 		runtime group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
