@@ -1,7 +1,3 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.ArrayList;
@@ -12,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
@@ -19,6 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemN
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -32,13 +30,13 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AttendanceItemsFinder {
-	
+
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
-
+	
 	/** The frame adapter. */
 	@Inject
 	private FrameNoAdapter frameAdapter;
@@ -66,12 +64,15 @@ public class AttendanceItemsFinder {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attendanceItemIds);
-		
-//		List<AttendanceItemDto> attendanceItemDtoResult = dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
-//			return new AttendanceItemDto(f.getAttendanceItemId(), f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
-//		}).collect(Collectors.toList());
-		
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(attendanceItemIds);
+
+		// List<AttendanceItemDto> attendanceItemDtoResult =
+		// dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
+		// return new AttendanceItemDto(f.getAttendanceItemId(),
+		// f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
+		// }).collect(Collectors.toList());
+
 		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
 			AttendanceItemDto attendanceItemDto = new AttendanceItemDto();
 			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
@@ -101,13 +102,12 @@ public class AttendanceItemsFinder {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attendanceItemIds);
-		
-		
-		Map<Integer, DailyAttendanceItem> dailyAttendanceItemMap =
-				dailyAttendanceItems.stream().collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, c -> c));
-			
-		
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(attendanceItemIds);
+
+		Map<Integer, DailyAttendanceItem> dailyAttendanceItemMap = dailyAttendanceItems.stream()
+				.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, c -> c));
+
 		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
 			AttdItemDto attendanceItemDto = new AttdItemDto();
 			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
@@ -122,6 +122,25 @@ public class AttendanceItemsFinder {
 		return attendanceItemDtos;
 	}
 
+	public List<AttdItemDto> findListByAttendanceAtr(int dailyAttendanceAtr) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = this.dailyAttendanceItemRepository
+				.findByAtr(companyId, EnumAdaptor.valueOf(dailyAttendanceAtr, DailyAttendanceAtr.class)).stream()
+				.map(f -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemDisplayNumber(f.getDisplayNumber());
+					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
+					attdItemDto.setDailyAttendanceAtr(f.getDailyAttendanceAtr().value);
+					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		return attendanceItemDtos;
+	}
+	
 	/**
 	 * Find by any item.
 	 *
@@ -133,12 +152,6 @@ public class AttendanceItemsFinder {
 	 * @author anhnm
 	 */
 	public List<FrameNoAdapterDto> findByAnyItem(AttdItemLinkRequest request) {
-
-		// in case list anyItemNos is empty.
-		if (request.getAnyItemNos().isEmpty()) {
-			return this.getAttendaneItemLinks(request.getPerformanceAtr());
-		}
-
 		// find list optional item by attribute
 		Map<String, String> filteredByAtr = this.optItemRepo
 				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
@@ -150,23 +163,11 @@ public class AttendanceItemsFinder {
 				.collect(Collectors.toMap(i -> Integer.parseInt(i), i -> Integer.parseInt(i)));
 
 		// return list AttendanceItemLinking after filtered by list optional item.
-		return this.getAttendaneItemLinks(request.getPerformanceAtr()).stream()
+		return this.frameAdapter.getByAnyItem(convertToFrameType(request.getPerformanceAtr())).stream()
 				.filter(item -> filteredBySelectableList.containsKey(item.getFrameNo())).collect(Collectors.toList());
 
 	}
-
-	/**
-	 * Gets the attendane item links.
-	 *
-	 * @param performanceAtr the performance atr
-	 * @return the attendane item links
-	 * 
-	 * @author anhnm
-	 */
-	private List<FrameNoAdapterDto> getAttendaneItemLinks(int performanceAtr) {
-		return this.frameAdapter.getByAnyItem(convertToFrameType(performanceAtr));
-	}
-
+	
 	/**
 	 * Convert to frame type.
 	 *
@@ -181,5 +182,3 @@ public class AttendanceItemsFinder {
 		return performanceAtr == PerformanceAtr.DAILY_PERFORMANCE.value ? DAILY_FRAME : MONTHLY_FRAME;
 	}
 }
-
-

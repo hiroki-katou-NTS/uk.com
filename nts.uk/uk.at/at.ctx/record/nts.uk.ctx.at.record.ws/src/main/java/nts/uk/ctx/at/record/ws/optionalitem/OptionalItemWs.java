@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommand;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommandHandler;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.optitem.OptItemEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class OptionalItemWs.
@@ -38,7 +38,7 @@ public class OptionalItemWs extends WebService {
 
 	/** The i 18 n. */
 	@Inject
-	private IInternationalization i18n;
+	private I18NResourcesForUK i18n;
 
 	/**
 	 * Find.

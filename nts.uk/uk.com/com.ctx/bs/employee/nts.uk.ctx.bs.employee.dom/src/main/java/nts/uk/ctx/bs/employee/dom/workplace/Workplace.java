@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -40,11 +42,14 @@ public class Workplace extends AggregateRoot{
 		this.workplaceId = memento.getWorkplaceId();
 		this.workplaceHistory = memento.getWorkplaceHistory();
 		
-		// sort by start date desc 
+		// sort by end date, start date desc 
         Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
             @Override
             public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
-                return obj2.getPeriod().start().compareTo(obj1.getPeriod().start());
+                return new CompareToBuilder()
+                		.append(obj2.getPeriod().end(), obj1.getPeriod().end())
+                		.append(obj2.getPeriod().start(), obj1.getPeriod().start())
+                		.toComparison();
             }
         });
 	}

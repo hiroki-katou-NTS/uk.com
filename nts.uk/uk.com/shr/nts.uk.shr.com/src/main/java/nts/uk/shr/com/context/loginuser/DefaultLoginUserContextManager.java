@@ -75,4 +75,10 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 			}
 		};
 	}
+
+	@Override
+	public void setLanguage(String basic, String forPersonName) {
+		// TODO Auto-generated method stub
+		
+	}
 }
