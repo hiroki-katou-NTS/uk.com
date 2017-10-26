@@ -23,9 +23,8 @@ module nts.uk.at.view.kdw001.f {
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
                 self.dateValue = ko.observable({});
-                let today = new Date;
-                self.dateValue().startDate = new Date(today.getFullYear()-1, today.getMonth(), today.getDate()+2);
-                self.dateValue().endDate =today;
+                self.dateValue().startDate = moment.utc().subtract(1, "y").add(1, "d").format("YYYY/MM/DD");
+                self.dateValue().endDate = moment.utc().format("YYYY/MM/DD");
                 self.startDateString = ko.observable('');
                 self.endDateString = ko.observable(new Date());
                 //table
@@ -51,14 +50,14 @@ module nts.uk.at.view.kdw001.f {
                 }
                 self.listClassification(temp);
                 self.columns = [
-                    { headerText: getText('KDW001_73'), key: 'date', width: 100 },
-                    { headerText: getText('KDW001_74'), key: 'code', width: 120 },
-                    { headerText: getText('KDW001_75'), key: 'name', width: 100 },
-                    { headerText: getText('KDW001_76'), key: 'timeclose', width: 150 },
-                    { headerText: getText('KDW001_77'), key: 'menu', width: 200 },
-                    { headerText: getText('KDW001_78'), key: 'result', width: 160 },
-                    { headerText: getText('KDW001_79'), key: 'detail', width: 100, 
-                        template: '<button data-bind="click :openDialogI">${detail}</button>', 
+                    { headerText: getText('KDW001_73'), key: 'executionDate', width: 100 },
+                    { headerText: getText('KDW001_74'), key: 'caseSpecExeContentID', width: 120 },
+                    { headerText: getText('KDW001_75'), key: 'caseSpecExeContentID', width: 100 },
+                    { headerText: getText('KDW001_76'), key: 'processingMonth', width: 150 },
+                    { headerText: getText('KDW001_77'), key: 'caseSpecExeContentID', width: 200 },
+                    { headerText: getText('KDW001_78'), key: 'executedMenu', width: 160 },
+                    { headerText: getText('KDW001_79'), key: 'executionStatus', width: 100, 
+                        template: '<button data-bind="click :openDialogI">参照</button>', 
                         columnCssClass: "colStyleButton",
                          }
                 ];
@@ -74,6 +73,7 @@ module nts.uk.at.view.kdw001.f {
                 let dfdAllEmpCalAndSumExeLog = self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate());
                 
                 $.when(dfdAllEmpCalAndSumExeLog).done((dfdAllEmpCalAndSumExeLogData) => {
+                    
                     dfd.resolve();
                 });
                 
@@ -87,6 +87,8 @@ module nts.uk.at.view.kdw001.f {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate).done(function(data){
+                    //_.sortBy(self.empCalAndSumExeLog(data), 'executionDate');
+                    data = _.orderBy(data, ['executionDate'], ['desc']);
                     self.empCalAndSumExeLog(data);
                     dfd.resolve(data);
                 }).fail(function(res: any) {
@@ -96,6 +98,12 @@ module nts.uk.at.view.kdw001.f {
                 return dfd.promise();
             }//end function getAllEmpCalAndSumExeLog
             
+            //button search
+            search(){
+                let self = this;
+                self.inputEmpCalAndSumByDate(new model.InputEmpCalAndSumByDate(self.dateValue().startDate, self.dateValue().endDate));
+                self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate()); 
+            }
             
             //open dialog I
             openDialogI(){
@@ -111,8 +119,8 @@ module nts.uk.at.view.kdw001.f {
          * class EmpCalAndSumExeLog
          */
         export class EmpCalAndSumExeLog{
-            empCalAndSumExecLogID:number;
-            caseSpecExeContentID :number;
+            empCalAndSumExecLogID: string;
+            caseSpecExeContentID : string;
             employeeID : string;
             executedMenu : number;
             executionStatus : number;
@@ -120,8 +128,8 @@ module nts.uk.at.view.kdw001.f {
             processingMonth : number;
             closureID : number;
             executionLogs : Array<ExecutionLog>;
-            constructor(empCalAndSumExecLogID :number,
-                    caseSpecExeContentID :number,
+            constructor(empCalAndSumExecLogID :string,
+                    caseSpecExeContentID :string,
                     employeeID : string,
                     executedMenu : number,
                     executionStatus : number,
@@ -146,8 +154,8 @@ module nts.uk.at.view.kdw001.f {
          * class ExecutionLog
          */
         export class ExecutionLog{
-            empCalAndSumExecLogID : number;
-            caseSpecExeContentID:number;
+            empCalAndSumExecLogID : string;
+            caseSpecExeContentID: string;
             employeeID:string;
             executedLogID : string;
             existenceError : number;
@@ -157,8 +165,8 @@ module nts.uk.at.view.kdw001.f {
             processStatus :number;
             calExeSetInfor : CalExeSettingInfor;
             objectPeriod : ObjectPeriod;
-            constructor(empCalAndSumExecLogID : number,
-                caseSpecExeContentID :number,
+            constructor(empCalAndSumExecLogID : string,
+                caseSpecExeContentID : string,
                 employeeID :string,
                 executedLogID : string,
                 existenceError : number,
@@ -219,8 +227,8 @@ module nts.uk.at.view.kdw001.f {
             startDate: string;
             endDate: string;
             constructor(startDate: string, endDate: string) {
-                this.startDate = startDate;
-                this.endDate = endDate;
+                this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
+                this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
             }
         }//end class InputEmpCalAndSumByDate
         
