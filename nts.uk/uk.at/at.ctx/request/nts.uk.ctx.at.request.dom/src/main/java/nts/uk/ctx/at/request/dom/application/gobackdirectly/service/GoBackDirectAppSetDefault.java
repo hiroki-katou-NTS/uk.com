@@ -84,7 +84,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		
 		if (application.isPresent()) {
 			data.prePostAtr = application.get().getPrePostAtr().value;
-			if (application.get().getApplicationReason().v().equals(":")) {
+			if (application.get().getApplicationReason().v().contains(":")) {
 				data.appReasonId = application.get().getApplicationReason().v().split(":")[0];
 				data.appReason = application.get().getApplicationReason().v().split(":")[1];
 			}

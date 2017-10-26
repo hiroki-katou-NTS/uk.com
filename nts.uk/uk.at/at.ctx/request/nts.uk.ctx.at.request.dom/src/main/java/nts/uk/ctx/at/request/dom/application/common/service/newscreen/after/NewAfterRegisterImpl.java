@@ -12,6 +12,7 @@ import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -50,6 +51,9 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 	@Inject
 	private MailSender mailSender;
 	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
+	
 	public void processAfterRegister(Application application){
 		
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
@@ -69,13 +73,13 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 		for(String destination : destinationList) {
 			// sendMail(obj);
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
-			System.out.println("Send Mail to "+destinationList);
-			/*try {
-				mailSender.send("NSVC", destination, new MailContents("nts","approvalChange"));
+			String email = employeeAdapter.empEmail(destination);
+			try {
+				mailSender.send("nts", email, new MailContents("nts mail", "mail from nts"));
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 		}
 	}
 	

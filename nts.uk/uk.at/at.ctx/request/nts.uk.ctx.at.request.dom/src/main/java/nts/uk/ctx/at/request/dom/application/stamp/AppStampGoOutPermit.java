@@ -48,14 +48,14 @@ public class AppStampGoOutPermit extends DomainObject {
 	private String endLocation;
 	
 	public AppStampGoOutPermit(AppStampAtr stampAtr, Integer stampFrameNo, AppStampGoOutAtr stampGoOutAtr,
-			TimeWithDayAttr startTime, String startLocation, TimeWithDayAttr endTime, String endLocation) {
+			Integer startTime, String startLocation, Integer endTime, String endLocation) {
 		super();
 		this.stampAtr = stampAtr;
 		this.stampFrameNo = stampFrameNo;
 		this.stampGoOutAtr = stampGoOutAtr;
-		this.startTime = startTime;
+		this.startTime = startTime == null ? null : new TimeWithDayAttr(startTime);
 		this.startLocation = startLocation;
-		this.endTime = endTime;
+		this.endTime = endTime == null ? null : new TimeWithDayAttr(endTime);
 		this.endLocation = endLocation;
 	}
 }

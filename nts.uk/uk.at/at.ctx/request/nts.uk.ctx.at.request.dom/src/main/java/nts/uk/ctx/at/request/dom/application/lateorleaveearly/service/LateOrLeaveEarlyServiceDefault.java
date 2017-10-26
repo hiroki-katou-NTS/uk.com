@@ -100,7 +100,6 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 
 		// [画面Bのみ]遅刻、早退、遅刻2、早退2のチェックがある遅刻時刻、早退時刻は入力必須(#Msg_470#)
-		int checkInputTime = lateTime1 + lateTime2 + earlyTime1 + earlyTime2;
 		if (prePost == 0 && 
 			( 	(late1 == 1 && lateTime1 == null) || 
 				(late2 == 1 && lateTime2 == null) ||
@@ -121,22 +120,12 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 				.getApplicationSettingByComID(lateOrLeaveEarly.getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 
-		int lateTime1 = lateOrLeaveEarly.getLateTime1().valueAsMinutes();
-		int earlyTime1 = lateOrLeaveEarly.getEarlyTime1().valueAsMinutes();
-		int lateTime2 = lateOrLeaveEarly.getLateTime2().valueAsMinutes();
-		int earlyTime2 = lateOrLeaveEarly.getEarlyTime2().valueAsMinutes();
-		int prePost = lateOrLeaveEarly.getPrePostAtr().value;
 		int late1 = lateOrLeaveEarly.getLate1().value;
 		int late2 = lateOrLeaveEarly.getLate2().value;
 		int early1 = lateOrLeaveEarly.getEarly1().value;
 		int early2 = lateOrLeaveEarly.getEarly2().value;
-		int checkInputTime = lateTime1 + lateTime2 + earlyTime1 + earlyTime2;
-		// 遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
-		if (lateTime1 >= earlyTime1 && lateTime2 >= earlyTime2 && prePost == 0) {
-			throw new BusinessException("Msg_381");
-		}
+		
 		// 遅刻、早退、遅刻2、早退2のいずれか１つはチェック必須(#Msg_382#)
-
 		int checkSelect = late1 + late2 + early1 + early2;
 		if (checkSelect == 0) {
 			throw new BusinessException("Msg_382");
@@ -145,9 +134,6 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 				&& Strings.isEmpty(lateOrLeaveEarly.getApplicationReason().v())) {
 			throw new BusinessException("Msg_115");
-		}
-		if (checkInputTime <= 0 && prePost == 0) {
-			throw new BusinessException("Msg_470");
 		}
 		
 		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);

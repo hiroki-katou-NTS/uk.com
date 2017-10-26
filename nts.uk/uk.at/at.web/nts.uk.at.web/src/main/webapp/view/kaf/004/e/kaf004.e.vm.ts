@@ -99,7 +99,6 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     appID: self.appID(),
                     appDate: self.date(),
-                    prePostAtr: self.postAtr,
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
                     lateTime1: self.lateTime1(),
