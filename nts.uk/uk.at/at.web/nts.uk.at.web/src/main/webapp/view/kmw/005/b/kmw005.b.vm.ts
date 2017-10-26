@@ -10,7 +10,6 @@ module nts.uk.at.view.kmw005.b {
 
         export class ScreenModel {
             closureList: KnockoutObservableArray<ClosureDto>;
-//            closure: ClosureDto;
             selectedClosure: KnockoutObservable<number>;
             closureColumn: KnockoutObservableArray<any>;
             yearMonth: KnockoutObservable<number>;
@@ -24,18 +23,15 @@ module nts.uk.at.view.kmw005.b {
                     { headerText: getText(''), key: 'closureId', hide: true },
                     { headerText: getText('KMW005_18'), key: 'closureName', width: 100 }
                 ]);
-//                self.closure = new ClosureDto;
                 
-//                self.closureList = ko.observableArray([]);
                 var closures: ClosureDto[] = getShared('ClosureList');
                 self.closureList = ko.observableArray(closures);
                 self.selectedClosure = ko.observable(0);
                 self.selectedClosure.subscribe(function(data: number) {
                     self.bindLockHist(data);
                 });
-                
-//                self.yearMonth = ko.observable(201710);
-                self.yearMonth = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system YearMonth.
+                // Initialize yearMonth value: current system YearMonth.
+                self.yearMonth = ko.observable(parseInt(moment().format('YYYYMM')));
                 self.yearMonth.subscribe(function(){
                     self.bindLockHistByYM();
                 });
@@ -59,12 +55,10 @@ module nts.uk.at.view.kmw005.b {
                 let dfd = $.Deferred<void>();
                 blockUI.invisible();
                 // Selected the First Closure in list
-//                self.bindLockHist(self.selectedClosure());
                 self.selectedClosure(self.closureList()[0].closureId);
                 blockUI.clear();
                 // Focus on Target YearMonth
                 $('#targetYM').focus();
-//                self.addLockIcon();
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -76,8 +70,8 @@ module nts.uk.at.view.kmw005.b {
                 // Add icon to column already setting.
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                    .mergeRelativePath('/view/kmw/005/a/images/72.png').serialize();
-                $('.icon-72').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 46px;")
+                    .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
+                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 46px;")
             }
             
             /**
@@ -86,7 +80,7 @@ module nts.uk.at.view.kmw005.b {
             private bindLockHist(closureId: number): void {
                 let self = this;
                 self.yearMonth(parseInt(moment().format('YYYYMM')));
-                service.findHistByClosure(closureId, self.yearMonth()).done(function(data: Array<ActualLockHistFindDto>) {
+                service.findHistByClosure(closureId).done(function(data: Array<ActualLockHistFindDto>) {
                     self.setLockHistList(data);
                     self.addLockIcon();
                 }).fail(function() {
@@ -140,7 +134,7 @@ module nts.uk.at.view.kmw005.b {
          */
         function lockIcon(value, row) {
             if (value == '1')
-                return "<i class='icon icon-72'></i>";
+                return "<i class='icon icon-2'></i>";
             return '';
         }
         

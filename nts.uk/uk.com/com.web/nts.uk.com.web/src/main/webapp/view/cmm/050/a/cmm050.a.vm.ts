@@ -191,114 +191,114 @@ module nts.uk.com.view.cmm050.a {
                 });
             }
             
-        /**
-         * Start Page
-         */
-        public startPage(): JQueryPromise<void> {
-            var dfd = $.Deferred<void>();
-            let _self = this;
-           
-            _self.loadMailServerSetting().done(function(data: MailServerFindDto){
-  
-                //check visible
-                if (data.useAuth == UseServer.USE && (data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_LOGIN || data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_PLAIN)){
-                    _self.fillUI(data.authenticationMethod);
-                }
-                
-                if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.POP_BEFORE_SMTP){
-                    _self.fillUI(data.authenticationMethod);
-                    if(data.popDto.popUseServer == PopUseServer.USE){
-                      _self.popServerEnable(true);
+            /**
+             * Start Page
+             */
+            public startPage(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                let _self = this;
+               
+                _self.loadMailServerSetting().done(function(data: MailServerFindDto){
+      
+                    //check visible
+                    if (data.useAuth == UseServer.USE && (data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_LOGIN || data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_PLAIN)){
+                        _self.fillUI(data.authenticationMethod);
                     }
-                }
+                    
+                    if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.POP_BEFORE_SMTP){
+                        _self.fillUI(data.authenticationMethod);
+                        if(data.popDto.popUseServer == PopUseServer.USE){
+                          _self.popServerEnable(true);
+                        }
+                    }
+                    
+                    if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.IMAP_BEFORE_SMTP){
+                        _self.fillUI(data.authenticationMethod);
+                        if(data.imapDto.imapUseServer == ImapUseServer.USE){
+                           _self.imapServerEnable(true);
+                        }  
+                    }
+                    
+                    dfd.resolve();
+                });
                 
-                if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.IMAP_BEFORE_SMTP){
-                    _self.fillUI(data.authenticationMethod);
-                    if(data.imapDto.imapUseServer == ImapUseServer.USE){
-                       _self.imapServerEnable(true);
-                    }  
-                }
-                
-                dfd.resolve();
-            });
-            
-            return dfd.promise();
-        }
-            
-        private fillUI(authMethodChanged): void {
-            let _self = this;
-            switch(authMethodChanged){
-                case AuthenticationMethod.POP_BEFORE_SMTP:
-                    _self.haveEncryptMethod(false);
-                    _self.havePopSetting(true);
-                    _self.haveImapSetting(false);
-                    
-                    _self.encryptionMethod(EncryptMethod.None);
-                    break;
-                case AuthenticationMethod.IMAP_BEFORE_SMTP:
-                    _self.haveEncryptMethod(false);
-                    _self.havePopSetting(false);
-                    _self.haveImapSetting(true);
-                    
-                    _self.encryptionMethod(EncryptMethod.None);
-                    break;
-                case AuthenticationMethod.SMTP_AUTH_LOGIN:
-                    _self.haveEncryptMethod(true);
-                    _self.havePopSetting(false);
-                    _self.haveImapSetting(false);
-                    break;
-                case AuthenticationMethod.SMTP_AUTH_PLAIN:
-                    _self.haveEncryptMethod(true);
-                    _self.havePopSetting(false);
-                    _self.haveImapSetting(false);
-                    break;
-                case AuthenticationMethod.SMTP_AUTH_CRAM_MD5:
-                    _self.haveEncryptMethod(false);
-                    _self.havePopSetting(false);
-                    _self.haveImapSetting(false);
-                    
-                    _self.encryptionMethod(EncryptMethod.None);
-                    break;
-            }    
-        } 
-            
-        /**
-         * Check Errors all input.
-         */
-        private hasError(): boolean {
-            let _self = this;
-            _self.clearErrors();
-            $('#email_auth').ntsEditor("validate");
-            $('#password').ntsEditor("validate");
-            $('#smtp_port').ntsEditor("validate");
-            $('#smtp_server').ntsEditor("validate");
-            $('#imap_port').ntsEditor("validate");
-            $('#imap_server').ntsEditor("validate");
-            $('#pop_port').ntsEditor("validate");
-            $('#pop_server').ntsEditor("validate");
-            if ($('.nts-input').ntsError('hasError')) {
-                return true;
+                return dfd.promise();
             }
-            return false;
-        }
+            
+            private fillUI(authMethodChanged): void {
+                let _self = this;
+                switch(authMethodChanged){
+                    case AuthenticationMethod.POP_BEFORE_SMTP:
+                        _self.haveEncryptMethod(false);
+                        _self.havePopSetting(true);
+                        _self.haveImapSetting(false);
+                        
+                        _self.encryptionMethod(EncryptMethod.None);
+                        break;
+                    case AuthenticationMethod.IMAP_BEFORE_SMTP:
+                        _self.haveEncryptMethod(false);
+                        _self.havePopSetting(false);
+                        _self.haveImapSetting(true);
+                        
+                        _self.encryptionMethod(EncryptMethod.None);
+                        break;
+                    case AuthenticationMethod.SMTP_AUTH_LOGIN:
+                        _self.haveEncryptMethod(true);
+                        _self.havePopSetting(false);
+                        _self.haveImapSetting(false);
+                        break;
+                    case AuthenticationMethod.SMTP_AUTH_PLAIN:
+                        _self.haveEncryptMethod(true);
+                        _self.havePopSetting(false);
+                        _self.haveImapSetting(false);
+                        break;
+                    case AuthenticationMethod.SMTP_AUTH_CRAM_MD5:
+                        _self.haveEncryptMethod(false);
+                        _self.havePopSetting(false);
+                        _self.haveImapSetting(false);
+                        
+                        _self.encryptionMethod(EncryptMethod.None);
+                        break;
+                }    
+            } 
+            
+            /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                let _self = this;
+                _self.clearErrors();
+                $('#email_auth').ntsEditor("validate");
+                $('#password').ntsEditor("validate");
+                $('#smtp_port').ntsEditor("validate");
+                $('#smtp_server').ntsEditor("validate");
+                $('#imap_port').ntsEditor("validate");
+                $('#imap_server').ntsEditor("validate");
+                $('#pop_port').ntsEditor("validate");
+                $('#pop_server').ntsEditor("validate");
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
 
-        /**
-         * Clear Errors
-         */
-        private clearErrors(): void {
-
-             // Clear errors
-            $('#email_auth').ntsEditor("clear");
-            $('#password').ntsEditor("clear");
-            $('#smtp_port').ntsEditor("clear");
-            $('#smtp_server').ntsEditor("clear");
-            $('#imap_port').ntsEditor("clear");
-            $('#imap_server').ntsEditor("clear");
-            $('#pop_port').ntsEditor("clear");
-            $('#pop_server').ntsEditor("clear");
-            // Clear error inputs
-            $('.nts-input').ntsError('clear');
-        }
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+    
+                 // Clear errors
+                $('#email_auth').ntsEditor("clear");
+                $('#password').ntsEditor("clear");
+                $('#smtp_port').ntsEditor("clear");
+                $('#smtp_server').ntsEditor("clear");
+                $('#imap_port').ntsEditor("clear");
+                $('#imap_server').ntsEditor("clear");
+                $('#pop_port').ntsEditor("clear");
+                $('#pop_server').ntsEditor("clear");
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
+            }
             
             /**
              * Get mail server setting

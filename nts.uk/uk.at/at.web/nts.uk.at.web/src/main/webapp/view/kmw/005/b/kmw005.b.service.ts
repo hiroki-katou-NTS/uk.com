@@ -6,9 +6,6 @@ module nts.uk.at.view.kmw005.b {
         }
         
         /**
-         * find all data closure history call service
-         */
-        /**
          * Find ActualLockHistory by TargetYM
          */
         export function findHistByTargetYM(closureId: number, targetYM: number): JQueryPromise<Array<model.ActualLockHistFindDto>> {
@@ -18,8 +15,8 @@ module nts.uk.at.view.kmw005.b {
         /**
          * Find ActualLockHistory by Closure
          */
-        export function findHistByClosure(closureId: number, targetYM: number): JQueryPromise<Array<model.ActualLockHistFindDto>> {
-            return nts.uk.request.ajax(paths.findHistByClosure + "/" + closureId + "/" + targetYM);
+        export function findHistByClosure(closureId: number): JQueryPromise<Array<model.ActualLockHistFindDto>> {
+            return nts.uk.request.ajax(paths.findHistByClosure + "/" + closureId);
         }
 
         
