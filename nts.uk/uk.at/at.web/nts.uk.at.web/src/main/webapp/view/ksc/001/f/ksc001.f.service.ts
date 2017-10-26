@@ -7,6 +7,7 @@ module nts.uk.at.view.ksc001.f {
             executionScheduleExecutionLog: "at/schedule/exelog/execution",
             findAllScheduleErrorLog: "at/schedule/exelog/findAllError"
         }
+        
 
         /**
          * call service find ScheduleExecutionLog by id

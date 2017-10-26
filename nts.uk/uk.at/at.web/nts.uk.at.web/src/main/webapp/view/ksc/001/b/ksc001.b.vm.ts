@@ -221,6 +221,12 @@ module nts.uk.at.view.ksc001.b {
                 $('#wizard').ntsWizard("prev");
             }
             /**
+             * function convert string to Date
+             */
+            private toDate(strDate: string): Date {
+                return moment.utc(strDate, 'yyyy/MM/dd').toDate();
+            }
+            /**
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
@@ -413,12 +419,11 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
-                console.log(self.periodDate().startDate);
-                service.checkThreeMonth(self.periodDate().startDate).done(function(check) {
+                service.checkThreeMonth(self.toDate(self.periodDate().startDate)).done(function(check) {
                     if (check) {
                         // show message confirm 567
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {
-                            service.checkMonthMax(self.periodDate().startDate).done(function(checkMax) {
+                            service.checkMonthMax(self.toDate(self.periodDate().startDate)).done(function(checkMax) {
                                 self.createByCheckMaxMonth();
                             });
                         }).ifNo(function() {
@@ -515,7 +520,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private createByCheckMaxMonth(): void {
                 var self = this;
-                service.checkMonthMax(self.periodDate().startDate).done(function(checkMax) {
+                service.checkMonthMax(self.toDate(self.periodDate().startDate)).done(function(checkMax) {
                     // check max
                     if (checkMax) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_568' }).ifYes(function() {
@@ -632,8 +637,8 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var data: PersonalSchedule = self.toPersonalScheduleData('');
                 var dto: ScheduleExecutionLogSaveDto = {
-                    periodStartDate: self.periodDate().startDate,
-                    periodEndDate: self.periodDate().endDate,
+                    periodStartDate: self.toDate(self.periodDate().startDate),
+                    periodEndDate: self.toDate(self.periodDate().endDate),
                     implementAtr: data.implementAtr,
                     reCreateAtr: data.reCreateAtr,
                     processExecutionAtr: data.processExecutionAtr,
