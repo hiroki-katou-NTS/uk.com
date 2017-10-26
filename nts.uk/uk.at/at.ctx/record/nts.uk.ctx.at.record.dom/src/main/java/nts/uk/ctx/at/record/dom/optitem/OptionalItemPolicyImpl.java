@@ -6,12 +6,15 @@ package nts.uk.ctx.at.record.dom.optitem;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 
 /**
  * The Class OptionalItemPolicyImpl.
  */
+@Stateless
 public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 
 	/** The Constant MAXIMUM. */
