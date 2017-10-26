@@ -26,6 +26,9 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant_;
 @Stateless
 public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndividualGrantRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository#findByUserAndRole(java.lang.String, nts.uk.ctx.sys.auth.dom.role.RoleType)
+	 */
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndRole(String userId, RoleType roleType) {
 		EntityManager em = this.getEntityManager();
@@ -45,6 +48,31 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 		predicateList.add(criteriaBuilder.equal(
 				root.get(SacmtRoleIndiviGrant_.sacmtRoleIndiviGrantPK).get(SacmtRoleIndiviGrantPK_.roleType),
 				roleType));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		SacmtRoleIndiviGrant sacmtRoleIndiviGrant = em.createQuery(cq).getSingleResult();
+		return Optional.of(new RoleIndividualGrant(new JpaRoleIndiviGrantGetMemento(sacmtRoleIndiviGrant)));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository#findByUser(java.lang.String)
+	 */
+	@Override
+	public Optional<RoleIndividualGrant> findByUser(String userId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<SacmtRoleIndiviGrant> cq = criteriaBuilder.createQuery(SacmtRoleIndiviGrant.class);
+		Root<SacmtRoleIndiviGrant> root = cq.from(SacmtRoleIndiviGrant.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(criteriaBuilder.equal(
+				root.get(SacmtRoleIndiviGrant_.sacmtRoleIndiviGrantPK).get(SacmtRoleIndiviGrantPK_.userId), userId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		SacmtRoleIndiviGrant sacmtRoleIndiviGrant = em.createQuery(cq).getSingleResult();

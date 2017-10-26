@@ -17,4 +17,12 @@ public interface RoleIndividualGrantExportRepo {
 	 * @return the by user and role type
 	 */
 	RoleIndividualGrantExport getByUserAndRoleType(String userId,Integer roleType);
+	
+	/**
+	 * Gets the by user.
+	 *
+	 * @param userId the user id
+	 * @return the by user
+	 */
+	RoleIndividualGrantExport getByUser(String userId);
 }

@@ -35,4 +35,13 @@ public class RoleIndividualGrantAdapterImpl implements RoleIndividualGrantAdapte
 		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUserAndRoleType(userId, roleType.value);
 		return new RoleIndividualGrantImport(export.getRoleId());
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter#getByUser(java.lang.String)
+	 */
+	@Override
+	public RoleIndividualGrantImport getByUser(String userId) {
+		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUser(userId);
+		return new RoleIndividualGrantImport(export.getRoleId());
+	}
 }
