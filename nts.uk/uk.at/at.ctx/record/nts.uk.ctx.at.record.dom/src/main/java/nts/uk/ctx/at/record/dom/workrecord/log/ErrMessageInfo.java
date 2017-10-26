@@ -44,11 +44,12 @@ public class ErrMessageInfo extends AggregateRoot  {
 	private ErrMessageContent messageError;
 	
 	public static ErrMessageInfo createFromJavaType(
-			String employeeID,long empCalAndSumExecLogID,
+			String employeeID,String empCalAndSumExecLogID,
 			String resourceID,int executionContent,
 			GeneralDate disposalDay,String messageError) {
 		return new ErrMessageInfo(
-				employeeID,empCalAndSumExecLogID,
+				employeeID,
+				Long.parseLong(empCalAndSumExecLogID),
 				new ErrMessageResource(resourceID),
 				EnumAdaptor.valueOf(executionContent, ExecutionContent.class),
 				disposalDay,

@@ -439,12 +439,16 @@ module nts.uk.ui.koExtentions {
                 }
                 if ($input.ntsError('hasError')) {
                     return;
-                }
+                } 
                 
                 var selectionTypeOnFocusing = document.getSelection().type;
                 
-                let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
-                $input.val(timeWithDayAttr.shortText);
+                if(!nts.uk.util.isNullOrEmpty(data.value())){
+                    let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
+                    $input.val(timeWithDayAttr.shortText);    
+                } else {
+                    $input.val("");
+                }
 
                 // If focusing is caused by Tab key, select text
                 // this code is needed because removing separator deselects.
