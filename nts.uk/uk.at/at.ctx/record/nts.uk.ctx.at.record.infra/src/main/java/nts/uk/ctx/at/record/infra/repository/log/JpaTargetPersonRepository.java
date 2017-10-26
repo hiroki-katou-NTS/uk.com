@@ -59,7 +59,7 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 		}
 
 	@Override
-	public List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID) {
+	public List<TargetPerson> getByempCalAndSumExecLogID(long empCalAndSumExecLogID) {
 		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID , KrcmtEmpExeTarget.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.getList(c -> toDomain(c));

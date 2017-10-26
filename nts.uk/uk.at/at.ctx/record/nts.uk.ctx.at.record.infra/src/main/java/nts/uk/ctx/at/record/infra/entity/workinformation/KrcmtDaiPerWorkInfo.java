@@ -2,14 +2,23 @@ package nts.uk.ctx.at.record.infra.entity.workinformation;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -42,13 +51,13 @@ public class KrcmtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	public String scheduleWorkWorktimeCode;
 
 	@Column(name = "CALCULATION_STATE")
-	public BigDecimal calculationState;
+	public Integer calculationState;
 
 	@Column(name = "GO_STRAIGHT_ATR")
-	public BigDecimal goStraightAttribute;
+	public Integer goStraightAttribute;
 	
 	@Column(name = "BACK_STRAIGHT_ATR")
-	public BigDecimal backStraightAttribute;
+	public Integer backStraightAttribute;
 
 	@Column(name = "WORK_NO")
 	public String workNo;
@@ -56,9 +65,24 @@ public class KrcmtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "YMD")
 	public BigDecimal ymd;
 
+	@OneToMany(mappedBy="daiPerWorkInfo", cascade = CascadeType.ALL)
+	public List<KrcmtWorkScheduleTime> scheduleTimes;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcmtDaiPerWorkInfoPK;
+	}
+	
+	public WorkInfoOfDailyPerformance toDomain() {
+		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(this.krcmtDaiPerWorkInfoPK.employeeId,
+			new WorkInformation(this.recordWorkWorktimeCode, this.recordWorkWorktypeCode),
+			new WorkInformation(this.scheduleWorkWorktimeCode, this.recordWorkWorktypeCode),
+			EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
+			EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
+			EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class),
+			GeneralDate.fromString(this.ymd.toString(), "yyyyMMdd"),
+			KrcmtWorkScheduleTime.toDomain(scheduleTimes));
+		return domain;
 	}
 
 }
