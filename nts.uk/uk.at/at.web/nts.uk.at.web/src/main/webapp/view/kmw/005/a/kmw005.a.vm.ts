@@ -32,10 +32,10 @@ module nts.uk.at.view.kmw005.a {
                 });
                 self.actualLockColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
-                    { headerText: getText('KMW005_3'), key: 'closureName', width: 100 },
+                    { headerText: getText('KMW005_3'), key: 'closureName', width: 105 },
                     { headerText: getText('KMW005_4'), key: 'period', width: 200 },
-                    { headerText: getText('KMW005_5'), key: 'dailyLockState', width: 90, formatter: lockIcon },
-                    { headerText: getText('KMW005_6'), key: 'monthlyLockState', width: 90, formatter: lockIcon }
+                    { headerText: getText('KMW005_5'), key: 'dailyLockState', width: 70, formatter: lockIcon },
+                    { headerText: getText('KMW005_6'), key: 'monthlyLockState', width: 70, formatter: lockIcon }
                 ]);
 
                 self.dailyActualLockOpt = ko.observableArray([
@@ -169,12 +169,12 @@ module nts.uk.at.view.kmw005.a {
              */
             private openDialog(): void {
                 let self = this;
-                let parrentData = [];
-                parrentData = self.actualLockList().map(item => {
+                let actualLocks = [];
+                actualLocks = self.actualLockList().map(item => {
                     return item.toClosureDto();
                 });
                 
-                setShared('ClosureList', parrentData, true);
+                setShared('ActualLock', actualLocks, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kmw/005/b/index.xhtml").onClosed(function() {
                     var output = getShared('childData');
@@ -189,7 +189,7 @@ module nts.uk.at.view.kmw005.a {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
-                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 27px;")
+                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 20px;")
             }
         }
 
