@@ -55,7 +55,8 @@ public class AttendanceItemWebService extends WebService {
 	@POST
 	@Path("attendanceItem/linking")
 	public List<FrameNoAdapterDto> getAttdItemLinkingByAnyItem(AttdItemLinkRequest request) {
-		return this.attendanceItemsFinder.findByAnyItem(request);
+		return null;
+//		return this.attendanceItemsFinder.findByAnyItem(request);
 	}
 
 }
