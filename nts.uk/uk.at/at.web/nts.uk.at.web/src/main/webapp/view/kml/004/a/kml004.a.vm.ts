@@ -118,6 +118,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let dfd = $.Deferred();
             service.getItem().done((lstItem: Array<IEvalOrder>) => {
                 if (lstItem.length == 0) {
+                    $("#swap-list-grid1").igGrid("container").focus();
                     nts.uk.ui.dialog.info({ messageId: "Msg_458" }).then(()=> {
                         nts.uk.ui.windows.close();        
                     });
@@ -216,6 +217,9 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             $("#nameCtg").focus();
                         });
                     }).fail(function(res) {
+                        if(res.messageId == 'Msg_363'){
+                            $('#swap-list-grid2').ntsError('set', res);
+                        }
                         nts.uk.ui.dialog.alertError(res.message);
                     }).always(()=>{
                         nts.uk.ui.block.clear();    
@@ -232,6 +236,12 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             $("#nameCtg").focus();
                         });
                     }).fail(function(res) {
+                        if(res.messageId == 'Msg_3'){
+                            $('#code-text').ntsError('set', res);
+                        }
+                        if(res.messageId == 'Msg_363'){
+                            $('#swap-list-grid2').ntsError('set', res);
+                        }
                         nts.uk.ui.dialog.alertError(res.message);
                     }).always(()=>{
                         nts.uk.ui.block.clear();    

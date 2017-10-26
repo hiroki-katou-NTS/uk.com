@@ -19,7 +19,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
             self.itemNameLabel = ko.observable(data.itemName);
             
             self.items = ko.observableArray([]);
-            self.rightItems = ko.observableArray([]);
+            self.rightItems = ko.observableArray([]);  
             
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML002_7"), prop: 'name', width: 180, formatter: _.escape }
@@ -28,7 +28,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
             self.currentCodeList = ko.observableArray([]);
             
             self.rightItemcolumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML002_36"), prop: 'adOrSub', width: 80 },
+                { headerText: nts.uk.resource.getText("KML002_36"), prop: 'operatorAtr', width: 80 },
                 { headerText: nts.uk.resource.getText("KML002_7"), prop: 'name', width: 160, formatter: _.escape }
             ]);
             
@@ -37,18 +37,26 @@ module nts.uk.at.view.kml002.d.viewmodel {
             self.checked = ko.observable(true);
         }
 
-        /**
+        /**   
          * Start page.
          */
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            let array = [];
             let param = {
-                budgetAtr: 1,
+                budgetAtr: 1,   
                 unitAtr: 0
             }
-            service.getByAtr(param).done((lst) => {     
-                console.log(lst);    
+            service.getByAtr(param).done((lst) => {  
+                console.log(lst);
+                _.map(lst, function(item){
+                    array.push({
+                        code: item.externalBudgetCode,
+                        name: item.externalBudgetName                             
+                    })    
+                });
+                self.items(array);   
                 dfd.resolve();
             })
             return dfd.promise();
@@ -76,11 +84,11 @@ module nts.uk.at.view.kml002.d.viewmodel {
     
     class NewItemModel {
         code: string;
-        adOrSub: string;
+        operatorAtr: number;
         name: string;
-        constructor(code: string, adOrSub: string, name: string) {
+        constructor(code: string, operatorAtr: number, name: string) {
             this.code = code;
-            this.adOrSub = adOrSub;
+            this.operatorAtr = operatorAtr;
             this.name = name;       
         }
     } 
