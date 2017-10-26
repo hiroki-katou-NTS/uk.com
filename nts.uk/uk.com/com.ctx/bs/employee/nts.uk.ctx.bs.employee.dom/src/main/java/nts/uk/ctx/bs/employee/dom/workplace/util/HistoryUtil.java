@@ -7,7 +7,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.util;
 import java.util.List;
 
 import nts.arc.error.BundledBusinessException;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -22,19 +21,13 @@ public class HistoryUtil {
     /** The Constant ELEMENT_FIRST. */
     private static final Integer ELEMENT_FIRST = 0;
     
-    /** The Constant DATE_FORMAT. */
-    private static final String DATE_FORMAT = "yyyy/MM/dd";
-    
-    /** The Constant MAX_DATE. */
-    private static final String MAX_DATE = "9999/12/31";
-    
     /**
      * Gets the max date.
      *
      * @return the max date
      */
     public static GeneralDate getMaxDate() {
-        return GeneralDate.fromString(MAX_DATE, DATE_FORMAT);
+        return GeneralDate.max();
     }
     
     /**
