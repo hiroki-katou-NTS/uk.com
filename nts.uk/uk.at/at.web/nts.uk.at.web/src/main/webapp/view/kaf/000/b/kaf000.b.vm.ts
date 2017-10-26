@@ -140,6 +140,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         abstract update(): any;
 
         start(baseDate: any): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             let self = this;
             
             self.inputDetail().baseDate = baseDate;
@@ -153,7 +154,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
                 let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
                 self.getMessageDeadline(data);
-                
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();

@@ -60,8 +60,8 @@ public class LateOrLeaveEarlyFinder {
 
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID =  AppContexts.user().employeeId();
-		String applicantName = employeeAdapter.getEmployeeName(employeeID);
+		String employeeID = "";
+		String applicantName = "";
 	
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
 		 
@@ -85,7 +85,12 @@ public class LateOrLeaveEarlyFinder {
 			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
 			if(lateOrLeaveEarlyOp.isPresent()){
 				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarlyOp.get()); 
+				employeeID = lateOrLeaveEarlyOp.get().getApplicantSID();
+				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
+		} else {
+			employeeID = AppContexts.user().employeeId();
+			applicantName = employeeAdapter.getEmployeeName(employeeID);
 		}
 
 		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto, listApplicationReasonDto, 

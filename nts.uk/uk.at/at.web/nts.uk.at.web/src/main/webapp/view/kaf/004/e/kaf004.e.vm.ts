@@ -39,9 +39,9 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             var self = this;
             var dfd = $.Deferred();
-
             service.getByCode(self.appID()).done(function(data) { 
                 self.ListTypeReason(data.listApplicationReasonDto);
                 self.applicantName(data.applicantName);
@@ -58,7 +58,12 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.earlyTime2(data.lateOrLeaveEarlyDto.earlyTime2);
                 self.showScreen(data.lateOrLeaveEarlyDto.postAtr == 1 ? 'F' : '');
                 self.postAtr = data.lateOrLeaveEarlyDto.postAtr;
+                self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
+                self.early1.subscribe(value => { $("#inpEarlyTime1").trigger("validate"); });
+                self.late2.subscribe(value => { $("#inpLate2").trigger("validate"); });
+                self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
                 $("#inputdate").focus();
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
                
@@ -67,9 +72,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         
         update() {
             var self = this;
-
-            $(".nts-input").trigger("validate");
-            if (!$(".nts-input").ntsError("hasError")) {
+            if (!nts.uk.ui.errors.hasError()) {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     appID: self.appID(),
                     appDate: self.date(),
@@ -118,5 +121,6 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         earlyTime2: number;
         reasonTemp: string;
         appReason: string;
+        appApprovalPhaseCmds: Array<any>;
     }
 }

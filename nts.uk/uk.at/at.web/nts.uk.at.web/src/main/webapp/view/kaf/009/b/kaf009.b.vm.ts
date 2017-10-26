@@ -83,7 +83,6 @@ module nts.uk.at.view.kaf009.b {
                 let self = this;
                 self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: false,
-                    placeholder: "Placeholder for text editor",
                     width: "500",
                     textalign: "left",
                 }));
@@ -162,8 +161,13 @@ module nts.uk.at.view.kaf009.b {
                         self.multilContent(detailData.appReason);
                         self.selectedReason(detailData.appReasonId);
                         self.appDate(detailData.appDate);
+                        self.employeeName(detailData.employeeName);
                         //Set Value of control
                         self.setValueControl(detailData.goBackDirectlyDto);
+                        self.selectedGo.subscribe(value => { $("#inpStartTime1").ntsError("clear"); });
+                        self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
+                        self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
+                        self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
                     }).fail(function() {
                         dfd.resolve();
                     });
@@ -208,10 +212,14 @@ module nts.uk.at.view.kaf009.b {
                         } else if (res.messageId == "Msg_298") {
                             dfd.reject();
                             //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
-                            $('#inpStartTime1').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpStartTime2').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpEndTime1').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpEndTime2').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                            if(self.selectedGo2()==1){
+                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                            }
+                            if(self.selectedBack2()==1){
+                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                            }
                         } else{
                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });     
                         }
