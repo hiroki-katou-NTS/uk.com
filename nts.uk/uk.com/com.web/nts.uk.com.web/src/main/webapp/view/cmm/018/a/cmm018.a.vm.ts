@@ -10,6 +10,8 @@ module nts.uk.com.view.cmm018.a {
     //=========Mode A: まとめて登録モード==============
     export module viewmodelA {
         export class ScreenModel{
+            //
+            initialExpandDepth: KnockoutObservable<number>= ko.observable(0);
             nameCompany: KnockoutObservable<string>= ko.observable('');
             modeCommon:KnockoutObservable<boolean> = ko.observable(true);
             listMode: KnockoutObservableArray<any>= ko.observableArray([
@@ -625,7 +627,18 @@ module nts.uk.com.view.cmm018.a {
                         //item is selected
                         itemCurrent = self.findHistory(self.currentCode());
                         //最新の期間履歴を選択するかチェックする(check có đang chọn period history mới nhất hay không)
-                        if(itemCurrent.endDate != self.listHistory()[0].endDate){
+                        let lstApp: Array<vmbase.ApplicationType> = self.findAppTypeHistory(self.tabSelected());
+                        let histLAst = self.findHistBestNewA(lstApp[0].value, lstApp[0].employRootAtr, self.tabSelected());
+                        if(itemCurrent.overLap != '※' && itemCurrent.overLap != true){
+                            //エラーメッセージ(Msg_181)(error message (Msg_181))
+                            dialog.alertError({ messageId: "Msg_181" });
+                            block.clear();
+                            self.enableDelete(true);
+                            block.clear();
+                            return;  
+                        }
+                                
+                        if(itemCurrent.startDate != histLAst.startDate){
                             //エラーメッセージ(Msg_181)(error message (Msg_181))
                             dialog.alertError({ messageId: "Msg_181" });
                             block.clear();
@@ -635,6 +648,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                     }
                     let appType = null;
+                    let employRootAtr = null;
                     let startDate = ''
                     //TH: tab company
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
@@ -642,14 +656,16 @@ module nts.uk.com.view.cmm018.a {
                         if(self.currentCode() == -1){
                             checkReload = true;
                             appType = self.itemOld().lstCompanyRoot[0].company.applicationType;
+                            employRootAtr  = self.itemOld().lstCompanyRoot[0].company.employmentRootAtr;
                             lstAppType = self.lstAppType;
                         }else{//selected item
                             self.itemOld(self.findComRoot(self.currentCode()));
-                            appType = self.itemOld().lstCompanyRoot[0].company.applicationType; 
+                            appType = self.itemOld().lstCompanyRoot[0].company.applicationType;
+                            employRootAtr  = self.itemOld().lstCompanyRoot[0].company.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
-                        let histLAst = self.findHistByEdateA(self.ENDDATE_LATEST, appType, vmbase.RootType.COMPANY);
-                        startDate = histLAst.lstCompanyRoot[0].company.startDate
+                        let histLAst = self.findHistBestNewA(appType, employRootAtr, vmbase.RootType.COMPANY);
+                        startDate = histLAst.startDate;
                     }
                     //TH: tab work place
                     else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
@@ -657,14 +673,16 @@ module nts.uk.com.view.cmm018.a {
                         if(self.currentCode() == -1){
                             checkReload = true;
                             appType = self.itemOld().lstWorkplaceRoot[0].workplace.applicationType;
+                            employRootAtr  = self.itemOld().lstWorkplaceRoot[0].workplace.employmentRootAtr;
                             lstAppType = self.lstAppType;
                         }else{
                             self.itemOld(self.findWpRoot(self.currentCode()));
                             appType = self.itemOld().lstWorkplaceRoot[0].workplace.applicationType;
+                            employRootAtr  = self.itemOld().lstWorkplaceRoot[0].workplace.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
-                        let histLAst = self.findHistByEdateA(self.ENDDATE_LATEST, appType, vmbase.RootType.WORKPLACE);
-                        startDate = histLAst.lstWorkplaceRoot[0].workplace.startDate
+                        let histLAst = self.findHistBestNewA(appType, employRootAtr, vmbase.RootType.WORKPLACE);
+                        startDate = histLAst.startDate
                     }
                     //TH: tab person
                     else{
@@ -672,17 +690,19 @@ module nts.uk.com.view.cmm018.a {
                         if(self.currentCode() == -1){
                             checkReload = true;
                             appType = self.itemOld().lstPersonRoot[0].person.applicationType;
+                            employRootAtr  = self.itemOld().lstPersonRoot[0].person.employmentRootAtr;
                             lstAppType = self.lstAppType;
                         }else{
                             self.itemOld(self.findPsRoot(self.currentCode()));
                             appType = self.itemOld().lstPersonRoot[0].person.applicationType;
+                            employRootAtr  = self.itemOld().lstPersonRoot[0].person.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
-                        let histLAst = self.findHistByEdateA(self.ENDDATE_LATEST, appType,  vmbase.RootType.PERSON);
-                        startDate = histLAst.lstPersonRoot[0].person.startDate
+                        let histLAst = self.findHistBestNewA(appType, employRootAtr, vmbase.RootType.PERSON);
+                        startDate = histLAst.startDate
                     }
-                     paramI = {name: "",
-                                startDate: self.listHistory()[0].startDate,
+                    paramI = {name: "",
+                                startDate: startDate,
                                 check: self.tabSelected(),
                                 mode: 0,
                                 lstAppType: lstAppType
@@ -1053,6 +1073,63 @@ module nts.uk.com.view.cmm018.a {
                     });
                 }
             }
+            findHistBestNewA(appType: number, employRootAtr: number, rootType: number): any {
+                let self = this;
+                //TH: company
+                if(rootType == vmbase.RootType.COMPANY){
+                    let lstComRoot: Array<vmbase.CompanyAppRootDto> = []
+                    _.each(self.lstCompany(), function(comRoot: vmbase.DataDisplayComDto){
+                        _.each(comRoot.lstCompanyRoot, function(com){
+                            lstComRoot.push(com);
+                        });
+                    });
+                    let lstCompany: Array<vmbase.ComApprovalRootDto> = [];
+                    _.each(lstComRoot, function(root){
+                        lstCompany.push(root.company);
+                    });
+                    let rootType = _.filter(lstCompany, function(root){
+                        return root.applicationType == appType  && root.employmentRootAtr == employRootAtr;
+                    });
+                    let lstHistorySort = _.orderBy(rootType, ["startDate"], ["desc"]);
+                    return lstHistorySort[0];
+                }
+                //TH: work place
+                else if(rootType == vmbase.RootType.WORKPLACE){
+                    let lstWpRoot: Array<vmbase.WorkPlaceAppRootDto> = []
+                    _.each(self.lstWorkplace(), function(wpRoot: vmbase.DataDisplayWpDto){
+                        _.each(wpRoot.lstWorkplaceRoot, function(wp){
+                            lstWpRoot.push(wp);
+                        });
+                    });
+                    let lstWorkplace: Array<vmbase.WpApprovalRootDto> = [];
+                    _.each(lstWpRoot, function(root){
+                        lstWorkplace.push(root.workplace);
+                    });
+                    let rootType = _.filter(lstWorkplace, function(root){
+                        return root.applicationType == appType  && root.employmentRootAtr == employRootAtr;
+                    });
+                    let lstHistorySort = _.orderBy(rootType, ["startDate"], ["desc"]);
+                    return lstHistorySort[0];
+                }
+                //TH: person    
+                else{
+                    let lstPsRoot: Array<vmbase.PersonAppRootDto> = []
+                    _.each(self.lstPerson(), function(wpRoot: vmbase.DataDisplayPsDto){
+                        _.each(wpRoot.lstPersonRoot, function(ps){
+                            lstPsRoot.push(ps);
+                        });
+                    });
+                    let lstPerson: Array<vmbase.PsApprovalRootDto> = [];
+                    _.each(lstPsRoot, function(root){
+                        lstPerson.push(root.person);
+                    });
+                    let rootType = _.filter(lstPerson, function(root){
+                        return root.applicationType == appType  && root.employmentRootAtr == employRootAtr;
+                    });
+                    let lstHistorySort = _.orderBy(rootType, ["startDate"], ["desc"]);
+                    return lstHistorySort[0];
+                }
+            } 
             /**
              * find appRootHist is selected of company
              * mode A: まとめて登録モード
@@ -1430,6 +1507,8 @@ module nts.uk.com.view.cmm018.a {
             ENDDATE_LATEST:string = '9999/12/31';
             //_____button Edit History___
             enableDeleteB: KnockoutObservable<boolean> = ko.observable(true);
+                //
+                    initialExpandDepth: KnockoutObservable<number>= ko.observable(0);
             constructor(){
                 let self = this;
                 //----SCREEN B
@@ -1438,6 +1517,9 @@ module nts.uk.com.view.cmm018.a {
                     if(codeChanged == '-1'){
                         return;
                     }
+                        if(codeChanged != null){
+                            self.initialExpandDepth(1);
+                        }
                     //TH: company
                     if(self.tabSelectedB()==0){
                         if(self.dataIB() != null){
@@ -1760,27 +1842,46 @@ module nts.uk.com.view.cmm018.a {
                 
             }
             /**
+             * find history best new
              * mode B: 申請個別登録モード
              */
-            findHistByEDate(appType: number,employRootAtr: number,endDate: string, rootType: number): any {
+            findHistBestNew(appType: number, employRootAtr: number, rootType: number): any {
                 let self = this;
                 //TH: company
                 if(rootType == 0){
-                    return _.find( self.lstCompany(), function(obj: vmbase.CompanyAppRootDto) {
-                        return obj.company.applicationType == appType && obj.company.endDate == endDate && obj.company.employmentRootAtr == employRootAtr;
+                    let rootType = _.filter(self.lstCompany(), function(root){
+                        return root.company.applicationType == appType  && root.company.employmentRootAtr == employRootAtr;
                     });
+                    let lstCompany = [];
+                    _.each(rootType, function(obj){
+                        lstCompany.push(obj.company);
+                    });
+                    let lstHistorySort = _.orderBy(lstCompany, ["startDate"], ["desc"]);
+                    return lstCompany.length == 0 ? null : lstHistorySort[0];
                 }
                 //TH: work place
                 else if(rootType == 1){
-                    return _.find( self.lstWorkplace(), function(obj) {
-                        return obj.workplace.applicationType == appType && obj.workplace.endDate == endDate && obj.workplace.employmentRootAtr == employRootAtr;
+                     let rootType = _.filter(self.lstWorkplace(), function(root){
+                        return root.workplace.applicationType == appType  && root.workplace.employmentRootAtr == employRootAtr;
                     });
+                    let lstWorkplace = [];
+                    _.each(rootType, function(obj){
+                        lstWorkplace.push(obj.workplace);
+                    });
+                    let lstHistorySort = _.orderBy(lstWorkplace, ["startDate"], ["desc"]);
+                    return lstWorkplace.length == 0 ? null : lstHistorySort[0];
                 }
                 //TH: person
                 else{
-                    return _.find( self.lstPerson(), function(obj: vmbase.PersonAppRootDto) {
-                        return obj.person.applicationType == appType && obj.person.endDate == endDate && obj.person.employmentRootAtr == employRootAtr;
+                    let rootType = _.filter(self.lstPerson(), function(root){
+                        return root.person.applicationType == appType  && root.person.employmentRootAtr == employRootAtr;
                     });
+                    let lstPerson = [];
+                    _.each(rootType, function(obj){
+                        lstPerson.push(obj.person);
+                    });
+                    let lstHistorySort = _.orderBy(lstPerson, ["startDate"], ["desc"]);
+                    return lstPerson.length == 0 ? null : lstHistorySort[0];
                 }
                 
             }
@@ -1995,42 +2096,37 @@ module nts.uk.com.view.cmm018.a {
                     let obj = self.findAppbyName(self.singleSelectedCode());
                     typeApp = obj == undefined ? null : obj.value;
                     employRootAtr = obj == undefined ? 0 : obj.employRootAtr;
-                    let itemLast = self.findHistByEDate(typeApp,employRootAtr, self.ENDDATE_LATEST, self.tabSelectedB());
+                    let itemLast = self.findHistBestNew(typeApp,employRootAtr, self.tabSelectedB());
                     if(itemLast != undefined){
-                        if(self.tabSelectedB() == 0){
-                            sDate = itemLast.company.startDate;
-                        }else if(self.tabSelectedB() == 1){
-                            sDate = itemLast.workplace.startDate;
-                        }else{
-                            sDate = itemLast.person.startDate;
-                        }
+                        sDate = itemLast.startDate;
                     }
                     name = typeApp == null ? '共通ルート' : getText("CMM018_7");
                 }else{//chon item
                     if(self.tabSelectedB() == 0){
                         if(itemCurrent !== undefined){
                             if(self.singleSelectedCode() == '-1'){
-                                typeApp = itemCurrent.lstAppType[0];
-//                                employRootAtr = itemCur
+                                typeApp = itemCurrent.lstAppType[0].value;
+                                employRootAtr = itemCurrent.lstAppType[0].employRootAtr;
                             }else{
                                 typeApp = itemCurrent.company.applicationType;
                                 employRootAtr = itemCurrent.company.employmentRootAtr;
                             }
-                            let itemLast = self.findHistByEDate(typeApp,employRootAtr, self.ENDDATE_LATEST, self.tabSelectedB());
-                            sDate = itemLast.company.startDate;
+                            let itemLast = self.findHistBestNew(typeApp,employRootAtr, self.tabSelectedB());
+                            sDate = itemLast.startDate;
                             name = typeApp == null ? '共通ルート' : getText("CMM018_7");
                         }
                     }
                     else if(self.tabSelectedB() == 1){
                         if(itemCurrent !== undefined){
                             if(self.singleSelectedCode() == '-1'){
-                                typeApp = itemCurrent.lstAppType[0];
+                                typeApp = itemCurrent.lstAppType[0].value;
+                                employRootAtr = itemCurrent.lstAppType[0].employRootAtr;
                             }else{
                                 typeApp = itemCurrent.workplace.applicationType;
                                 employRootAtr = itemCurrent.workplace.employmentRootAtr;
                             }
-                            let itemLast = self.findHistByEDate(typeApp,employRootAtr, self.ENDDATE_LATEST, self.tabSelectedB());
-                            sDate = itemLast.workplace.startDate;
+                            let itemLast = self.findHistBestNew(typeApp,employRootAtr, self.tabSelectedB());
+                            sDate = itemLast.startDate;
                             typeApp = itemCurrent.workplace.applicationType
                             name = typeApp == null ? '共通ルート' : getText("CMM018_7");
                         }
@@ -2038,13 +2134,14 @@ module nts.uk.com.view.cmm018.a {
                     else{
                         if(itemCurrent !== undefined){
                             if(self.singleSelectedCode() == '-1'){
-                                typeApp = itemCurrent.lstAppType[0];
+                                typeApp = itemCurrent.lstAppType[0].value;
+                                employRootAtr = itemCurrent.lstAppType[0].employRootAtr;
                             }else{
                                 typeApp = itemCurrent.person.applicationType;
                                 employRootAtr = itemCurrent.person.employmentRootAtr;
                             }
-                            let itemLast = self.findHistByEDate(typeApp,employRootAtr, self.ENDDATE_LATEST, self.tabSelectedB());
-                            sDate = itemLast.person.startDate;
+                            let itemLast = self.findHistBestNew(typeApp,employRootAtr, self.tabSelectedB());
+                            sDate = itemLast.startDate;
                             typeApp = itemCurrent.person.applicationType;
                             name = typeApp == null ? '共通ルート' : getText("CMM018_7");
                         }
@@ -2346,6 +2443,7 @@ module nts.uk.com.view.cmm018.a {
                 if(mode == 0){//まとめて登録モード
                     return;
                 }
+                self.initialExpandDepth(0);
                 self.singleSelectedCode();
                 self.historyStr('');
                 self.singleSelectedCode(null);
