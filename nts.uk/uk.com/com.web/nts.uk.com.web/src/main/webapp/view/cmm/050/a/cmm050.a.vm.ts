@@ -118,6 +118,34 @@ module nts.uk.com.view.cmm050.a {
                        _self.popServerEnable(false);
                     }
                 });
+                
+                _self.emailAuth.subscribe(function(emailString){
+                   if(emailString.trim().length <= 0){
+                        $('#email_auth').ntsError('set', {messageId:"Msg_533"});
+                        return;
+                    }else{
+                        _self.clearErrors();
+                   }
+                });
+                
+                _self.popPort.subscribe(function(popPort){
+                    if(Number(popPort) <= 0)
+                    {
+                        _self.popPort(0);
+                    }
+                });
+                _self.imapPort.subscribe(function(imapPort){
+                    if(Number(imapPort) <= 0)
+                    {
+                        _self.imapPort(0);
+                    }
+                });
+                _self.smtpPort.subscribe(function(smtpPort){
+                    if(Number(smtpPort) <= 0)
+                    {
+                        _self.smtpPort(0);
+                    }
+                });
             }
             
             /**
@@ -126,6 +154,18 @@ module nts.uk.com.view.cmm050.a {
             public registerMailSetting() {
                 let _self = this;
                  
+                if(_self.emailAuth().trim().length <= 0)
+                {
+                    $('#email_auth').ntsError('set', {messageId:"Msg_533"});
+                    return;
+                }
+                
+                if(_self.password().trim().length <= 0)
+                {
+                    $('#email_auth').ntsError('set', {messageId:"Msg_533"});
+                    return;
+                }
+                
                 // Validate
                 if (_self.hasError()) {
                     // validate input pop info
