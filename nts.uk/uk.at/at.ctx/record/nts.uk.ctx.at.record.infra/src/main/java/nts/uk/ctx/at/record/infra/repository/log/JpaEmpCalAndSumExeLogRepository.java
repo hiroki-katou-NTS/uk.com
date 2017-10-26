@@ -57,7 +57,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	 * get EmpCalAndSumExeLog by code
 	 */
 	@Override
-	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, long empCalAndSumExecLogID,
+	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID,
 			String operationCaseID, String employeeID) {
 		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_CODE,KrcmtEmpExecutionLog.class)
 				.setParameter("companyID", companyID)
@@ -69,7 +69,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	}
 
 	@Override
-	public List<EmpCalAndSumExeLog> getListByExecutionContent(long empCalAndSumExecLogID, int executionContent) {
+	public List<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
 		List<EmpCalAndSumExeLog> list = this.queryProxy().query(SELECT_BY_EXECUTION_LOG, KrcmtEmpExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.setParameter("executionContent", executionContent)

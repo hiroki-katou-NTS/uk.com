@@ -26,7 +26,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 	@Override
 	public boolean processFlowOfDailyCreation(int executionAttr, BigDecimal startDate, BigDecimal endDate,
-			String executionID, long empCalAndSumExecLogID) {
+			String executionID, String empCalAndSumExecLogID) {
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();

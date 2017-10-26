@@ -61,7 +61,7 @@
 								</tr>
 								<com:ko tag="foreach" bind="overtimes">
 									<tr>
-										<td tabindex="-1" class="bg-green tdno">
+										<td tabindex="-1" class="tdno">
 											<div tabindex="-1" data-bind="text: overtimeNo"></div>
 										</td>
 										<td tabindex="-1">
@@ -74,6 +74,7 @@
 													value: overtime,
 													inputFormat: 'time', 
 													mode: 'time',
+													defaultValue : 0,
 													required: true,
 													enable: $parents[1].isEditable,
 													constraint: 'OvertimeValue'}" />
@@ -111,7 +112,7 @@
 								
 								<com:ko tag="foreach" bind="breakdownItems">
 									<tr>
-										<td class="bg-green tdno">
+										<td class="tdno">
 											<div data-bind="text: breakdownItemNo"></div>
 										</td>
 										<td class="tdname">

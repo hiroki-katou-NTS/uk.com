@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.config.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -22,7 +22,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -42,10 +41,6 @@ public class WkpConfigServiceImpl implements WkpConfigService {
     /** The workplace repo. */
     @Inject
     private WorkplaceRepository workplaceRepo;
-
-    /** The workplace info repo. */
-    @Inject
-    private WorkplaceInfoRepository workplaceInfoRepo;
 
     /** The Constant ELEMENT_FIRST. */
     private static final Integer ELEMENT_FIRST = 0;
@@ -95,49 +90,60 @@ public class WkpConfigServiceImpl implements WkpConfigService {
         List<Workplace> lstWorkplace = this.workplaceRepo.findByWkpIds(lstWkpId);
         
         lstWorkplace.forEach(workplace -> {
-            this.progress(workplace, latestWkpConfigHist.getPeriod().start(), newHistStartDate);
+            this.processRemoveWKp(workplace, latestWkpConfigHist.getPeriod().start(), newHistStartDate);
         });
     }
 
     /**
-     * Progress.
+     * Process remove W kp.
      *
-     * @param workplace
-     *            the workplace
-     * @param startDateHistCurrent
-     *            the start date hist current
-     * @param newStartDateHist
-     *            the new start date hist
+     * @param workplace the workplace
+     * @param startDWkpConfigHistCurrent the start D wkp config hist current
+     * @param newStartDWkpConfigHist the new start D wkp config hist
      */
-    private void progress(Workplace workplace, GeneralDate startDateHistCurrent, GeneralDate newStartDateHist) {
-        List<WorkplaceHistory> lstNewWkpHistory = new ArrayList<>();
-        for (WorkplaceHistory wkpHistory : workplace.getWorkplaceHistory()) {
-            GeneralDate startDateWkpHist = wkpHistory.getPeriod().start();
-            // not equal
-            if (!startDateWkpHist.equals(startDateHistCurrent)) {
-                continue;
-            }
-            // find date range need to remove
-            List<String> lstHistoryIdRemove = this.findExistedDateInRange(workplace.getWorkplaceHistory(),
-                    newStartDateHist, startDateWkpHist);
-            if (!CollectionUtil.isEmpty(lstHistoryIdRemove)) {
-                // remove workplace infor in date range
-                this.removeWorkplaceInfor(workplace.getCompanyId(), workplace.getWorkplaceId(), lstHistoryIdRemove);
-            }
-            startDateWkpHist = newStartDateHist;
+	private void processRemoveWKp(Workplace workplace, GeneralDate startDWkpConfigHistCurrent,
+			GeneralDate newStartDWkpConfigHist) {
+		final List<String> lstHistIdRemove = new ArrayList<>();
+		Iterator<WorkplaceHistory> itWkpHistory = workplace.getWorkplaceHistory().iterator();
+		Boolean isChangedEndDate = false;
 
-            lstNewWkpHistory = this.subListWkpHistory(workplace.getWorkplaceHistory(), newStartDateHist);
-            lstNewWkpHistory.add(wkpHistory);
-            break;
-        }
-        // empty list workplace history
-        workplace.getWorkplaceHistory().clear();
+		while (itWkpHistory.hasNext()) {
+			WorkplaceHistory wkpHistoryCurrent = itWkpHistory.next();
+			GeneralDate startDateWkpHist = wkpHistoryCurrent.getPeriod().start();
+			
+			// not equal
+			if (!startDateWkpHist.equals(startDWkpConfigHistCurrent)) {
+				
+				// update start date, end date of previous
+				if (isChangedEndDate && !lstHistIdRemove.contains(wkpHistoryCurrent.getHistoryId())) {
+					DatePeriod period = wkpHistoryCurrent.getPeriod();
+					int dayOfAgo = -1;
+					wkpHistoryCurrent.setPeriod(period.newSpan(period.start(),
+							newStartDWkpConfigHist.addDays(dayOfAgo)));
+					break;
+				}
+				continue;
+			}
+			// find date range need to remove
+			lstHistIdRemove.addAll(this.findExistedDateInRange(workplace.getWorkplaceHistory(), newStartDWkpConfigHist,
+					startDateWkpHist));
+			
+			// remove workplace infor in date range
+			this.removeWkpHistory(workplace, lstHistIdRemove);
+			
+			// update start date
+			DatePeriod period = wkpHistoryCurrent.getPeriod();
+			wkpHistoryCurrent.setPeriod(period.newSpan(newStartDWkpConfigHist, period.end()));
 
-        // add all new list workplace history
-        workplace.getWorkplaceHistory().addAll(lstNewWkpHistory);
-
-        // update workplace
-        this.workplaceRepo.update(workplace);
+			// set flag changed end date of previous workplace history
+			isChangedEndDate = true;
+		}
+		
+		// remove workplace history
+     	workplace.getWorkplaceHistory().removeIf(item -> lstHistIdRemove.contains(item.getHistoryId()));
+		
+		// update workplace
+		this.workplaceRepo.update(workplace);
     }
 
     /**
@@ -154,8 +160,8 @@ public class WkpConfigServiceImpl implements WkpConfigService {
     private List<String> findExistedDateInRange(List<WorkplaceHistory> lstWkpHistory, GeneralDate startDate,
             GeneralDate endDate) {
         return lstWkpHistory.stream()
-                .filter(item -> item.getPeriod().start().afterOrEquals(startDate)
-                        && item.getPeriod().start().beforeOrEquals(endDate))
+                .filter(item -> item.getPeriod().start().after(startDate)
+                        && item.getPeriod().start().before(endDate))
                 .map(item -> item.getHistoryId())
                 .collect(Collectors.toList());
     }
@@ -170,33 +176,10 @@ public class WkpConfigServiceImpl implements WkpConfigService {
      * @param lstHistoryIdRemove
      *            the lst history id remove
      */
-    private void removeWorkplaceInfor(String companyId, String workplaceId, List<String> lstHistoryIdRemove) {
+    private void removeWkpHistory(Workplace workplace, List<String> lstHistoryIdRemove) {
         lstHistoryIdRemove.forEach(historyId -> {
-            this.workplaceInfoRepo.remove(companyId, workplaceId, historyId);
+            // remove workplace history and workplace infor
+            this.workplaceRepo.removeWkpHistory(workplace.getCompanyId(), workplace.getWorkplaceId(), historyId);
         });
-    }
-
-    /**
-     * Sub list wkp history.
-     *
-     * @param lstWorkplaceHistory
-     *            the lst workplace history
-     * @param newStartDateHist
-     *            the new start date hist
-     * @return the list
-     */
-    private List<WorkplaceHistory> subListWkpHistory(List<WorkplaceHistory> lstWorkplaceHistory,
-            GeneralDate newStartDateHist) {
-        List<WorkplaceHistory> subListWkpHistory = lstWorkplaceHistory.stream()
-                .filter(item -> item.getPeriod().start().before(newStartDateHist)).collect(Collectors.toList());
-
-        if (CollectionUtil.isEmpty(subListWkpHistory)) {
-            return new ArrayList<>();
-        }
-        // set previous a day for end date
-        DatePeriod period = subListWkpHistory.get(0).getPeriod();
-        subListWkpHistory.get(0).setPeriod(period.newSpan(period.start(), newStartDateHist.addDays(-1)));
-
-        return subListWkpHistory;
     }
 }

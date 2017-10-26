@@ -18,7 +18,7 @@ public class TargetPersonDto {
 	/**
 	 * 就業計算と集計実行ログID
 	 */
-	private long empCalAndSumExecLogId;
+	private String empCalAndSumExecLogId;
 	/**
 	 * 状態
 	 */

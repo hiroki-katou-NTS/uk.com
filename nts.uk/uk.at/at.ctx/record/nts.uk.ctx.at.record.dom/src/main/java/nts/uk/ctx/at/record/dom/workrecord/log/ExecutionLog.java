@@ -29,12 +29,12 @@ public class ExecutionLog {
 	/**
 	 * ID (table 就業計算と集計実行ログ)
 	 */
-	private long empCalAndSumExecLogID;
+	private String empCalAndSumExecLogID;
 
 	/**
 	 * 運用ケース
 	 */
-	private long caseSpecExeContentID;
+	private String caseSpecExeContentID;
 	
 	/**
 	 * 実行社員ID
@@ -96,8 +96,8 @@ public class ExecutionLog {
 		
 		return new ExecutionLog(
 				companyID,
-				Long.parseLong(empCalAndSumExecLogID),
-				Long.parseLong(caseSpecExeContentID),
+				empCalAndSumExecLogID,
+				caseSpecExeContentID,
 				employeeID,
 				executedLogID,
 				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSumByDate;

@@ -25,12 +25,12 @@ public class ExecutionLogDto {
 	/**
 	 * ID(table 就業計算と集計実行ログ)
 	 */
-	private long empCalAndSumExecLogID;
+	private String empCalAndSumExecLogID;
 
 	/**
 	 * 運用ケース
 	 */
-	private long caseSpecExeContentID;
+	private String caseSpecExeContentID;
 	
 	/**
 	 * 実行社員ID

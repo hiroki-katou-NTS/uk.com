@@ -17,4 +17,9 @@ public class WorkInformation {
 	
 	private WorkTypeCode workTypeCode;
 
+	public WorkInformation(String workTimeCode, String workTypeCode) {
+		this.workTimeCode = new WorkTimeCode(workTimeCode);
+		this.workTypeCode = new WorkTypeCode(workTypeCode);
+	}
+	
 }
