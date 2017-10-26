@@ -14,8 +14,12 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDt
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -32,6 +36,14 @@ public class AttendanceItemsFinder {
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+	
+	/** The frame adapter. */
+	@Inject
+	private FrameNoAdapter frameAdapter;
+
+	/** The opt item repo. */
+	@Inject
+	private OptionalItemRepository optItemRepo;
 
 	public List<AttendanceItemDto> find() {
 		LoginUserContext login = AppContexts.user();
@@ -127,5 +139,46 @@ public class AttendanceItemsFinder {
 				}).collect(Collectors.toList());
 
 		return attendanceItemDtos;
+	}
+	
+	/**
+	 * Find by any item.
+	 *
+	 * @param anyItemNos the any item nos
+	 * @param formulaAtr the formula atr
+	 * @param performanceAtr the performance atr
+	 * @return the list
+	 * 
+	 * @author anhnm
+	 */
+	public List<FrameNoAdapterDto> findByAnyItem(AttdItemLinkRequest request) {
+		// find list optional item by attribute
+		Map<String, String> filteredByAtr = this.optItemRepo
+				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
+				.collect(Collectors.toMap(i -> i.getOptionalItemNo().v(), i -> i.getOptionalItemNo().v()));
+
+		// filter list optional item by selectable list parameters.
+		Map<Integer, Integer> filteredBySelectableList = request.getAnyItemNos().stream()
+				.filter(itemNo -> filteredByAtr.containsKey(itemNo))
+				.collect(Collectors.toMap(i -> Integer.parseInt(i), i -> Integer.parseInt(i)));
+
+		// return list AttendanceItemLinking after filtered by list optional item.
+		return this.frameAdapter.getByAnyItem(convertToFrameType(request.getPerformanceAtr())).stream()
+				.filter(item -> filteredBySelectableList.containsKey(item.getFrameNo())).collect(Collectors.toList());
+
+	}
+	
+	/**
+	 * Convert to frame type.
+	 *
+	 * @param performanceAtr the performance atr
+	 * @return the int
+	 * 
+	 * @author anhnm
+	 */
+	private static final int convertToFrameType(int performanceAtr) {
+		final int MONTHLY_FRAME = 1;
+		final int DAILY_FRAME = 3;
+		return performanceAtr == PerformanceAtr.DAILY_PERFORMANCE.value ? DAILY_FRAME : MONTHLY_FRAME;
 	}
 }
