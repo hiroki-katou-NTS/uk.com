@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.enterprise.inject.spi.CDI;
 
-import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.i18n.I18NResources;
 
 public class TextResource {
 
@@ -17,7 +17,7 @@ public class TextResource {
 	}
 
 	public static String localize(String resourceId, List<String> params) {
-		return CDI.current().select(IInternationalization.class).get().getMessage(resourceId, params)
+		return CDI.current().select(I18NResources.class).get().localize(resourceId, params)
 				.orElse(resourceId);
 	}
 }

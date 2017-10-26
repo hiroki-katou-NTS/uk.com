@@ -22,6 +22,7 @@ public class OutsideOTSettingReport {
 	
 	/** The value. */
 	private Object value;
+	
 
 	public OutsideOTSettingReport(int numberRows, int numberCols, Object value) {
 		super();

@@ -42,7 +42,14 @@ public interface LoginUserContextManager {
 	 * Returns RoleIdSetter to set role IDs of the user.
 	 * @return RoleIdSetter
 	 */
-	RoleIdSetter roleIdSetter(); 
+	RoleIdSetter roleIdSetter();
+
+	/**
+	 * set language
+	 * @param basic basic
+	 * @param forPersonName for person name
+	 */
+	void setLanguage(String basic, String forPersonName);
 	
 	public static interface RoleIdSetter {
 

@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.i18n.entity;
+package nts.uk.shr.infra.i18n.resource.data;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,9 +13,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "CMNMT_RESOURCE")
-public class CompanyResource {
+public class CmnmtResource {
 	@EmbeddedId
-	private CompanyResourcePK primaryKey;
+	private CmnmtResourcePK primaryKey;
 	@Column(name = "ITEM_CONTENT")
 	private String content;
 	

@@ -96,15 +96,15 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		Employee employee = this.employeeRepository.getBySid(employeeId).get();
 
 		// Get infos
-		JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository
+		JobTitleInfo jobInfo = this.jobTitleInfoRepository
 				.find(employee.getCompanyId(), affJobTitleHist.getJobTitleId().v(), baseDate).get();
 
 		// Return
-		return Optional.of(JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
-				.jobTitleId(jobTitleInfo.getJobTitleId())
-				.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
-				.jobTitleName(jobTitleInfo.getJobTitleName().v())
-				.sequenceCode(jobTitleInfo.getSequenceCode().v())
+		return Optional.of(JobTitleExport.builder().companyId(jobInfo.getCompanyId().v())
+				.jobTitleId(jobInfo.getJobTitleId()).jobTitleCode(jobInfo.getJobTitleCode().v())
+				.jobTitleName(jobInfo.getJobTitleName().v())
+				.sequenceCode(
+						jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
 				.startDate(affJobTitleHist.getPeriod().start())
 				.endDate(affJobTitleHist.getPeriod().end()).build());
 	}
@@ -121,20 +121,20 @@ public class JobTitlePubImp implements SyJobTitlePub {
 			GeneralDate baseDate) {
 
 		// Query
-		JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository
-				.find(companyId, jobTitleId, baseDate).get();
+		JobTitleInfo jobInfo = this.jobTitleInfoRepository.find(companyId, jobTitleId, baseDate)
+				.get();
 
 		JobTitle jobTitle = this.jobTitleRepository
-				.findByHistoryId(companyId, jobTitleInfo.getJobTitleHistoryId()).get();
+				.findByHistoryId(companyId, jobInfo.getJobTitleHistoryId()).get();
 
 		JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistory().get(FIRST_ITEM_INDEX);
 
 		// Return
-		return Optional.of(JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
-				.jobTitleId(jobTitleInfo.getJobTitleId())
-				.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
-				.jobTitleName(jobTitleInfo.getJobTitleName().v())
-				.sequenceCode(jobTitleInfo.getSequenceCode().v())
+		return Optional.of(JobTitleExport.builder().companyId(jobInfo.getCompanyId().v())
+				.jobTitleId(jobInfo.getJobTitleId()).jobTitleCode(jobInfo.getJobTitleCode().v())
+				.jobTitleName(jobInfo.getJobTitleName().v())
+				.sequenceCode(
+						jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
 				.startDate(jobTitleHistory.getPeriod().start())
 				.endDate(jobTitleHistory.getPeriod().end()).build());
 	}
@@ -149,17 +149,18 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public List<JobTitleExport> findAll(String companyId, GeneralDate baseDate) {
 		// Query
-		List<JobTitleInfo> jobTitleDtos = this.jobTitleInfoRepository.findAll(companyId, baseDate);
+		List<JobTitleInfo> jobInfos = this.jobTitleInfoRepository.findAll(companyId, baseDate);
 
 		// Return
-		return jobTitleDtos.stream().map(item -> {
+		return jobInfos.stream().map(jobInfo -> {
 			JobTitle jobTitle = this.jobTitleRepository
-					.findByHistoryId(companyId, item.getJobTitleHistoryId()).get();
+					.findByHistoryId(companyId, jobInfo.getJobTitleHistoryId()).get();
 			JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistory().get(FIRST_ITEM_INDEX);
-			return JobTitleExport.builder().companyId(item.getCompanyId().v())
-					.jobTitleId(item.getJobTitleId()).jobTitleCode(item.getJobTitleCode().v())
-					.jobTitleName(item.getJobTitleName().v())
-					.sequenceCode(item.getSequenceCode().v())
+			return JobTitleExport.builder().companyId(jobInfo.getCompanyId().v())
+					.jobTitleId(jobInfo.getJobTitleId()).jobTitleCode(jobInfo.getJobTitleCode().v())
+					.jobTitleName(jobInfo.getJobTitleName().v())
+					.sequenceCode(jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v()
+							: null)
 					.startDate(jobTitleHistory.getPeriod().start())
 					.endDate(jobTitleHistory.getPeriod().end()).build();
 		}).collect(Collectors.toList());
