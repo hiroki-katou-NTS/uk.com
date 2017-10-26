@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import find.person.info.item.PersonInfoItemDefDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
@@ -12,6 +13,7 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class PerCtgInfoDto {
 	private String categoryNameDefault;
 	private String categoryName;

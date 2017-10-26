@@ -11,7 +11,6 @@ import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgFullDto;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
@@ -32,6 +31,7 @@ import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class PerInfoItemDefFinder {
@@ -40,7 +40,7 @@ public class PerInfoItemDefFinder {
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	@Inject
-	IInternationalization internationalization;
+	I18NResourcesForUK ukResouce;
 
 	@Inject
 	private PerInfoCategoryFinder categoryFinder;
@@ -51,12 +51,12 @@ public class PerInfoItemDefFinder {
 				.map(item -> {
 					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
-		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, internationalization);
+		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce);
 		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class,
-				internationalization);
+				ukResouce);
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
-				internationalization);
-		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, internationalization);
+				ukResouce);
+		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, ukResouce);
 		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
 				perInfoItemDefs);
 	};
@@ -97,7 +97,7 @@ public class PerInfoItemDefFinder {
 	private PerInfoItemChangeDefDto mappingFromDomaintoChangeDto(PerInfoItemDefDto itemDefDto, String defaultName,
 			int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
-				internationalization);
+				ukResouce);
 		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
 				itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
 				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
@@ -188,7 +188,7 @@ public class PerInfoItemDefFinder {
 
 	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
-				internationalization);
+				ukResouce);
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
