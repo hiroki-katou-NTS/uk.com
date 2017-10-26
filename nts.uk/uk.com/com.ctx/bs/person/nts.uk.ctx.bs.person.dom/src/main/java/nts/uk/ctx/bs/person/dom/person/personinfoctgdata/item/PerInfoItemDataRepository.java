@@ -3,11 +3,11 @@ package nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item;
 import java.util.List;
 
 /**
- * @author sonnlb
+ * @author LaiTV
  *
  */
 public interface PerInfoItemDataRepository {
 
-	List<EmpInfoItemData> getAllInfoItem(String categoryCd);
+	List<PersonInfoItemData> getAllInfoItem(String categoryCd);
 
 }
