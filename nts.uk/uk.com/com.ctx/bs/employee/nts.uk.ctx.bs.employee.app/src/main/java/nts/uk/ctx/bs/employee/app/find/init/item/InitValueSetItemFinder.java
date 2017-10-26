@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.app.find.init.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,13 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataStateType;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.DateValue;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.NumberValue;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.StringValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;

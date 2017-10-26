@@ -24,7 +24,7 @@ public class ErrMessageInfo extends AggregateRoot  {
 	/**
 	 * 就業計算と集計実行ログID
 	 */
-	private long empCalAndSumExecLogID;
+	private String empCalAndSumExecLogID;
 	/**
 	 * リソースID
 	 */
@@ -44,11 +44,12 @@ public class ErrMessageInfo extends AggregateRoot  {
 	private ErrMessageContent messageError;
 	
 	public static ErrMessageInfo createFromJavaType(
-			String employeeID,long empCalAndSumExecLogID,
+			String employeeID,String empCalAndSumExecLogID,
 			String resourceID,int executionContent,
 			GeneralDate disposalDay,String messageError) {
 		return new ErrMessageInfo(
-				employeeID,empCalAndSumExecLogID,
+				employeeID,
+				empCalAndSumExecLogID,
 				new ErrMessageResource(resourceID),
 				EnumAdaptor.valueOf(executionContent, ExecutionContent.class),
 				disposalDay,

@@ -4,14 +4,12 @@
  *****************************************************************/
 package nts.uk.file.at.infra.outsideot;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.at.app.outsideot.OutsideOTSettingExportGenerator;
-import nts.uk.file.at.app.outsideot.data.OutsideOTSettingReport;
+import nts.uk.file.at.app.outsideot.data.OutsideOTSettingReportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -25,8 +23,11 @@ public class AsposeOutsideOTSettingExportGenerator extends AsposeCellsReportGene
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KMK010_A.xlsx";
 	
+	/** The Constant TEMPLATE_JAPAN_FILE. */
+	private static final String TEMPLATE_JAPAN_FILE = "report/KMK010_AJP.xlsx";
+	
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "KMK010_A.xlsx";
+	private static final String REPORT_FILE_NAME = "マスタリスト設計書-KMK010-時間外超過の登録.xlsx";
   
 	
 	
@@ -39,14 +40,18 @@ public class AsposeOutsideOTSettingExportGenerator extends AsposeCellsReportGene
 	 * nts.uk.file.at.app.outsideot.OutsideOTSettingData)
 	 */
 	@Override
-	public void generate(FileGeneratorContext fileContext, List<OutsideOTSettingReport> data) {
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+	public void generate(FileGeneratorContext fileContext, OutsideOTSettingReportData reportData) {
+		String templateFile = TEMPLATE_FILE;
+		if (reportData.getIsLanguageJapan()) {
+			templateFile = TEMPLATE_JAPAN_FILE;
+		}
+		try (val reportContext = this.createContext(templateFile)) {
 
 			val workbook = reportContext.getWorkbook();
 			val sheet = workbook.getWorksheets().get(0);
 			val cells = sheet.getCells();
 
-			data.forEach(dataItem -> {
+			reportData.getData().forEach(dataItem -> {
 				cells.get(dataItem.getNumberRows(), dataItem.getNumberCols())
 						.setValue(dataItem.getValue());
 			});

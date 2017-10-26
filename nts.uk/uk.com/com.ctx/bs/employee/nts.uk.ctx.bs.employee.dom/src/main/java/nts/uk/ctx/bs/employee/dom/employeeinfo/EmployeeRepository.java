@@ -127,5 +127,5 @@ public interface EmployeeRepository {
 	 * RequestList #101
 	 * @return the optional
 	 */
-	Optional<Employee> findBySidCidSystemDate(String companyId, String employeeId , GeneralDate systemDate);
+	Optional<Employee> findBySidCidSystemDate(String companyId, String personId , GeneralDate systemDate);
 }

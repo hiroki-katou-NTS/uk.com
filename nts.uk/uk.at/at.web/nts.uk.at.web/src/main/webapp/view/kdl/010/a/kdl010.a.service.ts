@@ -6,5 +6,5 @@ module kdl010.a.service {
     export function getAllWorkLocation(): JQueryPromise<Array<viewmodel.WorkLocation>> {
         return nts.uk.request.ajax("at", paths.getAllWorkLocation);
     }
-    
+       
 }

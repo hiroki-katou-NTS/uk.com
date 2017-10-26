@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepo
 import nts.uk.file.at.app.outsideot.data.OutsideOTBRDItemNameLangData;
 import nts.uk.file.at.app.outsideot.data.OutsideOTSettingData;
 import nts.uk.file.at.app.outsideot.data.OutsideOTSettingReport;
+import nts.uk.file.at.app.outsideot.data.OutsideOTSettingReportData;
 import nts.uk.file.at.app.outsideot.data.OvertimeNameLanguageData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -295,6 +296,8 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
        
         data.setSetting(this.finder.reportById());
         
+        
+        
 		List<OvertimeNameLanguageData> overtimeNameLanguageData = new ArrayList<>();
 		
 		// for each all data overtime language
@@ -345,7 +348,8 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 		
 		data.setMapAttendanceItem(mapAttendanceItem);
         // generate file
-        this.generator.generate(context.getGeneratorContext(), this.convertToListReport(data));
+		this.generator.generate(context.getGeneratorContext(),
+				this.convertToListReport(query.getLanguageId().equals(LANGUAGE_ID_JAPAN), data));
     }
 
 	/**
@@ -374,10 +378,11 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 /**
  * Convert to list report.
  *
+ * @param isLanugeJapan the is lanuge japan
  * @param data the data
  * @return the list
  */
-private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData data){
+private OutsideOTSettingReportData convertToListReport(Boolean isLanugeJapan, OutsideOTSettingData data){
 		List<OutsideOTSettingReport> reportData = new ArrayList<>();
 		
 		// add header
@@ -391,8 +396,10 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 				TextResource.localize(NAME_VALUE_A7_3)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_4, NUMBER_COLS_A7_4,
 				TextResource.localize(NAME_VALUE_A7_4)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_5, NUMBER_COLS_A7_5,
-				TextResource.localize(NAME_VALUE_A7_5)));
+		if (!isLanugeJapan) {
+			reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_5, NUMBER_COLS_A7_5,
+					TextResource.localize(NAME_VALUE_A7_5)));
+		}
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_1, NUMBER_COLS_A9_1,
 				TextResource.localize(NAME_VALUE_A9_1)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_2, NUMBER_COLS_A9_2,
@@ -405,8 +412,10 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 			reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_5, NUMBER_COLS_A9_5 + index,
 					TextResource.localize(NAME_VALUE_A9_5) + index));
 		}
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_6, NUMBER_COLS_A9_6,
-				TextResource.localize(NAME_VALUE_A9_6)));
+		if (!isLanugeJapan) {
+			reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_6, NUMBER_COLS_A9_6,
+					TextResource.localize(NAME_VALUE_A9_6)));
+		}
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A15_1, NUMBER_COLS_A15_1,
 				TextResource.localize(NAME_VALUE_A15_1)));
 		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A15_2, NUMBER_COLS_A15_2,
@@ -524,7 +533,10 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 			}
 			startRow++;
 		});
-		return reportData;
+		OutsideOTSettingReportData dataReport = new OutsideOTSettingReportData();
+		dataReport.setData(reportData);
+		dataReport.setIsLanguageJapan(isLanugeJapan);
+		return dataReport;
 	}
 
 /**
