@@ -567,7 +567,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var data = {
                 verticalCalCd: self.code(),
                 itemId: itemCd,
+                attributeId: attribute,
                 attribute: attrValue,
+                unit : self.unitSelected(),
                 itemName: itemName,
                 verticalItems: verticalCalItems
             };
