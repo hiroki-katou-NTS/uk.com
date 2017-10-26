@@ -27,31 +27,38 @@
 				<com:ko-if bind="showScreen() == 'F'">
 					<div class="valign-center control-group row" style="margin-left: 130px;">
 						<!-- 	fix cứng time -->
-						<label style="margin-left: 15px; margin-right: 15px;">10:30</label>
-						~ <label style="margin-left: 15px; margin-right: 15px;">11:00</label>
-						<label style="margin-left: 25px; margin-right: 15px;">14:00</label>
-						~ <label style="margin-left: 15px; margin-right: 15px;">17:00</label>
+						<label data-bind="ntsFormLabel: {}" style="margin-right: 58px;">#{i18n.getText('KAF004_21')}</label>
+						<label style="margin-left: 15px; margin-right: 15px;">08:30　 ～　12:00</label>
+						<label style="margin-left: 25px; margin-right: 15px;">13:00　～　17:30</label>
+						<br/><br/>						
+						<label data-bind="ntsFormLabel: {}" style="margin-right: 58px;margin-top: 10px">#{i18n.getText('KAF004_22')}</label>
+						<label style="margin-left: 15px; margin-right: 15px;">10:30　 ～　11:00</label>
+						<label style="margin-left: 25px; margin-right: 15px;">14:00　～　17:00</label>
+						<br/>
 					</div>
 				</com:ko-if>
 				<div class="valign-center control-group row4"
-					style="margin-left: 130px;">
+					style="margin-left: 130px; margin-top: 15px">
 					<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 					<input style = "margin-left: 35px;"
-						data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />
+						data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}, visible: isVisibleTimeF" />
+					<label data-bind="ntsFormLabel: {}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 30px">2:00</label>
 					<!-- <div data-bind="text: ko.toJSON(lateTime1)	"></div> -->
 					<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
 					<input style = "margin-left: 35px;"
-						data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
+						data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}, visible: isVisibleTimeF" />
+					<label data-bind="ntsFormLabel: {}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 30px">1:00</label>
 				</div>
-				<br />
 				<div class="valign-center control-group row4"
 					style="margin-left: 130px;">
 					<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 					<input class="col1"
-						data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" />
+						data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}, visible: isVisibleTimeF" />
+					<label data-bind="ntsFormLabel: {}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 15px">1:00</label>
 					<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
 					<input class="col2"
-						data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" />
+						data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}, visible: isVisibleTimeF" />
+					<label data-bind="ntsFormLabel: {}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 15px">0:30</label>
 				</div>
 			</div>
 			<div class="valign-center control-group">

@@ -30,7 +30,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         //Show Screen
         showScreen: KnockoutObservable<string> = ko.observable('');
         postAtr: KnockoutObservable<number> = ko.observable(0);
-        
+        isVisibleTimeF: KnockoutObservable<boolean> = ko.observable(true);
+        isLblTimeF: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -62,6 +63,13 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.early1.subscribe(value => { $("#inpEarlyTime1").trigger("validate"); });
                 self.late2.subscribe(value => { $("#inpLate2").trigger("validate"); });
                 self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
+                if(self.showScreen() === 'F'){
+                    self.isVisibleTimeF(false);  
+                    self.isLblTimeF(true);  
+                }else{
+                    self.isVisibleTimeF(true);
+                    self.isLblTimeF(false);    
+                }
                 $("#inputdate").focus();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
