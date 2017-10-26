@@ -302,6 +302,10 @@ module nts.uk.com.view.cmm018.a {
                    }
                 } 
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                // Init Fixed Table
+                $("#fixed-table").ntsFixedTable({ height: 500 });
+                $("#fixed-tableWp").ntsFixedTable({ height: 500 });
+                $("#fixed-tablePs").ntsFixedTable({ height: 500 });
             }
             convertEmployeeCcg01ToKcp009(dataList : vmbase.EmployeeSearchDto[]) : void{
                 let self = this;    
@@ -714,16 +718,11 @@ module nts.uk.com.view.cmm018.a {
                                 }
                             });
                         }  
-                        //TH: list right
+                         //TH: list right
                         //初めから作成するを選択した場合(tạo mới từ đầu)
                         if(!data.copyDataFlag){
                             let tmp: Array<vmbase.DataRootCheck> = [];
-                            let lstAppTypeNew: Array<vmbase.ApplicationType> = [];
-                            lstAppTypeNew.push(new vmbase.ApplicationType(null,'',0));
-                            _.each(self.lstNameAppType(), function(appType){
-                                lstAppTypeNew.push(new vmbase.ApplicationType(appType.value,'',appType.employRootAtr));
-                            });
-                            let check = self.createNew(lstAppTypeNew);
+                            let check = self.createNew(data.lstAppType);
                             self.cpA(check);
                         }
                         //履歴から引き継ぐから作成する場合(tao moi theo lich su cu)
@@ -1435,8 +1434,6 @@ module nts.uk.com.view.cmm018.a {
                         }
                         //TH: 1,2,appName
                         else{
-                            
-//                            self.comRoot(null);
                             self.showItem(codeChanged);
                         }
                     }
@@ -1456,7 +1453,6 @@ module nts.uk.com.view.cmm018.a {
                         }
                         //TH: 1,2,appName
                         else{
-//                            self.comRoot(null);
                             self.showItem(codeChanged);
                         }
                     }
@@ -1476,7 +1472,6 @@ module nts.uk.com.view.cmm018.a {
                         }
                         //TH: 1,2,appName
                         else{
-//                            self.comRoot(null);
                             self.showItem(codeChanged);
                         }
                     }
@@ -2327,11 +2322,12 @@ module nts.uk.com.view.cmm018.a {
             checkTabSelectedB(codeChanged: number, id: string){
                 let self = this;
                 let mode = __viewContext.viewModel.viewmodelA.selectedModeCode();
-                    if(mode == 0){//まとめて登録モード
-                        return;
-                    }
-                    self.singleSelectedCode();
-                    self.historyStr('');
+                if(mode == 0){//まとめて登録モード
+                    return;
+                }
+                self.singleSelectedCode();
+                self.historyStr('');
+                self.singleSelectedCode(null);
                 self.dataDisplay([]);
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     //TH: tab company
