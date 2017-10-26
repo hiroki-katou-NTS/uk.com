@@ -43,6 +43,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private AppStampDetailDomainService applicationStampDetailDomainService;
 	
@@ -83,10 +85,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.PREDICT,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -123,10 +125,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -165,10 +167,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -201,10 +203,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -234,10 +236,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
