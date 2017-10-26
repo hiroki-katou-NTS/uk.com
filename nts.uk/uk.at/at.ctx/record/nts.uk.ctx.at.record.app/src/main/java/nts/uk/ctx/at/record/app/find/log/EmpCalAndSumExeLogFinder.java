@@ -53,7 +53,7 @@ public class EmpCalAndSumExeLogFinder {
 	}
 	
 
-	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
+	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(long empCalAndSumExecLogID){
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID).stream()
 				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c))
 				.collect(Collectors.toList());

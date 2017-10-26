@@ -16,7 +16,7 @@ public interface TargetPersonRepository {
 	 * @param empCalAndSumExecLogId
 	 * @return
 	 */
-	Optional<TargetPerson> getTargetPersonByID(String employeeID,long empCalAndSumExecLogId);
+	Optional<TargetPerson> getTargetPersonByID(String employeeID, long empCalAndSumExecLogId);
 	
 	/**
 	 * get All target person
@@ -27,6 +27,6 @@ public interface TargetPersonRepository {
 
 //	Optional<TargetPerson> getTargetPersonByID(String employeeID,String empCalAndSumExecLogId);
 	
-	List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID);
+	List<TargetPerson> getByempCalAndSumExecLogID(long empCalAndSumExecLogID);
 	
 }

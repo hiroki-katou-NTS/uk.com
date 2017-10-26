@@ -29,7 +29,7 @@ public interface EmpCalAndSumExeLogRepository {
 	
 	List<EmpCalAndSumExeLog> getListByExecutionContent(long empCalAndSumExecLogID, int executionContent);	
 	
-	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
+	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (long empCalAndSumExecLogID);
 
 
 
