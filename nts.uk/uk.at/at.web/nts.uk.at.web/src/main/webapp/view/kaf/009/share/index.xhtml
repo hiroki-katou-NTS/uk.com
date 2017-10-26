@@ -35,7 +35,11 @@
 				<div class="cell valign-center">
 					<div>
 						<input tabindex="7" class="row-cell-margin" id="inpStartTime1"
-							data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
+							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
+															constraint:'TimeWithDayAttr',
+															value: timeStart1, 
+															enable: true, 
+															readonly: false }" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
 					<div tabindex="10" class="row-cell-margin"
@@ -58,7 +62,11 @@
 				<div class="cell valign-center">
 					<div class="row-cell-margin">
 						<input tabindex="8" id="inpEndTime1"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
+							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
+															constraint:'TimeWithDayAttr', 
+															value: timeEnd1, 
+															enable: true, 
+															readonly: false}" />
 					</div>
 
 					<div tabindex="11" class="row-cell-margin"
@@ -81,7 +89,7 @@
 					<!--選択場所　Button-->
 					<button tabindex="9" id="btnLocation1" class="location-button"
 						data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
-					<label
+					<label id = "lblLocation"
 						data-bind="text : workLocationCD() + '   ' + workLocationName()"></label>
 				</div>
 			</div>
@@ -96,7 +104,9 @@
 				<div class="cell valign-center">
 					<div>
 						<input tabindex="12" class="row-cell-margin" id="inpStartTime2"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
+							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直行',
+															constraint:'TimeWithDayAttr',
+															value: timeStart2}" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
 					<div tabindex="15" class="row-cell-margin"
@@ -118,7 +128,9 @@
 				<div class="cell valign-center">
 					<div>
 						<input tabindex="13" class="row-cell-margin" id="inpEndTime2"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
+							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直帰', 
+															constraint:'TimeWithDayAttr',
+															value: timeEnd2}" />
 					</div>
 					<div tabindex="16" class="row-cell-margin"
 						data-bind="ntsSwitchButton: {

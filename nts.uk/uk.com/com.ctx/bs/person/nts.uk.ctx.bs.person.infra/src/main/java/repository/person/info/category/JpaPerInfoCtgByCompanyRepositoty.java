@@ -33,11 +33,12 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 
 	private final static String DELELE_BY_COMPANY_ID = " DELETE FROM PpemtPerInfoCtgOrder c where c.cid =:cid";
 
-	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
-			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName";
-
 	private final static String SELECT_CTG_NAME_BY_CTG_CD_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
+	
+	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
+			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 
 	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
 		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
@@ -124,19 +125,22 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	}
 
 	@Override
-	public List<String> checkCtgNameIsUnique(String companyId, String newCtgName) {
-		return this.queryProxy().query(SELECT_CHECK_CTG_NAME_QUERY, String.class)
-				.setParameter("companyId", companyId)
-				.setParameter("categoryName", newCtgName)
-				.getList();
-	}
-
-	@Override
 	public String getNameCategoryInfo(String companyId, String categoryCd) {
 		return this.queryProxy().query(SELECT_CTG_NAME_BY_CTG_CD_QUERY, String.class)
 				.setParameter("cid", companyId)
 				.setParameter("categoryCd", categoryCd)
 				.getSingle().orElse("null");
+	}
+
+	@Override
+	public boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId) {
+		List<String> categoryNames = this.queryProxy().query(SELECT_CHECK_CTG_NAME_QUERY, String.class)
+				.setParameter("companyId", companyId).setParameter("categoryName", newCtgName)
+				.setParameter("ctgId", ctgId).getList();
+		if (categoryNames == null || categoryNames.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 }

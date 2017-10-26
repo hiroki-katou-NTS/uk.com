@@ -18,23 +18,23 @@ public class PerInfoInitValSetCtg  extends AggregateRoot {
 
 	/**
 	 * @Contructors PerInfoInitValSetCtg
-	 * @param initValueSettingId
+	 * @param settingId
 	 * @param perInfoCtgId
 	 */
-	public PerInfoInitValSetCtg(String initValueSettingId, String perInfoCtgId) {
+	public PerInfoInitValSetCtg(String settingId, String perInfoCtgId) {
 		super();
-		this.initValueSettingId = initValueSettingId;
+		this.initValueSettingId = settingId;
 		this.perInfoCtgId = perInfoCtgId;
 	}
 
 	/**
 	 * createFromJavaType
-	 * @param initValueSettingId
-	 * @param initValueSettingCtgId
+	 * @param settingId
+	 * @param perInfoCtgId
 	 * @return PerInfoInitValSetCtg
 	 */
-	public static PerInfoInitValSetCtg createFromJavaType(String initValueSettingId, String initValueSettingCtgId) {
-		return new PerInfoInitValSetCtg(initValueSettingId, initValueSettingCtgId);
+	public static PerInfoInitValSetCtg createFromJavaType(String settingId, String perInfoCtgId) {
+		return new PerInfoInitValSetCtg(settingId, perInfoCtgId);
 	}
 	
 	public void updateInitSetId(String initValueSettingId){

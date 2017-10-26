@@ -2677,6 +2677,7 @@ module nts.uk.ui.exTable {
             if (options.containerClass !== BODY_PRF + DETAIL || util.isNullOrUndefined(options.updateMode) 
                 || options.updateMode !== STICK) return;
             $cell.on(events.CLICK_EVT, function(evt: any) {
+                if (evt.ctrlKey) return;
                 let $grid = $cell.closest("." + BODY_PRF + DETAIL);
                 let sticker = $grid.data(internal.STICKER);
                 if (!sticker || util.isNullOrUndefined(sticker.data) 
@@ -6102,7 +6103,7 @@ module nts.uk.ui.exTable {
                 let self = this;
                 self.$selector.on(events.MOUSE_DOWN, function(evt: any) {
                     self.getTable();
-                    if (evt.ctrlKey && self.$table.data(NAMESPACE).determination) return;
+                    if (evt.ctrlKey && self.$table.closest("." + NAMESPACE).data(NAMESPACE).determination) return;
                     self.click(evt);
                 });
             }

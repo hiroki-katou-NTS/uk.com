@@ -10,11 +10,13 @@ import nts.arc.primitive.constraint.IntegerRange;
 @IntegerRange(min = 1, max = 9999)
 public class WorkClock extends IntegerPrimitiveValue<WorkClock>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public WorkClock(Integer rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
-
-	private static final long serialVersionUID = 3163405888083803496L;
-
 }

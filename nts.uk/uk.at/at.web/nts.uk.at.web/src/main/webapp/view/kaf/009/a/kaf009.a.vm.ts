@@ -73,6 +73,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
         useMulti : KnockoutObservable<boolean> = ko.observable(true);
+        dateType: string = 'YYYY/MM/DD';
         constructor() {
             let self = this;
             //KAF000_A
@@ -86,7 +87,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             }));
             //startPage 009a AFTER start 000_A
             self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format("YYYY/MM/DD")).done(function(){
+                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
                 })    
             })
@@ -172,24 +173,25 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          * insert//登録ボタンをクリックする
          */
         insert() {
-            let self = this;
+            let self = this;            
             //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
             //直行直帰するチェック
-            var promiseResult = self.checkBeforeInsert();
-            promiseResult.done((result) => {
-                if (result) {
-                    nts.uk.ui.block.invisible();
-                    service.insertGoBackDirect(self.getCommand()).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        //clean Screen 
-                        self.cleanScreen();
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
-                    }).then(function(){
-                        nts.uk.ui.block.clear();    
-                    })
-                }
-            });
+            self.checkBeforeInsert();     
+            
+        }
+        
+        registry(){
+            let self = this;
+            nts.uk.ui.block.invisible();
+            service.insertGoBackDirect(self.getCommand()).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                //clean Screen 
+                self.cleanScreen();
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
+            }).then(function(){
+                nts.uk.ui.block.clear();    
+            })    
         }
         
         /**
@@ -198,7 +200,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         cleanScreen(){
             let self = this;
             self.prePostSelected(0);
-            self.appDate(moment().format('YYYY/MM/DD'));
+            self.appDate(moment().format(self.dateType));
             self.timeStart1(0);   
             self.timeEnd1(0);
             self.timeStart2(0);
@@ -222,16 +224,23 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             //check before Insert 
-           if(self.checkUse()){
-               service.checkInsertGoBackDirect(self.getCommand()).done(function(){
-                   dfd.resolve(true);
+            self.checkUse();
+            return dfd;
+        }
+        checkRegister(){
+            let self = this;
+            let dfd = $.Deferred();
+            service.checkInsertGoBackDirect(self.getCommand()).done(function(){
+                    self.registry();
+                    dfd.resolve(true);
                 }).fail(function(res: any){
                     if(res.messageId =="Msg_297"){
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
-                           dfd.resolve(true);
+                            self.registry();
+                            dfd.resolve(true);
                         }).ifNo(function() {
                             nts.uk.ui.block.clear();
-                   dfd.resolve(false);
+                            dfd.resolve(false);
                         });
                     } else if(res.messageId == "Msg_298"){
                         dfd.reject();
@@ -245,8 +254,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); }); 
                     }
                 })
-           }
-           return dfd;
+            return dfd.promise();
         }
         
         /**
@@ -254,16 +262,18 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         checkUse(){
             let self = this;
-            if ((self.selectedGo() == 0 && self.selectedBack()== 0) 
-                || (self.selectedGo2() == 0 && self.selectedBack2()== 0)) {
+            if (self.selectedGo() == 0 
+                && self.selectedBack()== 0 
+                && self.selectedGo2() == 0 
+                && self.selectedBack2()== 0) {
+                //直行直帰区分＝なし
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
-                    return true;
+                    self.checkRegister();
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
-                    return false;
                 });
             } else {
-                return true;
+                 self.checkRegister();
             }
         }
         /**
