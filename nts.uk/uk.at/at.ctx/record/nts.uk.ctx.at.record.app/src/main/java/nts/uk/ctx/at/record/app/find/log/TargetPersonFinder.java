@@ -37,7 +37,7 @@ public class TargetPersonFinder {
 	 * @param empCalAndSumExecLogId
 	 * @return
 	 */
-	public TargetPersonDto getTargetPersonByID(long empCalAndSumExecLogId){
+	public TargetPersonDto getTargetPersonByID(String empCalAndSumExecLogId){
 		Optional<TargetPersonDto> data = targetPersonRepo.getTargetPersonByID(employeeID, empCalAndSumExecLogId)
 				.map(c -> TargetPersonDto.fromDomain(c));
 		if(data.isPresent())

@@ -113,7 +113,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	@Override
 	public void setSmtpInfo(SmtpInfo smtpInfo) {
 		this.sevstMailServer.setSmtpServer(smtpInfo.getServer().v());
-		this.sevstMailServer.setStmtPort(smtpInfo.getPort().v());
+		this.sevstMailServer.setSmtpPort(smtpInfo.getPort().v());
 	}
 
 	/*

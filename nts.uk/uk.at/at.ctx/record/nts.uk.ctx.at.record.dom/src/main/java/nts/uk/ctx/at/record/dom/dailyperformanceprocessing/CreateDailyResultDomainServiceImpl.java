@@ -15,7 +15,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Override
 	public boolean createDailyResult(List<String> emloyeeIds, int reCreateAttr, BigDecimal startDate,
-			BigDecimal endDate, int executionAttr, long empCalAndSumExecLogID) {
+			BigDecimal endDate, int executionAttr, String empCalAndSumExecLogID) {
 		
 		//日別作成を実行するかチェックする
 		List<EmpCalAndSumExeLog> empCalAndSumExeLogs = this.empCalAndSumExeLogRepository.getListByExecutionContent(empCalAndSumExecLogID, 0);

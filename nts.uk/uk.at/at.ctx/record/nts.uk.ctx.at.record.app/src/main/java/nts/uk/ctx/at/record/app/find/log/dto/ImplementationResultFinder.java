@@ -26,7 +26,7 @@ public class ImplementationResultFinder {
 	 private TargetPersonRepository targetPersonRepository;
 	
 	
-	public  ScreenImplementationResultDto getScreenImplementationResult (long empCalAndSumExecLogID ){
+	public  ScreenImplementationResultDto getScreenImplementationResult (String empCalAndSumExecLogID ){
 		//Get List EmpCalAndSumExeLog
 		List<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Conver to Dto

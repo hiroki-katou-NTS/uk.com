@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.category.service;
+package nts.uk.ctx.bs.employee.dom.person;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -81,7 +81,6 @@ module nts.uk.com.view.cmm011.b {
             private shareData() {
                 let self = this;
                 let shareData: any = self.toJSonDate(true);
-                shareData.isDeletionMode = self.workplaceHistory().isRemoved;
                 shareData.isWkpConfigHistLatest = self.workplaceHistory().isSelectedLatestHistory();
                 shareData.historyId = self.workplaceHistory().getSelectedHistoryByHistId().historyId;
                 
@@ -187,8 +186,6 @@ module nts.uk.com.view.cmm011.b {
             addBtnControl: KnockoutObservable<boolean>;
             updateBtnControl: KnockoutObservable<boolean>;
             
-            isRemoved: boolean;
-            
             constructor(parentModel: ScreenModel) {
                 super();
                 let self = this;
@@ -210,7 +207,6 @@ module nts.uk.com.view.cmm011.b {
                     }
                     return false;
                 });
-                self.isRemoved = false;
                 
                 self.selectedHistoryId.subscribe(function(newCode) {
                     let detail: IHistory = self.getSelectedHistoryByHistId();
@@ -241,7 +237,6 @@ module nts.uk.com.view.cmm011.b {
             public removeHistory() {
                 let self = this;
                 nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
-                    self.isRemoved = true;
                     let command: any = {};
                     command.historyId = self.selectedHistoryId();
                     
