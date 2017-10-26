@@ -3,9 +3,7 @@ module nts.uk.at.view.kmw005.a {
         var paths = {
             findAllActualLock: "ctx/at/record/workrecord/actuallock/findAll",
             findLockByClosureId: "ctx/at/record/workrecord/actuallock/findLockByClosureId",
-            
             saveActualLock: "ctx/at/record/workrecord/actuallock/saveLock",
-            saveActualLockHist: "ctx/at/record/workrecord/actuallock/saveLockHist"
         }
         
         /**
@@ -26,25 +24,9 @@ module nts.uk.at.view.kmw005.a {
         /**
          * Save ActualLock
          */
-        export function saveActualLock(command: any): JQueryPromise<any> {
+        export function saveActualLock(command: any): JQueryPromise<boolean> {
             return nts.uk.request.ajax(paths.saveActualLock, command);
         }
-        
-        /**
-         * Save ActualLockHist
-         */
-        export function saveActualLockHist(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.saveActualLockHist, command);
-        }
-//
-//        /**
-//         * save closure history call service
-//         */
-//        export function saveClosureHistory(dto: model.ClosureHistoryDto): JQueryPromise<void> {
-//            var data = { closureHistory: dto };
-//            return nts.uk.request.ajax(paths.saveClosureHistory, data);
-//        }
-
         
 
         export module model {

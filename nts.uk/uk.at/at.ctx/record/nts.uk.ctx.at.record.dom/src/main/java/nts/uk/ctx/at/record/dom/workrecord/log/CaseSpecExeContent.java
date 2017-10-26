@@ -19,7 +19,7 @@ public class CaseSpecExeContent extends AggregateRoot {
 	/**
 	 * ID
 	 */
-	private long caseSpecExeContentID;
+	private String caseSpecExeContentID;
 
 	/**
 	 * 並び順

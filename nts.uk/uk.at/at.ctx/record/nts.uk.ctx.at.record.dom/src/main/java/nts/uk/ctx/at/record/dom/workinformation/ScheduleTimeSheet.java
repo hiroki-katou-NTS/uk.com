@@ -17,4 +17,12 @@ public class ScheduleTimeSheet {
 	private TimeWithDayAttr attendance;
 	
 	private TimeWithDayAttr leaveWork;
+
+	public ScheduleTimeSheet(String workNo, int attendance, int leaveWork) {
+		super();
+		this.workNo = workNo;
+		this.attendance = new TimeWithDayAttr(attendance);
+		this.leaveWork = new TimeWithDayAttr(leaveWork);
+	}
+	
 }

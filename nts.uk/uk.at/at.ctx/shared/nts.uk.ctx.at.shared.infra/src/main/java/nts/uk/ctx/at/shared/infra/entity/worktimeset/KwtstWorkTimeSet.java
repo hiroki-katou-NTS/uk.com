@@ -46,7 +46,13 @@ public class KwtstWorkTimeSet extends UkJpaEntity{
 	
 	@Column(name="PREDETERMINE_ATR")
 	public int predetermineAtr;
-	
+
+	@Column(name = "MORNING_END_TIME")
+	public int morningEndTime;
+
+	@Column(name = "AFTERNOON_START_TIME")
+	public int afternoonStartTime;
+
 	@Override
 	protected Object getKey() {
 		return kwtspWorkTimeSetPK;

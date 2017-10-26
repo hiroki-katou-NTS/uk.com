@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.pubimp.dailyattendanceitem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.DailyAttendanceItemRecPub;
@@ -42,4 +44,20 @@ public class DailyAttendanceItemRecPubImpl implements DailyAttendanceItemRecPub 
 		return dailyAttendanceItemRecPubDtos;
 	}
 
+	@Override
+	public List<DailyAttendanceItemRecPubDto> getDailyAttendanceItemList(String companyId, List<Integer> dailyAttendanceAtrs) {
+		if (CollectionUtil.isEmpty(dailyAttendanceAtrs)) {
+			return Collections.emptyList();
+		}
+		
+		return this.dailyAttendanceItemRepository.findByAtr(companyId, dailyAttendanceAtrs)
+				.stream().map(x -> DailyAttendanceItemRecPubDto.builder()
+							.attendanceItemId(x.getAttendanceItemId())
+							.attendanceName(x.getAttendanceName().v())
+							.dailyAttendanceAtr(x.getDailyAttendanceAtr().value)
+							.displayNumber(x.getDisplayNumber())
+							.nameLineFeedPosition(x.getNameLineFeedPosition())
+							.userCanUpdateAtr(x.getUserCanUpdateAtr().value)
+							.companyId(companyId).build()).collect(Collectors.toList());
+	}
 }

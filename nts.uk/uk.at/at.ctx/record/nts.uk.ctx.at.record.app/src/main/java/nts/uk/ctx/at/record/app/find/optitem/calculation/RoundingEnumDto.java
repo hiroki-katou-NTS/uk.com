@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.i18n.custom.IInternationalization;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class RoundingEnumDto.
@@ -30,7 +30,7 @@ public class RoundingEnumDto {
 	 *
 	 * @return the rounding enum dto
 	 */
-	public static RoundingEnumDto amount(IInternationalization i18n) {
+	public static RoundingEnumDto amount(I18NResourcesForUK i18n) {
 		RoundingEnumDto dto = new RoundingEnumDto();
 		dto.setRounding(
 				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class, i18n));
@@ -43,7 +43,7 @@ public class RoundingEnumDto {
 	 *
 	 * @return the rounding enum dto
 	 */
-	public static RoundingEnumDto number(IInternationalization i18n) {
+	public static RoundingEnumDto number(I18NResourcesForUK i18n) {
 		RoundingEnumDto dto = new RoundingEnumDto();
 		dto.setRounding(
 				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding.class, i18n));
@@ -56,7 +56,7 @@ public class RoundingEnumDto {
 	 *
 	 * @return the rounding enum dto
 	 */
-	public static RoundingEnumDto time(IInternationalization i18n) {
+	public static RoundingEnumDto time(I18NResourcesForUK i18n) {
 		RoundingEnumDto dto = new RoundingEnumDto();
 		dto.setRounding(
 				EnumAdaptor.convertToValueNameList(nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class, i18n));

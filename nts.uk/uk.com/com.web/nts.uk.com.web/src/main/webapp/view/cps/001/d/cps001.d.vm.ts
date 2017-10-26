@@ -1,6 +1,7 @@
 module cps001.d.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -9,6 +10,8 @@ module cps001.d.vm {
     export class ViewModel {
         empFileMn: KnockoutObservable<EmpFileMn> = ko.observable(new EmpFileMn({employeeId: "", fileId: "", fileType: -1}));
         oldEmpFileMn = {};
+         isChange: KnockoutObservable<boolean> = ko.observable(false);
+        isInit = true;
         
         constructor(){  
             let self = this;         
@@ -20,42 +23,65 @@ module cps001.d.vm {
             service.getAvatar(self.empFileMn().employeeId()).done(function(data){
                 if(data){
                     self.empFileMn().fileId(data.fileId);
-                    self.empFileMn().fileType(data.fileType);
                     self.empFileMn().fileType(0);
                     if(self.empFileMn().fileId() != "" && self.empFileMn().fileId() != undefined)
                         self.getImage();
                     self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId(), fileId: self.empFileMn().fileId(), fileType: self.empFileMn().fileType()};
                 }
+                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                    if (!self.isInit) {
+                        self.isChange(true);
+                        return;
+                    }
+                    self.isInit = false;
+                });
                 
             });
             
         }
+        
         upload(){
             let self = this;
             nts.uk.ui.block.grayout();
-            $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
-                self.empFileMn().fileId(data.id);
-                
-                service.checkEmpFileMnExist(self.empFileMn().employeeId()).done(function(isExist){
-                    if(isExist){
-                        //insert employee file management
-                        service.removeAvaOrMap(self.oldEmpFileMn).done(function(){
-                             service.insertAvaOrMap(ko.toJS(self.empFileMn())).done(function(){
-                            setShared("imageId", self.empFileMn().fileId());
-                            self.close();
-                        }).always(function(){ nts.uk.ui.block.clear();});
-                            });
-                       
-                    }else{
-                        //insert employee file management
-                        service.insertAvaOrMap(ko.toJS(self.empFileMn())).done(function(){
-                            setShared("imageId", self.empFileMn().fileId());
-                            self.close();
-                        }).always(function(){ nts.uk.ui.block.clear();});
-                    }
-                }); 
-            });
+            let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            if(isImageLoaded.imgOnView){
+                if (self.isChange()) {
+                    $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
+                        self.empFileMn().fileId(data.id);
+                        self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
+                    });
+                } else self.close();
+            }else{
+                self.close();
+            }          
         }
+        
+        updateImage(oldEmpFileMn, currentEmpFileMn){
+            let self = this;
+            service.checkEmpFileMnExist(currentEmpFileMn.employeeId).done(function(isExist){
+                        if(isExist){
+                             confirm({messageId: "Msg_386", messageParams:"CPS001_68"}).ifYes(()=>{
+                                //insert employee file management
+                                service.removeAvaOrMap(oldEmpFileMn).done(function(){
+                                     service.insertAvaOrMap(currentEmpFileMn).done(function(){
+                                        setShared("imageId", currentEmpFileMn.fileId);
+                                        self.close();
+                                     }).always(function(){ nts.uk.ui.block.clear();});
+                                });
+                            }).ifNo(()=>{
+                                nts.uk.ui.block.clear();
+                            });
+                           
+                        }else{
+                            //insert employee file management
+                            service.insertAvaOrMap(currentEmpFileMn).done(function(){
+                                setShared("imageId", currentEmpFileMn.fileId);
+                                self.close();
+                            }).always(function(){ nts.uk.ui.block.clear();});
+                        }
+                    }); 
+        }
+        
         getImage(){
             let self = this;
             let id = self.empFileMn().fileId();

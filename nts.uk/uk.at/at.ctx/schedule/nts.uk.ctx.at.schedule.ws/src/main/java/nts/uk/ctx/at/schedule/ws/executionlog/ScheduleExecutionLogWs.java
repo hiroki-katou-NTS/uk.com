@@ -66,6 +66,7 @@ public class ScheduleExecutionLogWs extends WebService {
 	@Inject
 	private ScheduleCreatorExecutionCommandHandler execution;
 
+	/** The exe error log export service. */
 	@Inject
 	private ExeErrorLogExportService exeErrorLogExportService;
 

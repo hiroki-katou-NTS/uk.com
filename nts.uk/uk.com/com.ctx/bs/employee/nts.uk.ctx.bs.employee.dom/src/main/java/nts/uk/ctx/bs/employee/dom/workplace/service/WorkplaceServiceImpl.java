@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -28,10 +27,6 @@ public class WorkplaceServiceImpl implements WorkplaceService {
     @Inject
     private WorkplaceRepository workplaceRepo;
     
-    /** The wkp info repo. */
-    @Inject
-    private WorkplaceInfoRepository wkpInfoRepo;
-
     /** The Constant ELEMENT_FIRST. */
     private static final Integer ELEMENT_FIRST = 0;
 
@@ -69,11 +64,7 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         List<String> lstHistIdRemoved = new ArrayList<>();
         workplace.getWorkplaceHistory().forEach(wkpHistory -> {
             if (wkpHistory.getPeriod().start().after(startDate)) {
-                
-                // remove workplace infor
-                this.wkpInfoRepo.remove(companyId, wkpId, wkpHistory.getHistoryId());
-                
-                // remove workplace history
+                // remove workplace history and workplace infor
                 this.workplaceRepo.removeWkpHistory(companyId, wkpId, wkpHistory.getHistoryId());
                 
                 // save history removed.

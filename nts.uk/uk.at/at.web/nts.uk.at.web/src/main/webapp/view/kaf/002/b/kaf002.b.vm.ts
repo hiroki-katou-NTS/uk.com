@@ -30,7 +30,11 @@ module nts.uk.at.view.kaf002.b {
                         applicationType, 
                         moment(new Date()).format("YYYY/MM/DD"))
                     .done(()=>{
-                        self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);    
+                        if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalList)){
+                            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
+                        } else {
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);  
+                        }  
                     }).fail(function(res) { 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
@@ -46,6 +50,7 @@ module nts.uk.at.view.kaf002.b {
             }
             
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 service.newScreenFind()

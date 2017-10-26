@@ -91,7 +91,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 		return wp;
 	}
 	public static boolean checkValidate(String startDate, String endDate){
-		if(startDate.compareTo(endDate) < 0){
+		if(startDate.compareTo(endDate) <= 0){
 			return true;
 		}
 		return false;

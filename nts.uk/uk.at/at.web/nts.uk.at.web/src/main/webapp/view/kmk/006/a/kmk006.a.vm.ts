@@ -17,9 +17,9 @@ module nts.uk.at.view.kmk006.a {
         export class ScreenModel {
             totalSelectedWorkplaceId: KnockoutObservable<string>;
             multiSelectedWorkplaceId: KnockoutObservable<string>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            treeGrid: TreeComponentOption;
-            treeGridTotal: TreeComponentOption;
+            wkpAlreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            treeOptionsWkp: TreeComponentOption;
+            treeOptionsWkpTotal: TreeComponentOption;
             autoCalAtrOvertimeEnum: Array<Enum>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
@@ -48,8 +48,8 @@ module nts.uk.at.view.kmk006.a {
             valueEnumResLatLi: KnockoutObservable<number>;
             valueEnumResLatAtr: KnockoutObservable<number>;
 
-            listComponentOption: any;
-            listComponentOptionTotal: any;
+            jobListOptions: any;
+            jobTotalListOptions: any;
             selectedCode: KnockoutObservable<string>;
             totalSelectedCode: KnockoutObservableArray<string>;
             multiSelectedCode: KnockoutObservableArray<string>;
@@ -99,8 +99,8 @@ module nts.uk.at.view.kmk006.a {
 
                 self.multiSelectedWorkplaceId = ko.observable('');
                 self.totalSelectedWorkplaceId = ko.observable('');
-                self.alreadySettingList = ko.observableArray([]);
-                self.treeGrid = {
+                self.wkpAlreadySettingList = ko.observableArray([]);
+                self.treeOptionsWkp = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
@@ -109,11 +109,11 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    alreadySettingList: self.alreadySettingList,
+                    alreadySettingList: self.wkpAlreadySettingList,
                     maxRows: 10
                 };
-                self.treeGridTotal = {
-                    isShowAlreadySet: true,
+                self.treeOptionsWkpTotal = {
+                    isShowAlreadySet: false,
                     isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.totalSelectedWorkplaceId,
@@ -121,7 +121,6 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    alreadySettingList: self.alreadySettingList,
                     maxRows: 10
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
@@ -159,14 +158,14 @@ module nts.uk.at.view.kmk006.a {
                 self.selectedCurrentWkp = ko.observable('');
                 self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 self.isShowAlreadySet = ko.observable(false);
-                self.alreadySettingList_ = ko.observableArray([]);
+                self.jobAlreadySettingList = ko.observableArray([]);
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.treeItemName = ko.observable('');
                 self.componentItemName = ko.observable('');
                 self.treeItemCode = ko.observable('');
                 self.componentItemCode = ko.observable('');
-                self.listComponentOption = {
+                self.jobListOptions = {
                     isShowAlreadySet: true,
                     baseDate: self.baseDate,
                     isMultiSelect: false,
@@ -175,18 +174,17 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.selectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList_
+                    alreadySettingList: self.jobAlreadySettingList
                 };
-                self.listComponentOptionTotal = {
-                    isShowAlreadySet: true,
+                self.jobTotalListOptions = {
+                    isShowAlreadySet: false,
                     baseDate: self.baseDate,
                     isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList_
+                    isShowNoSelectRow: self.isShowNoSelectRow()
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
@@ -203,7 +201,7 @@ module nts.uk.at.view.kmk006.a {
                         }
                     }
                 });
-                
+
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
@@ -216,18 +214,18 @@ module nts.uk.at.view.kmk006.a {
                         }
                     }
                 });
-                
+
                 //subscribe 
                 self.totalSelectedCode.subscribe(function(codeChanged) {
-                     self.selectedCurrentJob(codeChanged);
-                     self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId() ,codeChanged);
-                     let data = $('#jobtitles').getDataList();
-                     for (let ent of data) {
+                    self.selectedCurrentJob(codeChanged);
+                    self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId(), codeChanged);
+                    let data = $('#jobtitles').getDataList();
+                    for (let ent of data) {
                         if (ent.id == codeChanged) {
                             self.componentItemName(ent.name);
                             self.componentItemCode(ent.code);
                         }
-                     }
+                    }
                 });
 
                 //subscribe 
@@ -284,64 +282,64 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();
 
                 // Initial settings.
-                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), _self.loadAutoCalAtrOvertimeEnum(), 
-                            _self.loadUseUnitAutoCalSettingModel()).done(function() {
-                    _self.onSelectCompany();
-                    dfd.resolve(_self);
-                });
+                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), _self.loadAutoCalAtrOvertimeEnum(),
+                    _self.loadUseUnitAutoCalSettingModel()).done(function() {
+                        _self.onSelectCompany();
+                        dfd.resolve(_self);
+                    });
 
                 return dfd.promise();
             }
-            
+
             //load workPlace-job already setting
-            public loadWkpJobAlreadySettingList() : JQueryPromise<void> {
+            public loadWkpJobAlreadySettingList(): JQueryPromise<void> {
                 let _self = this;
                 var jobSettingList: any = [];
                 var wkpSettingList: any = [];
                 var dfd = $.Deferred<any>();
-                
-                service.getAllWplJobAutoCal().done(function(data){
+
+                service.getAllWplJobAutoCal().done(function(data) {
                     data.forEach(c => {
-                        let job_item : JobAlreadySettingModel = {id: c.jobId, isAlreadySetting: true};
-                        let wkp_item : UnitAlreadySettingModel = {workplaceId: c.wkpId, isAlreadySetting: true};
+                        let job_item: JobAlreadySettingModel = { id: c.jobId, isAlreadySetting: true };
+                        let wkp_item: UnitAlreadySettingModel = { workplaceId: c.wkpId, isAlreadySetting: true };
                         wkpSettingList.push(wkp_item);
                         jobSettingList.push(job_item);
                     });
-                    _self.alreadySettingList(wkpSettingList);
-                    _self.alreadySettingList_(jobSettingList);
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
-            //load job already setting
-            public loadJobAlreadySettingList() : JQueryPromise<void> {
-                let _self = this;
-                var settingList: any = [];
-                var dfd = $.Deferred<any>();
-                service.getAllJobAutoCal().done(function(data){
-                    data.forEach(c => {
-                        let item : JobAlreadySettingModel = {id: c.jobId, isAlreadySetting: true};
-                        settingList.push(item);
-                    });
-                    _self.alreadySettingList_(settingList);
+                    _self.wkpAlreadySettingList(wkpSettingList);
+                    _self.jobAlreadySettingList(jobSettingList);
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
 
-            
-            //load workPlace already setting
-            public loadWkpAlreadySettingList() : JQueryPromise<void> {
+            //load job already setting
+            public loadJobAlreadySettingList(): JQueryPromise<void> {
                 let _self = this;
                 var settingList: any = [];
                 var dfd = $.Deferred<any>();
-                service.getAllWkpAutoCal().done(function(data){
+                service.getAllJobAutoCal().done(function(data) {
                     data.forEach(c => {
-                        let item : UnitAlreadySettingModel = {workplaceId: c.wkpId, isAlreadySetting: true};
+                        let item: JobAlreadySettingModel = { id: c.jobId, isAlreadySetting: true };
                         settingList.push(item);
                     });
-                    _self.alreadySettingList(settingList);
+                    _self.jobAlreadySettingList(settingList);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+
+            //load workPlace already setting
+            public loadWkpAlreadySettingList(): JQueryPromise<void> {
+                let _self = this;
+                var settingList: any = [];
+                var dfd = $.Deferred<any>();
+                service.getAllWkpAutoCal().done(function(data) {
+                    data.forEach(c => {
+                        let item: UnitAlreadySettingModel = { workplaceId: c.wkpId, isAlreadySetting: true };
+                        settingList.push(item);
+                    });
+                    _self.wkpAlreadySettingList(settingList);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -359,7 +357,7 @@ module nts.uk.at.view.kmk006.a {
                 }).fail(res => {
                     nts.uk.ui.dialog.alertError(res);
                 });
-                 return dfd.promise();
+                return dfd.promise();
             }
 
             // All function
@@ -785,7 +783,7 @@ module nts.uk.at.view.kmk006.a {
                 self.loadComAutoCal();
 
                 self.isLoading(true);
-                
+
                 dfd.resolve();
 
                 return dfd.promise();
@@ -796,8 +794,8 @@ module nts.uk.at.view.kmk006.a {
                 var self = this;
 
                 self.isLoading(true);
-                
-                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function(){
+
+                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                     let code = $('#component-items-list').getDataList()[0].id;
                     self.selectedCode(code);
                     self.loadJobAutoCal(code);
@@ -816,11 +814,11 @@ module nts.uk.at.view.kmk006.a {
 
                 // Update flags.
                 self.isLoading(true);
-                
-                $('#tree-grid-srcc').ntsTreeComponent(self.treeGrid).done(function() {
+
+                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
                     self.loadWkpAutoCal(self.multiSelectedWorkplaceId);
-                    self.loadWkpAlreadySettingList().done(function(){
-                          
+                    self.loadWkpAlreadySettingList().done(function() {
+
                     });
                 });
             }
@@ -828,25 +826,25 @@ module nts.uk.at.view.kmk006.a {
             public onSelectWkpJob(): void {
                 $('.nts-input').ntsError('clear');
                 var self = this;
-               
+
                 // Update flags.
                 self.isLoading(true);
-                
+
                 //load grid          
-                $('#tree-grid').ntsTreeComponent(self.treeGridTotal).done(function() {
-                   
+                $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
+
                 });
-                
-                $('#jobtitles').ntsListComponent(self.listComponentOptionTotal).done(function(){
+
+                $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
                     let code = $('#jobtitles').getDataList()[0].id;
                     self.totalSelectedCode(code);
                     self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId, code);
-                     // load ready setting
-                    self.loadWkpJobAlreadySettingList().done(function(){
-                        
+                    // load ready setting
+                    self.loadWkpJobAlreadySettingList().done(function() {
+
                     });
                 });
-               
+
             }
 
             /**
@@ -1172,13 +1170,13 @@ module nts.uk.at.view.kmk006.a {
                 this.calAtr(0);
             }
         }
-        
+
         export class UnitAutoCalSettingView {
             useWkpSet: any;
             useJobSet: any;
             useJobwkpSet: any;
-            
-            constructor(useWkpSet: boolean, useJobSet : boolean, useJobwkpSet: boolean) {
+
+            constructor(useWkpSet: boolean, useJobSet: boolean, useJobwkpSet: boolean) {
                 this.useWkpSet = useWkpSet;
                 this.useJobSet = useJobSet;
                 this.useJobwkpSet = useJobwkpSet;
@@ -1211,7 +1209,7 @@ module nts.uk.at.view.kmk006.a {
             workplaceId: string;
             isAlreadySetting: boolean;
         }
-        
+
         export interface JobAlreadySettingModel {
             id: string;
             isAlreadySetting: boolean;

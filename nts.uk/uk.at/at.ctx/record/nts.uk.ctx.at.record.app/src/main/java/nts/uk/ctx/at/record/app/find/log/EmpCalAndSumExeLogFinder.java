@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
+import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSumByDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -23,7 +24,6 @@ public class EmpCalAndSumExeLogFinder {
 	private String employeeID = AppContexts.user().employeeId();
 	/**
 	 * get All EmpCalAndSumExeLog
-	 * 
 	 * @return list EmpCalAndSumExeLog
 	 */
 	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(){
@@ -36,7 +36,11 @@ public class EmpCalAndSumExeLogFinder {
 			return Collections.emptyList();
 		return data;
 	}
-	
+	/**
+	 * get All EmpCalAndSumExeLog by id
+	 * @param inputEmpCalAndSum
+	 * @return
+	 */
 	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogById(InputEmpCalAndSum inputEmpCalAndSum){
 		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
 				.getEmpCalAndSumExeLogByID(companyID, inputEmpCalAndSum.getEmpCalAndSumExecLogID(), inputEmpCalAndSum.getOperationCaseID(), employeeID)
@@ -47,5 +51,25 @@ public class EmpCalAndSumExeLogFinder {
 		
 	}
 	
+
+	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
+		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID).stream()
+				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c))
+				.collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+	}
+
+	public List<EmpCalAndSumExeLogDto> getEmpCalAndSumExeLogByDate(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
+		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
+				.getAllEmpCalAndSumExeLogByDate(companyID, inputEmpCalAndSumByDate.getStartDate(), inputEmpCalAndSumByDate.getEndDate())
+				.stream()
+				.map(c->EmpCalAndSumExeLogDto.fromDomain(c))
+				.collect(Collectors.toList());;
+			if(data.isEmpty())
+				return Collections.emptyList();
+		return data;
+	}
 
 }

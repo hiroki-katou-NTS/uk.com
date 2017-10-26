@@ -44,6 +44,7 @@ module nts.uk.ui.koExtentions {
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
+            var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
 
             $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
@@ -104,6 +105,7 @@ module nts.uk.ui.koExtentions {
                     $searchLeftContainer.width(searchAreaWidth).css({position: "absolute", left: 0});
                     
                     initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
+                    $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 }
                 
                 if(showSearchBox.showRight){
@@ -112,8 +114,9 @@ module nts.uk.ui.koExtentions {
                     $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
                     initSearchArea($searchRightContainer, grid2Id, data.searchMode);
+                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 }
-                $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                
                 $searchArea.height(SEARCH_AREA_HEIGHT);
                 gridHeight -= SEARCH_AREA_HEIGHT;
             }
@@ -130,7 +133,7 @@ module nts.uk.ui.koExtentions {
 
             var features = [{ name: 'Selection', multipleSelection: true },
 //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
           
             $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
             $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);

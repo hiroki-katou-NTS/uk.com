@@ -28,9 +28,11 @@ module nts.uk.at.view.kaf002.m3 {
                         ));        
                     });
                 }
+                nts.uk.ui.block.clear();
             }
             
             register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
                     appID: "",
@@ -50,16 +52,22 @@ module nts.uk.at.view.kaf002.m3 {
                 service.insert(command)
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                         $('.cm-memo').focus();
                         nts.uk.ui.block.clear();
                     });     
                 })
                 .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});
+                    if(res.messageId === "Msg_327"){
+                        nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                    }
                 });
             }
             
             update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
                     version: application.version,
@@ -80,6 +88,7 @@ module nts.uk.at.view.kaf002.m3 {
                 service.update(command)
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                         $('.cm-memo').focus();
                         nts.uk.ui.block.clear();
                     });     
@@ -88,7 +97,11 @@ module nts.uk.at.view.kaf002.m3 {
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});    
+                        if(res.messageId === "Msg_327"){
+                            nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                        }   
                     }
                 });
             }

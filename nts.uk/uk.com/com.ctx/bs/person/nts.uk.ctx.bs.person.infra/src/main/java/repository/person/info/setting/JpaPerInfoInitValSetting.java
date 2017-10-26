@@ -17,12 +17,18 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 	private final String SEL_ALL = " SELECT c FROM PpemtPersonInitValueSetting c" + " WHERE c.companyId = :companyId"
 			+ " ORDER BY c.settingCode";
 
-	private final String SEL_ALL_HAS_CHILD = " SELECT iv FROM PpemtPersonInitValueSetting iv"
-			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" + " ON ic.settingId = iv.initValueSettingPk.settingId"
-			+ " LEFT JOIN PpemtPerInfoCtg pc" + " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND pc.abolitionAtr=0" + " LEFT JOIN PpemtPerInfoItem pi"
-			+ " ON pi.perInfoCtgId= ic.settingCtgPk.perInfoCtgId" + " AND pi.abolitionAtr = 0"
-			+ " WHERE iv.companyId = :companyId" + " AND pi.ppemtPerInfoItemPK.perInfoItemDefId != NULL";
+	private final String SEL_ALL_HAS_CHILD = "SELECT DISTINCT iv"
+			+ " FROM PpemtPersonInitValueSetting iv"
+			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" 
+			+ " ON iv.initValueSettingPk.settingId  = ic.settingCtgPk.settingId"
+			+ " LEFT JOIN PpemtPerInfoCtg pc" 
+			+ " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " AND pc.abolitionAtr=0" 
+			+ " INNER JOIN PpemtPerInfoItem pi"
+			+ " ON ic.settingCtgPk.perInfoCtgId= pi.perInfoCtgId " 
+			+ " AND pi.abolitionAtr = 0"
+			+ " WHERE iv.companyId = :companyId" 
+			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId IS NOT NULL";
 
 	private final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";

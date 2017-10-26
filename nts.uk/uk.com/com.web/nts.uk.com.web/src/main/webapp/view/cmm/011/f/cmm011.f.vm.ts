@@ -43,7 +43,7 @@ module nts.uk.com.view.cmm011.f {
                 // get condition to initial screen.
                 let objTransfer: any = nts.uk.ui.windows.getShared("ObjectTransfer");
                 self.workplaceCode(objTransfer.code);
-                self.workplaceCode(objTransfer.name);
+                self.workplaceName(objTransfer.name);
                 self.isLess999Hierarchies(objTransfer.isLess999Hierarchies);
                 self.isLessTenthHierarchy(objTransfer.isLessTenthHierarchy);
                 
