@@ -7,35 +7,28 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.category.HistoryTypes;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.info.category.service.ParamForGetPerItem;
-import nts.uk.ctx.bs.person.dom.person.info.category.service.PerInfoCtgDomainService;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class PerInfoCategoryFinder {
 
 	@Inject
-	I18NResourcesForUK internationalization;
+	IInternationalization internationalization;
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
-	
-	@Inject
-	private PerInfoCtgDomainService perInfoCtgDomainService;
 	
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
@@ -103,32 +96,6 @@ public class PerInfoCategoryFinder {
 							p.getCategoryType().value, p.getIsFixed().value, 1);
 				}).orElse(null));
 		return lstResult;
-	}
-	 
-	/**
-	 * get person ctg infor and list of item children
-	 * */
-	public PerCtgInfoDto getCtgAndItemByCtgId(String ctgId){
-		val perCtgInfo = perInfoCtgRepositoty.getPerInfoCategory(ctgId, AppContexts.user().contractCode()).get();
-		val lstPerItemDef = pernfoItemDefRep.getPerInfoItemByCtgId(ctgId, AppContexts.user().companyId(), AppContexts.user().contractCode());
-		return PerCtgInfoDto.createObjectFromDomain(perCtgInfo, lstPerItemDef);
-	}
-	/**
-	 * person ctg infor and list of item children by parent
-	 * */
-	public PerCtgInfoDto getCtgAndItemByParent(String employeeId, String ctgId, String parentInfoId){
-		String contractCode = AppContexts.user().contractCode();
-		String companyId = AppContexts.user().companyId();
-		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
-		val perCtgInfo = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
-		if(perCtgInfo.getCategoryType() == CategoryType.SINGLEINFO)
-			return PerCtgInfoDto.createObjectFromDomain(perCtgInfo);
-		else{
-			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition = perInfoCtgDomainService.getPerItemDef(
-					new ParamForGetPerItem(perCtgInfo, parentInfoId, roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)));
-		};
-		return null;
 	}
 	
 	//vinhpx: end

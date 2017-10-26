@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.category.service;
+package nts.uk.ctx.bs.employee.dom.person;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.adapter.SubJobPosAdapter;
-import nts.uk.ctx.bs.person.dom.person.adapter.SubJobPosImport;
-import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familycare.FamilyCareAdapter;
-import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familycare.FamilyCareImport;
-import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familysocialinsurance.FamilySocialInsuranceAdapter;
-import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.familysocialinsurance.FamilySocialInsuranceImport;
-import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.incometax.IncomeTaxAdapter;
-import nts.uk.ctx.bs.person.dom.person.adapter.familyrelatedinformation.incometax.IncomeTaxImport;
+import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
+import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
+import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax.IncomeTax;
+import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax.IncomeTaxRepository;
+import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsurance;
+import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsuranceRepository;
+import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
+import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
@@ -40,17 +40,17 @@ public class PerInfoCtgDomainService {
 	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
 	 
 	@Inject
-	private SubJobPosAdapter subJobPosAdapter;
+	private SubJobPosRepository subJobPosRepository;
 	
 	@Inject 
-	private IncomeTaxAdapter incomeTaxAdapter;
+	private IncomeTaxRepository incomeTaxRepository;
 	
 	@Inject 
-	private FamilySocialInsuranceAdapter familySocialInsuranceAdapter;
+	private FamilySocialInsuranceRepository familySocialInsuranceRepository;
 	
 	
 	@Inject 
-	private FamilyCareAdapter familyCareAdapter;
+	private FamilyCareRepository familyCareRepository;
 	
 
 	public List<PersonInfoItemDefinition> getPerItemDef(ParamForGetPerItem paramObject) {
@@ -99,16 +99,16 @@ public class PerInfoCtgDomainService {
 		if(paramObject.getPersonInfoCategory().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
 			switch(paramObject.getPersonInfoCategory().getCategoryCode().v()){
 				case "CS00005":
-					IncomeTaxImport incomeTax  = incomeTaxAdapter.getInComeTaxById(paramObject.getParentInfoId()).get();
+					IncomeTax incomeTax  = incomeTaxRepository.getIncomeTaxById(paramObject.getParentInfoId()).get();
 					break;
 				case "CS00006":
-					FamilySocialInsuranceImport familySocialInsurance = familySocialInsuranceAdapter.getFamilySocialInseById(paramObject.getParentInfoId()).get();
+					FamilySocialInsurance familySocialInsurance = familySocialInsuranceRepository.getFamilySocialInsById(paramObject.getParentInfoId()).get();
 					break;
 				case "CS00007":
-					FamilyCareImport familyCare = familyCareAdapter.getFamilyCareByid(paramObject.getParentInfoId()).get();
+					FamilyCare familyCare = familyCareRepository.getFamilyCareById(paramObject.getParentInfoId()).get();
 					break;
 				case "CS00013":
-					List<SubJobPosImport> lstSubJobPos = subJobPosAdapter.getSubJobPosByDeptId(paramObject.getParentInfoId());
+					List<SubJobPosition> lstSubJobPos = subJobPosRepository.getSubJobPosByDeptId(paramObject.getParentInfoId());
 					break;
 			}
 		}
