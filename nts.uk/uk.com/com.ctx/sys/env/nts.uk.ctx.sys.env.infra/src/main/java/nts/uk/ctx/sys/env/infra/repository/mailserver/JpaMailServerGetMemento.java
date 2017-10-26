@@ -95,7 +95,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	@Override
 	public SmtpInfo getSmtpInfo() {
 		return new SmtpInfo(new Server(this.sevstMailServer.getSmtpServer()),  
-						new Port(this.sevstMailServer.getStmtPort()));
+						new Port(this.sevstMailServer.getSmtpPort()));
 	}
 
 	/* (non-Javadoc)
