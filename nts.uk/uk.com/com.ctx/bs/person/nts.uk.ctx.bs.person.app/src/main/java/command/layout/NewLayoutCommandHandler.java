@@ -13,7 +13,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.I18NErrorMessage;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.I18NText;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
@@ -22,6 +21,7 @@ import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoCl
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 @Transactional
@@ -40,7 +40,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 	PerInfoItemDefFinder itemDefFinder;
 
 	@Inject
-	IInternationalization text;
+	I18NResourcesForUK text;
 
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {

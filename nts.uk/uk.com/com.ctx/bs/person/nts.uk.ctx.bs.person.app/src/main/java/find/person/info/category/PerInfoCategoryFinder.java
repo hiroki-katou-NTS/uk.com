@@ -11,24 +11,22 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SubJobPosPub;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.HistoryTypes;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.category.service.ParamForGetPerItem;
 import nts.uk.ctx.bs.person.dom.person.info.category.service.PerInfoCtgDomainService;
-import nts.uk.ctx.bs.person.dom.person.info.category.service.SubJobPosAc;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class PerInfoCategoryFinder {
 
 	@Inject
-	IInternationalization internationalization;
+	I18NResourcesForUK ukResource;
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
@@ -152,7 +150,7 @@ public class PerInfoCategoryFinder {
 							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 				}).collect(Collectors.toList());
 
-		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, ukResource);
 		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
 	};
 	
@@ -164,7 +162,7 @@ public class PerInfoCategoryFinder {
 							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 				}).collect(Collectors.toList());
 
-		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, ukResource);
 		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
 	};
 	
