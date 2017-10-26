@@ -105,50 +105,63 @@
 									<!-- A3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div id="table-wrapper">
-  								<div id="table-scroll">
-								<table class="contents-header">
+								<br/>
+								<table class="contents-header" id="fixed-table">
+									<colgroup>
+										<col width="100px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="60px"/>
+									</colgroup>
 									<thead>
 										<tr >
 											<!-- A3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name text">#{i18n.getText('CMM018_24')}</td>
+											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
 											<!-- A3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2" class = "text">#{i18n.getText('CMM018_30')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
 											<!-- A3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units text">#{i18n.getText('CMM018_31')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
 											<!-- A3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units text">#{i18n.getText('CMM018_32')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
 											<!-- A3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units text">#{i18n.getText('CMM018_33')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
 											<!-- A3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date text">#{i18n.getText('CMM018_34')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
 											<!-- A3_29: クリア（見出し） -->
-											<td rowspan="2" class="allow-pay text">#{i18n.getText('CMM018_95')}</td>
+											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
 										</tr>
 										<tr>
 											<!-- A3_10: 承認者指定（見出し） -->
-											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11: 承認者（見出し） -->
-											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase text">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver text">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
+									<tbody data-bind = "foreach: cpA">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- A3_12: App Name -->
 											<td class="name td-first-bg">
@@ -227,7 +240,6 @@
 										</tr>
 									</tbody>
 								</table>
-								</div></div>
 							</div>
 						</div>
 						<!-- SCREEN B -->
@@ -253,6 +265,7 @@
 												optionsText: 'nameAppType',
 												multiple: false,
 												enable: true,
+												initialExpandDepth: 0,
 												rows: 15,
 												showCheckBox: false}"></table>
 									</div>
@@ -266,43 +279,57 @@
 									<!-- B3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table class="contents-header">
+								<br/>
+								<table class="contents-header" id="fixed-tableB">
+									<colgroup>
+										<col width="100px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+									</colgroup>
 									<thead>
 										<tr>
 											<!-- B3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<th rowspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
 											<!-- B3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
 											<!-- B3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
 											<!-- B3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
 											<!-- B3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
 											<!-- B3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
 										</tr>
 										<tr>
 											<!-- B3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
@@ -389,9 +416,9 @@
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
 					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
-					<!-- c1_7: Button 承認者一覧 -->
+					<!-- C1_7: Button 承認者一覧 -->
 					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
-					<!-- c1_8: Button マスタリスト -->
+					<!-- C1_8: Button マスタリスト -->
 					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
@@ -402,11 +429,11 @@
 								<button style = "margin-left: 20px" data-bind = "click: openDialogCDL008">職場選択 </button>
 								</td>
 								<td>
-									<!-- A1_11: Label モード切替： -->
+									<!-- C1_11: Label モード切替： -->
 									<div >#{i18n.getText('CMM018_8')}</div>
 								</td>
 								<td>
-									<!-- A1_12: SwitchButton モード切替 -->
+									<!-- C1_12: SwitchButton モード切替 -->
 									<div data-bind="ntsSwitchButton: {
 											options: listMode,
 											optionsValue: 'code',
@@ -420,7 +447,7 @@
 					<div>
 						<!-- SCREEN C -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
-							<!-- A2: List gridList -->
+							<!-- C2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
@@ -442,53 +469,68 @@
 									</div>
 								</div>
 							</div>
-							<!-- A3: List -->
+							<!-- C3: List -->
 							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;">
 								<div>
-									<!-- A3_1: Label 有効期間 -->
+									<!-- C3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- A3_2: 選択する期間 -->
+									<!-- C3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table class="contents-header">
+								<br/>
+								<table class="contents-header" id="fixed-tableWp">
+									<colgroup>
+										<col width="100px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="60px"/>
+									</colgroup>
 									<thead>
 										<tr>
 											<!-- A3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
 											<!-- C3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
 											<!-- C3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
 											<!-- A3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
 											<!-- A3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
 											<!-- A3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
 											<!-- A3_29: クリア（見出し） -->
-											<td rowspan="2" class="allow-pay">#{i18n.getText('CMM018_95')}</td>
+											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
 										</tr>
 										<tr>
 											<!-- A3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- C3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- C3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
@@ -594,6 +636,7 @@
 												optionsText: 'nameAppType',
 												multiple: false,
 												enable: true,
+												initialExpandDepth: 0,
 												rows: 15,
 												showCheckBox: false}"></table>
 									</div>
@@ -607,43 +650,57 @@
 									<!-- D3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table class="contents-header">
+								<br/>
+								<table class="contents-header" id="fixed-tableWpB">
+									<colgroup>
+										<col width="100px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+									</colgroup>
 									<thead>
 										<tr>
 											<!-- B3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<th rowspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
 											<!-- B3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
 											<!-- B3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
 											<!-- D3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
 											<!-- B3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
 											<!-- D3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
 										</tr>
 										<tr>
 											<!-- D3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- D3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- D3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- D3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- D3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- D3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- B3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- B3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
@@ -795,45 +852,60 @@
 									<!-- E3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table class="contents-header" style="width: 890px !important">
+								<br/>
+								<table class="contents-header" id="fixed-tablePs" style="width: 890px !important">
+									<colgroup>
+										<col width="100px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="60px"/>
+									</colgroup>
 									<thead>
 										<tr>
 											<!-- A3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
 											<!-- A3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
 											<!-- A3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
 											<!-- A3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
 											<!-- A3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
 											<!-- A3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
 											<!-- A3_29: クリア（見出し） -->
-											<td rowspan="2" class="allow-pay">#{i18n.getText('CMM018_95')}</td>
+											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
 										</tr>
 										<tr>
 											<!-- E3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- A3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- A3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- E3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
 									<tbody style = "height: 200px;" data-bind = "foreach: cpA">
@@ -939,6 +1011,7 @@
 												optionsText: 'nameAppType',
 												multiple: false,
 												enable: true,
+												initialExpandDepth: 0,
 												rows: 15,
 												showCheckBox: false}"></table>
 									</div>
@@ -952,43 +1025,57 @@
 									<!-- F3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table class="contents-header" style="width: 890px !important">
+								<br/>
+								<table class="contents-header" id = "fixed-tablePsB">
+									<colgroup>
+										<col width="100px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+										<col width="80px"/>
+										<col width="70px"/>
+									</colgroup>
 									<thead>
 										<tr>
 											<!-- F3_4: 申請の種類（見出し） -->
-											<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+											<th rowspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
 											<!-- F3_5: フェーズ1⇒（見出し） -->
-											<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
 											<!-- F3_6: フェーズ2⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
 											<!-- F3_7: フェーズ3⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
 											<!-- F3_8: フェーズ4⇒（見出し） -->
-											<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
 											<!-- F3_9: フェーズ5（見出し） -->
-											<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
 										</tr>
 										<tr>
 											<!-- F3_10: 承認者指定（見出し） -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- F3_11: 承認者（見出し） -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- F3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- F3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- F3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- F3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- F3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- F3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 											<!-- F3_10 -->
-											<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- F3_11 -->
-											<td class="approver">#{i18n.getText('CMM018_29')}</td>
+											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
