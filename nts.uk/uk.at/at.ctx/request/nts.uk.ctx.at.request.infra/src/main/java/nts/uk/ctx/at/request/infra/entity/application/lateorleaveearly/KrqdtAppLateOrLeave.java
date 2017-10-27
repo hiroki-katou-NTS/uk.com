@@ -10,6 +10,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
@@ -28,6 +30,10 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 
 	@EmbeddedId
 	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
 	
 	@Column(name = "ACTUAL_CANCEL_ATR")
 	public int actualCancelAtr;
