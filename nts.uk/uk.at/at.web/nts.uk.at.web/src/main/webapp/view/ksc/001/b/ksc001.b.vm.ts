@@ -565,7 +565,6 @@ module nts.uk.at.view.ksc001.b {
                 self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
                 service.addScheduleExecutionLog(self.collectionData()).done(function(data){
                     nts.uk.ui.windows.setShared('inputData', data);
-                    console.log(data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
                     });
                 });
@@ -582,7 +581,6 @@ module nts.uk.at.view.ksc001.b {
                 nts.uk.ui.windows.setShared('reflectionSetting', self.convertPersonalScheduleToReflectionSetting(data));
                 nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
                     let dto = nts.uk.ui.windows.getShared('returnedData');
-                    console.log(dto);
                 });
             }
             /**

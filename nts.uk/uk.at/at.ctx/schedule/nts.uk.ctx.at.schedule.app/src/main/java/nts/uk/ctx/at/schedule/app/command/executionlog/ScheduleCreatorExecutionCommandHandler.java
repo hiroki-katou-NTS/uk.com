@@ -13,20 +13,19 @@ import java.util.Optional;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
-import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ClassificationDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.WorkplaceDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
@@ -104,10 +103,6 @@ public class ScheduleCreatorExecutionCommandHandler
 	@Inject
 	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 
-	/** The finder. */
-	@Inject
-	private ScheduleExecutionLogFinder finder;
-
 	/** The schedule creator repository. */
 	@Inject
 	private ScheduleCreatorRepository scheduleCreatorRepository;
@@ -182,12 +177,9 @@ public class ScheduleCreatorExecutionCommandHandler
 	@Inject
 	private WorkTimeSetRepository workTimeSetRepository;
 		
-	/** The setter. */
-	private TaskDataSetter setter;
-	
-		
-	/** The Constant DEFAULT_VALUE. */
-	private static final Integer DEFAULT_VALUE = 0;
+	/** The sc employment status adapter. */
+	@Inject
+	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
 	
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -210,6 +202,15 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/** The Constant SHIFT2. */
 	public static  final int SHIFT2 = 2;
+	
+	/** The Constant BEFORE_JOINING. */
+	// 入社前
+	public static final int BEFORE_JOINING = 4;
+	
+	/** The Constant RETIREMENT. */
+	// 退職
+	public static final int RETIREMENT = 6;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -226,8 +227,6 @@ public class ScheduleCreatorExecutionCommandHandler
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		val asyncTask = context.asAsync();
-		setter = asyncTask.getDataSetter();
 		ScheduleCreatorExecutionCommand command = context.getCommand();
 		command.setCompanyId(companyId);
 		
@@ -289,12 +288,10 @@ public class ScheduleCreatorExecutionCommandHandler
 			}
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
-			ScheduleExecutionLogInfoDto dto = this.finder.findInfoById(scheduleExecutionLog.getExecutionId());
 			//insert basic schedule
 			BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 			commandSave.setConfirmedAtr(this.getConfirmedAtr(true, ConfirmedAtr.CONFIRMED).value);
 			commandSave = toCommandSave(commandSave, domain.getEmployeeId(), "001", "001");
-			commandSave.setIsDeleteBeforeSave(true);
 			this.basicSave.handle(commandSave);
 		});
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
@@ -370,13 +367,22 @@ public class ScheduleCreatorExecutionCommandHandler
 		while(command.getToDate().before(this.nextDay(domain.getPeriod().end().date()))){
 			
 			// get status employment
-			if(getStatusEmployment(domain)){
+			EmploymentStatusDto employmentStatus = this.getStatusEmployment(personalWorkScheduleCreSet.getEmployeeId(),
+					GeneralDate.legacyDate(command.getToDate()));
+			
+			// status employment equal RETIREMENT (退職)
+			if(employmentStatus.getStatusOfEmployment() == RETIREMENT){
+				return;
+			}
+			
+			// status employment not equal BEFORE_JOINING (入社前)
+			if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
 				Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
 						.find(domain.getExecutionEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
-				
+
 				// check exist data basic schedule
-				if(optionalBasicSchedule.isPresent()){
-					
+				if (optionalBasicSchedule.isPresent()) {
+
 					BasicSchedule basicSchedule = optionalBasicSchedule.get();
 					this.createWorkScheduleByImplementAtr(command, basicSchedule, personalWorkScheduleCreSet);
 				}
@@ -610,9 +616,9 @@ public class ScheduleCreatorExecutionCommandHandler
 				this.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_602");
 			}
 
-		} else
-		// CLASSIFICATION
-		{
+		} 
+		// 営業日カレンダーの参照先 is 分類 (referenceBusinessDayCalendar is CLASSIFICATION) 
+		else {
 			Optional<ClassificationDto> optionalClass = this.scClassificationAdapter.findByDate(
 					personalWorkScheduleCreSet.getEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
 			if (optionalClass.isPresent()) {
@@ -941,9 +947,8 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @return the status employment
 	 */
 	// アルゴリズム
-	private boolean getStatusEmployment(ScheduleExecutionLog domain){
-		// fake data
-		return true;
+	private EmploymentStatusDto getStatusEmployment(String employeeId, GeneralDate baseDate) {
+		return this.scEmploymentStatusAdapter.getStatusEmployment(employeeId, baseDate);
 	}
 	
 	/**

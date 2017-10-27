@@ -30,9 +30,6 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 @Getter
 @Setter
 public class BasicScheduleSaveCommand {
-	
-	/** The is delete before save. */
-	private Boolean isDeleteBeforeSave;
 
 	/** The employee id. */
 	// 社員ID

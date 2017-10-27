@@ -33,8 +33,8 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="component-items-list"></div>
-				<div style="float: left; width: 49%">
-					<div style="float: left; width: 100%; height: 428px;">
+				<div id="content-right">
+					<div id="content-right-top">
 						<div id="calendar"
 							data-bind="ntsExCalendar:{startDate: startDate, endDate: endDate, value: selectedIds}"></div>
 					</div>
@@ -57,7 +57,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large">#{i18n.getText('KSU001_83')}</button>
+				<button class="proceed x-large" data-bind="click: decision">#{i18n.getText('KSU001_83')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_84')}</button>
 			</div>
 		</ui:define>

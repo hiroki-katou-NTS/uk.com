@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
 
 /**
@@ -14,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
 @Getter
 public class BreakTimeSheet {
 	
-	//休憩枠NO - primitive value
-	private String breakFrameNo;
+	//休憩枠NO
+	private BreakFrameNo breakFrameNo;
 	
 	private AttendanceTime breakTime;
 	
-	//勤怠打刻(実打刻付き) - primitive value
-	private BigDecimal startTime;
+	//開始 - 勤怠打刻(実打刻付き)
+	private TimeActualStamp startTime;
 	
-	//勤怠打刻(実打刻付き) - primitive value
-	private BigDecimal endTime;
+	//終了 - 勤怠打刻(実打刻付き)
+	private TimeActualStamp endTime;
 
 }

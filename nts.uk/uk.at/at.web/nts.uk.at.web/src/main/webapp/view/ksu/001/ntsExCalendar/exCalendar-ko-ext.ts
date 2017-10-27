@@ -7,7 +7,7 @@ module ksu001 {
             let heightC: string = !!data.height ? ko.unwrap(data.height()) : 'auto';
             let widthC: string = !!data.width ? ko.unwrap(data.width()) : '400px';
             let startDate: Date = ko.unwrap(data.startDate());
-            let endDate: Date = ko.unwrap(data.endDate());
+            let endDate: Date = new Date(ko.unwrap(data.endDate()));
             let endDateString: string = moment(endDate).format('YYYY/MM/DD');
             //if endDate is 2017/12/23,calendar will display to 2017/12/22, so add 1 days
             endDate.setDate(endDate.getDate() + 1);

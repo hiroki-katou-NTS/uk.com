@@ -23,7 +23,7 @@
 }
 
 #extable {
-	top: 10px;
+	top: 5px;
 	left: 85px;
 }
 
@@ -222,68 +222,16 @@ table th, table td {
 	margin-left: 20px
 }
 
-#color-1 {
-	background-color: #DDDDDD
-}
-
-#color-2 {
-	background-color: #00FFFF
-}
-
-#color-3 {
-	background-color: #99CCFF
-}
-
-#color-4 {
-	background-color: #A2DBA8
-}
-
-#color-5 {
-	background-color: #ECCEFB
-}
-
-#color-6 {
-	background-color: #FEDFE6
-}
-
 #color-7 {
-	background-color: #0000FF
+	background-color: #0000ff
 }
 
 #color-8 {
-	background-color: #FF0000
+	background-color: #ff0000
 }
 
 #color-9 {
 	background-color: #008000
-}
-
-#color-10 {
-	background-color: #8BD8FF
-}
-
-#color-11 {
-	background-color: #FABF8F
-}
-
-#color-12 {
-	background-color: #FFFF00
-}
-
-#color-13 {
-	background-color: #FFC0CB
-}
-
-#color-14 {
-	background-color: #ACFE2F
-}
-
-#color-15 {
-	background-color: #EF7F7F
-}
-
-#color-16 {
-	background-color: #FEA400
 }
 
 #image102 {

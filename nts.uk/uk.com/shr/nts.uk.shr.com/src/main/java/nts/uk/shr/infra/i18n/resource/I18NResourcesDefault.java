@@ -29,9 +29,14 @@ public class I18NResourcesDefault {
 		this.resources.put(languageId, container);
 	}
 	
-	public Map<String, String> createContentsMap(String languageId) {
+	public Map<String, String> createContentsMapByResourceType(String languageId, I18NResourceType resourceType) {
 		val container = this.resources.getOrDefault(languageId, this.defaultContainer());
-		return container.createContentsMap();
+		return container.createContentsMapByResourceType(resourceType);
+	}
+	
+	public Map<String, String> createContentsMapByClassId(String languageId, String classId) {
+		val container = this.resources.getOrDefault(languageId, this.defaultContainer());
+		return container.createContentsMapByClassId(classId);
 	}
 	
 	private I18NResourceContainer<?> defaultContainer() {

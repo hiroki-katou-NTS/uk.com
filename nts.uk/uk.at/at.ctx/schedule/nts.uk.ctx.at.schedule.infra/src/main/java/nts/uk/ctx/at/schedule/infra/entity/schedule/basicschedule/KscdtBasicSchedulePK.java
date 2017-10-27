@@ -7,10 +7,12 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -27,6 +29,7 @@ public class KscdtBasicSchedulePK implements Serializable {
 	public String sId;
 
 	@Column(name = "YMD")
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate date;
 
 	/**

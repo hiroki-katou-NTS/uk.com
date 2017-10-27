@@ -39,12 +39,7 @@ public class BasicScheduleSaveCommandHandler extends CommandHandler<BasicSchedul
 		Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
 				command.getYmd());
 		if (optionalBasicSchedule.isPresent()) {
-			if (command.getIsDeleteBeforeSave()) {
-				this.basicScheduleRepository.delete(command.getEmployeeId(), command.getYmd());
-				this.basicScheduleRepository.insert(command.toDomain());
-			} else {
-				this.basicScheduleRepository.update(command.toDomain());
-			}
+			this.basicScheduleRepository.update(command.toDomain());
 		} else {
 			this.basicScheduleRepository.insert(command.toDomain());
 		}

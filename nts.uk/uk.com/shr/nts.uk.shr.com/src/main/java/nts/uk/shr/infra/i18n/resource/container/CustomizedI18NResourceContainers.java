@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.val;
+import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 
 public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
 	
@@ -29,9 +30,14 @@ public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
 		return this.itemsEachCompany.getOrDefault(companyId, I18NResourceContainer.empty());
 	}
 	
-	public Map<String, String> createContentsMap(String companyId) {
+	public Map<String, String> createContentsMapByClassId(String classId, String companyId) {
 		val container = this.itemsEachCompany.getOrDefault(companyId, I18NResourceContainer.empty());
-		return container.createContentsMap();
+		return container.createContentsMapByClassId(classId);
+	}
+	
+	public Map<String, String> createContentsMapByResourceType(I18NResourceType resourceType, String companyId) {
+		val container = this.itemsEachCompany.getOrDefault(companyId, I18NResourceContainer.empty());
+		return container.createContentsMapByResourceType(resourceType);
 	}
 	
 	@SuppressWarnings("unchecked")
