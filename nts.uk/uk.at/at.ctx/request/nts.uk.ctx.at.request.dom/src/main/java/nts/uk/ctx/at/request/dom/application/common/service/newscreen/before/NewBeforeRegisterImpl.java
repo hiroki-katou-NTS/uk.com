@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
@@ -40,7 +40,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
 	private ApplicationDeadlineRepository appDeadlineRepository;

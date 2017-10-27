@@ -6,13 +6,13 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 
 @Stateless
 public class GetAllNameByAppID {
 	
 	@Inject 
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
 	private GetAllDataAppPhaseFrame getAllDataAppPhaseFrame;

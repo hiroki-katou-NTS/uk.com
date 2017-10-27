@@ -11,7 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
@@ -39,7 +39,7 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Override
 	public void appReasonCheck(String titleReason, String detailReason, AppStamp appStamp) {

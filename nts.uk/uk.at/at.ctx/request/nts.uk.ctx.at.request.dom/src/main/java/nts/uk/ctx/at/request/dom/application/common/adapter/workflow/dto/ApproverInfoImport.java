@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
+import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Getter;
  * @author vunv
  *
  */
-@Getter
+@Data
 public class ApproverInfoImport {
 	
 	/**職位ID*/
