@@ -259,7 +259,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 	
 	@Override
-	public List<PersonInfoCategory> getPerInfoCtgByParentId(String parentCtgCd, String contractCd) {
+	public List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgCd, String contractCd) {
 		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD, Object[].class).setParameter("contractCd", contractCd)
 				.setParameter("parentCd", parentCtgCd).getList(c -> {
 					return createDomainFromEntity(c);

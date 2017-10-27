@@ -32,7 +32,7 @@ public interface PerInfoCategoryRepositoty {
 	// vinhpx: start
 	DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId);
 	
-	List<PersonInfoCategory> getPerInfoCtgByParentId(String parentCtgId, String contractCd);
+	List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgId, String contractCd);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
 
