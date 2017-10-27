@@ -6,6 +6,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import shrVm = cmm018.shr.vmbase;
     import service = cmm018.k.service;
     export class ScreenModel{
+        //enable list workplace
+        enableListWp: KnockoutObservable<boolean> = ko.observable(true);
         appType: KnockoutObservable<String> = ko.observable('');
         standardDate: KnockoutObservable<Date> = ko.observable(new Date());
         //承認者指定種類
@@ -31,7 +33,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //→ & ←
         itemsSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
         currentCodeListSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
-        confirm: stirng = '';
+        confirm: string = '';
         //職場リスト
         treeGrid: ITreeGrid = {
                 treeType: 1,
@@ -102,6 +104,12 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.selectTypeSet.subscribe(function(newValue){
                 self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
+                if(newValue == 0){
+                    self.enableListWp(true);
+                    $('#tree-grid').ntsTreeComponent(self.treeGrid);
+                }else{
+                    self.enableListWp(false);
+                }
             })
             //職場リスト            
             self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
@@ -227,15 +235,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }
             return dataRes;
         }
-        
-        // start function
-        start(): JQueryPromise<any>{
-            var self = this;
-            var dfd = $.Deferred<any>();
-            
-            
-            return dfd.promise();
-        }//end start
         /**
          * load data new when base date is changed 
          */
