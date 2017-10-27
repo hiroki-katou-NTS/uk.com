@@ -9,5 +9,5 @@ import java.util.List;
 public interface EmpInfoItemDataRepository {
 
 	List<EmpInfoItemData> getAllInfoItem(String categoryCd);
-
+	List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId);
 }
