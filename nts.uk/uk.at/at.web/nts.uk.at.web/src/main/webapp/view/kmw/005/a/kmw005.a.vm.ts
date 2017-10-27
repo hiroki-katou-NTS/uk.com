@@ -10,7 +10,6 @@ module nts.uk.at.view.kmw005.a {
 
         export class ScreenModel {
             actualLockList: KnockoutObservableArray<ActualLockFind>;
-//            selectedClosure: KnockoutObservable<number>;
             actualLockColumn: KnockoutObservableArray<any>;
             actualLock: ActualLock;
             dailyActualLockOpt: KnockoutObservableArray<any>;
@@ -23,10 +22,6 @@ module nts.uk.at.view.kmw005.a {
                 var self = this;
                 self.actualLock = new ActualLock();
                 self.actualLockList = ko.observableArray<ActualLockFind>([]);
-//                self.selectedClosure = ko.observable(1);
-//                self.selectedClosure.subscribe(function(data: number) {
-//                    self.bindActualLock(data);
-//                });
                 self.actualLock.closureId.subscribe(function(data: number) {
                     self.bindActualLock(data);
                 });
@@ -54,7 +49,7 @@ module nts.uk.at.view.kmw005.a {
             }
 
             /**
-             * start page data 
+             * start page
              */
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -137,7 +132,6 @@ module nts.uk.at.view.kmw005.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
                     
-//                    self.bindActualLock(self.actualLock.closureId());
                     // Reload Page
                     blockUI.invisible();
                     service.findAllActualLock().done(function(data) {
@@ -155,7 +149,6 @@ module nts.uk.at.view.kmw005.a {
                         }
                         self.actualLockList(dataRes);
                         self.addLockIcon();
-//                        self.actualLock.closureId(data[0].closureId);
                     })
                     blockUI.clear();
                 }).fail(function(res) {
@@ -273,7 +266,6 @@ module nts.uk.at.view.kmw005.a {
             }
 
             updateLock(dto: ActualLockFindDto): void {
-//                this.closureId(dto.closureId);
                 this.dailyLockState(dto.dailyLockState);
                 this.monthlyLockState(dto.monthlyLockState);
             }

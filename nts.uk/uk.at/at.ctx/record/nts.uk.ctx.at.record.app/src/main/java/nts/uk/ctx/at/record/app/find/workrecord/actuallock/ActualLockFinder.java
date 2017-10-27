@@ -104,9 +104,8 @@ public class ActualLockFinder {
 				// Get ClosurePeriod to get StartDate, EndDate
 				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId(),
 						c.getClosureMonth().getProcessingYm());
-				// PeriodCurrentMonth period = new
-				// PeriodCurrentMonth(datePeriod.start(), datePeriod.end());
-				// Set Dto
+				
+				// Set ActualLockFinderDto
 				dto.setClosureId(ClosureId.valueOf(c.getClosureId()));
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
 				// Set Period: StartDate, EndDate
@@ -173,10 +172,10 @@ public class ActualLockFinder {
 				targetMonth);
 		// Filter
 		List<ActualLockHistory> filtedList = actualLockHistList.stream().filter(hist -> {
-			// Filter ActualLockHistory: YearMonth of LockDateTime equal to
-			// selected targetMonth
+			// Filter ActualLockHistory: YearMonth of LockDateTime equal to selected targetMonth
 			return hist.getLockDateTime().yearMonth().v() == targetMonth;
 		}).collect(Collectors.toList());
+		// Check Empty
 		if (CollectionUtil.isEmpty(filtedList)) {
 			return new ArrayList<>();
 		}

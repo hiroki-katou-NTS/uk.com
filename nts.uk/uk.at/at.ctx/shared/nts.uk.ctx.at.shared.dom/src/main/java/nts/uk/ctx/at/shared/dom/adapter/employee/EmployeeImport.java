@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
  * The Class EmployeeImport.
  */
 //社員
+// Imported Class for RequestList #1-2
 @Getter
 @Builder
 public class EmployeeImport {
