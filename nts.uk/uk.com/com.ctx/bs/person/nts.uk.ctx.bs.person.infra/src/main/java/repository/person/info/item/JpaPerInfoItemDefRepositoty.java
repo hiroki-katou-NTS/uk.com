@@ -607,7 +607,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
-			List<EmpCopySettingItem> itemList) {
+			List<String> itemCodeList) {
 		// TODO Auto-generated method stub
 		return null;
 	}

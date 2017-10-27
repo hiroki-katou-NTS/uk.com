@@ -39,7 +39,6 @@ public class InitValueSetItemFinder {
 	@Inject
 	private PerInfoItemDefRepositoty infoItemDefRepo;
 
-
 	// sonnlb
 	public List<InitValueSettingItemDto> getAllInitItem(String settingId, String categoryCd) {
 
@@ -123,6 +122,8 @@ public class InitValueSetItemFinder {
 
 			break;
 		}
+
+		returnList.addAll(loadInfoItemList(categoryCd));
 
 		return returnList;
 	}
