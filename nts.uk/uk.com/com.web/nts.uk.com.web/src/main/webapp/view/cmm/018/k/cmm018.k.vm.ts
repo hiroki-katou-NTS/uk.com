@@ -227,15 +227,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }
             return dataRes;
         }
-        
-        // start function
-        start(): JQueryPromise<any>{
-            var self = this;
-            var dfd = $.Deferred<any>();
-            
-            
-            return dfd.promise();
-        }//end start
         /**
          * load data new when base date is changed 
          */
