@@ -81,7 +81,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //MultilineEditor 
             self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                 resizeable: false,
-                placeholder: "Placeholder for text editor",
                 width: "500",
                 textalign: "left",
             }));
@@ -159,6 +158,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.employeeName(settingData.employeeName);
                     //直行直帰申請共通設定
                     self.setGoBackCommonSetting(settingData.goBackSettingDto);
+                    self.selectedGo.subscribe(value => { $("#inpStartTime1").ntsError("clear"); });
+                    self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
+                    self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
+                    self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
                 }
                 dfd.resolve();
             }).fail((res) => {
@@ -247,9 +250,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
                         //khi có so sánh trên server thì gửi thêm vị trí giá trị giờ nhập sai nữa
                         $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
-                        $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
                         $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
-                        $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                        if(self.selectedGo2()==1){
+                            $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                        }
+                        if(self.selectedBack2()==1){
+                            $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                        }
                     }else{
                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); }); 
                     }

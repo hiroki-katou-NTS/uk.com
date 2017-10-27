@@ -60,13 +60,11 @@ public class LateOrLeaveEarlyDto {
 		private String appReason;
 				
 		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain){
-			String appReasonID = domain.getApplicationReason().v().split(":")[0];
-			String appReasonString = domain.getApplicationReason().v().substring(appReasonID.length() + 1);
 			return new LateOrLeaveEarlyDto(
 					domain.getCompanyID(),
 					domain.getAppID(),
 					domain.getPrePostAtr().value,
-					appReasonID,
+					domain.getAppReasonID(),
 					//Get ApplicationName
 					domain.getApplicantSID(),
 					domain.getApplicationDate(),
@@ -79,9 +77,6 @@ public class LateOrLeaveEarlyDto {
 					domain.getEarlyTime2().v(),
 			    	domain.getLate2().value,
 			    	domain.getLateTime2().v(),
-			    	appReasonString);
-			
-	
-		
+			    	domain.getApplicationReason().v());
 		}
 }

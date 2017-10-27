@@ -170,27 +170,18 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	
 	private static final String SEPERATE_REASON_STRING = ":";
 	public static KafdtApplication toEntity(Application domain) {
-		String applicationReason = domain.getApplicationReason().v();
-		String appReasonID = "";
-		String appReason = "";
-		if (applicationReason.indexOf(SEPERATE_REASON_STRING) != -1) {
-			if(!applicationReason.equals(":")) {
-				appReasonID = applicationReason.split(SEPERATE_REASON_STRING)[0];
-				appReason = applicationReason.substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
-			}
-		}
 		return new KafdtApplication(
 			new KafdtApplicationPK(
 				domain.getCompanyID(), 
 				domain.getApplicationID()), 
 			domain.getVersion(),
-			appReasonID,
+			domain.getAppReasonID(),
 			domain.getPrePostAtr().value, 
 			domain.getInputDate() , 
 			domain.getEnteredPersonSID(),
 			domain.getReversionReason().v(), 
 			domain.getApplicationDate(), 
-			appReason,
+			domain.getApplicationReason().v(),
 			domain.getApplicationType().value, 
 			domain.getApplicantSID(), 
 			domain.getReflectPlanScheReason().value,
@@ -215,7 +206,8 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 			this.inputDate, this.enteredPersonSID,
 			new AppReason(this.reversionReason), 
 			this.applicationDate, 
-			this.appReasonId == null ? new AppReason(this.applicationReason) : new AppReason(this.appReasonId + SEPERATE_REASON_STRING + this.applicationReason),
+			this.appReasonId,
+			new AppReason(this.applicationReason),
 			EnumAdaptor.valueOf(this.applicationType,ApplicationType.class),
 			this.applicantSID, 
 			EnumAdaptor.valueOf(this.reflectPlanScheReason,ReflectPlanScheReason.class), 
