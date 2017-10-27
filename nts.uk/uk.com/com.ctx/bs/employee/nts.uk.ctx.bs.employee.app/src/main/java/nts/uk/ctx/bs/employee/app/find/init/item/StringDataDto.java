@@ -13,7 +13,7 @@ public class StringDataDto extends SaveDataDto {
 
 	private StringDataDto(String value) {
 		super();
-		this.saveDataType = SaveDataType.STRING.value;
+		this.saveDataType = SaveDataType.STRING;
 		this.value = value;
 	}
 
