@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf009.b {
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
-                        self.workLocationName(detailData.workLocationName1);
+                        self.workLocationName(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
