@@ -766,6 +766,9 @@ module nts.uk.at.view.kmk002.a {
                 // set new mapped list formula.
                 self.calcFormulas(mapped);
 
+                // sort list formula by orderNo
+                self.sortListFormula();
+
                 // set formula setting result
                 _.each(self.calcFormulas(), formula => {
                     if (formula.isTypeOfFormulaSetting()) {
@@ -774,9 +777,6 @@ module nts.uk.at.view.kmk002.a {
                         formula.setItemSelectionResult(formula.itemSelection);
                     }
                 });
-
-                // sort list formula by orderNo
-                self.sortListFormula();
 
             }
 
