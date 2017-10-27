@@ -30,11 +30,8 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			+ " AND el.executionContent = 0";
 
 	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c " 
-			+"JOIN KrcmtExecutionLog d ON c.krcmtEmpExecutionLogPK.companyID = d.krcmtExecutionLogPK.companyID "
-			+"AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = d.krcmtExecutionLogPK.empCalAndSumExecLogID "
-			+"AND c.krcmtEmpExecutionLogPK.caseSpecExeContentID = d.krcmtExecutionLogPK.caseSpecExeContentID "
-			+"AND c.krcmtEmpExecutionLogPK.employeeID = d.krcmtExecutionLogPK.employeeID "
-			+"WHERE d.krcmtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID " ;
+			
+			+" WHERE c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID " ;
 	
 	
 

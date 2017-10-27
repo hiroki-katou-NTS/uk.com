@@ -29,6 +29,11 @@ public interface EmpCalAndSumExeLogRepository {
 	
 	List<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent);	
 	
+	/**
+	 * get list EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * @param empCalAndSumExecLogID
+	 * @return
+	 */
 	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 
 
