@@ -23,7 +23,16 @@ module ksu001.a.viewmodel {
         ]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        itemList: KnockoutObservableArray<ItemModel>;
+        backgroundColorList: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            new ItemModel('001', '就業時間帯'),
+            new ItemModel('002', '通常')
+        ]);
+        selectedBackgroundColor: KnockoutObservable<string> = ko.observable('');
+        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            new ItemModel('基本給1', '基本給'),
+            new ItemModel('基本給2', '役職手当'),
+            new ItemModel('基本給3', '基本給')
+        ]);
         selectedCode1: KnockoutObservable<string> = ko.observable('0003');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
             { code: '1', name: nts.uk.resource.getText("KSU001_89") },
@@ -43,10 +52,11 @@ module ksu001.a.viewmodel {
         ]);
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2]);
         popupVal: KnockoutObservable<string> = ko.observable('');
+        selectedDate: KnockoutObservable<string> = ko.observable('');
 
         //Date time
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/01/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/01/31'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/01'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/10/31'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -108,11 +118,20 @@ module ksu001.a.viewmodel {
                 }
             });
 
-            self.itemList = ko.observableArray([
-                new ItemModel('基本給1', '基本給', ''),
-                new ItemModel('基本給2', '役職手当', ''),
-                new ItemModel('基本給3', '基本給', '')
-            ]);
+            self.selectedModeDisplayObject.subscribe((newValue) => {
+                if (newValue == 2) {
+                    //actual data display mode (in phase 2 not done, so the actual data is set to null)
+                    // if actual data is null, display intended data
+                    self.dataSource([]);
+                    self.updateExTable();
+                } else {
+                    // intended data display mode 
+                    // get data basicSchedule
+                    self.getDataBasicSchedule().done(function() {
+                        self.updateExTable();
+                    });
+                }
+            });
 
             //display for A3_2
             self.lengthListSid = ko.pureComputed(() => {
@@ -173,10 +192,16 @@ module ksu001.a.viewmodel {
                 arrSid.push(x.empId);
             });
             self.listSid(arrSid);
-            //get data basicSchedule
-            self.getDataBasicSchedule().done(function() {
+            if (self.selectedModeDisplayObject() == 1) {
+                //intended data display mode 
+                //get data basicSchedule
+                self.getDataBasicSchedule().done(function() {
+                    self.updateExTable();
+                });
+            } else {
+                //actual data display mode 
                 self.updateExTable();
-            });
+            }
         }
 
         /**
@@ -458,7 +483,8 @@ module ksu001.a.viewmodel {
                 .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
 
             //set mode of exTable is stickMode single
-            $("#extable").exTable("stickMode", "single");
+//            $("#extable").exTable("stickMode", "single");
+//            $("#extable").exTable("updateMode", "edit");
 
             //undo
             $("#image030").click(function() {
@@ -709,8 +735,9 @@ module ksu001.a.viewmodel {
             if (self.empItems().length == 0) {
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
-            } else {
+            } else if (self.selectedModeDisplayObject() == 1) {
                 self.getDataBasicSchedule().done(() => {
+                    //intended data display mode 
                     //dataSour of detail
                     _.each(self.listSid(), (x) => {
                         let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
@@ -734,6 +761,25 @@ module ksu001.a.viewmodel {
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                     $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
                 });
+            } else if (self.selectedModeDisplayObject() == 2) {
+                //actual data display mode , if hasn't actual data, display intended data
+                newDetailContentDs.push(new ExItem(null, [], __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                let updateDetailContent = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailContentDs,
+                    features: [{
+                        name: "BodyCellStyle",
+                        decorator: detailContentDeco
+                    }]
+                };
+
+                let updateHorzSumContent = {
+                    columns: newDetailColumns,
+                    dataSource: horzSumContentDs
+                };
+
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
             }
         }
 
@@ -781,6 +827,14 @@ module ksu001.a.viewmodel {
             nts.uk.ui.dialog.bundledErrors(errorVm);
         }
 
+        setColorForExTable(): void {
+            let self = this;
+            // Background Color
+            if (self.selectedBackgroundColor() === '001') {
+
+            }
+        }
+
         /**
          * open dialog C
          */
@@ -794,11 +848,6 @@ module ksu001.a.viewmodel {
          */
         openDialogD(): void {
             let self = this;
-            if (self.empItems().length != 0) {
-                _.each(self.empItems(), (x) => {
-
-                });
-            }
             setShared('dataForScreenD', {
                 empItems: self.empItems(),
                 startDate: self.dtPrev(),
@@ -833,7 +882,7 @@ module ksu001.a.viewmodel {
          * go to screen KML004
          */
         gotoKml004(): void {
-            nts.uk.request.jump("/view/kml/004/a/index.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/kml/004/a/index.xhtml");
         }
 
         /**
@@ -842,7 +891,6 @@ module ksu001.a.viewmodel {
         gotoKml002(): void {
             nts.uk.request.jump("/view/kml/002/a/index.xhtml");
         }
-
     }
 
     class BoxModel {
@@ -948,7 +996,7 @@ module ksu001.a.viewmodel {
         code: string;
         name: string;
         description: string;
-        constructor(code: string, name: string, description: string) {
+        constructor(code: string, name: string, description?: string) {
             this.code = code;
             this.name = name;
             this.description = description;
