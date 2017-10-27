@@ -84,7 +84,7 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         
         // insert domain workplace infor
         WorkplaceInfo workplaceInfo = command.getWkpInfor().toDomain(companyId, newWorkplace.getWorkplaceId(),
-                newWorkplace.getWkpHistoryLatest().getHistoryId());
+                newWorkplace.getWkpHistoryLatest().identifier());
         this.wkpInfoRepo.add(workplaceInfo);
         
         if (command.getCreateType() == CreateWorkpceType.CREATE_TO_LIST) {

@@ -118,14 +118,16 @@ module nts.uk.com.view.cmm050.a {
                        _self.popServerEnable(false);
                     }
                 });
-                
+                 
                 _self.emailAuth.subscribe(function(emailString){
                    if(emailString.trim().length <= 0){
-                        $('#email_auth').ntsError('set', {messageId:"Msg_533"});
-                        return;
-                    }else{
-                        _self.clearErrors();
-                   }
+                        _self.emailAuth(emailString.trim());
+                    }
+                });
+                _self.password.subscribe(function(pass){
+                   if(pass.trim().length <= 0){
+                        _self.password(pass.trim());
+                    }
                 });
                 
                 _self.popPort.subscribe(function(popPort){
@@ -134,10 +136,27 @@ module nts.uk.com.view.cmm050.a {
                         _self.popPort(0);
                     }
                 });
+                 _self.popServer.subscribe(function(popServer){
+                   if(popServer.trim().length <= 0){
+                        _self.popServer(popServer.trim());
+                    }
+                });
+
                 _self.imapPort.subscribe(function(imapPort){
                     if(Number(imapPort) <= 0)
                     {
                         _self.imapPort(0);
+                    }
+                });
+                _self.imapServer.subscribe(function(imapServer){
+                   if(imapServer.trim().length <= 0){
+                        _self.imapServer(imapServer.trim());
+                    }
+                });
+                
+                _self.smtpServer.subscribe(function(smtpServer){
+                   if(smtpServer.trim().length <= 0){
+                        _self.smtpServer(smtpServer.trim());
                     }
                 });
                 _self.smtpPort.subscribe(function(smtpPort){
@@ -156,13 +175,13 @@ module nts.uk.com.view.cmm050.a {
                  
                 if(_self.emailAuth().trim().length <= 0)
                 {
-                    $('#email_auth').ntsError('set', {messageId:"Msg_533"});
+                    $('#email_auth').ntsError('set', {messageId:"Msg_001"});
                     return;
                 }
                 
                 if(_self.password().trim().length <= 0)
                 {
-                    $('#email_auth').ntsError('set', {messageId:"Msg_533"});
+                    $('#password').ntsError('set', {messageId:"Msg_001"});
                     return;
                 }
                 

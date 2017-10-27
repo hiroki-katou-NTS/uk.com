@@ -87,9 +87,9 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
 
         WorkplaceConfigHistory latestWkpConfigHist = wkpConfig.getWkpConfigHistoryLatest();
         // validate add hist and return first histId
-        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpConfigHist.getPeriod().start(), newStartDateHist);
+        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpConfigHist.span().start(), newStartDateHist);
 
-        String latestHistIdCurrent = latestWkpConfigHist.getHistoryId();
+        String latestHistIdCurrent = latestWkpConfigHist.identifier();
 
         // convert command to domain
         WorkplaceConfig workplaceConfig = command.toDomain(companyId);
@@ -102,7 +102,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
         // update previous history
         wkpConfigService.updatePrevHistory(companyId, latestHistIdCurrent, newStartDateHist.addDays(dayOfAgo));
 
-        String newHistoryId = workplaceConfig.getWkpConfigHistoryLatest().getHistoryId();
+        String newHistoryId = workplaceConfig.getWkpConfigHistoryLatest().identifier();
         // copy latest ConfigInfoHist from fisrtHistId
         wkpConfigInfoService.copyWkpConfigInfoHist(companyId, latestHistIdCurrent, newHistoryId);
     }
@@ -125,19 +125,19 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
 		// get start date of add new hist
 		GeneralDate newStartDateHist = command.getWkpConfigHistory().getPeriod().getStartDate();
 
-		if (wkpConfigDatabase.getWkpConfigHistory().size() > MIN_LENGTH) {
+		if (wkpConfigDatabase.items().size() > MIN_LENGTH) {
 
 			// get previous history (below history latest)
 			int idxPrevLatestHist = 1;
-			WorkplaceConfigHistory prevHistLatest = wkpConfigDatabase.getWkpConfigHistory().get(idxPrevLatestHist);
+			WorkplaceConfigHistory prevHistLatest = wkpConfigDatabase.items().get(idxPrevLatestHist);
 
 			// validate new start date with previous of latest history.
-			HistoryUtil.validStartDate(Boolean.FALSE, prevHistLatest.getPeriod().start(), newStartDateHist);
+			HistoryUtil.validStartDate(Boolean.FALSE, prevHistLatest.span().start(), newStartDateHist);
 
 			// set end date of previous history (below of history latest)
 			int dayOfAgo = -1;
 			// update previous history latest
-			wkpConfigService.updatePrevHistory(companyId, prevHistLatest.getHistoryId(),
+			wkpConfigService.updatePrevHistory(companyId, prevHistLatest.identifier(),
 					newStartDateHist.addDays(dayOfAgo));
 		}
 		// update workplace by new start date history if need
