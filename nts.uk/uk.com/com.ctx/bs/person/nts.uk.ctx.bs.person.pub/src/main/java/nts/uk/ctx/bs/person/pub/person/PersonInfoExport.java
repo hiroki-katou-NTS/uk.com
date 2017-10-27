@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
  * The Class PersonInfoExport.
  */
 // 個人情報
+// Output Class of RequestList #86
 @Data
 @Builder
 public class PersonInfoExport {

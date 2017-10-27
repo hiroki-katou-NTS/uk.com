@@ -4,16 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.employee;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 
 /**
- * The Class EmployeeImported.
+ * The Class EmployeeImport.
  */
 //社員
 @Getter
-public class EmployeeImported {
+@Builder
+public class EmployeeImport {
 	
 	/** The entry date. */
 	// 入社年月日
@@ -37,7 +39,7 @@ public class EmployeeImported {
 	
 	/** The entire date. */
 	// 退職年月日
-	private GeneralDate entireDate;
+	private GeneralDate retiredDate;
 
 	/**
 	 * Instantiates a new employee imported.
@@ -49,15 +51,15 @@ public class EmployeeImported {
 	 * @param employeeName the employee name
 	 * @param entireDate the entire date
 	 */
-	public EmployeeImported(GeneralDate entryDate, String employeeId, String employeeCode,
-			MailAddress employeeMailAddress, String employeeName, GeneralDate entireDate) {
+	public EmployeeImport(GeneralDate entryDate, String employeeId, String employeeCode,
+			MailAddress employeeMailAddress, String employeeName, GeneralDate retiredDate) {
 		super();
 		this.entryDate = entryDate;
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.employeeMailAddress = employeeMailAddress;
 		this.employeeName = employeeName;
-		this.entireDate = entireDate;
+		this.retiredDate = retiredDate;
 	}
 	
 }

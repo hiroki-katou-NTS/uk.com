@@ -20,6 +20,8 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
@@ -55,6 +57,9 @@ public class ActualLockFinder {
 	/** The actual lock hist repo. */
 	@Inject
 	private ActualLockHistoryRepository actualLockHistRepo;
+
+	@Inject
+	private EmpEmployeeAdapter employeeAdapter;
 
 	/**
 	 * Find all.
@@ -99,14 +104,15 @@ public class ActualLockFinder {
 				// Get ClosurePeriod to get StartDate, EndDate
 				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId(),
 						c.getClosureMonth().getProcessingYm());
-				// PeriodCurrentMonth period = new PeriodCurrentMonth(datePeriod.start(), datePeriod.end());
+				// PeriodCurrentMonth period = new
+				// PeriodCurrentMonth(datePeriod.start(), datePeriod.end());
 				// Set Dto
 				dto.setClosureId(ClosureId.valueOf(c.getClosureId()));
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
 				// Set Period: StartDate, EndDate
 				dto.setStartDate(datePeriod.start().toString());
 				dto.setEndDate(datePeriod.end().toString());
-				
+
 				dto.setDailyLockState(
 						actualLockOpt.isPresent() ? actualLockOpt.get().getDailyLockState() : LockStatus.UNLOCK);
 				dto.setMonthlyLockState(
@@ -171,16 +177,29 @@ public class ActualLockFinder {
 			// selected targetMonth
 			return hist.getLockDateTime().yearMonth().v() == targetMonth;
 		}).collect(Collectors.toList());
-
+		if (CollectionUtil.isEmpty(filtedList)) {
+			return new ArrayList<>();
+		}
 		// Convert to Dto
 		return filtedList.stream().map(actualLockHist -> {
 			ActualLockHistFindDto dto = new ActualLockHistFindDto();
+			// Save To Memento
 			actualLockHist.saveToMemento(dto);
+			// Get Updater Name
+			EmployeeImport empImport = this.employeeAdapter.findByEmpId(actualLockHist.getUpdater());
+			// Set Updater Name to Dto
+			dto.setUpdater(empImport.getEmployeeName());
 			return dto;
 		}).collect(Collectors.toList());
 
 	}
 
+	/**
+	 * Find hist by closure.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
 	public List<ActualLockHistFindDto> findHistByClosure(int closureId) {
 		// Get LoginUserContext
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -194,10 +213,20 @@ public class ActualLockFinder {
 		List<ActualLockHistory> actualLockHistList = this.actualLockHistRepo.findByTargetMonth(companyId, closureId,
 				targetMonth);
 
+		// Check empty for ActualLock History list
+		if (CollectionUtil.isEmpty(actualLockHistList)) {
+			return new ArrayList<>();
+		}
+
 		// Convert to Dto
 		return actualLockHistList.stream().map(actualLockHist -> {
 			ActualLockHistFindDto dto = new ActualLockHistFindDto();
+			// Save To Memento
 			actualLockHist.saveToMemento(dto);
+			// Get Updater Name
+			EmployeeImport empImport = this.employeeAdapter.findByEmpId(actualLockHist.getUpdater());
+			// Set Updater Name to Dto
+			dto.setUpdater(empImport.getEmployeeName());
 			return dto;
 		}).collect(Collectors.toList());
 
