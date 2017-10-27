@@ -3,11 +3,9 @@ package nts.uk.ctx.bs.employee.pub.person;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * The Class PersonInfoDto. 

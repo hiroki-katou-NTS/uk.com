@@ -53,6 +53,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Inject
 	private PersonRepository personRepository;
+	
 
 	/*
 	 * (non-Javadoc)
