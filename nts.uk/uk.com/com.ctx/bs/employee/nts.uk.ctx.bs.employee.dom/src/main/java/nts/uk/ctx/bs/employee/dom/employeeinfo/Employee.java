@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -50,5 +51,25 @@ public class Employee extends AggregateRoot {
 
 		return Arrays.asList("IS00020", "IS00021", "IS00022", "IS00024", "IS00025", "IS00026", "IS00027", "IS00028");
 
+	}
+
+	public GeneralDate getJoinDate() {
+		GeneralDate joinDate = listEntryJobHist.get(0).getJoinDate();
+		for (JobEntryHistory jobHis : listEntryJobHist) {
+			if (jobHis.getJoinDate().after(joinDate)) {
+				joinDate = jobHis.getJoinDate();
+			}
+		}
+		return joinDate;
+	}
+
+	public GeneralDate getRetirementDate() {
+		GeneralDate retirementDate = listEntryJobHist.get(0).getRetirementDate();
+		for (JobEntryHistory jobHis : listEntryJobHist) {
+			if (jobHis.getRetirementDate().after(retirementDate)) {
+				retirementDate = jobHis.getRetirementDate();
+			}
+		}
+		return retirementDate;
 	}
 }
