@@ -107,7 +107,7 @@ module nts.uk.at.view.kmk002.a {
             constructor() {
                 this.optionalItemNo = ko.observable('');
                 this.optionalItemName = ko.observable('');
-                this.optionalItemAtr = ko.observable(0);
+                this.optionalItemAtr = ko.observable(null);
                 this.usageAtr = ko.observable(0);
                 this.empConditionAtr = ko.observable(0);
                 this.performanceAtr = ko.observable(0);
@@ -1236,7 +1236,7 @@ module nts.uk.at.view.kmk002.a {
                 this.formulaId = nts.uk.util.randomId();
                 this.optionalItemNo = '';
                 this.formulaName = ko.observable('');
-                this.formulaAtr = ko.observable(1);
+                this.formulaAtr = ko.observable(null);
                 this.symbolValue = '';
                 this.orderNo = 1;
                 this.selected = ko.observable(false);
@@ -1254,18 +1254,18 @@ module nts.uk.at.view.kmk002.a {
                 this.timeDailyUnitStash = null;
 
                 // Rounding
-                this.timeMonthlyRounding = ko.observable(1);
-                this.timeMonthlyUnit = ko.observable(1);
-                this.timeDailyRounding = ko.observable(1);
-                this.timeDailyUnit = ko.observable(1);
-                this.numberMonthlyRounding = ko.observable(1);
-                this.numberMonthlyUnit = ko.observable(1);
-                this.numberDailyRounding = ko.observable(1);
-                this.numberDailyUnit = ko.observable(1);
-                this.amountMonthlyRounding = ko.observable(1);
-                this.amountMonthlyUnit = ko.observable(1);
-                this.amountDailyRounding = ko.observable(1);
-                this.amountDailyUnit = ko.observable(1);
+                this.timeMonthlyRounding = ko.observable(null);
+                this.timeMonthlyUnit = ko.observable(null);
+                this.timeDailyRounding = ko.observable(null);
+                this.timeDailyUnit = ko.observable(null);
+                this.numberMonthlyRounding = ko.observable(null);
+                this.numberMonthlyUnit = ko.observable(null);
+                this.numberDailyRounding = ko.observable(null);
+                this.numberDailyUnit = ko.observable(null);
+                this.amountMonthlyRounding = ko.observable(null);
+                this.amountMonthlyUnit = ko.observable(null);
+                this.amountDailyRounding = ko.observable(null);
+                this.amountDailyUnit = ko.observable(null);
 
                 // initial data source
                 this.initDatasource();
