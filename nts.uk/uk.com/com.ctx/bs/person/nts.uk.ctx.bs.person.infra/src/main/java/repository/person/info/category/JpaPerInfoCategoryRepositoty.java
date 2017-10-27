@@ -47,6 +47,15 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND CO.categoryParentCd = :parentCd";
+	
+	private final static String SELECT_CATEGORY_BY_PARENT_CD_WITH_ORDER = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " AND CO.categoryParentCd = :parentCd ORDER BY po.disporder";
 
 	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.ppemtPerInfoCtgCmPK.categoryCd FROM PpemtPerInfoCtgCm co"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.ppemtPerInfoCtgCmPK.categoryCd DESC";
@@ -270,6 +279,15 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId) {
 		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).getSingleOrNull();
 		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+	}
+
+	@Override
+	public List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgId, String contractCd,
+			boolean isASC) {
+		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD + (isASC?" ASC":" DESC"), Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("parentCd", parentCtgId).getList(c -> {
+					return createDomainFromEntity(c);
+					});
 	}
 	
 	

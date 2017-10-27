@@ -33,6 +33,8 @@ public interface PerInfoCategoryRepositoty {
 	DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId);
 	
 	List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgId, String contractCd);
+	
+	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgId, String contractCd, boolean isASC);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
 
