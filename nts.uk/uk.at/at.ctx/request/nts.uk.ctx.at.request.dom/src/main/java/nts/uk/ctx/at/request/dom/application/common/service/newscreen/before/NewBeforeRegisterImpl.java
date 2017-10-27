@@ -72,7 +72,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		
 		// 登録可能期間のチェック(１年以内)(check thời gian có thế đăng ký (trong vong 1 năm)
 		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getEndDate())) {
-			throw new BusinessException("Msg_276");			
+			throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_276").addRaw(application.getEndDate().toString(DATE_FORMAT)).build()));
 		}
 		
 		// 過去月のチェック(check tháng quá khứ)

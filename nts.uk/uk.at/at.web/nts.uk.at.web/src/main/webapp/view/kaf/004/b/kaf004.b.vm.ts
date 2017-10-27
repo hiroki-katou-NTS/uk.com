@@ -141,7 +141,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         location.reload();
                     });
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res);
+                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
                 });
 
             }
