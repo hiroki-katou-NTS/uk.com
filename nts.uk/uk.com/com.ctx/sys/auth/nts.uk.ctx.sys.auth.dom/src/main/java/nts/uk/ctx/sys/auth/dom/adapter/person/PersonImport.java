@@ -11,6 +11,7 @@ import lombok.Data;
  * The Class PersonImport.
  */
 // 個人
+// Imported Class for RequestList #86
 @Data
 @Builder
 public class PersonImport {
