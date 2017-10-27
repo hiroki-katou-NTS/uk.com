@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.ac.workflow.approvalroot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,12 +12,17 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
@@ -35,6 +41,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	
 	@Inject 
 	private SyJobTitlePub syJobTitlePub;
+	
+	@Inject
+	private AgentAdapter agentAdapter;
 
 	@Override
 	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,int appType, GeneralDate standardDate) {
@@ -43,7 +52,31 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 			return Collections.emptyList();
 		}
 		 
-		return approvalRootData.stream().map(x -> this.convertApprovalRootImport(x)).collect(Collectors.toList());
+		List<ApprovalRootImport> approvalRootResult = approvalRootData.stream().map(x -> this.convertApprovalRootImport(x)).collect(Collectors.toList());
+		List<String> approverSIDList = new ArrayList<>();
+		approvalRootResult.stream().forEach(approvalRootImport -> {
+			approvalRootImport.getBeforeApprovers().stream().forEach(approvalPhaseImport -> {
+				approvalPhaseImport.getApprovers().stream().forEach(approverInfoImport -> {
+					approverSIDList.add(approverInfoImport.getSid());
+				});
+			});
+		});
+		
+		AgentPubImport agentPubImport = agentAdapter.getApprovalAgencyInformation(cid, approverSIDList);
+		List<ApproverRepresenterImport> representerList = agentPubImport.getListApproverAndRepresenterSID();
+		approvalRootResult.stream().forEach(approvalRootImport -> {
+			approvalRootImport.getBeforeApprovers().stream().forEach(approvalPhaseImport -> {
+				approvalPhaseImport.getApprovers().stream().forEach(approverInfoImport -> {
+					representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
+					.map(y -> {
+						approverInfoImport.addRepresenterSID(y.getRepresenter());
+						approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+						return null;
+					}).orElse(null);
+				});
+			});
+		});
+		return approvalRootResult;
 	}
 	/**
 	 * convert ApprovalRootExport to ApprovalRootImport

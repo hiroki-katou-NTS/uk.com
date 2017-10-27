@@ -32,7 +32,11 @@
 										承認者<label data-bind="text: ($data.orderNumber + 1)"></label>
 									</td>
 									<td>
-										<label data-bind="text: $data.name"></label>
+										<label data-bind="text: $data.name">
+											<div style="display: inline-block;" data-bind="if: $data.representerName">
+												<label data-bind="text: '('+$data.representerName+')'"></label>
+											</div>
+										</label>
 									</td>
 								</tr>
 							</com:ko>
