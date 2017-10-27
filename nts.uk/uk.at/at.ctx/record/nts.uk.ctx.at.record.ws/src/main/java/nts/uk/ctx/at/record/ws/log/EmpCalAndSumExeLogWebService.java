@@ -45,8 +45,6 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	@POST
 	@Path("getallbydate")
 	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
-//		GeneralDate startDate = GeneralDate.fromString(inputEmpCalAndSumByDate.getEndDate(), "yyyy/MM/dd");
-//		GeneralDate endDate = GeneralDate.fromString(inputEmpCalAndSumByDate.getEndDate(), "yyyy/MM/dd");
 		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogByDate(inputEmpCalAndSumByDate);	
 		
 	}

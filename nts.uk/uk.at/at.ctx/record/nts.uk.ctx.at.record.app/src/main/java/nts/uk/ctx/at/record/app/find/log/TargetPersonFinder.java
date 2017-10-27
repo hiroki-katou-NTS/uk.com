@@ -18,12 +18,12 @@ public class TargetPersonFinder {
 	@Inject
 	private TargetPersonRepository  targetPersonRepo;
 	
-	private String employeeID = AppContexts.user().employeeId();
 	/**
 	 * get all TargetPerson
 	 * @return
 	 */
 	public List<TargetPersonDto> getAllTargetPerson(){
+		String employeeID = AppContexts.user().employeeId();
 		List<TargetPersonDto> data = targetPersonRepo.getAllTargetPerson(employeeID)
 				.stream()
 				.map(c -> TargetPersonDto.fromDomain(c))
@@ -38,6 +38,7 @@ public class TargetPersonFinder {
 	 * @return
 	 */
 	public TargetPersonDto getTargetPersonByID(String empCalAndSumExecLogId){
+		String employeeID = AppContexts.user().employeeId();
 		Optional<TargetPersonDto> data = targetPersonRepo.getTargetPersonByID(employeeID, empCalAndSumExecLogId)
 				.map(c -> TargetPersonDto.fromDomain(c));
 		if(data.isPresent())
