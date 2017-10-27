@@ -12,73 +12,78 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class Workplace.
  */
-@Getter
-//職場
-public class Workplace extends AggregateRoot{
+// 職場
+public class Workplace extends AggregateRoot
+		implements PersistentResidentHistory<WorkplaceHistory, DatePeriod, GeneralDate> {
 
 	/** The company id. */
 	// 会社ID
+	@Getter
 	private String companyId;
 
 	/** The workplace id. */
-	//職場ID
+	// 職場ID
+	@Getter
 	private String workplaceId;
-	
+
 	/** The workplace history. */
-	//履歴
+	// 履歴
 	private List<WorkplaceHistory> workplaceHistory;
 
 	/**
 	 * Instantiates a new workplace.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public Workplace(WorkplaceGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.workplaceHistory = memento.getWorkplaceHistory();
-		
-		// sort by end date, start date desc 
-        Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
-            @Override
-            public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
-                return new CompareToBuilder()
-                		.append(obj2.getPeriod().end(), obj1.getPeriod().end())
-                		.append(obj2.getPeriod().start(), obj1.getPeriod().start())
-                		.toComparison();
-            }
-        });
+
+		// sort by end date, start date desc
+		Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
+			@Override
+			public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
+				return new CompareToBuilder()
+						.append(obj2.span().end(), obj1.span().end())
+						.append(obj2.span().start(), obj1.span().start()).toComparison();
+			}
+		});
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(WorkplaceSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorkplaceId(this.workplaceId);
 		memento.setWorkplaceHistory(this.workplaceHistory);
 	}
-	
+
 	/**
 	 * Gets the wkp history latest.
 	 *
 	 * @return the wkp history latest
 	 */
 	public WorkplaceHistory getWkpHistoryLatest() {
-        int indexLatestHist = 0;
-        if (this.workplaceHistory.size() > 1) {
-            System.out.println();
-        }
-        return this.workplaceHistory.get(indexLatestHist);
-    }
+		int indexLatestHist = 0;
+		return this.workplaceHistory.get(indexLatestHist);
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -89,7 +94,9 @@ public class Workplace extends AggregateRoot{
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -108,6 +115,15 @@ public class Workplace extends AggregateRoot{
 			return false;
 		return true;
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.shr.com.history.History#items()
+	 */
+	@Override
+	public List<WorkplaceHistory> items() {
+		return this.workplaceHistory;
+	}
+
 }
