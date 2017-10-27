@@ -111,7 +111,7 @@ subprojects {
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
         compile group: 'nts.gul', name: 'nts.gul', version: '0.37.1'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.48.1'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.48.2'
 	}
 }
 //=============com.file↓===========================================
@@ -291,6 +291,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 	}
 }
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub') {
