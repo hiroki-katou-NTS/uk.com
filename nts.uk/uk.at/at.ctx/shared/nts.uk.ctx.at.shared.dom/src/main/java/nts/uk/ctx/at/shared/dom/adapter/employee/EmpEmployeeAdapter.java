@@ -15,5 +15,6 @@ public interface EmpEmployeeAdapter {
 	 * @param empId the emp id
 	 * @return the employee imported
 	 */
-	EmployeeImported findByEmpId(String empId);
+	// for RequestList #1-2
+	EmployeeImport findByEmpId(String empId);
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeMail;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
@@ -28,6 +30,7 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
  * The Class SyEmployeePubImp.
@@ -51,6 +54,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
 
+	/** The person repository. */
 	@Inject
 	private PersonRepository personRepository;
 	
@@ -119,19 +123,31 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	 */
 	@Override
 	public EmployeeBasicInfoExport findByEmpId(String empId) {
-		// Employee Tbl
-		Employee emp = this.employeeRepository.getBySid(empId).get();
-		// Person Tbl
-		Person person = this.personRepository.getByPersonId(emp.getPId()).get();
+		// Employee Opt
+		Optional<Employee> empOpt = this.employeeRepository.getBySid(empId);
+		if (!empOpt.isPresent()) {
+			return null;
+		}
+		// Get Employee
+		Employee emp = empOpt.get();
+		// Person Opt
+		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPId());
+		if (!personOpt.isPresent()) {
+			return null;
+		}
+		// Get Person
+		Person person = personOpt.get();
+		PersonName pname = person.getPersonNameGroup().getPersonName();
+		EmployeeMail comMailAddr = emp.getCompanyMail();
 		
 		EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder()
-				.pId(emp.getPId())
-				.pName(person.getPersonNameGroup().getPersonName().v())
-				.companyMailAddr(new MailAddress(emp.getCompanyMail().v()))
-				.birthDay(person.getBirthDate())
-				.pMailAddr(new MailAddress(person.getMailAddress().v()))
-				.empId(emp.getSId())
-				.empCode(emp.getSCd().v())
+				.pId(person.getPersonId())
+				.pName((pname == null ? null : pname.v()))
+				.companyMailAddr(comMailAddr == null? null : new MailAddress(emp.getCompanyMail().v()))
+				.birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
+				.pMailAddr(person.getMailAddress() == null ? null : new MailAddress(person.getMailAddress().v()))
+				.empId(emp.getSId() == null ? null : emp.getSId())
+				.empCode(emp.getSCd() == null ? null : emp.getSCd().v())
 				.entryDate(emp.getListEntryJobHist().get(0).getJoinDate())
 				.retiredDate(emp.getListEntryJobHist().get(0).getRetirementDate())
 				.build();
