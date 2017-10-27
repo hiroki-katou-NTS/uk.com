@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.AuthenticationMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.EncryptionMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServer;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServerRepository;
+import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
 import nts.uk.shr.com.mail.SendMailSettingAdaptor;
 
 /**
@@ -51,9 +52,13 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		// Return data
 		ServerLocator smtpServer = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 				mailServer.getSmtpInfo().getPort().v());
-		int secondsToTimeout = mailServer.getSmtpInfo().getTimeOut().v();
-		SendMailAuthenticationMethod authenticationMethod = this
-				.switchAuthenticationMethodEnum(mailServer.getAuthenticationMethod());
+		int secondsToTimeout = 60;
+		SendMailAuthenticationMethod authenticationMethod = SendMailAuthenticationMethod.NONE;
+		if (UseAuthentication.USE.equals(mailServer.getUseAuthentication())) {
+			authenticationMethod = this
+					.switchAuthenticationMethodEnum(mailServer.getAuthenticationMethod());
+		}
+
 		Optional<SendMailAuthenticationAccount> authenticationAccount = Optional
 				.of(new SendMailAuthenticationAccount(mailServer.getEmailAuthentication().v(),
 						mailServer.getPassword().v()));
@@ -64,20 +69,17 @@ public class SendMailSettingAdaptorImpl implements SendMailSettingAdaptor {
 		// Get info
 		switch (authenticationMethod) {
 		case POP_BEFORE_SMTP:
-			secondsToTimeout = mailServer.getPopInfo().getTimeOut().v();
 			serverLocator = new ServerLocator(mailServer.getPopInfo().getServer().v(),
 					mailServer.getPopInfo().getPort().v());
 			break;
 
 		case IMAP_BEFORE_SMTP:
-			secondsToTimeout = mailServer.getImapInfo().getTimeOut().v();
 			serverLocator = new ServerLocator(mailServer.getImapInfo().getServer().v(),
 					mailServer.getImapInfo().getPort().v());
 			break;
 
 		default:
-			secondsToTimeout = mailServer.getSmtpInfo().getTimeOut().v();
-			smtpServer = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
+			serverLocator = new ServerLocator(mailServer.getSmtpInfo().getServer().v(),
 					mailServer.getSmtpInfo().getPort().v());
 			break;
 		}

@@ -1,5 +1,6 @@
 module nts.uk.at.view.kaf000.b.viewmodel {
     import vmbase =  nts.uk.at.view.kaf002.shr.vmbase;
+    import shrvm = nts.uk.at.view.kaf000.shr;
     export abstract class ScreenModel {
 
         // Metadata
@@ -10,17 +11,17 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          * List
          */
         //listPhase
-        listPhase: KnockoutObservableArray<model.AppApprovalPhase>;
+        listPhase: KnockoutObservableArray<shrvm.model.AppApprovalPhase>;
         //listPhaseID
-        listPhaseID: Array<String>;
+        listPhaseID: Array<string>;
         //list appID 
-        listReasonByAppID: KnockoutObservableArray<String>;
+        listReasonByAppID: KnockoutObservableArray<string>;
 
         /**InputCommonData
          * value obj 
          */
-        reasonToApprover: KnockoutObservable<String>;
-        reasonApp: KnockoutObservable<String>;
+        reasonToApprover: KnockoutObservable<string>;
+        reasonApp: KnockoutObservable<string>;
         inputCommonData : KnockoutObservable<model.InputCommonData>;
 
         dataApplication: KnockoutObservable<model.ApplicationDto>;
@@ -30,7 +31,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //obj input
         //obj output message deadline
-        outputMessageDeadline: KnockoutObservable<model.OutputMessageDeadline>;
+        outputMessageDeadline: KnockoutObservable<shrvm.model.OutputMessageDeadline>;
         //obj DetailedScreenPreBootModeOutput
         outputDetailCheck: KnockoutObservable<model.DetailedScreenPreBootModeOutput>;
         //obj InputCommandEvent
@@ -70,11 +71,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
 
         //item InputCommandEvent
-        appReasonEvent: KnockoutObservable<String>;
+        appReasonEvent: KnockoutObservable<string>;
         
         approvalList: Array<vmbase.AppApprovalPhase> = [];
+        
+        displayButtonControl: KnockoutObservable<model.DisplayButtonControl> = ko.observable(new model.DisplayButtonControl());
 
-        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+        constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
             self.appReasonEvent = ko.observable('');
@@ -136,7 +139,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         abstract update(): any;
 
-        start(baseDate): JQueryPromise<any> {
+        start(baseDate: any): JQueryPromise<any> {
             let self = this;
             
             self.inputDetail().baseDate = baseDate;
@@ -146,8 +149,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
              let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
-                self.getMessageDeadline(self.dataApplication());
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID, dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData, dfdGetDetailCheckData) => {
+                // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
+                let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
+                self.getMessageDeadline(data);
                 
                 dfd.resolve();
             });
@@ -157,53 +162,100 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         checkDisplayStart() {
             let self = this;
             if (self.outputDetailCheck() != null) {
-                if (self.outputDetailCheck().user == 1 || self.outputDetailCheck().user == 2) {
-                    //b1_7
-                    self.enableRelease(true);
-
-                    
-                    if (self.outputDetailCheck().authorizableFlags == true) {
-                        //例：ログイン者の承認区分が未承認
-                        if (self.outputDetailCheck().approvalATR == 0) {
-                            self.enableApprove(true);
-                            self.enableDeny(true);
-                            self.visibleApproval(false);
-                            self.visibleDenial(false);
-                        }
-
-                        //ログイン者の承認区分が承認済
-                        if (self.outputDetailCheck().approvalATR == 1) {
-                            self.enableApprove(false);
-                            self.enableDeny(true);
-                            self.visibleApproval(true);
-                            self.visibleDenial(false);
-                        }
-
-                        //例：ログイン者の承認区分が否認
-                        if (self.outputDetailCheck().approvalATR == 2) {
-                            self.enableApprove(true);
-                            self.enableDeny(false);
-                            self.visibleApproval(false);
-                            self.visibleDenial(true);
-                        }
-                    } else {
-                        self.enableApprove(false);
-                        self.enableDeny(false);
-                        self.visibleApproval(false);
-                        self.visibleDenial(false);
+                //check 利用者
+                let user = self.outputDetailCheck().user;
+                switch(user){
+                    case 2: {
+                        // 利用者 = 申請本人
+                        self.displayButtonControl().displayUpdate(true);
+                        self.displayButtonControl().displayDelete(true);
+                        self.displayButtonControl().displayCancel(true);    
+                        break;
                     }
-                }
-            }
-
-
-            if (self.outputDetailCheck().user == 0 || self.outputDetailCheck().user == 1 || self.outputDetailCheck().user == 99) {
-                //b1_8
-                self.enableRegistration(true)
-                //b1_12  
-                self.enableDelete(true)
-
-                if (true) {
-                    //b1_13
+                    case 1: {
+                        // 利用者 = 承認者
+                        // check ログイン者の承認区分
+                        let approvalATR = self.outputDetailCheck().approvalATR;
+                        switch(approvalATR){
+                            case 1: {
+                                // ログイン者の承認区分 = 承認済
+                                self.displayButtonControl().displayDeny(true);
+                                self.displayButtonControl().displayRemand(true);
+                                self.displayButtonControl().displayApprovalLabel(!self.displayButtonControl().displayApproval()&&true);
+                                break;  
+                            }     
+                            case 2: {
+                                // ログイン者の承認区分 = 否認
+                                self.displayButtonControl().displayApproval(true);
+                                self.displayButtonControl().displayRemand(true);
+                                self.displayButtonControl().displayDenyLabel(!self.displayButtonControl().displayDeny()&&true);  
+                                break;      
+                            }
+                            case 3: {
+                                // ログイン者の承認区分 = 差し戻し
+                                self.displayButtonControl().displayApproval(true);
+                                self.displayButtonControl().displayDeny(true);
+                                self.displayButtonControl().displayRemand(true);
+                                break; 
+                            }
+                            default: {
+                                // ログイン者の承認区分 = 未承認
+                                self.displayButtonControl().displayApproval(true);
+                                self.displayButtonControl().displayDeny(true);
+                                self.displayButtonControl().displayRemand(true);
+                            }  
+                        }
+                        self.displayButtonControl().displayRelease(true);
+                        self.displayButtonControl().displayReturnReasonLabel(true);
+                        self.displayButtonControl().displayReturnReason(true);
+                        break;
+                    }
+                    case 0: {
+                        // 利用者 = 申請本人&承認者
+                        // check ログイン者の承認区分
+                        let approvalATR = self.outputDetailCheck().approvalATR;
+                        switch(approvalATR){
+                            case 1: {
+                                // ログイン者の承認区分 = 承認済
+                                self.displayButtonControl().displayDeny(true);
+                                self.displayButtonControl().displayRemand(true);
+                                self.displayButtonControl().displayApprovalLabel(!self.displayButtonControl().displayApproval()&&true); 
+                                break;  
+                            }     
+                            case 2: {
+                                // ログイン者の承認区分 = 否認
+                                self.displayButtonControl().displayApproval(true);
+                                self.displayButtonControl().displayRemand(true);
+                                self.displayButtonControl().displayDenyLabel(!self.displayButtonControl().displayDeny()&&true);  
+                                break;      
+                            }
+                            case 3: {
+                                // ログイン者の承認区分 = 差し戻し
+                                self.displayButtonControl().displayApproval(true);
+                                self.displayButtonControl().displayDeny(true);
+                                self.displayButtonControl().displayRemand(true); 
+                                break; 
+                            }
+                            default: {
+                                // ログイン者の承認区分 = 未承認
+                                self.displayButtonControl().displayApproval(true);
+                                self.displayButtonControl().displayDeny(true);
+                                self.displayButtonControl().displayRemand(true); 
+                            }  
+                        }
+                        self.displayButtonControl().displayRelease(true);
+                        self.displayButtonControl().displayReturnReasonLabel(true);
+                        self.displayButtonControl().displayReturnReason(true);
+                        self.displayButtonControl().displayUpdate(true);
+                        self.displayButtonControl().displayDelete(true);
+                        self.displayButtonControl().displayCancel(true); 
+                        break;
+                    }
+                    default: {
+                        // 利用者 = その他
+                        self.displayButtonControl().displayUpdate(true);
+                        self.displayButtonControl().displayDelete(true);
+                    }   
                 }
             }
 
@@ -213,41 +265,104 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         checkDisplayAction() {
             let self = this;
             if (self.outputDetailCheck() != null) {
-                if (self.outputDetailCheck().authorizableFlags == true && self.outputDetailCheck().alternateExpiration == false) {
-                    self.enableApprove(true);//b1_4
-                    self.enableDeny(true);//b1_5
-                    self.visibleApproval(true); //b1_14
-                    self.visibleDenial(true);  //b1_15
-                }
-
-                //b1_7
-                //ログイン者の承認区分：承認済、否認 
-                if (self.outputDetailCheck().approvalATR == 1 || self.outputDetailCheck().approvalATR == 2) {
-                    self.enableRelease(true);
-                }
-                //ログイン者の承認区分：未承認                      
-                if (self.outputDetailCheck().approvalATR == 0) {
-                    self.enableRelease(false);
-                }
-
-
-                if (self.outputDetailCheck().reflectPlanState == 0 || self.outputDetailCheck().reflectPlanState == 1) {
-                    //b1_8
-                    self.enableRegistration(true)
-                    //b1_12  
-                    self.enableDelete(true)
-                }
-
-                if (self.outputDetailCheck().reflectPlanState == 4) {
-                    //b1_13
-                    self.enableCancel(true)
-                }
+                //check 利用者
+                let user = self.outputDetailCheck().user;
+                switch(user){
+                    case 1: {
+                        // 利用者 = 承認者
+                        // check ステータス
+                        let reflectPlanState = self.outputDetailCheck().reflectPlanState;
+                        if(reflectPlanState==6||reflectPlanState==5||reflectPlanState==0||reflectPlanState==1){
+                            // 否認/反映待ち/未反映/差し戻し                                         
+                            let authorizableFlags = self.outputDetailCheck().authorizableFlags;
+                            if(authorizableFlags){
+                                // 承認できるフラグ(true)           
+                                let alternateExpiration = self.outputDetailCheck().alternateExpiration; 
+                                if(alternateExpiration){
+                                    // 代行期限切れフラグ(true)   
+                                    let approvalATR = self.outputDetailCheck().approvalATR;       
+                                    if(approvalATR == 1 || approvalATR == 2){
+                                        // ログイン者の承認区分：承認済、否認                                                                        
+                                        self.displayButtonControl().enableRelease(true);    
+                                    }    
+                                } else {
+                                    // 代行期限切れフラグ(false)    
+                                    let approvalATR = self.outputDetailCheck().approvalATR;       
+                                    if(approvalATR == 1 || approvalATR == 2){
+                                        // ログイン者の承認区分：承認済、否認                                                                        
+                                        self.displayButtonControl().enableRelease(true);
+                                    }
+                                    self.displayButtonControl().enableApproval(true);
+                                    self.displayButtonControl().enableDeny(true);
+                                    self.displayButtonControl().enableRemand(true);
+                                    self.displayButtonControl().displayReturnReasonPanel(true);
+                                    self.displayButtonControl().displayReturnReasonLabel(true);
+                                    self.displayButtonControl().displayReturnReason(true);
+                                    self.displayButtonControl().enableReturnReason(true); 
+                                }    
+                            }        
+                        }
+                        break;
+                    }
+                    case 0: {
+                        // 利用者 = 申請本人&承認者
+                        // check ステータス
+                        let reflectPlanState = self.outputDetailCheck().reflectPlanState;
+                        if(reflectPlanState==6||reflectPlanState==5||reflectPlanState==0||reflectPlanState==1){
+                            // 否認/反映待ち/未反映/差し戻し                                         
+                            let authorizableFlags = self.outputDetailCheck().authorizableFlags;
+                            if(authorizableFlags){
+                                // 承認できるフラグ(true)           
+                                let alternateExpiration = self.outputDetailCheck().alternateExpiration; 
+                                if(alternateExpiration){
+                                    // 代行期限切れフラグ(true)   
+                                    let approvalATR = self.outputDetailCheck().approvalATR;       
+                                    if(approvalATR == 1 || approvalATR == 2){
+                                        // ログイン者の承認区分：承認済、否認                                                                        
+                                        self.displayButtonControl().enableRelease(true);    
+                                    }    
+                                } else {
+                                    // 代行期限切れフラグ(false)    
+                                    let approvalATR = self.outputDetailCheck().approvalATR;       
+                                    if(approvalATR == 1 || approvalATR == 2){
+                                        // ログイン者の承認区分：承認済、否認                                                                        
+                                        self.displayButtonControl().enableRelease(true); 
+                                    }
+                                    self.displayButtonControl().enableApproval(true);
+                                    self.displayButtonControl().enableDeny(true);
+                                    self.displayButtonControl().enableRemand(true);
+                                    self.displayButtonControl().displayReturnReasonPanel(true);
+                                    self.displayButtonControl().displayReturnReasonLabel(true);
+                                    self.displayButtonControl().displayReturnReason(true);
+                                    self.displayButtonControl().enableReturnReason(true);
+                                }    
+                            }    
+                            if(reflectPlanState == 0 || reflectPlanState == 1){
+                                self.displayButtonControl().enableUpdate(true);
+                                self.displayButtonControl().enableDelete(true);      
+                            }   
+                        } else if(reflectPlanState == 4 ){
+                            self.displayButtonControl().enableCancel(true); 
+                        }
+                        break;
+                    }
+                    default: {
+                        // 利用者 = 申請本人 || その他
+                        let reflectPlanState = self.outputDetailCheck().reflectPlanState;
+                        if(reflectPlanState == 0 || reflectPlanState == 1){
+                            self.displayButtonControl().enableUpdate(true);
+                            self.displayButtonControl().enableDelete(true); 
+                            self.displayButtonControl().displayReturnReasonPanel(true);        
+                        } else if(reflectPlanState == 4){
+                            self.displayButtonControl().enableCancel(true);
+                        }
+                    }   
+                } 
             }
-
         }
 
         // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline) {
+        getMessageDeadline(inputMessageDeadline: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
@@ -261,31 +376,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         //getAll data by App ID
-        getAllDataByAppID(appID) {
+        getAllDataByAppID(appID: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
-                //                let temp = data.listOutputPhaseAndFrame;
-                //                _.forEach(temp, function(phase) {
-                //                    let listApproveAcceptedForView = [];
-                //                    //con cai clone la de clone ra 1 array moi, tranh bi anh huong array goc(tạo ra 1 bản sao)
-                //                    // _.sortBy sắp xếp theo dispOrder,
-                //                    let frameTemp = _.sortBy(_.clone(phase.listApprovalFrameDto), ['dispOrder']);
-                //                    for (var i = 0; i < frameTemp.length; i++) {
-                //                        let frame = frameTemp[i];
-                //                        let sameOrder = _.filter(phase.listApproveAcceptedDto, function(f) {
-                //                            return frame["dispOrder"] === f["dispOrder"];
-                //                        });
-                //                        let approverSID = "";
-                //                        _.forEach(sameOrder, function(so) {
-                //                            approverSID += (nts.uk.util.isNullOrEmpty(approverSID) ? "" : ", ") + so["approverSID"];
-                //                        });
-                //                        frame["approverSID2"] = approverSID;
-                //                        listApproveAcceptedForView.push(frame);
-                //                    }
-                //                    phase["listApproveAcceptedForView"] = listApproveAcceptedForView;
-                //                });
-                //                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 self.appType(data.applicationType);
                 let listPhase = self.dataApplication().listPhase; 
@@ -329,7 +423,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         //get all reason by app ID
-        getAllReasonByAppID(appID) {
+        getAllReasonByAppID(appID: string) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllReasonByAppID(appID).done(function(data) {
@@ -338,13 +432,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     self.reasonApp(self.listReasonByAppID()[0].toString());
                     if(self.listReasonByAppID().length > 1){
                         self.reasonToApprover(self.listReasonByAppID()[1].toString());    
-                    }
-                    
-//                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
-//                        self.listReasonToApprover(
-//                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
-//                        );
-//                    }
+                    }                    
                 }
                 dfd.resolve(data);
             }).fail(function(res: any) {
@@ -354,7 +442,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         //get detail check 
-        getDetailCheck(inputGetDetail) {
+        getDetailCheck(inputGetDetail: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getDetailCheck(inputGetDetail).done(function(data) {
@@ -374,17 +462,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnBefore() {
             let self = this;
             var prevAppInfo = self.getPrevAppInfo();
-            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml",
-            { 'listAppMeta': self.listAppMeta,
-              'currentApp': prevAppInfo
-            });
+            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': prevAppInfo });
         }
         
-        private getPrevAppInfo(): model.ApplicationMetadata {
+        private getPrevAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index > 0) {
-                return new model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
             }
             return null;
         }
@@ -395,15 +480,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnAfter() {
             let self = this;
             var nextAppInfo = self.getNextAppInfo();
-            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta,
-                'currentApp': nextAppInfo });
+            nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': nextAppInfo });
         }
         
-        private getNextAppInfo(): model.ApplicationMetadata {
+        private getNextAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index < self.listAppMeta.length - 1) {
-                return new model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
             }
             return null;
         }
@@ -579,58 +663,50 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }//end class OutputGetAllDataApp
 
-        export class ApplicationMetadata {
-            appID: string;
-            appType: number;
-            constructor(appID: string, appType: number) {
-                this.appID = appID;
-                this.appType = appType;
-            }
-        }
 
         //class Application 
         export class ApplicationDto {
-            applicationID: String;
+            applicationID: string;
             prePostAtr: number;
-            inputDate: String;
-            enteredPersonSID: String;
-            reversionReason: String;
-            applicationDate: String;
-            applicationReason: String;
+            inputDate: string;
+            enteredPersonSID: string;
+            reversionReason: string;
+            applicationDate: string;
+            applicationReason: string;
             applicationType: number;
-            applicantSID: String;
+            applicantSID: string;
             reflectPlanScheReason: number;
-            reflectPlanTime: String;
+            reflectPlanTime: string;
             reflectPlanState: number;
             reflectPlanEnforce: number;
             reflectPerScheReason: number;
-            reflectPerTime: String;
+            reflectPerTime: string;
             reflectPerState: number;
             reflectPerEnforce: number;
-            startDate: String;
-            endDate: String;
-            listPhase: Array<AppApprovalPhase>;
+            startDate: string;
+            endDate: string;
+            listPhase: Array<shrvm.model.AppApprovalPhase>;
             constructor(
-                applicationID: String,
+                applicationID: string,
                 prePostAtr: number,
-                inputDate: String,
-                enteredPersonSID: String,
-                reversionReason: String,
-                applicationDate: String,
-                applicationReason: String,
+                inputDate: string,
+                enteredPersonSID: string,
+                reversionReason: string,
+                applicationDate: string,
+                applicationReason: string,
                 applicationType: number,
-                applicantSID: String,
+                applicantSID: string,
                 reflectPlanScheReason: number,
-                reflectPlanTime: String,
+                reflectPlanTime: string,
                 reflectPlanState: number,
                 reflectPlanEnforce: number,
                 reflectPerScheReason: number,
-                reflectPerTime: String,
+                reflectPerTime: string,
                 reflectPerState: number,
                 reflectPerEnforce: number,
-                startDate: String,
-                endDate: String,
-                listPhase: Array<AppApprovalPhase>) {
+                startDate: string,
+                endDate: string,
+                listPhase: Array<shrvm.model.AppApprovalPhase>) {
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr;
                 this.inputDate = inputDate;
@@ -657,82 +733,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class OutputPhaseAndFrame 
         export class OutputPhaseAndFrame {
-            appApprovalPhase: AppApprovalPhase;
-            listApprovalFrame: Array<ApprovalFrame>;
+            appApprovalPhase: shrvm.model.AppApprovalPhase;
+            listApprovalFrame: Array<shrvm.model.ApprovalFrame>;
             constructor(
-                appApprovalPhase: AppApprovalPhase,
-                listApprovalFrame: Array<ApprovalFrame>) {
+                appApprovalPhase: shrvm.model.AppApprovalPhase,
+                listApprovalFrame: Array<shrvm.model.ApprovalFrame>) {
                 this.appApprovalPhase = appApprovalPhase;
                 this.listApprovalFrame = listApprovalFrame;
             }
         }//end class OutputPhaseAndFrame
 
-
-        // class AppApprovalPhase
-        export class AppApprovalPhase {
-            appID: String;
-            phaseID: String;
-            approvalForm: number;
-            dispOrder: number;
-            approvalATR: number;
-            listFrame: Array<ApprovalFrame>;
-            constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number,
-                approvalATR: number,
-                listFrame: Array<ApprovalFrame>) {
-                this.appID = appID;
-                this.phaseID = phaseID;
-                this.approvalForm = approvalForm;
-                this.dispOrder = dispOrder;
-                this.approvalATR = approvalATR;
-                this.listFrame = listFrame;
-            }
-        }
-
-        // class ApprovalFrame
-        export class ApprovalFrame {
-            frameID: String;
-            dispOrder: number;
-            listApproveAccepted: Array<ApproveAccepted>;
-            constructor(frameID: String, dispOrder: number, listApproveAccepted: Array<ApproveAccepted>) {
-                this.frameID = frameID;
-                this.dispOrder = dispOrder;
-                this.listApproveAccepted = listApproveAccepted;
-
-            }
-        }//end class frame  
-
-        //class ApproveAccepted
-        export class ApproveAccepted {
-            appAccedtedID: String;
-            approverSID: String;
-            approvalATR: number;
-            confirmATR: number;
-            approvalDate: String;
-            reason: String;
-            representerSID: String;
-            constructor(appAccedtedID: String,
-                approverSID: String,
-                approvalATR: number,
-                confirmATR: number,
-                approvalDate: String,
-                reason: String,
-                representerSID: String) {
-                this.appAccedtedID = appAccedtedID;
-                this.approverSID = approverSID;
-                this.approvalATR = approvalATR;
-                this.confirmATR = confirmATR;
-                this.approvalDate = approvalDate;
-                this.reason = reason;
-                this.representerSID = representerSID;
-            }
-        }//end class ApproveAccepted
-
         //class InputGetDetailCheck 
         export class InputGetDetailCheck {
-            applicationID: String;
-            baseDate: String;
-            constructor(applicationID: String,
-                baseDate: String) {
+            applicationID: string;
+            baseDate: string;
+            constructor(applicationID: string,
+                baseDate: string) {
                 this.applicationID = applicationID;
                 this.baseDate = baseDate;
 
@@ -760,21 +776,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
         }//end class DetailedScreenPreBootModeOutput
 
-        //class outputMessageDeadline
-        export class OutputMessageDeadline {
-            message: String;
-            deadline: String;
-            constructor(message: String, deadline: String) {
-                this.message = message;
-                this.deadline = deadline;
-            }
-        }// end class outputMessageDeadline
+        
         
         //class InputApprove
         export class InputCommonData {
             applicationDto: ApplicationDto;
-            memo: String;
-            constructor(applicationDto : ApplicationDto, memo : String) {
+            memo: string;
+            constructor(applicationDto : ApplicationDto, memo : string) {
                 this.applicationDto = applicationDto;
                 this.memo = memo;
             }
@@ -782,11 +790,80 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class InputCommandEvent
         export class InputCommandEvent {
-            appId: String;
-            applicationReason: String;
-            constructor(appId: String, applicationReason: String) {
+            appId: string;
+            applicationReason: string;
+            constructor(appId: string, applicationReason: string) {
                 this.appId = appId;
                 this.applicationReason = applicationReason;
+            }
+        }
+        
+        export class DisplayButtonControl {
+            // B1-8 Update
+            displayUpdate: KnockoutObservable<boolean>;
+            enableUpdate: KnockoutObservable<boolean>;
+            
+            // B1-4 Approval
+            displayApproval: KnockoutObservable<boolean>;
+            enableApproval: KnockoutObservable<boolean>;
+            
+            // B1-5 Deny
+            displayDeny: KnockoutObservable<boolean>;
+            enableDeny: KnockoutObservable<boolean>;
+            
+            // B1-6 Remand
+            displayRemand: KnockoutObservable<boolean>;
+            enableRemand: KnockoutObservable<boolean>;
+            
+            // B1-7 Release
+            displayRelease: KnockoutObservable<boolean>;
+            enableRelease: KnockoutObservable<boolean>;
+            
+            // B1-12 Delete
+            displayDelete: KnockoutObservable<boolean>;  
+            enableDelete: KnockoutObservable<boolean>;
+            
+            // B1-13 Cancel
+            displayCancel: KnockoutObservable<boolean>;
+            enableCancel: KnockoutObservable<boolean>;
+            
+            // B1-14 ApprovalLabel
+            displayApprovalLabel: KnockoutObservable<boolean>;
+            
+            // B1-15 DenyLabel
+            displayDenyLabel: KnockoutObservable<boolean>;
+            
+            // B3-1
+            displayReturnReasonPanel: KnockoutObservable<boolean>;
+            
+            // B4-1 
+            displayReturnReasonLabel: KnockoutObservable<boolean>;
+            
+            // B4-2 
+            displayReturnReason: KnockoutObservable<boolean>;
+            enableReturnReason: KnockoutObservable<boolean>;
+            
+            constructor(){
+                this.displayUpdate = ko.observable(false); 
+                this.enableUpdate = ko.observable(false);
+                this.displayApproval = ko.observable(false);
+                this.enableApproval = ko.observable(false);
+                this.displayDeny = ko.observable(false);
+                this.enableDeny = ko.observable(false);
+                this.displayRemand = ko.observable(false);
+                this.enableRemand = ko.observable(false);
+                this.displayRelease = ko.observable(false);
+                this.enableRelease = ko.observable(false);
+                this.displayDelete = ko.observable(false);
+                this.enableDelete = ko.observable(false);
+                this.displayCancel = ko.observable(false);
+                this.enableCancel = ko.observable(false);
+                this.displayApprovalLabel = ko.observable(false);
+                this.displayDenyLabel = ko.observable(false);
+                this.displayReturnReasonPanel = ko.observable(false);
+                this.displayReturnReasonLabel = ko.observable(false);
+                this.displayReturnReason = ko.observable(false);   
+                this.enableReturnReason = ko.observable(false);  
             }
         }
         

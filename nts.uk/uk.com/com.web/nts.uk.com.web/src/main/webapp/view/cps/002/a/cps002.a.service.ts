@@ -12,7 +12,9 @@ module cps002.a.service {
         'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
         'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
-        'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}'
+        'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
+        'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}',
+        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
 
     };
 
@@ -55,6 +57,14 @@ module cps002.a.service {
     export function getAllInitValueCtgSetting(settingId: string) {
         return ajax(format(paths.getAllInitValueCtgSetting, settingId));
 
+    }
+
+    export function getAllInitValueItemSetting(settingId, categoryCd) {
+        return ajax(format(paths.getAllInitValueItemSetting, settingId, categoryCd));
+    }
+
+    export function getSelfRoleAuth() {
+        return ajax(paths.getSelfRoleAuth);
     }
 
 }

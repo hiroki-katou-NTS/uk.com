@@ -2,15 +2,26 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.schedulevertical.vertical
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Attributes;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.CalculateAtr;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.CumulativeAtr;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.DisplayAtr;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Rounding;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstVerticalCalSet;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstVerticalCalSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItem;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrder;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrderPK;
 
 /**
  * 
@@ -21,23 +32,15 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetti
 @Stateless
 public class JpaVerticalSetting extends JpaRepository implements VerticalSettingRepository {
 	
-	private static final String SELECT_ALL_VERTICAL_CAL_SET;
-	
-	private static final String DELETE_VERTICAL_CAL_SET;
+	private static final String SELECT_ALL_GEN_VERT_SET;
 	
 	static {
 
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstVerticalCalSet e");
-		builderString.append(" WHERE e.kscstVerticalCalSetPK.companyId = :companyId");
-		SELECT_ALL_VERTICAL_CAL_SET = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("DELETE FROM KscstVerticalCalSet e");
-		builderString.append(" WHERE e.kscstVerticalCalSetPK.companyId = :companyId");
-		builderString.append(" AND e.kscstVerticalCalSetPK.verticalCalCd = :verticalCalCd");
-		DELETE_VERTICAL_CAL_SET = builderString.toString();
+		builderString.append(" FROM KscmtGenVertSet e");
+		builderString.append(" WHERE e.kscmtGenVertSetPK.companyId = :companyId");
+		SELECT_ALL_GEN_VERT_SET = builderString.toString();
 	}
 
 	/**
@@ -45,7 +48,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public List<VerticalCalSet> findAllVerticalCalSet(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_VERTICAL_CAL_SET, KscstVerticalCalSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_ALL_GEN_VERT_SET, KscmtGenVertSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomainVcs(c));
 	}
 
@@ -54,14 +57,28 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param kscstVerticalCalSet
 	 * @return
 	 */
-	private VerticalCalSet convertToDomainVcs(KscstVerticalCalSet kscstVerticalCalSet) {
+	private VerticalCalSet convertToDomainVcs(KscmtGenVertSet kscstVerticalCalSet) {
+		List<VerticalCalItem> verticalCalItems = kscstVerticalCalSet.genVertItems.stream().map(t -> {
+			return new VerticalCalItem(t.kscmtGenVertItemPK.companyId, 
+					t.kscmtGenVertItemPK.verticalCalCd, 
+					t.kscmtGenVertItemPK.itemId, 
+					t.itemName, 
+					EnumAdaptor.valueOf(t.calculateAtr, CalculateAtr.class),
+					EnumAdaptor.valueOf(t.displayAtr, DisplayAtr.class),
+					EnumAdaptor.valueOf(t.cumulativeAtr, CumulativeAtr.class),
+					EnumAdaptor.valueOf(t.attributes, Attributes.class),
+					EnumAdaptor.valueOf(t.rounding, Rounding.class),
+					t.genVertOrder.dispOrder);
+			}).collect(Collectors.toList());
+		
 		VerticalCalSet verticalCalSet = VerticalCalSet.createFromJavaType(
-				kscstVerticalCalSet.kscstVerticalCalSetPK.companyId,
-				kscstVerticalCalSet.kscstVerticalCalSetPK.verticalCalCd, 
+				kscstVerticalCalSet.kscmtGenVertSetPK.companyId,
+				kscstVerticalCalSet.kscmtGenVertSetPK.verticalCalCd, 
 				kscstVerticalCalSet.verticalCalName,
 				kscstVerticalCalSet.unit,
 				kscstVerticalCalSet.useAtr,
-				kscstVerticalCalSet.assistanceTabulationAtr);
+				kscstVerticalCalSet.assistanceTabulationAtr,
+				verticalCalItems);
 		
 		return verticalCalSet;
 	}
@@ -71,9 +88,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public Optional<VerticalCalSet> getVerticalCalSetByCode(String companyId, String verticalCalCd) {
-		KscstVerticalCalSetPK primaryKey = new KscstVerticalCalSetPK(companyId, verticalCalCd);
+		KscmtGenVertSetPK primaryKey = new KscmtGenVertSetPK(companyId, verticalCalCd);
 		
-		return this.queryProxy().find(primaryKey, KscstVerticalCalSet.class)
+		return this.queryProxy().find(primaryKey, KscmtGenVertSet.class)
 				.map(x -> convertToDomainVcs(x));
 	}
 
@@ -82,19 +99,31 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * @param verticalCalSet
 	 * @return
 	 */
-	private KscstVerticalCalSet convertToDbTypeVcs(VerticalCalSet verticalCalSet) {
-		KscstVerticalCalSet kscstVerticalCalSet = new KscstVerticalCalSet();
+	private KscmtGenVertSet convertToDbTypeVcs(VerticalCalSet verticalCalSet) {
+		List<KscmtGenVertItem> items = verticalCalSet.getVerticalCalItems().stream()
+				.map(x -> {
+					KscmtGenVertOrder kscstVerticalItemOrder = new KscmtGenVertOrder(
+							new KscmtGenVertOrderPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(), x.getItemId()), x.getDispOrder());
+							
+					KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(), x.getItemId());
+					return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value, x.getCumulativeAtr().value,
+							x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder);
+				}).collect(Collectors.toList());
+				
+		KscmtGenVertSet kscstVerticalCalSet = new KscmtGenVertSet();
 		
-		KscstVerticalCalSetPK kscstVerticalCalSetPK = new KscstVerticalCalSetPK(
+		KscmtGenVertSetPK kscmtGenVertSetPK = new KscmtGenVertSetPK(
 				verticalCalSet.getCompanyId(),
-				verticalCalSet.getVerticalCalCd());
+				verticalCalSet.getVerticalCalCd().v());
 		
-		kscstVerticalCalSet.verticalCalName = verticalCalSet.getVerticalCalName();
+		kscstVerticalCalSet.verticalCalName = verticalCalSet.getVerticalCalName().v();
 		kscstVerticalCalSet.unit = verticalCalSet.getUnit().value;
 		kscstVerticalCalSet.useAtr = verticalCalSet.getUseAtr().value;
 		kscstVerticalCalSet.assistanceTabulationAtr = verticalCalSet.getAssistanceTabulationAtr().value;
 		
-		kscstVerticalCalSet.kscstVerticalCalSetPK = kscstVerticalCalSetPK;
+		kscstVerticalCalSet.kscmtGenVertSetPK = kscmtGenVertSetPK;
+		
+		kscstVerticalCalSet.genVertItems = items;
 		
 		return kscstVerticalCalSet;
 	}
@@ -112,13 +141,25 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public void updateVerticalCalSet(VerticalCalSet verticalCalSet) {
-		KscstVerticalCalSetPK kscstVerticalCalSetPK = new KscstVerticalCalSetPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd());
-		KscstVerticalCalSet kscstVerticalCalSet = this.queryProxy().find(kscstVerticalCalSetPK, KscstVerticalCalSet.class).get();
+		KscmtGenVertSetPK kscstVerticalCalSetPK = new KscmtGenVertSetPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v());
+		KscmtGenVertSet kscstVerticalCalSet = this.queryProxy().find(kscstVerticalCalSetPK, KscmtGenVertSet.class).get();
 		
-		kscstVerticalCalSet.verticalCalName = verticalCalSet.getVerticalCalName();
+		kscstVerticalCalSet.verticalCalName = verticalCalSet.getVerticalCalName().v();
 		kscstVerticalCalSet.unit = verticalCalSet.getUnit().value;
 		kscstVerticalCalSet.useAtr = verticalCalSet.getUseAtr().value;
 		kscstVerticalCalSet.assistanceTabulationAtr = verticalCalSet.getAssistanceTabulationAtr().value;
+		
+		List<KscmtGenVertItem> items = verticalCalSet.getVerticalCalItems().stream()
+				.map(x -> {
+					KscmtGenVertOrder kscstVerticalItemOrder = new KscmtGenVertOrder(
+							new KscmtGenVertOrderPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(), x.getItemId()), x.getDispOrder());
+					
+					KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(), x.getItemId());
+					return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value, x.getCumulativeAtr().value,
+							x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder);
+				}).collect(Collectors.toList());
+		
+		kscstVerticalCalSet.genVertItems = items;
 		
 		this.commandProxy().update(kscstVerticalCalSet);
 	}
@@ -128,20 +169,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public void deleteVerticalCalSet(String companyId, String verticalCalCd) {
-		this.getEntityManager().createQuery(DELETE_VERTICAL_CAL_SET)
-		.setParameter("companyId", companyId).setParameter("verticalCalCd", verticalCalCd)
-		.executeUpdate();
-	}
-
-	@Override
-	public List<VerticalCalItem> findAllVerticalCalItem(String companyId, String verticalCalCd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteVerticalCalItems(String companyId, String verticalCalCd) {
-		// TODO Auto-generated method stub
-		
+		KscmtGenVertSetPK kscstVerticalCalSetPK = new KscmtGenVertSetPK(companyId, verticalCalCd);
+		this.commandProxy().remove(KscmtGenVertSet.class, kscstVerticalCalSetPK);
 	}
 }

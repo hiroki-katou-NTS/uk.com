@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -26,8 +25,8 @@ public class JpaJobTitleHistoryGetMemento implements JobTitleHistoryGetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleHistoryGetMemento#getHistoryId()
 	 */
 	@Override
-	public HistoryId getHistoryId() {
-		return new HistoryId(this.entity.getBsymtJobHistPK().getHistId());
+	public String getHistoryId() {
+		return this.entity.getBsymtJobHistPK().getHistId();
 	}
 
 	/* (non-Javadoc)

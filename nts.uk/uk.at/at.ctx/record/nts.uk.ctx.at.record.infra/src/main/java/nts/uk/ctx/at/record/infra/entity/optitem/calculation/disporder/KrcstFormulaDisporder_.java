@@ -17,6 +17,6 @@ public class KrcstFormulaDisporder_ {
 	public static volatile SingularAttribute<KrcstFormulaDisporder, KrcstFormulaDisporderPK> krcstFormulaDisporderPK;
 
 	/** The disporder. */
-	public static volatile SingularAttribute<KrcstFormulaDisporder, String> disporder;
+	public static volatile SingularAttribute<KrcstFormulaDisporder, Integer> disporder;
 
 }

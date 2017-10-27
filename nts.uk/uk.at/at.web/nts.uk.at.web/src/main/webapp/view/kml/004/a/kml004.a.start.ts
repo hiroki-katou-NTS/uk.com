@@ -6,10 +6,9 @@ module nts.uk.at.view.kml004.a {
             if(screenModel.lstCate().length > 0){
                 $("#nameCtg").focus();
             }else{
-                screenModel.checkUpdate(false);
-                screenModel.check(true);
+                screenModel.checkUpdate(true);
                 $("#code-text").focus(); 
             }
         });
-    });
+    });  
 }   

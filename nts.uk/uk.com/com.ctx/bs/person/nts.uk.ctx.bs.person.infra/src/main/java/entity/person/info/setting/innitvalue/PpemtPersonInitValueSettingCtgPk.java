@@ -19,5 +19,10 @@ public class PpemtPersonInitValueSettingCtgPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "PER_INFO_CTG_ID")
 	public String perInfoCtgId;
+	
+	@Basic(optional = false)
+	@Column(name = "PER_INIT_SET_ID")
+	public String settingId;
+
 
 }

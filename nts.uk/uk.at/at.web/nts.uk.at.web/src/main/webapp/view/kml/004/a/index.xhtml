@@ -5,8 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1230,
+					height : 640
+				};
+			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode
 				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName
@@ -29,9 +35,9 @@
 						data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KML004_2')}</button>
 					<!-- A1_3 -->
 					<button tabindex="3" id="DELETE_BTN" class="danger"
-						data-bind="click: remove, enable: lstCate().length >0 &amp; checkUpdate()">#{i18n.getText('KML004_3')}</button>
+						data-bind="click: remove, enable: lstCate().length >0 &amp; !checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
-					<button tabindex="4" id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
+					<button tabindex="4" id="Close_BTN" data-bind="click: closeDialog">#{i18n.getText('KML004_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -60,7 +66,7 @@
 						<!-- A3_2 -->
 						<span><input tabindex="6" id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.check, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
+							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.checkUpdate, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
 						<!-- A3_3 -->
 						<span><input tabindex="7" id="nameCtg" style="width: 180px"
 							data-bind="ntsTextEditor: {value: categoryName, constraint:'CategoryName' , required: true, name: '#[KML004_10]'}" /></span>
@@ -88,42 +94,9 @@
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_16')}</div>
 						<!-- A5_3 disableMoveButton-->
 
-						<!-- 						<div class="left-contents"> -->
-						<!-- 							<br /> -->
-						<!-- 							<table class="left-data" id="multi-list1" tabindex="9" -->
-						<!-- 								data-bind="ntsGridList: { -->
-						<!-- 									height: 320, -->
-						<!-- 									options: items, -->
-						<!-- 									optionsValue: 'totalItemNo', -->
-						<!-- 									columns: columns, -->
-						<!-- 									multiple: true, -->
-						<!-- 									value: currentCodeList}"> -->
-						<!-- 							</table> -->
-						<!-- 						</div> -->
-
-						<!-- 						<div class="move-function"> -->
-						<!-- 							<button id="insert_btn" data-bind="click: add"> -->
-						<!-- 								<i class="icon icon-button-arrow-right"></i> -->
-						<!-- 							</button> -->
-						<!-- 							<br /> -->
-						<!-- 							<button id="remove-items" data-bind="click: del"> -->
-						<!-- 								<i class="icon icon-button-arrow-left"></i> -->
-						<!-- 							</button> -->
-						<!-- 						</div> -->
-
-						<!-- 						<div class="right-contents"> -->
-						<!-- 							<table id="multi-list2" data-bind="ntsGridList: { -->
-						<!--   									height: 320,  -->
-						<!--   									options: newItems,   -->
-						<!--  									optionsValue: 'totalItemNo',   -->
-						<!--   									columns: newColumns,   -->
-						<!--   									multiple: true,   -->
-						<!--   									value: newCurrentCodeList}">   -->
-						<!-- 							</table> -->
-						<!-- 						</div> -->
 
 
-						<div id="swap-list"
+						<div id="swap-list" tabindex="9"
 							data-bind="ntsSwapList: {
 										height: 330,
 										dataSource: items,
@@ -134,32 +107,20 @@
 										multiple: true,
 										enableRowNumbering: false ,
 										showNumbering: false,
+										enableRowNumbering: true,
 										showSort:{ showLeft : false, showRight: false}
-										
 									}">
 						</div>
 
-
-<!-- 									<div id="up-down"
-									data-bind="ntsUpDown: {
-									targetSource: newItems,
-									primaryKey: 'totalItemNo',
-									comId: '#swap-list',
-									type: 'swap',
-									swapTarget: 'right'
-								}"></div>  -->
-
-
-
- 						  <div class="chane-position-function">
+ 						  <div class="chane-position-function" >
 							<div id="swap-up-down"
 								data-bind="ntsUpDown: {
-										targetSource: newItems,
+										targetSource: selectedOption().totalEvalOrders,
 										primaryKey: 'totalItemNo',
 										comId: '#swap-list',
 										type: 'swap',
-										swapTarget: 'right'
-									}">
+										swapTarget: 'right',
+										enable:  ko.computed(function() { return selectedOption().totalEvalOrders().length > 0;})}">
 							</div> 
 						 </div> 
  

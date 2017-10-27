@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
@@ -26,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class WorkMonthlySettingFinder.
@@ -65,10 +65,6 @@ public class WorkMonthlySettingFinder {
 	/** The work type repository. */
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-	
-	/** The internationalization. */
-	@Inject
-	private IInternationalization internationalization;
 	
 	/**
 	 * Find by month.
@@ -180,7 +176,7 @@ public class WorkMonthlySettingFinder {
 						dto.setWorkTypeName(worktype.getName().v());
 					} else {
 						// set work type name NONE_SETTING
-						dto.setWorkTypeName(internationalization.getItemName(NONE_SETTING).get());
+						dto.setWorkTypeName(TextResource.localize(NONE_SETTING));
 					}
 					
 					// set work time name ""

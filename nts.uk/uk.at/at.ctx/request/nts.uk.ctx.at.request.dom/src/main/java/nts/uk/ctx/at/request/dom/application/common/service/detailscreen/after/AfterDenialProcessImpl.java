@@ -11,10 +11,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
@@ -110,7 +110,7 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 					if (agency.getListRepresenterSID().contains(loginEmp)) {
 						// (ドメインモデル「承認枠」)承認区分=「否認」、承認者=空、代行者=ログイン者の社員ID
 						//insert them 1 ban ghi vao bang KRQDT_APPROVE_ACCEPTED (ko co trong EAP)
-						ApproveAccepted approveAccepted = ApproveAccepted.createFromJavaType(companyID,
+						ApproveAccepted representer = ApproveAccepted.createFromJavaType(companyID,
 								UUID.randomUUID().toString(),
 								"", 
 								ApprovalAtr.DENIAL.value, 
@@ -118,7 +118,13 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 								GeneralDate.today(),
 								memo, 
 								loginEmp);
-						approveAcceptedRepo.createApproverAccepted(approveAccepted, frame.getFrameID());
+						//frame.getListApproveAccepted().add(approveAccepted);
+						approveAcceptedRepo.createApproverAccepted(representer, frame.getFrameID());
+						//chuyen trang thai nhung nguoi trong frame thanh DENIAL
+						frame.getListApproveAccepted().stream().forEach(x -> {
+							x.setApprovalATR(ApprovalAtr.DENIAL);
+							x.setRepresenterSID(loginEmp);
+						});
 					}
 				}
 			}

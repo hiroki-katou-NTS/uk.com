@@ -41,6 +41,12 @@ public class TotalEvalOrderFinder {
 		return horiCalDaySetDto;
 	}
 	
+	/**
+	 * convert list HoriTotalCNTSet from domain to dto
+	 * @param list HoriTotalCNTSet
+	 * @return
+	 * author: HoangYen
+	 */
 	private List<HoriTotalCNTSetDto> fromDomainCnt(List<HoriTotalCNTSet> lstHoriTotalCNTSet){
 		List<HoriTotalCNTSetDto> lst = new ArrayList<>(); 
 		HoriTotalCNTSetDto horiTotalCNTSetDto = new HoriTotalCNTSetDto();

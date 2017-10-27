@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@AllArgsConstructor
 public class ApprovalPhaseImport {
 	/** 会社ID */
 	private String companyId;

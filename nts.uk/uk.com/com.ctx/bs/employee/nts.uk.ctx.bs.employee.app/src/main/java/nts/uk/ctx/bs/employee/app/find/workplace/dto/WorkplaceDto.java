@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceSetMemento;
 
 /**
@@ -63,7 +62,7 @@ public class WorkplaceDto implements WorkplaceSetMemento {
 	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId)
 	 */
 	@Override
-	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.workplaceId = workplaceId.v();
+	public void setWorkplaceId(String workplaceId) {
+		this.workplaceId = workplaceId;
 	}
 }

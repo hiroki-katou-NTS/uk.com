@@ -10,25 +10,25 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStampDetail;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampDetail;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author Doan Duy Hung
@@ -83,9 +84,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			case STAMP_GO_OUT_PERMIT: 
 				for(int i=0;i<appStamp.getAppStampGoOutPermits().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).goOutReasonAtr = appStamp.getAppStampGoOutPermits().get(i).getStampGoOutAtr().value;
-					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampGoOutPermits().get(i).getStartTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampGoOutPermits().get(i).getStartTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampGoOutPermits().get(i).getStartLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampGoOutPermits().get(i).getEndTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampGoOutPermits().get(i).getEndTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampGoOutPermits().get(i).getEndLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
@@ -94,9 +95,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				for(int i=0;i<appStamp.getAppStampWorks().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportCard = appStamp.getAppStampWorks().get(i).getSupportCard();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportLocationCD = appStamp.getAppStampWorks().get(i).getSupportLocationCD();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
@@ -115,9 +116,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				for(int i=0;i<appStamp.getAppStampWorks().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportCard = appStamp.getAppStampWorks().get(i).getSupportCard();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).supportLocationCD = appStamp.getAppStampWorks().get(i).getSupportLocationCD();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
+					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime().v();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
@@ -276,9 +277,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStampGoOutPermit.getStampFrameNo()), 
 							appStamp.getVersion(),
 							appStampGoOutPermit.getStampGoOutAtr().value, 
-							appStampGoOutPermit.getStartTime(), 
+							appStampGoOutPermit.getStartTime().v(), 
 							appStampGoOutPermit.getStartLocation(), 
-							appStampGoOutPermit.getEndTime(), 
+							appStampGoOutPermit.getEndTime().v(), 
 							appStampGoOutPermit.getEndLocation(), 
 							null, 
 							null, 
@@ -298,9 +299,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStampWork.getStampFrameNo()),
 							appStamp.getVersion(),
 							appStampWork.getStampGoOutAtr().value, 
-							appStampWork.getStartTime(), 
+							appStampWork.getStartTime().v(), 
 							appStampWork.getStartLocation(), 
-							appStampWork.getEndTime(), 
+							appStampWork.getEndTime().v(), 
 							appStampWork.getEndLocation(), 
 							appStampWork.getSupportCard(), 
 							appStampWork.getSupportLocationCD(), 
@@ -346,9 +347,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStampWork.getStampFrameNo()),
 							appStamp.getVersion(),
 							appStampWork.getStampGoOutAtr().value, 
-							appStampWork.getStartTime(), 
+							appStampWork.getStartTime().v(), 
 							appStampWork.getStartLocation(), 
-							appStampWork.getEndTime(), 
+							appStampWork.getEndTime().v(), 
 							appStampWork.getEndLocation(), 
 							appStampWork.getSupportCard(), 
 							appStampWork.getSupportLocationCD(), 

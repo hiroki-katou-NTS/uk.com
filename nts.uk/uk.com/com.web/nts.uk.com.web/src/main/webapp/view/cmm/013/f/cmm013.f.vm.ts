@@ -127,11 +127,17 @@ module nts.uk.com.view.cmm013.f {
                                 _self.createMode(false);                                                     
                                 _self.sequenceCode(data.sequenceCode);
                                 _self.sequenceName(data.sequenceName);    
-                                _self.order(data.order);
+                                _self.order(data.order);                           
                             } else {                               
                                 // Sequence not found
                                 _self.sequenceCode("");
                                 _self.sequenceName("");   
+                            }
+                            // Set focus
+                            if (_self.createMode()) {
+                                $('#sequence-code').focus();
+                            } else {
+                                $('#sequence-name').focus();
                             }
                         })
                         .fail((res: any) => {
@@ -141,6 +147,8 @@ module nts.uk.com.view.cmm013.f {
                     // No value, remove data
                     _self.sequenceCode("");
                     _self.sequenceName("");    
+                    // Set focus
+                    $('#sequence-code').focus();
                 }                     
             }
             
@@ -159,24 +167,35 @@ module nts.uk.com.view.cmm013.f {
             public save(): void {
                 let _self = this;                  
                 
-                // Check required field
-                if (_self.sequenceCode() === "" || _self.sequenceName() === "") {
+                // Validate
+                if (!_self.validate()) {
                     return;
-                }
+                }  
                 
                 if (_self.createMode()) {
                     // Create mode                                 
-                    // Get max order
-                    service.findMaxOrder()
-                        .done((maxOrder: number) => {
-                            let newCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), maxOrder + 1);                           
-                            _self.saveHandler(newCommand);      
-                        });                                    
+                    let newCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), null);                           
+                    _self.saveHandler(newCommand);                                      
                 } else {
                     // Update mode
                     let updateCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), _self.order());
                     _self.saveHandler(updateCommand);                                       
                 }               
+            }
+            
+            /**
+             * Validate
+             */
+            private validate(): any {
+                let _self = this;
+
+                $('#sequence-code').ntsError('clear');
+                $('#sequence-name').ntsError('clear');
+
+                $('#sequence-code').ntsEditor('validate');
+                $('#sequence-name').ntsEditor('validate');
+
+                return !$('.nts-input').ntsError('hasError');
             }
             
             /**
@@ -189,24 +208,25 @@ module nts.uk.com.view.cmm013.f {
                 service.saveSequenceMaster(command)
                     .done((data: any) => {   
                         nts.uk.ui.block.clear();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });      
-                        _self.loadSequenceList()
-                            .done((dataList: SequenceMaster[]) => {                        
-                                if (dataList && dataList.length > 0) {
-                                    // Update mode
-                                    _self.createMode(false);
-                                    _self.items(dataList);
-                                    _self.currentCode(command.sequenceCode);  
-                                } else {
-                                    // Create mode
-                                    _self.createMode(true);
-                                    _self.items([]);
-                                    _self.currentCode(null);
-                                }                                        
-                            })
-                            .fail((res: any) => {
-                                
-                            });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.loadSequenceList()
+                                .done((dataList: SequenceMaster[]) => {                        
+                                    if (dataList && dataList.length > 0) {
+                                        // Update mode
+                                        _self.createMode(false);
+                                        _self.items(dataList);
+                                        _self.currentCode(command.sequenceCode);  
+                                    } else {
+                                        // Create mode
+                                        _self.createMode(true);
+                                        _self.items([]);
+                                        _self.currentCode(null);
+                                    }                                       
+                                })
+                                .fail((res: any) => {
+                                    
+                                });
+                        });                              
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
@@ -224,7 +244,7 @@ module nts.uk.com.view.cmm013.f {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                     .ifYes(() => { 
                         // Get item behind removed item
-                        let selectedCode: string = null;                    
+                        let nextCode: string = null;                    
                         //let currentIndex: number = _self.items().findIndex(item => item.sequenceCode == _self.currentCode()); // ES6 only :(      
                         let currentIndex: number = null;     
                         for (let item of _self.items()) {
@@ -234,35 +254,36 @@ module nts.uk.com.view.cmm013.f {
                         }
                         
                         if (currentIndex && _self.items()[currentIndex + 1]) {
-                            selectedCode = _self.items()[currentIndex + 1].sequenceCode;
+                            nextCode = _self.items()[currentIndex + 1].sequenceCode;
                         } 
                         
                         nts.uk.ui.block.grayout();
                         service.removeSequenceMaster(new SequenceMasterRemoveCommand(_self.sequenceCode()))
                             .done((data: any) => {
                                 nts.uk.ui.block.clear();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" });      
-                                _self.loadSequenceList()
-                                .done((dataList: SequenceMaster[]) => {                        
-                                    if (dataList && dataList.length > 0) {
-                                        // Update mode
-                                        _self.createMode(false);
-                                        _self.items(dataList);                                   
-                                        if (selectedCode) { 
-                                            _self.currentCode(selectedCode);
-                                        } else {
-                                            _self.currentCode(dataList[dataList.length - 1].sequenceCode);  
-                                        }                                    
-                                    } else {
-                                        // Create mode
-                                        _self.createMode(true);
-                                        _self.items([]);
-                                        _self.currentCode(null);
-                                    }     
-                                })
-                                .fail((res: any) => {
-                                    
-                                });
+                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                    _self.loadSequenceList()
+                                        .done((dataList: SequenceMaster[]) => {                        
+                                            if (dataList && dataList.length > 0) {
+                                                // Update mode
+                                                _self.createMode(false);
+                                                _self.items(dataList);                                   
+                                                if (nextCode) { 
+                                                    _self.currentCode(nextCode);
+                                                } else {
+                                                    _self.currentCode(dataList[dataList.length - 1].sequenceCode);  
+                                                }                                
+                                            } else {
+                                                // Create mode
+                                                _self.createMode(true);
+                                                _self.items([]);
+                                                _self.currentCode(null);
+                                            }     
+                                        })
+                                        .fail((res: any) => {
+                                            
+                                        });
+                                });                                     
                             })
                             .fail((res: any) => {
                                 nts.uk.ui.block.clear();

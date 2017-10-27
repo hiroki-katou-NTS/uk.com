@@ -25,31 +25,22 @@ module nts.uk.at.view.kmk004.b.viewmodel {
                 self.halfDay = ko.observable(false);
                 self.share = ko.observable(getShared("KML004A_DAY_SET"));
                 self.calDaySet(getShared("KML004A_DAY_SET"));
-//                self.halfDay.subscribe((value) => {
-//                    self.calDaySet().halfDay = value;
-//                });
-//                self.yearHd.subscribe((value) => {
-//                    self.calDaySet().yearHd = value;
-//                });
-//                self.heavyHd.subscribe((value) => {
-//                    self.calDaySet().heavyHd = value;
-//                });
-//                self.specialHoliday.subscribe((value) => {
-//                    self.calDaySet().specialHoliday = value;
-//                });
             }
 
 
             /**
              * Event on start page.
              */
-            public startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<any> {  
                 var self = this;
                 var dfd = $.Deferred();
                 service.getAll().done(function(data) {
-                    self.check(true);
+                    data.annualManage = 0;
+                    self.check(data.annualManage == 1 ? true : false);
                     if(self.check() == false){
-                        nts.uk.ui.windows.getSelf().setHeight(400);    
+                        nts.uk.ui.windows.getSelf().setHeight(350);    
+                    }else{
+                        nts.uk.ui.windows.getSelf().setHeight(400);
                     }
                     self.halfDay(self.calDaySet().halfDay);
                     self.yearHd(self.calDaySet().yearHd);

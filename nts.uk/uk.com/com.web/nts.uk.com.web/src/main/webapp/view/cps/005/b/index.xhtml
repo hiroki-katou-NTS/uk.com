@@ -241,7 +241,7 @@
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div
-											data-bind="ntsFormLabel: { constraint: ['DecimalPart'], required: true }"
+											data-bind="ntsFormLabel: { constraint: ['DecimalPart'], required: false }"
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_21')}' "></span>
 										</div>
@@ -255,7 +255,7 @@
 									            	width: '175px',
 									            	textalign: 'left'
 									            }),
-												required: true,
+												required: false,
 												enable: true,
 												readonly: false,
 												immediate: false}" />
@@ -266,12 +266,14 @@
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_35')}' "></span>
 										</div>
-										<input
-											data-bind="ntsNumberEditor: {
+										<com:ko-if bind="$parents[2].isNotsetOrnull(decimalPart)">
+											<input
+												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
 												option:  new nts.uk.ui.option.NumberEditorOption({
+												grouplength: 3,
 									            	placeholder: '',
 									            	width: '80px',
 									            	textalign: 'left'
@@ -279,13 +281,14 @@
 												required: false,
 												enable: true,
 												readonly: false}" />
-										<span class="label">～</span> <input
-											data-bind="ntsNumberEditor: {
+											<span class="label">～</span>
+											<input
+												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
-												option: 'NumericItemMin',
 												option:  new nts.uk.ui.option.NumberEditorOption({
+												grouplength: 3,
 									            	placeholder: '',
 									            	width: '80px',
 									            	textalign: 'left'
@@ -293,6 +296,47 @@
 												required: false,
 												enable: true,
 												readonly: false}" />
+
+										</com:ko-if>
+
+										<com:ko-if bind="!$parents[2].isNotsetOrnull(decimalPart)">
+											<input
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_38]',
+												value: numericItemMin,
+												constraint: 'NumericItemMin',
+												option:  new nts.uk.ui.option.CurrencyEditorOption({
+													grouplength: 3,
+									            	decimallength: decimalPart>8?8:decimalPart,
+									            	width: '70px',
+									            	textalign: 'left',
+									            	currencyformat: 'JPY',
+									            	currencyposition:'right'
+									            }),
+												required: false,
+												enable: true,
+												readonly: false}" />
+											<span class="label">～</span>
+											<input
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_39]',
+												value: numericItemMax,
+												constraint: 'NumericItemMax',
+												option:  new nts.uk.ui.option.CurrencyEditorOption({
+													grouplength: 3,
+									            	decimallength: decimalPart>8?8:decimalPart ,
+									            	width: '70px',
+									            	textalign: 'left',
+									            	currencyformat: 'JPY',
+									            	currencyposition:'right'
+									            }),
+												required: false,
+												enable: true,
+												readonly: false}" />
+
+										</com:ko-if>
+
+
 									</div>
 								</div>
 								<!-- End dataType is selected value 2 - 数値(Numeric) -->

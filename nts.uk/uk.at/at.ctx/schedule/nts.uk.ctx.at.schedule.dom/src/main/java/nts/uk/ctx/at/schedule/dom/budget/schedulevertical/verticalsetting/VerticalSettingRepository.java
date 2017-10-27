@@ -37,19 +37,4 @@ public interface VerticalSettingRepository {
 	 * @param verticalCalCd
 	 */
 	void deleteVerticalCalSet(String companyId, String verticalCalCd);
-	
-	/**
-	 * Find all Vertical Calculator Items by verticalCalCd
-	 * @param companyId
-	 * @param verticalCalCd
-	 * @return
-	 */
-	List<VerticalCalItem> findAllVerticalCalItem(String companyId, String verticalCalCd);
-	
-	/**
-	 * Delete Vertical Calculator Items  
-	 * @param companyId
-	 * @param verticalCalCd
-	 */
-	void deleteVerticalCalItems(String companyId, String verticalCalCd);
 }

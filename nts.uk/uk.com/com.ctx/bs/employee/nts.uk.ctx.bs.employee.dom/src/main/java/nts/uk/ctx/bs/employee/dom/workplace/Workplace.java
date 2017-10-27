@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -24,7 +26,7 @@ public class Workplace extends AggregateRoot{
 
 	/** The workplace id. */
 	//職場ID
-	private WorkplaceId workplaceId;
+	private String workplaceId;
 	
 	/** The workplace history. */
 	//履歴
@@ -44,7 +46,10 @@ public class Workplace extends AggregateRoot{
         Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
             @Override
             public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
-                return obj2.getPeriod().start().compareTo(obj1.getPeriod().start());
+                return new CompareToBuilder()
+                		.append(obj2.getPeriod().end(), obj1.getPeriod().end())
+                		.append(obj2.getPeriod().start(), obj1.getPeriod().start())
+                		.toComparison();
             }
         });
 	}
@@ -67,6 +72,9 @@ public class Workplace extends AggregateRoot{
 	 */
 	public WorkplaceHistory getWkpHistoryLatest() {
         int indexLatestHist = 0;
+        if (this.workplaceHistory.size() > 1) {
+            System.out.println();
+        }
         return this.workplaceHistory.get(indexLatestHist);
     }
 

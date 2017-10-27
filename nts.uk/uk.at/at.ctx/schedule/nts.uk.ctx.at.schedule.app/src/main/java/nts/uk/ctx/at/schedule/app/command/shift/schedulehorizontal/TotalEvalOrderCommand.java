@@ -16,8 +16,6 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 @Data
 @AllArgsConstructor
 public class TotalEvalOrderCommand {
-//	/** カテゴリコード */
-//	private String categoryCode;
 	/** 集計項目NO */
 	private int totalItemNo;
 	/** 並び順 */

@@ -90,4 +90,10 @@ public class PersonApprovalRoot extends AggregateRoot{
 		ps.period.updateStrartDate(sDate);
 		return ps;
 	}
+	public static boolean checkValidate(String startDate, String endDate){
+		if(startDate.compareTo(endDate) <= 0){
+			return true;
+		}
+		return false;
+	}
 }

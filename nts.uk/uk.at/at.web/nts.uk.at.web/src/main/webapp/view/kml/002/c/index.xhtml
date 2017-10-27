@@ -56,7 +56,7 @@
 							columns: [
 								{ prop: 'catName', length: 10 }
 							]}"></div>
-					<div class="cbx-checked" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
+					<div class="cbx-checked" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('KML002_27')}' }"></div>
 					
 					<div class="search-box"
 						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
@@ -76,9 +76,9 @@
 				</div>
 				
 				<div class="function-btns">
-					<button class="addition">#{i18n.getText('KML002_37')}</button>
-					<button class="subtraction">#{i18n.getText('KML002_38')}</button>
-					<button class="left-btn"><i class="icon icon-button-arrow-left"></i></button>
+					<button class="addition" data-bind="click: addition">#{i18n.getText('KML002_37')}</button>
+					<button class="subtraction" data-bind="click: subtraction">#{i18n.getText('KML002_38')}</button>
+					<button class="left-btn" data-bind="click: returnItems"><i class="icon icon-button-arrow-left"></i></button>
 				</div>
 				
 				<div class="right-tbl">

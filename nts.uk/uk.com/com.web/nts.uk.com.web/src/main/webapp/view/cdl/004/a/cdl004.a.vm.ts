@@ -28,7 +28,7 @@ module nts.uk.com.view.cdl004.a {
                     self.baseDate(inputCDL004.baseDate);
                     self.isShowNoSelectRow = inputCDL004.showNoSelection;
                     if (self.isMultiple) {
-                        self.selectedMulJobtitle(inputCDL004.canSelected);
+                        self.selectedMulJobtitle(inputCDL004.canSelected ? inputCDL004.canSelected : []);
                     }   
                     else {
                         self.selectedSelJobtitle(inputCDL004.canSelected);
@@ -44,7 +44,8 @@ module nts.uk.com.view.cdl004.a {
                     isShowNoSelectRow:  self.isShowNoSelectRow,
                     selectedCode: null,
                     isDialog: true,
-                    maxRows: 12
+                    maxRows: 12,
+                    tabindex: 1
                 }
                 if (self.isMultiple) {
                     self.jobtitles.selectedCode = self.selectedMulJobtitle;
@@ -58,30 +59,36 @@ module nts.uk.com.view.cdl004.a {
              * function on click button selected job title
              */
             private selectedJobtitle() :void {
-                var self = this;
-                if(self.isMultiple){
-                    if(!self.selectedMulJobtitle() || self.selectedMulJobtitle().length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
-                        return;    
-                    }    
-                }else {
-                     if(!self.selectedSelJobtitle || !self.selectedSelJobtitle()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
-                        return;    
-                    }      
+                let self = this;
+                if(self.isMultiple && self.selectedMulJobtitle().length == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                    return;
                 }
-                
-                var selectedCode : any = self.selectedMulJobtitle();
-                if (!self.isMultiple) {
-                    selectedCode = self.selectedSelJobtitle();
+                var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
+                if (!self.isMultiple && !self.selectedSelJobtitle() && !isNoSelectRowSelected) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                    return;
                 }
-                nts.uk.ui.windows.setShared('outputCDL004', { selectedCode: selectedCode });
-                nts.uk.ui.windows.close();    
+                nts.uk.ui.windows.setShared('outputCDL004', self.isMultiple ? self.selectedMulJobtitle() : self.selectedSelJobtitle());
+                nts.uk.ui.windows.close();   
+            }
+            
+            /**
+             * function check job title
+             */
+            public checkExistJobtile(code: string, data: UnitModel[]): boolean {
+                for (var item of data) {
+                    if (code === item.id) {
+                        return true;
+                    }
+                }
+                return false;
             }
             /**
              * close windows
              */
             private closeWindows(): void{
+                nts.uk.ui.windows.setShared('CDL004Cancel', true);
                 nts.uk.ui.windows.close();  
             }
         }

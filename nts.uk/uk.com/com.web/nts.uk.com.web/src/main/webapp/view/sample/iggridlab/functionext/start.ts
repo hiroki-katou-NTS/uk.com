@@ -289,6 +289,11 @@ module nts.uk.ui.gridlist {
                                       ],
                             ntsFeatures: [{ name: 'CopyPaste' },
                                             { name: 'CellEdit' },
+                                            { name: 'Storage',
+                                                type: 'Remote',
+                                                loadPath: 'sample/store/load',
+                                                savePath: 'sample/store/save'
+                                            },
                                             { name: 'CellColor', columns: [ 
                                                   { 
                                                     key: 'ruleCode', 

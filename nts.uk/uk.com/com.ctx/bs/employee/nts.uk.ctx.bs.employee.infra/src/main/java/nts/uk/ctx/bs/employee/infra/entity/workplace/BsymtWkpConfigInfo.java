@@ -11,7 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
@@ -41,10 +41,10 @@ public class BsymtWkpConfigInfo extends UkJpaEntity implements Serializable {
 	private String hierarchyCd;
 
 	/** The bsymt wkp config info. */
-	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
-	public BsymtWkpConfigInfo bsymtWkpConfigInfo;
+	private BsymtWkpConfig bsymtWkpConfig;
 
 	/**
 	 * Instantiates a new bsymt wkp config info.

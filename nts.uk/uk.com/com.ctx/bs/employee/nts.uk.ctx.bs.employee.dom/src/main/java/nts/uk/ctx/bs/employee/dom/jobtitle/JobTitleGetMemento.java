@@ -22,7 +22,7 @@ public interface JobTitleGetMemento {
 	 *
 	 * @return the job title id
 	 */
-	public JobTitleId getJobTitleId();
+	public String getJobTitleId();
 	
 	/**
 	 * Gets the job title history.

@@ -36,14 +36,14 @@
 							</tr>
 							<com:ko tag="foreach" bind="lstOvertimeModel">
 								<tr>
-									<td  class="bg-green">
+									<td>
 										<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification, enable: $parent.enableCheckbox }"></div>
 									</td>
 									<td>
 										<div data-bind="text: overtimeNo"></div>
 									</td>
 									<td>
-										<input tabindex="2"  data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, ntsTextEditor: {value: name, constraint: 'OvertimeName' }"/>
+										<input tabindex="2" data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText}"/>
 									</td>
 								</tr>
 							</com:ko>

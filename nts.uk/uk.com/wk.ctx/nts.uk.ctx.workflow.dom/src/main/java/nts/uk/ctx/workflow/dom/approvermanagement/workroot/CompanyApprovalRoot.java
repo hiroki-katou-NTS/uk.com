@@ -84,4 +84,10 @@ public class CompanyApprovalRoot extends AggregateRoot {
 		com.period.updateStrartDate(startDate);
 		return com;
 	}
+	public static boolean checkValidate(String startDate, String endDate){
+		if(startDate.compareTo(endDate) <= 0){
+			return true;
+		}
+		return false;
+	}
 }

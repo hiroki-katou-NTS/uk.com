@@ -37,9 +37,11 @@ module nts.uk.at.view.kmk010.c {
                    for (var dto of data) {
                        var model: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
                        model.updateData(dto);
+                       model.updateEnableCheck(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
+                       model.setUpdateData(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN);
                        self.lstOutsideOTBRDItemModel.push(model);
                    }
-                     // equal language id 
+                   // equal language id 
                    if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
                        self.textOvertimeName(nts.uk.resource.getText('KMK010_45'));
                        self.enableCheckbox(true);
@@ -71,20 +73,26 @@ module nts.uk.at.view.kmk010.c {
              */
            private saveOutsideOTBRDItem(): void {
                var self = this;
+               if (self.validateDomainSave()) {
+                   return;
+               }
                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
+                   
                    // convert model to dto
-                   var overtimes: OutsideOTBRDItemDto[] = [];
+                   var breakdownItems: OutsideOTBRDItemDto[] = [];
                    for (var model of self.lstOutsideOTBRDItemModel) {
-                       overtimes.push(model.toDto());
+                       breakdownItems.push(model.toDto());
                    }
 
                    // call service save all overtime
-                   service.saveAllOutsideOTBRDItem(overtimes).done(function() {
+                   service.saveAllOutsideOTBRDItem(breakdownItems).done(function() {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
-                       nts.uk.ui.dialog.alertError(error);
+                       nts.uk.ui.dialog.alertError(error).then(function() {
+                           nts.uk.ui.windows.close();
+                       });
                    });
                } else {
                    var overtimeLangNames: OutsideOTBRDItemLangDto[] = [];
@@ -102,9 +110,33 @@ module nts.uk.at.view.kmk010.c {
                            nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
-                       nts.uk.ui.dialog.alertError(error);
+                       nts.uk.ui.dialog.alertError(error).then(function() {
+                           nts.uk.ui.windows.close();
+                       });
+                       
                    });
                }
+           }
+           /**
+            * function validate domain save
+            */
+           private validateDomainSave(): boolean {
+               var self = this;
+               for (var model of self.lstOutsideOTBRDItemModel) {
+                   $('#breakdownItemNo_' + model.breakdownItemNo()).ntsError("clear");
+               }
+               for (var model of self.lstOutsideOTBRDItemModel) {
+                   if (model.requiredText()) {
+                       $('#breakdownItemNo_' + model.breakdownItemNo()).ntsEditor("validate");
+                   }
+               }
+               for (var model of self.lstOutsideOTBRDItemModel) {
+                   if (model.requiredText() && $('#breakdownItemNo_' + model.breakdownItemNo()).ntsError('hasError')) {
+                       return true;
+                   }
+               }
+               return false;
+
            }
             
             /**

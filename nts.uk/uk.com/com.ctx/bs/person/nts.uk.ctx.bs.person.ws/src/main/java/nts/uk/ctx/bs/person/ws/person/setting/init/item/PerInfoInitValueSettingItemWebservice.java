@@ -9,18 +9,20 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import find.person.setting.init.item.PerInfoInitValueSetItemFinder;
+import find.person.setting.init.item.PerInfoInitValueSettingItemDto;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 
 @Path("ctx/bs/person/info/setting/init/item")
 @Produces("application/json")
 public class PerInfoInitValueSettingItemWebservice extends WebService {
 	@Inject
 	private PerInfoInitValueSetItemFinder finder;
-	
+
 	@POST
-	@Path("find/{perInfoCtgId}")
-	public List<PerInfoInitValueSetItem> getAllItem(@PathParam("perInfoCtgId") String perInfoCtgId) {
-		return this.finder.getAllItem(perInfoCtgId);
+	@Path("find/{settingId}/{perInfoCtgId}")
+	public List<PerInfoInitValueSettingItemDto> getAllItem(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
+		return this.finder.getAllItem(settingId, perInfoCtgId);
 	}
+
+
 }

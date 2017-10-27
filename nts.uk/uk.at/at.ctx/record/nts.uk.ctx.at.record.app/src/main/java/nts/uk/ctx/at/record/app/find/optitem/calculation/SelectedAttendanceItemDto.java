@@ -17,10 +17,16 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItemSetMem
 public class SelectedAttendanceItemDto implements SelectedAttendanceItemSetMemento {
 
 	/** The attendance item id. */
-	private String id;
+	private int attendanceItemId;
 
 	/** The operator. */
 	private int operator;
+
+	/** The attendance item name. */
+	private String attendanceItemName;
+
+	/** The operator text. */
+	private String operatorText;
 
 	/*
 	 * (non-Javadoc)
@@ -29,8 +35,8 @@ public class SelectedAttendanceItemDto implements SelectedAttendanceItemSetMemen
 	 * SelectedAttendanceItemSetMemento#setAttItemId(java.lang.String)
 	 */
 	@Override
-	public void setAttItemId(String id) {
-		this.id = id;
+	public void setAttItemId(int id) {
+		this.attendanceItemId = id;
 	}
 
 	/*

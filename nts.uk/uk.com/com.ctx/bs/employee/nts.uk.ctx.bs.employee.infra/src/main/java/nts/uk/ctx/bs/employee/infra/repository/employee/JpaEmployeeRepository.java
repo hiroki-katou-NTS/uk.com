@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import entity.employeeinfo.BsymtEmployee;
+import entity.employeeinfo.BsymtEmployeePk;
 import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
+import entity.layout.PpemtMaintenanceLayout;
+import entity.layout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -80,10 +83,22 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
 	
 	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = 
-			" SELECT c.employeeCode, d.personName "
+			" SELECT c.employeeCode, d.personName, a.bsymtDeleteEmpManagementPK.sid "
 			+ " FROM BsymtDeleteEmpManagement a "
 			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId ";
+	
+	public final String GET_EMPLOYEE_DETAIL_INFO_TO_DELETE = 
+			" SELECT a.deleteDate, a.reason, c.employeeCode, d.personName "
+			+ " FROM BsymtDeleteEmpManagement a "
+			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
+			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId "
+			+ " WHERE a.bsymtDeleteEmpManagementPK.sid = :sid";
+	
+	public final String SELECT_BY_SID_CID_SYSTEMDATE = "SELECT c FROM BsymtEmployee c "
+			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " WHERE c.companyId = :companyId " + " AND c.personId = :personId"
+			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :systemDate" + " AND d.retireDate >= :systemDate";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -109,19 +124,20 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				entity.hiringType, entity.retireDate, entity.bsymtJobEntryHistoryPk.entryDate, entity.adoptDate);
 		return domain;
 	}
-
-	private BsymtDeleteEmpManagement toEntityDeleteEmpManagent(DeleteEmpManagement domain) {
-		BsymtDeleteEmpManagementPK pk = new BsymtDeleteEmpManagementPK(domain.getSid());
-		BsymtDeleteEmpManagement entity = new BsymtDeleteEmpManagement();
-		entity.setBsymtDeleteEmpManagementPK(pk);
-		entity.setReason(domain.getReasonRemoveEmp().toString());
-		entity.setIsDeleted(0); // 0 : false
-		entity.setDeleteDate(domain.getDeleteDate());
-		
+	
+	private BsymtEmployee toEntityEmployee(Employee domain) {
+		BsymtEmployee entity = new BsymtEmployee();
+		entity.bsymtEmployeePk = new BsymtEmployeePk(domain.getSId().toString());
+		entity.companyId = domain.getCompanyId();
+		entity.companyMail = domain.getCompanyMail().v();
+		entity.companyMobile = domain.getCompanyMobile().v();
+		entity.employeeCode = domain.getSCd().v();
+		entity.personId = domain.getPId();
+		entity.companyMobileMail = domain.getMobileMail().v();
 		return entity;
-		
-		
 	}
+
+
 	@Override
 	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
 		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployee.class)
@@ -292,7 +308,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// laitv
 	@Override
 	public Optional<Object[]> getEmployeeInfoToDelete(String employeeId) {
-		// TODO Auto-generated method stub
 
 		Optional<Object[]> empInfo = this.queryProxy().query(GET_EMPLOYEE_INFO_TO_DELETE)
 				.setParameter("sId", employeeId).getSingle();
@@ -300,14 +315,40 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	}
 
 	@Override
-	public void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement) {
-		this.commandProxy().insert(toEntityDeleteEmpManagent(deleteEmpManagement));
-	}
-
-	@Override
 	public List<Object[]> getAllEmployeeInfoToDelete() {
 		List<Object[]> lst = this.queryProxy().query(GET_ALL_EMPLOYEE_INFO_TO_DELETE).getList();
 		return lst;
+	}
+
+	@Override
+	public Optional<Object[]> getEmployeeDetailToDelete(String employeeId) {
+
+		Optional<Object[]> empDetailInfo = this.queryProxy().query(GET_EMPLOYEE_DETAIL_INFO_TO_DELETE)
+				.setParameter("sid", employeeId).getSingle();
+		return empDetailInfo;
+	}
+
+	@Override
+	public void updateEmployee(Employee domain) {
+		this.commandProxy().update(toEntityEmployee(domain));
+	}
+
+	@Override
+	public Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate) {
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID_CID_SYSTEMDATE, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("personId", personId)
+				.setParameter("systemDate", systemDate).getSingleOrNull();
+
+		Employee emp = new Employee();
+		if (entity != null) {
+			emp = toDomainEmployee(entity);
+
+			if (!entity.listEntryHist.isEmpty()) {
+				emp.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(emp);
 	}
 
 }

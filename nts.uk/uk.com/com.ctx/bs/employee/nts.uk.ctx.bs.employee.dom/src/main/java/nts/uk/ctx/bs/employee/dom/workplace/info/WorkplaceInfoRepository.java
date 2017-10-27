@@ -14,13 +14,13 @@ import nts.arc.time.GeneralDate;
  */
 public interface WorkplaceInfoRepository {
 
-    /**
+	/**
      * Adds the.
      *
      * @param workplaceInfo the workplace info
      */
     void add(WorkplaceInfo workplaceInfo);
-    
+
 	/**
 	 * Update.
 	 *
@@ -36,7 +36,7 @@ public interface WorkplaceInfoRepository {
      * @param historyId the history id
      */
     void remove(String companyId, String workplaceId, String historyId);
-	
+
 	/**
 	 * Find by wkp id.
 	 *
@@ -55,6 +55,15 @@ public interface WorkplaceInfoRepository {
 	List<WorkplaceInfo> findByWkpCd(String companyId, String wpkCode, GeneralDate baseDate);
 
 	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate);
+
+	/**
 	 * Find by wkp id.
 	 *
 	 * @param companyId the company id
@@ -63,21 +72,13 @@ public interface WorkplaceInfoRepository {
 	 * @return the list
 	 */
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
-	
-	/**
-	 * Find latest by wkp id.
-	 *
-	 * @param wkpId the wkp id
-	 * @return the optional
-	 */
-	Optional<WorkplaceInfo> findLatestByWkpId(String wkpId);
-	
+
 	/**
 	 * Checks if is existed.
 	 *
 	 * @param companyId the company id
-	 * @param newWkpId the new wkp id
+	 * @param newWkpCd the new wkp id
 	 * @return true, if is existed
 	 */
-	boolean isExisted(String companyId, String newWkpId);
+	boolean isExistedWkpCd(String companyId, String newWkpCd);
 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,12 +12,13 @@ import lombok.NoArgsConstructor;
  * The Class WorkplaceStateDto.
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class WorkplaceStateDto {
 
     /** The is less max hierarchy. */
-    private boolean isLessMaxHierarchy;
+    private Boolean isLessMaxHierarchy;
     
     /** The is less max siblings. */
-    private boolean isLessMaxSiblings;
+    private Boolean isLessMaxSiblings;
 }

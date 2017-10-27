@@ -11,14 +11,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -42,19 +42,19 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyId, 
-						"", 
-						"", 
+						command.goBackCommand.getAppID(), 
+						appApprovalPhaseCmd.phaseID, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
 						//Frame
 						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyId, 
-								"", 
+								approvalFrame.frameID, 
 								approvalFrame.dispOrder, 
 								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyId, 
-										"", 
+										approveAccepted.appAcceptedID, 
 										approveAccepted.approverSID,
 										ApprovalAtr.UNAPPROVED.value,
 										approveAccepted.confirmATR,

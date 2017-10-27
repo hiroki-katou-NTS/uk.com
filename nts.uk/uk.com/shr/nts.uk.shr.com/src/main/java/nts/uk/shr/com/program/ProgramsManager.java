@@ -980,6 +980,27 @@ public class ProgramsManager {
 	
 	public static final Program KDW003B = new Program(WebAppId.AT, ProgramIdConsts.KDW003B, "KDW003_16",
 			"/view/kdw/003/b/index.xhtml");
+	
+	public static final Program CMM018A = new Program(WebAppId.COM, ProgramIdConsts.CMM018A, "CMM018_1",
+			"/view/cmm/018/a/index.xhtml");
+	
+	public static final Program CMM018I = new Program(WebAppId.COM, ProgramIdConsts.CMM018I, "CMM018_9",
+			"/view/cmm/018/i/index.xhtml");
+	
+	public static final Program CMM018J = new Program(WebAppId.COM, ProgramIdConsts.CMM018J, "CMM018_10",
+			"/view/cmm/018/j/index.xhtml");
+	
+	public static final Program CMM018K = new Program(WebAppId.COM, ProgramIdConsts.CMM018K, "CMM018_11",
+			"/view/cmm/018/k/index.xhtml");
+	
+	public static final Program CMM018L = new Program(WebAppId.COM, ProgramIdConsts.CMM018L, "CMM018_12",
+			"/view/cmm/018/l/index.xhtml");
+	
+	public static final Program CMM018M = new Program(WebAppId.COM, ProgramIdConsts.CMM018M, "CMM018_13",
+			"/view/cmm/018/m/index.xhtml");
+	
+	public static final Program CMM018N = new Program(WebAppId.COM, ProgramIdConsts.CMM018N, "CMM018_14",
+			"/view/cmm/018/n/index.xhtml");
 
 	// TODO: Define new programs here.
 

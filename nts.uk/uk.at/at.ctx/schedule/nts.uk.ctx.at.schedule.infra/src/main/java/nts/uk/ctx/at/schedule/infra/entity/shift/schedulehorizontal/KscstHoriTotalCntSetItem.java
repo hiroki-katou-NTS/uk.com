@@ -24,7 +24,7 @@ public class KscstHoriTotalCntSetItem extends UkJpaEntity implements Serializabl
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KscstHoriTotalCntSetPK kscstHoriTotalCntSetPK;
-
+	// many cnt set to one order item
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "CATEGORY_CD", insertable = false, updatable = false),

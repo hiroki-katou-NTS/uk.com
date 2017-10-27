@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
@@ -28,7 +27,9 @@ public class VerticalSettingCommandHandler extends CommandHandler<VerticalSettin
 		Optional<VerticalCalSet> data = this.repository.getVerticalCalSetByCode(companyId, command.getVerticalCalCd());
 		
 		if (data.isPresent()) {
-			throw new BusinessException("Msg_3");
+			//throw new BusinessException("Msg_3");
+			// update process
+			repository.updateVerticalCalSet(verticalCalSet);
 		} else {
 			// insert process
 			repository.addVerticalCalSet(verticalCalSet);

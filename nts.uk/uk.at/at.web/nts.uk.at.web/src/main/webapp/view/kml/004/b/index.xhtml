@@ -9,8 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 400,
-					height : 500
+					width : 400
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -20,14 +19,14 @@
 			<com:scriptfile path="kml004.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area cf">
+			<div id="contents-area">
 				<!-- B1_1 -->
 				<div id="label_1" data-bind="ntsFormLabel: {requied: false}">#{i18n.getText('KML004_19')}</div>
 				<div>
 					<!-- B1_2 -->
-					<div tabindex="1" id="check_1" data-bind="ntsCheckBox: { checked: yearHd, visiable: check }">#{i18n.getText('KML004_20')}</div>
+					<div tabindex="1" id="check_1" data-bind="ntsCheckBox: { checked: yearHd}, visible: check">#{i18n.getText('KML004_20')}</div>
 					<!-- B1_3 -->
-					<div><div tabindex="2" id="check_2" data-bind="ntsCheckBox: { checked: heavyHd, visiable: check }">#{i18n.getText('KML004_21')}</div></div>
+					<div><div tabindex="2" id="check_2" data-bind="ntsCheckBox: { checked: heavyHd}, visible: check">#{i18n.getText('KML004_21')}</div></div>
 					<!-- B1_4 -->
 					<div><div tabindex="3" id="check_3" data-bind="ntsCheckBox: { checked: specialHoliday}">#{i18n.getText('KML004_22')}</div></div>
 				</div>

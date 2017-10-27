@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
@@ -28,10 +26,10 @@ public class PerInfoInitValueSettingCtgFinder {
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
-	public List<PerInfoInitValueSettingCtg> getAllCategory() {
+	public List<PerInfoInitValueSettingCtg> getAllCategory(String settingId) {
 		String companyId = AppContexts.user().companyId();
 
-		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId);
+		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId, settingId);
 
 		if (ctgLst.size() > 0) {
 
@@ -42,17 +40,17 @@ public class PerInfoInitValueSettingCtgFinder {
 		return ctgLst;
 	}
 
-	// sonnlb
+	// sonnlb code start
+	public List<InitCtgDto> getAllCategoryBySetId(String settingId) {
 
-	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(String settingId) {
-
-		List<PerInfoInitValueSettingCtgDto> settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream()
-				.map(c -> PerInfoInitValueSettingCtgDto.fromDomain(c)).collect(Collectors.toList());
+		List<InitCtgDto> settingList;
+		settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream().map(c -> InitCtgDto.fromDomain(c))
+				.collect(Collectors.toList());
 
 		return settingList;
 
 	}
 
-	// sonnlb
+	// sonnlb code end
 
 }

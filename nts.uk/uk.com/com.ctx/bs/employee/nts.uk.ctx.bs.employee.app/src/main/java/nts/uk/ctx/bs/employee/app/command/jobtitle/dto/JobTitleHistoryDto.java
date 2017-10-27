@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -17,10 +16,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JobTitleHistoryDto {
 
 	/** The history id. */
-	public String historyId;
+	private String historyId;
 
 	/** The period. */
-	public PeriodDto period;
+	private PeriodDto period;
 
 	/**
 	 * To domain.
@@ -34,7 +33,7 @@ public class JobTitleHistoryDto {
 	/**
 	 * The Class JobTitleHistoryGetMementoImpl.
 	 */
-	public class JobTitleHistoryGetMementoImpl implements JobTitleHistoryGetMemento {
+	class JobTitleHistoryGetMementoImpl implements JobTitleHistoryGetMemento {
 
 		/** The job title history dto. */
 		private JobTitleHistoryDto dto;
@@ -52,12 +51,12 @@ public class JobTitleHistoryDto {
 		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento#getHistoryId()
 		 */
 		@Override
-		public HistoryId getHistoryId() {
+		public String getHistoryId() {
 			String historyId = this.dto.getHistoryId();
 			if (StringUtil.isNullOrEmpty(historyId, true)) {
 				historyId = IdentifierUtil.randomUniqueId();
 			}
-			return new HistoryId(historyId);
+			return historyId;
 		}
 
 		/* (non-Javadoc)

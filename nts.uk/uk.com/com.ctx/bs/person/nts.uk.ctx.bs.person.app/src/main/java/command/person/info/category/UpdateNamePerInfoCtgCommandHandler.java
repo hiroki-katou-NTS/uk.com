@@ -28,8 +28,8 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 		UpdateNamePerInfoCtgCommand update = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		String contractCd = companyId.substring(0, 12);
-		List<String> nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName());
-		if ( (nameList.size()) < 1) {
+		boolean nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName(), update.getCategoryId());
+		if (nameList) {
 			PersonInfoCategory categoryInfo = this.perInfoCtgRepositoty
 					.getDetailCategoryInfo(companyId, update.getCategoryId(), contractCd).orElse(null);
 			if (categoryInfo != null) {

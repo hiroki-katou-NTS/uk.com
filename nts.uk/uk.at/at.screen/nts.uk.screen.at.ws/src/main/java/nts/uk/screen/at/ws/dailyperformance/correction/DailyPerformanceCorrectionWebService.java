@@ -10,7 +10,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 
@@ -25,6 +27,9 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private DailyPerformanceCorrectionProcessor processor;
 	
+	@Inject
+	private DPUpdateColWidthCommandHandler commandHandler;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
@@ -36,4 +41,11 @@ public class DailyPerformanceCorrectionWebService {
 	public List<ErrorReferenceDto> getError(DPParams params ) {
 		return this.processor.getListErrorRefer(params.dateRange, params.lstEmployee);
 	}
+	
+	@POST
+	@Path("updatecolumnwidth")
+	public void getError(UpdateColWidthCommand command){
+		this.commandHandler.handle(command);
+	}
+	
 }

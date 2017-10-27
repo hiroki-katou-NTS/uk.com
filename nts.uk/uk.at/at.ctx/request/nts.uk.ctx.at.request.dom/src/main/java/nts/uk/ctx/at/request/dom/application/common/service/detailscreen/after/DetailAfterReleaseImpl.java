@@ -3,9 +3,10 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -70,8 +71,9 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 					// có thì thay đổi approveAccepted
 					if(approveAccepted.getApproverSID().equals(loginID)||approveAccepted.getRepresenterSID().equals(loginID)){
 						approveAccepted.setApprovalATR(ApprovalAtr.UNAPPROVED);
-						approveAccepted.setApproverSID("");
-						approveAccepted.setRepresenterSID("");
+						// clear ApproverSID and RepresenterSID ???
+						// approveAccepted.setApproverSID("");
+						// approveAccepted.setRepresenterSID("");
 					}
 				}
 			}
@@ -79,7 +81,6 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
 			
 		}
-		appRepo.updateApplication(application);
 		
 		if(!cancelFlag) return;
 		

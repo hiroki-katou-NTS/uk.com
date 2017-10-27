@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class WorkplaceName.
  */
-@StringMaxLength(120)
+@StringMaxLength(20)
 public class WorkplaceName extends StringPrimitiveValue<WorkplaceName> {
 	
 	/** The Constant serialVersionUID. */

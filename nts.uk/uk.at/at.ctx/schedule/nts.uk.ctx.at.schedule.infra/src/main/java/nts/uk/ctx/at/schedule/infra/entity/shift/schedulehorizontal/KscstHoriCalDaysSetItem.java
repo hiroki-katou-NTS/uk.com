@@ -42,7 +42,7 @@ public class KscstHoriCalDaysSetItem extends UkJpaEntity implements Serializable
 	/** 積休カウント区分 **/
 	@Column(name = "HAVY_HD_ATR")
 	public int heavyHd;
-	
+	// one cal day set to one eval order
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 		@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "CATEGORY_CD", insertable = false, updatable = false),

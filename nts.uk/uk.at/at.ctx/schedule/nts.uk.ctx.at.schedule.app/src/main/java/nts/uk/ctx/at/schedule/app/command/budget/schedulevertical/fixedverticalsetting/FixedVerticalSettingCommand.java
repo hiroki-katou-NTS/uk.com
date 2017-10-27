@@ -18,10 +18,7 @@ public class FixedVerticalSettingCommand {
 	/* 付与基準日 */
 	private int fixedItemAtr;
 
-	/* 付与基準日 */
-	private int verticalDetailedSet;
-
 	public FixedVertical toDomain(String companyId){
-		return FixedVertical.createFromJavaType(companyId, this.fixedItemAtr, this.useAtr, this.verticalDetailedSet);
+		return FixedVertical.createFromJavaType(companyId,this.useAtr, this.fixedItemAtr);
 	}
 }

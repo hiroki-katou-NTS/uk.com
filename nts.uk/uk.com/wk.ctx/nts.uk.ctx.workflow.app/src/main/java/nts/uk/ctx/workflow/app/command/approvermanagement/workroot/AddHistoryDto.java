@@ -9,7 +9,7 @@ import lombok.Setter;
 public class AddHistoryDto {
 
 	/**申請種類*/
-	private List<Integer> lstAppType;
+	private List<AppType> lstAppType;
 	/**開始日*/
 	private String startDate;
 	/**開始日 Old*/

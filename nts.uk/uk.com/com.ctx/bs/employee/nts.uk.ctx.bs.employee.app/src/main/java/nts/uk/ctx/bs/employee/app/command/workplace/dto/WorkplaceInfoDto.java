@@ -5,10 +5,6 @@
 package nts.uk.ctx.bs.employee.app.command.workplace.dto;
 
 import lombok.Data;
-import nts.gul.text.IdentifierUtil;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
@@ -19,6 +15,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName;
 
 /**
  * The Class WorkplaceInfoDto.
+ */
+
+/**
+ * Instantiates a new workplace info dto.
  */
 
 /**
@@ -50,10 +50,11 @@ public class WorkplaceInfoDto {
      *
      * @param companyId the company id
      * @param wkpId the wkp id
+     * @param historyId the history id
      * @return the workplace info
      */
-    public WorkplaceInfo toDomain(String companyId, WorkplaceId wkpId) {
-        return new WorkplaceInfo(new WorkplaceInfoGetMementoImpl(companyId, wkpId, this));
+    public WorkplaceInfo toDomain(String companyId, String wkpId, String historyId) {
+        return new WorkplaceInfo(new WorkplaceInfoGetMementoImpl(companyId, wkpId, historyId, this));
     }
 
     /**
@@ -65,7 +66,10 @@ public class WorkplaceInfoDto {
         private String companyId;
 
         /** The wkp id. */
-        private WorkplaceId wkpId;
+        private String wkpId;
+        
+        /** The history id. */
+        private String historyId;
 
         /** The dto. */
         private WorkplaceInfoDto dto;
@@ -73,18 +77,15 @@ public class WorkplaceInfoDto {
         /**
          * Instantiates a new workplace info get memento impl.
          *
-         * @param companyId
-         *            the company id
-         * @param wkpId
-         *            the wkp id
-         * @param historyId
-         *            the history id
-         * @param dto
-         *            the dto
+         * @param companyId the company id
+         * @param wkpId the wkp id
+         * @param historyId the history id
+         * @param dto the dto
          */
-        public WorkplaceInfoGetMementoImpl(String companyId, WorkplaceId wkpId, WorkplaceInfoDto dto) {
+        public WorkplaceInfoGetMementoImpl(String companyId, String wkpId, String historyId, WorkplaceInfoDto dto) {
             this.companyId = companyId;
             this.wkpId = wkpId;
+            this.historyId = historyId;
             this.dto = dto;
         }
 
@@ -108,12 +109,12 @@ public class WorkplaceInfoDto {
          * getHistoryId()
          */
         @Override
-        public HistoryId getHistoryId() {
-            String historyId = this.dto.historyId;
-            if (StringUtil.isNullOrEmpty(historyId, true)) {
-                historyId = IdentifierUtil.randomUniqueId();
-            }
-            return new HistoryId(historyId);
+        public String getHistoryId() {
+            return this.historyId;
+//            if (StringUtil.isNullOrEmpty(historyId, true)) {
+//                historyId = IdentifierUtil.randomUniqueId();
+//            }
+//            return historyId;
         }
 
         /*
@@ -124,7 +125,7 @@ public class WorkplaceInfoDto {
          * getWorkplaceId()
          */
         @Override
-        public WorkplaceId getWorkplaceId() {
+        public String getWorkplaceId() {
             return this.wkpId;
         }
 

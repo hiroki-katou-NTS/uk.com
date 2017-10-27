@@ -10,14 +10,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 /**
  * 
@@ -102,11 +102,6 @@ public class AppStamp extends Application {
 		switch(this.stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: {
 				for(AppStampGoOutPermit appStampGoOutPermit : this.appStampGoOutPermits){
-					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampGoOutPermit.getStartTime()>=appStampGoOutPermit.getEndTime()){
-						throw new BusinessException("Msg_307");
-					}
-					
 					/*打刻申請詳細.打刻分類＝外出のとき、すべての外出許可申請が以下のいずれも設定されていない (#Msg_308#)
 					- 開始時刻
 					- 開始場所
@@ -126,17 +121,22 @@ public class AppStamp extends Application {
 							appStampGoOutPermit.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
 					}
+					if((appStampGoOutPermit.getStampAtr().equals(AppStampAtr.CARE))&&
+							(appStampGoOutPermit.getStartTime() == null ||
+							appStampGoOutPermit.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
+					
+					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
+					if(appStampGoOutPermit.getStartTime().greaterThanOrEqualTo(appStampGoOutPermit.getEndTime())){
+						throw new BusinessException("Msg_307");
+					}
 				}
 				break;
 			}
 			
 			case STAMP_ADDITIONAL: {
 				for(AppStampWork appStampWork : this.appStampWorks) {
-					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampWork.getStartTime()>=appStampWork.getEndTime()){
-						throw new BusinessException("Msg_307");
-					}
-					
 					/*打刻申請詳細.打刻分類＝出勤／退勤 または 臨時のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
 					- 開始時刻
 					- 開始場所
@@ -146,6 +146,11 @@ public class AppStamp extends Application {
 							Strings.isEmpty(appStampWork.getStartLocation()) || 
 							appStampWork.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
+					}
+					
+					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
+					if(appStampWork.getStartTime().greaterThanOrEqualTo(appStampWork.getEndTime())){
+						throw new BusinessException("Msg_307");
 					}
 				}
 				break;
@@ -167,9 +172,15 @@ public class AppStamp extends Application {
 			
 			case OTHER: {
 				for(AppStampWork appStampWork : this.appStampWorks) {
-					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampWork.getStartTime()>=appStampWork.getEndTime()){
-						throw new BusinessException("Msg_307");
+					/*打刻申請詳細.打刻分類＝出勤／退勤 または 臨時のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 開始場所
+					- 終了時刻*/
+					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
+							(appStampWork.getStartTime() == null ||
+							Strings.isEmpty(appStampWork.getStartLocation()) || 
+							appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
 					}
 					
 					/*打刻申請詳細.打刻分類＝外出のとき、すべての外出許可申請が以下のいずれも設定されていない (#Msg_308#)
@@ -191,15 +202,9 @@ public class AppStamp extends Application {
 									appStampWork.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
 					}
-					
-					/*打刻申請詳細.打刻分類＝出勤／退勤 または 臨時のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
-					- 開始時刻
-					- 開始場所
-					- 終了時刻*/
-					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
+					if((appStampWork.getStampAtr().equals(AppStampAtr.CARE))&&
 							(appStampWork.getStartTime() == null ||
-							Strings.isEmpty(appStampWork.getStartLocation()) || 
-							appStampWork.getEndTime() == null )){
+									appStampWork.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
 					}
 					
@@ -212,6 +217,11 @@ public class AppStamp extends Application {
 							Strings.isBlank(appStampWork.getSupportCard()) || 
 							appStampWork.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
+					}
+					
+					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
+					if(appStampWork.getStartTime().greaterThanOrEqualTo(appStampWork.getEndTime())){
+						throw new BusinessException("Msg_307");
 					}
 				}
 				break;

@@ -29,7 +29,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         appreason: KnockoutObservable<string>;
         time: KnockoutObservable<string>;
         //Show Screen
-        showScreen: string;
+        showScreen: KnockoutObservable<string>;
+        postAtr: number;
         
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
@@ -37,7 +38,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             //check sendMail
             self.sendMail = ko.observable(true);
             //date editor
-            self.date = ko.observable("");
+            self.date = ko.observable(new Date());
             //time editor
             self.lateTime1 = ko.observable(0);
             self.lateTime2 = ko.observable(0);
@@ -58,36 +59,45 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             //MultilineEditor 
             self.appreason = ko.observable('');
             //Show Screen
-            self.showScreen = __viewContext.transferred.value.showScreen;
+            self.showScreen = ko.observable('');
             self.startPage();
             self.applicantName = ko.observable("");
-        }
-        
-        update(): JQueryPromise<any> {
-            
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
 
-            service.getByCode().done(function(data) { 
+            service.getByCode(self.appID()).done(function(data) { 
                 self.ListTypeReason(data.listApplicationReasonDto);
                 self.applicantName(data.applicantName);
-                
+                self.selectedCode(data.lateOrLeaveEarlyDto.appReasonID);
+                self.appreason(data.lateOrLeaveEarlyDto.appReason);
+                self.date(data.lateOrLeaveEarlyDto.applicationDate);
+                self.lateTime1(data.lateOrLeaveEarlyDto.lateTime1);
+                self.lateTime2(data.lateOrLeaveEarlyDto.lateTime2);
+                self.late1(data.lateOrLeaveEarlyDto.late1);
+                self.late2(data.lateOrLeaveEarlyDto.late2);
+                self.early1(data.lateOrLeaveEarlyDto.early1);
+                self.early2(data.lateOrLeaveEarlyDto.early2);
+                self.earlyTime1(data.lateOrLeaveEarlyDto.earlyTime1);
+                self.earlyTime2(data.lateOrLeaveEarlyDto.earlyTime2);
+                self.showScreen(data.lateOrLeaveEarlyDto.postAtr == 1 ? 'F' : '');
+                self.postAtr = data.lateOrLeaveEarlyDto.postAtr;
+                $("#inputdate").focus();
                 dfd.resolve();
             });
                
             return dfd.promise();
         }
-
-        /** Create Button Click */
-        registryButtonClick() {
+        
+        update() {
             var self = this;
 
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
+                    appID: self.appID(),
                     appDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
@@ -99,9 +109,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     early2: self.early2() ? 1 : 0,
                     earlyTime2: self.earlyTime2(),
                     reasonTemp: self.selectedCode(),
-                    appReason: self.appreason()
+                    appReason: self.appreason(),
+                    appApprovalPhaseCmds: self.approvalList
                 };
-                service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
+                service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res);
@@ -119,6 +130,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     }
 
     interface LateOrLeaveEarly {
+        appID: string;
         applicantName: string;
         appDate: string;
         sendMail: boolean

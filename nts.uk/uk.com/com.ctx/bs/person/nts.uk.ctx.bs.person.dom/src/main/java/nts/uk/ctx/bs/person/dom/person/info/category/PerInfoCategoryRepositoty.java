@@ -22,12 +22,17 @@ public interface PerInfoCategoryRepositoty {
 	boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId);
 
 	List<String> getPerInfoCtgIdList(List<String> companyIdList, String categoryCd);
+	
+	
 
 	void addDateRangeItemRoot(DateRangeItem dateRangeItem);
 
 	void addListDateRangeItem(List<DateRangeItem> dateRangeItems);
 
 	// vinhpx: start
+	DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId);
+	
+	List<PersonInfoCategory> getPerInfoCtgByParentId(String parentCtgId, String contractCd);
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
 

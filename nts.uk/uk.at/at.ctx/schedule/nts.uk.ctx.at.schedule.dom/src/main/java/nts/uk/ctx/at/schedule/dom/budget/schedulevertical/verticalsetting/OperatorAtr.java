@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum OperatorAtr {
-	/** 0- - **/
-	SUBTRACTION(0),
-	/** 1- + **/
-	SUMMATION(1),
+	/** 0- + **/
+	SUMMATION(0),
+	/** 1- - **/
+	SUBTRACTION(1),	
 	/** 2- x **/
 	MULTIPLICATION(2),
 	/** 3- ÷ **/

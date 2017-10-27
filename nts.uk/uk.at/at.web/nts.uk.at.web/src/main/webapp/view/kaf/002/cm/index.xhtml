@@ -18,19 +18,20 @@
 					</div>
 					<div class="table cm-table" data-bind="style: { display: screenMode() === 1 ? '' : 'none' }">
 						<div class="cell cm-column1">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_9')}</div>
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF002_9')}</div>
 						</div>
 						<div class="cell cm-column2">
-							<input class="cm-time-editor" data-bind="ntsTimeEditor: {
-									name: '#[KAF002_9]',
-									value: application().appDate, 
-									inputFormat: 'date',
-									required: true }" />
+							<div class="cm-time-editor" data-bind="ntsDatePicker: {
+											name: '#[KAF002_9]',
+											value: application().appDate,
+											dateFormat: 'YYYY/MM/DD',
+											valueFormat: 'YYYY/MM/DD',
+											required: true }" />
 						</div>
 					</div>
 					<div class="table cm-table" data-bind="style: { display: screenMode() !== 1 ? '' : 'none' }">
 						<div class="cell cm-column1">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL001_3')}</div>
 						</div>
 						<div class="cell cm-column2">
 							<span class="label" data-bind="text: application().appDate() + ' ( 入力日 : ' + application().inputDate() + ' )'"></span>
@@ -86,7 +87,7 @@
 									optionsText: 'content',
 									enable: true,
 									columns: [
-										{ prop: 'content', length: 3 },
+										{ prop: 'content', length: 19 },
 									]}"></span>	
 						</div>
 					</div>
@@ -98,7 +99,8 @@
 							<span>
 								<textarea class="cm-memo" data-bind="ntsMultilineEditor: { 
 									name: '#[KAF002_11]',
-									value: application().contentReason }" />
+									value: application().contentReason,
+									constraint: 'AppReason' }" />
 							</span>
 						</div>
 					</div>

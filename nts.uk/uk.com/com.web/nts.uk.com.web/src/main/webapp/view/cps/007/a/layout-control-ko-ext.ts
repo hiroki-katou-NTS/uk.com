@@ -1146,28 +1146,27 @@ module nts.custombinding {
                         case IT_CLA_TYPE.ITEM:
                             let item = x.listItemDf && x.listItemDf[0];
                             if (item.itemTypeState.itemType == ITEM_TYPE.SINGLE) {
-                                if (x.items) {
-                                    if (ko.isObservable(x.items)) {
-                                        let def = _.find(x.items(), (m: any) => m.code == item.itemCode);
-                                        if (def) {
-                                            hasitem(def, item);
+                                if (!x.items) {
+                                    noitem(item);
+                                } else {
+                                    if (!ko.isObservable(x.items)) {
+                                        if (!_.isArray(x.items)) {
+                                            x.items = ko.observableArray([]);
                                         } else {
-                                            noitem(item);
-                                        }
-                                    } else {
-                                        let def = _.find(x.items, (m: any) => m.code == item.itemCode);
-                                        if (def) {
-                                            hasitem(def, item);
-                                        } else {
-                                            noitem(item);
+                                            x.items = ko.observableArray(x.items);
                                         }
                                     }
-                                } else {
-                                    noitem(item);
+
+                                    let def = _.find(x.items(), (m: any) => m.code == item.itemCode);
+                                    if (def) {
+                                        hasitem(def, item);
+                                    } else {
+                                        noitem(item);
+                                    }
                                 }
                             } else {
-                                if (x.items) {
-                                    // continue
+                                if (!x.items) {
+                                    x.items = ko.observableArray([]);
                                     _.each(Array((x.listItemDf || []).length), (_x, i) => {
                                         let item = x.listItemDf[i];
                                         let def = {
@@ -1182,7 +1181,27 @@ module nts.custombinding {
                                             item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
                                         };
 
-                                        return def;
+                                        x.items.push(def);
+                                    });
+                                } else {
+                                    if (!ko.isObservable(x.items)) {
+                                        if (!_.isArray(x.items)) {
+                                            x.items = ko.observableArray([]);
+                                        } else {
+                                            x.items = ko.observableArray(x.items);
+                                        }
+                                    }
+                                    _.each(Array((x.listItemDf || []).length), (_x, i) => {
+                                        let item = x.listItemDf[i];
+
+                                        let def = _.find(x.items(), (m: any) => m.code == item.itemCode);
+                                        if (def) {
+                                            hasitem(def, item);
+                                        } else {
+                                            def = {};
+                                            hasitem(def, item);
+                                            x.items.push(def);
+                                        }
                                     });
                                 }
                             }

@@ -43,7 +43,7 @@ module nts.uk.com.view.cmm013.d {
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
-                        _self.showErrorMessage(res);
+                        _self.showBundledErrorMessage(res);
                     });
             }
             
@@ -64,7 +64,7 @@ module nts.uk.com.view.cmm013.d {
                     return {};
                 }
                 return {
-                    isAddMode: true,
+                    isCreateMode: true,
                     jobTitleId: jobTitleId,
                     jobTitleHistory: {
                         historyId: "",
@@ -89,10 +89,8 @@ module nts.uk.com.view.cmm013.d {
             /**
              * Show Error Message
              */
-            private showErrorMessage(res: any): void {
-                if (res.businessException) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                }
+            private showBundledErrorMessage(res: any): void {
+                nts.uk.ui.dialog.bundledErrors(res); 
             }           
         }
     }    

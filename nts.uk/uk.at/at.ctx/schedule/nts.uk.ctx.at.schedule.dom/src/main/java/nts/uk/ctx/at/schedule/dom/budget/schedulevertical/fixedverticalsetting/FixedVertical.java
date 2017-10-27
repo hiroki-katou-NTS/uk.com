@@ -23,8 +23,6 @@ public class FixedVertical extends AggregateRoot {
 	/**利用区分**/
 	private UseAtr useAtr;
 	
-	/**縦計詳細設定**/
-	private VerticalDetailedSettings verticalDetailedSettings;
 	
 	/**
 	 * Create from Java Type of Fixed Vertical
@@ -35,10 +33,9 @@ public class FixedVertical extends AggregateRoot {
 	 * @param verticalDetailedSettings
 	 * @return
 	 */
-	public static FixedVertical createFromJavaType(String companyId,int fixedItemAtr, int useAtr, int verticalDetailedSettings){
+	public static FixedVertical createFromJavaType(String companyId,int fixedItemAtr, int useAtr){
 		return new FixedVertical(companyId, 
 				EnumAdaptor.valueOf(fixedItemAtr, FixedItemAtr.class),
-				EnumAdaptor.valueOf(useAtr, UseAtr.class),
-				EnumAdaptor.valueOf(verticalDetailedSettings, VerticalDetailedSettings.class));
+				EnumAdaptor.valueOf(useAtr, UseAtr.class));
 	}
 }

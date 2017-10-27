@@ -41,6 +41,12 @@ public class HoriTotalCategoryFinder {
 		return horiCalDaySetDto;
 	}
 	
+	/**
+	 * convert from domain to dto
+	 * @param list horitotalcntset
+	 * @return
+	 * author: HoangYen
+	 */
 	private List<HoriTotalCNTSetDto> fromDomainCnt(List<HoriTotalCNTSet> lstHoriTotalCNTSet){
 		List<HoriTotalCNTSetDto> lst = new ArrayList<>(); 
 		HoriTotalCNTSetDto horiTotalCNTSetDto = new HoriTotalCNTSetDto();

@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum CalculateAtr {
-	/** 0- 利用する **/
-	USE(0),
-	/** 1-利用しない **/
-	NOT_USE(1);
+	/** 0- 計算項目選択 **/
+	ITEM_SELECTION(0),
+	/** 1- 計算式設定 **/
+	FORMULA_SETTING(1);
 	
 	public final int value;
 }

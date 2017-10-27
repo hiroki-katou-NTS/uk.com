@@ -39,9 +39,9 @@ public class BasicScheduleSaveCommand {
 	// 年月日
 	private GeneralDate ymd;
 	
-	/** The schedule determination atr. */
+	/** The confirmed atr. */
 	// 予定確定区分
-	private int scheduleDeterminationAtr;
+	private int confirmedAtr;
 	
 	/** The worktype code. */
 	// 勤務種類 

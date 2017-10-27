@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 
 /**
  * 

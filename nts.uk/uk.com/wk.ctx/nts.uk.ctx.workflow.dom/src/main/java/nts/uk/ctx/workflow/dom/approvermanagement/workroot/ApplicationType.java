@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import lombok.AllArgsConstructor;
 /**
  * 申請種類
  * @author hoatt
