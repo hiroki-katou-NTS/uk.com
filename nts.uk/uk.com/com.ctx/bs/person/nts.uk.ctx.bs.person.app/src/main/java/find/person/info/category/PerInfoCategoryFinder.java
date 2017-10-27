@@ -81,7 +81,7 @@ public class PerInfoCategoryFinder {
 	// isParent, 1 - parent; 0 - is not
 	public List<PerInfoCtgWithParentMapDto> getPerInfoCtgWithParent(String parentCd) {
 		List<PerInfoCtgWithParentMapDto> lstResult = new ArrayList<>();
-		lstResult = perInfoCtgRepositoty.getPerInfoCtgByParentId(parentCd, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+		lstResult = perInfoCtgRepositoty.getPerInfoCtgByParentCode(parentCd, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
 				.stream().map(p -> {
 					return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
