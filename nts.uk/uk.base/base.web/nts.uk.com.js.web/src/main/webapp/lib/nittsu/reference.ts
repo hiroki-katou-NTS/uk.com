@@ -1,8 +1,24 @@
+/// <reference path="generic.d.ts/jquery.d.ts"/>
+/// <reference path="generic.d.ts/jquery.steps.d.ts"/>
+/// <reference path="generic.d.ts/igniteui.d.ts"/>
+/// <reference path="generic.d.ts/jqueryui.d.ts"/>
+/// <reference path="generic.d.ts/knockout.d.ts"/>
+/// <reference path="generic.d.ts/knockout.mapping.d.ts"/>
+/// <reference path="generic.d.ts/lodash.d.ts"/>
+/// <reference path="generic.d.ts/moment.d.ts"/>
+/// <reference path="generic.d.ts/require.d.ts"/>
+
 /// <reference path="ui/viewcontext.d.ts"/>
 /// <reference path="util.ts"/>
 /// <reference path="text.ts"/>
 /// <reference path="number.ts"/>
+
 /// <reference path="time.ts"/>
+/// <reference path="time/minutesbased/minutesbased.ts"/>
+/// <reference path="time/minutesbased/minutesbased_duration.ts"/>
+/// <reference path="time/minutesbased/minutesbased_clock.ts"/>
+/// <reference path="time/minutesbased/minutesbased_withdayattr.ts"/>
+
 /// <reference path="request.ts"/>
 /// <reference path="ui/init.ts"/>
 /// <reference path="ui/notify.ts"/>
@@ -30,3 +46,6 @@
 /// <reference path="ui/ko-ext/treegrid-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/updown-button-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
+/// <reference path="ui/function-wrap/contextmenu.ts"/>

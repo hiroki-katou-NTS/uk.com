@@ -136,6 +136,22 @@ module nts.uk.request {
             return new Locator(stack.join('/') + queryStringParts);
         }
     }
+    
+    export function writeDynamicConstraint(codes: Array<string>){
+        var dfd = $.Deferred();
+        ajax("constraint/getlist", codes).done(function(data: Array<any>){
+            if(nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)){
+                __viewContext.primitiveValueConstraints = {};
+            }
+            _.forEach(data, function(item){
+                __viewContext.primitiveValueConstraints[item.itemCode] = item;
+            });
+            dfd.resolve(data); 
+        }).fail(function(error){
+            dfd.reject(error);            
+        });        
+        return dfd.promise();
+    }
 
     export function ajax(path: string, data?: any, options?: any);
     export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any) {
@@ -162,14 +178,14 @@ module nts.uk.request {
             url: webserviceLocator.serialize(),
             dataType: options.dataType || 'json',
             data: data,
-            headers: { 
+            headers: {
                 'PG-Path': location.current.serialize()
             }
         }).done(function(res) {
-            if (res !== undefined && res.businessException) {
+            if (res !== undefined && isErrorToReject(res)) {
                 dfd.reject(res);
             } else if (res !== undefined && res.commandResult === true) {
-                dfd.resolve(res.value);        
+                dfd.resolve(res.value);
             } else {
                 dfd.resolve(res);
             }
@@ -177,38 +193,66 @@ module nts.uk.request {
 
         return dfd.promise();
     }
+    export function syncAjax(path: string, data?: any, options?: any);
+    export function syncAjax(webAppId: WebAppId, path: string, data?: any, options?: any) {
 
-    export function uploadFile(data: FormData, option?: any): $.Deferred {
-        let dfd = $.Deferred();
+        if (typeof arguments[1] !== 'string') {
+            return syncAjax.apply(null, _.concat(location.currentAppId, arguments));
+        }
+
+        var dfd = $.Deferred();
+        options = options || {};
+
+        if (typeof data === 'object') {
+            data = JSON.stringify(data);
+        }
+
+        var webserviceLocator = location.siteRoot
+            .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
+            .mergeRelativePath(location.ajaxRootDir)
+            .mergeRelativePath(path);
+
         $.ajax({
+            type: options.method || 'POST',
+            contentType: options.contentType || 'application/json',
+            url: webserviceLocator.serialize(),
+            dataType: options.dataType || 'json',
+            data: data,
+            async: false,
+            headers: {
+                'PG-Path': location.current.serialize()
+            },
+            success: function(res) {
+                if (res !== undefined && isErrorToReject(res)) {
+                    dfd.reject(res);
+                } else if (res !== undefined && res.commandResult === true) {
+                    dfd.resolve(res.value);
+                } else {
+                    dfd.resolve(res);
+                }
+            },
+            error: function(xhr,status, error) {
+                alert(error);
+                dfd.reject(); 
+            }
+        });
+
+        return dfd.promise();
+    }
+	
+	function isErrorToReject(res) : boolean{
+        return res.businessException || res.optimisticLock;
+    }
+	
+    export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {
+        return $.ajax({
             url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
             type: 'POST',
             data: data,
             cache: false,
             contentType: false,
-            processData: false,
-            success: function(data, textStatus, jqXHR) {
-                if (option.onSuccess) {
-                    option.onSuccess();
-                }
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                if (option.onFail) {
-                    option.onFail();
-                }
-
-            }
-        }).done(function(res) {
-            if (res !== undefined && res.businessException) {
-                dfd.reject(res);
-            } else {
-                dfd.resolve(res);
-            }
-        }).fail(function(res) {
-            dfd.reject(res);
+            processData: false
         });
-        return dfd.promise();
     }
 
     export function exportFile(path: string, data?: any, options?: any) {
@@ -228,42 +272,92 @@ module nts.uk.request {
                     specials.donwloadFile(res.id);
                     dfd.resolve(res);
                 }
-
             })
-            .fail(res => {
+            .fail((res: any) => {
                 dfd.reject(res);
             });
 
         return dfd.promise();
     }
+    
+    export function downloadFileWithTask(taskId: string, data?: any, options?: any) {
+        let dfd = $.Deferred();
+
+        var checkTask = function(){
+            specials.getAsyncTaskInfo(taskId).done((res: any) => {
+                if (res.status == "PENDING" || res.status == "RUNNING") {
+                    setTimeout(function(){ 
+                     checkTask();       
+                    }, 1000)
+                } if (res.failed || res.status == "ABORTED") { 
+                        dfd.reject(res.error);
+                } else {
+                    specials.donwloadFile(res.id);
+                    dfd.resolve(res);
+                }
+            }).fail(res => {
+                dfd.reject(res);
+            });
+        };
+        
+        checkTask();
+
+        return dfd.promise();
+    }
+    
+    export module asyncTask {
+        export function getInfo(taskId: string) {
+            return ajax('/ntscommons/arc/task/async/info/' + taskId);
+        }
+        
+        export function requestToCancel(taskId: string) {
+            ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+        }
+    }
 
     export module specials {
 
         export function getAsyncTaskInfo(taskId: string) {
-            return ajax('/ntscommons/arc/task/async/' + taskId);
+            return asyncTask.getInfo(taskId);
         }
 
         export function donwloadFile(fileId: string) {
-           var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId),{
-            successCallback: function (url) { 
-              dfd.resolve();
-            },
-            failCallback: function (responseHtml, url) {
-                var responseError = $(responseHtml);
-                var error = JSON.parse(responseError.text());
-                dfd.reject(error);
-            }});
+            var dfd = $.Deferred();
+            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+                successCallback: function(url) {
+                    dfd.resolve();
+                },
+                failCallback: function(responseHtml, url) {
+                    var responseError = $(responseHtml);
+                    var error = JSON.parse(responseError.text());
+                    dfd.reject(error);
+                }
+            });
             return dfd.promise();
         }
+        
+        export function isFileExist(fileId: string): boolean {
+            return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+        }
+        
     }
 
 
-    export function jump(path: string, data?: any) {
-
+    export function jump(path: string, data?: any);
+    export function jump(webAppId: WebAppId, path: string, data?: any): string {
+        if (typeof arguments[1] !== 'string') {
+            return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+        }
+        if(webAppId==nts.uk.request.location.currentAppId){
+            path = resolvePath(path);
+        }else{
+            path = nts.uk.request.location.siteRoot
+            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+            .mergeRelativePath(path).serialize();
+        }
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
-        window.location.href = resolvePath(path);
+        window.location.href = path;
     }
 
     export function resolvePath(path: string) {
@@ -276,18 +370,19 @@ module nts.uk.request {
 
         return destination.rawUrl;
     }
+
     export function liveView(fileId: string);
     export function liveView(webAppId: WebAppId, fileId: string): string {
         let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
         if (typeof arguments[1] !== 'string') {
-            return  resolvePath(liveViewPath) + _.concat(location.currentAppId,arguments)[1];
+            return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
         }
 
         var webserviceLocator = location.siteRoot
             .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
             .mergeRelativePath(liveViewPath);
 
-        let fullPath =  webserviceLocator.serialize() + fileId;
+        let fullPath = webserviceLocator.serialize() + fileId;
         return fullPath;
     }
     export module location {

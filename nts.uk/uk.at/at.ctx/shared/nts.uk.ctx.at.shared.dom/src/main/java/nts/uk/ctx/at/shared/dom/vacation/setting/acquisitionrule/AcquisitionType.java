@@ -22,7 +22,7 @@ public enum AcquisitionType {
 	FundedPaidHoliday(4, "積立年休", "積立年休"),
 
 	/** The Over time 60 H. */
-	ExsessHoliday(5, "̉60H超休", "̉60H超休"),
+	ExsessHoliday(5, "60H超休", "60H超休"),
 
 	/** The Special holiday. */
 	SpecialHoliday(6, "特別休暇", "特別休暇");

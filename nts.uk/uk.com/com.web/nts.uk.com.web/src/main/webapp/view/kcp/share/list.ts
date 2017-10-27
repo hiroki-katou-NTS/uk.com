@@ -93,6 +93,17 @@ module kcp.share.list {
          * Max rows to visible in list component.
          */
         maxRows: number;
+        
+        /**
+         * Set max width for component.Min is 350px;
+         */
+        maxWidth?: number;
+        
+        /**
+         * Set tabindex attr for controls in component.
+         * If not set, tabindex will same as spec of KCPs.
+         */
+        tabindex?: number;
     }
     
     export class SelectType {
@@ -112,12 +123,29 @@ module kcp.share.list {
         static EMPLOYEE = 4;
     }
     
+    /**
+     * Grid style
+     */
     export interface GridStyle {
-        codeColumnSize: number;
+        codeColumnSize: any;
         totalColumnSize: number;
         totalComponentSize: number;
         totalHeight: number;
         rowHeight: number;
+        nameColumnSize: any;
+        workplaceColumnSize: any;
+        alreadySetColumnSize: any;
+    }
+    
+    /**
+     * Tab index.
+     */
+    export interface TabIndex {
+        searchBox: number;
+        table: number;
+        baseDateInput?: number;
+        decideButton?: number;
+        selectAllButton?: number;
     }
     
     /**
@@ -138,6 +166,8 @@ module kcp.share.list {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         searchOption: any;
         targetKey: string;
+        maxRows: number;
+        tabIndex: TabIndex;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -152,44 +182,44 @@ module kcp.share.list {
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var self = this;
+            $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
+            ko.cleanNode($input[0]);
+            
+            // Init self data.
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
-            if (!data.maxRows) {
-                data.maxRows = 12;
-            }
+            self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
+            if (data.maxWidth && data.maxWidth <= 350) {
+                data.maxWidth = 350;
+            }
             self.listType = data.listType;
-            if (self.hasBaseDate) {
+            self.tabIndex = this.getTabIndexByListType(data);
+            if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            data.selectedCode.subscribe(function(selectedValue) {
-                // If select No select row and other row in one time.
-                // => un-select No select row.
-                if (self.isMultiple && (<Array<string>>selectedValue).indexOf('') > -1 
-                        && (<Array<string>>selectedValue).length > 1) {
-                    var dataSelected = selectedValue.slice();
-                    (<Array<string>>dataSelected).splice((<Array<string>>selectedValue).indexOf(''), 1);
-                    data.selectedCode(dataSelected);
-                }
-            });
             if (self.listType == ListType.JOB_TITLE) {
                 this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
             }
             
             // Setup list column.
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
-                        template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
+                        formatter: function(code) {
+                            return code;
+                        },});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: self.gridStyle.nameColumnSize,
+                        template: "<td class='list-component-name-col'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
+                        template: "<td class='list-component-name-col'>${workplaceName}</td>"});
             }
             
             // If show Already setting.
@@ -197,10 +227,10 @@ module kcp.share.list {
                 self.alreadySettingList = data.alreadySettingList;
                 // Add row already setting.
                 self.listComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
+                    headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon-78"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -229,6 +259,9 @@ module kcp.share.list {
             return dfd.promise();
         }
         
+        /**
+         * Init component.
+         */
         private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) :JQueryPromise<void>{
             var dfd = $.Deferred<void>();
             var self = this;
@@ -249,11 +282,8 @@ module kcp.share.list {
             // Remove No select row.
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
-            // Set default value when init component.
-            self.initSelectedValue(data, self.itemList());
-            
             // Check is show no select row.
-            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
+            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             
@@ -277,15 +307,16 @@ module kcp.share.list {
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 $input.find('table').attr('id', self.componentGridId);
-                ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
-                $('.base-date-editor').find('.nts-input').width(133);
+                $input.find('.base-date-editor').find('.nts-input').width(133);
+                
+                // Set default value when init component.
+                self.initSelectedValue(data, self.itemList());
                 dfd.resolve();
             });
             
-            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
+            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
                 self.addIconToAlreadyCol();
-                $('.list-component-name-col').tooltip();
             });
             
             // defined function get data list.
@@ -297,12 +328,59 @@ module kcp.share.list {
             // defined function focus
             $.fn.focusComponent = function() {
                 if (self.hasBaseDate) {
-                    $('.base-date-editor').first().focus();
+                    $input.find('.base-date-editor').first().focus();
                 } else {
-                    $(".ntsSearchBox").focus();
+                    $input.find(".ntsSearchBox").focus();
                 }
             }
+            $.fn.reloadJobtitleDataList = self.reload;
+            $.fn.isNoSelectRowSelected = function() {
+                if (self.isMultiple) {
+                    return false;
+                }
+                var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
+                if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
+                    return true;
+                }
+                return false;
+            }
             return dfd.promise();
+        }
+        
+        /**
+         * Get tab index by list type.
+         */
+        private getTabIndexByListType(data: ComponentOption): TabIndex {
+            if (data.tabindex) {
+                return {
+                    searchBox: data.tabindex,
+                    table: data.tabindex
+                }
+            }
+            switch(data.listType) {
+                case ListType.EMPLOYMENT, ListType.Classification:
+                    return {
+                        searchBox: 1,
+                        table: 2
+                    }
+                case ListType.JOB_TITLE:
+                    return {
+                        searchBox: 3,
+                        table: 4,
+                        baseDateInput: 1,
+                        decideButton: 2
+                    }
+                case ListType.EMPLOYEE:
+                    return {
+                        searchBox: 1,
+                        table: 2,
+                        selectAllButton: 3
+                    }
+            }
+            return {
+                searchBox: 1,
+                table: 2
+            }
         }
         
         /**
@@ -317,6 +395,9 @@ module kcp.share.list {
             $("head").append(s);
         }
         
+        /**
+         * Add Icon to already column setting
+         */
         private addIconToAlreadyCol() {
             // Add icon to column already setting.
             var iconLink = nts.uk.request.location.siteRoot
@@ -325,13 +406,14 @@ module kcp.share.list {
             $('.icon-78').attr('style', "background: url('" + iconLink + "');width: 20px;height: 20px;background-size: 20px 20px;")
         }
         
+        /**
+         * Init default selected value.
+         */
         private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
             var self = this;
             switch(data.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
-                    if (self.isMultiple) {
-                        self.selectedCodes(data.selectedCode());
-                    }
+                    //self.selectedCodes(data.selectedCode());
                     return;
                 case SelectType.SELECT_ALL:
                     if (!self.isMultiple){
@@ -378,10 +460,13 @@ module kcp.share.list {
             return data.code;
         }
         
+        /**
+         * Init Grid Style.
+         */
         private initGridStyle(data: ComponentOption) {
-            var codeColumnSize: number = 50;
+            var codeColumnSize: any = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = 23;
+            var heightOfRow : number = data.isMultiSelect ? 24 : 23;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;
@@ -401,17 +486,24 @@ module kcp.share.list {
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
             var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
-            var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
+            var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
-            var totalRowsHeight = heightOfRow * data.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate ? 123 : 55;
+            var totalRowsHeight = heightOfRow * this.maxRows + 24;
+            var totalHeight: number = this.hasBaseDate ? 101 : 55;
+            codeColumnSize = data.maxWidth ? '25%': codeColumnSize;
+            var nameColumnSize = data.maxWidth ? '35%' : 170;
+            var workplaceColumnSize = data.maxWidth ? '25%' : 150;
+            var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
                 totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2,
                 totalHeight: totalHeight + totalRowsHeight,
-                rowHeight: totalRowsHeight
+                rowHeight: totalRowsHeight,
+                nameColumnSize: nameColumnSize,
+                workplaceColumnSize: workplaceColumnSize,
+                alreadySetColumnSize: alreadySetColumnSize
             };
         }
         
@@ -459,6 +551,9 @@ module kcp.share.list {
             });
         }
         
+        /**
+         * Get item name for each component type.
+         */
         public getItemNameForList(): string {
             switch(this.listType) {
                 case ListType.EMPLOYMENT:
@@ -489,9 +584,9 @@ module kcp.share.list {
         
         // Service paths.
         var servicePath = {
-            findEmployments: "basic/company/organization/employment/findAll/",
-            findJobTitles: 'basic/company/organization/jobtitle/findall/',
-            findClassifications: 'basic/company/organization/classification/findAll/',
+            findEmployments: "bs/employee/employment/findAll/",
+            findJobTitles: 'bs/employee/jobtitle/findAll',
+            findClassifications: 'bs/employee/classification/findAll',
         }
         
         /**
@@ -538,6 +633,16 @@ interface JQuery {
      * Focus component.
      */
     focusComponent(): void;
+    
+    /**
+     * Function reload job title data list. Support job title list only.
+     */
+    reloadJobtitleDataList(): void;
+    
+    /**
+     * Check isNoSelectRowSelected.
+     */
+    isNoSelectRowSelected(): boolean;
 }
 
 (function($: any) {

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl003.parent.style.css" />
+			<com:scriptfile path="kdl003.parent.start.js" />
+			<com:scriptfile path="kdl003.parent.service.js" />
+			<com:scriptfile path="kdl003.parent.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="large" data-bind="click: OpenDialog003" >KDL003</button>
+			</div>
+			<div id="contents-area">
+			<table>
+				<tr>
+					<td>選択可能な勤務種類コード:</td>
+					<td><input data-bind="ntsTextEditor: {
+						value: canSelectWorkTypeCodes,
+						required: false,
+						enable: true,
+						readonly: false}" /></td>
+				</tr>
+				<tr>
+					<td>選択中の勤務種類コード:</td>
+					<td><input data-bind="ntsTextEditor: {
+						value: selectWorkTypeCode,
+						required: false,
+						enable: true,
+						readonly: false}" /></td>
+				</tr>
+				<tr>
+					<td>選択可能な就業時間帯コード:</td>
+					<td><input data-bind="ntsTextEditor: {
+						value: canSelectSiftCodes,
+						required: false,
+						enable: true,
+						readonly: false}" /></td>
+				</tr>
+				<tr>
+					<td>選択中の就業時間帯コード:</td>
+					<td><input data-bind="ntsTextEditor: {
+						value: selectSiftCode,
+						required: false,
+						enable: true,
+						readonly: false}" /></td>
+				</tr>
+			</table>
+					
+				<br/>
+				<div style="font-weight: bold">Returned Data:</div>
+				<div> Selected Work Type Code:</div>
+				<span data-bind="text: childSelectWorkTypeCode"></span>
+				
+				<div> Selected Work Type Name:</div>
+				<span data-bind="text: childSelectWorkTypeName"></span>
+				
+				<div> Selected Work Time Code:</div>
+				<span data-bind="text: childSelectSiftCode"></span>
+				
+				<div> Selected Work Time Name:</div>
+				<span data-bind="text: childSelectSiftName"></span>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

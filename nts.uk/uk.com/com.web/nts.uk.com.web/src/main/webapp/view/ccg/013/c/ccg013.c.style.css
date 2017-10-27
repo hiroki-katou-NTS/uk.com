@@ -18,7 +18,7 @@
 	padding-top: 20px;
 }
 
-.ntsRadioBox {;
+.ntsRadioBox {
 	margin-bottom: 10px;
 	display: block;
 }
@@ -37,18 +37,21 @@ table.control {
 
 img {
 	width: 270px;
-	height: 150px;
+	height: 200px;
+	padding-top: 1em
 }
 
 #imageName {
 	cursor: pointer;
-	color: blue;
-	text-decoration: underline;
 	width: 200px;
 	overflow: hidden;
 	display: inline-block;
 }
 
+.text-blue-underline {
+	color: blue;
+	text-decoration: underline;
+}
 
 #description {
 	height: 20px;
@@ -59,23 +62,28 @@ img {
 	margin: 5px 0px 5px 0px;
 }
 
-.col2{
+.col2 {
 	width: 180px;
 }
-#delBtn{
+
+#delBtn {
 	position: relative;
-    width: 80px;
+	width: 80px;
 }
 
-.pull-right {text-align: right;}
+.pull-right {
+	text-align: right;
+}
 
-#nameTitleBar{
+#nameTitleBar {
 	width: 220px !important;
 }
-#file_upload{
+
+#file_upload {
 	width: 200px;
 	overflow: hidden;
 }
-.labelRight{
-	margin-left: 10px;	
+
+.labelRight {
+	margin-left: 10px;
 }

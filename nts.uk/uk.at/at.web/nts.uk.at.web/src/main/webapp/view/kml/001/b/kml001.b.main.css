@@ -1,4 +1,4 @@
-body {
+#contents-area {
 	overflow-x: hidden;
 }
 .label:FIRST-CHILD {
@@ -60,7 +60,4 @@ body {
 button.nts-switch-button {
 	height: 30px;
 	width: 93px;
-}
-#functions-area-bottom > button {
-	margin-right: 10px;
 }

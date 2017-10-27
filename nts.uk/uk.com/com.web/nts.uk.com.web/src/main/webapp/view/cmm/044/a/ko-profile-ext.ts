@@ -5,6 +5,10 @@ class ProfileHandler implements KnockoutBindingHandler {
             params.enable = true;
         }
 
+        if (params.showTxtEmployee == undefined) {
+            params.showTxtEmployee = true;
+        }
+
         let container1: HTMLElement = document.createElement('div'),
             container2: HTMLElement = document.createElement('div'),
             searchBtn: HTMLElement = document.createElement('button'),
@@ -35,6 +39,12 @@ class ProfileHandler implements KnockoutBindingHandler {
             };
         }
 
+        if (!params.showTxtEmployee) {
+            input.setAttribute("style", "display: none;");
+        }
+
+        input.id = "profile-input";
+        input.setAttribute("tabindex", '0');
         input.setAttribute('type', 'text');
         input.classList.add("nts-editor");
         input.classList.add("nts-input");
@@ -45,7 +55,7 @@ class ProfileHandler implements KnockoutBindingHandler {
                 labelName.innerText = v[params.code];
 
                 let _options: Array<any> = ko.toJS(params.options);
-                labelPerson.innerText = (_options.length ? '1' : '0') + '/' + _options.length + ' 人';
+                labelPerson.innerText = '1' + '/' + _options.length + ' 人';
 
                 let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == v[params.key]);
                 if (index == options.length - 1) {
@@ -87,7 +97,7 @@ class ProfileHandler implements KnockoutBindingHandler {
 
         params.options.subscribe((v) => {
             let options = ko.toJS(params.options);
-            labelPerson.innerText = (options.length ? '1' : '0') + '/' + options.length + ' 人';
+            labelPerson.innerText =  '1' + '/' + (options.length ? options.length: '1' ) + ' 人'
 
             if (!options.length) {
                 params.value(undefined);

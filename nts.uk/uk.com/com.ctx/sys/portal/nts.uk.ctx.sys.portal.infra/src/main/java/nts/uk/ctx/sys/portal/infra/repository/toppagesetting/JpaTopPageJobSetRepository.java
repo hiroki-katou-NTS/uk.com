@@ -6,6 +6,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSet;
@@ -42,8 +45,8 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		entity.ccgptTopPageJobSetPK = new CcgptTopPageJobSetPK();
 		entity.ccgptTopPageJobSetPK.companyId = domain.getCompanyId();
 		entity.ccgptTopPageJobSetPK.jobId = domain.getJobId();
-		entity.loginMenuCd = domain.getLoginMenuCode().v();
-		entity.topMenuCd = domain.getTopMenuCode().v();
+		entity.loginMenuCd = StringUtil.isNullOrEmpty(domain.getLoginMenuCode().v(), true) ? "    " : domain.getLoginMenuCode().v();
+		entity.topMenuCd = StringUtil.isNullOrEmpty(domain.getTopMenuCode().v(), true) ? "    " : domain.getTopMenuCode().v();
 		entity.personPermissionSet = domain.getPersonPermissionSet().value;
 		entity.system = domain.getLoginSystem().value;
 		entity.loginMenuCls = domain.getMenuClassification().value;
@@ -66,7 +69,7 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 	public void add(TopPageJobSet topPageJobSet) {
 		this.commandProxy().insert(toEntity(topPageJobSet));
 	}
-
+	
 	/**
 	 * Update TopPageJobSet
 	 */
@@ -75,16 +78,17 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		CcgptTopPageJobSetPK pk = new CcgptTopPageJobSetPK(topPageJobSet.getCompanyId(), topPageJobSet.getJobId());
 		CcgptTopPageJobSet entity = this.queryProxy().find(pk, CcgptTopPageJobSet.class).get();
 		entity.ccgptTopPageJobSetPK = pk;
-		entity.loginMenuCd = topPageJobSet.getLoginMenuCode().v();
+		entity.loginMenuCd = StringUtil.isNullOrEmpty(topPageJobSet.getLoginMenuCode().v(), true) ? "    " : topPageJobSet.getLoginMenuCode().v();
 		entity.loginMenuCls = topPageJobSet.getMenuClassification().value;
 		entity.personPermissionSet = topPageJobSet.getPersonPermissionSet().value;
 		entity.system = topPageJobSet.getLoginSystem().value;
-		entity.topMenuCd = topPageJobSet.getTopMenuCode().v();
+		entity.topMenuCd = StringUtil.isNullOrEmpty(topPageJobSet.getTopMenuCode().v(), true) ? "    " : topPageJobSet.getTopMenuCode().v();
 		this.commandProxy().update(entity);
 	}
 
 	/**
-	 * Update several property of TopPageJobSet
+	 * Update property of TopPageJobSet: loginMenuCd = topMenuCd, 
+	 * loginMenuCls = TopPage, system = Common
 	 */
 	@Override
 	public void updateProperty(TopPageJobSet topPageJobSet) {
@@ -93,6 +97,9 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		entity.ccgptTopPageJobSetPK = pk;
 		entity.personPermissionSet = topPageJobSet.getPersonPermissionSet().value;
 		entity.topMenuCd = topPageJobSet.getTopMenuCode().v();
+		entity.loginMenuCd = topPageJobSet.getTopMenuCode().v();
+		entity.loginMenuCls = MenuClassification.TopPage.value;
+		entity.system = System.COMMON.value;
 		this.commandProxy().update(entity);
 	}
 }

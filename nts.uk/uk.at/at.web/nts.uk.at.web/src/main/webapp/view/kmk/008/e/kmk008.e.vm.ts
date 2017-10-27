@@ -6,7 +6,8 @@ module nts.uk.at.view.kmk008.e {
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentWorkplaceName: KnockoutObservable<string>;
-
+    
+            maxRows : number;
             selectedWorkplaceId: KnockoutObservable<string>;
             selectedRowWorkplace: RowSelection;
             baseDate: KnockoutObservable<Date>;
@@ -27,6 +28,7 @@ module nts.uk.at.view.kmk008.e {
                 self.alreadySettingList = ko.observableArray([]);
 
                 self.treeGrid = {
+                    maxRows : 15,
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     treeType: 1,
@@ -101,6 +103,7 @@ module nts.uk.at.view.kmk008.e {
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.getDetail(self.selectedWorkplaceId());
                     });
                     return;
@@ -111,6 +114,7 @@ module nts.uk.at.view.kmk008.e {
                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     self.getalreadySettingList();
                     self.getDetail(self.selectedWorkplaceId());
                 });

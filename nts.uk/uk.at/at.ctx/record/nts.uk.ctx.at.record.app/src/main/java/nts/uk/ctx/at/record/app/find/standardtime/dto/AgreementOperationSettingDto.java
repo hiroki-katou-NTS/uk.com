@@ -20,15 +20,7 @@ public class AgreementOperationSettingDto {
 	
 	private List<EnumConstant> alarmListAtrEnum;
 	
-	private int startingMonth;
+	private AgreementOperationSettingDetailDto agreementOperationSettingDetailDto;
+	
 
-	private int numberTimesOverLimitType;
-
-	private int closingDateType;
-
-	private int closingDateAtr;
-
-	private int yearlyWorkTableAtr;
-
-	private int alarmListAtr;
 }

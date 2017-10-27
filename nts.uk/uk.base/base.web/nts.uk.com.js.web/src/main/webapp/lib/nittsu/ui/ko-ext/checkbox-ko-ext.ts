@@ -20,6 +20,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var setChecked = data.checked;
             var textId: string = data.text;
+            var style: string = "style-" + (data.style || "normal");
             var checkBoxText: string;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
@@ -31,8 +32,12 @@ module nts.uk.ui.koExtentions {
                 if (container.data("readonly") === true) e.preventDefault();
             });
             
+            container.addClass(style);
             container.data("tabindex", container.attr("tabindex"));
 
+            let wrapper = container.parent();
+            wrapper.addClass(style);
+            
             if (textId) {
                 checkBoxText = textId;
             } else {
@@ -56,13 +61,10 @@ module nts.uk.ui.koExtentions {
                 if (code === 32) {
                     if(container.data("enable") !== false){
                         let checkbox = container.find("input[type='checkbox']:first");
-                        if(checkbox.is(":checked")){
-                            checkbox.prop("checked", false);   
-                            setChecked(false); 
-                        } else {
-                            checkbox.prop("checked", true);
-                            setChecked(true);    
-                        }       
+                        let checked = !checkbox.is(":checked");
+                        checkbox.prop("checked", checked);
+                        container[checked ? "addClass" : "removeClass"]("checked");
+                        setChecked(checked);
                     }       
                     evt.preventDefault();         
                 }    
@@ -87,6 +89,8 @@ module nts.uk.ui.koExtentions {
 
             // Checked
             $checkBox.prop("checked", checked);
+            container[checked ? "addClass" : "removeClass"]("checked");
+            
             // Enable
             if (enable === true) { 
                 $checkBox.removeAttr("disabled") 
@@ -112,6 +116,8 @@ module nts.uk.ui.koExtentions {
             container.addClass("ntsControl").on("click", (e) => {
                 if (container.data("readonly") === true) e.preventDefault();
             });
+            
+            container.wrap("<div class='multicheckbox-wrapper'/>");
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             container.data("enable", _.clone(enable));
             container.data("init", true);

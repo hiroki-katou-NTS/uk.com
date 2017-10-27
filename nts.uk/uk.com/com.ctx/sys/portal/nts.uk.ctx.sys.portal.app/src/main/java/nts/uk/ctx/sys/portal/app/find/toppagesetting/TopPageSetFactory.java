@@ -31,22 +31,13 @@ public interface TopPageSetFactory {
 	 * @param topPageJob
 	 * @return
 	 */
-	LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition,TopPageJobSet topPageJob);
+	LayoutAllDto getTopPageForPosition(String fromScreen, JobPositionDto jobPosition,TopPageJobSet topPageJob);
 	/**
 	 * get top page not position
 	 * @param tpPerson
 	 * @return
 	 */
-	LayoutAllDto getTopPageNotPosition();
-	/**
-	 * get top page by code
-	 * @param companyId
-	 * @param code
-	 * @param system
-	 * @param classification
-	 * @return
-	 */
-	LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean check);
+	LayoutAllDto getTopPageNotPosition(String fromScreen);
 	/**
 	 * check my page co duoc su dung khong
 	 * @return

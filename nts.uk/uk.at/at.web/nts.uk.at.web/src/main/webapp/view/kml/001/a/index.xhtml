@@ -31,14 +31,14 @@
 									<button class="dateControlBtn" data-bind="click: createDialog">#{i18n.getText('KML001_41')}</button>
 									<button class="dateControlBtn" data-bind="click: editDialog, enable: !isInsert()">#{i18n.getText('KML001_42')}</button>
 								</div>
-								<div id="dateRange-list-container">
+								<div id="dateRange-list-content">
 									<table id="dateRange-list" data-bind="ntsGridList: {
 										name: '#[KML001_6]', 
 										height: 290,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
 										columns: ko.observableArray([
-							                { headerText: 'コード', prop: 'dateRange' }]),
+							                { headerText: '', prop: 'dateRange' }]),
 										value: currentGridPersonCost }">
 									</table>
 								</div>
@@ -131,11 +131,14 @@
 															name: '#[KML001_13]',
 															value: rate,
 															constraint: 'PremiumRate',
-															option: { width: '35px' },
+															option: { 
+																width: '80px',
+																decimallength: 1, 
+																unitID: 'PERCENT' 
+															},
 															required: true, 
 															enable: true }" />
 												</span>
-												<div class="percenSymbol">%</div>
 											</td>
 											<td class="control-group valign-center">
 												<div class="cell">

@@ -28,7 +28,7 @@ public class KsvstEmpSubstVacationPK implements Serializable {
 	private String cid;
 
 	/** The contract type cd. */
-	@Column(name = "CONTRACT_TYPE_CD")
+	@Column(name = "EMPCD")
 	private String contractTypeCd;
 
 	/**

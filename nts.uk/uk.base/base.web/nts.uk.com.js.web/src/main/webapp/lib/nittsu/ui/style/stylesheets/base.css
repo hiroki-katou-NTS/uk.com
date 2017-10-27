@@ -23,7 +23,10 @@ time, mark, audio, video {
 /* line 22, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html {
   /*line-height: 1; mod kitahira */
+
 }
+
+   }
 
 /* line 24, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 ol, ul {
@@ -180,43 +183,83 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /* line 18, ../sass/components/_color.scss */
+.color-schedule-saturday {
+  color: #0000FF;
+}
+
+/* line 19, ../sass/components/_color.scss */
+.color-schedule-sunday {
+  color: #FF0000;
+}
+
+/* line 20, ../sass/components/_color.scss */
 .bg-schedule-support {
   background-color: #fedfe6;
 }
 
-/* line 19, ../sass/components/_color.scss */
+/* line 21, ../sass/components/_color.scss */
 .bg-schedule-no-empl-insurance {
   background-color: #ef7f7f;
 }
 
-/* line 20, ../sass/components/_color.scss */
+/* line 22, ../sass/components/_color.scss */
 .bg-schedule-no-health-insurance {
   background-color: #acfe2f;
 }
 
-/* line 21, ../sass/components/_color.scss */
+/* line 23, ../sass/components/_color.scss */
 .bg-schedule-no-empl-health-insurance {
   background-color: #fea400;
 }
 
-/* line 22, ../sass/components/_color.scss */
+/* line 24, ../sass/components/_color.scss */
 .bg-schedule-fixed {
   background-color: #eccefb;
 }
 
-/* line 23, ../sass/components/_color.scss */
+/* line 25, ../sass/components/_color.scss */
 .bg-schedule-uncorrectable {
   background-color: #ddddd2;
 }
 
-/* line 24, ../sass/components/_color.scss */
+/* line 26, ../sass/components/_color.scss */
 .bg-schedule-work-by-dow {
   background-color: #FFFF69;
 }
 
-/* line 25, ../sass/components/_color.scss */
+/* line 27, ../sass/components/_color.scss */
 .bg-schedule-shift-work {
   background-color: #FFE699;
+}
+
+/* line 28, ../sass/components/_color.scss */
+.bg-schedule-saturday {
+  background-color: #8bd8ff;
+}
+
+/* line 29, ../sass/components/_color.scss */
+.bg-schedule-sunday {
+  background-color: #fabf8f;
+}
+
+/* line 30, ../sass/components/_color.scss */
+.bg-schedule-specific-date {
+  background-color: #ffc0cb;
+}
+
+/* line 31, ../sass/components/_color.scss */
+.bg-schedule-that-day {
+  background-color: #ffff00;
+}
+
+/* line 32, ../sass/components/_color.scss */
+.bg-schedule-focus {
+  background-color: #ffffcc;
+}
+
+/* line 34, ../sass/components/_color.scss */
+.bg-calendar-ym-set {
+  background-color: #BFEA60;
 }
 
 /*****************************
@@ -265,99 +308,101 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /* line 21, ../sass/components/_commons.scss */
-.hyperlink {
-  color: #0066CC;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* line 22, ../sass/components/_commons.scss */
 .control-group.valign-center > * {
   vertical-align: middle;
 }
 
-/* line 23, ../sass/components/_commons.scss */
+/* line 22, ../sass/components/_commons.scss */
 .control-group.valign-top > * {
   vertical-align: top;
 }
 
-/* line 24, ../sass/components/_commons.scss */
+/* line 23, ../sass/components/_commons.scss */
 .control-group.valign-bottom > * {
   vertical-align: bottom;
 }
 
-/* line 25, ../sass/components/_commons.scss */
+/* line 24, ../sass/components/_commons.scss */
 .halign-left {
   text-align: left;
 }
 
-/* line 26, ../sass/components/_commons.scss */
+/* line 25, ../sass/components/_commons.scss */
 .halign-right {
   text-align: right;
 }
 
-/* line 27, ../sass/components/_commons.scss */
+/* line 26, ../sass/components/_commons.scss */
 .halign-center {
   text-align: center;
 }
 
-/* line 28, ../sass/components/_commons.scss */
+/* line 27, ../sass/components/_commons.scss */
 .container {
   width: 1200px;
 }
-/* line 30, ../sass/components/_commons.scss */
+/* line 29, ../sass/components/_commons.scss */
 .container:before, .container:after {
   content: " ";
   display: table;
 }
-/* line 31, ../sass/components/_commons.scss */
+/* line 30, ../sass/components/_commons.scss */
 .container:after {
   clear: both;
 }
 
-/* line 33, ../sass/components/_commons.scss */
+/* line 32, ../sass/components/_commons.scss */
 .flex {
   display: flex;
 }
-/* line 35, ../sass/components/_commons.scss */
+/* line 34, ../sass/components/_commons.scss */
 .flex .item {
   flex: 1;
 }
-/* line 36, ../sass/components/_commons.scss */
+/* line 35, ../sass/components/_commons.scss */
 .flex.valign-center {
   align-items: center;
 }
 
-/* line 38, ../sass/components/_commons.scss */
+/* line 37, ../sass/components/_commons.scss */
 .table {
   display: table;
 }
-/* line 40, ../sass/components/_commons.scss */
+/* line 39, ../sass/components/_commons.scss */
 .table .cell {
   display: table-cell;
 }
-/* line 42, ../sass/components/_commons.scss */
+/* line 41, ../sass/components/_commons.scss */
 .table .cell.valign-center {
   vertical-align: middle;
 }
-/* line 43, ../sass/components/_commons.scss */
+/* line 42, ../sass/components/_commons.scss */
 .table .cell.valign-bottom {
   vertical-align: bottom;
 }
-/* line 44, ../sass/components/_commons.scss */
+/* line 43, ../sass/components/_commons.scss */
 .table .cell.valign-top {
   vertical-align: top;
+}
+
+/* line 46, ../sass/components/_commons.scss */
+.disappear {
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 /*****************************
   ntsControl
 *****************************/
-/* line 51, ../sass/components/_commons.scss */
+/* line 57, ../sass/components/_commons.scss */
 .control-group {
   margin-bottom: 10px;
 }
 
-/* line 52, ../sass/components/_commons.scss */
+/* line 58, ../sass/components/_commons.scss */
 .ntsControl {
   display: inline-block;
 }
@@ -365,7 +410,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   NtsFormLabel
 *****************************/
-/* line 57, ../sass/components/_commons.scss */
+/* line 63, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
   box-sizing: border-box;
@@ -375,34 +420,34 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 0 10px 0 8px;
 }
-/* line 79, ../sass/components/_commons.scss */
+/* line 85, ../sass/components/_commons.scss */
 div.form-label.broken label {
   line-height: inherit;
 }
-/* line 82, ../sass/components/_commons.scss */
+/* line 88, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 23px;
   line-height: 23px;
 }
-/* line 85, ../sass/components/_commons.scss */
+/* line 91, ../sass/components/_commons.scss */
 div.form-label.inline label {
   line-height: 23px;
 }
-/* line 88, ../sass/components/_commons.scss */
+/* line 94, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 92, ../sass/components/_commons.scss */
+/* line 98, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 96, ../sass/components/_commons.scss */
+/* line 102, ../sass/components/_commons.scss */
 div.form-label > label {
   max-height: 100%;
   font-size: 14px;
   line-height: 37px;
 }
-/* line 102, ../sass/components/_commons.scss */
+/* line 108, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -410,38 +455,33 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 109, ../sass/components/_commons.scss */
+/* line 115, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 113, ../sass/components/_commons.scss */
+/* line 119, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 118, ../sass/components/_commons.scss */
+/* line 124, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
 
-/*****************************
-  NtsLinkButton
-*****************************/
-/* line 128, ../sass/components/_commons.scss */
-.link-button {
-  display: inline-block;
-  padding: 3px 12px;
-  background-color: #E0F59E;
-  color: #0D86D1;
-  text-decoration: underline;
-  cursor: pointer;
-  user-select: none;
+/* line 130, ../sass/components/_commons.scss */
+.constraint-label {
+  display: block;
+  margin-top: 1px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #777777;
 }
 
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 142, ../sass/components/_commons.scss */
+/* line 140, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -453,25 +493,37 @@ div.popup-panel {
 }
 
 /*****************************
-  NtsEditor
+  NtsError
 *****************************/
-/* line 154, ../sass/components/_commons.scss */
+/* line 152, ../sass/components/_commons.scss */
 .ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ntsControl.error .sp-replacer {
   border-color: #ff6666;
 }
 
-/* line 159, ../sass/components/_commons.scss */
+/* line 157, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
+}
+
+/* line 160, ../sass/components/_commons.scss */
+.checkbox-wrapper.error {
+  border: 1px solid #ff6666;
+}
+
+/* line 163, ../sass/components/_commons.scss */
+.multicheckbox-wrapper.error {
+  border: 1px solid #ff6666;
 }
 
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 166, ../sass/components/_commons.scss */
+/* line 169, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
-  display: none;
+  display: inline-block;
+  visibility: hidden;
+  z-index: 10;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -484,46 +536,46 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 179, ../sass/components/_commons.scss */
+/* line 184, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 185, ../sass/components/_commons.scss */
+/* line 190, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
-  display: inline-block;
+  visibility: visible;
 }
 
 /*****************************
   Label
 *****************************/
-/* line 194, ../sass/components/_commons.scss */
+/* line 199, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 198, ../sass/components/_commons.scss */
+/* line 203, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 205, ../sass/components/_commons.scss */
+/* line 210, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 211, ../sass/components/_commons.scss */
+/* line 216, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 217, ../sass/components/_commons.scss */
+/* line 222, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -531,23 +583,28 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 224, ../sass/components/_commons.scss */
+/* line 5, ../sass/components/_icons.scss */
+button .icon {
+  vertical-align: middle;
+}
+
+/* line 9, ../sass/components/_icons.scss */
 .icon {
   position: relative;
   display: inline-block;
 }
-/* line 228, ../sass/components/_commons.scss */
+/* line 13, ../sass/components/_icons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 234, ../sass/components/_commons.scss */
+/* line 19, ../sass/components/_icons.scss */
 .icon.icon-close {
   width: 16px;
   height: 16px;
 }
-/* line 237, ../sass/components/_commons.scss */
+/* line 22, ../sass/components/_icons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -556,7 +613,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 245, ../sass/components/_commons.scss */
+/* line 30, ../sass/components/_icons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -564,7 +621,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 248, ../sass/components/_commons.scss */
+/* line 33, ../sass/components/_icons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -572,7 +629,7 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 253, ../sass/components/_commons.scss */
+/* line 38, ../sass/components/_icons.scss */
 .icon.icon-dot {
   width: 16px;
   height: 16px;
@@ -581,7 +638,7 @@ div.label {
   background: #00B050;
   box-sizing: border-box;
 }
-/* line 262, ../sass/components/_commons.scss */
+/* line 47, ../sass/components/_icons.scss */
 .icon.icon-search {
   width: 12px;
   height: 12px;
@@ -589,7 +646,7 @@ div.label {
   border-radius: 100%;
   transform: rotate(-45deg);
 }
-/* line 268, ../sass/components/_commons.scss */
+/* line 53, ../sass/components/_icons.scss */
 .icon.icon-search::after {
   top: 12px;
   left: 5px;
@@ -597,7 +654,7 @@ div.label {
   width: 2px;
   background-color: #333333;
 }
-/* line 276, ../sass/components/_commons.scss */
+/* line 61, ../sass/components/_icons.scss */
 .icon.icon-searchbox {
   position: absolute;
   top: 0;
@@ -608,7 +665,7 @@ div.label {
   background: #00B050;
   border-radius: 5px;
 }
-/* line 286, ../sass/components/_commons.scss */
+/* line 71, ../sass/components/_icons.scss */
 .icon.icon-searchbox:before {
   width: 12px;
   height: 12px;
@@ -617,7 +674,7 @@ div.label {
   top: 6px;
   left: 7px;
 }
-/* line 294, ../sass/components/_commons.scss */
+/* line 79, ../sass/components/_icons.scss */
 .icon.icon-searchbox::after {
   top: 18px;
   left: 22px;
@@ -627,14 +684,14 @@ div.label {
   background-color: #FFF;
   transform: rotate(-45deg);
 }
-/* line 304, ../sass/components/_commons.scss */
+/* line 89, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left {
   margin: 10px 0 10px 3px;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 310, ../sass/components/_commons.scss */
+/* line 95, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -643,7 +700,7 @@ div.label {
   left: -3px;
   top: -4px;
 }
-/* line 318, ../sass/components/_commons.scss */
+/* line 103, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -652,14 +709,14 @@ div.label {
   left: -3px;
   top: 4px;
 }
-/* line 327, ../sass/components/_commons.scss */
+/* line 112, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right {
   margin: 10px 3px 10px 0;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 333, ../sass/components/_commons.scss */
+/* line 118, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -668,7 +725,7 @@ div.label {
   right: -3px;
   top: -4px;
 }
-/* line 341, ../sass/components/_commons.scss */
+/* line 126, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -677,14 +734,14 @@ div.label {
   right: -3px;
   top: 4px;
 }
-/* line 350, ../sass/components/_commons.scss */
+/* line 135, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top {
   margin: 8px 5px 0 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 356, ../sass/components/_commons.scss */
+/* line 141, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -693,7 +750,7 @@ div.label {
   left: -2px;
   top: 2px;
 }
-/* line 364, ../sass/components/_commons.scss */
+/* line 149, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -702,14 +759,14 @@ div.label {
   left: -10px;
   top: 2px;
 }
-/* line 373, ../sass/components/_commons.scss */
+/* line 158, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom {
   margin: 5px 5px 3px 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 379, ../sass/components/_commons.scss */
+/* line 164, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -718,7 +775,7 @@ div.label {
   left: -2px;
   bottom: 2px;
 }
-/* line 387, ../sass/components/_commons.scss */
+/* line 172, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -726,6 +783,59 @@ div.label {
   transform: rotate(-130deg);
   left: -10px;
   bottom: 2px;
+}
+
+/* line 183, ../sass/components/_icons.scss */
+.img-icon {
+  display: inline-block;
+}
+/* line 185, ../sass/components/_icons.scss */
+.img-icon.icon-arrow-up {
+  background: url("images/icons/arrow-up.png") no-repeat center;
+  width: 24px;
+  height: 24px;
+}
+/* line 189, ../sass/components/_icons.scss */
+.img-icon.icon-arrow-down {
+  background: url("images/icons/arrow-down.png") no-repeat center;
+  width: 24px;
+  height: 24px;
+}
+/* line 193, ../sass/components/_icons.scss */
+.img-icon.icon-download {
+  background: url("images/icons/download.png") no-repeat center;
+  width: 17px;
+  height: 16px;
+}
+/* line 197, ../sass/components/_icons.scss */
+.img-icon.icon-filter {
+  background: url("images/icons/filter.png") no-repeat center;
+  width: 30px;
+  height: 28px;
+}
+/* line 202, ../sass/components/_icons.scss */
+.img-icon.icon-next {
+  background: url("images/icons/next-arrow.png") no-repeat center;
+  width: 26px;
+  height: 22px;
+}
+/* line 207, ../sass/components/_icons.scss */
+.img-icon.icon-next-all {
+  background: url("images/icons/next-all-arrow.png") no-repeat center;
+  width: 44px;
+  height: 22px;
+}
+/* line 212, ../sass/components/_icons.scss */
+.img-icon.icon-prev {
+  background: url("images/icons/prev-arrow.png") no-repeat center;
+  width: 26px;
+  height: 22px;
+}
+/* line 217, ../sass/components/_icons.scss */
+.img-icon.icon-prev-all {
+  background: url("images/icons/prev-all-arrow.png") no-repeat center;
+  width: 44px;
+  height: 22px;
 }
 
 /* line 2, ../sass/components/_accordion.scss */
@@ -742,7 +852,11 @@ div.label {
 .ui-accordion .ui-accordion-header.ui-state-active .ui-icon {
   background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png");
 }
-/* line 19, ../sass/components/_accordion.scss */
+/* line 17, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
+}
+/* line 23, ../sass/components/_accordion.scss */
 .ui-accordion .status {
   display: inline-block;
   float: right;
@@ -754,7 +868,7 @@ div.label {
   min-width: 60px;
   text-align: center;
 }
-/* line 31, ../sass/components/_accordion.scss */
+/* line 35, ../sass/components/_accordion.scss */
 .ui-accordion .close-button {
   position: absolute;
   top: 50%;
@@ -762,10 +876,14 @@ div.label {
   margin-top: -8px;
   float: right;
 }
-/* line 39, ../sass/components/_accordion.scss */
+/* line 43, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-content {
   border-top-width: 1px;
   border-color: #999;
+}
+/* line 47, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-content.nts-accordion-content {
+  display: block !important;
 }
 
 /* line 3, ../sass/components/_editor.scss */
@@ -956,57 +1074,57 @@ button[disabled] {
   cursor: default;
   color: #888888;
 }
-/* line 46, ../sass/components/_button.scss */
+/* line 39, ../sass/components/_button.scss */
 button.proceed {
   background-color: #A4EEB0;
 }
-/* line 49, ../sass/components/_button.scss */
+/* line 42, ../sass/components/_button.scss */
 button.proceed:hover {
   background-color: #79e68b;
 }
-/* line 53, ../sass/components/_button.scss */
+/* line 46, ../sass/components/_button.scss */
 button.proceed[disabled] {
   background-color: #b0d3b5;
 }
-/* line 57, ../sass/components/_button.scss */
+/* line 50, ../sass/components/_button.scss */
 button.danger {
   background-color: #FED3C6;
 }
-/* line 60, ../sass/components/_button.scss */
+/* line 53, ../sass/components/_button.scss */
 button.danger:hover {
   background-color: #fec0ad;
 }
-/* line 64, ../sass/components/_button.scss */
+/* line 57, ../sass/components/_button.scss */
 button.danger[disabled] {
   background-color: #ead2cb;
 }
-/* line 69, ../sass/components/_button.scss */
+/* line 62, ../sass/components/_button.scss */
 button.with-icon {
   background-repeat: no-repeat;
   background-position: 3px;
   background-size: 16px;
   padding-left: 21px;
 }
-/* line 76, ../sass/components/_button.scss */
+/* line 69, ../sass/components/_button.scss */
 button.with-icon.small {
   background-position: 2px 1px;
   background-size: 14px;
   padding-left: 17px;
 }
-/* line 82, ../sass/components/_button.scss */
+/* line 75, ../sass/components/_button.scss */
 button.with-icon.large {
   background-position: 4px;
   background-size: 20px;
   padding-left: 28px;
 }
-/* line 88, ../sass/components/_button.scss */
+/* line 81, ../sass/components/_button.scss */
 button.with-icon.x-large {
   background-position: 7px 5px;
   background-size: 30px;
   padding-left: 38px;
 }
 
-/* line 97, ../sass/components/_button.scss */
+/* line 90, ../sass/components/_button.scss */
 button {
   color: #404040;
   font-size: 13px;
@@ -1018,32 +1136,33 @@ button {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   overflow: visible;
 }
-/* line 125, ../sass/components/_button.scss */
+/* line 118, ../sass/components/_button.scss */
 button:focus {
   border-color: #0096f2;
   box-shadow: 0 2px 2px 0 #0096f2;
 }
-/* line 128, ../sass/components/_button.scss */
+/* line 121, ../sass/components/_button.scss */
 button:focus.small {
+  box-shadow: 0 2px 2px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 132, ../sass/components/_button.scss */
+/* line 126, ../sass/components/_button.scss */
 button:focus.large {
-  box-shadow: 0 4px #0096f2;
+  box-shadow: 0 4px 2px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 140, ../sass/components/_button.scss */
+/* line 134, ../sass/components/_button.scss */
 button:focus.x-large {
-  box-shadow: 0 5px #0096f2;
+  box-shadow: 0 5px 3px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 149, ../sass/components/_button.scss */
-button:active {
+/* line 143, ../sass/components/_button.scss */
+button:active:enabled {
   top: 3px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 #999;
 }
-/* line 155, ../sass/components/_button.scss */
+/* line 149, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
@@ -1053,13 +1172,13 @@ button.small {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 171, ../sass/components/_button.scss */
-button.small:active {
+/* line 165, ../sass/components/_button.scss */
+button.small:active:enabled {
   top: 3px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 179, ../sass/components/_button.scss */
+/* line 173, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
@@ -1069,13 +1188,13 @@ button.large {
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 195, ../sass/components/_button.scss */
-button.large:active {
+/* line 189, ../sass/components/_button.scss */
+button.large:active:enabled {
   top: 4px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 203, ../sass/components/_button.scss */
+/* line 197, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
@@ -1085,15 +1204,36 @@ button.x-large {
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 219, ../sass/components/_button.scss */
-button.x-large:active {
+/* line 213, ../sass/components/_button.scss */
+button.x-large:active:enabled {
   top: 5px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 227, ../sass/components/_button.scss */
+/* line 221, ../sass/components/_button.scss */
 button.auto-height {
   height: auto;
+}
+
+/* line 226, ../sass/components/_button.scss */
+#functions-area,
+#functions-area-bottom,
+.sidebar-content-header {
+  font-size: 0;
+}
+/* line 230, ../sass/components/_button.scss */
+#functions-area button,
+#functions-area-bottom button,
+.sidebar-content-header button {
+  margin-left: 15px;
+  min-width: 65px;
+}
+/* line 234, ../sass/components/_button.scss */
+#functions-area button.danger,
+#functions-area-bottom button.danger,
+.sidebar-content-header button.danger {
+  margin-left: 45px;
+  margin-right: 30px;
 }
 
 /*****************************
@@ -1668,12 +1808,58 @@ button.nts-switch-button[disabled]:hover {
 .ntsCheckBox {
   display: inline-block;
   padding: 1px 5px 3px 4px;
+  border: solid 1px transparent;
 }
 /* line 4, ../sass/components/_checkbox.scss */
 .ntsCheckBox label {
   display: inline-block;
 }
-/* line 7, ../sass/components/_checkbox.scss */
+/* line 9, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-warnpanel {
+  background-color: #FED3C6;
+  padding: 2px 10px 3px 6px;
+  border-radius: 2px;
+}
+/* line 15, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button {
+  border: solid 1px #7F7F7F;
+  border-radius: 5px;
+  padding: 6px 15px 8px 9px;
+  box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+}
+/* line 21, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button:focus {
+  border-radius: 5px;
+  border-color: #0096f2;
+  box-shadow: 0 3px #0096f2;
+}
+/* line 27, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button.checked {
+  background-color: #00B050;
+}
+/* line 30, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button.checked .ntsCheckBox-label {
+  color: #fff;
+}
+/* line 34, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button.checked .ntsCheckBox-label input[type="checkbox"] + span {
+  background: #2FCC71;
+  border: 2px solid #fff;
+}
+/* line 37, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button.checked .ntsCheckBox-label input[type="checkbox"] + span:after {
+  width: 10px;
+}
+/* line 41, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button.checked .ntsCheckBox-label input[type="checkbox"][disabled] + span {
+  background: transparent;
+  border-color: #DDD;
+}
+/* line 44, ../sass/components/_checkbox.scss */
+.ntsCheckBox.style-button.checked .ntsCheckBox-label input[type="checkbox"][disabled] + span:after {
+  border-color: #DDD;
+}
+/* line 52, ../sass/components/_checkbox.scss */
 .ntsCheckBox span.box,
 .ntsCheckBox span.label {
   cursor: pointer;
@@ -1682,7 +1868,7 @@ button.nts-switch-button[disabled]:hover {
   line-height: 19px;
   vertical-align: middle;
 }
-/* line 16, ../sass/components/_checkbox.scss */
+/* line 61, ../sass/components/_checkbox.scss */
 .ntsCheckBox span.box {
   position: relative;
   width: 19px;
@@ -1693,7 +1879,7 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 4px;
   box-sizing: border-box;
 }
-/* line 26, ../sass/components/_checkbox.scss */
+/* line 71, ../sass/components/_checkbox.scss */
 .ntsCheckBox span.box:after {
   content: '';
   width: 11px;
@@ -1708,83 +1894,83 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 1px;
   transform: rotate(-59deg);
 }
-/* line 42, ../sass/components/_checkbox.scss */
+/* line 87, ../sass/components/_checkbox.scss */
 .ntsCheckBox span.label {
   display: inline-block;
   padding-left: 10px;
 }
-/* line 47, ../sass/components/_checkbox.scss */
+/* line 92, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] {
   display: none;
 }
-/* line 51, ../sass/components/_checkbox.scss */
+/* line 96, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"]:checked + span {
   background: #2FCC71;
 }
-/* line 53, ../sass/components/_checkbox.scss */
+/* line 98, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"]:checked + span:after {
   opacity: 1;
 }
-/* line 57, ../sass/components/_checkbox.scss */
+/* line 102, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"][disabled] + span, .ntsCheckBox input[type="checkbox"][disabled] + span + span {
   cursor: default;
   user-select: none;
   opacity: 0.8;
 }
-/* line 65, ../sass/components/_checkbox.scss */
+/* line 110, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"][disabled] + span {
   background: transparent;
   border-color: #AAA;
 }
-/* line 68, ../sass/components/_checkbox.scss */
+/* line 113, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"][disabled] + span:after {
   border-color: #AAA;
 }
-/* line 73, ../sass/components/_checkbox.scss */
+/* line 118, ../sass/components/_checkbox.scss */
 .ntsCheckBox:focus {
   box-shadow: 0 0 1px 1px #0096f2;
   border-radius: 2px;
 }
 
-/* line 79, ../sass/components/_checkbox.scss */
+/* line 124, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox-label {
   color: #fff;
 }
-/* line 83, ../sass/components/_checkbox.scss */
+/* line 128, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox-label input[type="checkbox"] + span {
   background: #2FCC71;
   border: 2px solid #fff;
 }
-/* line 86, ../sass/components/_checkbox.scss */
+/* line 131, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox-label input[type="checkbox"] + span:after {
   width: 10px;
 }
-/* line 90, ../sass/components/_checkbox.scss */
+/* line 135, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox-label input[type="checkbox"][disabled] + span {
   background: transparent;
   border-color: #DDD;
 }
-/* line 93, ../sass/components/_checkbox.scss */
+/* line 138, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox-label input[type="checkbox"][disabled] + span:after {
   border-color: #DDD;
 }
 
-/* line 99, ../sass/components/_checkbox.scss */
+/* line 144, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox-label {
   color: #444;
 }
-/* line 103, ../sass/components/_checkbox.scss */
+/* line 148, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox-label span.label {
   padding-left: 5px;
 }
-/* line 107, ../sass/components/_checkbox.scss */
+/* line 152, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox-label span.box {
   width: 1em;
   height: 1em;
   border: 1px solid #444;
   border-radius: 0;
 }
-/* line 113, ../sass/components/_checkbox.scss */
+/* line 158, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox-label span.box:after {
   width: 9px;
   height: 4px;
@@ -1795,9 +1981,21 @@ button.nts-switch-button[disabled]:hover {
   border-right: none;
   border-radius: 0;
 }
-/* line 127, ../sass/components/_checkbox.scss */
+/* line 172, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox-label input[type="checkbox"]:checked + span {
   background: transparent;
+}
+
+/* line 179, ../sass/components/_checkbox.scss */
+.checkbox-wrapper {
+  display: inline-block;
+  border: solid 1px transparent;
+  /* keep 1px border for error style */
+}
+
+/* line 184, ../sass/components/_checkbox.scss */
+.multicheckbox-wrapper {
+  display: inline-block;
 }
 
 /* line 1, ../sass/components/_panel.scss */
@@ -1805,19 +2003,37 @@ button.nts-switch-button[disabled]:hover {
   padding: 10px;
   position: relative;
 }
-/* line 5, ../sass/components/_panel.scss */
+/* line 7, ../sass/components/_panel.scss */
 .panel.panel-frame {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
 }
-/* line 9, ../sass/components/_panel.scss */
+/* line 11, ../sass/components/_panel.scss */
 .panel.panel-gray-bg {
   background-color: #E7E6E6;
 }
-/* line 12, ../sass/components/_panel.scss */
+/* line 14, ../sass/components/_panel.scss */
 .panel.ntsPanel {
   background-color: #E0F59E;
   border-radius: 7px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+/* line 19, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-top {
+  margin-top: 50px;
+}
+/* line 20, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-bottom {
+  margin-bottom: 50px;
+}
+/* line 21, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-right {
+  margin-right: 50px;
+}
+/* line 22, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-left {
+  margin-left: 50px;
 }
 
 @CHARSET "UTF-8";
@@ -1940,25 +2156,27 @@ button.nts-switch-button[disabled]:hover {
   background: #F39814;
   color: white;
 }
+/* line 22, ../sass/components/_listbox.scss */
+.ntsListBox tbody tr {
+  /* .ui-iggrid-selectedcell{ 
+  	background: #007fff !important;
+  } */
+}
 /* line 23, ../sass/components/_listbox.scss */
 .ntsListBox tbody tr td {
-  height: 28px;
+  /* height: 28px; */
   overflow: hidden;
   user-select: none;
   cursor: default;
   box-sizing: border-box;
   border: 0px transparent !important;
 }
-/* line 32, ../sass/components/_listbox.scss */
-.ntsListBox tbody tr .ui-iggrid-selectedcell {
-  background: #F39814 !important;
-}
 /* line 39, ../sass/components/_listbox.scss */
 .ntsListBox .nts-column {
   /* float: left; */
   padding: 0 2px;
-  height: 28px;
-  line-height: 28px;
+  height: 23px;
+  line-height: 23px;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -1971,6 +2189,7 @@ button.nts-switch-button[disabled]:hover {
 .listbox-wrapper {
   border: 1px solid grey;
   display: inline-block;
+  overflow: hidden;
 }
 
 /* line 3, ../sass/components/_gridlist.scss */
@@ -2073,18 +2292,19 @@ button.nts-switch-button[disabled]:hover {
 .ui-widget.ui-tabs .ui-tabs-panel {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
+  display: block !important;
 }
-/* line 36, ../sass/components/_tabpanel.scss */
+/* line 37, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical {
   display: flex;
 }
-/* line 39, ../sass/components/_tabpanel.scss */
+/* line 40, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav {
   float: left;
   padding: .4em 0;
   border-radius: 0;
 }
-/* line 44, ../sass/components/_tabpanel.scss */
+/* line 45, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav li {
   clear: left;
   width: 100%;
@@ -2092,17 +2312,43 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 0;
   border-width: 1px 0;
 }
-/* line 51, ../sass/components/_tabpanel.scss */
+/* line 52, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav li.ui-tabs-active {
   padding: 0;
   margin: 0;
   border-color: #00B050;
 }
-/* line 58, ../sass/components/_tabpanel.scss */
+/* line 59, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
   padding: 1em;
+}
+
+/* line 3, ../sass/components/_treedrag.scss */
+.ui-igtree {
+  border: 1px solid #dddddd;
+}
+
+/* line 6, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-root {
+  border: 0px white solid;
+}
+
+/* line 9, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igcheckbox-normal-on {
+  top: -2px;
+}
+
+/* line 12, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igcheckbox-normal-off {
+  top: -4px;
+  left: -2px;
+}
+
+/* line 16, ../sass/components/_treedrag.scss */
+.ui-igtree li {
+  list-style-type: none;
 }
 
 /* line 3, ../sass/components/_treegridview.scss */
@@ -2187,22 +2433,29 @@ button.nts-switch-button[disabled]:hover {
 /* line 8, ../sass/components/_combobox.scss */
 .nts-combo-item {
   height: 20px;
+  font-size: 0px;
+  white-space: nowrap;
 }
-
-/* line 11, ../sass/components/_combobox.scss */
-.nts-column {
+/* line 13, ../sass/components/_combobox.scss */
+.nts-combo-item .nts-column {
+  display: inline-block;
   height: 20px;
   overflow: hidden;
   margin-right: 5px;
 }
 
-/* line 18, ../sass/components/_combobox.scss */
+/* line 22, ../sass/components/_combobox.scss */
 .ui-state-active {
   border-color: #0096f2;
 }
-/* line 21, ../sass/components/_combobox.scss */
+/* line 25, ../sass/components/_combobox.scss */
 .ui-state-active:focus {
   border-color: #0096f2;
+}
+
+/* line 31, ../sass/components/_combobox.scss */
+.compact-grid .ui-igcombo-wrapper {
+  height: 27px;
 }
 
 /* line 2, ../sass/components/_dialog.scss */
@@ -2248,21 +2501,25 @@ button.nts-switch-button[disabled]:hover {
   bottom: 3px;
   background-position: -80px -224px;
 }
-/* line 43, ../sass/components/_dialog.scss */
+/* line 44, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar-close:active {
+  top: calc(50% + 3px);
+}
+/* line 48, ../sass/components/_dialog.scss */
 .ui-dialog.no-close-btn .ui-dialog-titlebar-close {
   display: none;
 }
-/* line 47, ../sass/components/_dialog.scss */
+/* line 52, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content {
   padding: 20px;
 }
-/* line 50, ../sass/components/_dialog.scss */
+/* line 55, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog {
   min-width: 250px;
   padding: 0;
   position: relative;
 }
-/* line 55, ../sass/components/_dialog.scss */
+/* line 60, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
   display: inline-block;
   margin: 20px;
@@ -2272,14 +2529,14 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   line-height: 22px;
 }
-/* line 64, ../sass/components/_dialog.scss */
+/* line 69, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .control {
   right: 10px;
   bottom: 0px;
   position: absolute;
   color: gray;
 }
-/* line 73, ../sass/components/_dialog.scss */
+/* line 78, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane {
   padding: 10px 0;
   margin: 0px;
@@ -2287,11 +2544,11 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   position: relative;
 }
-/* line 80, ../sass/components/_dialog.scss */
+/* line 85, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
   float: none;
 }
-/* line 84, ../sass/components/_dialog.scss */
+/* line 89, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane > .ui-dialog-buttonpane-resize {
   right: 0px;
   bottom: 0px;
@@ -2299,23 +2556,23 @@ button.nts-switch-button[disabled]:hover {
   max-width: 20px;
   max-height: 20px;
 }
-/* line 92, ../sass/components/_dialog.scss */
+/* line 97, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
   min-width: 80px;
   font-family: "Meiryo UI";
 }
-/* line 99, ../sass/components/_dialog.scss */
+/* line 104, ../sass/components/_dialog.scss */
 .ui-dialog #error-board {
   overflow: hidden;
 }
-/* line 102, ../sass/components/_dialog.scss */
+/* line 107, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table {
   border-collapse: collapse;
   width: 100%;
   margin: 0;
 }
-/* line 108, ../sass/components/_dialog.scss */
+/* line 113, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td {
   border: solid 1px #bbb;
@@ -2326,20 +2583,20 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   cursor: pointer;
 }
-/* line 119, ../sass/components/_dialog.scss */
+/* line 124, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td:first-child {
   background-color: #A4EEB0;
 }
-/* line 124, ../sass/components/_dialog.scss */
+/* line 129, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table thead tr {
   position: relative;
 }
-/* line 129, ../sass/components/_dialog.scss */
+/* line 134, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody {
   overflow: auto;
 }
-/* line 133, ../sass/components/_dialog.scss */
+/* line 138, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody tr td:last-child {
   color: gray;
 }
@@ -2605,40 +2862,46 @@ button.nts-switch-button[disabled]:hover {
 }
 /* line 264, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body {
+  display: block !important;
+  visibility: hidden;
   float: left;
   position: absolute;
   width: 95%;
   height: 95%;
   padding: 2.5%;
 }
-/* line 272, ../sass/components/_wizard.scss */
+/* line 274, ../sass/components/_wizard.scss */
+.nts-wizard > .content > .current {
+  visibility: visible;
+}
+/* line 278, ../sass/components/_wizard.scss */
 .nts-wizard > .actions {
   position: relative;
   display: block;
   text-align: right;
   width: 100%;
 }
-/* line 279, ../sass/components/_wizard.scss */
+/* line 285, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions {
   display: inline;
   float: right;
   margin: 0 2.5%;
   width: 95%;
 }
-/* line 286, ../sass/components/_wizard.scss */
+/* line 292, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul {
   display: inline-block;
   text-align: right;
 }
-/* line 291, ../sass/components/_wizard.scss */
+/* line 297, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul > li {
   margin: 0 0.5em;
 }
-/* line 295, ../sass/components/_wizard.scss */
+/* line 301, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions > ul > li {
   margin: 0 0 0 1em;
 }
-/* line 299, ../sass/components/_wizard.scss */
+/* line 305, ../sass/components/_wizard.scss */
 .nts-wizard > .actions a,
 .nts-wizard > .actions a:hover,
 .nts-wizard > .actions a:active {
@@ -2651,28 +2914,28 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 312, ../sass/components/_wizard.scss */
+/* line 318, ../sass/components/_wizard.scss */
 .nts-wizard > .actions .disabled a,
 .nts-wizard > .actions .disabled a:hover,
 .nts-wizard > .actions .disabled a:active {
   background: #eee;
   color: #aaa;
 }
-/* line 326, ../sass/components/_wizard.scss */
+/* line 332, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue .header .content {
   background: #ABEBF5;
 }
-/* line 328, ../sass/components/_wizard.scss */
+/* line 334, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end > a,
 .nts-wizard.theme-blue > .steps > ul > .end > a:hover,
 .nts-wizard.theme-blue > .steps > ul > .end > a:active {
   background-color: #ABEBF5;
 }
-/* line 332, ../sass/components/_wizard.scss */
+/* line 338, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end.current a, .nts-wizard.theme-blue > .steps > ul > .end.current a:hover, .nts-wizard.theme-blue > .steps > ul > .end.current a:active {
   background-color: #37B0F0;
 }
-/* line 336, ../sass/components/_wizard.scss */
+/* line 342, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .actions a:active {
   background: #ABEBF5;
 }
@@ -2687,32 +2950,22 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
 }
 
-/* line 7, ../sass/components/_swaplist.scss */
-.ntsSwapList {
-  overflow: hidden;
-}
-
 /* line 10, ../sass/components/_swaplist.scss */
 .ntsSearchButton {
   margin-left: 10px;
 }
 
 /* line 13, ../sass/components/_swaplist.scss */
-.move-button {
-  width: 75px;
-}
-
-/* line 16, ../sass/components/_swaplist.scss */
 .move-forward {
   margin-bottom: 5px;
 }
 
-/* line 19, ../sass/components/_swaplist.scss */
+/* line 16, ../sass/components/_swaplist.scss */
 .ntsSwapComponent {
   display: table-cell;
 }
 
-/* line 22, ../sass/components/_swaplist.scss */
+/* line 20, ../sass/components/_swaplist.scss */
 .ntsMoveDataArea {
   height: 100%;
   vertical-align: middle;
@@ -2720,7 +2973,13 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
 }
 
-/* line 28, ../sass/components/_swaplist.scss */
+/* line 26, ../sass/components/_swaplist.scss */
+.ntsMoveDataArea .move-button {
+  width: 75px;
+  margin: 10px 0px;
+}
+
+/* line 31, ../sass/components/_swaplist.scss */
 .ntsSearchArea div {
   display: inline-block;
 }
@@ -2749,30 +3008,33 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 1, ../sass/components/_searchbox.scss */
-input.ntsSearchBox {
+.nts-searchbbox-wrapper {
+  margin-bottom: 15px;
+}
+/* line 4, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper input.ntsSearchBox {
   box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid #999;
+  border-radius: 3px;
   font-size: 14px;
-  background-color: white;
-  background-image: url("enter mark.png");
+  background-image: url("images/icons/enter_mark.png");
   background-position: right;
   background-repeat: no-repeat;
   padding: 6px 30px 6px 15px;
-  -webkit-transition: width 0.4s ease-in-out;
+  vertical-align: top;
   transition: width 0.4s ease-in-out;
 }
-
-/* When the input field gets focus, change its width to 100% */
-/* line 16, ../sass/components/_searchbox.scss */
-input.ntsSearchBox:focus {
-  border: 2px solid #00BFFF;
+/* line 17, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper input.ntsSearchBox:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
   outline: none;
 }
-
-/* line 20, ../sass/components/_searchbox.scss */
-button.search-btn {
-  margin: 5px;
+/* line 22, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper button.search-btn,
+.nts-searchbbox-wrapper button.clear-btn {
+  vertical-align: top;
+  margin-left: 5px;
+  min-width: 65px;
 }
 
 /*!
@@ -3020,34 +3282,50 @@ button.search-btn {
   padding: 4px 0;
   border-radius: 2px;
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+  z-index: 120050;
 }
-/* line 11, ../sass/components/_contextmenu.scss */
+/* line 12, ../sass/components/_contextmenu.scss */
+.ntsContextMenu:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #FAFAFA;
+  width: 30px;
+  border-right: 1px solid #EEEEEE;
+  box-sizing: border-box;
+  z-index: 1;
+}
+/* line 26, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li {
   position: relative;
   display: block;
   list-style: none;
-  padding: 0 10px 0 30px;
+  padding: 0 10px 0 37px;
   line-height: 28px;
   cursor: pointer;
+  z-index: 2;
 }
-/* line 19, ../sass/components/_contextmenu.scss */
+/* line 35, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
-/* line 23, ../sass/components/_contextmenu.scss */
+/* line 39, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
-/* line 29, ../sass/components/_contextmenu.scss */
+/* line 45, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li .menu-icon {
   position: absolute;
-  left: 6px;
+  left: 7px;
   top: 50%;
   margin-top: -8px;
 }
-/* line 37, ../sass/components/_contextmenu.scss */
+/* line 53, ../sass/components/_contextmenu.scss */
 .ntsContextMenu .divider {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3168,36 +3446,61 @@ button.search-btn {
 }
 
 /* line 1, ../sass/components/_ntsgrid.scss */
-.nts-grid-wrapper table .ui-ig-altrecord {
+.nts-grid-wrapper table .ui-ig-altrecord,
+.nts-grid .ui-ig-altrecord {
   background-color: #FFF;
 }
 
-/* line 5, ../sass/components/_ntsgrid.scss */
-.nts-grid-wrapper table tr td.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover {
-  background-color: aqua;
+/* line 6, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td,
+.nts-grid-wrapper table tr th.ui-iggrid-header {
+  border-color: #AAB7B8;
 }
 
-/* line 10, ../sass/components/_ntsgrid.scss */
+/* line 11, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td.ui-state-hover,
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
+.nts-grid tr td.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ui-state-hover {
+  background-color: aqua;
+  border-color: #AAB7B8;
+}
+
+/* line 19, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-disable.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover,
+.nts-grid tr td.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-disable.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
   background-color: #CCC;
   color: gray;
 }
 
-/* line 18, ../sass/components/_ntsgrid.scss */
+/* line 30, ../sass/components/_ntsgrid.scss */
+.ui-iggrid .ui-iggrid-tablebody td {
+  height: 21px;
+}
+
+/* line 33, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover,
+.nts-grid tr td.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-calc.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-calc.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover {
   background-color: purple;
 }
 
-/* line 27, ../sass/components/_ntsgrid.scss */
+/* line 48, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3205,11 +3508,19 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover,
+.nts-grid tr td.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-reflect.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-reflect.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-reflect.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover {
   background-color: green;
 }
 
-/* line 38, ../sass/components/_ntsgrid.scss */
+/* line 67, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3219,11 +3530,21 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover,
+.nts-grid tr td.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-manual-edit-other.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
   background-color: orange;
 }
 
-/* line 51, ../sass/components/_ntsgrid.scss */
+/* line 90, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3235,11 +3556,23 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover,
+.nts-grid tr td.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-manual-edit-target.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
   background-color: pink;
 }
 
-/* line 66, ../sass/components/_ntsgrid.scss */
+/* line 117, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3253,11 +3586,25 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover,
+.nts-grid tr td.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-alarm.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover {
   background-color: yellow;
 }
 
-/* line 83, ../sass/components/_ntsgrid.scss */
+/* line 148, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3273,11 +3620,27 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-error.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover,
+.nts-grid tr td.ntsgrid-error,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error,
+.nts-grid tr td.ntsgrid-error.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-alarm,
+.nts-grid tr td.ntsgrid-error.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-error.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-error.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-error.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-error.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-error.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover {
   background-color: red;
 }
 
-/* line 102, ../sass/components/_ntsgrid.scss */
+/* line 183, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3295,8 +3658,237 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover,
+.nts-grid tr td.ui-iggrid-selectedcell,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-error,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-error,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-alarm,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-manual-edit-target,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-manual-edit-other,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-reflect,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-calc,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
+.nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
   background-color: #007fff;
+}
+
+/* line 222, ../sass/components/_ntsgrid.scss */
+.nts-image-container {
+  height: 100%;
+  text-align: center;
+}
+
+/* line 231, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td .nts-grid.control {
+  height: 35px;
+}
+
+/* line 239, ../sass/components/_ntsgrid.scss */
+.text-limited {
+  white-space: nowrap;
+}
+
+/* line 1, ../sass/components/_extable.scss */
+.extable {
+  position: relative;
+}
+
+/* line 4, ../sass/components/_extable.scss */
+.extable .xheader td {
+  color: #000;
+  background-color: #CFF1A5;
+  font-weight: bold;
+}
+
+/* line 9, ../sass/components/_extable.scss */
+.extable td.edit-cell {
+  padding: 0px;
+}
+
+/* line 12, ../sass/components/_extable.scss */
+.extable div.highlight, .extable td.highlight, .xheader td.highlight {
+  background-color: aqua;
+}
+
+/* line 15, ../sass/components/_extable.scss */
+.extable div.xdet, .extable td.xdet {
+  background-color: #D2B4DE;
+}
+
+/* line 18, ../sass/components/_extable.scss */
+.extable div.edited, .extable td.edited {
+  background-color: #FAD7A0;
+}
+
+/* line 21, ../sass/components/_extable.scss */
+.extable td.ex-round-go {
+  cursor: pointer;
+}
+
+/* line 24, ../sass/components/_extable.scss */
+.extable div.x-cell-selected, .extable td.x-cell-selected {
+  background-color: #3498DB;
+  color: #FFF;
+}
+
+/* line 28, ../sass/components/_extable.scss */
+.extable tr.x-row-selected {
+  background-color: #AED6F1;
+}
+
+/* line 31, ../sass/components/_extable.scss */
+.extable td.x-error, .extable div.x-error {
+  border: solid 1px #FF6666 !important;
+}
+
+/* line 34, ../sass/components/_extable.scss */
+.extable td .column-icon {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+/* line 40, ../sass/components/_extable.scss */
+.ex-editor input::-ms-clear {
+  display: none;
+}
+
+/* line 43, ../sass/components/_extable.scss */
+.extable-crud {
+  padding-bottom: 4px;
+}
+
+/* line 46, ../sass/components/_extable.scss */
+.extable-delete-rows {
+  margin-left: 4px;
+}
+
+/* line 49, ../sass/components/_extable.scss */
+div .ex-area-line.x-stay {
+  cursor: default !important;
+}
+
+/* line 53, ../sass/components/_extable.scss */
+.top-right-tooltip:before {
+  width: 0;
+  height: 0;
+  position: absolute;
+  content: " ";
+  border-top: solid transparent 6px;
+  border-bottom: solid transparent 6px;
+  border-right-style: solid;
+  border-right-width: 14px;
+  border-right-color: inherit;
+  top: 5px;
+  left: -14px;
+}
+
+/* line 66, ../sass/components/_extable.scss */
+.top-right-tooltip {
+  background-color: #CACA1E;
+  box-shadow: 2px 2px 2px #95A5A6;
+  border-radius: 2px;
+  border: solid 1px #CACA1E;
+  display: inline-block;
+  padding-left: 4px;
+  padding-top: 4px;
+}
+
+/* line 76, ../sass/components/_extable.scss */
+.x-context-menu {
+  position: absolute;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #aaa;
+  min-width: 150px;
+  padding: 4px 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+  z-index: 120050;
+}
+
+/* line 87, ../sass/components/_extable.scss */
+.x-context-menu:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #FAFAFA;
+  width: 30px;
+  border-right: 1px solid #EEEEEE;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* line 101, ../sass/components/_extable.scss */
+.x-context-menu li {
+  position: relative;
+  display: block;
+  list-style: none;
+  padding: 0 10px 0 37px;
+  line-height: 28px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* line 110, ../sass/components/_extable.scss */
+.x-context-menu li:hover {
+  background: rgba(0, 0, 0, 0.075);
+}
+
+/* line 113, ../sass/components/_extable.scss */
+.x-context-menu li.disabled {
+  background: transparent;
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* line 118, ../sass/components/_extable.scss */
+.x-context-menu li .menu-icon {
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+/* line 124, ../sass/components/_extable.scss */
+.x-context-menu .partition {
+  height: 0;
+  border-top: 1px solid #ccc;
+  padding: 0;
+  margin: 5px 0;
+}
+
+/* line 131, ../sass/components/_extable.scss */
+.x-popup-panel {
+  position: absolute;
+  display: block;
+  background-color: #fff;
+  border: solid 2px #E67E22;
+  -webkit-box-shadow: 1px 1px 5px 1px #888;
+  -moz-box-shadow: 1px 1px 5px 1px #888;
+  box-shadow: 1px 1px 5px 1px #888;
+  padding: 5px;
+}
+
+/* line 142, ../sass/components/_extable.scss */
+.x-link {
+  display: inline-block;
+  color: #0D86D1;
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
 }
 
 /*****************************
@@ -3318,6 +3910,150 @@ button.search-btn {
   background: #ffc;
   border: solid 1px #b85;
   padding: 5px;
+  z-index: 120100;
+}
+
+/* line 1, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel {
+  position: absolute;
+  padding: 10px;
+  background-color: #fff;
+  border: solid 2px #aaa;
+}
+/* line 7, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item {
+  margin-bottom: 8px;
+}
+/* line 10, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item:last-child {
+  margin-bottom: 0;
+}
+/* line 14, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item .legend-item-symbol {
+  display: inline-block;
+}
+/* line 18, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item .legend-item-label {
+  display: inline-block;
+  margin-left: 6px;
+}
+
+/* line 1, ../sass/components/_linkbutton.scss */
+.hyperlink {
+  color: #0066CC;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* line 7, ../sass/components/_linkbutton.scss */
+.link-button {
+  position: relative;
+  display: inline-block;
+  padding: 0px 12px;
+  line-height: 30px;
+  background-color: #E0F59E;
+  color: #0D86D1;
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+/* line 21, ../sass/components/_linkbutton.scss */
+.link-button.goout {
+  padding-left: 40px;
+}
+/* line 24, ../sass/components/_linkbutton.scss */
+.link-button.goout:before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  display: block;
+  background-image: url("images/icons/go-out.png");
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 26px;
+}
+/* line 38, ../sass/components/_linkbutton.scss */
+.link-button.goback {
+  padding-left: 25px;
+  margin-left: 15px;
+  text-decoration: none;
+  color: #333;
+}
+/* line 44, ../sass/components/_linkbutton.scss */
+.link-button.goback:before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 0px;
+  display: block;
+  background-image: url("images/icons/go-back.png");
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  height: 30px;
+  width: 30px;
+}
+
+/* line 3, ../sass/components/_fixedtable.scss */
+.nts-fixed-table table.fixed-table {
+  width: 100%;
+  table-layout: fixed;
+}
+/* line 7, ../sass/components/_fixedtable.scss */
+.nts-fixed-table table.fixed-table > tbody > tr > td,
+.nts-fixed-table table.fixed-table > tbody > tr > th {
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* line 13, ../sass/components/_fixedtable.scss */
+.nts-fixed-table table.fixed-table > tbody > tr:hover > td,
+.nts-fixed-table table.fixed-table > tbody > tr:hover > th {
+  background-color: #C5F1F7;
+}
+/* line 20, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-header-container {
+  overflow: auto;
+}
+/* line 24, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-body-container {
+  overflow: auto;
+  float: left;
+  border: 1px solid #CCC;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-body-wrapper {
+  margin: -1px 0 0 -1px;
+}
+
+/* line 2, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .browser-button {
+  float: left;
+  margin-right: 5px;
+}
+/* line 3, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .filenamelabel,
+.nts-fileupload-container .nts-editor-wrapped {
+  display: block;
+  overflow: hidden;
+}
+/* line 5, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .filenamelabel {
+  line-height: 30px;
+  text-overflow: ellipsis;
+}
+/* line 6, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .nts-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* line 7, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .fileinput {
+  display: none;
 }
 
 /* line 1, ../sass/frame/_header.scss */
@@ -3348,6 +4084,12 @@ button.search-btn {
 /* line 1, ../sass/frame/_contents.scss */
 #contents-area {
   padding: 10px;
+  overflow-y: auto;
+}
+
+/* line 5, ../sass/frame/_contents.scss */
+#master-wrapper {
+  height: 100vh;
 }
 
 /* line 7, ../sass/frame/_sidebar.scss */
@@ -3415,31 +4157,32 @@ button.search-btn {
 #sidebar-area .navigator a.active {
   background-color: #f0f0f0;
   color: #666;
+  cursor: default;
 }
-/* line 53, ../sass/frame/_sidebar.scss */
+/* line 54, ../sass/frame/_sidebar.scss */
 #sidebar-area .navigator a[disabled=disabled] {
   color: #BBB;
   background-color: transparent;
   cursor: default;
 }
-/* line 60, ../sass/frame/_sidebar.scss */
+/* line 61, ../sass/frame/_sidebar.scss */
 #sidebar-area .divider {
   margin: 10px -5px;
   border-top: 1px solid #f0f0f0;
 }
 
-/* line 66, ../sass/frame/_sidebar.scss */
+/* line 67, ../sass/frame/_sidebar.scss */
 .sidebar-content-header {
   position: relative;
   height: 50px;
   border-bottom: solid 1px #B1B1B1;
   width: 100%;
 }
-/* line 71, ../sass/frame/_sidebar.scss */
+/* line 72, ../sass/frame/_sidebar.scss */
 .sidebar-content-header > * {
   vertical-align: middle;
 }
-/* line 73, ../sass/frame/_sidebar.scss */
+/* line 74, ../sass/frame/_sidebar.scss */
 .sidebar-content-header:before {
   content: '';
   position: absolute;
@@ -3450,7 +4193,7 @@ button.search-btn {
   background: left center no-repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJsAAACbCAYAAAB1YemMAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABC2SURBVHhe7d0Hc1zFEgVg/WlyzjnnDCYYMAaMyclksMlgwORsosk53VfflNpva1mJlbQ7e2e3T1XXWi9II825HU73zF36559/ukSiBpJsiWpIsiWqIcmWqIYkW6IakmyJakiyJaohyZaohiRbohqSbIlqSLIlqiHJlqiGJFuiGpJsiWpIsiWqIcmWqIYkW6IakmyJakiyJaohyZaohrki22+//dZ9++233ddff13sq6++6vbt29f99NNP3V9//bX8v0rMCnNDtr///rvbu3dv9/zzz3dPP/1099RTT3WPP/54t2vXru6dd97pvvnmm+X/ZWJWaJpsvBXP9e6773bPPfdcd++993Y33HBDt2nTpu6aa67prr766u66667rbr/99u7hhx8uRHzrrbe6Tz/9tPvxxx+Xv0uiFpomG2/17LPPdjfffHN3xhlndMcdd1x3zDHHjLTjjz++O+2007orrriiu++++wrpfv/99+XvlKiBJsnGo33yySclXF5//fWFaEcccUR3yCGHdIceemixww47rJh/+8+Zr0888cTu4osv7m699dYSaoXY7777rpun3LWvaJJsyPHQQw91l1xySfFmhx9+eHfUUUetyY499tji6bZu3dq9+uqr3ffff7/83RPTQlNk49EQ7aWXXuquvPLKEhoRjcc68sgjR5Jq2HjA8Hj+P2eddVa3efPmktO99tprpYrNynU6aIpsv/76a/fKK690t9xyS3fyyScXwowi1FoM+XyeeuqppaiQA5JM/vjjj+WfmpgUmiLbzz//3N1///3dueee2x199NHFQw2TZy3Gs/GMQdpTTjmleMw777yzSCYfffRRkm6CaIpsBFvSxiBZ4t+TMN8P8eRz8sEHHnigaHeqVjpeYmNogmzW+Oeff3bvvfded9lll5XKchpEi4qWt1O1XnjhhSVkP/HEE6VqTW1uY2iCbLwKr/biiy92559/fnfwwQfvz7WmZb4/Q0I/85577un27NlTWl/W01JE6AuaIdvnn39edLFzzjmneJ8aZItKl7wiT9SZuPvuu0vVmlLJ2tEE2ULEffTRR7uzzz57KmF0NUM8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");
   background-size: auto 100%;
 }
-/* line 84, ../sass/frame/_sidebar.scss */
+/* line 85, ../sass/frame/_sidebar.scss */
 .sidebar-content-header .title {
   display: inline-block;
   font-size: 2rem;
@@ -3476,12 +4219,83 @@ button.search-btn {
   top: 10px;
 }
 
-/* line 41, ../sass/base.scss */
+/* line 1, ../sass/components/_imagepreview.scss */
+.image-holder {
+  width: 600px;
+  height: 600px;
+}
+
+/* line 5, ../sass/components/_imagepreview.scss */
+.image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 9, ../sass/components/_imagepreview.scss */
+.inline-container {
+  float: left;
+  padding: 5px 10px;
+}
+
+/* line 13, ../sass/components/_imagepreview.scss */
+.info-label {
+  display: block;
+}
+
+/* line 16, ../sass/components/_imagepreview.scss */
+.checkbox-holder {
+  padding: 10px 10px;
+}
+
+/* line 19, ../sass/components/_imagepreview.scss */
+.crop-icon {
+  border: 1px red solid;
+  height: 15px;
+  width: 25px;
+}
+
+/* line 24, ../sass/components/_imagepreview.scss */
+.crop-description {
+  padding: 5px 5px;
+}
+
+/* line 27, ../sass/components/_imagepreview.scss */
+.mouse-icon {
+  height: 15px;
+  width: 15px;
+  background-image: url("../images/mouse-128.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 5px 5px;
+}
+
+/* line 35, ../sass/components/_imagepreview.scss */
+.mouse-description-text {
+  padding: 5px 0px;
+}
+
+/* line 38, ../sass/components/_imagepreview.scss */
+.cropper-line {
+  background-color: red !important;
+}
+
+/* line 41, ../sass/components/_imagepreview.scss */
+.cropper-point {
+  background-color: red !important;
+}
+
+/* line 44, ../sass/components/_imagepreview.scss */
+.cropper-crop-box {
+  outline-color: rgba(255, 0, 0, 0.75) !important;
+  outline: 1px solid red !important;
+}
+
+/* line 49, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 45, ../sass/base.scss */
+/* line 53, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

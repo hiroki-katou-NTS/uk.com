@@ -130,14 +130,14 @@ module nts.uk.ui.koExtentions {
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         itemSelected = _.map(selected, s => s.id);
                     } else {
                         itemSelected = [];
                     }
                 } else {
                     let selected = container.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         itemSelected = selected.id;
                     } else {
                         itemSelected = ('');
@@ -201,6 +201,7 @@ module nts.uk.ui.koExtentions {
             var rows = data.rows;
             // Container.
             var container = $(element).find(".ntsListBox");
+            var currentSource = container.igGrid('option', 'dataSource');
             if(container.data("enable") !== enable){
                 if(!enable){
                     container.ntsGridList('unsetupSelecting');
@@ -229,6 +230,21 @@ module nts.uk.ui.koExtentions {
                 }); 
                 container.igGrid('option', 'dataSource', currentSources);
                 container.igGrid("dataBind");        
+            } else if(container.attr("filtered") === true || container.attr("filtered") === "true"){
+                let sources = options.slice();
+                let filteredSource = [];
+                _.forEach(currentSource, function(item){
+                    let itemX = _.find(sources, function (s){
+                        return s[optionValue] === item[optionValue];        
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
+                if(!_.isEqual(filteredSource, currentSource)){
+                    container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                    container.igGrid("dataBind");    
+                }
             }
             
             let isMultiOld = container.igGridSelection('option', 'multipleSelection');

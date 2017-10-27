@@ -122,8 +122,52 @@
 							</div>
 							<div id="tabs-viewmodel" class="cf">
 								<h2>TypeScript</h2>
-<pre><![CDATA[import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
-import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+<pre><![CDATA[export interface EmployeeSearchDto {
+	employeeId: string;
+	
+	employeeCode: string;
+	
+	employeeName: string;
+	
+	workplaceCode: string;
+	
+	workplaceId: string;
+	
+	workplaceName: string;
+}
+
+export interface GroupOption {
+    baseDate?: KnockoutObservable<Date>;
+    // クイック検索タブ
+    isQuickSearchTab: boolean;
+    // 参照可能な社員すべて
+    isAllReferableEmployee: boolean;
+    //自分だけ
+    isOnlyMe: boolean;
+    //おなじ部門の社員
+    isEmployeeOfWorkplace: boolean;
+    //おなじ＋配下部門の社員
+    isEmployeeWorkplaceFollow: boolean;
+
+    
+    // 詳細検索タブ
+    isAdvancedSearchTab: boolean;
+    //複数選択 
+    isMutipleCheck: boolean;
+    
+    //社員指定タイプ or 全社員タイプ
+    isSelectAllEmployee: boolean;
+
+    onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+
+    onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
+    
+    onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
+    
+    onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
+    
+    onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+}
     export class ScreenModel {
         ccgcomponent: GroupOption;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
@@ -136,11 +180,11 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 			var self = this;
 			self.selectedEmployee = ko.observableArray([]);
 			self.showinfoSelectedEmployee = ko.observable(false);
-			self.baseDate: ko.observable(new Date());
+			self.baseDate = ko.observable(new Date());
 			
             self.ccgcomponent = {
                baseDate: self.baseDate,
-               <!-- Show/hide options -->
+               //Show/hide options
                isQuickSearchTab: true,
                isAdvancedSearchTab: true,
                isAllReferableEmployee: true,
@@ -149,8 +193,6 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
                isEmployeeWorkplaceFollow: true,
                isMutipleCheck: true,
                isSelectAllEmployee: true,
-
-               <!-- Event options -->
                /**
                * @param dataList: list employee returned from component.
                * Define how to use this list employee by yourself in the function's body.

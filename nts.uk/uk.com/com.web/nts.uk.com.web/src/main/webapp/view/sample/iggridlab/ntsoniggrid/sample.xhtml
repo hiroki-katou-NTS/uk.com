@@ -40,12 +40,14 @@
 					        ],
 					        rowsRendered: rowsRendered
 						}"></table>-->
-						
+						<div style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['id']}" />
 						<table id="grid2"></table>
-						<input type="button" id="run" value="Run"/>
-						<input type="button" id="update-row" value="updateRow"/>
-						<input type="button" id="enable-ctrl" value="Enable"/>
-						<input type="button" id="disable-ctrl" value="Disable"/>
+						<button id="run">Run</button>
+						<button id="update-row">updateRow</button>
+						<button id="enable-ctrl">Enable</button>
+						<button id="disable-ctrl">Disable</button>
+						<button id="disable-all">Disable All</button>
+						<button id="enable-all">Enable All</button>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -218,6 +220,18 @@ $("#grid2").ntsGrid({
 												<td>$(".selector").ntsGrid("disableNtsControlAt", rowId, columnKey, controlType);</td>
 												<td>
 													Disable control in the cell corresponding to rowId and columnKey.
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsGrid("enableNtsControls", columnKey, controlType);</td>
+												<td>
+													Enable controls in a column of columnKey.
+												</td>
+											</tr>											
+											<tr>
+												<td>$(".selector").ntsGrid("disableNtsControls", columnKey, controlType);</td>
+												<td>
+													Disable controls in a column of columnKey.
 												</td>
 											</tr>
 										</tbody>

@@ -73,7 +73,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		AgreementYearSetting agreementYearSetting = AgreementYearSetting.createFromJavaType(
 				kmkmtAgeementYearSetting.kmkmtAgeementYearSettingPK.employeeId,
 				kmkmtAgeementYearSetting.kmkmtAgeementYearSettingPK.yearValue.intValue(),
-				kmkmtAgeementYearSetting.errorOneYear.longValue(), kmkmtAgeementYearSetting.alarmOneYear.longValue());
+				kmkmtAgeementYearSetting.errorOneYear.intValue(), kmkmtAgeementYearSetting.alarmOneYear.intValue());
 		return agreementYearSetting;
 	}
 

@@ -38,39 +38,7 @@ module kdl002.b.viewmodel {
                 self.items(nts.uk.ui.windows.getShared('KDL002_SelectedNewItem'));
             })
         }
-        OpenDialog0072(){
-            var self = this;
-            let param: IData = {
-                isMulti: true,
-                selecteds: self.list(self.SelectedCode())
-            }
-            nts.uk.ui.windows.setShared('KDL007_PARAM', param,true);
-            nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                self.items([]);
-                var lst = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                console.log(lst);
-                let lstItemMapping =  _.map(lst.selecteds , item => {
-                        return new model.ItemModel2(item, '');
-                });
-                self.items(lstItemMapping);
-            })
-        }
-        OpenDialog007(){
-            var self = this;
-            let param: IData = {
-                isMulti: false,
-                selecteds: self.list(self.SelectedCode())
-            }
-            nts.uk.ui.windows.setShared('KDL007_PARAM', param,true);
-            nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                self.items([]);
-                var lst = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                let lstItemMapping =  _.map(lst , item => {
-                    return new model.ItemModel2(item, '');
-                });
-                self.items(lstItemMapping);
-            })
-        }
+
         OpenDialog002(){
             var self = this;
             let lstSelectedCode = self.list(self.SelectedCode());
@@ -97,10 +65,5 @@ module kdl002.b.viewmodel {
             }
         }
 
-    }
-        interface IData {
-        isMulti: boolean,
-        posibles: Array<any>,
-        selecteds: Array<any>
     }
 }

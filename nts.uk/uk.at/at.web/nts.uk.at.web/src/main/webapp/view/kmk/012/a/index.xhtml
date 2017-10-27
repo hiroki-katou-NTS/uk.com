@@ -13,14 +13,14 @@
 				<com:scriptfile path="kmk012.a.service.js" />
 				<com:scriptfile path="kmk012.a.vm.js" />
 				<com:ValidatorScript>
-					nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName
+					nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName
 				</com:ValidatorScript>
 			</ui:define>
 	
 			<ui:define name="content">
-				<div id="functions-area" class="divHeader">
-					<button class="proceed large btnSave" id="btn_save"
-						data-bind="click: saveClosureHistory">登録</button>
+				<div id="functions-area">
+					<button tabindex="-1" class="proceed large btnSave" id="btn_save" 
+						data-bind="click: saveClosureHistory, enable: $root.errors.isEmpty">登録</button>
 				</div>
 				
 				<div id="contents-area">
@@ -29,6 +29,7 @@
 							<td id="contents-left"
 								class="bg-green caret-right caret-background">
 								<div
+									tabindex="-1" 
 									id="lstClosureHistory" 
 										data-bind="ntsListBox: {
 										options: lstClosureHistory,
@@ -143,7 +144,7 @@
 													optionsValue: 'day',
 													value: closureHistoryModel.closureDate,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: enableChangeClosureDate,
 													columns: [
 														{ prop: 'name', length: 4 }

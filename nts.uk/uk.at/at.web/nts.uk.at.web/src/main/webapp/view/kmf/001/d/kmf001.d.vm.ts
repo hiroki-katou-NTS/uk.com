@@ -17,7 +17,7 @@ module nts.uk.pr.view.kmf001.d {
             
             retentionYearsAmount: KnockoutObservable<number>;
             maxDaysCumulation: KnockoutObservable<number>;
-            textEditorOption: KnockoutObservable<any>;
+            
             yearsAmountByEmp: KnockoutObservable<number>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
             isManaged: KnockoutObservable<boolean>;
@@ -56,11 +56,7 @@ module nts.uk.pr.view.kmf001.d {
                 self.maxDaysCumulation = ko.observable(null);
                 self.yearsAmountByEmp = ko.observable(null);
                 self.maxDaysCumulationByEmp = ko.observable(null);
-                self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    width: "50px",
-                    textmode: "text",
-                    textalign: "left"
-                }));
+                
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理する'),
                     new ManagementModel(0, '管理しない')
@@ -192,8 +188,6 @@ module nts.uk.pr.view.kmf001.d {
                     if (data) {
                         // Find EmploymentSetting By employment
                         service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
-                            //                        self.hasSelectedEmp(true);
-                            $('#switch-btn').focus();
                             self.bindEmploymentSettingData(data1);
                         });
                         self.hasSelectedEmp(true);

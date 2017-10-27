@@ -17,17 +17,14 @@
 }
 
 .contents-area {
-	margin-top: 20px !important;
-	margin-left: 40px !important;
+	margin-top: 30px;
+	margin-left: 50px;
 }
 .bg-dark-green {
 	background-color: #C7F391;
 }
 .right-content {
 	margin-left: 50px;
-}
-#btn-usage-unit {
-	margin-left: 600px;
 }
 #list-workplace {
 	width: 480px;
@@ -48,4 +45,16 @@
 }
 #lblWorkplaceName {
 	margin-left: 40px;
+}
+.cbb-weekstart {
+	display: inline-flex;
+	margin-left: 20px;
+}
+.tbl-daily {
+	display: inline;
+	margin-left: 75px;
+}
+.tbl-monthly {
+	display: inline;
+	margin-left: 170px;
 }

@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPUnitUseSettingUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPUnitUseSettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPUnitUseSettingUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPUnitUseSettingUpdateCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPUnitUseSettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPUnitUseSettingFinder;
 

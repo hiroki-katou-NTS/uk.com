@@ -1,0 +1,20 @@
+#button1{
+	display: inline-block;
+	width: 64px;
+}
+#button2{
+	width: 64px;
+	margin: 0px 0px 0px 165px;
+}
+#buttonArea{
+	border-top: solid 1px #B1B1B1;
+    margin: 60px 20px 20px 0px;
+    padding: 20px 20px 20px;
+}
+#simpleList{
+	margin-left: 28px;
+}
+#label1{
+	margin-left: 28px;
+	width: 195px;
+}

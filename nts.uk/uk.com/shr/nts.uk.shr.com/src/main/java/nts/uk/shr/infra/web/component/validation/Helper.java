@@ -32,9 +32,10 @@ import nts.arc.primitive.constraint.StringRegEx;
 import nts.arc.primitive.constraint.TimeMaxValue;
 import nts.arc.primitive.constraint.TimeMinValue;
 import nts.arc.primitive.constraint.TimeRange;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 class Helper {
-	
+
 	/**
 	 * these constraints have single parameter
 	 */
@@ -54,8 +55,9 @@ class Helper {
 		CONSTRAINTS_SIGNLE_PARAM.put(HalfIntegerMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(HalfIntegerMinValue.class.getSimpleName(), "min");
 		CONSTRAINTS_SIGNLE_PARAM.put(DecimalMantissaMaxLength.class.getSimpleName(), "mantissaMaxLength");
+		CONSTRAINTS_SIGNLE_PARAM.put(ZeroPaddedCode.class.getSimpleName(), "isZeroPadded");
 	}
-	
+
 	/**
 	 * these constraints have multiple parameters: max, min
 	 */
@@ -67,7 +69,7 @@ class Helper {
 		CONSTRAINTS_MAX_MIN_PARAM.add(TimeRange.class.getSimpleName());
 		CONSTRAINTS_MAX_MIN_PARAM.add(HalfIntegerRange.class.getSimpleName());
 	}
-	
+
 	static HashMap<String, String> CHARTYPE_NAMES_MAP = new HashMap<>();
 	static {
 		CHARTYPE_NAMES_MAP.put(CharType.ANY_HALF_WIDTH.name(), "AnyHalfWidth");
@@ -76,13 +78,13 @@ class Helper {
 		CHARTYPE_NAMES_MAP.put(CharType.NUMERIC.name(), "Numeric");
 		CHARTYPE_NAMES_MAP.put(CharType.KANA.name(), "Kana");
 	}
-	
+
 	static String getValueType(Class<?> inputClass) {
 		if (StringPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "String";
 		} else if (TimeDurationPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Time";
-		} else if (TimeClockPrimitiveValue.class.isAssignableFrom(inputClass)) { 
+		} else if (TimeClockPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Clock";
 		} else if (IntegerPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Integer";
@@ -96,41 +98,43 @@ class Helper {
 			throw new RuntimeException("not supported: " + inputClass.getName());
 		}
 	}
-	
+
 	static String getAnnotationName(String representationOfAnnotation) {
 		int end = representationOfAnnotation.indexOf("(");
-    	String noEnd = representationOfAnnotation.substring(0, end);
-    	int start = noEnd.lastIndexOf(".") + 1;
+		String noEnd = representationOfAnnotation.substring(0, end);
+		int start = noEnd.lastIndexOf(".") + 1;
 
-    	return noEnd.substring(start, end);
+		return noEnd.substring(start, end);
 	}
-	
+
 	static String getAnnotationParametersString(String representationOfAnnotation) {
-    	int start = representationOfAnnotation.indexOf("(") + 1;
-    	int end = representationOfAnnotation.indexOf(")");
+		int start = representationOfAnnotation.indexOf("(") + 1;
+		int end = representationOfAnnotation.lastIndexOf(")");
 		return representationOfAnnotation.substring(start, end);
 	}
-	
+
 	static String parseSingleParameterValue(String constraintName, String parametersString) {
 		String jsValue = parametersString.replaceAll("value=", "");
-		
-		if (constraintName.equals("StringCharType")) {
+
+		if (constraintName.equalsIgnoreCase("StringCharType")) {
 			jsValue = "'" + Helper.CHARTYPE_NAMES_MAP.get(jsValue) + "'";
-		} else if (constraintName.equals("StringRegEx")){
+		} else if (constraintName.equalsIgnoreCase("StringRegEx")) {
 			jsValue = "/" + jsValue + "/";
+		} else if (constraintName.equalsIgnoreCase("ZeroPaddedCode")) {
+			jsValue = "true";
 		}
-		
+
 		return jsValue;
 	}
-	
+
 	static Map<String, String> parseMultipleParametersString(String parametersString) {
 		val results = new HashMap<String, String>();
-		
+
 		for (String param : parametersString.split(",")) {
 			String[] paramParts = param.split("=");
 			results.put(paramParts[0].trim(), paramParts[1].trim());
 		}
-		
-		return results; 
+
+		return results;
 	}
 }

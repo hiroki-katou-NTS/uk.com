@@ -23,7 +23,7 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             container.addClass("panel ntsPanel caret-background");
             let caretClass = "caret-" + direction;
-            container.addClass(caretClass);
+            container.addClass(caretClass + " direction-" + direction);
             if (showIcon === true) {
                 container.append("<i class='icon icon-searchbox'></i>");
             }

@@ -29,6 +29,10 @@
          */
         submit() {
             var self = this;
+            nts.uk.ui.block.invisible();
+            
+            validateNameInput($("#web-name"),'#[CCG013_50]', self.name().trim(), 'WebMenuName');
+            
             var code = self.code();
             var name = self.name();
             var allowOverwrite = self.allowOverwrite();
@@ -37,18 +41,29 @@
                 currentWebMenuCode: self.currentWebMenuCode(),
                 allowOverwrite: allowOverwrite,
                 webMenuCode: code,
-                webMenuName: name    
+                webMenuName: name
             }
             
-            if(nts.uk.ui.errors.hasError() !== true){
-                service.copy(data).done(function() {
-                    //    
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
+            $("#web-code").trigger("validate");
+            $("#web-name").trigger("validate");
+            
+            if(nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
+            service.copy(data).done(function() {
+                nts.uk.ui.windows.setShared("CCG013E_WEB_CODE_COPY", code);
+                nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(() => {
+                    nts.uk.ui.windows.close();
                 });
                 
-                self.closeDialog();
-            }
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();      
+            });
+            
         }
         
         /**
@@ -56,6 +71,8 @@
          * Close the popup
          */
         closeDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared("CCG013E_WEB_CODE_COPY", self.currentWebMenuCode());
             nts.uk.ui.windows.close();
         }
     }

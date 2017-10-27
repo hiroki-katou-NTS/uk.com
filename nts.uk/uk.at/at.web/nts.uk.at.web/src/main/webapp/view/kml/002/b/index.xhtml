@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 820,
+					height : 370
+				};
+			</script>
+<!-- 			<com:ValidatorScript> -->
+<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears -->
+<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths -->
+<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays -->
+<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays -->
+<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt -->
+<!-- 			</com:ValidatorScript> -->
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../main.css" />
+			<com:scriptfile path="kml002.b.vm.js" />
+			<com:scriptfile path="kml002.b.start.js" />
+			<com:scriptfile path="kml002.b.service.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+		
+			<!-- BEGIN CONTENT AREA-->
+			<div id="contents-area">
+				<table class="cal-formula-form-data">
+					<tr>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_18')}</div></td>
+						<td>レイアウトコード</td>
+						<td></td>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_19')}</div></td>
+						<td>レイアウトコード</td>
+					</tr>
+				</table>
+				
+				<hr />
+				
+				<table class="cal-formula-input-form">
+					<tr>
+						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_149')}</div></td>
+						<td></td>
+						<td></td>
+						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_150')}</div></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td rowspan="2">
+							<div data-bind="ntsRadioBoxGroup: {
+								options: radioForm,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedLeftId,
+								enable: true}"></div>
+						</td>
+						<td>
+							<div class="project-item" data-bind="ntsComboBox: {
+								options: projectItem,
+								optionsValue: 'itemCode',
+								value: selectedItem1,
+								optionsText: 'itemName',
+								enable: enableProjectItem1,
+								columns: [
+									{ prop: 'itemName', length: 10 }
+								]}"></div>
+						</td>
+						<td rowspan="2">
+							<div class="operator-item" data-bind="ntsComboBox: {
+								options: operatorItem,
+								optionsValue: 'operatorCode',
+								value: selectedOperator,
+								optionsText: 'operatorName',
+								enable: true,
+								columns: [
+									{ prop: 'operatorName', length: 2 }
+								]}"></div>
+						</td>
+						<td rowspan="2">
+							<div data-bind="ntsRadioBoxGroup: {
+								options: radioForm,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedRightId,
+								enable: true}"></div>
+						</td>
+						<td>
+							<div class="project-item" data-bind="ntsComboBox: {
+								options: projectItem,
+								optionsValue: 'itemCode',
+								value: selectedItem2,
+								optionsText: 'itemName',
+								enable: enableProjectItem2,
+								columns: [
+									{ prop: 'itemName', length: 10 }
+								]}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td><input class="numerical" data-bind="ntsNumberEditor: { value: numerical1, enable: enableNumerical1 }" /></td>						
+						
+						<td><input class="numerical" data-bind="ntsNumberEditor: { value: numerical2, enable: enableNumerical2 }" /></td>
+					</tr>
+				</table>
+			</div>
+			<!-- END CONTENT AREA-->
+			
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="functions-area-bottom">
+				<button id="submit-btn" class="x-large proceed"
+					data-bind="click: submit">#{i18n.getText('KML002_40')}</button>
+				<button id="cancel-btn" data-bind="click: cancel"
+					class="large">#{i18n.getText('KML002_41')}</button>
+			</div>
+			<!-- END FUNCTION AREA-->
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,160 +1,120 @@
-module cmm013.c.viewmodel {
+module nts.uk.com.view.cmm013.c {
 
-    export class ScreenModel {
-        label_002: KnockoutObservable<Labels>;
-        inp_003: KnockoutObservable<string>;
-        historyId: KnockoutObservable<string>;
-        startDateLast: KnockoutObservable<string>;
-        //C_SEL_001
-        itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-        res: KnockoutObservableArray<string>;
-        yearmonthdateeditor: any;
-
-        constructor() {
-            var self = this;
-            self.label_002 = ko.observable(new Labels());
-            self.inp_003 = ko.observable("");
-            self.historyId = ko.observable(null);
-            self.startDateLast = ko.observable('');
-            //C_SEL_001
-            self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
-            self.yearmonthdateeditor = {
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-                    inputFormat: 'date'
-                })),
-            };
-        }
-        /**
-         * Start page
-         * get start date last from screen A
-         */
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            self.historyId(nts.uk.ui.windows.getShared('CMM013_historyId'));
-            self.startDateLast(nts.uk.ui.windows.getShared('CMM013_startDateLast'));
-           
-            self.selectedId = ko.observable(0);
-    //!nts.uk.text.isNullOrEmpty(self.historyId()) && !nts.uk.text.isNullOrEmpty(self.startDateLast()) && 
+    export module viewmodel {
+       
+        import Constants = base.Constants;
+        
+        import SequenceMaster = base.SequenceMaster;
+        
+        export class ScreenModel {
             
-            if (self.startDateLast()) {
-                self.itemList = ko.observableArray([
-                    new BoxModel(0, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
-                    new BoxModel(1, '初めから作成する')
-                   
-                ]);
-                 self.selectedId = ko.observable(1);
-                self.enable(true);
-            } else {
-                self.enable(false);
-                 self.setValueForRadio();
+            columns: KnockoutObservableArray<any>;    //nts.uk.ui.NtsGridListColumn       
+            items: KnockoutObservableArray<SequenceMaster>;        
+            currentCode: KnockoutObservable<string>;
+            
+            constructor() {
+                let _self = this;
+                
+                _self.items = ko.observableArray([]);
+                _self.currentCode = ko.observable(null);
+                
+                _self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('CMM013_23'), key: 'sequenceCode', width: 75},
+                    { headerText: nts.uk.resource.getText('CMM013_24'), key: 'sequenceName', width: 135}
+                ]); 
             }
-            dfd.resolve();
-            return dfd.promise();
-        }
-        /**
-         * decision add history
-         * set start date new and send to screen A(main)
-         * then close screen C
-         */
-        setValueForRadio(): any {
-            var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel(0, ' 初めから作成する '),
-                new BoxModel(1, ' 初めから作成する')
-            ]);
-            self.selectedId = ko.observable(0);
-        }
+            
+            /**
+             * Start page
+             */
+            public startPage(): JQueryPromise<any> {
+                let _self = this;
+                let dfd = $.Deferred<any>();
 
-        closeDialog() {
-
-            nts.uk.ui.windows.close();
-
-
-        }
-        add() {
-            var self = this;
-            if (self.checkTypeInput() == false) {
-                return;
-            } else
-                if (self.checkValueInput(self.inp_003()) == false) {
-                    return;
+                // Load sequence data list
+                nts.uk.ui.block.grayout();
+                _self.loadSequenceList()
+                    .done((data: SequenceMaster[]) => {    
+                        nts.uk.ui.block.clear();                    
+                        if (data && data.length > 0) {
+                            // Load data
+                            _self.items(data);
+                            _self.currentCode(data[0].sequenceCode);                           
+                        } else {
+                            // No data - Error msg_571
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_571" }).then(() => {
+                                // Load sequence register screen
+                                nts.uk.ui.windows.sub.modal('/view/cmm/013/f/index.xhtml').onClosed(() => {
+                                    // Reload data after register
+                                    _self.loadSequenceList()
+                                        .done((data: SequenceMaster[]) => {                        
+                                            if (data && data.length > 0) {
+                                                // Load data
+                                                _self.items(data);
+                                                _self.currentCode(data[0].sequenceCode);    
+                                            }                       
+                                        })                                        
+                                        .fail((res: any) => {
+                            
+                                        });
+                                });                      
+                            });                                     
+                        }                                                 
+                        dfd.resolve();
+                    })
+                    .fail((res: any) => {
+                        nts.uk.ui.block.clear();
+                    });
+                
+                return dfd.promise();
+            }
+            
+            /**
+             * Load all sequence
+             */
+            public loadSequenceList(): JQueryPromise<any> {
+                let _self = this;
+                let dfd = $.Deferred<any>();
+                service.findAllSequenceMaster()
+                    .done((data: SequenceMaster[]) => {                                                                       
+                        dfd.resolve(data);
+                    })
+                    .fail((res: any) => {
+                        dfd.fail(res);
+                    });
+                return dfd.promise();
+            }
+            
+            /**
+             * Select sequence master
+             */
+            public selectSequence(): void {               
+                let _self = this;               
+                if (_self.currentCode()) {
+                    nts.uk.ui.block.grayout();
+                    service.findBySequenceCode(_self.currentCode())
+                        .done((data: SequenceMaster) => {   
+                            nts.uk.ui.block.clear();                        
+                            nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, data);
+                            _self.close();
+                        })
+                        .fail((res: any) => {
+                            nts.uk.ui.block.clear();   
+                            nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);
+                            _self.close();
+                        });
+                } else {
+                    nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);
+                    _self.close();                                
                 }
-                else {
-                    if (self.startDateLast() != '' && self.startDateLast() != null) {
-                        var check = self.selectedId();
-                    } else {
-                        var check = 2;
-                    }
-                    var date = new Date(self.inp_003());
-                    let dateNew = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
-                    if (date.getMonth() < 9 && date.getDate() < 10) {
-                        dateNew = date.getFullYear() + '/' + 0 + (date.getMonth() + 1) + '/' + 0 + date.getDate();
-                    } else {
-                        if (date.getDate() < 10) {
-                            dateNew = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + 0 + date.getDate();
-                        }
-                        if (date.getMonth() < 9) {
-                            dateNew = date.getFullYear() + '/' + 0 + (date.getMonth() + 1) + '/' + date.getDate();
-                        }
-                    }
-                    if (self.checkValueInput(dateNew) == false) {
-                        return;
-                    }
-
-                    nts.uk.ui.windows.setShared('cmm013C_startDateNew', dateNew, true);
-                    nts.uk.ui.windows.setShared('cmm013Copy', check == 0 ? true : false, true);
-                    nts.uk.ui.windows.setShared('cmm013Insert', true, true);
-                    nts.uk.ui.windows.close();
-                }
-        }
-        checkTypeInput(): boolean {
-            var self = this;
-            var date = new Date(self.inp_003());
-
-            if (date.toDateString() == 'Invalid Date') {
-                alert("Input by YYYY/MM/DD");
-                return false;
-            } else {
-                return true;
+            }
+            
+            /**
+             * Close
+             */
+            public close(): void {
+                nts.uk.ui.windows.close();
             }
         }
-        checkValueInput(value: string): boolean {
-            var self = this;
-            if (value <= self.startDateLast()) {
-                alert("履歴の期間が正しくありません。");
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
-    export class Labels {
-        constraint: string = 'LayoutCode';
-        inline: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-
-        constructor() {
-            var self = this;
-            self.inline = ko.observable(true);
-            self.required = ko.observable(true);
-            self.enable = ko.observable(true);
-        }
-    }
-
-    export class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
-
+    }    
 }

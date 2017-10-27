@@ -7,7 +7,6 @@ import lombok.Value;
 @Value
 public class BPTimeItemDto {
 	public String companyId;
-	private String timeItemId;
 	public int useAtr;
 	public String timeItemName;
 	public int timeItemNo;

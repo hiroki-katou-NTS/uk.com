@@ -40,18 +40,19 @@ module nts.uk.at.view.kmk008.j {
                             employmentUseAtr: self.useEmployment() ? 1 : 0,
                             workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,
                             classificationUseAtr: self.useClasss() ? 1 : 0
+                        }).done(() => {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });    
                         });
                     } else {
                         service.insertData({
                             employmentUseAtr: self.useEmployment() ? 1 : 0,
                             workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,
                             classificationUseAtr: self.useClasss() ? 1 : 0
+                        }).done(() => {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });    
                         });
                     }
                 })
-
-
-
                 self.closeDialog();
             }
             closeDialog(): void {

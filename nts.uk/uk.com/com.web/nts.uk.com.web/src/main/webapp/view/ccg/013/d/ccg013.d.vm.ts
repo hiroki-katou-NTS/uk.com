@@ -8,6 +8,7 @@
         allItems: KnockoutObservableArray<ItemModel>;
         items: KnockoutObservableArray<ItemModel>;
         newItems: KnockoutObservableArray<ItemModel>;
+        tempItems: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         newColumns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
@@ -22,6 +23,8 @@
         currentSystemCode: KnockoutObservable<number>
         selectedSystemCode: KnockoutObservable<number>;
         
+        disableSwap: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;         
             self.singleSelectedCode = ko.observable(null);
@@ -34,18 +37,19 @@
             self.allItems = ko.observableArray([]);
             self.items = ko.observableArray([]);
             self.newItems = ko.observableArray([]);
+            self.tempItems = ko.observableArray([]);
             self.dataItems = ko.observableArray([]);
             
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key:'code', width: 55 },
-                { headerText: '名称', prop: 'name', key:'name', width: 167 },
+                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key:'code', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key:'name', width: 167, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key:'primaryKey', width: 1, hidden: true }
             ]);
             
             self.newColumns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 55 },
-                { headerText: '対象メニュー', prop: 'targetItem', width: 160 },
-                { headerText: '表示名称', prop: 'name', width: 160 },
+                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key:'primaryKey', width: 1, hidden: true }
             ]);
             
@@ -55,11 +59,11 @@
             
             //Set System data to dropdownlist
             self.systemList = ko.observableArray([
-                new SystemModel(0, '共通'),
-                new SystemModel(1, '勤次郎'),
-                new SystemModel(2, 'オフィスヘルパー'),
-                new SystemModel(3, 'Ｑ太郎'),
-                new SystemModel(4, '人事郎'),
+                new SystemModel(0, nts.uk.resource.getText("Enum_System_COMMON")),
+                new SystemModel(1, nts.uk.resource.getText("Enum_System_TIME_SHEET")),
+                new SystemModel(2, nts.uk.resource.getText("Enum_System_OFFICE_HELPER")),
+                new SystemModel(3, nts.uk.resource.getText("Enum_System_KYUYOU")),
+                new SystemModel(4, nts.uk.resource.getText("Enum_System_JINJIROU")),
             ]);
             
             self.systemName = ko.observable('');
@@ -69,7 +73,9 @@
             //Get data by system
             self.selectedSystemCode.subscribe(function(newValue) {
                 self.findBySystem(Number(newValue));
-            });
+            });        
+            
+            self.disableSwap = ko.observable(false);
         }
         
         start(): JQueryPromise<any> {
@@ -88,18 +94,36 @@
                         }); 
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
-                            var primaryKey = standardMenu.primaryKey;
-                            self.newItems.push(new ItemModel(primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system));
+                            var primaryKey = nts.uk.util.randomId();
+                            var data = new ItemModel(primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
+                            self.newItems.push(data);
+                            self.tempItems.push(data);
                         }       
                     });
                 }
                 
+                self.disableSwapButton();
+                
                 dfd.resolve();   
+                $("#combo-box").focus();
             }).fail(function() {
                 dfd.reject();    
             });
             
             return dfd.promise();
+        }
+        
+        /**
+         * Disable swap button when right contents does not have any items
+         */
+        disableSwapButton(): void{
+            var self = this;
+            
+            if(self.newItems().length === 0){
+                self.disableSwap(false);
+            } else {
+                self.disableSwap(true);
+            }
         }
         
         /**
@@ -134,7 +158,7 @@
             var list001: Array<ItemModel> = [];
             var index = 0;
             _.forEach(self.allItems(), function(item: ItemModel) {
-                if ((item.system == self.selectedSystemCode() && item.menu_cls != 8) || (item.system == 0 && item.menu_cls == 8)) {
+                if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
                     var id = nts.uk.util.randomId();
                     list001.push(new ItemModel(id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                     index++;
@@ -154,13 +178,14 @@
             _.forEach(self.items(), function(item: ItemModel) {
                 if (_.indexOf(self.currentCodeList(), item.primaryKey) !== -1) {
                     item.order = self.newItems().length + 1;
-                    item.primaryKey = item.code + item.order;
+                    item.primaryKey = nts.uk.util.randomId();
                     self.newItems.push(new ItemModel(item.primaryKey, item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
                 } 
             })
 
             self.currentCodeList([]);
             self.newCurrentCodeList([]);
+            self.disableSwapButton();
         }
         
         /**
@@ -169,6 +194,7 @@
         remove(): void{
             var self = this;
             var newItems = self.newItems();
+                                   
             _.remove(newItems, function(currentObject: ItemModel) {
                 return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1;
             });
@@ -177,7 +203,9 @@
             _.forEach(newItems, function(item) {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
-            })            
+            })   
+            
+            self.disableSwapButton();
         }
                 
         /**
@@ -189,7 +217,7 @@
                         
             nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
             
-            self.closeDialog();
+            nts.uk.ui.windows.close();
         }
         
         /**
@@ -198,7 +226,8 @@
          */
         closeDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
+            
+            nts.uk.ui.windows.setShared("CCG013D_MENUS", self.tempItems());
             
             nts.uk.ui.windows.close();
         }
@@ -232,5 +261,17 @@
             this.systemCode = systemCode;
             this.systemName = systemName;
         }
+    }
+     
+    enum Menu_Cls {
+        Standard = 0,
+        OptionalItemApplication,
+        MobilePhone,
+        Tablet,
+        CodeName,
+        GroupCompanyMenu,
+        Customize,
+        OfficeHelper,
+        TopPage
     }
  }

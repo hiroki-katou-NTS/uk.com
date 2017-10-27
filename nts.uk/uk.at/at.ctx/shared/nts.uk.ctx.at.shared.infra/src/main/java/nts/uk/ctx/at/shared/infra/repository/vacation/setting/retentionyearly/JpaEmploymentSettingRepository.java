@@ -43,7 +43,6 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
 		emptYearlyRetentionSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
-		
 	}
 
 	/*
@@ -110,26 +109,25 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmptYearlyRetentionSetting> findAll(String companyId) {
 		// Get entity manager
-				EntityManager em = this.getEntityManager();
-				CriteriaBuilder bd = em.getCriteriaBuilder();
-				CriteriaQuery<KmfmtRetentionEmpCtr> cq = bd.createQuery(KmfmtRetentionEmpCtr.class);
-				
-				// Root
-				Root<KmfmtRetentionEmpCtr> root = cq.from(KmfmtRetentionEmpCtr.class);
-				cq.select(root);
-				
-				// Predicate where clause
-				List<Predicate> predicateList = new ArrayList<>();
-				predicateList.add(bd.equal(root.get(KmfmtRetentionEmpCtr_.kmfmtRetentionEmpCtrPK)
-						.get(KmfmtRetentionEmpCtrPK_.cid), companyId));
-				
-				// Set Where clause to SQL Query
-				cq.where(predicateList.toArray(new Predicate[] {}));
-				
-				// Create Query
-				TypedQuery<KmfmtRetentionEmpCtr> query = em.createQuery(cq);
-				
-				return query.getResultList().stream()
-						.map(item -> this.toDomain(item)).collect(Collectors.toList());
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder bd = em.getCriteriaBuilder();
+		CriteriaQuery<KmfmtRetentionEmpCtr> cq = bd.createQuery(KmfmtRetentionEmpCtr.class);
+
+		// Root
+		Root<KmfmtRetentionEmpCtr> root = cq.from(KmfmtRetentionEmpCtr.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(bd.equal(
+				root.get(KmfmtRetentionEmpCtr_.kmfmtRetentionEmpCtrPK).get(KmfmtRetentionEmpCtrPK_.cid), companyId));
+
+		// Set Where clause to SQL Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Create Query
+		TypedQuery<KmfmtRetentionEmpCtr> query = em.createQuery(cq);
+
+		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 }

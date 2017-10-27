@@ -21,10 +21,10 @@
 			</script>
 		</ui:define>
 
-		<ui:define tabindex="1" name="sidebar">
-			<ul class="navigator">
-				<li><a href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#employment-tab" role="tab-navigator"
+		<ui:define name="sidebar">
+			<ul tabindex="1" class="navigator">
+				<li><a tabindex="-1" href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li><a tabindex="-1" href="#employment-tab" role="tab-navigator"
 					data-bind="click: switchToEmploymentTab" >#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
@@ -40,8 +40,6 @@
 						<label tabindex="4" data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div>
 				</div>
-				<div class="ruledLine"></div>
-
 				<div id="company-content">
 					<div data-bind="ntsFormLabel: {required: true}"
 						class="margin_right_125">#{i18n.getText('KMF001_75')}</div>
@@ -94,10 +92,9 @@
 						</tr>
 						<tr>
 							<td colspan="6">
-								<div data-bind="ntsFormLabel: {}">
+								<div class ="margin_right_50" data-bind="ntsFormLabel: {}">
 									#{i18n.getText('KMF001_78')}</div> 
-									<span class="pad_left_50"
-										tabindex="8"
+									<span tabindex="8"
 										data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
@@ -131,7 +128,7 @@
 							<td colspan="6">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_79')}</div>
 								<div class="float_right">
-									<button tabindex="6"
+									<button tabindex="10"
 										data-bind="ntsHelpButton: {image: 'KMF001_2.png', position: 'left top', enable: true }">?</button>
 								</div>
 								<div class="hr_width">
@@ -140,12 +137,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="7"
+							<td class="pad_left_30"><div tabindex="11"
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
 							<td class="radio_group_width pad_left_60" rowspan="2">
-								<div id="radio_group_work" tabindex="8"
+								<div id="radio_group_work" tabindex="12"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -156,21 +153,21 @@
 							<td colspan = "2" class="pad_left_70">
 							<div class="text_width" ><label>#{i18n.getText('KMF001_81')}</label></div>
 							<div class="input_width pad_left_30"><input id="workOneDay"
-								class="check_error float_right" tabindex="9"
+								class="check_error float_right" tabindex="13"
 								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 							<td colspan = "2" class="pad_left_70">
 							<div class = "text_width"><label>#{i18n.getText('KMF001_82')}</label></div>
 							<div class="input_width pad_left_30">
 							<input id="workHalfDay"
-								class="check_error" tabindex="10"
+								class="check_error" tabindex="14"
 								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
-									<input id="workAll" class="check_error" tabindex="11"
+									<input id="workAll" class="check_error" tabindex="15"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 								<div class="text_width">
@@ -179,12 +176,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="12"
+							<td class="pad_left_30"><div tabindex="16"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div></td>
 						</tr>
 						<tr>
 							<td class=" radio_group_width pad_left_60" rowspan="2">
-								<div id="radio_group_over" tabindex="13"
+								<div id="radio_group_over" tabindex="17"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -197,7 +194,7 @@
 									<label>#{i18n.getText('KMF001_81')}</label>
 								</div>
 								<div class="input_width pad_left_30">
-									<input id="overOneDay" class="check_error" tabindex="14"
+									<input id="overOneDay" class="check_error" tabindex="18"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
@@ -206,7 +203,7 @@
 									<label>#{i18n.getText('KMF001_82')}</label>
 								</div>
 								<div class="input_width pad_left_30">
-									<input id="overHalfDay" class="check_error" tabindex="15"
+									<input id="overHalfDay" class="check_error" tabindex="19"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
@@ -214,7 +211,7 @@
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
-									<input id="overAll" class="check_error" tabindex="16"
+									<input id="overAll" class="check_error" tabindex="20"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 								<div class="text_width">
@@ -232,22 +229,21 @@
 			<div id="employment-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
-					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
-					<button tabindex="3"
+					<button data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
+					<button
 						data-bind="click: saveEmployment,enable: !isEmptyEmployment()"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
 					<div class="link_label">
-						<label tabindex="4" data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
+						<label data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div>
 				</div>
-				<div class="ruledLine"></div>
 				<div id="employment-content">
 
 					<table id="main-scr-tbl">
 						<tr>
 							<td>
 								<!-- left -->
-								<div id="list-employ-component"></div>
+								<div tabindex ="1" id="list-employ-component"></div>
 							</td>
 							<td id="main-scr-tbl-right">
 								<!-- right -->

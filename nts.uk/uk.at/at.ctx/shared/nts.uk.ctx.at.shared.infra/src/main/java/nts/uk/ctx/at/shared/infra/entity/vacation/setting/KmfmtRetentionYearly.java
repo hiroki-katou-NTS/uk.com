@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,9 +23,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KMFMT_RETENTION_YEARLY")
-public class KmfmtRetentionYearly extends UkJpaEntity {
-    
-    /** The cid. */
+public class KmfmtRetentionYearly extends UkJpaEntity  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	/** The cid. */
     @Id
     @NotNull
     @Column(name = "CID")

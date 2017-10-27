@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl007.b.main.css" />
+			<com:scriptfile path="kdl007.b.start.js" />
+			<com:scriptfile path="kdl007.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="total">
+				<!-- A1_1 -->
+				<div>
+					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog007" >007Single</button>
+					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0072" >007Multiple</button>
+				</div>
+                 <br></br>
+				<div>選択中の勤務種類コード</div>
+				<!-- A1_2 -->
+				<input class="nts-input"
+					data-bind="ntsTextEditor: {
+                                   value: SelectedCode,
+                                   enable: true, 
+                                   required: false}"/>
+                 <div>(Eg: Single: 001 | Multiple: 001,002,003,...)</div>
+                 <div>(Table: KBPMT_BONUS_PAY_SET)</div>
+                 <br></br>
+				<div style="float: left; margin-bottom: 20px;">
+					<div>
+						<!-- A1_3 -->
+						<table id="single-list" tabindex="2"
+							data-bind="ntsGridList: {
+										height: 390,
+										options: items,
+										optionsValue: 'code',
+										columns: columns,
+										value: currentCodeList}">
+						</table>
+					</div>
+					<hr />
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

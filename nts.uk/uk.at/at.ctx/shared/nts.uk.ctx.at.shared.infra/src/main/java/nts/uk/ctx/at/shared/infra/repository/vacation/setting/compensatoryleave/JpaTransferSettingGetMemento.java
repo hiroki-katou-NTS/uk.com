@@ -42,7 +42,7 @@ public class JpaTransferSettingGetMemento implements TransferSettingGetMemento {
      */
     @Override
     public OneDayTime getCertainTime() {
-        return new OneDayTime(this.entity.getCertainTime());
+        return new OneDayTime(this.entity.getCertainTime().intValue());
     }
 
     /**
@@ -74,7 +74,7 @@ public class JpaTransferSettingGetMemento implements TransferSettingGetMemento {
      */
     @Override
     public OneDayTime getOneDayTime() {
-        return new OneDayTime(this.entity.getOneDayTime());
+        return new OneDayTime(this.entity.getOneDayTime().intValue());
     }
 
     /**
@@ -90,7 +90,7 @@ public class JpaTransferSettingGetMemento implements TransferSettingGetMemento {
      */
     @Override
     public OneDayTime getHalfDayTime() {
-        return new OneDayTime(this.entity.getHalfDayTime());
+        return new OneDayTime(this.entity.getHalfDayTime().intValue());
     }
 
     /**

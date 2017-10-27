@@ -1,15 +1,19 @@
-module cmm044.g.service {
+module ccg013.g.service {
     var servicePath = {
-        findBySystem: "sys/portal/standardmenu/findAllDisplay",
-        addPerson: "sys/portal/webmenu/addPerson"
+        addPerson: "sys/portal/webmenu/addPerson",
+        deletePerson: "sys/portal/webmenu/deletePerson",
+        findPerson: "sys/portal/webmenu/findPerson"
     }
     
-    export function findBySystem(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax(servicePath.findBySystem);
+    export function addPerson(agent: any){
+        return nts.uk.request.ajax("com", servicePath.addPerson, agent);
     }
     
-    export function addPerson(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax(servicePath.addPerson);
+    export function deletePerson(agent: any){
+        return nts.uk.request.ajax("com", servicePath.deletePerson, agent);
     }
-
+    
+    export function findPerson(personId){
+        return nts.uk.request.ajax("com", servicePath.findPerson +"/"+ personId);
+    }
 }

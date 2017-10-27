@@ -18,11 +18,11 @@
 }
 .placement-wraper {
 	position: relative;
-	height: 500px;
+	height: 470px;
 	overflow: auto;
 }
 /* Override base */
-#header {display: none;}
+
 #functions-area-bottom {position:relative; height:45px;}
 
 .placement-container {overflow:auto;}

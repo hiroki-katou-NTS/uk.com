@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.common;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
-import nts.gul.util.Time;
 
 /**
  * 週間時間.
@@ -15,48 +14,18 @@ import nts.gul.util.Time;
 public class WeeklyTime extends TimeDurationPrimitiveValue<WeeklyTime> {
 
 	/** The Constant DEFAULT_VALUE. */
-	public static final long DEFAULT_VALUE = 0L;
+	public static final int DEFAULT_VALUE = 0;
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new attendance time.
-	 *
-	 * @param hour the hour
-	 * @param minute the minute
-	 */
-	public WeeklyTime(int hour, int minute) {
-		super(hour, minute);
-	}
-
-	/**
-	 * Instantiates a new attendance time.
-	 *
-	 * @param seconds the seconds
-	 */
-	public WeeklyTime(Long seconds) {
-		super(seconds);
-	}
-
-	/**
 	 * Instantiates a new weekly time.
 	 *
-	 * @param minutes the minutes
-	 * @param isMinute the is minute
+	 * @param timeAsMinutes the time as minutes
 	 */
-	public WeeklyTime(Long minutes, boolean isMinute) {
-		super(minutes * Time.STEP);
-	}
-
-	/**
-	 * Of minutes.
-	 *
-	 * @param minutes the minutes
-	 * @return the weekly time
-	 */
-	public static WeeklyTime ofMinutes(Long minutes) {
-		return new WeeklyTime(minutes, true);
+	public WeeklyTime(int timeAsMinutes) {
+		super(timeAsMinutes);
 	}
 
 	/**

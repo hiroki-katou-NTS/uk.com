@@ -21,6 +21,6 @@ public class KmlspPremiumSetPK {
 	@Column(name="HIS_ID")
 	public String historyID;
 	
-	@Column(name="PREMIUM_ID")
-	public Integer premiumID;
+	@Column(name="PREMIUM_NO")
+	public Integer displayNumber;
 }

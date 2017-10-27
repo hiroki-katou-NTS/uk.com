@@ -4,32 +4,12 @@
 	float: left;
 }
 
-#image {
-	width: 200px;
-	height: 600px;
-	margin-top: 10px;
-}
-
-#nts-component-list {
-	margin: 50px 0 0 20px;
-}
-
-th {
-	border: 1px solid #999999;
-	background-color: #E0F59E;
-	height: 25px;
-}
-
-td {
-	border: 1px solid #999999;
-}
-
 #ccgcomponent {
 	z-index: 1000 !important
 }
 
 #part-2 {
-	margin-left: 65px;
+	margin: 50px 0 0 85px;
 }
 
 #part-3 {
@@ -42,7 +22,7 @@ td {
 }
 
 #table-1 tbody tr td #combo-box {
-	padding: 2px;
+	padding: 2px 2px 0 2px;
 	height: 25px;
 	min-width: 150px !important;
 	width: 150px !important
@@ -64,4 +44,8 @@ td {
 
 #B3_13 {
 	margin: 0px 20px;
+}
+
+.screen-b .nts-searchbbox-wrapper {
+	min-width: 100%;
 }

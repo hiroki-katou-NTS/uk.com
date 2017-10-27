@@ -12,13 +12,9 @@ import lombok.Value;
 public class PremiumItemDto {
 	private String companyID;
 	
-	private Integer iD;
-	
-	private Integer attendanceID;
+	private Integer displayNumber;
 	
 	private String name;
-
-	private Integer displayNumber;
 
 	private int useAtr;
 }

@@ -12,12 +12,24 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
+
 @Stateless
 public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPTimeItemSettingRepository {
-	private final String SELECT_BPTIMEITEMSET_BY_COMPANYID = "SELECT c FROM KbpstBPTimeItemSetting c  JOIN  KbpstBonusPayTimeItem k  ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
-			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 0 AND k.useAtr = 1 ORDER BY k.timeItemNo";
-	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c FROM KbpstBPTimeItemSetting c JOIN  KbpstBonusPayTimeItem k ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
-			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 1 AND k.useAtr = 1 ORDER BY k.timeItemNo";
+	private final String SELECT_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
+			+ " JOIN  KbpstBonusPayTimeItem k "
+			+ " ON c.kbpstBPTimeItemSettingPK.timeItemNo = k.kbpstBonusPayTimeItemPK.timeItemNo "
+			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = k.kbpstBonusPayTimeItemPK.timeItemTypeAtr "
+			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId "
+			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = 0 " + " AND k.useAtr = 1 "
+			+ " ORDER BY k.kbpstBonusPayTimeItemPK.timeItemNo";
+
+	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
+			+ " JOIN KbpstBonusPayTimeItem k "
+			+ " ON c.kbpstBPTimeItemSettingPK.timeItemNo = k.kbpstBonusPayTimeItemPK.timeItemNo "
+			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = k.kbpstBonusPayTimeItemPK.timeItemTypeAtr "
+			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId "
+			+ " AND k.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 " + " AND k.useAtr = 1 "
+			+ " ORDER BY k.kbpstBonusPayTimeItemPK.timeItemNo";
 
 	@Override
 	public List<BPTimeItemSetting> getListSetting(String companyId) {
@@ -33,30 +45,36 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 
 	@Override
 	public void addListSetting(List<BPTimeItemSetting> lstSetting) {
-		List<KbpstBPTimeItemSetting> lstKbpstBPTimeItemSetting = lstSetting.stream().map(c -> toBPTimeItemSettingEntity(c)).collect(Collectors.toList());
+		List<KbpstBPTimeItemSetting> lstKbpstBPTimeItemSetting = lstSetting.stream()
+				.map(c -> toBPTimeItemSettingEntity(c)).collect(Collectors.toList());
 		this.commandProxy().insertAll(lstKbpstBPTimeItemSetting);
 	}
 
 	@Override
 	public void updateListSetting(List<BPTimeItemSetting> lstSetting) {
-		lstSetting.forEach(c->{
-			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy().find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), c.getTiemItemId()), KbpstBPTimeItemSetting.class);
+		lstSetting.forEach(c -> {
+			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy()
+					.find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), new BigDecimal(c.getTimeItemNo()), new BigDecimal(c.getTimeItemTypeAtr().value)),
+							KbpstBPTimeItemSetting.class);
 			if (kbpstBPTimeItemSettingOptional.isPresent()) {
 				KbpstBPTimeItemSetting kbpstBPTimeItemSetting = kbpstBPTimeItemSettingOptional.get();
-				kbpstBPTimeItemSetting.holidayCalSettingAtr= new BigDecimal(c.getHolidayCalSettingAtr().value);
-				kbpstBPTimeItemSetting.overtimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
-				kbpstBPTimeItemSetting.worktimeCalSettingAtr= new BigDecimal(c.getWorktimeCalSettingAtr().value);
+				kbpstBPTimeItemSetting.holidayCalSettingAtr = new BigDecimal(c.getHolidayCalSettingAtr().value);
+				kbpstBPTimeItemSetting.overtimeCalSettingAtr = new BigDecimal(c.getOvertimeCalSettingAtr().value);
+				kbpstBPTimeItemSetting.worktimeCalSettingAtr = new BigDecimal(c.getWorktimeCalSettingAtr().value);
 				this.commandProxy().update(kbpstBPTimeItemSetting);
+			} else {
+				this.commandProxy().insert(c);
 			}
 		});
 	}
 
 	private BPTimeItemSetting toBPTimeItemSettingDomain(KbpstBPTimeItemSetting kbpstBPTimeItemSetting) {
 		return BPTimeItemSetting.createFromJavaType(kbpstBPTimeItemSetting.kbpstBPTimeItemSettingPK.companyId,
-				kbpstBPTimeItemSetting.kbpstBPTimeItemSettingPK.timeItemId,
+				kbpstBPTimeItemSetting.kbpstBPTimeItemSettingPK.timeItemNo.intValue(),
 				kbpstBPTimeItemSetting.holidayCalSettingAtr.intValue(),
 				kbpstBPTimeItemSetting.overtimeCalSettingAtr.intValue(),
-				kbpstBPTimeItemSetting.worktimeCalSettingAtr.intValue());
+				kbpstBPTimeItemSetting.worktimeCalSettingAtr.intValue(),
+				kbpstBPTimeItemSetting.kbpstBPTimeItemSettingPK.timeItemTypeAtr.intValue());
 
 	}
 
@@ -64,7 +82,8 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 
 		return new KbpstBPTimeItemSetting(
 				new KbpstBPTimeItemSettingPK(bpTimeItemSetting.getCompanyId().toString(),
-						bpTimeItemSetting.getTiemItemId().toString()),
+						new BigDecimal(bpTimeItemSetting.getTimeItemNo()),
+						new BigDecimal(bpTimeItemSetting.getTimeItemTypeAtr().value)),
 				new BigDecimal(bpTimeItemSetting.getHolidayCalSettingAtr().value),
 				new BigDecimal(bpTimeItemSetting.getOvertimeCalSettingAtr().value),
 				new BigDecimal(bpTimeItemSetting.getWorktimeCalSettingAtr().value));

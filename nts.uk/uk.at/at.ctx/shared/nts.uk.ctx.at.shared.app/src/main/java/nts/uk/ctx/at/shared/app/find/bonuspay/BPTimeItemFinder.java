@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.bonuspay;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,16 +32,28 @@ public class BPTimeItemFinder {
 		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
 	}
 
+	public List<BPTimeItemDto> getListBonusPayTimeItemInUse() {
+		String companyId = AppContexts.user().companyId();
+		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListBonusPayTimeItemInUse(companyId);
+		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
+	}
+
 	public List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
 		String companyId = AppContexts.user().companyId();
 		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListSpecialBonusPayTimeItem(companyId);
 		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
 	}
 
-	public BPTimeItemDto getBonusPayTimeItem(String timeItemId) {
+	public List<BPTimeItemDto> getListSpecialBonusPayTimeItemInUse() {
+		String companyId = AppContexts.user().companyId();
+		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListSpecialBonusPayTimeItemInUse(companyId);
+		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
+	}
+
+	public BPTimeItemDto getBonusPayTimeItem(BigDecimal timeItemNo) {
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getBonusPayTimeItem(companyId, new TimeItemId(timeItemId));
+		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getBonusPayTimeItem(companyId, timeItemNo);
 		if(bonusPayTimeItem.isPresent()){
 			return this.toBPTimeItemDto(
 					bonusPayTimeItem.get());
@@ -65,9 +78,9 @@ public class BPTimeItemFinder {
 	
 	
 
-	public BPTimeItemDto getSpecialBonusPayTimeItem(String timeItemId) {
+	public BPTimeItemDto getSpecialBonusPayTimeItem(BigDecimal timeItemNo) {
 		String companyId = AppContexts.user().companyId();
-		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getSpecialBonusPayTimeItem(companyId, new TimeItemId(timeItemId));
+		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getSpecialBonusPayTimeItem(companyId, timeItemNo);
 		if(bonusPayTimeItem.isPresent()){
 			return  this.toBPTimeItemDto(
 					bonusPayTimeItem.get());
@@ -78,7 +91,7 @@ public class BPTimeItemFinder {
 
 	private BPTimeItemDto toBPTimeItemDto(BonusPayTimeItem bonusPayTimeItem) {
 		return new BPTimeItemDto(bonusPayTimeItem.getCompanyId().toString(),
-				bonusPayTimeItem.getTimeItemId().toString(), bonusPayTimeItem.getUseAtr().value,
+				bonusPayTimeItem.getUseAtr().value,
 				bonusPayTimeItem.getTimeItemName().toString(), bonusPayTimeItem.getId(),
 				bonusPayTimeItem.getTimeItemTypeAtr().value);
 	}

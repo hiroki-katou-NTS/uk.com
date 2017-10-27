@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode
+				nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />			
+			<com:stylefile path="kdw009.a.main.css" />
+			<com:scriptfile path="kdw009.a.start.js" />
+			<com:scriptfile path="kdw009.a.vm.js" />
+			<com:scriptfile path="kdw009.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" style="height: 55px">
+				<!-- A1_1: Button New -->
+				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="click: newMode">#{i18n.getText('KDW009_2')}</button>
+				<!-- A1_2: Button Registration -->
+				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KDW009_3')}</button>
+				<!-- A1_3: Button Delete -->
+				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable:lstBusinessType().length>0, click: remove" >#{i18n.getText('KDW009_4')}</button>
+			</div>
+			<div id="content-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div style="float: left; margin: 20px" >
+						<!-- A2_2: List -->
+						<table id="lstBusinessType" tabindex="4" data-bind="ntsGridList: {								
+						height: 362,
+						options: lstBusinessType,
+						optionsValue: 'businessTypeCode',
+						columns: gridListColumns,
+						multiple: false,
+						value: selectedCode}"></table>
+					</div>
+				</div>
+				<div id="right-content" style="float: left;">
+					<table>
+						<colgroup>
+							<col width="280px" />
+							<col width="*" />
+						</colgroup>
+						<tr class="row">
+							<td>
+								<!-- A3_1: Label -->
+								<div id="label" data-bind="ntsFormLabel: {required: true, constraint:['BusinessTypeCode','BusinessTypeName'] }">#{i18n.getText('KDW009_8')}</div>
+							</td>
+							<td>
+								<!-- A3_2: Code -->
+								<input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
+																												constraint: 'BusinessTypeCode',
+																												required: true,
+																												name: '#[KDW009_9]',
+																												immediate: true,
+																												option: {autofill:true, filldirection:'left'},
+																												enable: check}"/>
+								<!-- A3_3: Name--> 
+								<input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
+																												constraint: 'BusinessTypeName',
+																												name: '#[KDW009_10]',
+																												required: true,
+																												enable: true}"/>
+							</td>
+						</tr>
+					</table>
+					
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

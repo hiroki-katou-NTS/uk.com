@@ -4,10 +4,6 @@ module nts.uk.pr.view.kmf001.c {
         import EnumertionModel = service.model.EnumerationModel;
         
         export class ScreenModel {
-            numberEditorOption: KnockoutObservable<any>;
-            
-            halfIntegerEditorOption: KnockoutObservable<any>;
-            
             manageDistinctList: KnockoutObservableArray<EnumertionModel>;
             selectedAnnualManage: KnockoutObservable<number>;
             enableAnnualVacation: KnockoutObservable<boolean>;
@@ -48,15 +44,6 @@ module nts.uk.pr.view.kmf001.c {
             
             constructor() {
                 let self = this;
-                self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    width: "50px",
-                    textalign: "right"
-                }));
-                self.halfIntegerEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    width: '50px',
-                    textalign: 'right',
-                    decimallength: 1
-                }));
                 // 年休の管理
                 self.manageDistinctList = ko.observableArray([]);
                 self.selectedAnnualManage = ko.observable(1);
@@ -111,6 +98,18 @@ module nts.uk.pr.view.kmf001.c {
                 
                 // Data backup
                 self.dataBackup = ko.observable(null);
+                
+                // subscribe
+                self.selectedMaxManageSemiVacation.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#max-number-company').ntsError('clear');
+                    }
+                });
+                self.selectedManageUpperLimitDayVacation.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#time-max-day-company').ntsError('clear');
+                    }
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -118,8 +117,9 @@ module nts.uk.pr.view.kmf001.c {
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
                         self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums()).done(function() {
-                    self.loadSetting();
-                    $('#annual-manage').focus();
+                    self.loadSetting().done(() => {
+                        $('#annual-manage').focus();
+                    });
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -134,6 +134,7 @@ module nts.uk.pr.view.kmf001.c {
                 let command = self.toJsObject();
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
+                        $('#annual-manage').focus();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         dfd.resolve();
                     });

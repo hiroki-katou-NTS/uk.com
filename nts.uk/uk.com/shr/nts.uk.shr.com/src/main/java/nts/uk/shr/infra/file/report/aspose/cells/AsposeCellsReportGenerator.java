@@ -8,13 +8,20 @@ import nts.arc.layer.infra.file.export.FileGenerator;
 public class AsposeCellsReportGenerator extends FileGenerator {
 
 	public AsposeCellsReportContext createContext(String templateFileInResource) {
+		AsposeCellsReportContext x =new AsposeCellsReportContext(this.getResourceAsStream(templateFileInResource));
 
-		return new AsposeCellsReportContext(this.getResourceAsStream(templateFileInResource));
+		return x;
+				
 	}
 	
 	public AsposeCellsReportContext createContext(String templateFileInResource, String reportId) {
 
 		return new AsposeCellsReportContext(this.getResourceAsStream(templateFileInResource), reportId);
+	}
+	
+	public AsposeCellsReportContext createEmptyContext(String reportId) {
+
+		return new AsposeCellsReportContext(reportId);
 	}
 
 	/**

@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.LineStart
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="ksu006.a.service.js" />
+			<com:scriptfile path="ksu006.a.vm.js" />
+			<com:scriptfile path="ksu006.a.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" tabindex="1" 
+					data-bind="click: execute, enable: (isModeExecute() &amp;&amp; $root.errors.isEmpty)">
+						#{i18n.getText('KSU006_1')}</button>
+				<button tabindex="2" data-bind="click: openDialogLog">#{i18n.getText('KSU006_2')}</button>
+			</div>
+
+			<div id="contents-area">
+				<table style="width: 1019px;">
+				  	<col width="180"></col>
+					<col width="260"></col>
+					<col width="200"></col>
+					<col width="340"></col>
+					<!--BEGIN A2_1 ~ A2_3 -->
+					<tr>
+						<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_3')}</div></td>
+						<td colspan="3">
+							<div id="comboExternalBudget" class="pull-left" tabindex="3" data-bind="ntsComboBox: {
+								name: '#[KSU006_4]',
+								options: externalBudgetList,
+								optionsValue: 'code',
+								value: selectedExtBudgetCode,
+								visibleItemsCount: 7,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'code', length: 3 },
+									{ prop: 'name', length: 10}
+								]}" style="width: 230px;margin-right: 10px;">
+							</div>
+							<button id="showDialogExternalBudget" tabindex="4" data-bind="click: openDialogExternalBudget">#{i18n.getText('KSU006_5')}</button>
+						</td>
+						<td></td>
+					</tr><!--END A2_1 ~ A2_3 -->
+					
+					<!--BEGIN A3_1 ~ A3_4 -->
+					<tr>
+						<td><div data-bind="ntsFormLabel: {required: true}, enable: isModeExecute">#{i18n.getText('KSU006_6')}</div></td>
+						<td colspan="2">
+							<div id="file-upload" tabindex="5" data-bind="ntsFileUpload:{
+								filename: fileName,
+								accept: extensionFileList,
+								enable: isModeExecute,
+								text: '#{i18n.getText('KSU006_7')}'}" >
+							</div>
+						</td>
+						<td>
+							<label id="label-char-code" data-bind="enable: isModeExecute">#{i18n.getText('KSU006_8')}</label>
+							<div tabindex="6" data-bind="ntsComboBox: {
+									options: encodingList,
+									optionsValue: 'value',
+									value: selectedEncoding,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									enable: isModeExecute,
+									columns: [
+										{ prop: 'localizedName', length: 5}]}" style="margin-left: 30px;">
+							</div>
+						</td>
+					</tr><!--END A3_1 ~ A3_4 -->
+					
+					<!--BEGIN A3_5 ~ A3_7 -->
+					<tr>
+						<td></td>
+						<td>
+							<div><input tabindex="7" id="data-start-line"
+								data-bind="ntsNumberEditor: {
+										value: startLine,
+										constraint: 'LineStart',
+										name: '#[KSU006_9]',
+										required: true,
+										option: {
+											width: '50px',
+											textalign: 'right'
+										},
+										enable: isModeExecute}" />
+							<label data-bind="enable: isModeExecute">#{i18n.getText('KSU006_10')}</label></div>
+						</td>
+						<td><div class="pull-left" tabindex="8" data-bind="ntsCheckBox: { checked: isOverride,
+											enable: isModeExecute,
+											text: '#{i18n.getText('KSU006_122')}' }"></div></td>
+						<td></td>
+					</tr><!--END A3_5 ~ A3_7 -->
+					
+					<!--BEGIN A3_8 ~ A3_9 -->
+					<tr>
+						<td></td>
+						<td>
+							<button style="width: 94.5%;" tabindex="9" class="large caret-bottom" 
+								data-bind="click: showDataPreview, enable: (isModeExecute() &amp;&amp; $root.errors.isEmpty)">
+								#{i18n.getText('KSU006_11')}</button>
+						</td>
+						<td><div data-bind="text: totalRecordDisplay(), enable: isModeExecute" 
+							class="pull-left" style="margin-left: 5px;" ></div></td>
+						<td></td>
+					</tr><!--END A3_8 ~ A3_9 -->
+				</table>
+				
+				<!-- BEGIN SHOW DATA PREVIEW -->
+				<div id="divTableParent" data-bind="visible: enableDataPreview()" style="display: none;">
+					<!-- BEGIN DAILY UNIT -->
+					<com:ko tag="if" bind="isDataDailyUnit()">
+						<table id="preview" class="dataPreview">
+							<!-- BEGIN HEADER -->
+							<thead>
+								<tr class="bgIgCol">
+									<td rowspan="2" class="dataPreview firstCol">#{i18n.getText('KSU006_12')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_13')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_14')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_15')}</td>
+								</tr>
+								<tr class="bgIgCol">
+									<td class="dataPreview header">#{i18n.getText('KSU006_16')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_17')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_18')}</td>
+								</tr>
+							</thead><!-- END HEADER -->
+							
+							<!-- BEGIN CONTENT -->
+							<tr class="first-row" data-bind="with: firstRecord">
+								<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase" id="label-preview">
+									<span data-bind="text: $parent.getLabelPreview().first"></span><br/>
+									<span data-bind="text: $parent.getLabelPreview().second"></span>
+								</td>
+								<td class="dataPreview"><div data-bind="text: code"></div></td>
+								<td class="dataPreview"><div data-bind="text: date"></div></td>
+								<td class="dataPreview"><div data-bind="text: listValue[0]"></div></td>
+							</tr>
+							<com:ko-foreach bind="remainData">
+								<tr>
+									<td class="dataPreview"><div data-bind="text: code"></div></td>
+									<td class="dataPreview"><div data-bind="text: date"></div></td>
+									<td class="dataPreview"><div data-bind="text: listValue[0]"></div></td>
+								</tr>
+							</com:ko-foreach>
+						</table>
+					</com:ko><!-- END DAILY UNIT -->
+	
+					<!-- BEGIN TIME ZONE UNIT -->
+					<com:ko tag="if" bind="!isDataDailyUnit()">
+						<div class="table-container">
+							<!-- BEGIN HEADER -->
+							<div class="headcol">
+								<table class="dataPreview" >
+									<thead>
+										<tr class="bgIgCol">
+											<td rowspan="2" class="dataPreview firstCol">#{i18n.getText('KSU006_20')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_21')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_22')}</td>
+										</tr>
+										<tr class="bgIgCol">
+											<td class="dataPreview header">#{i18n.getText('KSU006_71')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_72')}</td>
+										</tr>
+									</thead><!-- END HEADER -->
+									
+									<!-- BEGIN CONTENT -->
+									<tr class="first-row" data-bind="with: firstRecord">
+										<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase">
+											<span data-bind="text: $parent.getLabelPreview().first"></span><br/>
+											<span data-bind="text: $parent.getLabelPreview().second"></span>
+										</td>
+										<td class="dataPreview"><div data-bind="text: code"></div></td>
+										<td class="dataPreview"><div data-bind="text: date"></div></td>
+									</tr>
+									<com:ko-foreach bind="remainData">
+										<tr>
+											<td class="dataPreview"><div data-bind="text: code"></div></td>
+											<td class="dataPreview"><div data-bind="text: date"></div></td>
+										</tr>
+									</com:ko-foreach>
+								</table>
+							</div><!-- END HEADER -->
+							
+							<!-- BEGIN CONTENT VALUE -->
+							 <div class="table-content-value">
+							 	<table class="dataPreview" >
+									<!-- BEGIN HEADER -->
+									<thead>
+										<tr class="bgIgCol">
+											<com:ko-foreach bind="nameIdTitleList">
+												<td class="dataPreview header"><div data-bind="text: $data"></div></td>
+											</com:ko-foreach>
+										</tr>
+										<tr class="bgIgCol">
+											<com:ko-foreach bind="nameIdValueList">
+												<td class="dataPreview header"><div data-bind="text: $data"></div></td>
+											</com:ko-foreach>
+										</tr>
+									</thead><!-- END HEADER -->
+									
+									<!-- BEGIN CONTENT -->
+									<tr class="first-row" data-bind="with: firstRecord">
+										<com:ko-foreach bind="listValue">
+											<td class="dataPreview"><div data-bind="text: $data"></div></td>
+										</com:ko-foreach>
+									</tr>
+									<com:ko-foreach bind="remainData">
+										<tr>
+											<com:ko-foreach bind="listValue">
+												<td class="dataPreview"><div data-bind="text: $data"></div></td>
+											</com:ko-foreach>
+										</tr>
+									</com:ko-foreach>
+								</table><!-- BEGIN CONTENT VALUE -->
+							</div>
+						</div>
+					</com:ko><!-- END TIME ZONE UNIT -->
+				</div><!-- END SHOW DATA PREVIEW -->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

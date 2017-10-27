@@ -40,7 +40,7 @@ public class CopyWebMenuCommandHandler extends CommandHandler<CopyWebMenuCommand
 
 		if (webMenu.isPresent()) {
 			if (!command.isAllowOverwrite()) {
-				throw new BusinessException("Msg_003");
+				throw new BusinessException("Msg_3");
 			}
 
 			webMenuRepository.update(newWebMenu);

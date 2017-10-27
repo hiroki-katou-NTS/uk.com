@@ -16,6 +16,13 @@ public class LayoutForMyPageDto {
 
 	/** Enum PG Type */
 	private int pgType;
+	
+	/**
+	 * true - active top page
+	 * false - active my page
+	 */
+	private boolean notActiveMyPage;
+	
 	/**flowMenu*/
 	private List<FlowMenuPlusDto> flowMenu;
 	/**placement*/

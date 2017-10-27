@@ -66,6 +66,7 @@ module nts.uk.pr.view.kmf001.b {
                 var dfd = $.Deferred<void>();
                 $.when(self.loadApplySetting(),self.loadCategoryEnums(), self.loadAcquisitionTypeEnums()).done(function(res) {
                     self.loadAcquisitionRule();
+                    $('#priority').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();

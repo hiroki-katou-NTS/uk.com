@@ -12,11 +12,8 @@ import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBarPK;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTying;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTyingPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleMenuPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTreeMenu;
@@ -35,7 +32,8 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	private final String SEL_1 = "SELECT a FROM CcgstWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId";
 	private final String UPD_NOT_DEFAULT = "UPDATE CcgstWebMenu a SET a.defaultMenu = 0 "
-			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "; 
+			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "
+			+ "AND a.ccgstWebMenuPK.webMenuCd != :webMenuCd " ; 
 
 	@Override
 	public List<WebMenu> findAll(String companyId) {
@@ -58,7 +56,13 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public void update(WebMenu webMenu) {
-		this.commandProxy().update(toEntity(webMenu));
+		CcgstWebMenuPK key = new CcgstWebMenuPK(webMenu.getCompanyId(), webMenu.getWebMenuCode().v());
+		CcgstWebMenu entity = this.queryProxy().find(key, CcgstWebMenu.class).get();
+		entity.ccgstWebMenuPK = key;
+		entity.defaultMenu = webMenu.getDefaultMenu().value;
+		entity.webMenuName = webMenu.getWebMenuName().v();
+		entity.menuBars = toEntityMenuBar(webMenu);	
+		this.commandProxy().update(entity);
 	}
 
 	@Override
@@ -68,17 +72,14 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	}
 	
 	@Override
-	public void changeNotDefault(String companyId) {
+	public void changeNotDefault(String companyId, String webMenuCode) {
 		this.getEntityManager().createQuery(UPD_NOT_DEFAULT)
 			.setParameter("companyId", companyId)
+			.setParameter("webMenuCd", webMenuCode)
 			.executeUpdate();
 	}
 
-	
-	@Override
-	public void add(PersonalTying personalTying){
-		this.commandProxy().insert(convertToDbType(personalTying));
-	}
+
 	
 
 	/**
@@ -194,13 +195,5 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		return treeMenus;
 	}
 
-	private CcgstPersonTying convertToDbType(PersonalTying personalTying) { 
-		CcgstPersonTying ccgstPersonTying = new CcgstPersonTying();
-		CcgstPersonTyingPK cPersonTyingPK = new CcgstPersonTyingPK(
-				personalTying.getCompanyId(),
-				personalTying.getWebMenuCode().v(),
-				personalTying.getEmployeeId());
-		ccgstPersonTying.ccgstPersonTyingPK = cPersonTyingPK;
-		return ccgstPersonTying;
-	}
+
 }

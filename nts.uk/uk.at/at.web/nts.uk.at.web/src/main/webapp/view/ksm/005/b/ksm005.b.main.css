@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+.contents {
+	margin-top: 20px;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.monthlyPatternContents {
+	padding: 20px;
+	width: 270px;
+}
+
+.monthlyPatternDetail {
+	margin-left: 50px;
+}

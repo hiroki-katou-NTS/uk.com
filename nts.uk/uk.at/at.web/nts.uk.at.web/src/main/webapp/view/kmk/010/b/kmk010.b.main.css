@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+.contentDialog {
+	margin-top: 30px;
+	margin-left: 30px;
+}
+
+.bg-dark-green {
+	background-color: #C7F391;
+}
+
+.overtime-border td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 5px;
+	min-width: 30px;
+	max-width: 250px;
+}
+
+.overtime-border input {
+	width: 150px;
+}
+
+.tbOvertime {
+	margin-top: 20px;
+}

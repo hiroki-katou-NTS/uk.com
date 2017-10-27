@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 1200, height: 750 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
+				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
+				<com:stylefile path="/view/kdl/023/base/kdl023.base.style.css" />
+				<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
+				<com:scriptfile path="/view/kdl/023/base/kdl023.base.vm.js" />
+				<ui:insert name="extended-header" />
+			</ui:define>
+			<ui:define name="content">
+				<div id="contents-area" data-bind="visible: true" style="display: none">
+					<div class="pull-left reflect-setting bg-green caret-right caret-background">
+					<com:ko tag="with" bind="reflectionSetting">
+						<div class="control-group cf">
+							<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_3')}</div>
+							<div tabindex="1" id="cbb-daily-work-pattern" class="pull-left" style="margin-left: 36px"
+								data-bind="ntsComboBox: {
+										name: '#[KDL023_4]',
+										options: $parent.dailyPatternList,
+										optionsValue: 'patternCode',
+										optionsText: 'patternName',
+										value: selectedPatternCd,
+										enable: true,
+										columns: [
+											{ prop: 'patternCode', length: 3 },
+											{ prop: 'patternName', length: 5 },
+										]}">
+							</div>
+						</div>
+							<div class="control-group">
+								<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
+							</div>
+							<div class="control-group">
+								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+							</div>
+							<div class="margin-left-100">
+								<div class="control-group" data-bind="with: statutorySetting">
+									<div tabindex="2" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
+									<div tabindex="3" id="cbb-work-type-statutory" class="pull-right"
+										data-bind="ntsComboBox: {
+												name: '#[KDL023_17]',
+												options: $parents[1].listWorkType,
+												optionsValue: 'workTypeCode',
+												optionsText: 'name',
+												value: workTypeCode,
+												enable: useClassification,
+												columns: [
+													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'name', length: 5 },
+												]}">
+									</div>
+								</div>
+								<div class="control-group" data-bind="with: nonStatutorySetting">
+									<div tabindex="4" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
+									<div tabindex="5" id="cbb-work-type-non-statutory" class="pull-right"
+										data-bind="ntsComboBox: {
+												name: '#[KDL023_18]',
+												options: $parents[1].listWorkType,
+												optionsValue: 'workTypeCode',
+												optionsText: 'name',
+												value: workTypeCode,
+												enable: useClassification,
+												columns: [
+													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'name', length: 5 },
+												]}">
+									</div>
+								</div>
+								<div class="control-group" data-bind="with: holidaySetting">
+									<div tabindex="6" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
+									<div tabindex="7" id="cbb-work-type-holiday" class="pull-right"
+										data-bind="ntsComboBox: {
+												name: '#[KDL023_19]',
+												options: $parents[1].listWorkType,
+												optionsValue: 'workTypeCode',
+												optionsText: 'name',
+												value: workTypeCode,
+												enable: useClassification,
+												columns: [
+													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'name', length: 5 },
+												]}">
+									</div>
+								</div>
+								<p class="control-group priority">#{i18n.getText('KDL023_9')}</p>
+							</div>
+							<div class="control-group">
+								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
+							</div>
+							<div id="reflection-method-radio-group" tabindex="8" class="margin-left-100">
+								<div class="control-group">
+									<label class="ntsRadioBox"><input type="radio"
+										name="textRadio"
+										data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
+									</label>
+								</div>
+								<div class="control-group">
+									<label class="ntsRadioBox"><input type="radio"
+										name="textRadio"
+										data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
+									</label>
+								</div>
+							</div>
+						</com:ko>
+						<button tabindex="9" class="btn-apply-setting caret-right pull-right" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
+						</button>
+					</div>
+					<!-- Calendar function -->
+					<div id="calendar-reflect-pattern">
+						<ui:insert name="period-calendar-header" />
+						<div class="pull-right" style="margin-bottom: 20px">
+							<button tabindex="10" data-bind="click: backward">#{i18n.getText('KDL023_14')}</button>
+							<button tabindex="11" data-bind="click: forward">#{i18n.getText('KDL023_15')}</button>
+						</div>
+
+						<div tabindex="12" id="component-calendar-kcp006" class="nts-calendar-container">
+							<!-- Calendar header -->
+							<ui:insert name="calendar-header" />
+							<!-- Calendar header -->
+							<div id="calendar" data-bind="ntsCalendar: {
+								optionDates: optionDates, 
+								yearMonth: yearMonthPicked, 
+								firstDay: firstDay, 
+								startDate: startDate, 
+								endDate: endDate,
+								workplaceId: workplaceId,
+								workplaceName: workplaceName,
+								eventDisplay: eventDisplay,
+								eventUpdatable: eventUpdatable,
+								holidayDisplay: holidayDisplay,
+								cellButtonDisplay: cellButtonDisplay}"></div>
+						</div>
+					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<ui:insert name="extended-function" />
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

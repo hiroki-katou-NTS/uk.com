@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.divergencetime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -13,8 +14,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
-@Transactional
+@Stateless
 public class UpdateDivergenceItemSetCommandHandler extends CommandHandler<List<UpdateDivergenceItemSetCommand>> {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;

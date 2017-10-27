@@ -8,7 +8,7 @@ module ccg013.a.service {
         updateWebMenu: "sys/portal/webmenu/update",
         findStandardMenuList: "sys/portal/standardmenu/findAll",
         deleteWebMenu: "sys/portal/webmenu/remove"
-    }
+    }  
     
     export function findWebMenu(webMenuCode: string): JQueryPromise<WebMenuDto> {
         var path = nts.uk.text.format(servicePath.find, webMenuCode);

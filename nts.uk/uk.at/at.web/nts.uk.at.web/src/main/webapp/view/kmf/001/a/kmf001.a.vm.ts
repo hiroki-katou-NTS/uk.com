@@ -15,7 +15,7 @@ module nts.uk.pr.view.kmf001.a {
             private startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
+                $('#annual-paid-leave-setting').focus();
                 // resolve.
                 dfd.resolve();
 
@@ -24,7 +24,7 @@ module nts.uk.pr.view.kmf001.a {
 
             // 優先順位の設定
             public openPrioritySettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/b/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+                nts.uk.ui.windows.sub.modal('/view/kmf/001/b/index.xhtml');
             }
 
             // 年次有給休暇

@@ -1,5 +1,5 @@
 module nts.uk.com.view.ccg013.k.viewmodel {
-
+    
     export class ScreenModel {
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
@@ -9,22 +9,23 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         listStandardMenu: KnockoutObservableArray<StandardMenu>;
         list: KnockoutObservableArray<StandardMenu>;
         columns: Array<any>;
-        features: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
+        id: KnockoutObservable<number>;
         constructor() {
             var self = this;
+            self.id = ko.observable(null);
             //combobox
             self.itemList = ko.observableArray([
                 // 共通 :COMMON(0) 
-                new ItemModel('0', '共通'),
+                new ItemModel('0', nts.uk.resource.getText("Enum_System_COMMON")),
                 // 勤次郎  :TIME_SHEET(1) 
-                new ItemModel('1', '勤次郎'),
+                new ItemModel('1', nts.uk.resource.getText("Enum_System_TIME_SHEET")),
                 // オフィスヘルパー :OFFICE_HELPER(2) 
-                new ItemModel('2', 'オフィスヘルパー'),
+                new ItemModel('2', nts.uk.resource.getText("Enum_System_OFFICE_HELPER")),
                 // Ｑ太郎 :KYUYOU(3) 
-                new ItemModel('3', 'Ｑ太郎'),
+                new ItemModel('3', nts.uk.resource.getText("Enum_System_KYUYOU")),
                 //  人事郎  :JINJIROU (4) 
-                new ItemModel('4', '人事郎')
+                new ItemModel('4', nts.uk.resource.getText("Enum_System_JINJIROU"))
             ]);
             self.selectedCode = ko.observable('0');
             self.isEnable = ko.observable(true);
@@ -33,58 +34,49 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.listStandardMenu = ko.observableArray([]);
             self.list = ko.observableArray([]);
             self.columns = [
+                {headerText:'id', key: 'id', width: 20, hidden: true},
                 { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80 },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
-                    headerText: nts.uk.resource.getText("CCG013_83"), key: 'displayName', width: 150,
-                    template: "<input class=\"displayName-input\" type=\"text\" value=\"${displayName}\" onchange='update(this, \"displayName\")' />"
+                    headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', formatter: _.escape, width: 150
+                    //template: "<input class=\"displayName-input\" type=\"text\" value=\"${displayName}\" />"
                 }
             ];
-            self.features = ko.observableArray([
-                {
-                    name: 'Updating',
-                    enableAddRow: true,
-                    editMode: 'row',
-                    columnSettings: [
-                        {
-                            columnKey: "displayName",
-                            editorType: "text",
-                            editorOptions: {
-                                buttonType: "dropdown",
-                                listItems: names,
-                                readOnly: false
-                            }
-                        }
-                    ]
-                }
-            ]);
             self.currentCode = ko.observable();
             self.selectedCode.subscribe((value) => {
                 self.getListStandardMenu(value);
+                $("#grid").igGrid("option", "dataSource", self.list()); 
             });
         }
 
         /** get data number "value" in list **/
         getListStandardMenu(value) {
             let self = this;
+            self.id(0);
             self.list([]);
             for (let i = 0; i < self.listStandardMenu().length; i++) {
-                if (self.listStandardMenu()[i].system == value)
-                    self.list.push(new StandardMenu(self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                if (self.listStandardMenu()[i].system == value){
+                    self.list.push(new StandardMenu(self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                    self.id(self.id()+1);
+                }
             }
         }
 
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
             let self = this;
+            self.id(0);
             let dfd = $.Deferred();
             // Get List StandrdMenu
             service.getAllStandardMenu().done(function(listStandardMenu: Array<viewmodel.StandardMenu>) {
                 listStandardMenu = _.orderBy(listStandardMenu, ["code"], ["asc"]);
                 _.each(listStandardMenu, function(obj: viewmodel.StandardMenu) {
-                    self.listStandardMenu.push(new StandardMenu(obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
+                    self.listStandardMenu.push(new StandardMenu(self.id(), obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
+                    self.id(self.id()+1);
                 });
                 self.getListStandardMenu("0");
+                
+                self.initGrid();
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -96,22 +88,47 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         /** update data when click button register **/
         register() {
             let self = this;  
-            let a: Array<any> = $("#multi-list").igGrid("option", "dataSource");
-            $('.displayName-input').trigger("validate");
+            self.id(0);
+            nts.uk.ui.errors.clearAll();
+            
+            if ($("#grid").igGridUpdating('isEditing')) {
+                $("#grid").igGridUpdating('endEdit', true, true);    
+            }
+            
+            let a: Array<any> = $("#grid").igGrid("option", "dataSource");
+            var index = 0;
+            _.forEach(a, function(item) {
+                 var data = {
+                    name: '#[CCG013_53]',
+                    value: item.displayName,
+                    required: true,
+                    constraint: 'MenuDisplayName'    
+                };
+                
+                var cell = $("#grid").igGrid("cellById", index, "displayName");
+
+                validateInput($(cell), data);
+                index++;
+            }); 
+                   
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+            
             _.defer(() => {
-                if (nts.uk.ui.errors.hasError() === false) {
+                if (!nts.uk.ui.errors.hasError() ) {
                     service.updateStandardMenu(a).done(function() {                          
                         _.remove(self.listStandardMenu(), function(item){                              
                             return item.system == parseInt(self.selectedCode());                         
                         });                         
-                     for(let i = 0; i < a.length; i++)  {   
-                        self.listStandardMenu().push(new StandardMenu(a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
-                     }
+                         for(let i = 0; i < a.length; i++)  {   
+                            self.listStandardMenu().push(new StandardMenu(self.id(self.id()+1), a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
+                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });     
                         self.getListStandardMenu(self.selectedCode());
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
-                        self.getListStandardMenu(self.selectedCode());
+                        nts.uk.ui.dialog.alertError(error.message);
+//                        self.getListStandardMenu(self.selectedCode());
                     });
                 }
             });
@@ -119,10 +136,53 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         }    
 
         /** close Dialog **/
-        closeDialog() {
-            nts.uk.ui.windows.close();
+        closeDialog() {   
+            nts.uk.ui.windows.close(); 
         }
-
+        
+        /**
+         * Init grid
+         */
+        initGrid(): void {
+            var self = this;
+            $("#grid").igGrid({
+                primaryKey: "id",
+                columns: self.columns,
+                dataSource: self.list(),
+                features: [
+                {
+                    name: 'Selection',
+                    mode: 'row',
+                    multipleSelection: true,
+                    activation: false       
+                },
+                {
+                    name: "Updating",
+                    enableAddRow: false,
+                    editMode: "cell",
+                    autoCommit: true,
+                    enableDeleteRow: false,
+                    virtualization: true,
+                    virtualizationMode: 'continuous',
+                    columnSettings: [
+                        { columnKey: "displayName", editorType: "text", editorOptions: { type: "text", disabled: false} },
+                        { columnKey: "code", editorOptions: { disabled: true} },
+                        { columnKey: "targetItems", editorOptions: { disabled: true} },
+                    ],
+                    editCellEnded: function(evt, ui){ 
+                        let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource"),
+                            row = dataSource[ui.rowID];
+                        if (row) {
+                            row.displayName = ui.value;
+                        }  
+                        $("#grid").igGrid("option", "dataSource", dataSource); 
+                    }
+                }]
+            });   
+            
+            $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
+            $("#grid").setupSearchScroll("igGrid", true);
+        }
     }
 
     class ItemModel {
@@ -135,12 +195,14 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     }
 
     export class StandardMenu {
+        id: number;
         code: string;
         targetItems: string;
         displayName: string;
         system: number;
         classification: number;
-        constructor(code: string, targetItems: string, displayName: string, system: number, classification: number) {
+        constructor(id: number, code: string, targetItems: string, displayName: string, system: number, classification: number) {
+            this.id = id;
             this.code = code;
             this.targetItems = targetItems;
             this.displayName = displayName;
@@ -150,17 +212,45 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     }
 }
 
-function update(v, c){ 
-     if(v.value.length > __viewContext.primitiveValueConstraints.MenuDisplayName.maxLength){
-        $(v).ntsError('set', "max value");
-        return;
+
+/**
+ * Validate input display name
+ */
+function validateInput($input: JQuery, data: any) {
+    var value: (newText: string) => {} = data.value;
+    var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+    var valueUpdate: string = (immediate === true) ? 'input' : 'change';
+    var valueUpdate: string = (immediate === true) ? 'input' : 'change';
+    var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+    var constraint = nts.uk.ui.validation.getConstraint(constraintName);   
+ 
+    var newText = data.value;
+    let validator = getValidator(data);
+    var result = validator.validate(newText);
+    if (result.isValid) {
+        $input.ntsError('clear');
+        $input.removeAttr("style");
+        //value(result.parsedValue);
+        new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+        return true;
     } else {
-        $(v).ntsError('clear');  
-    } 
-    let data: Array<any> = $("#multi-list").igGrid("option", "dataSource"),
-        row = data[$(v).parents('tr').data('row-idx')];
-    if (row) {
-        row[c] = v.value;
-    }  
-    $("#multi-list").igGrid("option", "dataSource", data);  
+        let error = $input.ntsError('getError');
+        if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+            $input.ntsError('clear');
+            $input.ntsError('set', result.errorMessage, result.errorCode);
+            $input.attr("style", "border-color: red !important;");
+        }
+        
+        new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+        //value(newText);
+        return false;
+    }
+}
+
+function getValidator(data: any): nts.uk.ui.validation.IValidator {
+    var name: string = data.name !== undefined ? ko.unwrap(data.name) : "";
+    name = nts.uk.resource.getControlName(name);
+    var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+    var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+    return new nts.uk.ui.validation.StringValidator(name, constraintName, { required: required });
 }

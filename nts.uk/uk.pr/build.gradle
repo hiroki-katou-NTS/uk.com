@@ -51,6 +51,11 @@ subprojects {
 		}
 	}
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
@@ -59,7 +64,7 @@ subprojects {
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 		
 		// Lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
+		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -99,10 +104,16 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.21'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.6'
+        // Apache commons CSV
+		compile group: 'org.apache.commons', name: 'commons-csv', version: '1.4'
+        
+        // Apache commons IO
+		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.37'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.48'
+		
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.4.2'
 	}
 }
 
@@ -282,6 +293,11 @@ project (':pr.web:nts.uk.pr.web') {
 	dependencies {
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.app')
@@ -313,6 +329,13 @@ project (':pr.web:nts.uk.pr.web') {
 		
 		runtime project (':pr.file:nts.uk.file.pr.app')
 		runtime project (':pr.file:nts.uk.file.pr.infra')
+		
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.1')
 		
 		// to provide PrimitiveValue
 		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'

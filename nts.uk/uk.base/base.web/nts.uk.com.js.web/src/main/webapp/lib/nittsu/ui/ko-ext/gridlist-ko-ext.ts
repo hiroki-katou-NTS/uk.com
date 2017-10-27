@@ -8,8 +8,10 @@ module nts.uk.ui.koExtentions {
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var HEADER_HEIGHT = 27;
-
+            let HEADER_HEIGHT = 27;
+            let ROW_HEIGHT = 23;
+            let DIFF_NUMBER = 2;
+            
             var $grid = $(element);
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
@@ -24,8 +26,22 @@ module nts.uk.ui.koExtentions {
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
+            
+            let rows = ko.unwrap(data.rows);
             $grid.data("init", true);
             
+            if (data.multiple){
+                ROW_HEIGHT = 24;      
+                
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia; 
+                if (isIE || isEdge) {
+                    DIFF_NUMBER = -2;    
+                }
+            }
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
 //            features.push({ name: 'Sorting', type: 'local' });
@@ -71,15 +87,51 @@ module nts.uk.ui.koExtentions {
                             let selectedValue = $element.attr('data-value');
                             let $tr = $element.closest("tr");  
                             $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
-                        });      
+                        });  
+                        
+                        ROW_HEIGHT = 30;
                     }       
                 }
                 return c; 
             });
+            
+            let isDeleteButton = !util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
+                && deleteOptions.visible === true;
+            
+            let height = data.height;
+            if(!nts.uk.util.isNullOrEmpty(rows)){
+                if (isDeleteButton){
+                    ROW_HEIGHT = 30;        
+                }
+                height = rows * ROW_HEIGHT + HEADER_HEIGHT - DIFF_NUMBER;   
+                
+                let colSettings = [];
+                _.forEach(iggridColumns, function (c){
+                    if(c["hidden"] === undefined || c["hidden"] === false){
+                        colSettings.push({ columnKey: c["key"], allowTooltips: true }); 
+                        if (nts.uk.util.isNullOrEmpty(c["columnCssClass"])) { 
+                            c["columnCssClass"] = "text-limited";             
+                        } else {
+                            c["columnCssClass"] += " text-limited";
+                        }
+                    }      
+                });
+                
+                features.push({
+                    name: "Tooltips",
+                    columnSettings: colSettings,
+                    visibility: "overflow",
+                    showDelay: 200,
+                    hideDelay: 200
+                });
+                
+                $grid.addClass("row-limited");
+            }
+            $grid.data("height", height);
 
             $grid.igGrid({
                 width: data.width,
-                height: (data.height) + "px",
+                height: height,
                 primaryKey: optionsValue,
                 columns: iggridColumns,
                 virtualization: true,
@@ -87,9 +139,12 @@ module nts.uk.ui.koExtentions {
                 features: features,
                 tabIndex: -1
             });
+            
+            if (data.itemDraggable) {
+                new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
+            }
 
-            if (!util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
-                && deleteOptions.visible === true) {
+            if (isDeleteButton) {
                 var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
                 $grid.ntsGridList("setupDeleteButton", {
                     deleteField: deleteOptions.deleteField,
@@ -118,14 +173,14 @@ module nts.uk.ui.koExtentions {
                 $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(_.map(selected, s => s.id));
                     } else {
                         data.value([]);
                     }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(selected.id);
                     } else {
                         data.value('');
@@ -180,6 +235,20 @@ module nts.uk.ui.koExtentions {
 //                        $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop);        
 //                    }, 10);
 //                }
+            } else if($grid.attr("filtered") === true || $grid.attr("filtered") === "true"){
+                let filteredSource = [];
+                _.forEach(currentSource, function(item){
+                    let itemX = _.find(sources, function (s){
+                        return s[optionsValue] === item[optionsValue];        
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
+                if(!_.isEqual(filteredSource, currentSource)){
+                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                    $grid.igGrid("dataBind");    
+                }
             }
 
             var currentSelectedItems = $grid.ntsGridList('getSelected');
@@ -192,9 +261,203 @@ module nts.uk.ui.koExtentions {
                 $grid.ntsGridList('setSelected', data.value());
             }
             $grid.data("ui-changed", false);
-            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height).attr("tabindex", $grid.data("tabindex"));
+            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
         }
     }
     
     ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
+    
+    class SwapHandler {
+        private model: SwapModel;
+        constructor() {
+        }
+        setModel(model: SwapModel) {
+            this.model = model;
+            return this;
+        }
+        get Model() {
+            return this.model;
+        }
+        
+        private handle(value: (param?: any) => any) {
+            var self = this;
+            var model = this.model;
+            var options = {
+                                items: "tbody > tr",
+                                containment: this.model.$grid,
+                                cursor: "move",
+                                connectWith: this.model.$grid,
+                                placeholder: "ui-state-highlight",
+                                helper: this._createHelper,
+                                appendTo: this.model.$grid,
+                                start: function(evt, ui) {
+                                    self.model.transportBuilder.setList(self.model.$grid.igGrid("option", "dataSource"));
+                                },
+                                beforeStop: function(evt, ui) {
+                                    self._beforeStop.call(this, model, evt, ui);
+                                },
+                                update: function(evt, ui) {
+                                    self._update.call(this, model, evt, ui, value);
+                                }
+                            };
+            this.model.$grid.sortable(options).disableSelection();
+        }
+        
+        private _createHelper(evt: any, ui: any): void {
+            var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+            // Set the orders same as on grid
+            selectedRowElms.sort(function(one, two) {
+                return one.index - two.index;
+            });
+            var $helper;
+            if ($(evt.currentTarget).hasClass("multiple-drag") && selectedRowElms.length > 1) {
+                $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
+                var rowId = ui.data("row-idx");
+                var selectedItems: Array<JQuery> = selectedRowElms.map(function(elm) { return elm.element; });
+                var height = 0;
+                $.each(selectedItems, function() {
+                    $helper.find("tbody").append($(this).clone()); 
+                    height += $(this).outerHeight();
+                    if (rowId !== this.data("row-idx")) $(this).hide(); 
+                });
+                $helper.height(height);
+                $helper.find("tr").first().children().each(function(idx) {
+                    $(this).width(ui.children().eq(idx).width());
+                });
+            } else {
+                $helper = ui.clone();
+                $helper.children().each(function(idx) {
+                    $(this).width(ui.children().eq(idx).width());
+                });
+            }
+            return $helper[0];
+        }
+        
+        private _beforeStop(model:any, evt: any, ui: any): void {
+            model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+            // In case of multiple selections
+            if (ui.helper.hasClass("select-drag")) {
+                var rowsInHelper = ui.helper.find("tr");
+                var rows = rowsInHelper.toArray();
+                $(this).sortable("cancel");
+                for (var idx in rows) {
+                    model.$grid.find("tbody").children().eq($(rows[idx]).data("row-idx")).show();
+                }
+            } 
+        }
+        
+        private _update(model: any, evt: any, ui: any, value: (param?: any) => any) {
+            if (ui.item.closest("table").length === 0) return;
+            model.transportBuilder.update();
+            model.$grid.igGrid("option", "dataSource", model.transportBuilder.getList());
+            value(model.transportBuilder.getList());
+            setTimeout(function() { model.dropDone(); }, 0);
+        }
+        
+        enableDragDrop(value: (param?: any) => any) {
+            this.model.enableDrag(this, value, this.handle);
+        }
+    }
+    
+    abstract class SwapModel {
+        $grid: JQuery;
+        primaryKey: any;
+        transportBuilder: ListItemTransporter;
+        
+        constructor($grid: JQuery, primaryKey: any) {
+            this.$grid = $grid;
+            this.primaryKey = primaryKey;
+            this.transportBuilder = new ListItemTransporter().primary(this.primaryKey);
+        }
+        
+        abstract target(param: any): any;
+        abstract neighbor(param: any): string;
+        abstract dropDone(): void;
+        abstract enableDrag(ctx: any, value: (param?: any) => any, cb: (value: (param?: any) => any) => void): void;
+    }
+    
+    class GridSwapList extends SwapModel {
+        
+        target(opts): any {
+            if (opts.helper !== undefined && opts.helper.hasClass("select-drag")) {
+                return opts.helper.find("tr").map(function() {
+                    return $(this).data("id");
+                });
+            } 
+            return [opts.item.data("id")];
+        }
+        
+        neighbor(opts): any {
+            return opts.item.prev().length === 0 ? "ceil" : opts.item.prev().data("id");
+        }
+        
+        dropDone(): void {
+            var self = this; 
+            self.$grid.igGridSelection("clearSelection");
+            setTimeout(function() {
+                self.$grid.igGrid("virtualScrollTo", self.transportBuilder.incomeIndex);
+            }, 0); 
+        }
+        
+        enableDrag(ctx: any, value: (param?: any) => any, cb: (value: (param?: any) => any) => void): void {
+            var self = this;
+            this.$grid.on("iggridrowsrendered", function(evt, ui) {
+                cb.call(ctx, value);
+            });
+        }
+    }
+    
+    class ListItemTransporter {
+        list: Array<any>;
+        primaryKey: string;
+        targetIds: Array<any>;
+        adjacentIncomeId: any;
+        outcomeIndex: number;
+        incomeIndex: number;
+        
+        primary(primaryKey: string) : ListItemTransporter {
+            this.primaryKey = primaryKey;
+            return this;
+        }
+        
+        target(targetIds: Array<any>) : ListItemTransporter {
+            this.targetIds = targetIds;
+            return this;
+        }
+        
+        toAdjacent(adjId: any) : ListItemTransporter {
+            if (adjId === null) adjId = "ceil";
+            this.adjacentIncomeId = adjId;
+            return this;
+        }
+        
+        indexOf(list: Array<any>, targetId: any) {
+            return _.findIndex(list, elm => elm[this.primaryKey].toString() === targetId.toString());
+        }
+        
+        update() : void {
+            for (var i = 0; i < this.targetIds.length; i++) { 
+                this.outcomeIndex = this.indexOf(this.list, this.targetIds[i]);
+                if (this.outcomeIndex === -1) return;
+                var target = this.list.splice(this.outcomeIndex, 1);
+                this.incomeIndex = this.indexOf(this.list, this.adjacentIncomeId) + 1;
+                if (this.incomeIndex === 0) {
+                    if (this.adjacentIncomeId === "ceil") this.incomeIndex = 0;
+                    else if (target !== undefined) {
+                        this.list.splice(this.outcomeIndex, 0, target[0]);
+                        return;
+                    }
+                }
+                this.list.splice(this.incomeIndex + i, 0, target[0]);
+            }
+        }
+        
+        getList() : Array<any> {
+            return this.list;
+        }
+        
+        setList(list: Array<any>) {
+            this.list = list;        
+        }
+    }
 }

@@ -3,7 +3,7 @@ module ccg018.b.viewmodel {
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import blockUI = nts.uk.ui.block;
 
-    export class ScreenModel {
+    export class ScreenModel extends base.viewModel.ScreenModelBase {
         items: KnockoutObservableArray<TopPagePersonSet>;
         selectedItem: KnockoutObservable<TopPagePersonSet>;
         currentCode: KnockoutObservable<any>;
@@ -15,42 +15,34 @@ module ccg018.b.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<any>;
 
-        comboItemsAfterLogin: KnockoutObservableArray<any>;
-        comboItemsAsTopPage: KnockoutObservableArray<any>;
-
         listSid: Array<any>;
         isSelectedFirst: KnockoutObservable<boolean>;
+        
+        isEmpty: KnockoutObservable<boolean>;
 
         //component
         ccgcomponent: GroupOption;
-        //        selectedCode: KnockoutObservableArray<string>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
         // Options
         baseDate: KnockoutObservable<Date>;
-        //        isQuickSearchTab: KnockoutObservable<boolean>;
-        //        isAdvancedSearchTab: KnockoutObservable<boolean>;
-        //        isAllReferableEmployee: KnockoutObservable<boolean>;
-        //        isOnlyMe: KnockoutObservable<boolean>;
-        //        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
-        //        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
-        //        isMutipleCheck: KnockoutObservable<boolean>;
-        //        isSelectAllEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
-        constructor() {
+        constructor(baseModel: base.result.BaseResultModel) {
+            super(baseModel);
             let self = this;
+            self.screenTemplateUrl("../b/index.xhtml");
+            self.comboItemsAfterLogin(baseModel.comboItemsAfterLogin);
+            self.comboItemsAsTopPage(baseModel.comboItemsAsTopPage);
+            self.categorySet(baseModel.categorySet);
             self.items = ko.observableArray([]);
             self.selectedItem = ko.observable(null);
             self.listSid = [];
-            self.comboItemsAfterLogin = ko.observableArray();
-            self.comboItemsAsTopPage = ko.observableArray();
             self.currentCode = ko.observable();
             self.employeeCode = ko.observable('');
             self.employeeName = ko.observable('');
             self.selectedItemAfterLogin = ko.observable('');
             self.selectedItemAsTopPage = ko.observable('');
-            self.categorySet = ko.observable();
             self.isVisible = ko.computed(function() {
                 return !!self.categorySet();
             });
@@ -80,6 +72,36 @@ module ccg018.b.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(false);
             self.baseDate = ko.observable(new Date());
 
+            self.selectedEmployee.subscribe(function() {
+                self.listSid = [];
+                _.each(self.selectedEmployee(), function(x) {
+                    self.listSid.push(x.employeeId);
+                });
+                self.findTopPagePersonSet();
+            });
+            
+            self.isEmpty = ko.computed(function(){
+                return !nts.uk.ui.errors.hasError();    
+            });
+        }
+
+        start(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+
+            $.when(self.findTopPagePersonSet()).done(function() {
+                self.bindGrid();
+                self.bindCCG001();
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.reject(error);
+            });
+            return dfd.promise();
+        }
+
+        
+        bindCCG001(): void {
+            let self = this;   
             self.ccgcomponent = {
                 baseDate: self.baseDate,
                 //Show/hide options
@@ -121,29 +143,11 @@ module ccg018.b.viewmodel {
                 }
             }
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-            self.findTopPagePersonSet();
-
-            self.selectedEmployee.subscribe(function() {
-                self.listSid = [];
-                _.each(self.selectedEmployee(), function(x) {
-                    self.listSid.push(x.employeeId);
-                });
-                self.findTopPagePersonSet();
-            });
-
-            self.bindGrid();
         }
-
-        start(): void {
-            let self = this;
-            self.categorySet(__viewContext.viewModel.viewmodelA1.categorySet());
-            self.comboItemsAfterLogin(__viewContext.viewModel.viewmodelA1.comboItemsAfterLogin());
-            self.comboItemsAsTopPage(__viewContext.viewModel.viewmodelA1.comboItemsAsTopPage());
-        }
-
+        
         bindGrid(): any {
             let self = this;
-            let listComponentOption = {
+            let listComponentOption: any = {
                 isShowAlreadySet: true,
                 alreadySettingList: self.items,
                 isMultiSelect: false,
@@ -162,7 +166,7 @@ module ccg018.b.viewmodel {
         findTopPagePersonSet(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            ccg018.b.service.findTopPagePersonSet(self.listSid)
+            service.findTopPagePersonSet(self.listSid)
                 .done(function(data) {
                     self.items([]);
                     let arr = [];
@@ -200,43 +204,43 @@ module ccg018.b.viewmodel {
                     }
                     self.isSelectedFirst(true);
                     dfd.resolve();
-                }).fail();
+                }).fail(function(){
+                        dfd.reject();    
+                    });
             return dfd.promise();
         }
 
         /**
          * Update/Insert data in to table TOPPAGE_PERSON_SET
          */
-        saveData(): JQueryPromise<any> {
+        save(): void {
             let self = this;
-            let dfd = $.Deferred();
-            blockUI.invisible();
-            if (self.items().length <= 0) {
+            if (!self.currentCode()) {
                 return;
             }
+            blockUI.invisible();
             let oldCode = self.selectedItem().code;
             let obj = {
                 ctgSet: self.categorySet(),
                 sId: self.selectedItem().employeeId,
                 topMenuCode: self.selectedItemAsTopPage(),
-                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItem().loginMenuCode(),
-                loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : self.selectedItem().system(),
-                loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : self.selectedItem().menuClassification(),
+                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItemAsTopPage(),
+                loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
+                loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
             };
             ccg018.b.service.update(obj).done(function() {
                 self.isSelectedFirst(false);
                 $.when(self.findTopPagePersonSet()).done(function() {
                     self.currentCode(oldCode);
+                    self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
                     self.isEnable(true);
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 });
-                dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
             }).always(function() {
                 blockUI.clear();
             });
-            return dfd.promise();
         }
 
         /**
@@ -246,7 +250,7 @@ module ccg018.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             if (!!!self.currentCode()) {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_85'));
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
             } else {
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
                     let obj = { sId: self.selectedItem().employeeId };
@@ -256,9 +260,11 @@ module ccg018.b.viewmodel {
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         });
-                    }).fail();
+                    }).fail(function(){
+                        dfd.reject();    
+                    });
                 }).ifNo(() => { });
             }
             dfd.resolve();
@@ -282,12 +288,6 @@ module ccg018.b.viewmodel {
             blockUI.clear();
         }
 
-        /**
-         * Jump to screen CCG015
-         */
-        jumpToCcg015(): void {
-            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
-        }
     }
 
     interface ITopPagePersonSet {
@@ -331,26 +331,4 @@ module ccg018.b.viewmodel {
         }
     }
 
-    interface IComboBox {
-        code: string;
-        name: string;
-        system: number;
-        menuCls: number;
-        uniqueCode?: string;
-    }
-    class ComboBox {
-        code: string;
-        name: string;
-        system: number;
-        menuCls: number;
-        uniqueCode: string;
-
-        constructor(param: IComboBox) {
-            this.code = param.code;
-            this.name = param.name;
-            this.system = param.system;
-            this.menuCls = param.menuCls;
-            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", param.code, param.system, param.menuCls);
-        }
-    }
 }

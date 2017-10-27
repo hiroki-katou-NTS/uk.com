@@ -1,27 +1,5 @@
 @CHARSET "UTF-8";
-#master-content {
-	min-width: 900px;
-}
-#header {
-    overflow: hidden;
-    position: fixed; /* Set the navbar to fixed position */
-    top: 0; /* Position the navbar at the top of the page */
-    width: 100%;
-    z-index: 999;
-}
-#functions-area {
-        overflow: hidden;
-    position: fixed; /* Set the navbar to fixed position */
-    top: 42px; /* Position the navbar at the top of the page */
-    width: 100%;
-    z-index: 900;
-    height: auto;
-    background: white;
-}
-#contents-area {
-	margin-top: 90px;
-	z-index: 5;
-}
+
 /* .nts-switch-button {
 	min-width: 80px;
 	font-size: 13px !important;
@@ -41,9 +19,8 @@
 	min-width: 560px;
 } */
 
-.btn-default {
+.label-link-button {
 	margin-left: 20px;
-	/* min-width: 80px; */
 }
 #table {
 	margin-top: 30px;
@@ -64,7 +41,7 @@ table#table tr td label.content-label {
 table#table tr td.title {
 	padding-bottom: 35px;
 }
-.ntsControl {
+.holiday-grant-table-link-button {
     display: inline !important;
 }
 #combo-box-time-unit {

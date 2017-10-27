@@ -1,5 +1,22 @@
+
 $(function(){
-    
+    var $pumpkin = $("<div class='pumpkin animated swing'/>").mouseenter(function() {
+        var self = this;
+        $(self).removeClass("animated swing")
+        _.defer(() => {
+            $(self).addClass("animated swing");
+        });
+    });
+    $("#header").append($pumpkin);
+    $("#master-content").append("<div id='fof'><div></div><canvas></canvas></div>");
+    $("#master-content").append("<div id='particles-js'></div>");
+    $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/nts.uk.com.web/view/sample/catalog/css/animate.css'));
+    $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/nts.uk.com.web/view/sample/catalog/css/404.css'));
+    $.getScript('/nts.uk.com.web/view/sample/catalog/script/404.js');
+    $.getScript('/nts.uk.com.web/view/sample/catalog/script/particles.min.js', function() {
+        particlesJS.load('particles-js', '/nts.uk.com.web/view/sample/catalog/script/particlesjs-config.json');
+    });
+        
     $("#side-menu").load("/nts.uk.com.web/view/sample/catalog/sidemenu.xhtml", function(){
         $("#side-menu a").each(function () {
             var href = $(this).attr('href');
@@ -91,12 +108,22 @@ $(function(){
     $('pre').addClass('prettyprint')
     $.getScript("https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js");
     
-    $(".tabs").tabs();
+    $(".tabs").tabs({
+    	create: function(event: Event, ui: any) {
+    		$(".tabs").find('.ui-tabs-panel').addClass('disappear');
+    		ui.panel.removeClass('disappear');
+    	},
+    	activate: function(evt: Event, ui: any) {
+    		$(".tabs").find('.ui-tabs-panel').addClass('disappear');
+            ui.newPanel.removeClass('disappear');
+        }
+    });
     
     $(".catalog-accordion").accordion({
         active: false,
         animate: false,
-        collapsible: true
+        collapsible: true,
+        heightStyle: "content"
     });
     
 });

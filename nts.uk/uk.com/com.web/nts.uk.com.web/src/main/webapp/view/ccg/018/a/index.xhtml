@@ -9,8 +9,10 @@
 		<ui:define name="sidebar-head">
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../base/base.js" />
 			<com:scriptfile path="ccg018.a.start.js" />
 			<com:scriptfile path="ccg018.a.vm.js" />
+			<com:scriptfile path="ccg018.a.service.js" />
 			<com:stylefile path="ccg018.a.main.css" />
 			<com:scriptfile path="../a1/ccg018.a1.vm.js" />
 			<com:scriptfile path="../a1/ccg018.a1.service.js" />
@@ -26,30 +28,31 @@
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
+		
+		<script type="text/html" id="jobtitle-template">
+    		<ui:include src="../a1/index.xhtml" />
+		</script>
+		
+		<script type="text/html" id="person-template">
+    		<ui:include src="../b/index.xhtml" />
+		</script>
 
 		<ui:define name="sidebar">
-			<div data-bind="with: viewmodelA">
+			<div>
 				<ul id="A1_1" class="navigator"
 					data-bind="foreach: tabs().filter(function(t) { return t.display() == true; })">
 					<li><a tabindex="-1"
 						data-bind="text: name, 
-						click: changeTab,
+						click: $parent.changeTab.bind($parent, $data),
 						css: { 'active': active },
-						attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
+						attr: { href: '#tabpanel-' + id().toLowerCase() }"></a></li>
 				</ul>
 			</div>
 		</ui:define>
 		<ui:define name="sidebar-content">
-			<div id="tabpanel-a1" role="tabpanel" data-bind="with: viewmodelA1"
-				style="display: none;">
-				<div class="screen-a1">
-					<ui:include src="../a1/index.xhtml" />
-				</div>
-			</div>
-			<div id="tabpanel-b" role="tabpanel" data-bind="with: viewmodelB"
-				style="display: none;">
-				<div class="screen-b">
-					<ui:include src="../b/index.xhtml" />
+			<div role="tabpanel" data-bind="attr:{id: 'tabpanel-' + currentTab().id()}">
+				<div data-bind="attr:{class: 'screen-content screen-' + currentTab().id(), id: 'screen-' + currentTab().id()} ">
+					
 				</div>
 			</div>
 		</ui:define>

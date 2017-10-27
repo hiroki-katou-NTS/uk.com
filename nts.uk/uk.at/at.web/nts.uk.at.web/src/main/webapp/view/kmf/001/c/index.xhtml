@@ -25,16 +25,13 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<div style="margin: 7px 20px;">
-					<button class="pull-left btn-default"
-						data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
-					<button class="proceed btn-default" data-bind="click: save"
-						tabindex="2">#{i18n.getText('KMF001_28')}</button>
-					<label class="pull-right btn-default">#{i18n.getText('KMF001_14')}</label>
-					<a class="pull-right"
-						data-bind="ntsLinkButton: {
-								jump: '/view/kmf/001/c/index.xhtml' }"
-						tabindex="3">#{i18n.getText('KMF001_29')}</a>
+				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
+				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+				<div class="pull-right" style="display: inline">
+					<a class="goout" data-bind="ntsLinkButton: {jump: '/view/kmf/001/c/index.xhtml' }"
+						tabindex="3">#{i18n.getText('KMF001_29')}
+					</a>
+					<label class="label-link-button" style="margin-right: 20px;">#{i18n.getText('KMF001_14')}</label>
 				</div>
 			</div>
 
@@ -107,7 +104,10 @@
 									constraint: 'AnnualNumberDay',
 									name: '#[KMF001_132]',
 									required: requiredMaxNumberCompany,
-									option: numberEditorOption,
+									option: {
+										width: '70px',
+										unitID: 'TIMES'
+									},
 									enable: enableMaxNumberCompany}" /></td>
 						</tr>
 						<tr>
@@ -123,7 +123,11 @@
 									constraint: 'AnnualLeaveGrantDay',
 									name: '#[KMF001_36]',
 									required: enableAnnualVacation,
-									option: halfIntegerEditorOption,
+									option: {
+										width: '70px',
+										decimallength: 1,
+										unitID: 'DAYS'
+									},
 									enable: enableAnnualVacation}" />
 								</div></td>
 
@@ -134,20 +138,27 @@
 									constraint: 'MaxRemainingDay',
 									name: '#[KMF001_37]',
 									required: enableAnnualVacation,
-									option: halfIntegerEditorOption,
+									option: {
+										width: '70px',
+										decimallength: 1,
+										unitID: 'DAYS'
+									},
 									enable: enableAnnualVacation}" /></td>
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_38')}</label></td>
-							<td style="padding-left: 4px;"><input tabindex="9"
+							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="9"
 								id="number-year-retain" class="nts-input"
 								data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
 									constraint: 'RetentionYear',
 									name: '#[KMF001_38]',
 									required: enableAnnualVacation,
-									option: numberEditorOption,
-									enable: enableAnnualVacation}" /></td>
+									option: {
+										width: '70px',
+										unitID: 'YEARS'
+									},
+									enable: enableAnnualVacation}" /></div></td>
 
 							<td><div></div></td>
 							<td><div></div></td>
@@ -302,11 +313,14 @@
 									constraint: 'MaxTimeDay',
 									name: '#[KMF001_132]',
 									required: requiredTimeMaxNumberCompany,
-									option: numberEditorOption,
+									option: {
+										width: '70px',
+										unitID: 'DAYS'
+									},
 									enable: enableTimeMaxNumberCompany}" /></td>
 						</tr>
 						<tr>
-							<td colspan="4" style="padding-left: 50px;"><div
+							<td colspan="4" style="padding-left: 50px;"><div tabindex="27"
 									data-bind="ntsCheckBox: { checked: isEnoughTimeOneDay,
 									enable: enableTimeMaxNumberCompany,
 									text: '#{i18n.getText('KMF001_55')}' }"></div></td>

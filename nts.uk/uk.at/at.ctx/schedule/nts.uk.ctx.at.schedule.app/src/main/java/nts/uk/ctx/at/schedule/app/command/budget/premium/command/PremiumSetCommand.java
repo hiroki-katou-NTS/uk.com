@@ -16,15 +16,13 @@ public class PremiumSetCommand {
 	
 	String historyID;
 	
-	Integer premiumID;
+	Integer displayNumber;
 	
 	Integer rate;
     
 	Integer attendanceID;
     
     String name;
-    
-    Integer displayNumber;
     
     int useAtr;
     

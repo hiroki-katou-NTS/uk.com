@@ -22,3 +22,7 @@
 .ui-tabs-panel > div {
     height: 350px;
 }
+
+#main{
+	margin-top: 20px;
+}

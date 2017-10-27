@@ -1,26 +1,47 @@
-.nts-grid-wrapper table .ui-ig-altrecord {
+.nts-grid-wrapper table .ui-ig-altrecord,
+.nts-grid .ui-ig-altrecord {
   background-color: #FFF;
 }
 
+.nts-grid-wrapper table tr td,
+.nts-grid-wrapper table tr th.ui-iggrid-header {
+	border-color: #AAB7B8;
+}
+
 .nts-grid-wrapper table tr td.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover {
-	background-color: aqua;
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
+.nts-grid tr td.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ui-state-hover {
+  background-color: aqua;
+  border-color: #AAB7B8;
 }
 
 .nts-grid-wrapper table tr td.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-disable.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover,
+.nts-grid tr td.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-disable.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
 	background-color: #CCC;
 	color: gray;
 }
-
+.ui-iggrid .ui-iggrid-tablebody td {
+	height: 21px;
+}
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc, 
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-calc.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover,
+.nts-grid tr td.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc, 
+.nts-grid tr td.ntsgrid-calc.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-calc.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover {
 	background-color: purple;
 }
 
@@ -31,7 +52,15 @@
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover,
+.nts-grid tr td.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect, 
+.nts-grid tr td.ntsgrid-reflect.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-calc, 
+.nts-grid tr td.ntsgrid-reflect.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-reflect.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover {
 	background-color: green;
 }
 
@@ -44,8 +73,18 @@
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ui-state-hover, 
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
-	background-color:orange;
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover,
+.nts-grid tr td.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other, 
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-reflect, 
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-calc, 
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-manual-edit-other.ui-state-hover, 
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
+	background-color: orange;
 }
 
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
@@ -59,7 +98,19 @@
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover,
+.nts-grid tr td.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target, 
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-reflect, 
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-calc, 
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-manual-edit-target.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
 	background-color: pink;
 }
 
@@ -76,7 +127,21 @@
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover,
+.nts-grid tr td.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm,  
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-manual-edit-other, 
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-calc, 
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-alarm.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover {
 	background-color: yellow;
 }
 
@@ -95,7 +160,23 @@
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-disable, 
 .nts-grid-wrapper table tr td.ntsgrid-error.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover,
+.nts-grid tr td.ntsgrid-error,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error, 
+.nts-grid tr td.ntsgrid-error.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-alarm, 
+.nts-grid tr td.ntsgrid-error.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-error.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-manual-edit-other, 
+.nts-grid tr td.ntsgrid-error.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-error.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-calc, 
+.nts-grid tr td.ntsgrid-error.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-disable, 
+.nts-grid tr td.ntsgrid-error.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover {
 	background-color: red;
 }
 
@@ -116,6 +197,45 @@
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover,
+.nts-grid tr td.ui-iggrid-selectedcell, 
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-error, 
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-error, 
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-alarm,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-manual-edit-target, 
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-manual-edit-other,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-reflect,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-calc,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
+.nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
 	background-color: #007fff;
+}
+
+.nts-image-container {
+	height: 100%;
+	text-align: center;
+}
+
+.nts-grid-wrapper {
+	table {
+		tr {
+			td {
+				.nts-grid.control {
+					height: 35px;
+				}
+			}
+		}
+	}
+}
+
+.text-limited {
+   	white-space: nowrap;
 }

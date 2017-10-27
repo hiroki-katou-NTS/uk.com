@@ -1,130 +1,60 @@
 module ccg018.a1.viewmodel {
     import blockUI = nts.uk.ui.block;
 
-    export class ScreenModel {
+    export class ScreenModel extends base.viewModel.ScreenModelBase {
         date: KnockoutObservable<string>;
         items: KnockoutObservableArray<TopPageJobSet> = ko.observableArray([]);
         isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
-        comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
-        comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
-        //appear/disappear header of scroll on UI
-        isHeaderScroll: KnockoutObservable<boolean>;
-
         roundingRules: KnockoutObservableArray<any>;
+        isEmpty: KnockoutObservable<boolean>;
 
-        constructor() {
+        constructor(baseModel: base.result.BaseResultModel) {
+            super(baseModel);
             let self = this;
+            self.screenTemplateUrl("../a1/index.xhtml");
+            self.categorySet(baseModel.categorySet);
             self.listJobTitle = ko.observableArray([]);
             self.date = ko.observable(new Date().toISOString());
-            self.comboItemsAfterLogin = ko.observableArray([]);
-            self.comboItemsAsTopPage = ko.observableArray([]);
-            self.categorySet = ko.observable(undefined);
             self.isVisible = ko.computed(function() {
                 return !!self.categorySet();
             });
-
-            self.isHeaderScroll = ko.computed(function() {
-                return self.items().length > 15 ? true : false;
-            });
-
+            self.comboItemsAfterLogin(baseModel.comboItemsAfterLogin);
+            self.comboItemsAsTopPage(baseModel.comboItemsAsTopPage);
             self.roundingRules = ko.observableArray([
                 { code: 1, name: nts.uk.resource.getText("CCG018_13") },
                 { code: 0, name: nts.uk.resource.getText("CCG018_14") }
             ]);
 
-            self.findByCId();
-            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis()).done(function() {
-                self.searchByDate();
-                $('#A2-2').focus();
+            self.isEmpty = ko.computed(function() {
+                return !nts.uk.ui.errors.hasError();
             });
+
+            self.categorySet.subscribe((newValue) => {
+                if (newValue == 0) {
+                    $("#width-tbody").addClass("width-tbody");
+                } else {
+                    $("#width-tbody").removeClass("width-tbody");
+                }
+            });
+
+            self.checkCategorySet();
+            $('#A2-2').focus();
         }
 
         start(): any {
             let self = this;
-            self.categorySet(__viewContext.viewModel.viewmodelB.categorySet());
+            self.searchByDate();
         }
 
-        /**
-         * get categorySet in DB TOPPAGE_SET base on companyId
-         */
-        findByCId(): JQueryPromise<any> {
+        checkCategorySet(): void {
             let self = this;
-            let dfd = $.Deferred();
-            ccg018.a1.service.findByCId()
-                .done(function(data) {
-                    if (!(!!data)) {
-                        self.openDialogC();
-                    } else {
-                        self.categorySet(data.ctgSet);
-                    }
-                    dfd.resolve();
-                }).fail();
-            return dfd.promise();
+            if (self.categorySet() == null) {
+                self.categorySet(1);
+                self.openDialogC();
+            }
         }
-
-        /**
-         * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
-         * Return 2 array comboItemsAsTopPage and comboItemsAfterLogin
-         */
-        findBySystemMenuCls(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.comboItemsAsTopPage([]);
-            ccg018.a1.service.findBySystemMenuCls()
-                .done(function(data) {
-                    if (data.length >= 0) {
-                        self.comboItemsAsTopPage.push(new ComboBox({
-                            code: '',
-                            name: '未設定',
-                            system: 0,
-                            menuCls: 0
-                        }));
-
-                        _.forEach(data, function(x) {
-                            self.comboItemsAsTopPage.push(new ComboBox({
-                                code: x.code,
-                                name: x.displayName,
-                                system: x.system,
-                                menuCls: x.classification
-                            }));
-                        });
-                    }
-                    dfd.resolve();
-                }).fail();
-            return dfd.promise();
-        }
-
-        /**
-         * find data in table STANDARD_MENU with companyId and 
-         * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
-         */
-        findDataForAfterLoginDis(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.comboItemsAfterLogin([]);
-            ccg018.a1.service.findDataForAfterLoginDis()
-                .done(function(data) {
-                    self.comboItemsAfterLogin.push(new ComboBox({
-                        code: '',
-                        name: '未設定',
-                        system: 0,
-                        menuCls: 0
-                    }));
-                    _.forEach(data, function(x) {
-                        self.comboItemsAfterLogin.push(new ComboBox({
-                            code: x.code,
-                            name: x.displayName,
-                            system: x.system,
-                            menuCls: x.classification
-                        }));
-                    });
-                    dfd.resolve();
-                }).fail();
-            return dfd.promise();
-        }
-
 
         /**
          * Find data in DB TOPPAGE_JOB_SET
@@ -133,41 +63,40 @@ module ccg018.a1.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.items.removeAll();
-            ccg018.a1.service.findDataOfTopPageJobSet(listJobId)
+            service.findDataOfTopPageJobSet(listJobId)
                 .done(function(data) {
-                    if (data.length > 0) {
-                        _.forEach(listJobId, function(x) {
-                            let dataObj: any = _.find(data, ['jobId', x]),
-                                jobTitle = _.find(self.listJobTitle(), ['id', x]);
+                    _.forEach(listJobId, function(x) {
+                        let dataObj: any = _.find(data, ['jobId', x]),
+                            jobTitle = _.find(self.listJobTitle(), ['id', x]);
 
-                            if (dataObj) {
-                                self.items.push(new TopPageJobSet({
-                                    code: jobTitle.code,
-                                    name: jobTitle.name,
-                                    loginMenuCd: dataObj.loginMenuCode,
-                                    topMenuCd: dataObj.topMenuCode,
-                                    personPermissionSet: dataObj.personPermissionSet,
-                                    jobId: x,
-                                    system: dataObj.loginSystem,
-                                    menuClassification: dataObj.menuClassification
-                                }));
-                            } else {
-                                self.items.push(new TopPageJobSet({
-                                    code: jobTitle.code,
-                                    name: jobTitle.name,
-                                    loginMenuCd: '',
-                                    topMenuCd: '',
-                                    personPermissionSet: 0,
-                                    jobId: x,
-                                    system: 0,
-                                    menuClassification: 0
-                                }));
-                            }
-                        });
-
-                        dfd.resolve();
-                    }
-                }).fail();
+                        if (dataObj) {
+                            self.items.push(new TopPageJobSet({
+                                code: jobTitle.code,
+                                name: jobTitle.name,
+                                loginMenuCd: dataObj.loginMenuCode,
+                                topMenuCd: dataObj.topMenuCode,
+                                personPermissionSet: dataObj.personPermissionSet,
+                                jobId: x,
+                                system: dataObj.loginSystem,
+                                menuClassification: dataObj.menuClassification
+                            }));
+                        } else {
+                            self.items.push(new TopPageJobSet({
+                                code: jobTitle.code,
+                                name: jobTitle.name,
+                                loginMenuCd: '',
+                                topMenuCd: '',
+                                personPermissionSet: 0,
+                                jobId: x,
+                                system: 0,
+                                menuClassification: 0
+                            }));
+                        }
+                    });
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
@@ -175,8 +104,9 @@ module ccg018.a1.viewmodel {
          * get JobId, JobCode and JobName in table CJTMT_JOB_TITLE
          * then call function findDataOfTopPageJobSet()
          */
-        searchByDate(): any {
+        searchByDate(): JQueryPromise<any> {
             let self = this;
+            let dfd = $.Deferred();
             blockUI.invisible();
             self.items([]);
             ccg018.a1.service.findDataOfJobTitle(self.date())
@@ -189,18 +119,24 @@ module ccg018.a1.viewmodel {
                         });
                         self.findDataOfTopPageJobSet(listJobId);
                     }
-                }).fail().always(function() {
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                }).always(function() {
                     blockUI.clear();
                 });
-
+            return dfd.promise();
         }
 
 
         /**
          * Update/insert data in TOPPAGE_JOB_SET
          */
-        update(): JQueryPromise<any> {
+        save(): void {
             let self = this;
+            if (self.items().length == 0) {
+                return;
+            }
             let dfd = $.Deferred();
             blockUI.invisible();
             let command = {
@@ -210,11 +146,12 @@ module ccg018.a1.viewmodel {
             ccg018.a1.service.update(command)
                 .done(function() {
                     self.searchByDate();
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
-                }).fail().always(function() {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
                     blockUI.clear();
                 });
-            return dfd.promise();
         }
 
         /**
@@ -235,12 +172,6 @@ module ccg018.a1.viewmodel {
             blockUI.clear();
         }
 
-        /**
-         * Jump to screen CCG015
-         */
-        jumpToCcg015(): void {
-            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
-        }
     }
 
     interface ITopPageJobSet {
@@ -289,27 +220,5 @@ module ccg018.a1.viewmodel {
         }
     }
 
-    interface IComboBox {
-        code: string;
-        name: string;
-        system: number;
-        menuCls: number;
-        uniqueCode?: string;
-    }
 
-    class ComboBox {
-        code: string;
-        name: string;
-        system: number;
-        menuCls: number;
-        uniqueCode: string;
-
-        constructor(param: IComboBox) {
-            this.code = param.code;
-            this.name = param.name;
-            this.system = param.system;
-            this.menuCls = param.menuCls;
-            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", param.code, param.system, param.menuCls);
-        }
-    }
 }

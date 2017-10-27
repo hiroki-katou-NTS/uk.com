@@ -11,7 +11,7 @@
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
   			</com:ValidatorScript>
-  			<script>var dialogSize = { width: 285, height: 420 };</script>
+  			<script>var dialogSize = { width: 310, height: 430 };</script>
 			<com:stylefile path="ccg008.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg008.c.start.js" />
@@ -20,7 +20,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div>
+			<div id="contents-area">
 				<div style="margin: 20px 0px 0px 25px">
 					<label>#{i18n.getText('CCG008_7')}</label>
 				</div>
@@ -36,6 +36,7 @@
 									value: selectedCode}">
 					</table>
 				</div>		
+				</div>
 				<div id="functions-area-bottom">
 					<div id="process">
 					<!-- C1_005 -->
@@ -46,7 +47,7 @@
 							tabindex="4">#{i18n.getText('CCG008_10')}</button>
 					</div>
 				</div>					
-			</div>
+			
 		</ui:define>
 	</ui:composition>
 </body>

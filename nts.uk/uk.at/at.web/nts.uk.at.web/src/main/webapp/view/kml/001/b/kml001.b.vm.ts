@@ -31,10 +31,8 @@ module nts.uk.at.view.kml001.b {
                             self.premiumItemList.push(
                                 new vmbase.PremiumItem(
                                     item.companyID,
-                                    item.id,
-                                    item.attendanceID,
-                                    item.name,
                                     item.displayNumber,
+                                    item.name,
                                     item.useAtr,
                                     false
                                 ));

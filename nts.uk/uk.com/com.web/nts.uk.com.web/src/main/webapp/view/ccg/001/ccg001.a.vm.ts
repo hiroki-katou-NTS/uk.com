@@ -75,9 +75,12 @@ module nts.uk.com.view.ccg001.a {
                 });
             }
 
-            
+            /**
+             * apply view
+             */
             public applyView(): void {
                 var self = this;
+                self.baseDate(new Date());
                 self.ccgcomponent = {
                     baseDate: self.baseDate,
                     isQuickSearchTab: self.isQuickSearchTab(),

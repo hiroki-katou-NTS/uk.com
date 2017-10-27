@@ -85,33 +85,76 @@ module nts.uk.ui {
                 };
 
                 this.build$dialog(options);
-
+                
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
-                    
-                    options.title = '※ダイアログタイトルは基盤で自動化予定';
 
+                    let dialogName = this.globalContext.__viewContext["program"]["programName"];
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "未設定" : dialogName;
+//                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
+                
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
-                        title: options.title || "dialog",
+                        title: title,
                         resizable: options.resizable,
                         position: {
                             my: "center",
                             at: "center",
-                            of: "body",
+                            of: window,
                             collision: "none"
+                        },
+                        open: function() {
+                            if ($(this).parent().height() >= $(window).height()) {
+                                $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" })
+                                $(this).parent().css("position", "absolute");
+                            }
+
+                            var $dialogDocument = $(this).parent();
+                            let $dialogContentDoc = $(this.lastElementChild.contentDocument);
+
+                            // catch press tab key in close button of dialog.
+                            $dialogDocument.on("keydown", ":tabbable", function(evt) {
+                                var code = evt.which || evt.keyCode;
+                                if (code.toString() === "9") {
+                                    var focusableElements = $dialogContentDoc.find(":tabbable");
+                                    if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
+                                        focusableElements.first().focus();
+                                        evt.preventDefault();
+                                    } else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
+                                        focusableElements.last().focus();
+                                        evt.preventDefault();
+                                    }
+                                }
+                            });
+                            // catch press tab key for component in dialog.
+                            $dialogContentDoc.on("keydown", ":tabbable", function(evt) {
+                                var code = evt.which || evt.keyCode;
+                                if (code.toString() === "9") {
+                                    var focusableElements = $dialogContentDoc.find(":tabbable");
+                                    if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                        focusableElements.first().focus();
+                                        evt.preventDefault();
+                                    } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                        focusableElements.last().focus();
+                                        evt.preventDefault();
+                                    }
+                                }
+                            });
                         },
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
                     }).dialog('open');
-                     
-//                    var widget= this.$dialog.dialog("widget");
-//                    widget.draggable("option","containment",false);
+                    //remove focus on tab key press on the close button on jquery dialog
+                    $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
+                    if (this.parent !== null)
+                        this.parent.globalContext.nts.uk.ui.block.clear();
+                    //                    var widget= this.$dialog.dialog("widget");
+                    //                    widget.draggable("option","containment",false);
                 });
 
-                this.globalContext.location.href = request.resolvePath(path);
+                this.globalContext.location.href = path;
             }
 
             build$dialog(options: any) {
@@ -126,8 +169,7 @@ module nts.uk.ui {
                 this.$iframe = $('<iframe/>').css({
                     width: '100%',
                     height: '100%'
-                })
-                    .appendTo(this.$dialog);
+                }).appendTo(this.$dialog);
 
                 this.setGlobal((<any>this.$iframe[0]).contentWindow);
             }
@@ -244,20 +286,42 @@ module nts.uk.ui {
         }
 
         export module sub {
-
-            export function modal(path: string, options?: any) {
+            export function modal(path: string, options?: any);
+            export function modal(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
+                if (typeof arguments[1] !== 'string') {
+                    return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                if(webAppId==nts.uk.request.location.currentAppId){
+                    path = nts.uk.request.resolvePath(path);
+                }else{
+                    path = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
+                }
+                
                 options = options || {};
                 options.modal = true;
                 return open(path, options);
             }
-
-            export function modeless(path: string, options?: any) {
+            export function modeless(path: string, options?: any)
+            export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
+                 if (typeof arguments[1] !== 'string') {
+                    return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                if(webAppId==nts.uk.request.location.currentAppId){
+                    path = nts.uk.request.resolvePath(path);
+                }else{
+                    path = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
+                }
                 options = options || {};
                 options.modal = false;
                 return open(path, options);
             }
 
             export function open(path: string, options?: any) {
+                nts.uk.ui.block.invisible();
                 return windows.container.createDialog(path, options, selfId);
             }
         }
@@ -272,13 +336,23 @@ module nts.uk.ui {
      * Using for display info or confirm dialog
      */
     export module dialog {
-        export class DialogHeader {
+        interface DialogHeader {
             icon?: string;
             text?: string;
         }
-        export class Message {
+        interface Message {
             d: string;
             messageParams?: any[];
+        }
+        export function getMaxZIndex() {
+            let overlayElements = parent.$(".ui-widget-overlay");
+            var max = 12000;
+            if (overlayElements.length > 0) {
+                let zIndexs = _.map(overlayElements, function(element) { return parseInt($(element).css("z-index")); });
+                var temp = _.max(zIndexs);
+                max = temp > max ? temp : max;
+            }
+            return max;
         }
         function createNoticeDialog(message, buttons, header?: DialogHeader) {
             var $control = $('<div/>').addClass('control');
@@ -300,7 +374,7 @@ module nts.uk.ui {
             }
             text = text.replace(/\n/g, '<br />');
 
-            var $this = $('<div/>').addClass('notice-dialog')
+            var $this = window.parent.$('<div/>').addClass('notice-dialog')
                 .append($('<div/>').addClass('text').append(text))
                 .append($control)
                 .appendTo('body')
@@ -314,8 +388,8 @@ module nts.uk.ui {
                     closeOnEscape: false,
                     buttons: buttons,
                     open: function() {
-                        $(this).closest('.ui-dialog').css('z-index', 120001);
-                        $('.ui-widget-overlay').last().css('z-index', 120000);
+                        $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
+                        $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
                         $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                         $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
 
@@ -328,8 +402,8 @@ module nts.uk.ui {
                         }
                     },
                     close: function(event) {
-                        $(this).dialog('destroy');
-                        $(event.target).remove();
+                        window.parent.$(this).dialog('destroy');
+                        window.parent.$(event.target).remove();
                     }
                 });
             //add header text if it has
@@ -348,7 +422,7 @@ module nts.uk.ui {
 		 */
         export function info(text) {
             var then = $.noop;
-            var $dialog = $('<div/>').hide();
+            var $dialog = window.parent.$('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
@@ -376,7 +450,7 @@ module nts.uk.ui {
         };
         export function alertError(message) {
             var then = $.noop;
-            var $dialog = $('<div/>').hide();
+            var $dialog = window.parent.$('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
@@ -411,7 +485,7 @@ module nts.uk.ui {
 		 */
         export function alert(text) {
             var then = $.noop;
-            var $dialog = $('<div/>').hide();
+            var $dialog = parent.$('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
@@ -518,203 +592,53 @@ module nts.uk.ui {
 
             return handlers;
         };
-    }
-
-    export module contextmenu {
-
-        export class ContextMenu {
-            guid: string;
-            selector: string;
-            items: Array<ContextMenuItem>;
-            enable: boolean;
-            private target: Element;
-
-            /**
-             * Create an instance of ContextMenu. Auto call init() method
-             * 
-             * @constructor
-             * @param {selector} Jquery selector for elements need to show ContextMenu
-             * @param {items} List ContextMenuItem for ContextMenu
-             * @param {enable} (Optinal) Set enable/disable for ContextMenu
-             */
-            constructor(selector: string, items: Array<ContextMenuItem>, enable?: boolean) {
-                this.selector = selector;
-                this.items = items;
-                this.enable = (enable !== undefined) ? enable : true;
-                this.init();
-            }
-
-            /**
-             * Create ContextMenu and bind event in DOM
-             */
-            init() {
-                var self = this;
-                // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
-                $('body .ntsContextMenu').each(function() {
-                    if ($(this).data("selector") === self.selector) {
-                        $("body").off("contextmenu", self.selector);
-                        $(this).remove();
-                    }
-                });
-
-                // Initial
-                self.guid = nts.uk.util.randomId();
-                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
-                self.createMenuItems($contextMenu);
-                $('body').append($contextMenu);
-
-                // Binding contextmenu event
-                $("html").on("contextmenu", self.selector, function(event) {
-                    if (self.enable === true) {
-                        event.preventDefault();
-                        self.target = event.target;
-                        $contextMenu.show().position({
-                            my: "left+2 top+2",
-                            of: event,
-                            collision: "fit"
-                        });
-                    }
-                });
-
-                // Hiding when click outside
-                $("html").on("mousedown", function(event) {
-                    if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
-                        $contextMenu.hide();
-                    }
-                });
-            }
-
-            /**
-             * Remove and unbind ContextMenu event
-             */
-            destroy() {
-                // Unbind contextmenu event
-                $("html").off("contextmenu", this.selector);
-                $("#" + this.guid).remove();
-            }
-
-            /**
-             * Re-create ContextMenu. Useful when you change various things in ContextMenu.items
-             */
-            refresh() {
-                this.destroy();
-                this.init();
-            }
-
-            /**
-             * Get a ContextMenuItem instance
-             * 
-             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-             * @return {any} Return ContextMenuItem if found or undefiend
-             */
-            getItem(target: any) {
-                if (typeof target === "number") {
-                    return this.items[target];
-                }
-                else if (typeof target === "string") {
-                    return _.find(this.items, ["key", target]);
-                }
-                else {
-                    return undefined;
-                }
-            }
-
-            /**
-             * Add an ContextMenuItem instance to ContextMenu
-             * 
-             * @param {item} An ContextMenuItem instance
-             */
-            addItem(item: ContextMenuItem) {
-                this.items.push(item);
-                this.refresh();
-            }
-
-            /**
-             * Remove item with given "key" or index
-             * 
-             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-             */
-            removeItem(target: any) {
-                var item = this.getItem(target);
-                if (item !== undefined) {
-                    _.remove(this.items, item);
-                    this.refresh();
-                }
-            }
-
-            /**
-             * Enable/Disable ContextMenu. If disable right-click will have default behavior
-             * 
-             * @param {enable} A boolean value set enable/disable
-             */
-            setEnable(enable: boolean) {
-                this.enable = enable;
-            }
-
-            /**
-             * Enable/Disable item with given "key" or index
-             * 
-             * @param {enable} A boolean value set enable/disable
-             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-             */
-            setEnableItem(enable: boolean, target: any) {
-                var item = this.getItem(target);
-                item.enable = enable;
-                this.refresh();
-            }
-
-            /**
-             * Show/Hide item with given "key" or index
-             * 
-             * @param {enable} A boolean value set visible/hidden
-             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
-             */
-            setVisibleItem(visible: boolean, target: any) {
-                var item = this.getItem(target);
-                item.visible = visible;
-                this.refresh();
-            }
-
-            private createMenuItems(container: JQuery) {
-                var self = this;
-                _.forEach(self.items, function(item) {
-                    if (item.key !== "divider") {
-                        let menuClasses = "menu-item ";
-                        menuClasses += (item.enable === true) ? "" : "disabled ";
-                        menuClasses += (item.visible === true) ? "" : "hidden ";
-                        let menuItem = $("<li class='" + menuClasses + "'><span class='menu-icon " + item.icon + "'></span>" + item.text + "</li>")
-                            .data("key", item.key)
-                            .on("click", function() {
-                                if (!$(this).hasClass("disabled")) {
-                                    item.handler(self.target);
-                                    container.hide();
-                                }
-                            }).appendTo(container);
-                    }
-                    else {
-                        let menuItem = $("<li class='menu-item divider'></li>").appendTo(container);
-                    }
-                });
-            }
+        
+        function addError(errorBody: JQuery, msg: string, id: string, idx: number){
+            let row = $("<tr/>");
+            row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");   
+            row.appendTo(errorBody);  
         }
-
-        export class ContextMenuItem {
-            key: string;
-            text: string;
-            handler: (ui: any) => void;
-            icon: string;
-            visible: boolean;
-            enable: boolean;
-
-            constructor(key: string, text?: string, handler?: (ui: any) => void, icon?: string, visible?: boolean, enable?: boolean) {
-                this.key = key;
-                this.text = text;
-                this.handler = (handler !== undefined) ? handler : $.noop;
-                this.icon = (icon) ? icon : "";
-                this.visible = (visible !== undefined) ? visible : true;
-                this.enable = (enable !== undefined) ? enable : true;
-            }
-        }
+        
+        export function bundledErrors(errors) {
+            let id = util.randomId();
+            $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
+            let container = $("body").find("#" + id);
+            container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
+                    "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+            let errorBody = container.find("tbody");
+            let idxCount = 0;
+            _.forEach(errors["messageId"], function(id, idx: number){ 
+                if ($.isArray(errors.messages[id])) {
+                   _.forEach(errors.messages[id], function (m) {
+                        addError(errorBody, m , id, idx + idxCount + 1); 
+                        idxCount++;
+                   }); 
+                } else {
+                    addError(errorBody, errors.messages[id], id, idx + idxCount + 1); 
+                }  
+            });
+            let functionArea = container.find("#functions-area-bottom");
+            functionArea.append("<button class='ntsButton ntsClose large'/>");
+            container.dialog({
+                    title: "エラー一覧",   
+                    dialogClass: "no-close-btn",
+                    modal: true,
+                    resizable: false,
+                    width: 450,
+                    maxHeight: 500,
+                    closeOnEscape: false,
+                    open: function() {
+                        container.find("#error-board").css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
+                        container.find("#functions-area-bottom").css({"left": "0px"});
+                        functionArea.find(".ntsClose").text("閉じる").click(function(evt){
+                            container.dialog("destroy");  
+                            container.remove();
+                        });   
+                    },
+                    close: function(event) {
+                    }
+                });
+        };
     }
 
     export var confirmSave: (dirtyChecker: DirtyChecker) => any;
@@ -771,16 +695,16 @@ module nts.uk.ui {
     export function confirmSaveDisable() {
         $(window).unbind('beforeunload');
     };
-    
+
     /**
      * Block UI Module
      * Using for blocking UI when action in progress
      */
     export module block {
-        
+
         export function invisible() {
             let rect = calcRect();
-            
+
             (<any>$).blockUI({
                 message: null,
                 overlayCSS: { opacity: 0 },
@@ -790,10 +714,10 @@ module nts.uk.ui {
                 }
             });
         }
-        
+
         export function grayout() {
             let rect = calcRect();
-            
+
             (<any>$).blockUI({
                 message: '<div class="block-ui-message">お待ちください</div>',
                 fadeIn: 200,
@@ -803,13 +727,13 @@ module nts.uk.ui {
                 }
             });
         }
-        
+
         export function clear() {
             (<any>$).unblockUI({
                 fadeOut: 200
             });
         }
-        
+
         function calcRect() {
             let width = 220;
             let left = ($(window).width() - width) / 2;
@@ -901,13 +825,13 @@ module nts.uk.ui {
             }
         }
     }
-    
+
     module smallExtensions {
-        
+
         $(() => {
             $('.limited-label').on('mouseenter', e => {
                 let $label = $(e.target);
-                
+
                 // Check if contents is overflow
                 if ($label.outerWidth() < $label[0].scrollWidth) {
                     let $view = $('<div />').addClass('limited-label-view')
@@ -919,7 +843,7 @@ module nts.uk.ui {
                             of: $label,
                             collision: 'flip'
                         });
-                    
+
                     $label.bind('mouseleave.limitedlabel', () => {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();

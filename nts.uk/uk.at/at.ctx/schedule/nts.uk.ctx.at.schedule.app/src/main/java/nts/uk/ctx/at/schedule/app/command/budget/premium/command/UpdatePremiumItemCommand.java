@@ -10,13 +10,9 @@ import lombok.Value;
 public class UpdatePremiumItemCommand {
 	private String companyID;
 	
-	private Integer iD;
-	
-	private Integer attendanceID;
+	private Integer displayNumber;
 	
 	private String name;
-
-	private Integer displayNumber;
 
 	private int useAtr;
 	

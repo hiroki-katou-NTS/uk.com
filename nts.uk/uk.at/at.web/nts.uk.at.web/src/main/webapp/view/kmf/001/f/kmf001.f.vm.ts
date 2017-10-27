@@ -65,6 +65,8 @@ module nts.uk.pr.view.kmf001.f {
             //for list employment
             alreadySettingList: KnockoutObservableArray<any>;
             listComponentOption: KnockoutObservable<any>;
+            
+            firstLoad: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(0);
@@ -173,6 +175,7 @@ module nts.uk.pr.view.kmf001.f {
                     isDialog: false,
                     alreadySettingList: this.alreadySettingList
                 };
+                self.firstLoad = ko.observable(true);
             }
 
             public startPage(): JQueryPromise<any> {
@@ -335,7 +338,10 @@ module nts.uk.pr.view.kmf001.f {
                         self.loadEmploymentToScreen(self.employmentDefaultData());
                         self.employmentBackUpData(self.employmentDefaultData());
                     }
-                    $('#emCompenManage').focus();
+                    if(self.firstLoad()){
+                        $('#emCompenManage').focus();
+                        self.firstLoad(false);
+                    }
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

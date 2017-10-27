@@ -8,10 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemSettingAddCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemSettingAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemSettingUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemSettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingUpdateCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemSettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemSettingFinder;
 

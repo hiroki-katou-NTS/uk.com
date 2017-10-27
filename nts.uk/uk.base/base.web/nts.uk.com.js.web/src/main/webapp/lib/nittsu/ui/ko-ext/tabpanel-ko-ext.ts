@@ -3,18 +3,18 @@
 module nts.uk.ui.koExtentions {
     
     /**
-     * TabPanel Binding Handler
-     */
+	 * TabPanel Binding Handler
+	 */
     class TabPanelBindingHandler implements KnockoutBindingHandler {
         /**
-         * Constructor.
-         */
+		 * Constructor.
+		 */
         constructor() {
         }
 
         /**
-         * Init.
-         */
+		 * Init.
+		 */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
@@ -37,8 +37,14 @@ module nts.uk.ui.koExtentions {
                 container.children(content).wrap('<div id="' + id + '"></div>')
             }
             container.tabs({
-                activate: function(evt: Event, ui: any) {
+            	create: function(event: Event, ui: any) {
+            		container.find('.ui-tabs-panel').addClass('disappear');
+            		ui.panel.removeClass('disappear');
+            	},
+            	activate: function(evt: Event, ui: any) {
                     data.active(ui.newPanel[0].id);
+            		container.find('.ui-tabs-panel').addClass('disappear');
+                    ui.newPanel.removeClass('disappear');
                     container.children('ul').children('.ui-tabs-active').addClass('active');
                     container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                     container.children('ul').children('.ui-state-disabled').addClass('disabled');
@@ -48,8 +54,8 @@ module nts.uk.ui.koExtentions {
         }
 
         /**
-         * Update
-         */
+		 * Update
+		 */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
@@ -60,7 +66,10 @@ module nts.uk.ui.koExtentions {
             // Select tab.
             var activeTab = tabs.filter(tab => { return tab.id == data.active(); })[0];
             var indexActive = tabs.indexOf(activeTab);
-            container.tabs("option", "active", indexActive);
+            let oldIndexActive = container.tabs("option", "active");
+            if(oldIndexActive !== indexActive){
+                container.tabs("option", "active", indexActive);
+            }
 
             // Disable & visible tab.
             tabs.forEach(tab => {
@@ -79,6 +88,8 @@ module nts.uk.ui.koExtentions {
                     container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                 }
             });
+            
+            _.defer(() => { container.children('ul').children('li').attr("tabindex", "-1"); });
         }
     }
     

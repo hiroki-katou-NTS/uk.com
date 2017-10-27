@@ -54,7 +54,7 @@ module cmm044.a.viewmodel {
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-
+        baseDate: KnockoutObservable<Date>;
         isShow: KnockoutObservable<boolean>;
 
         constructor() {
@@ -69,6 +69,7 @@ module cmm044.a.viewmodel {
             ]);
 
             self.dateValue = ko.observable({});
+            self.baseDate = ko.observable(new Date());
 
             self.displayEmployeeInfo1 = ko.observable(true);
             self.displayEmployeeInfo2 = ko.observable(true);
@@ -108,7 +109,6 @@ module cmm044.a.viewmodel {
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
 
-
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(newValue) {
@@ -126,33 +126,46 @@ module cmm044.a.viewmodel {
             self.histSelectedItem = ko.observable("");
             self.histSelectedItem.subscribe(function(requestId) {
                 if (requestId) {
-                    self.getAgen(self.empSelectedItem().personId, requestId);
-                    $("#daterangepicker").find(".ntsStartDatePicker").blur();
-                    nts.uk.ui.errors.clearAll();
-                    self.isEnableDelete(true);
-                    self.isEnableAdd(true);
+                    $.when(self.getAgen(self.empSelectedItem().personId, requestId)).done(function() {
+                        $("#daterangepicker").find(".ntsStartDatePicker").blur();
+                        nts.uk.ui.errors.clearAll();
+                        self.isEnableDelete(true);
+                        self.isEnableAdd(true);
+                        var currentName1 = _.find(self.empItems(), ['personId', self.currentItem().agentSid1()]);
+                        if (currentName1) {
+                            self.employeeNameScreen1(currentName1.name);
+                        }
+                        var currentName2 = _.find(self.empItems(), ['personId', self.currentItem().agentSid2()]);
+                        if (currentName2) {
+                            self.employeeNameScreen2(currentName2.name);
+                        }
+                        var currentName3 = _.find(self.empItems(), ['personId', self.currentItem().agentSid3()]);
+                        if (currentName3) {
+                            self.employeeNameScreen3(currentName3.name);
+                        }
+                        var currentName4 = _.find(self.empItems(), ['personId', self.currentItem().agentSid4()]);
+                        if (currentName4) {
+                            self.employeeNameScreen4(currentName4.name);
+                        }
+                    });
                 }
-
-
             });
-            
+
             self.selectedTab.subscribe(function(newValue) {
-            var currentName1 = _.find(self.empItems(), ['personId', self.currentItem().agentSid1()]);
-            var currentName2 = _.find(self.empItems(), ['personId', self.currentItem().agentSid2()]);
-            var currentName3 = _.find(self.empItems(), ['personId', self.currentItem().agentSid3()]);
-            var currentName4 = _.find(self.empItems(), ['personId', self.currentItem().agentSid4()]);
-            if (newValue == 'tab-1' && currentName1) {
-                self.employeeNameScreen1(currentName1.name);
-            } else if (newValue == ('tab-2') && currentName2) {
-                self.employeeNameScreen2(currentName2.name);
-            } else if (newValue == ('tab-3') && currentName3) {
-                self.employeeNameScreen3(currentName3.name);
-            } else if (newValue == ('tab-3') && currentName3) {
-                self.employeeNameScreen4(currentName4.name);
-            }
-
-
-        });
+                var currentName1 = _.find(self.empItems(), ['personId', self.currentItem().agentSid1()]);
+                var currentName2 = _.find(self.empItems(), ['personId', self.currentItem().agentSid2()]);
+                var currentName3 = _.find(self.empItems(), ['personId', self.currentItem().agentSid3()]);
+                var currentName4 = _.find(self.empItems(), ['personId', self.currentItem().agentSid4()]);
+                if (newValue == 'tab-1' && currentName1) {
+                    self.employeeNameScreen1(currentName1.name);
+                } else if (newValue == ('tab-2') && currentName2) {
+                    self.employeeNameScreen2(currentName2.name);
+                } else if (newValue == ('tab-3') && currentName3) {
+                    self.employeeNameScreen3(currentName3.name);
+                } else if (newValue == ('tab-3') && currentName3) {
+                    self.employeeNameScreen4(currentName4.name);
+                }
+            });
 
             self.itemList = ko.observableArray([
                 new BoxModel(0, nts.uk.resource.getText("CMM044_16")),
@@ -179,15 +192,25 @@ module cmm044.a.viewmodel {
             var dfd = $.Deferred();
             self.currentItem(new model.AgentAppDto(null, "", "", "", "", null, "", null, "", null, "", null));
             self.initCCG001();
+
             if (self.empItems().length == 0) {
                 self.isEnableDelete(false);
                 self.isEnableAdd(false);
+                service.searchEmployeeByLogin(self.baseDate()).done(data => {
+                    if (data.length > 0) {
+                        self.searchEmployee(data);
+                    }
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });
             }
+            _.defer(() => {
+                $("#daterangepicker").find(".ntsStartDatePicker").focus();
+            });
             dfd.resolve();
             return dfd.promise();
 
         }
-
 
         /**
          * find agen by employee
@@ -279,6 +302,10 @@ module cmm044.a.viewmodel {
          */
         addAgent() {
             var self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
             nts.uk.ui.block.invisible();
             self.currentItem().agentAppType1(self.agentAppType1());
             self.currentItem().agentAppType2(self.agentAppType2());
@@ -302,8 +329,8 @@ module cmm044.a.viewmodel {
                     $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
-                }).always(function(){
-                    nts.uk.ui.block.clear();    
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 })
             } else {
                 service.addAgent(agent).done(function(res) {
@@ -315,11 +342,11 @@ module cmm044.a.viewmodel {
                         $("#daterangepicker").find(".ntsStartDatePicker").focus();
 
                     }
-                   
+
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
-                }).always(function(){
-                    nts.uk.ui.block.clear();    
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 })
             }
         }
@@ -355,36 +382,41 @@ module cmm044.a.viewmodel {
             });
         }
 
-        initAgent() {
+        initAgent(): void {
             let self = this;
-            self.dateValue = ko.observable({});
-            self.displayEmployeeInfo1(true);
-            self.displayEmployeeInfo2(true);
-            self.displayEmployeeInfo3(true);
-            self.displayEmployeeInfo4(true);
-            self.isEnableDelete(false);
-            self.isEnableAdd(true);
-            nts.uk.ui.errors.clearAll();
-            self.agentAppType1(0);
-            self.agentAppType2(0);
-            self.agentAppType3(0);
-            self.agentAppType4(0);
-            self.employeeNameScreen1("");
-            self.employeeNameScreen2("");
-            self.employeeNameScreen3("");
-            self.employeeNameScreen4("");
-            
-            self.selectedTab('tab-1');
-            self.histSelectedItem("");
-            self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
-            $("#daterangepicker").find(".ntsStartDatePicker").focus();
+            if (!nts.uk.util.isNullOrUndefined(self.empSelectedItem())) {
+                self.dateValue = ko.observable({});
+                self.displayEmployeeInfo1(true);
+                self.displayEmployeeInfo2(true);
+                self.displayEmployeeInfo3(true);
+                self.displayEmployeeInfo4(true);
+                self.isEnableDelete(false);
+                self.isEnableAdd(true);
+                nts.uk.ui.errors.clearAll();
+                self.agentAppType1(0);
+                self.agentAppType2(0);
+                self.agentAppType3(0);
+                self.agentAppType4(0);
+                self.employeeNameScreen1("");
+                self.employeeNameScreen2("");
+                self.employeeNameScreen3("");
+                self.employeeNameScreen4("");
+
+                self.selectedTab('tab-1');
+                self.histSelectedItem("");
+                self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
+                _.defer(() => {
+                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                });
+            }
         }
+
         openDDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
-            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
-            nts.uk.ui.block.clear();
+            nts.uk.ui.windows.setShared('CMM044_TABS', self.tabs());
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
             });
 
         }
@@ -444,7 +476,6 @@ module cmm044.a.viewmodel {
                 */
                 onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                     self.searchEmployee(dataList);
-
                 },
                 onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                     self.showinfoSelectedEmployee(true);
@@ -462,9 +493,7 @@ module cmm044.a.viewmodel {
                     self.searchEmployee(dataEmployee);
                 }
             }
-
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-
         }
 
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {

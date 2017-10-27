@@ -1,6 +1,29 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui.errors {
+    
+    export interface ErrorListItem {
+        errorCode: string;
+        /** OBSOLATE! using messageText instead */
+        messageText?: string;
+        message?: any;
+        location?: string;
+        tab?: string;
+        $control?: JQuery;
+    }
+    
+    export interface ErrorMessage {
+        message: string;
+        messageId?: string;
+        parameterIds?: string[];
+    }
+    
+    export interface GridCellError {
+        grid: JQuery;
+        rowId: any;
+        columnKey: string;
+        message: string;
+    }
 
     export class ErrorsViewModel {
         title: string;
@@ -23,6 +46,8 @@ module nts.uk.ui.errors {
             this.allResolved = $.Callbacks();
             this.allCellsResolved = $.Callbacks();
 
+             this.option.show.extend({notify:"always"});
+            
             this.errors.subscribe(() => {
                 if (this.errors().length === 0) {
                     this.allResolved.fire();
@@ -44,8 +69,9 @@ module nts.uk.ui.errors {
                 this.hide();
             });
         }
-
+        
         closeButtonClicked() {
+             this.option.show(false);
         }
 
         open() {
@@ -64,7 +90,7 @@ module nts.uk.ui.errors {
                 if (typeof error.message === "string") {
                     error.messageText = error.message;
                 } else {
-                    //business exception
+                    // Business Exception
                     if (error.message.message) {
                         error.messageText = error.message.message;
                         error.errorCode = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
@@ -141,22 +167,6 @@ module nts.uk.ui.errors {
         }
     }
 
-    export interface ErrorListItem {
-        tab?: string;
-        location: string;
-        messageText: string;
-        message: any;
-        errorCode: string;
-        $control?: JQuery;
-    }
-    
-    export interface GridCellError {
-        grid: JQuery;
-        rowId: any;
-        columnKey: string;
-        message: string;
-    }
-
     export class ErrorHeader {
         name: string;
         text: string;
@@ -195,7 +205,8 @@ module nts.uk.ui.errors {
     }
 
     export function clearAll(): void {
-        errorsViewModel().clearError();
+        if (nts.uk.ui._viewModel !== undefined)
+            errorsViewModel().clearError();
     }
 
     export function removeByElement($control: JQuery): void {

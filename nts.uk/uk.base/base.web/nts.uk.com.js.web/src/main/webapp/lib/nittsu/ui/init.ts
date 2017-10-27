@@ -50,12 +50,27 @@ module nts.uk.ui {
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
+            
+            //avoid page content overlap header and function area
+            var content_height=20;
+            if ($("#header").length != 0) {
+                content_height += 50 ;//header height+ content area botton padding,top padding
+            }
+            if ($("#functions-area").length != 0) {
+                content_height += 49;//top function area height
+            }
+            if ($("#functions-area-bottom").length != 0) {
+                content_height += 74;//bottom function area height
+            }
+            $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+            //            if($("#functions-area-bottom").length!=0){
+            //            }
         }
         
         $(function () {
             documentReady.fire();
             
-            __viewContext.transferred = uk.sessionStorage.getItemAndRemove(uk.request.STORAGE_KEY_TRANSFER_DATA)
+            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
                 .map(v => JSON.parse(v));
             
             _.defer(() => _start.call(__viewContext));

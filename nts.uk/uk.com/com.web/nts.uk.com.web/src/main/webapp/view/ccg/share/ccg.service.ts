@@ -5,13 +5,13 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchAllEmployee: "basic/organization/employee/search/allemployee",
-            searchEmployeeByLogin: "basic/organization/employee/search/onlyemployee",
-            searchModeEmployee: "basic/organization/employee/search/advanced",
-            searchOfWorkplace: "basic/organization/employee/search/ofworkplace",
-            searchWorkplaceChild: "basic/organization/employee/search/workplacechild",
-            searchWorkplaceOfEmployee: "basic/organization/employee/search/workplaceemp",
-            getOfSelectedEmployee: "basic/organization/employee/search/getoffselect",
+            searchAllEmployee: "basic/organization/employee/allemployee",
+            searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
+            searchModeEmployee: "basic/organization/employee/advanced",
+            searchOfWorkplace: "basic/organization/employee/ofworkplace",
+            searchWorkplaceChild: "basic/organization/employee/workplacechild",
+            searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
+            getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             
         }
 
@@ -22,29 +22,48 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
         }
 
-        // get person by login employee code
+        /**
+         * call service get employee by login
+         */
+        
         export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
         }
 
+        /**
+         *search employee of work place 
+         */
+         
         export function searchOfWorkplace(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchOfWorkplace, baseDate);
         }
+        /**
+         * search employee of work place child
+         */
         export function searchWorkplaceChild(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceChild, baseDate);
         }
 
+        /**
+         * search data mode employee
+         */
         export function searchModeEmployee(input: model.EmployeeSearchInDto)
             : JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
 
+        /**
+         * search data of employee
+         */
         export function searchWorkplaceOfEmployee(baseDate: Date): JQueryPromise<string[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
         }
         
-        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]){
-              return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, {baseDate: baseDate, employeeIds: employeeIds});  
+        /**
+         * search data of employee
+         */
+        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]): JQueryPromise<model.EmployeeSearchDto[]> {
+            return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, { baseDate: baseDate, employeeIds: employeeIds });
         }
         
         

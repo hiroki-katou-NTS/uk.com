@@ -11,5 +11,7 @@ public interface PremiumItemRepository {
 	public void update(PremiumItem premiumItem);
 	
 	public List<PremiumItem> findByCompanyID(String companyID);
+	
+	public List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers);
 
 }

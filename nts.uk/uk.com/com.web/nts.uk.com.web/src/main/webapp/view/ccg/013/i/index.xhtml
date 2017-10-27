@@ -13,6 +13,7 @@
 		</com:ValidatorScript>
 		<com:stylefile path="ccg013.i.style.css" />
 		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="/view/ccg/013/base/base.js" of="/nts.uk.com.web" />
 		<com:scriptfile path="ccg013.i.start.js" />
 		<com:scriptfile path="ccg013.i.service.js" />
 		<com:scriptfile path="ccg013.i.vm.js" />
@@ -36,17 +37,17 @@
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_87')}</div></td>
-							<td><input data-bind="ntsTextEditor: {value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption}, hasfocus: true" /></td>
+							<td><input id="menu-bar-name" data-bind="ntsTextEditor: {name:'#[CCG013_87]', value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption}, hasfocus: true" /></td>
 						</tr>
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_88')}</div></td>
-							<td><div id="textColorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 60, required: true}"/></td>
+							<td><div id="textColorpicker" data-bind="ntsColorPicker: {name:'#[CCG013_88]', value: textColor, enable: true, width: 60, required: true}"/></td>
 						</tr>
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_89')}</div></td>
-							<td><div id="bgColorpicker" data-bind="ntsColorPicker: {value: bgColor, enable: true, width: 60, required: true}"/></td>
+							<td><div id="bgColorpicker" data-bind="ntsColorPicker: {name:'#[CCG013_89]', value: bgColor, enable: true, width: 60, required: true}"/></td>
 						</tr>
 					</table>
 				</div>

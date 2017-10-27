@@ -51,7 +51,7 @@ public class TopPageSelfSettingFinder {
 	 */
 	public TopPageSelfSettingDto getTopPageSelfSet(){
 		//lay employeeId
-		String employeeId = AppContexts.user().employeeCode();
+		String employeeId = AppContexts.user().employeeId();
 		Optional<TopPageSelfSettingDto> lst = this.repository.getTopPageSelfSet(employeeId)
 				.map(c->TopPageSelfSettingDto.fromDomain(c));
 		if(!lst.isPresent()){

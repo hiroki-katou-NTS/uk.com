@@ -1,6 +1,8 @@
 /// <reference path="reference.ts"/>
 
-﻿module nts.uk.time {
+module nts.uk.time {
+    
+    const MINUTES_IN_DAY = 24 * 60;
 
     var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
     var listEmpire: { [year: string]: string } = {
@@ -157,10 +159,10 @@
     }
 
 	/**
-	* 日付をフォーマットする
-	* @param  {Date}   date	 日付
-	* @param  {String} [format] フォーマット
-	* @return {String}		  フォーマット済み日付
+	* Format date
+	* @param  {Date}   date	 date
+	* @param  {String} [format] format
+	* @return {String}		  formatted date
 	*/
     export function formatDate(date: Date, format: any) {
         if (!format)
@@ -203,6 +205,17 @@
         return result;
     }
 
+    /**
+    * Format MonthDay
+    * @param  {any} [monthDay]  Input MonthDay
+    * @return {string}          Formatted MonthDay
+    */
+    export function formatMonthDayLocalized(monthDay: any) {
+        monthDay = String(monthDay);
+        monthDay = text.padLeft(monthDay, '0', 4);
+        return moment.utc(monthDay, "MMDD").format("MMMDo");
+    }
+    
 	/**
 	* Format by pattern
 	* @param  {Date}   [date]		 Input date
@@ -237,7 +250,7 @@
             this.minus = minus;
             this.hours = hours;
             this.minutes = minutes;
-            this.msg = msg || nts.uk.resource.getMessage("FND_E_DATE_YMD");
+            this.msg = msg || "FND_E_TIME";
         }
 
         static succeeded(minus, hours, minutes) {
@@ -495,8 +508,12 @@
 
     export class MomentResult extends ParseResult {
         momentObject: moment.Moment;
+        min: moment.Moment = moment.utc("1900/01/01", "YYYY/MM/DD", true);
+        max: moment.Moment = moment.utc("9999/12/31", "YYYY/MM/DD", true);
         outputFormat: string;
         msg: string;
+        msgID: string;
+        params: Array<string>;
         constructor(momentObject: moment.Moment, outputFormat?: string) {
             super(true);
             this.momentObject = momentObject;
@@ -512,6 +529,12 @@
             this.success = false;
         }
 
+        failedWithMessegeId(msgID?: string, params?: Array<string>) {
+            this.msgID = msgID;
+            this.params = params;
+            this.success = false;
+        }
+
         format() {
             if (!this.success)
                 return "";
@@ -522,6 +545,14 @@
             if (!this.success)
                 return null;
             return this.momentObject;
+        }
+
+        systemMin() {
+            return this.min;
+        }
+
+        systemMax() {
+            return this.max;
         }
 
         toNumber(outputFormat?: string) {
@@ -536,42 +567,68 @@
                 return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
             }
             else if (outputFormat === "time") {
-                return this.momentObject.hours()*60 + this.momentObject.minutes();
+                return this.momentObject.hours() * 60 + this.momentObject.minutes();
             } else {
                 return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
             }
         }
 
         getMsg() { return this.msg; }
+
+        getEmsg(name?: string) {
+            if (this.msgID === undefined) {
+                return this.msg;
+            } else {
+                if (name !== undefined) {
+                    this.params.unshift(name);
+                }
+                return nts.uk.resource.getMessage(this.msgID, this.params);
+            }
+        }
+
+        getMsgID() { return this.msgID === undefined ? "" : this.msgID; }
     }
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
         var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
-        var momentObject = moment.utc(datetime, inputFormats, true);  
+        var momentObject = moment.utc(datetime, inputFormats, true);
         var result = new MomentResult(momentObject, outputFormat);
-        if (momentObject.isValid())
-            result.succeeded();
-        else
+        if (momentObject.isValid()) {
+            if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
+                let parsedFormat = momentObject.creationData().format;
+                if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
+                    result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
+                } else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
+                    result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+                } else {
+                    result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+                }
+            } else {
+                result.succeeded();
+            }
+        } else {
             result.failed();
-        return result;
-    } 
-     
-    function findFormat (format: string): Array<string>{
-        if(nts.uk.util.isNullOrEmpty(format)){
-            return defaultInputFormat;        
         }
-        if (format === "yearmonth"){
-            format = "YM";        
+        return result;
+    }
+
+    function findFormat(format: string): Array<string> {
+        if (nts.uk.util.isNullOrEmpty(format)) {
+            return defaultInputFormat;
+        }
+        if (format === "yearmonth") {
+            format = "YM";
+            format = "YM";
         }
         let uniqueFormat = _.uniq(format.split(""));
-        let formats =  _.filter(defaultInputFormat, function (dfFormat: string){
-            return _.find(uniqueFormat, function (opFormat: string){
-                return dfFormat.indexOf(opFormat) >= 0;         
-            }) !== undefined;        
-        }); 
-        return nts.uk.util.isNullOrEmpty(formats) ? defaultInputFormat : formats;     
-    } 
+        let formats = _.filter(defaultInputFormat, function(dfFormat: string) {
+            return _.find(uniqueFormat, function(opFormat: string) {
+                return dfFormat.indexOf(opFormat) >= 0;
+            }) !== undefined;
+        });
+        return nts.uk.util.isNullOrEmpty(formats) ? defaultInputFormat : formats;
+    }
 
     export function UTCDate(year?: number, month?: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): Date {
         // Return local time in UTC
@@ -597,27 +654,27 @@
             return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
         }
     }
-     
+
     export class DateTimeFormatter {
         shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
-        shortYmdwPattern =/^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
+        shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
         shortYmPattern = /^\d{4}\/\d{1,2}$/;
         shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
-        longYmdPattern = /^\d{4}年\d{1,2}月\d{1,2}日$/;
-        longYmdwPattern = /^\d{4}年\d{1,2}月\d{1,2}日\(\w+\)$/;
+        longYmdPattern = /^\d{4}年\d{1,2}月d{1,2}日$/;
+        longYmdwPattern = /^\d{4}年\d{1,2}月d{1,2}日\(\w+\)$/;
         longFPattern = /^\d{4}年度$/;
-        longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月\d{1,2}日$/;
+        longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月d{1,2}日$/;
         longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
         fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
         timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
         timeShortHmPattern = /^\d+:\d{2}$/;
         days = ['日', '月', '火', '水', '木', '金', '土'];
-        
+
         shortYmd(date: string) {
             let d = this.dateOf(date);
             if (this.shortYmdPattern.test(d)) return this.format(d);
         }
-        
+
         shortYmdw(date: string) {
             let d = this.dateOf(date);
             if (this.shortYmdwPattern.test(d)) return d;
@@ -626,7 +683,7 @@
                 return this.format(d) + '(' + dayStr + ')';
             }
         }
-        
+
         shortYm(date: string) {
             let d = this.format(this.dateOf(date));
             if (this.shortYmPattern.test(d)) return d;
@@ -635,7 +692,7 @@
                 if (end !== -1) return d.substring(0, end);
             }
         }
-        
+
         shortMd(date: string) {
             let d = this.format(this.dateOf(date));
             if (this.shortMdPattern.test(d)) return d;
@@ -644,7 +701,7 @@
                 if (start !== -1) return d.substring(start + 1);
             }
         }
-        
+
         longYmd(date: string) {
             let d = this.dateOf(date);
             if (this.longYmdPattern.test(d)) return d;
@@ -653,7 +710,7 @@
                 return this.toLongJpDate(mDate);
             }
         }
-        
+
         longYmdw(date: string) {
             let d = this.dateOf(date);
             if (this.longYmdwPattern.test(d)) return d;
@@ -662,11 +719,11 @@
                 return this.toLongJpDate(mDate) + '(' + this.days[mDate.getDay()] + ')';
             }
         }
-            
+
         toLongJpDate(d: Date) {
             return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
         }
-        
+
         longF(date: string) {
             let d = this.dateOf(date);
             if (this.longFPattern.test(d)) return d;
@@ -675,23 +732,23 @@
                 return this.fiscalYearOf(mDate) + '年度';
             }
         }
-            
+
         longJmd(date: string) {
             let d = this.dateOf(date);
             if (this.longJmdPattern.test(d)) return d;
             return this.fullJapaneseDateOf(d);
         }
-            
+
         longJm(date: string) {
             let d = this.dateOf(date);
             if (this.longJmPattern.test(d)) return d;
             let jpDate = this.fullJapaneseDateOf(d);
-            let start = jpDate.indexOf("月"); 
+            let start = jpDate.indexOf("月");
             if (start !== -1) {
                 return jpDate.substring(0, start + 1);
             }
         }
-            
+
         fullJapaneseDateOf(date: string) {
             if (this.shortYmdPattern.test(date)) {
                 let d = new Date(date);
@@ -699,27 +756,27 @@
             }
             return date;
         }
-        
+
         fiscalYearOf(date: Date) {
             if (date < new Date(date.getFullYear(), 3, 1))
                 return date.getFullYear() - 1;
             return date.getFullYear();
         }
-        
+
         dateOf(dateTime: string) {
             if (this.fullDateTimeShortPattern.test(dateTime)) {
                 return dateTime.split(" ")[0];
             }
             return dateTime;
         }
-        
+
         timeOf(dateTime: string) {
             if (this.fullDateTimeShortPattern.test(dateTime)) {
                 return dateTime.split(" ")[1];
             }
             return dateTime;
         }
-    
+
         timeShortHm(time: string) {
             let t = this.timeOf(time);
             if (this.timeShortHmPattern.test(t)) return t;
@@ -727,37 +784,37 @@
                 return t.substring(0, t.lastIndexOf(":"));
             }
         }
-    
+
         timeShortHms(time: string) {
             let t = this.timeOf(time);
             if (this.timeShortHmsPattern.test(t)) return t;
         }
-    
+
         clockShortHm(time: string) {
             return this.timeShortHm(time);
         }
-    
+
         fullDateTimeShort(dateTime: string) {
             if (this.fullDateTimeShortPattern.test(dateTime)) return dateTime;
         }
-        
+
         format(date: string) {
             return new Date(date).toLocaleDateString("ja-JP");
         }
     }
-     
+
     export function getFormatter() {
-        switch(systemLanguage) {
+        switch (systemLanguage) {
             case 'ja':
                 return new DateTimeFormatter();
             case 'en':
-                return null;   
+                return null;
         }
     }
-    
+
     export function applyFormat(format: string, dateTime: string, formatter: DateTimeFormatter) {
         if (formatter === undefined) formatter = getFormatter();
-        switch(format) {
+        switch (format) {
             case 'Short_YMD':
                 return formatter.shortYmd(dateTime);
             case 'Short_YMDW':
@@ -786,12 +843,45 @@
                 return formatter.fullDateTimeShort(dateTime);
         }
     }
-     
-    export function isEndOfMonth(value: string, format: string) : boolean{
+
+    export function isEndOfMonth(value: string, format: string): boolean {
         let currentDate = moment(value, format);
-        if(currentDate.isValid()){
-            return currentDate.daysInMonth() === currentDate.date();        
+        if (currentDate.isValid()) {
+            return currentDate.daysInMonth() === currentDate.date();
         }
         return false;
     }
+
+    export function convertJapaneseDateToGlobal(japaneseDate: string): string{
+        let inputDate = _.clone(japaneseDate);
+        let endEraSymbolIndex = -1;
+        let currentEra;
+        let eraAcceptFormats = ["YYMMDD", "YY/MM/DD", "YY/M/DD", "YY/MM/D", "YY/M/D", "Y/MM/DD", "Y/M/DD", "Y/MM/D", "Y/M/D"];
+        
+        for(let i of __viewContext.env.japaneseEras){
+            if (inputDate.indexOf(i.name) >= 0) {
+                endEraSymbolIndex = inputDate.indexOf(i.name) + i.name.length;
+                currentEra = i;
+                break;
+            } else if (inputDate.indexOf(i.symbol) >= 0) { 
+                endEraSymbolIndex = inputDate.indexOf(i.symbol) + i.symbol.length;
+                currentEra = i;
+                break;
+            }                
+        }
+        if (endEraSymbolIndex > -1) {
+            let startEraDate = moment(currentEra.start, "YYYY-MM-DD");
+            let inputEraDate = inputDate.substring(endEraSymbolIndex);
+            let tempEra = moment.utc(inputEraDate, eraAcceptFormats, true); 
+            if (tempEra.isValid()) {
+                return startEraDate.add(tempEra.format("YY"), "Y")
+                                    .set({'month': tempEra.month(), "date": tempEra.date()})
+                                    .format("YYYY/MM/DD");      
+            }
+        }
+        
+        return japaneseDate;
+    }
+
+
 }

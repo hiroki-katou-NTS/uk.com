@@ -1,0 +1,14 @@
+#contents-area{width: 1000px}
+#register-button {margin-left: 128px !important;}
+#right-content {margin-left: 30px; display: inline-block; vertical-align: top;}
+#lstErrorAlarm_container {display: inline-block;}
+#errorAlarmWorkRecordCode, #errorAlarmWorkRecordName {vertical-align: text-bottom;}
+#labelName {margin-left: 80px;}
+#labelUseAtr, #tab-panel, #color-label, #message-label {margin-top: 10px;}
+#useAtr {margin-left: 10px;}
+#typeAtr {margin-left: 85px;}
+#colorpicker {margin-left: 47px;}
+#messageDisplay {margin-left: 10px;}
+.settingTab {width: 515px;}
+#messageDisplay{vertical-align: text-top;height: 120px;width: 230px;margin-top: -15px;}
+#boldAtr{margin-left: 136px;}

@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
@@ -111,13 +108,13 @@ public class BasicAgreementSetting extends AggregateRoot {
 		this.limitOneYear = limitOneYear;
 	}
 
-	public static BasicAgreementSetting createFromJavaType(String basicSettingId, Long alarmWeek,
-			Long errorWeek, Long limitWeek, Long alarmTwoWeeks, Long errorTwoWeeks,
-			Long limitTwoWeeks, Long alarmFourWeeks, Long errorFourWeeks, Long limitFourWeeks,
-			Long alarmOneMonth, Long errorOneMonth, Long limitOneMonth, Long alarmTwoMonths,
-			Long errorTwoMonths, Long limitTwoMonths, Long alarmThreeMonths,
-			Long errorThreeMonths, Long limitThreeMonths, Long alarmOneYear, Long errorOneYear,
-			Long limitOneYear) {
+	public static BasicAgreementSetting createFromJavaType(String basicSettingId, int alarmWeek,
+			int errorWeek, int limitWeek, int alarmTwoWeeks, int errorTwoWeeks,
+			int limitTwoWeeks, int alarmFourWeeks, int errorFourWeeks, int limitFourWeeks,
+			int alarmOneMonth, int errorOneMonth, int limitOneMonth, int alarmTwoMonths,
+			int errorTwoMonths, int limitTwoMonths, int alarmThreeMonths,
+			int errorThreeMonths, int limitThreeMonths, int alarmOneYear, int errorOneYear,
+			int limitOneYear) {
 		return new BasicAgreementSetting(basicSettingId, new AlarmWeek(alarmWeek), new ErrorWeek(errorWeek), new LimitWeek(limitWeek),
 				new AlarmTwoWeeks(alarmTwoWeeks), new ErrorTwoWeeks(errorTwoWeeks), new LimitTwoWeeks(limitTwoWeeks),
 				new AlarmFourWeeks(alarmFourWeeks),new ErrorFourWeeks(errorFourWeeks),new LimitFourWeeks(limitFourWeeks),

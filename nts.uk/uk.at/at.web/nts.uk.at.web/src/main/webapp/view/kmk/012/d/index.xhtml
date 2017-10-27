@@ -16,10 +16,11 @@
 				<com:scriptfile path="kmk012.d.service.js" />
 				<com:scriptfile path="kmk012.d.vm.js" />
 				<com:ValidatorScript>
-					nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName
+					nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName
 				</com:ValidatorScript>
 			</ui:define>
 			<ui:define name="content">
+				<div id="content-area">
 				<div class="processingDate">
 					<div id="valueProcessingDate" 
 						class="nts-input"
@@ -73,7 +74,7 @@
 							optionsValue: 'day',
 							value: closureDetailModel.closureDateChange,
 							optionsText: 'name',
-							editable: true,
+							editable: false,
 							enable: true,
 							columns: [
 								{ prop: 'name', length: 4 }
@@ -86,19 +87,20 @@
 					<div class="startChangeDate"><label class="valueStartChange">#{i18n.getText('KMK012_8')}</label></div>
 					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.endDay()"></label></div>
 				</div>
-				
+			
 				<div class="bottomChangeAfter">
 					<div class="lableStartChange"><label class="valueStartChange">#{i18n.getText('KMK012_36')}</label></div>
 					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.afterClosureDate.beginDay()"></label></div>
 					<div class="startChangeDate"><label class="valueStartChange">#{i18n.getText('KMK012_8')}</label></div>
 					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.afterClosureDate.endDay()"></label></div>
 				</div>
-				
+			
 				<br/>
-					<div id="functions-area-bottom">
-						<button tabindex="3" class="proceed large btnAction" data-bind="click: saveChangeClosureDate">#{i18n.getText('KMK012_32')}</button>
-						<button tabindex="4" class="large btnclose btnAction"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
-					</div>
+				<div id="functions-area-bottom">
+					<button tabindex="3" class="proceed x-large btnAction" data-bind="click: saveChangeClosureDate, enable: $root.errors.isEmpty">#{i18n.getText('KMK012_32')}</button>
+					<button tabindex="4" class="large btnclose btnAction"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
+				</div>
+				</div>
 			</ui:define>
 		</ui:composition>
 	</body>

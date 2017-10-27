@@ -1,0 +1,276 @@
+.extable .xheader td.color-pink {
+	background-color: #FFB9B9;
+}
+
+.extable .xheader td.color-blue {
+	background-color: #8BD8FF;
+}
+
+.extable td.text-color-red {
+	color: red;
+}
+
+.extable td.text-color-blue {
+	color: blue;
+}
+
+.text-align-center {
+	text-align: center;
+}
+
+#extable {
+	top: 10px;
+	left: 85px;
+}
+
+.ml-30 {
+	margin-left: 30px
+}
+
+table th, table td {
+	padding: 5px 5px;
+	border: 1px solid #ccc;
+}
+
+#functions-area>button {
+	height: 30px;
+	margin-left: 5px;
+	min-width: 85px
+}
+
+.setting {
+	margin-left: 120px !important;
+}
+
+.hope {
+	margin-left: 100px !important;
+}
+
+.generally, .simulation, .capture {
+	width: 95px;
+}
+
+.simulation, .capture {
+	margin-top: 15px;
+}
+
+.execution-popup3 {
+	margin-right: 7px;
+	float: right;
+	margin-top: 23px;
+	width: 80px;
+}
+
+.substitute-holiday, .pause, .annual-holiday, .yearly-reserved {
+	width: 75px;
+}
+
+.break {
+	margin-left: 80px;
+}
+
+#work-setting, #company-setting {
+	margin-left: 10px;
+}
+
+#work-setting button, #company-setting button {
+	width: 109px;
+	margin-bottom: 10px;
+}
+
+#top-area {
+	border-bottom: 1px solid #B1B1B1;
+	margin-left: 80px;
+	padding-bottom: 7px;
+}
+
+.img-icon {
+	margin: -4px -4px 0 -4px;
+	vertical-align: middle;
+}
+
+#top-area div:first-child {
+	height: 20px
+}
+
+#oViewModel {
+	margin-left: 80px;
+	margin-top: 5px;
+	height: 85px
+}
+
+.setting-button {
+	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
+	width: 37px;
+	top: 3px;
+}
+
+.color-button {
+	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
+	width: 37px;
+	top: 3px;
+	margin-left: 30px;
+}
+
+.icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
+	width: 12px !important;
+}
+
+.switchButton-wrapper {
+	margin-left: 10px !important;
+}
+
+.nts-switch-button {
+	min-width: 55px;
+}
+
+#button-top {
+	margin-left: 22px;
+}
+
+#button-bot {
+	margin: 15px;
+	margin-left: 22px;
+}
+
+#multi-list_container {
+	margin-left: 7px !important;
+	margin-top: 16px !important;
+}
+
+#popup-area4 {
+	width: 307px !important;
+}
+
+#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
+	#popup-area7, #popup-area8, #popup-area9 {
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+}
+
+#multi-list {
+	height: initial !important;
+}
+
+#generally-created, #simulation-explanation, #capture-explanation,
+	#date-time-prev, #date-time-after, #special {
+	margin-left: 10px;
+}
+
+#alarm-check-explanation {
+	margin-left: 7px;
+}
+
+#popup-area6 {
+	display: none;
+	z-index: 100;
+	visibility: visible;
+	top: 155px;
+	left: 825px;
+	width: 390px
+}
+
+#popup6-radioBox {
+	width: 120px;
+}
+
+#popup6-radioBox>.ntsRadioBox, .div-popup {
+	margin-bottom: 10px
+}
+
+#popup-area7>div {
+	margin-top: 15px
+}
+
+#popup-area7>div>button {
+	margin-left: 45px
+}
+
+#popup-area9 {
+	display: none;
+	z-index: 100;
+	visibility: visible;
+	top: 155px;
+	left: 710px;
+	width: 460px
+}
+
+.square {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	vertical-align: text-top;
+}
+
+.popup-div {
+	width: 150px;
+	display: inline-block;
+	margin-bottom: 10px
+}
+
+#color-1 {
+	background-color: #DDDDDD
+}
+
+#color-2 {
+	background-color: #00FFFF
+}
+
+#color-3 {
+	background-color: #99CCFF
+}
+
+#color-4 {
+	background-color: #A2DBA8
+}
+
+#color-5 {
+	background-color: #ECCEFB
+}
+
+#color-6 {
+	background-color: #FEDFE6
+}
+
+#color-7 {
+	background-color: #0000FF
+}
+
+#color-8 {
+	background-color: #FF0000
+}
+
+#color-9 {
+	background-color: #008000
+}
+
+#color-10 {
+	background-color: #8BD8FF
+}
+
+#color-11 {
+	background-color: #FABF8F
+}
+
+#color-12 {
+	background-color: #FFFF00
+}
+
+#color-13 {
+	background-color: #FFC0CB
+}
+
+#color-14 {
+	background-color: #ACFE2F
+}
+
+#color-15 {
+	background-color: #EF7F7F
+}
+
+#color-16 {
+	background-color: #FEA400
+}

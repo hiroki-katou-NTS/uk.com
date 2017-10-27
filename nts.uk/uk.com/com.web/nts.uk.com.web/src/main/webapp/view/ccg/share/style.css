@@ -1,9 +1,5 @@
 @CHARSET "UTF-8";
 
-.ntsSearchBox {
-	width: 230px !important;
-}
-
 .controlSetting.caret-right:after {
 	cursor: pointer;
 	color: #2ECC71;
@@ -19,7 +15,13 @@
 }
 
 .contentkcp {
-	min-height: 320px;
+	min-height: 350px;
+	padding-top: 8px !important;
+	padding-left: 10px !important;
+}
+
+.contentkcpWorkplace {
+	min-height: 475px;
 	padding-top: 8px !important;
 	padding-left: 10px !important;
 }

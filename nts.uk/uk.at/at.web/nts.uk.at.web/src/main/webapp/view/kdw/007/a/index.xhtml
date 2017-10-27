@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordCode
+					nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordName
+					nts.uk.ctx.at.record.dom.workrecord.erroralarm.DisplayMessage
+				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kdw007.a.style.css" />
+				<com:scriptfile path="kdw007.a.start.js" />
+				<com:scriptfile path="kdw007.a.service.js" />
+				<com:scriptfile path="kdw007.a.vm.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+					<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW007_17')}</a>
+					<button id="register-button" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
+				</div>
+				<div id="contents-area">
+					<table id="lstErrorAlarm" data-bind="ntsGridList: {								
+						height: 370,
+						dataSource: lstErrorAlarm,
+						primaryKey: 'code',
+						columns: gridListColumns,
+						multiple: false,
+						value: selectedErrorAlarmCode
+					}"></table>
+					<div id="right-content">
+						<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true }">#{i18n.getText('KDW007_6')}</div>
+						<input id="errorAlarmWorkRecordCode" data-bind="ntsTextEditor: {
+							value: selectedErrorAlarm().code,
+							constraint: 'ErrorAlarmWorkRecordCode',
+							required: true,
+							enable: selectedErrorAlarm().fixedAtr() != 1
+							}" />
+						<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName', required: true }">#{i18n.getText('KDW007_7')}</div>
+						<input id="errorAlarmWorkRecordName" data-bind="ntsTextEditor: {
+							value: selectedErrorAlarm().name,
+							constraint: 'ErrorAlarmWorkRecordName',
+							required: true,
+							enable: true
+							}" /><br/>
+						<div id="labelUseAtr" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW007_8')}</div>
+						<div id="useAtr" class="cf" data-bind="ntsSwitchButton: {
+							options: listUseAtr,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedErrorAlarm().useAtr,
+							enable: true }"></div><br/>
+						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+							<div class="settingTab">
+								<div id="type-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW007_10')}</div>
+								<div id="typeAtr" class="cf" data-bind="ntsSwitchButton: {
+									options: listTypeAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedErrorAlarm().typeAtr,
+									enable: selectedErrorAlarm().fixedAtr() != 1 }"></div><br/>
+								<div id="color-label" data-bind="ntsFormLabel: { }">#{i18n.getText('KDW007_13')}</div>
+								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: true, width: 100}"/><br/>
+								<div id="message-label" data-bind="ntsFormLabel: { required: true, constraint: 'DisplayMessage' }">#{i18n.getText('KDW007_14')}</div>
+								<textarea id="messageDisplay" data-bind="ntsMultilineEditor: { 
+									value: selectedErrorAlarm().displayMessage, 
+									constraint: 'DisplayMessage', 
+									required: true, 
+									resizeable: false }" /><br/>
+								<div id="boldAtr" data-bind="ntsCheckBox: { checked: selectedErrorAlarm().boldAtr, enable: true, text: '#{i18n.getText('KDW007_15')}' }"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

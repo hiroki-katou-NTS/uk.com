@@ -36,27 +36,35 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.selectedTitleAtr = ko.observable(0);
             self.enableGrid = ko.observable(false);
             $("#titleSeach").prop("disabled", true);
-            _.defer(function(){
-                $(".ntsSearchBox").prop('disabled',true);    
+            _.defer(function() {
+                $(".ntsSearchBox").prop('disabled', true);
             });
-            
+
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
             //GridList
             self.listTitleMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'titleCode', width: 100 },
-                { headerText: '名称', key: 'titleName', width: 230 }
+                { headerText: nts.uk.resource.getText("CCG013_39"), key: 'titleCode', width: 100 },
+                { headerText: nts.uk.resource.getText("CCG013_40"), key: 'titleName', width: 230 }
             ]);
             //self.selectCodeTitleMenu = ko.observable('');
             self.currentTitleMenu = ko.observable('');
             //delete button 
             self.isDelete = ko.observable(false);
             //image upload
-            self.filename = ko.observable(""); //file name
-            self.imageName = ko.observable("");
-            self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'),0));
+            self.filename = ko.observable(''); //file name
+            self.imageName = ko.observable('未設定。非活性。');
+            self.imageName.subscribe((newValue) => {
+                if (newValue != '未設定。非活性。') {
+                    $('#imageName').addClass('text-blue-underline');
+                } else {
+                    $('#imageName').removeClass('text-blue-underline');
+                }
+            });
+
+            self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             self.accept = ko.observableArray([".png"]); //supported extension
             self.textId = ko.observable(""); // file browser button text id
             self.fileID = ko.observable('');
@@ -116,7 +124,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 self.fileID(res[0].id);
                 self.filename('');
                 self.imageName(res[0].originalName);
-                self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'),res[0].originalSize));
+                self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), res[0].originalSize));
                 self.isDelete(true);
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err.message);
@@ -127,8 +135,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         private deleteFile(): void {
             var self = this;
-            self.imageName('');
-            self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'),0));
+            self.imageName('未設定。非活性。');
+            self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             $("#liveview").html('');
             self.isDelete(false);
         }
@@ -139,22 +147,28 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
-            if (nts.uk.ui.errors.hasError()) {
+            $(".ntsColorPicker_Container").trigger("validate");
+            validateNameInput($("#nameTitleBar"), '#[CCG013_31]', self.nameTitleBar().trim(), 'TitleBarName');
+
+            var hasError = nts.uk.ui.errors.hasError();
+            if (hasError) {
                 return;
             }
             if (self.selectedTitleAtr() == 1) {
                 if (self.currentTitleMenu() !== '') {
-                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu());
+                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu(), self.imageName(), self.imageSize());
                     windows.setShared("CCG013C_TitleBar", titleBar1);
+                    self.cancel_Dialog();
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });
-                    return false;
+                    return;
                 }
             } else {
-                var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '');
+                var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '', self.imageName(), self.imageSize());
                 windows.setShared("CCG013C_TitleBar", titleBar0);
+                self.cancel_Dialog();
             }
-            self.cancel_Dialog();
+
         }
     }
 
@@ -165,14 +179,19 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         selectedTitleAtr: number;
         imageId: string;
         titleMenuCode: string;
+        imageName: string;
+        imageSize: string;
 
-        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number, imageId: string, titleMenuCode: string) {
+
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number, imageId: string, titleMenuCode: string, imageName: string, imageSize: string) {
             this.nameTitleBar = nameTitleBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
             this.selectedTitleAtr = selectedTitleAtr;
             this.imageId = imageId;
             this.titleMenuCode = titleMenuCode;
+            this.imageName = imageName;
+            this.imageSize = imageSize;
         }
     }
 

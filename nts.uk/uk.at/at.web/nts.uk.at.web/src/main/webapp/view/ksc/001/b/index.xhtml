@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="ksc001.b.main.css" />
+				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="ksc001.b.vm.js" />
+				<com:scriptfile path="ksc001.b.start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+					<!-- Go back Style -->
+					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksc/001/a/index.xhtml' }">
+						#{i18n.getText('KSC001_40')}
+					</a>
+				</div>
+				
+				<div tabindex="-1" id="contents-area">
+					<div tabindex="-1" id="wizard" data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}"  class="cf" style="width: 1200px;">
+						<div class="header" tabindex="-1">
+							<div class="image" data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+							<div class="content">再集計</div>
+						</div>
+						<div class="steps" tabindex="-1">
+							<div class="step-1">再集計</div>
+							<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする</div>
+							<div class="step-3">対象社員を選ぶ</div>
+							<div class="step-4">対象社員を選ぶ</div>
+							<div class="step-5">対象社員を選ぶ</div>
+							<div class="end step-6">実行</div>
+						</div>
+						<div class="contents" tabindex="-1">
+							<div class="step-1" tabindex="-1">
+								<ui:include src="b.xhtml" />
+							</div>
+							<div class="step-2" tabindex="-1">
+								<ui:include src="c.xhtml" />
+							</div>
+							<div class="step-3">contents step3</div>
+							<div class="step-4">contents step4</div>
+							<div class="step-5">contents step5</div>
+							<div class="step-6">contents step6</div>
+						</div>
+						
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

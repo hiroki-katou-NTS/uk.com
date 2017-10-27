@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 430,
+					height :180
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps009.d.style.css" />
+			<com:scriptfile path="cps009.d.service.js" />
+			<com:scriptfile path="cps009.d.start.js" />
+			<com:scriptfile path="cps009.d.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="copy_row_1" style="margin-bottom: 5px;">
+					<label>#{i18n.getText('CPS009_26')}</label>
+					<div id="label_code" data-bind="ntsFormLabel: {required: true}"
+						class="form-label ">
+						<label>#{i18n.getText('CPS009_12')}</label>
+					</div>
+					<input id="roleCode"
+						data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
+										required: true, enable: true,
+										immediate: true}" />
+					<input id="roleName"
+						data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
+										required: true, enable: true,
+										immediate: true}" />
+
+
+				</div>
+
+			</div>
+			<div id='functions-area-bottom'>
+				<button id="registration" data-bind="click: newInitValue"
+					class="proceed x-large" tabindex="5">#{i18n.getText('CPS009_29')}
+				</button>
+				<button id="cancel" data-bind="click: cancelNewInitValue"
+					tabindex="6">#{i18n.getText('CPS009_30')}</button>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

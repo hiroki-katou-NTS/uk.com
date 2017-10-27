@@ -1,0 +1,18 @@
+#contents-area {
+	height: initial !important;
+}
+
+#codeInput {
+	width: 50px !important;
+}
+
+#roleName {
+	width: 100px !important;
+}
+#roleCodeOld {
+	margin-left: 110px;
+	width: 50px !important;
+}
+#roleNameOld {
+    margin-left: 30px;
+}

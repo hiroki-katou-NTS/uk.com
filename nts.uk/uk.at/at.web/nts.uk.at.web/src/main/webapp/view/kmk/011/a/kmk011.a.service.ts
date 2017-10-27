@@ -3,9 +3,9 @@ module kmk011.a.service {
         getAllDivTime: "at/record/divergencetime/getalldivtime",
         updateDivTime: "at/record/divergencetime/updatedivtime",
         updateTimeItemId: "at/record/divergencetime/updateTimeItemId",
-        getAllAttItem: "at/share/attendanceType/getByType/",
+        getAllAttItem: "at/record/divergencetime/getAttendanceDivergenceItem",
         getItemSet: "at/record/divergencetime/getitemset/",
-        getAllName: "at/share/attendanceitem/getPossibleAttendanceItem"
+        getAllName: "at/record/divergencetime/AttendanceDivergenceName"
     }
     /**
     * get all item selected(item da duoc chon)
@@ -23,7 +23,7 @@ module kmk011.a.service {
     * get all attendance item id(id co the chon)
     */
     export function getAllAttItem(divType: number): JQueryPromise<Array<viewmodel.model.AttendanceType>> {
-        return nts.uk.request.ajax("at", paths.getAllAttItem + divType);
+        return nts.uk.request.ajax("at", paths.getAllAttItem);
     }
     /**
     * update time item id (da duoc chon lai)

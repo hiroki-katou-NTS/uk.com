@@ -12,7 +12,8 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 
 import lombok.Getter;
-import nts.arc.i18n.custom.IInternationalization;
+import nts.uk.shr.infra.i18n.resource.I18NResourceType;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 public class AsposeCellsReportContext implements AutoCloseable {
 	
@@ -48,8 +49,23 @@ public class AsposeCellsReportContext implements AutoCloseable {
 			throw new RuntimeException(ex);
 		}
 		
-		IInternationalization i18n = CDI.current().select(IInternationalization.class).get();
-		Map<String, Object> items = i18n.getReportItems(reportId);
+		I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
+		Map<String, ?> items = i18n.loadForUserByResourceType(I18NResourceType.ITEM_NAME);
+		if (!items.isEmpty()) this.setDataSource("I18N", new SingleMapDataSource(items));
+	}
+	
+	public AsposeCellsReportContext(String reportId) {
+		
+		try {
+			this.templateFile = null;
+			this.workbook = new Workbook();
+			this.designer = new WorkbookDesigner(this.workbook);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
+		Map<String, ?> items = i18n.loadForUserByResourceType(I18NResourceType.ITEM_NAME);
 		if (!items.isEmpty()) this.setDataSource("I18N", new SingleMapDataSource(items));
 	}
 	
@@ -84,10 +100,20 @@ public class AsposeCellsReportContext implements AutoCloseable {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public void saveAsCSV(OutputStream outputStream) {
+		try {
+			this.workbook.save(outputStream, SaveFormat.CSV);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public void close() throws Exception {
-		this.templateFile.close();
+		if(this.templateFile != null){
+			this.templateFile.close();	
+		}
 	}
 	
 }

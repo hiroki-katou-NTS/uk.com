@@ -18,7 +18,6 @@
 .absolute {position: absolute !important;}
 .pull-left {float: left;}
 .pull-right {float: right;}
-.hyperlink { color: $hyperlink_color; text-decoration: underline; cursor: pointer; }
 .control-group.valign-center > * { vertical-align: middle; }
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
@@ -47,6 +46,13 @@
 		&.valign-bottom { vertical-align: bottom; }
 		&.valign-top { vertical-align: top; }
 	}
+}
+.disappear {
+	position: absolute;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+	overflow: hidden;
 }
 
 /*****************************
@@ -125,21 +131,13 @@ div.form-label {
 	}
 }
 
-
-/*****************************
-  NtsLinkButton
-*****************************/
-.link-button {
-	display: inline-block;
-	padding: 3px 12px;
-	background-color: $green_background_color;
-	color: #0D86D1;
-	text-decoration: underline;
-	cursor: pointer;
-	user-select: none;
+.constraint-label {
+	display: block;
+	margin-top: 1px;
+	font-size: $bfs * 1.4;
+	font-weight: normal;
+	color: #777777;
 }
-
-
 /*****************************
   NtsPopupPanel
 *****************************/
@@ -152,7 +150,7 @@ div.popup-panel {
 }
 
 /*****************************
-  NtsEditor
+  NtsError
 *****************************/
 .ntsControl.error {
 	.nts-editor, .ntsDatepicker, .sp-replacer {
@@ -163,14 +161,21 @@ div.popup-panel {
 .ui-igcombo.error {
 	border-color:#ff6666;
 }
-
+.checkbox-wrapper.error {
+	border: 1px solid #ff6666;
+}
+.multicheckbox-wrapper.error {
+	border: 1px solid #ff6666;
+}
 /*****************************
   ErrorNotifier
 *****************************/
 #func-notifier-errors {
 	position: absolute;
-	display: none;
-
+	display: inline-block;
+	visibility: hidden;
+	z-index:10;
+	
 	@include border-radius(5px);
 	padding: 1px 17px 3px 17px;
 	font-weight: bold;
@@ -187,7 +192,7 @@ div.popup-panel {
 	}
 	
 	&.shown {
-		display: inline-block;
+		visibility: visible;
 	}
 }
 
@@ -220,181 +225,4 @@ div.popup-panel {
 }
 div.label {
 	width: 100%;
-}
-
-/*****************************
-  Icon
-*****************************/
-.icon {
-	position: relative;
-	display: inline-block;
-	
-	&::before, &::after {
-	    content: '';
-	    position: absolute;
-	    display: block;
-	}
-	
-	&.icon-close {
-		width: 16px;
-		height: 16px;
-		&::before, &::after {
-		    height: 3px;
-		    width: 100%;
-		    top: 50%;
-		    left: 0;
-		    margin-top: -1px;
-		    background: $button_font_color;
-		}
-		&::before {
-			@include transform(rotate(45deg));
-		}
-		&::after {
-			@include transform(rotate(-45deg));
-		}
-	}
-	
-	&.icon-dot {
-		width: 16px;
-		height: 16px;
-	    border: 2px solid #fff;
-	    border-radius: 50%;
-	    background: $activated_color;
-	    box-sizing: border-box;
-	}
-	
-	&.icon-search {
-	    width: 12px;
-	    height: 12px;
-	    border: solid 2px #333333;
-	    border-radius: 100%;
-	    transform: rotate(-45deg);
-	    &::after {
-		    top: 12px;
-		    left: 5px;
-		    height: 10px;
-		    width: 2px;
-		    background-color: #333333;
-	    }
-	}
-	&.icon-searchbox {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 32px;
-		height: 32px;
-		margin: -16px 0 0 -16px;
-		background: $activated_color;
-		border-radius: 5px;
-	    
-		&:before {
-		    width: 12px;
-		    height: 12px;
-		    border: solid 2px #FFF;
-		    border-radius: 100%;
-		    top: 6px;
-		    left: 7px;
-		}
-	    &::after {
-		    top: 18px;
-		    left: 22px;
-		    height: 8px;
-		    width: 2px;
-		    border-radius: 0 0 5px 5px;
-		    background-color: #FFF;
-		    transform: rotate(-45deg);
-	    }
-	}
-	&.icon-button-arrow-left {
-	    margin: 10px 0 10px 3px;
-	    width: 40px;
-	    height: 4px;
-	    background-color: $activated_color;
-	    
-	    &:before {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 0 2px 2px 0;
-		    transform: rotate(-40deg);
-		    left: -3px;
-		    top: -4px;
-	    }
-	    &:after {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 2px 0 0 2px;
-		    transform: rotate(-140deg);
-		    left: -3px;
-		    top: 4px;
-	    }
-	}
-	&.icon-button-arrow-right {
-	    margin: 10px 3px 10px 0;
-	    width: 40px;
-	    height: 4px;
-	    background-color: $activated_color;
-	    
-	    &:before {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 2px 0 0 2px;
-		    transform: rotate(40deg);
-		    right: -3px;
-		    top: -4px;
-	    }
-	    &:after {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 0 2px 2px 0;
-		    transform: rotate(140deg);
-		    right: -3px;
-		    top: 4px;
-	    }
-	}
-	&.icon-button-arrow-top {
-	    margin: 8px 5px 0 5px;
-	    width: 4px;
-	    height: 30px;
-	    background-color: $activated_color;
-	    
-	    &:before {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 0 2px 2px 0;
-		    transform: rotate(50deg);
-		    left: -2px;
-		    top: 2px;
-	    }
-	    &:after {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 0 2px 2px 0;
-		    transform: rotate(130deg);
-		    left: -10px;
-		    top: 2px;
-	    }
-	}
-	&.icon-button-arrow-bottom {
-	    margin: 5px 5px 3px 5px;
-	    width: 4px;
-	    height: 30px;
-	    background-color: $activated_color;
-	    
-	    &:before {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 0 2px 2px 0;
-		    transform: rotate(-50deg);
-		    left: -2px;
-		    bottom: 2px;
-	    }
-	    &:after {
-	        width: 16px;
-		    border-top: solid 4px $activated_color;
-		    border-radius: 0 2px 2px 0;
-		    transform: rotate(-130deg);
-		    left: -10px;
-		    bottom: 2px;
-	    }
-	}
 }

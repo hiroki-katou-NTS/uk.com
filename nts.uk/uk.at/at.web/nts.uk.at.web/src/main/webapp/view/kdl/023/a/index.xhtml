@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../base/kdl023.base.index.xhtml">
+		<ui:define name="extended-header">
+			<com:scriptfile path="kdl023.a.vm.js" />
+			<com:scriptfile path="kdl023.a.start.js" />
+		</ui:define>
+		<ui:define name="calendar-header">
+			<div class="nts-calendar-header">
+				<div data-bind="ntsDatePicker: {
+				value: yearMonthPicked, 
+				dateFormat: 'yearmonth', 
+				valueFormat: 'YYYYMM', 
+				cssRanger: cssRangerYM,
+				defaultClass: 'round-orange',
+				showJumpButtons: true}"></div>
+			</div>
+		</ui:define>
+		<ui:define name="extended-function">
+			<button id="btnClose" class="large" data-bind="click: closeDialog"
+						tabindex="13">#{i18n.getText('KDL023_16')}</button>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

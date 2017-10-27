@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.primitive.Memo;
 /**
@@ -23,9 +22,6 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	@Inject
 	private PersonCostCalculationRepository personCostCalculationRepository;
 	
-	@Inject
-	IInternationalization internationalization;
-	
 	@Override
 	public PersonCostCalculation createPersonCostCalculationFromJavaType(String companyID, GeneralDate startDate, 
 			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings) {
@@ -34,12 +30,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 				premiumSettings.stream()
 				.map(x -> new PremiumSetting(
 						companyID, 
-						historyID, 
-						x.getPremiumID(), 
-						x.getRate(), 
-						x.getAttendanceID(), 
-						x.getName(),
+						historyID,  
 						x.getDisplayNumber(),
+						x.getRate(), 
+						x.getName(),
 						x.getUseAtr(), 
 						x.getAttendanceItems()))
 				.collect(Collectors.toList()));

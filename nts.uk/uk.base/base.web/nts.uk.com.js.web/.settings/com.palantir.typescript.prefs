@@ -1,5 +1,5 @@
 build.path.exportedFolder=
-build.path.sourceFolder=src/main/webapp/lib/nittsu
+build.path.sourceFolder=src/main/webapp/lib
 compiler.codeGenTarget=ECMASCRIPT5
 compiler.compileOnSave=true
 compiler.generateDeclarationFiles=true

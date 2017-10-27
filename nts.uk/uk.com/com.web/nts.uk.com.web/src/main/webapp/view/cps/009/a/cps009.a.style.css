@@ -1,0 +1,171 @@
+#content {
+	/* 	width: 1200px;
+	margin-bottom: 20px; */
+	
+}
+
+.float-right {
+	float: right !important;
+}
+
+#content-left {
+	width: 260px;
+	height: 590px;
+	float: left;
+}
+
+.requiredCell {
+	background-color: #FFC000;
+}
+
+.notrequiredCell {
+	background-color: #C7F391;
+}
+
+.input-units {
+	width: 200px !important;
+}
+
+.sub-input-units{
+	width: 161px !important;
+	margin-left: 3px !important;
+	margin-right: 3px !important;
+	
+}
+.nts-datepicker-wrapper .ntsDatepicker {
+	width: 161px !important;
+}
+
+#content-right {
+	float: left;
+	width: 900px;
+}
+
+#category_grid_container {
+	margin-left: -3px !important;
+}
+
+#item_grid_container {
+	margin-top: 10px !important;
+	width: 250px;
+}
+
+.distane {
+	margin-bottom: 5px;
+}
+
+#ctgName {
+	width: 200px;
+}
+
+#ctgCode {
+	width: 80px;
+}
+
+button.search-btn, button.clear-btn {
+	width: 40px;
+}
+
+.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn
+	{
+	vertical-align: top;
+	margin-left: 5px;
+	min-width: 50px;
+}
+
+input.ntsSearchBox {
+	width: 150px !important;
+}
+
+#sub-content-right {
+	margin-top: 10px;
+}
+
+#sub-left {
+	width: 300px;
+	height: 590px;
+	float: left;
+}
+
+#sub-right {
+	float: left;
+	width: 600px;
+}
+
+#history {
+	margin-left: 220px;
+}
+
+#grid {
+	margin-top: 20px !important;
+}
+
+#grid td {
+	border: 1px solid #CCC;
+	text-align: center;
+	height: 20px;
+}
+
+thead {
+	background-color: #c7f391;
+}
+
+tr {
+	height: 10px;
+}
+
+table.grid tbody {
+    height: 350px;   
+    overflow-y: auto;   
+    overflow-x: hidden; 
+    border: 1px solid #CCC;
+}
+
+#combo-box {
+	width: 100px;
+}
+
+.input-units {
+	width: 200px;
+}
+
+.ui-igcombo-buttonicon, .ui-igcombo-clearicon {
+	top: 27% !important;
+	margin-top: -8px !important;
+	position: inherit !important;
+}
+
+.value {
+	width: 200px !important;
+}
+
+#A2_012 {
+	margin-left: 0px;
+	width: 124px;
+}
+
+#help {
+	width: 30px;
+	margin-left: 5px;
+}
+/* #grid2__container {
+	margin-left: 20px !important;
+	margin-top: 20px !important;
+}
+
+#grid2_virtualContainer {
+	margin-top: 16px !important;
+}
+
+#grid2_displayContainer {
+	max-width: 600px !important;
+	width: 600px !important;
+}
+
+#grid2_headers_v, #grid2_virtualContainer td:FIRST-CHILD, #grid2_combo {
+	overflow: visible !important;
+}
+
+#grid2_displayContainer_a {
+	position: fixed !important;
+} */

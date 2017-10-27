@@ -1,0 +1,159 @@
+@CHARSET "UTF-8";
+
+#monthdays {
+	left: -80px;
+	top: -25px !important;
+}
+
+#button_radio {
+	padding: 5px !important;
+	width: 300px;
+}
+
+thead {
+	background-color: #c7f391;
+}
+
+tr {
+	height: 10px;
+}
+
+.contents-area{
+	padding: 24px 30px;
+}
+
+.cal-panel {
+	float: right;
+}
+
+.btn-cal {
+	width: 80px;
+	height: 36px;
+}
+
+.panel.panel-frame {
+	width: 300px;
+	float: right;
+}
+
+.cal-value {
+	width: 85px;
+}
+
+.contents-header td {
+	border: 1px solid #CCC;
+	height: 20px;
+	padding: 5px 3px;
+}
+
+.bound {
+	height: 20px;
+	z-index: -999999;
+	height: 140px;
+}
+
+span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
+	width: auto !important;
+}
+
+table.contents-header td.numbers {
+	width: 36px;
+}
+
+table.contents-header td.pay-day-cal {
+	width: auto;
+}
+
+table.contents-header td.input-units {
+	width: 133px !important;
+}
+
+table.contents-header td.base-date {
+	width: 150px;
+}
+
+table.contents-header td.allow-pay {
+	width: 34px;
+}
+
+.input-units {
+	width: 122px !important;
+}
+
+.base-date-options {
+	width: 150px;
+	min-width: 0 !important;
+}
+
+.contents-header {
+	width: 26.7%;
+	margin-left: 30px!important;
+}
+
+.contents-data {
+	margin-left: 20px;
+	width: 17%;
+}
+
+.contents-data td {
+	border: 1px solid #CCC;
+    text-align: center;
+    height: 20px;
+    padding: 3px 10px;
+    width: 122px;
+}
+
+table.contents-data td.numbers {
+	width: 22px;
+}
+
+table.contents-data td.pay-day-cal {
+	width: 219px;
+}
+
+table.contents-data td.input-units {
+	width: 60px !important;
+}
+
+table.contents-data td.base-date {
+	width: 156px;
+}
+
+table.contents-data td.allow-pay {
+	width: 40px;
+}
+
+table.contents-data thead, table.contents-data tbody {
+	display: block;
+}
+
+table.contents-data tbody {
+	height: 350px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 1px solid #CCC;
+}
+
+#label{
+	margin-left: 40px;
+	margin-bottom: 20px;
+}
+#help{
+	margin-left: 500px;
+	background: #c7f391;
+}
+.text{
+	    margin-left: 30px !important;
+}
+
+.date-input-field{
+	width: 91px;
+}
+.help-btn{
+	margin-left: 650px !important;
+}
+hr.spegator{
+	    width: 90%;
+    float: left;
+    margin-left: 30px;
+}

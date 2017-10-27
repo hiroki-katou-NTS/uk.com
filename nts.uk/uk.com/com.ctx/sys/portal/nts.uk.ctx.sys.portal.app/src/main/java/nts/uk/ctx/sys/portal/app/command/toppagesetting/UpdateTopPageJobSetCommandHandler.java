@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.CategorySetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
@@ -54,12 +56,24 @@ public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJob
 		for (UpdateTopPageJobSetCommand updateTopPageSettingCommandObj : updateTopPageJobSetCommand) {
 			TopPageJobSet topPageJobSet = topPageJobMap.get(updateTopPageSettingCommandObj.getJobId());
 			TopPageJobSet topPageJobSetObj = updateTopPageSettingCommandObj.toDomain(companyId);
-			if (topPageJobSet == null) {
-				topPageJobSetRepo.add(topPageJobSetObj);
-			} else if (categorySet == CategorySetting.DIVIDE.value) {
-				topPageJobSetRepo.update(topPageJobSetObj);
+
+			if (categorySet == CategorySetting.DIVIDE.value) {
+				if (topPageJobSet == null) {
+					topPageJobSetRepo.add(topPageJobSetObj);
+				} else {
+					topPageJobSetRepo.update(topPageJobSetObj);
+				}
 			} else {
-				topPageJobSetRepo.updateProperty(topPageJobSetObj);
+				if (topPageJobSet == null) {
+					// if category = NOTDIVEDE, loginMenuCd = topMenuCd, system
+					// = COMMON, MenuCls = TOPPAGE
+					TopPageJobSet tpJobSet = new TopPageJobSet(companyId, topPageJobSetObj.getTopMenuCode(),
+							topPageJobSetObj.getTopMenuCode(), topPageJobSetObj.getJobId(),
+							topPageJobSetObj.getPersonPermissionSet(), System.COMMON, MenuClassification.TopPage);
+					topPageJobSetRepo.add(tpJobSet);
+				} else {
+					topPageJobSetRepo.updateProperty(topPageJobSetObj);
+				}
 			}
 		}
 

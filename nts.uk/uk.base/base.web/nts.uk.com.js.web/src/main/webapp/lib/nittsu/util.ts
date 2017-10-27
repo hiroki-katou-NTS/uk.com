@@ -5,7 +5,28 @@
     }
 
     export module util {
-
+        export function compare(obj1:any,obj2:any){
+            for(var p in obj1){
+                if(obj1.hasOwnProperty(p)!== obj2.hasOwnProperty(p)){return false;}
+                switch(typeof(obj1[p])){
+                    case "object":
+                        if(!compare(obj1[p],obj2[p])) return false;
+                        break;
+                    case "function":
+                        
+                        break;
+                    default:
+                        if(obj1[p]!==obj2[p]){
+                            return false;    
+                        }
+                }   
+            }
+            for(var p in obj2){
+                if(typeof(obj1[p])=='undefined') return false;    
+            }
+            
+            return true;
+        }
         /**
          * 常にtrueを返す関数が必要になったらこれ
          */
@@ -145,7 +166,7 @@
         export function isInFrame() {
             return window.parent != window;
         }
-
+        
         /**
          * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
          * そうでなければ、valueMaybeEmptyを返す。
@@ -153,6 +174,44 @@
         export function orDefault(valueMaybeEmpty: any, defaultValue: any) {
             return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
         }
+        
+        export function getConstraintMes(primitiveValues: any) {
+            if(isNullOrEmpty(primitiveValues)) {
+                return "";        
+            }
+            if (!Array.isArray(primitiveValues))
+                primitiveValues = [primitiveValues];
+            let constraintText: string = "";
+            _.forEach(primitiveValues, function(primitiveValue) {
+                let constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                switch (constraint.valueType) {
+                    case 'String':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                        break;
+                    case 'Decimal':
+                    case 'Integer':
+                    case 'Date':
+                    case 'Duration':
+                    case 'Time':
+                    case 'Clock ':
+                    case 'TimePoint ':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
+                    default:
+                        constraintText += 'ERROR';
+                        break;
+                }
+            });
+            return constraintText;
+        }
+        
+        export function getConstraintLabel(primitiveValues: any){
+            let constraintText = getConstraintMes(primitiveValues);    
+            
+            return "<span class='constraint-label'>(" + constraintText + ")</span>";
+        } 
 
         /**
          * Returns true if expects contains actual.
@@ -407,21 +466,21 @@
                 }
             }
         }
-        
+
         export module value {
-        
+
             export function reset($controls: JQuery, defaultVal?: any, immediateApply?: boolean) {
                 var resetEvent = new CustomEvent(DefaultValue.RESET_EVT, {
-                    detail: { 
-                                value: defaultVal,
-                                immediateApply: immediateApply === undefined ? true : immediateApply
-                            }
+                    detail: {
+                        value: defaultVal,
+                        immediateApply: immediateApply === undefined ? true : immediateApply
+                    }
                 });
                 _.forEach($controls, function(control) {
                     control.dispatchEvent(resetEvent);
                 });
             }
-            
+
             export class DefaultValue {
                 static RESET_EVT: string = "reset";
                 onReset($control: JQuery, koValue: (data?: any) => any) {
@@ -433,19 +492,37 @@
                     });
                     return this;
                 }
-                
+
                 applyReset($control: JQuery, koValue: (data?: any) => any): any {
-                    var defaultVal = _.cloneDeep($control.data("default")); 
+                    var defaultVal = _.cloneDeep($control.data("default"));
                     var isDirty = defaultVal !== koValue();
                     if ($control.ntsError("hasError")) $control.ntsError("clear");
                     if (defaultVal !== undefined && isDirty) setTimeout(() => koValue(defaultVal), 0);
-                    return { isDirty: isDirty }; 
+                    return { isDirty: isDirty };
                 }
-            
+
                 asDefault($control: JQuery, koValue: (data?: any) => any, defaultValue: any, immediateApply: boolean) {
                     var defaultVal = defaultValue !== undefined ? defaultValue : koValue();
                     $control.data("default", defaultVal);
                     if (immediateApply) this.applyReset($control, koValue);
+                }
+            }
+        }
+        
+        export module accessor {
+            export function defineInto(obj: any): AccessorDefine {
+                return new AccessorDefine(obj);
+            }
+            
+            export class AccessorDefine {
+                obj: any;
+                constructor(obj: any) {
+                    this.obj = obj;
+                }
+                
+                get(name: string, func: () => any) {
+                    Object.defineProperty(this.obj, name, { get: func, configurable: true });
+                    return this;
                 }
             }
         }
@@ -469,7 +546,7 @@
         setItemAsJson(key: string, value: any) {
             this.setItem(key, JSON.stringify(value));
         }
-
+        
         containsKey(key: string) {
             return this.getItem(key) !== null;
         };
@@ -590,10 +667,14 @@
             }
         }
     }
+     
+    
     export module resource {
+        
+        var names = window['names'] || {};
+        var messages = window['messages'] || {};
 
-
-        export function getText(code: string, params: string[]): string {
+        export function getText(code: string, params?: string[]): string {
             let text = names[code];
             if (text) {
                 text = formatCompCustomizeResource(text);
@@ -603,9 +684,20 @@
             return code;
         }
 
-        export function getMessage(messageId: string, params: string[]): string {
+        export function getMessage(messageId: string, params?: string[]): string {
             let message = messages[messageId];
-            if (!message) { return messageId; }
+            if (!message) {
+                let responseText="";
+                nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function(res) {
+                    responseText=res;
+                }).fail(function() {
+                });
+                if (responseText.length == 0 || responseText === messageId) {
+                    return messageId;
+                }
+                message = responseText;
+                messages[messageId] = message;
+            }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);
             return message;
@@ -621,16 +713,16 @@
             return message;
         }
         function formatParams(message: string, args: string[]) {
-            if (args==null||args.length==0) return message;
+            if (args == null || args.length == 0) return message;
             let paramRegex = /{([0-9])+(:\w+)?}/;
             let matches: string[];
             let formatter = time.getFormatter();
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
                 let text = args[parseInt(code)];
-//                if(text!=undefined && text.indexOf("#")==0){
-//                    text = getText(text.substring(1))
-//                }
+                //                if(text!=undefined && text.indexOf("#")==0){
+                //                    text = getText(text.substring(1))
+                //                }
                 let param = matches[2];
                 if (param !== undefined && formatter !== undefined) {
                     text = time.applyFormat(param.substring(1), text, formatter);
@@ -639,13 +731,13 @@
             }
             return message;
         }
-        
+
         export function getControlName(name: string): string {
             var hashIdx = name.indexOf("#");
             if (hashIdx !== 0) return name;
-            var names = name.substring(hashIdx + 2, name.length -　1).split(",");
+            var names = name.substring(hashIdx + 2, name.length - 1).split(",");
             if (names.length > 1) {
-                let params: Array<string> = new Array<string>(); 
+                let params: Array<string> = new Array<string>();
                 _.forEach(names, function(n: string, idx: number) {
                     if (idx === 0) return true;
                     params.push(getText(n.trim()));
@@ -654,58 +746,91 @@
             }
             return getText(names[0]);
         }
-        
+
     }
-     
+
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
     export var localStorage = new WebStorageWrapper(window.localStorage);
 
     export module characteristics {
-        
+
         /**
          * Now, "characteristic data" is saved in Local Storage.
          * In the future, the data may be saved in DB using Ajax.
          * So these APIs have jQuery Deferred Interface to support asynchronous. 
          */
-        
+
         let delayToEmulateAjax = 100;
+        function convertObjectToArray(key:any):string{
+            var result=[];
+            for(var p in key){
+                result.push([p,key[p]]);
+            }
+            result.sort(function(a,b){
+                return (a > b) ? 1 : (a < b) ? -1 : 0;    
+            });
+            return result.toString();
+        }    
+        
+        export function saveByObjectKey(key: any, value: any){
+            return save(convertObjectToArray(key),value);
+        }
+        
+        export function restoreByObjectKey(key:any): JQueryPromise<any>{
+            return restore(convertObjectToArray(key));    
+        }
         
         export function save(key: string, value: any) {
             let dfd = $.Deferred();
-            
+
             setTimeout(() => {
                 localStorage.setItemAsJson(createKey(key), value);
                 dfd.resolve();
             }, delayToEmulateAjax);
-            
+
             return dfd.promise();
         }
-        
+
         export function restore(key: string): JQueryPromise<any> {
             let dfd = $.Deferred();
-            
+
             setTimeout(() => {
                 let value = localStorage.getItem(createKey(key))
                     .map(v => JSON.parse(v)).orElse(undefined);
                 dfd.resolve(value);
             }, delayToEmulateAjax);
-            
+
             return dfd.promise();
         }
-        
+
         export function remove(key: string) {
             let dfd = $.Deferred();
-            
+
             setTimeout(() => {
                 localStorage.removeItem(createKey(key));
                 dfd.resolve();
             }, delayToEmulateAjax);
-            
+
             return dfd.promise();
         }
-        
+
         function createKey(key: string): string {
             return 'nts.uk.characteristics.' + key;
+        }
+    }
+     
+    export module types {
+        
+        export function matchArguments(values: any[], types: string[]) {
+            if (values.length !== types.length) {
+                return false;
+            }
+            
+            for (var i = 0; i < values.length; i++) {
+                if (typeof values[i] !== types[i]) return false;
+            }
+            
+            return true;
         }
     }
 }

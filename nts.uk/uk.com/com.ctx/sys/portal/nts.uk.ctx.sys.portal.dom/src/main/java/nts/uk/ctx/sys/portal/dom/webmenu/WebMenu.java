@@ -4,7 +4,9 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 
 @Getter
 public class WebMenu extends AggregateRoot {
@@ -56,6 +58,19 @@ public class WebMenu extends AggregateRoot {
 		this.webMenuName = webMenuName;
 		this.defaultMenu = defaultMenu;
 		this.menuBars = menuBars;
+	}
+	
+	
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.webMenuCode == null || StringUtil.isNullOrEmpty(this.webMenuCode.v(), true)) {
+			throw new BusinessException("Msg_86");
+		}
+		
+		if (this.webMenuName == null || StringUtil.isNullOrEmpty(this.webMenuName.v(), true)) {
+			throw new BusinessException("Msg_86");
+		}
 	}
 	
 	/**

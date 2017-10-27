@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.CBPSettingCommand;
-import nts.uk.ctx.at.shared.app.command.CBPSettingCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.CBPSettingCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.CBPSettingCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.CompanyBPSettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.CompanyBPSettingFinder;
 

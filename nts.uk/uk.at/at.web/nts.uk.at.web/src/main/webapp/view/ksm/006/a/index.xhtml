@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition
+		template="../../../../master/sidebar.xhtml">
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="ksm006.a.main.css" />
+			<com:scriptfile path="ksm006.a.service.js" />
+			<com:scriptfile path="ksm006.a.vm.js" />
+			<com:scriptfile path="ksm006.a.start.js" />
+			
+		</ui:define>
+		<ui:define name="sidebar" id="left-sidebar">
+			<ul class="navigator">
+				<li><a href="#companyWide-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab" tabindex="-1">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab"  tabindex="-1">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab"  tabindex="-1">#{i18n.getText('Com_Class')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="companyWide-tab" role="tabpanel" data-bind="if: isShowCompanyTab()">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button class="proceed" data-bind="click: registerByCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+					<!-- <button class="danger" data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button> -->
+				</div>
+
+
+				<div id="companyWide-content">
+					<div id="companyWide-content-detail">
+						<div>#{i18n.getText('KSM006_5',["#Com_Company"])}</div>
+						<div id="ruledLine1"></div>
+						<div>
+							<table style="margin-top: 20px" data-bind="with: companyBWWorkingDay">
+								<tr class="tr-heigh">
+									<td style="width: 150px"><div
+											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
+									<td class="td-width-100"><button id="companyBWWorkingDayBtn" style="width: 70px"
+											tabindex="3" data-bind="click: gotoDialog.bind($data, 1)">#{i18n.getText('KSM006_11')}</button></td>
+									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
+									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
+								</tr>
+								<tr class="tr-heigh">
+									<td style="width: 150px"></td>
+									<td class="td-width-100"></td>
+									<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+									<td class="td-width-100"><span data-bind="text: workingCode"></span></td>
+									<td class="td-width-100"><span data-bind="text: workingDisplayName"></span></td>
+								</tr>
+							</table>
+
+							<table data-bind="with: companyBWNonInLaw">
+								<tr class="tr-heigh">
+									<td style="width: 150px"><div
+											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
+									<td class="td-width-100"><button style="width: 70px" id="companyBWNonInLawBtn"
+											tabindex="4" data-bind="click: gotoDialog.bind($data, 2)">#{i18n.getText('KSM006_11')}</button></td>
+									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
+									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
+								</tr>
+								<tr class="tr-heigh">
+									<td style="width: 150px"></td>
+									<td class="td-width-100"></td>
+									<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+									<td class="td-width-100"><span data-bind="text: workingCode"></span></td>
+									<td class="td-width-100"><span data-bind="text: workingDisplayName"></span></td>
+								</tr>
+							</table>
+							<table data-bind="with: companyBWNonExtra">
+								<tr class="tr-heigh">
+									<td style="width: 150px"><div
+											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
+									<td class="td-width-100" data-bind="click: gotoDialog.bind($data, 3)"><button style="width: 70px" id="companyBWNonExtraBtn"
+											tabindex="5">#{i18n.getText('KSM006_11')}</button></td>
+									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
+									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
+								</tr>
+								<tr class="tr-heigh">
+									<td style="width: 150px"></td>
+									<td class="td-width-100"></td>
+									<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+									<td class="td-width-100"><span data-bind="text: workingCode"></span></td>
+									<td class="td-width-100"><span data-bind="text: workingDisplayName"></span></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="workplace-tab" role="tabpanel" data-bind="if: isShowWorkplaceTab()">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Workplace')}</span>
+					<button class="proceed"
+						data-bind="click: registerByWorkplace, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
+					<button class="danger"
+						data-bind="click: removeByWorkplace, enable: isUpdateModeWorkplace()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
+				</div>
+
+				<div id="workplace-content">
+					<table style="margin: 50px">
+						<tr>
+							<td>
+								<div id="workplace-list" tabindex="-1"></div>
+							</td>
+
+							<td class="right-content">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM006_12',["#Com_Workplace"])}</div>
+								<div style="display: inline-block; padding-left: 10px">
+									<span data-bind="text: workplaceName()"></span>
+								</div>
+								<div class="ruledLine2" style=""></div>
+								<div>
+									<table style="margin-top: 20px"
+										data-bind="with: workplaceBWWorkingDay">
+										<tr class="tr-heigh">
+											<td style="width: 150px"><div
+													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
+											<td class="td-width-100"><button style="width: 70px" id="workplaceBWWorkingDayBtn"
+													tabindex="2"  data-bind="click: gotoDialog.bind($data, 1)">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeDisplayName"></span></td>
+										</tr>
+										<tr class="tr-heigh">
+											<td style="width: 150px"></td>
+											<td class="td-width-100"></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingDisplayName"></span></td>
+										</tr>
+									</table>
+
+									<table data-bind="with: workplaceBWNonInLaw">
+										<tr class="tr-heigh">
+											<td style="width: 150px"><div
+													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
+											<td class="td-width-100"><button style="width: 70px" id="workplaceBWNonInLawBtn"
+													tabindex="3"  data-bind="click: gotoDialog.bind($data, 2)">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeDisplayName"></span></td>
+										</tr>
+										<tr class="tr-heigh">
+											<td style="width: 150px"></td>
+											<td class="td-width-100"></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingDisplayName"></span></td>
+										</tr>
+									</table>
+									<table data-bind="with: workplaceBWNonExtra">
+										<tr class="tr-heigh">
+											<td style="width: 150px"><div
+													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
+											<td class="td-width-100"><button style="width: 70px" id="workplaceBWNonExtraBtn"
+													tabindex="4" data-bind="click: gotoDialog.bind($data, 3)">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeDisplayName"></span></td>
+										</tr>
+										<tr class="tr-heigh">
+											<td style="width: 150px"></td>
+											<td class="td-width-100"></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingDisplayName"></span></td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<div id="classification-tab" role="tabpanel" data-bind="if: isShowClassifyTab()">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Class')}</span>
+					<button class="proceed"
+						data-bind="click: registerByClassification, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
+					<button class="danger"
+						data-bind="click: removeByClassification, enable: isUpdateModeClassify()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
+				</div>
+
+				<div id="classification-content">
+					<table style="margin: 50px">
+						<tr>
+							<td>
+								<div id="classification-list" tabindex="-1"></div>
+							</td>
+
+							<td class="right-content">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM006_12',["#Com_Class"])}</div>
+								<div style="display: inline-block; padding-left: 10px">
+									<span data-bind="text: classificationName()"></span>
+								</div>
+								<div class="ruledLine2" style=""></div>
+								<div>
+									<table style="margin-top: 20px"
+										data-bind="with: classifyBWWorkingDay">
+										<tr class="tr-heigh">
+											<td style="width: 150px"><div
+													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
+											<td class="td-width-100"><button style="width: 70px" id="classifyBWWorkingDayBtn"
+													tabindex="2"  data-bind="click: gotoDialog.bind($data, 1)">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeDisplayName"></span></td>
+										</tr>
+										<tr class="tr-heigh">
+											<td style="width: 150px"></td>
+											<td class="td-width-100"></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingDisplayName"></span></td>
+										</tr>
+									</table>
+
+									<table data-bind="with: classifyBWNonInLaw">
+										<tr class="tr-heigh">
+											<td style="width: 150px"><div
+													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
+											<td class="td-width-100"><button style="width: 70px" id="classifyBWNonInLawBtn"
+													tabindex="3"  data-bind="click: gotoDialog.bind($data, 2)">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeDisplayName"></span></td>
+										</tr>
+										<tr class="tr-heigh">
+											<td style="width: 150px"></td>
+											<td class="td-width-100"></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingDisplayName"></span></td>
+										</tr>
+									</table>
+									<table data-bind="with: classifyBWNonExtra">
+										<tr class="tr-heigh">
+											<td style="width: 150px"><div
+													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
+											<td class="td-width-100"><button style="width: 70px" id="classifyBWNonExtraBtn"
+													tabindex="4"  data-bind="click: gotoDialog.bind($data, 3)">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: worktypeDisplayName"></span></td>
+										</tr>
+										<tr class="tr-heigh">
+											<td style="width: 150px"></td>
+											<td class="td-width-100"></td>
+											<td class="td-width-100"><span>#{i18n.getText('KSM006_10')}</span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingCode"></span></td>
+											<td class="td-width-100"><span
+												data-bind="text: workingDisplayName"></span></td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

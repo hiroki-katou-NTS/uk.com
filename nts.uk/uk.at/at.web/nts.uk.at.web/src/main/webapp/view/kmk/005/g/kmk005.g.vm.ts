@@ -12,18 +12,26 @@ module nts.uk.at.view.kmk005 {
     export module viewmodel {
         export class TabScreenModel {
             title: KnockoutObservable<string> = ko.observable('');
+            removeAble: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
                 new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'H', name: getText('Com_Department') }),
+                new TabModel({ id: 'H', name: getText('Com_Workplace') }),
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
 
             constructor() {
-                let self = this;
-                
-                self.tabs()[3].display(false);
-                
+                let self = this,
+                    tabs = self.tabs();
+                //get use setting
+                nts.uk.at.view.kmk005.g.service.getUseSetting()
+                    .done(x => {
+                        if (x) {
+                            tabs[1].display(x.workplaceUseAtr);
+                            tabs[2].display(x.personalUseAtr);
+                            tabs[3].display(x.workingTimesheetUseAtr);
+                        }
+                    });
 
                 self.tabs().map((t) => {
                     // set title for tab
@@ -43,7 +51,8 @@ module nts.uk.at.view.kmk005 {
                 if (oldtab.id == tab.id) {
                     return;
                 }
-
+                //set not display remove button first when change tab
+                //__viewContext.viewModel.tabView.removeAble(false);
                 tab.active(true);
                 self.title(tab.name);
                 self.tabs().map(t => (t.id != tab.id) && t.active(false));
@@ -149,7 +158,7 @@ module nts.uk.at.view.kmk005 {
             name: string;
             active: KnockoutObservable<boolean> = ko.observable(false);
             display: KnockoutObservable<boolean> = ko.observable(true);
-            
+
             constructor(param: ITabModel) {
                 this.id = param.id;
                 this.name = param.name;
@@ -184,12 +193,15 @@ module nts.uk.at.view.kmk005 {
                             if (x) {
                                 model.name(x.name);
                             } else {
-                                model.id('000');
+                                __viewContext.viewModel.tabView.removeAble(false);
+                                model.id('');
                                 model.name(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
+                        model.id.valueHasMutated();
                     } else {
-                        model.id('000');
+                        __viewContext.viewModel.tabView.removeAble(false);
+                        model.id('');
                         model.name(getText("KDL007_6"));
                     }
                 }).fail(x => alert(x));
@@ -212,12 +224,12 @@ module nts.uk.at.view.kmk005 {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('000');
+                                    model.id('');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('000');
+                            model.id('');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -231,8 +243,16 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 0 // add/update mode
                     };
-
-                service.saveData(command).done(x => self.start()).fail(x => alert(x));
+                if (data.id !== '') {
+                    service.saveData(command)
+                        .done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        })
+                        .fail(x => alert(x));
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
+                }
             }
 
             removeData() {
@@ -243,7 +263,10 @@ module nts.uk.at.view.kmk005 {
                         action: 1 // remove mode
                     };
 
-                service.saveData(command).done(x => self.start()).fail(x => alert(x));
+                service.saveData(command).done(() => {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                    self.start();
+                }).fail(x => alert(x));
             }
         }
 
@@ -262,6 +285,14 @@ module nts.uk.at.view.kmk005 {
 
                 self.id(param.id);
                 self.name(param.name);
+
+                self.id.subscribe(x => {
+                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                    if (acts && acts.id == 'G') {
+                        view.removeAble(!!x);
+                    }
+                });
             }
         }
     }

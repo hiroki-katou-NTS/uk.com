@@ -14,59 +14,87 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshstEmp60hVacation.
  */
 @Setter
 @Getter
 @Entity
 @Table(name = "KSHST_EMP_60H_VACATION")
 public class KshstEmp60hVacation extends KshstSixtyHourVacationSetting implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
-    /** The kshst emp 60 h vacation PK. */
-    @EmbeddedId
-    protected KshstEmp60hVacationPK kshstEmp60hVacationPK;
-    
-    
-    
-    public KshstEmp60hVacation() {
-    	super();
-    }
 
-    public KshstEmp60hVacation(KshstEmp60hVacationPK kshstEmp60hVacationPK) {
-        this.kshstEmp60hVacationPK = kshstEmp60hVacationPK;
-    }  
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (kshstEmp60hVacationPK != null ? kshstEmp60hVacationPK.hashCode() : 0);
-        return hash;
-    }
+	/** The kshst emp 60 h vacation PK. */
+	@EmbeddedId
+	protected KshstEmp60hVacationPK kshstEmp60hVacationPK;
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstEmp60hVacation)) {
-            return false;
-        }
-        KshstEmp60hVacation other = (KshstEmp60hVacation) object;
-        if ((this.kshstEmp60hVacationPK == null && other.kshstEmp60hVacationPK != null) || (this.kshstEmp60hVacationPK != null && !this.kshstEmp60hVacationPK.equals(other.kshstEmp60hVacationPK))) {
-            return false;
-        }
-        return true;
-    }
+	/**
+	 * Instantiates a new kshst emp 60 h vacation.
+	 */
+	public KshstEmp60hVacation() {
+		super();
+	}
 
-    @Override
-    public String toString() {
-        return "entity.KshstEmp60hVacation[ kshstEmp60hVacationPK=" + kshstEmp60hVacationPK + " ]";
-    }
+	/**
+	 * Instantiates a new kshst emp 60 h vacation.
+	 *
+	 * @param kshstEmp60hVacationPK
+	 *            the kshst emp 60 h vacation PK
+	 */
+	public KshstEmp60hVacation(KshstEmp60hVacationPK kshstEmp60hVacationPK) {
+		this.kshstEmp60hVacationPK = kshstEmp60hVacationPK;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (kshstEmp60hVacationPK != null ? kshstEmp60hVacationPK.hashCode() : 0);
+		return hash;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KshstEmp60hVacation)) {
+			return false;
+		}
+		KshstEmp60hVacation other = (KshstEmp60hVacation) object;
+		if ((this.kshstEmp60hVacationPK == null && other.kshstEmp60hVacationPK != null)
+				|| (this.kshstEmp60hVacationPK != null
+						&& !this.kshstEmp60hVacationPK.equals(other.kshstEmp60hVacationPK))) {
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "entity.KshstEmp60hVacation[ kshstEmp60hVacationPK=" + kshstEmp60hVacationPK + " ]";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.kshstEmp60hVacationPK;
 	}
-    
+
 }

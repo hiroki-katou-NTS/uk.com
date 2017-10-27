@@ -127,10 +127,8 @@ button.nts-switch-button {
 	padding: 10px 5px;
 	margin: 11px 156px;
 }
-.copy_btn{
-	margin-left: -45px;
-	margin-right: 19px;
-}
+
 .bottom_area_style{
-	height: 150px !important;
+	height: 130px !important;
 }
+#checkOverwritting {background-color: #F7EFD4; padding: 10px 25px; margin-bottom: 10px;}

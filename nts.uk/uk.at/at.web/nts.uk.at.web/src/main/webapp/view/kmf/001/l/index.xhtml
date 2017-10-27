@@ -21,14 +21,10 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-			<div id="functions-area">
-				<div style="margin: 7px 20px;">
-					<button class="pull-left btn-default"
-						data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
-					<button class="proceed btn-default" data-bind="click: save"
-						tabindex="2">#{i18n.getText('KMF001_28')}</button>
-					<label class="pull-right btn-default">#{i18n.getText('KMF001_29')}</label>
-				</div>
+			<div id="functions-area" class="fix-on-top">
+				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
+				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+				<label class="pull-right" style="margin-right: 20px;" tabindex="3">#{i18n.getText('KMF001_29')}</label>
 			</div>
 
 			<div id="contents-area">
@@ -61,23 +57,8 @@
 							</tr>
 							<tr>
 								<td><label>#{i18n.getText('KMF001_109')}</label></td>
-								<td><div tabindex="5">
-										<input id="nursing-month"
-											data-bind="ntsNumberEditor: {
-									value: nursingMonth,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>月</span> <input id="nursing-day"
-											style="margin-left: 10px;"
-											data-bind="ntsNumberEditor: {
-									value: nursingDay,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>日</span>
+								<td><div tabindex="5"
+										data-bind="ntsMonthDays: {value: monthDay, enable: enableNursing}" >
 									</div></td>
 								<td><div></div></td>
 							</tr>
@@ -86,16 +67,17 @@
 								<td><label>#{i18n.getText('KMF001_110')}</label></td>
 								<td class="target-child">
 									<div>
-										<label>#{i18n.getText('KMF001_111')}</label> <input
-											id="nursing-number-leave-day" style="float: right;"
+										<label>#{i18n.getText('KMF001_111')}</label>
+										<div style="display: inline;float: right;"><input
+											id="nursing-number-leave-day"
 											tabindex="6" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
 											constraint: 'NumberDayNursing',
 											name: '#[KMF001_111]',
 											required: enableNursing,
-											option: $parent.textEditorOption,
-											enable: enableNursing}" />
+											option: $parent.numberEditorOption,
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td></td>
@@ -105,16 +87,17 @@
 								<td><label></label></td>
 								<td>
 									<div>
-										<label>#{i18n.getText('KMF001_112')}</label> <input
-											id="nursing-number-person" style="float: right;" tabindex="7"
+										<label>#{i18n.getText('KMF001_112')}</label>
+										<div style="display: inline;float: right;"><input
+											id="nursing-number-person" tabindex="7"
 											class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
 											constraint: 'NumberDayNursing',
 											name: '#[KMF001_112]',
 											required: enableNursing,
-											option: $parent.textEditorOption,
-											enable: enableNursing}" />
+											option: $parent.numberEditorOption,
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td><label>#{i18n.getText('KMF001_113')}</label></td>
@@ -123,21 +106,19 @@
 							<tr>
 								<td><label>#{i18n.getText('KMF001_114')}</label></td>
 								<td>
-									<div>
-										<input class="nts-input"
+										<input id="work-type-code-nursing" class="nts-input" tabindex="-1"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
 											name: '#[KMF001_114]',
 											required: enableNursing,
 											option: {
-												width: '92.5%',
+												width: '300',
 												textalign: 'left'
 											},
 											readonly: true,
 											enable: enableNursing}" />
-									</div>
 								</td>
-								<td><button tabindex="8" data-bind="enable: enableNursing">#{i18n.getText('KMF001_127')}</button></td>
+								<td><button tabindex="8" data-bind="enable: enableNursing, click: openDialog">#{i18n.getText('KMF001_127')}</button></td>
 							</tr>
 						</table>
 					</div>
@@ -149,7 +130,7 @@
 							<thead>
 								<div data-bind="ntsFormLabel: {required: true}"
 									style="margin-right: 50px;">#{i18n.getText('KMF001_116')}</div>
-								<span tabindex="9"
+								<span tabindex="9" id ="child-manage-nursing"
 									data-bind="ntsSwitchButton: {
 												options: $parent.manageDistinctList,
 												optionsValue: 'value',
@@ -170,23 +151,7 @@
 							</tr>
 							<tr>
 								<td><label>#{i18n.getText('KMF001_117')}</label></td>
-								<td><div tabindex="10">
-										<input id="child-nursing-month"
-											data-bind="ntsNumberEditor: {
-									value: nursingMonth,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>月</span> <input id="child-nursing-day"
-											style="margin-left: 10px;"
-											data-bind="ntsNumberEditor: {
-									value: nursingDay,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>日</span>
+								<td><div tabindex="10" data-bind="ntsMonthDays: {value: monthDay, enable: enableNursing}">
 									</div></td>
 								<td><div></div></td>
 							</tr>
@@ -196,15 +161,15 @@
 								<td class="target-child">
 									<div>
 										<label style="padding-left: 0px">#{i18n.getText('KMF001_119')}</label>
-										<input id="child-nursing-number-leave-day"
-											style="float: right;" tabindex="11" class="nts-input"
+										<div style="display: inline;float: right;"><input id="child-nursing-number-leave-day"
+											tabindex="11" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
 											name: '#[KMF001_119]',
 											constraint: 'NumberDayNursing',
 											required: enableNursing,
-											option: $parent.textEditorOption,
-											enable: enableNursing}" />
+											option: $parent.numberEditorOption,
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td></td>
@@ -214,16 +179,17 @@
 								<td><label></label></td>
 								<td>
 									<div>
-										<label>#{i18n.getText('KMF001_120')}</label> <input
-											id="child-nursing-number-person" style="float: right;"
+										<label>#{i18n.getText('KMF001_120')}</label>
+										<div style="display: inline;float: right;"><input
+											id="child-nursing-number-person"
 											tabindex="12" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
 											constraint: 'NumberDayNursing',
 											name: '#[KMF001_120]',
 											required: enableNursing,
-											option: $parent.textEditorOption,
-											enable: enableNursing}" />
+											option: $parent.numberEditorOption,
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td></td>
@@ -233,20 +199,20 @@
 								<td><label>#{i18n.getText('KMF001_121')}</label></td>
 								<td>
 									<div>
-										<input class="nts-input"
+										<input id="work-type-code-child-nursing" class="nts-input" tabindex="-1"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
 											name: '#[KMF001_121]',
 											required: enableNursing,
 											option: {
-												width: '92.5%',
+												width: '300',
 												textalign: 'left'
 											},
 											readonly: true,
 											enable: enableNursing}" />
 									</div>
 								</td>
-								<td><button tabindex="13" data-bind="enable: enableNursing">#{i18n.getText('KMF001_127')}</button></td>
+								<td><button tabindex="13" data-bind="enable: enableNursing, click: openDialog">#{i18n.getText('KMF001_127')}</button></td>
 							</tr>
 						</table>
 					</div>

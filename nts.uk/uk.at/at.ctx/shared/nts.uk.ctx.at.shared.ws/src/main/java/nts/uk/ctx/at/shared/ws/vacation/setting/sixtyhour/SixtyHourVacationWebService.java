@@ -15,13 +15,14 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.command.Com60HourVacationSaveCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.command.Com60HourVacationSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.command.Emp60HourVacationSaveCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.command.Emp60HourVacationSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.SixtyHourVacationFinder;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.Emp60HourVacationDto;
-import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.SixtyHourVacationSettingDto;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.sixtyhours.Com60HourVacationSaveCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.sixtyhours.Com60HourVacationSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.sixtyhours.Emp60HourVacationSaveCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.sixtyhours.Emp60HourVacationSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.SixtyHourVacationFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.Emp60HourVacationDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingCheckDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -142,5 +143,16 @@ public class SixtyHourVacationWebService {
 	@Path("enum/timedigestiveunit")
 	public List<EnumConstant> getTimeDigestiveUnit() {
 		return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
+	}
+	
+	/**
+	 * Check manange setting.
+	 *
+	 * @return the sixty hour vacation setting check dto
+	 */
+	@POST
+	@Path("com/check/manage")
+	public SixtyHourVacationSettingCheckDto checkManangeSetting() {
+		return this.sixtyHourVacationFinder.checkManangeSetting();
 	}
 }

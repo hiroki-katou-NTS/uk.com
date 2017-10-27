@@ -5,14 +5,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemAddCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemUpdateCommandhandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommandhandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemFinder;
 
@@ -37,6 +36,12 @@ public class BonusPayTimeItemWebService extends WebService {
 	@Path("getListBonusPayTimeItem")
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
+	}	
+
+	@POST
+	@Path("getListBonusPayTimeItemInUse")
+	public List<BPTimeItemDto> getListBonusPayTimeItemInUse() {
+		return this.bpTimeItemFinder.getListBonusPayTimeItemInUse();
 	}
 	
 	@POST
@@ -50,16 +55,26 @@ public class BonusPayTimeItemWebService extends WebService {
 	public List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItem();
 	}
+
 	@POST
-	@Path("getBonusPayTimeItem/{timeItemId}")
-	public BPTimeItemDto getBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
-		return this.bpTimeItemFinder.getBonusPayTimeItem(timeItemId);
+	@Path("getListSpecialBonusPayTimeItemInUse")
+	public List<BPTimeItemDto> getListSpecialBonusPayTimeItemInUse() {
+		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItemInUse();
 	}
-	@POST
-	@Path("getSpecialBonusPayTimeItem/{timeItemNo}")
-	public BPTimeItemDto getSpecialBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
-		return this.bpTimeItemFinder.getSpecialBonusPayTimeItem(timeItemId);
-	}
+
+	// cann't find this Path in UI 
+//	@POST
+//	@Path("getBonusPayTimeItem/{timeItemId}")
+//	public BPTimeItemDto getBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
+//		return this.bpTimeItemFinder.getBonusPayTimeItem(timeItemId);
+//	}
+	
+	// cann't find this Path in UI 
+//	@POST
+//	@Path("getSpecialBonusPayTimeItem/{timeItemNo}")
+//	public BPTimeItemDto getSpecialBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
+//		return this.bpTimeItemFinder.getSpecialBonusPayTimeItem(timeItemId);
+//	}
 	
 	@POST
 	@Path("addListBonusPayTimeItem")

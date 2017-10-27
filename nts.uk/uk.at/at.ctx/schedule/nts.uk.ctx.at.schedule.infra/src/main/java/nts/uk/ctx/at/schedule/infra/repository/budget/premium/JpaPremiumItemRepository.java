@@ -22,9 +22,11 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 
 	private final String findAll = "SELECT a FROM KmnmtPremiumItem a WHERE a.kmnmpPremiumItemPK.companyID = :CID";
 	
+	private final String findByListDisplayNumber = findAll + " AND a.kmnmpPremiumItemPK.displayNumber IN :displayNumbers";
+	
 	@Override
 	public void update(PremiumItem premiumItem) {
-		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getID()), KmnmtPremiumItem.class).get();
+		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getDisplayNumber()), KmnmtPremiumItem.class).get();
 		if(premiumItem.getUseAtr().equals(UseAttribute.Use)){
 			item.setUseAtr(premiumItem.getUseAtr().value);
 			item.setName(premiumItem.getName().v());
@@ -40,6 +42,14 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 				.getList(x -> convertToDomain(x));
 	}
 	
+	@Override
+	public List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers) {
+		return this.queryProxy().query(findByListDisplayNumber, KmnmtPremiumItem.class)
+				.setParameter("CID", companyID)
+				.setParameter("displayNumbers", displayNumbers)
+				.getList(x -> convertToDomain(x));
+	}
+	
 	/**
 	 * convert PremiumItem Entity Object to PremiumItem Domain Object
 	 * @param kmnmtPremiumItem PremiumItem Entity Object
@@ -48,10 +58,10 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	private PremiumItem convertToDomain(KmnmtPremiumItem kmnmtPremiumItem){
 		return new PremiumItem(
 				kmnmtPremiumItem.kmnmpPremiumItemPK.companyID, 
-				kmnmtPremiumItem.kmnmpPremiumItemPK.iD,
-				kmnmtPremiumItem.attendanceID,
+				kmnmtPremiumItem.kmnmpPremiumItemPK.displayNumber,
 				new PremiumName(kmnmtPremiumItem.name), 
-				kmnmtPremiumItem.displayNumber, 
 				EnumAdaptor.valueOf(kmnmtPremiumItem.useAtr, UseAttribute.class));
 	}
+
+	
 }

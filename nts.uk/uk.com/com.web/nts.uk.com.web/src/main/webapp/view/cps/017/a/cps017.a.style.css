@@ -1,0 +1,99 @@
+#history_lst_grid{
+	width: 266px;
+}
+
+#history_lst{
+	width: 266px;
+}
+
+#content-left {
+	margin-top: 10px;
+	margin-left: 10px !important;
+}
+
+#content-center {
+	margin-top: 10px;
+	width: 380px !important;
+}
+
+#content-right {
+	margin-left: 40px;
+	margin-top: 10px;
+	width: 600px !important;
+	float: left;
+	margin-top: 10px;
+}
+
+#item_register_grid_headers {
+	max-width: 310px;
+	padding-right: 17px;
+	width: 310px;
+}
+
+#sel_item_grid_container {
+	width: 200px !important;
+}
+
+#sel_item_grid {
+	height: initial !important;
+	width: 200px;
+}
+
+#caret {
+	margin-left: 94px;
+	font-size: 2rem;
+}
+
+#history_lst-grid {
+	width: 235px !important;
+}
+
+#history {
+	margin-bottom: 10px;
+}
+
+#history_lst_grid_container {
+	width: 235px !important;
+}
+
+.col1 {
+	width: 150px;
+}
+
+.col2 {
+	width: 150px;
+}
+
+#register {
+	margin-top: 30px;
+}
+
+#itemRegisterLst {
+	margin-top: 20px;
+}
+
+#code {
+	width: 100px;
+}
+
+#name {
+	width: 250px;
+}
+
+#externalCode {
+	width: 100px;
+}
+
+#memo {
+	width: 400px;
+	height: 200px;
+}
+
+.distance {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.formlabel {
+	margin-top: 10px;
+}

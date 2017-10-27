@@ -5,7 +5,8 @@ module nts.uk.at.view.kmk005.g.service {
     let paths: any = {
         'get': 'at/share/cpBonusPaySetting/getSetting',
         'save': 'at/share/cpBonusPaySetting/saveSetting',
-        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
+        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}',
+        getUseSetting: "at/share/bpUnitUseSetting/getSetting",
     }
 
     export function getData() {
@@ -19,4 +20,9 @@ module nts.uk.at.view.kmk005.g.service {
     export function saveData(command: any) {
         return ajax(paths.save, command);
     }
+
+    export function getUseSetting(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getUseSetting);
+    }
+    
 }

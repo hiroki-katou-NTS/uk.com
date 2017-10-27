@@ -5,7 +5,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
         yearMonthPicked: KnockoutObservable<number>;
         cssRangerYM: any;
         optionDates: KnockoutObservableArray<any>;
-        firstDay: number;
+        firstDay: KnockoutObservable<number>;
         yearMonth: KnockoutObservable<number>;
         startDate: number;
         endDate: number;
@@ -14,12 +14,14 @@ module nts.uk.at.view.kcp006.a.viewmodel {
         eventUpdatable: KnockoutObservable<boolean>;
         holidayDisplay: KnockoutObservable<boolean>;
         cellButtonDisplay: KnockoutObservable<boolean>;
+        showCalendarHeader: KnockoutObservable<boolean>;
         workplaceName: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
             self.yearMonthPicked = ko.observable(200005);
             self.cssRangerYM = {
+                2000: [5,10]
             };
             self.optionDates = ko.observableArray([
                 {
@@ -72,7 +74,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
                     ]
                 }
             ]);
-            self.firstDay = 0;
+            self.firstDay = ko.observable(0);
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("0");
@@ -81,10 +83,17 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             self.eventUpdatable = ko.observable(true);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
-            nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
-                alert(date);
-            };
+            self.showCalendarHeader = ko.observable(true);
+            $("#calendar").ntsCalendar("init", {
+                buttonClick: function(date) {
+                    alert(date);
+                },
+                cellClick: function(date) {
+                    alert(date);
+                }
+            });
         }
 
     }
+
 }

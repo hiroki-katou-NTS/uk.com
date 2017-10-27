@@ -14,10 +14,10 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command.NursingLeaveCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command.NursingLeaveCommandHandler;
-import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.NursingLeaveFinder;
-import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.dto.NursingLeaveSettingDto;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.NursingLeaveCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.NursingLeaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.NursingLeaveFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -66,5 +66,16 @@ public class NursingLeaveWs extends WebService {
     @Path("find/setting")
     public List<NursingLeaveSettingDto> findByCompanyId() {
         return this.nursingFinder.findNursingLeaveByCompanyId();
+    }
+    
+    /**
+     * Find list work type code by company id.
+     *
+     * @return the list
+     */
+    @POST
+    @Path("find/listworktypecode")
+    public List<String> findListWorkTypeCodeByCompanyId() {
+        return this.nursingFinder.findListWorkTypeCodeByCompanyId();
     }
 }

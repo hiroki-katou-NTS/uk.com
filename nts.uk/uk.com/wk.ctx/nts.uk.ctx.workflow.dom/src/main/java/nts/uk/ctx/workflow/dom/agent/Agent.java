@@ -174,22 +174,22 @@ public class Agent extends AggregateRoot {
 		this.checkAgentRequest();
 		
 		List<RangeDate> rangeDateList1 = agentSidList.stream()
-				.filter(x->x.getAgentSid1().equals(this.agentSid1) && !this.requestId.equals(x.getRequestId().toString()))
+				.filter(x->this.agentSid1.equals(x.getAgentSid1()) && !this.requestId.equals(x.getRequestId().toString()))
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
 		List<RangeDate> rangeDateList2 = agentSidList.stream()
-				.filter(x->x.getAgentSid2().equals(this.agentSid2) && !this.requestId.equals(x.getRequestId().toString()))
+				.filter(x->this.agentSid2.equals(x.getAgentSid2()) && !this.requestId.equals(x.getRequestId().toString()))
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
 		List<RangeDate> rangeDateList3 = agentSidList.stream()
-				.filter(x->x.getAgentSid3().equals(this.agentSid3) && !this.requestId.equals(x.getRequestId().toString()))
+				.filter(x->this.agentSid3.equals(x.getAgentSid3()) && !this.requestId.equals(x.getRequestId().toString()))
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
 		List<RangeDate> rangeDateList4 = agentSidList.stream()
-				.filter(x->x.getAgentSid4().equals(this.agentSid4) && !this.requestId.equals(x.getRequestId().toString()))
+				.filter(x->this.agentSid4.equals(x.getAgentSid4()) && !this.requestId.equals(x.getRequestId().toString()))
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
@@ -239,6 +239,9 @@ public class Agent extends AggregateRoot {
 		}
 	}
 	
+	/**
+	 * check agentAppType by agentSid
+	 */
 	private void checkAgentRequest() {
 		if ((this.agentAppType1 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid1 == "")
 		|| ( this.agentAppType2 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid2 == "")

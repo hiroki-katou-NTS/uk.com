@@ -1,0 +1,430 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<!-- COMPONENT CCG001 -->
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- #CCG001 -->
+			<com:stylefile path="ksu001.a.main.css" />
+			<com:scriptfile path="ksu001.a.start.js" />
+			<com:scriptfile path="ksu001.a.vm.js" />
+			<com:scriptfile path="ksu001.a.service.js" />
+
+			<com:stylefile path="../o/ksu001.o.main.css" />
+			<com:scriptfile path="../o/ksu001.o.vm.js" />
+			<com:scriptfile path="../o/ksu001.o.service.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div data-bind="with: viewA">
+				<div id="functions-area">
+					<button id="saveData" tabindex="1" class="proceed"
+						data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1')}</button>
+					<button tabindex="2" class="done">#{i18n.getText('KSU001_2')}</button>
+					<button tabindex="3" class="create">#{i18n.getText('KSU001_3')}</button>
+					<button tabindex="7" class="check">#{i18n.getText('KSU001_4')}</button>
+					<button tabindex="10" class="confirm">#{i18n.getText('KSU001_5')}</button>
+					<button tabindex="11" class="release">#{i18n.getText('KSU001_6')}</button>
+					<button tabindex="12" class="output">#{i18n.getText('KSU001_7')}</button>
+					<button tabindex="13" class="hope">#{i18n.getText('KSU001_8')}</button>
+					<button tabindex="14" class="vacation">#{i18n.getText('KSU001_9')}</button>
+					<button tabindex="20" class="revision">#{i18n.getText('KSU001_10')}</button>
+					<button tabindex="21" class="setting">#{i18n.getText('KSU001_11')}</button>
+				</div>
+
+				<div id="popup-area2" class="popup-area popup-panel"
+					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 190px;">
+					<button tabindex="4" class="proceed generally ">#{i18n.getText('KSU001_12')}</button>
+					<span id="generally-created">#{i18n.getText('KSU001_15')}</span><br />
+					<button tabindex="5" class="proceed simulation">#{i18n.getText('KSU001_13')}</button>
+					<span id="simulation-explanation">#{i18n.getText('KSU001_16')}</span><br />
+					<button tabindex="6" class="proceed capture">#{i18n.getText('KSU001_14')}</button>
+					<span id="capture-explanation">#{i18n.getText('KSU001_17')}</span>
+				</div>
+
+				<div id="popup-area3" class="popup-area popup-panel"
+					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 280px; width: 286px;">
+					<span id="alarm-check-explanation">#{i18n.getText('KSU001_18')}</span>
+					<table tabindex="8" id="multi-list"
+						data-bind="ntsGridList: {
+							height: 385,
+							options: items,
+							optionsValue: 'code',
+							columns: columns,
+							multiple: true,
+							value: currentCodeList}">
+					</table>
+					<button tabindex="9" class="proceed execution-popup3">#{i18n.getText('KSU001_21')}</button>
+				</div>
+
+				<div id="popup-area4" class="popup-area popup-panel"
+					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 825px; width: 280px;">
+					<div id="button-top">
+						<button tabindex="15" class="substitute-holiday">#{i18n.getText('Com_CompensationHoliday')}</button>
+						<button tabindex="16" class="pause">#{i18n.getText('Com_SubstituteHoliday')}</button>
+						<button tabindex="17" class="annual-holiday">#{i18n.getText('Com_PaidHoliday')}</button>
+					</div>
+					<div id="button-bot">
+						<button tabindex="18" class="yearly-reserved">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+						<button tabindex="19" class="break">#{i18n.getText('Com_ExsessHoliday')}</button>
+					</div>
+				</div>
+
+				<div id="popup-area5" class="popup-area popup-panel"
+					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 872px;">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_301')}</div>
+					<hr></hr>
+					<div id="work-setting">
+						<div>
+							<button tabindex="22">#{i18n.getText('KSU001_22')}</button>
+							<span>#{i18n.getText('KSU001_30')}</span>
+						</div>
+
+						<div>
+							<button tabindex="23" data-bind="click: openDialogL">#{i18n.getText('KSU001_25')}</button>
+							<span>#{i18n.getText('KSU001_33')}</span>
+						</div>
+
+						<div>
+							<button tabindex="24">#{i18n.getText('KSU001_26')}</button>
+							<span>#{i18n.getText('KSU001_34')}</span>
+						</div>
+
+						<div>
+							<button tabindex="25" data-bind="click: openDialogN">#{i18n.getText('KSU001_27')}</button>
+							<span>#{i18n.getText('KSU001_35')}</span>
+						</div>
+
+						<div>
+							<button tabindex="26">#{i18n.getText('KSU001_28')}</button>
+							<span>#{i18n.getText('KSU001_36')}</span>
+						</div>
+
+						<div>
+							<button tabindex="27">#{i18n.getText('KSU001_29')}</button>
+							<span>#{i18n.getText('KSU001_37')}</span>
+						</div>
+					</div>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_302')}</div>
+					<hr></hr>
+					<div id="company-setting">
+						<div>
+							<button tabindex="28">#{i18n.getText('KSU001_23')}</button>
+							<span>#{i18n.getText('KSU001_31')}</span>
+						</div>
+						<div>
+							<button tabindex="29">#{i18n.getText('KSU001_24')}</button>
+							<span>#{i18n.getText('KSU001_32')}</span>
+						</div>
+					</div>
+				</div>
+
+				<div id="popup-area6" class="popup-area popup-panel">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_86')}</div>
+					<hr></hr>
+					<div style="margin-left: 35px; float: left">
+						<div style="width: 35%; float: left">
+							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_87')}</div>
+							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_88')}</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_91')}</div>
+						</div>
+						<div style="width: 65%; float: left">
+							<div style="margin-bottom: 17px" id="combo-box"
+								data-bind="ntsComboBox: {
+									options: itemList,
+									optionsValue: 'code',
+									value: selectedCode,
+									optionsText: 'name',
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 }
+									]}"></div>
+							<div style="margin-bottom: 15px; margin-left: 0px !important"
+								class="cf"
+								data-bind="ntsSwitchButton: {
+									options: roundingRules,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode,
+									enable: true }"></div>
+							<div id="popup6-radioBox"
+								data-bind="ntsRadioBoxGroup: {
+									options: itemList1,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value: selectedId,
+									enable: true}"></div>
+							<input style="width: 65px"
+								data-bind="ntsTextEditor: {value: ko.observable('')}" />
+						</div>
+					</div>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_92')}</div>
+					<hr></hr>
+					<div style="margin-left: 35px">
+						<div style="width: 35%; float: left">
+							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_93')}</div>
+							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_94')}</div>
+							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_95')}</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_96')}</div>
+						</div>
+						<div style="width: 65%; float: left">
+							<div style="margin-bottom: 18px; margin-left: 0px !important"
+								class="cf"
+								data-bind="ntsSwitchButton: {
+									options: roundingRules,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode,
+									enable: true }"></div>
+							<div style="margin-bottom: 18px; margin-left: 0px !important"
+								class="cf"
+								data-bind="ntsSwitchButton: {
+									options: roundingRules,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode,
+									enable: true }"></div>
+							<div style="margin-bottom: 17px; margin-left: 0px !important"
+								class="cf"
+								data-bind="ntsSwitchButton: {
+									options: roundingRules,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode,
+									enable: true }"></div>
+							<div id="combo-box"
+								data-bind="ntsComboBox: {
+									options: itemList,
+									optionsValue: 'code',
+									value: selectedCode,
+									optionsText: 'name',
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 }
+									]}"></div>
+						</div>
+					</div>
+				</div>
+
+				<div id="popup-area7" class="popup-area popup-panel"
+					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 100px;">
+					<span>#{i18n.getText('KSU001_338')}</span><br />
+					<div style="width: 150px"
+						data-bind="ntsMultiCheckBox: {
+							options: itemList2,
+							optionsValue: 'id',
+							optionsText: 'name',
+							value: selectedIds,
+							enable: true}"></div>
+					<div>
+						<button class="proceed">#{i18n.getText('KSU001_21')}</button>
+					</div>
+				</div>
+
+				<div id="popup-area8" class="popup-area popup-panel"
+					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 100px;">
+					<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_342')}</div>
+					<span>2017/12/12</span><br /> <span>#{i18n.getText('KSU001_343')}</span>
+					<hr />
+					<div>
+						<input style="width: 130px"
+							data-bind="ntsTextEditor: {value: popupVal, enable: false}" />
+					</div>
+					<span>#{i18n.getText('KSU001_344')}</span> <span>#{i18n.getText('KSU001_344')}</span>
+					<hr />
+					<div>
+						<input
+							data-bind="ntsTextEditor: {
+								value: popupVal,
+								option:  ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+					            	textmode: 'text',
+					            	placeholder: '',
+					            	width: '130px',
+					            	textalign: 'left'
+					            })),
+								enable: true,
+								readonly: false}" />
+					</div>
+					<div style="margin-top: 10px">
+						<button id="popup-set" class="proceed" style="margin-left: 25px">#{i18n.getText('KSU001_1')}</button>
+						<button id="close-popup">#{i18n.getText('KSU001_84')}</button>
+					</div>
+				</div>
+
+				<div id="popup-area9" class="popup-area popup-panel">
+					<span>#{i18n.getText('KSU001_306')}</span>
+					<hr />
+					<div>
+						<div class="popup-div">
+							<div id="color-1" class="square"></div>
+							<span>#{i18n.getText('KSU001_310')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-2" class="square"></div>
+							<span>#{i18n.getText('KSU001_311')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-3" class="square"></div>
+							<span>#{i18n.getText('KSU001_312')}</span>
+						</div>
+					</div>
+					<div class="div-popup">
+						<div class="popup-div">
+							<div id="color-4" class="square"></div>
+							<span>#{i18n.getText('KSU001_313')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-5" class="square"></div>
+							<span>#{i18n.getText('KSU001_5')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-6" class="square"></div>
+							<span>#{i18n.getText('KSU001_314')}</span>
+						</div>
+					</div>
+
+					<span>#{i18n.getText('KSU001_307')}</span>
+					<hr />
+					<div class="div-popup">
+						<div class="popup-div">
+							<div id="color-7" class="square"></div>
+							<span>#{i18n.getText('KSU001_315')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-8" class="square"></div>
+							<span>#{i18n.getText('KSU001_316')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-9" class="square"></div>
+							<span>#{i18n.getText('KSU001_317')}</span>
+						</div>
+					</div>
+
+					<span>#{i18n.getText('KSU001_308')}</span>
+					<hr />
+					<div>
+						<div class="popup-div">
+							<div id="color-10" class="square"></div>
+							<span>#{i18n.getText('KSU001_318')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-11" class="square"></div>
+							<span>#{i18n.getText('KSU001_319')}</span>
+						</div>
+					</div>
+					<div class="div-popup">
+						<div class="popup-div">
+							<div id="color-12" class="square"></div>
+							<span>#{i18n.getText('KSU001_320')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-13" class="square"></div>
+							<span>#{i18n.getText('KSU001_21')}</span>
+						</div>
+					</div>
+
+					<span>#{i18n.getText('KSU001_309')}</span>
+					<hr />
+					<div>
+						<div class="popup-div" style="width: 305px !important">
+							<div id="color-14" class="square"></div>
+							<span>#{i18n.getText('KSU001_322')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-15" class="square"></div>
+							<span>#{i18n.getText('KSU001_323')}</span>
+						</div>
+					</div>
+					<div class="div-popup">
+						<div class="popup-div" style="width: 305px !important">
+							<div id="color-16" class="square"></div>
+							<span>#{i18n.getText('KSU001_324')}</span>
+						</div>
+						<div class="popup-div">
+							<div id="color-6" class="square"></div>
+							<span>#{i18n.getText('KSU001_314')}</span>
+						</div>
+					</div>
+				</div>
+
+				<div id="ccgcomponent_contents">
+					<div class="left-content">
+						<div id="ccgcomponent"></div>
+					</div>
+					<div class="right-content">
+						<div id="top-area">
+							<div>
+								<span data-bind="text: workPlaceNameDisplay"></span> <span
+									data-bind="text: lengthListSid"></span>
+							</div>
+							<div id="top-area-2">
+								<button tabindex="-1" id="prevMonth">
+									<img class="img-icon"
+										src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAcCAYAAACK7SRjAAAEY0lEQVRIS61WXUsjZxQ+0w/aSgVLLyrBtJQiXtRtV/GiJpbSXkSXHehdqL3tH/BGMciS+RstJJFkEqPBKLVaFUN0xRAxBIKEoAmpJCEaNeiOoZmPd2bKO81kXyej24vmNuc88zzn4zkvBf/jT1VVKhKJvAUAbwOATL0JGycAQDsBABSKolRjXivuPQDoAYAuAHj1KDiZkM/nu/r7+19pSRSFTMDfAYBeAPjq5OTko4GBgeyD4ASw5e7ubtDj8XRPTU1lAeCUoqi/SfBW7IcAMFSr1Sb8fv/709PTf5qCk8AAMBqNRu2np6fS7OzsHwCQpCjqTgcnYq2CIDiCweBErVa7c7lcwYfAdYn24+NjemVlZZCiqMKLFy/mAWCfoigOgxtI2DY2NuhMJvNEFMVTt9vt6QAnJdbrdef8/LyD5/kehFDS7Xb/BgAvCfA2iVQqRW9vb9sQQt2qqmqx98BJiYqiOBYXF51nZ2dDoigqqqruMwzzqw5OkqhUKs5QKOSQJMmKEBL02Da4UeLh4SEdi8XsCKFeRVFwA1/q4ACAa47HztpoNByhUMhZr9eHBEHATcX/abEkeFvi+fk5HQgEbKIoWhBCGKSdgGsOAAIAWADAtry8TOfzeTvP83gMMQbux2twUqIsy85AIOC4uLiw8jyPgTGBdgIAJFpLYk8kEnQ8HrfJsmxRFKUjVmOuqir+Yh8AjMfj8clkMjnckqgr08FxQ9MA8EWxWHSGw2GHoii4zjowhnvNnGA9XCqVJlmWHVcUpQ8hhD+o/ziKovbdbjcexb84jvvG7/c7OY7DzcZ1JgfjHrjGWpKkcY/HM3lzc2NkrbNJMAzzOzYklmW/r1QqY0SdyYW9B45N5unm5ubP6XT6uSRJfa0yGROOGIZJxGKxT5LJ5LcIoc9VVSXL0VbZbqiqqljWaCQS+aVQKPwgCMLHLRc0BV9dXbXkcrnvBEH4DADeNXHVDuZfNxqNn7xe70Sj0fhUFEUjI5yAy7KOEPrA5/M9r9frwzzPG+vd0VB9vsey2eyP0Wh0DFunLMtmDQ3ima9WqxPBYNAhiqJVkiQzIv/OObnyAOBYW1tzZrPZIQMrXaoHWy4APMlkMvT6+ro247Ism48i4W6aHzebTafP53Pc3t5aifKQc54EgG68nVtbW3Q6nbaLothLDMH9DSUWCa+wvVgs0uFwmGRltv6af2Nzq1arpFJTcLwIWJ7mGTs7O/TR0ZHOysy4NKVXV1fapnIcp9e/07gM5q+xYlnWeXl5+ZDlto0ul8vR0WjUpigK9phOyzWcLY0V9mmWZR0IoR5Zlu8dC+Mp3N3dfZZIJEYlScL96DwWxAfarA4ODui9vb1BSZIKLW8xPXOyLI8uLS09K5VKXzabzQLDMPNvPNA4aWFhwV4ulyWXy/XYgbZwHDcaCATsHMdpsf/paXF9fT3o9Xq7Z2ZmHntaaMNQLpcH/X5/99zc3MPvFkODe1KpVNfIyMhjjyJ92tqx/wDegT1EzA0zRAAAAABJRU5ErkJggg==" />
+								</button>
+								<span id="date-time-prev" data-bind="text: dateTimePrev"></span><span id="special">#{i18n.getText('KSU001_66')}</span>
+								<span id="date-time-after" data-bind="text: dateTimeAfter"></span>
+								<button tabindex="-1" id="nextMonth">
+									<img class="img-icon"
+										src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAdCAYAAABBsffGAAAEg0lEQVRIS61WTUtrVxRd9577lUSNUTT4ARItJalEVAiYVh0E4gd+BJGISYwmDl7BX5EMRP/EmxRpS0YWUrQOOvAZdZZXtNBBhaJixfLgtUrANvWUfXuvL5popPTCne299jpr77P2ETjnAgARAAPwN4A7QRA4/odP4JxLAOzGXwDwHsDt4wL/hQSBWwF8fHR01O31eq8B/ATgNyoA4E86DRUySRwdHdm9Xu+TJEoPTFm1AAbW19cnk8mkxel0HgP4BcCvAE4BvBMEoWiSWF9f704mk9dG3EWlU5oFCLwOwNDa2lrC6XR+Eo1Gf9c0jZJ+ALAN4EdBEAomibW1tUmn0ylFIpFdi8WSA3BJxSu1yAQfTqfTrxRF+ay3t1cbHx8n3Q8AfAHgjdEHOuFQOp1OKIri6uvrOxwbG8sAyAO4qTQE9+CpVOpzxtiwJEl1ExMThZ6enrcAvgTwLYBzANQbnYQoiv2MsZOpqamM1+vdAXBWSZ4H4JQsy3KdpmnFxcXF86amJgKmAlSIpmqYSAD4VFGUgqqquXg8nm1ubt4HUKZ/GTgAAuctLS3vY7HYG0mSXhvS3JEsBC4IwhDnXKXetLS07EcikayiKGX6VwQXBAGyLBd8Pt/bYDBoSvMHMTaYDwOoFQThVpblM5/PtxMMBsv0rwhOnWeMFUVRPJ+dnf3O7XZ/BeBnAP2pVOoVyUMnBMAZYzec83w4HM54PJ4H+j8JTomKotyoqppPJBKZxsbGQwAumhbO+ZABTjyKiqJckv7Ly8tZh8PxQX9jzs1GmYzMsS1qmnbZ1taWi8Viu6IoSul0epJzPkCyGEHkQ7ekf1tb20E0Gt1ijNEYXzzHnHK5KIq3kiRdDAwMHAcCgetUKtVNdmGMpkmiNG4/EAhkAeSqgesFGGNU4H04HC5sbGyYJkejWfqZcadzc3PbXV1dX78EHJzzO03T/rLb7cWrqysClQ2bfoj+b9w7u93+/crKyuuXgOtHJguYnp4ubG5uPsnciDudmpra7uvrq8r8vlkej+c4FAo9pbk+NdR8j8ezFwqFvgGwV415UVXVy8bGxtzCwsKu1WqtNC16X1RVvWloaMjH4/GM1WrV5/3ZOZdl+UaW5fzCwkKmtbX1qTnnsizfKopyFolEdtrb2z/c1CfmXNdZFMWz0dHRHZ/PRwknlW4oxTHGLkZGRvZ9Pp8+gqbHV2Kue4aiKBdut3t/ZmbGTKDVVuYtRtzBzMzMlrED7t2xEriVdK6vr88tLi5mbTabeZ3Vx66oquqFw+E4iMfjWzabTb+Vpb7+AJyslDEmiqKYj8VimY6OjnsjMq77vZ9LklRgjOXm5+ezLpfreT+nDUOLmm5iIBDY8fv9DyzU7I0R1y9J0kkgEMj4/f6qm4iWQMJisXzU0dFxHA6Hs8SqdPmai5ziNE1zdXZ2Hs7NzVXdofrTgrZ6TU2NvLS0lKurqyvTr3T719bWSolEYrempqbq9tcfRaurq93RaPTa5XLRu6VsH5rvlmpxjx9F+nNub2/PPjg4+Nxz7kVxpeD/APUJYCJ8MZ+EAAAAAElFTkSuQmCC" />
+								</button>
+
+								<label class="ml-30">#{i18n.getText('KSU001_38')}:</label>
+								<div tabindex="-1" class="cf"
+									data-bind="ntsSwitchButton: {
+										options: timePeriod,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedTimePeriod}">
+								</div>
+								<label class="ml-30">#{i18n.getText('KSU001_42')}:</label>
+								<div tabindex="-1" class="cf"
+									data-bind="ntsSwitchButton: {
+										options: modeDisplay,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedModeDisplay}">
+								</div>
+								<label class="ml-30">#{i18n.getText('KSU001_46')}:</label>
+								<div tabindex="-1" class="cf"
+									data-bind="ntsSwitchButton: {
+										options: modeDisplayObject,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedModeDisplayObject}">
+								</div>
+								<button tabindex="-1" class="color-button">
+									<img src="color.png" style="width: 20px;" />
+								</button>
+								<button tabindex="-1" class="setting-button">
+									<img src="設定.png" style="width: 20px;" />
+								</button>
+							</div>
+						</div>
+
+						<div id="oViewModel">
+							<div data-bind="with: $parent.viewO">
+								<ui:include src="../o/index.xhtml" />
+							</div>
+						</div>
+						<div>
+							<div id="extable"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

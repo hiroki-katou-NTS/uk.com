@@ -22,7 +22,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	
 	private static final String SELECT_AGENT_SID;
 
-
+	private static final String SELECT_AGENT_SID_DATE;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -43,8 +43,9 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.startDate >= :startDate");
-		builderString.append(" AND e.endDate <= :endDate");
+		builderString.append(" AND NOT (e.startDate > :endDate");
+		builderString.append(" OR e.endDate < :startDate)");
+		builderString.append(" ORDER BY e.startDate DESC");
 		SELECT_AGENT_BY_DATE = builderString.toString(); 
 		
 		builderString = new StringBuilder();
@@ -53,6 +54,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid = :agentSid");
 		SELECT_AGENT_SID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.cmmmtAgentPK.employeeId IN :employeeIds");
+		builderString.append(" AND e.startDate >= :baseDate");
+		builderString.append(" AND e.endDate <= :baseDate");
+		SELECT_AGENT_SID_DATE = builderString.toString();
 		
 		}
 	
@@ -125,6 +135,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.getList(c -> convertToDomain(c));
 	}
 
+	@Override
+	public List<Agent> find(String companyId, List<String> employeeIds, GeneralDate baseDate) {
+		return this.queryProxy().query(SELECT_AGENT_SID_DATE, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeIds", employeeIds)
+				.setParameter("baseDate", baseDate)
+				.getList(c -> convertToDomain(c));
+	}
+	
 	/**
 	 * Add Agent
 	 */

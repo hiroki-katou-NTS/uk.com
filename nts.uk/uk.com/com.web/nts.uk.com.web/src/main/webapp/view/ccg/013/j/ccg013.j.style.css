@@ -25,6 +25,7 @@
 
 table.control {
 	margin-left: 5px;
+	margin-top: 10px
 }
 
 .sp-preview {
@@ -40,16 +41,25 @@ table.control {
 	height: 150px;
 }
 
+#liveview img {
+	width: 270px;
+	height: 200px;
+	padding-top: 0.5em
+}
+
 #imageName {
 	cursor: pointer;
-	color: blue;
-	text-decoration: underline;
 	width: 200px;
 	overflow: hidden;
 	display: inline-block;
 }
 
-.description{
+.text-blue-underline {
+	color: blue;
+	text-decoration: underline;
+}
+
+.description {
 	height: 30px;
 }
 
@@ -57,17 +67,24 @@ table.control {
 	margin: 5px 0px 5px 0px;
 }
 
-.col2{
+.col2 {
 	width: 180px;
 }
-#delBtn{
+
+#delBtn {
 	position: relative;
-    width: 80px;
+	width: 80px;
 }
 
-.pull-right {text-align: right;}
+.pull-right {
+	text-align: right;
+}
 
-.filename{
+.filename {
 	width: 200px;
 	display: none;
+}
+
+.control td {
+	padding-bottom: 0.5em
 }

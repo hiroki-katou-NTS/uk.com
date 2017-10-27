@@ -45,14 +45,21 @@ module nts.uk.ui.koExtentions {
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
-            var optionValue = ko.unwrap(data.optionsValue);
-            var optionText = ko.unwrap(data.optionsText);
+            var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
+            var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
             var selectedValue = ko.unwrap(data.value);
             var editable = ko.unwrap(data.editable);
-            var enable: boolean = ko.unwrap(data.enable);
+            var enable: boolean = data.enable !== undefined ? ko.unwrap(data.enable) : true;
             var columns: Array<any> = ko.unwrap(data.columns);
             var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
-
+            var dropDownAttachedToBody: boolean = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
+            if (dropDownAttachedToBody === null) {
+                if ($(element).closest(".ui-iggrid").length != 0)
+                    dropDownAttachedToBody = true;
+                else
+                    dropDownAttachedToBody = false;
+            }
+            
             // Container.
             var container = $(element);
             var comboMode: string = editable ? 'editable' : 'dropdown';
@@ -61,12 +68,16 @@ module nts.uk.ui.koExtentions {
             var distanceColumns = '     ';
             var fillCharacter = ' '; // Character used fill to the columns.
             var maxWidthCharacter = 15;
+            
             // Default value
             var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-
+            var getValue = function (item){
+                return optionValue === null ? item : item[optionValue];        
+            };
+            
             // Check selected code.
-            if (_.find(options, item => item[optionValue] === selectedValue) === undefined && !editable) {
-                selectedValue = options.length > 0 ? options[0][optionValue] : '';
+            if (_.find(options, item => getValue(item) === selectedValue) === undefined && !editable) {
+                selectedValue = options.length > 0 ?getValue(options[0]) : '';
                 data.value(selectedValue);
             }
 
@@ -92,7 +103,7 @@ module nts.uk.ui.koExtentions {
                         });
 
                     } else {
-                        newOptionText = option[optionText];
+                        newOptionText = optionText === null ? option : option[optionText]; 
                     }
                     // Add label attr.
                     option['nts-combo-label'] = newOptionText;
@@ -126,6 +137,7 @@ module nts.uk.ui.koExtentions {
                     dataSource: options,
                     valueKey: data.optionsValue,
                     visibleItemsCount: visibleItemsCount,
+                    dropDownAttachedToBody : dropDownAttachedToBody,
                     textKey: 'nts-combo-label',
                     mode: comboMode,
                     disabled: !enable,
@@ -138,7 +150,7 @@ module nts.uk.ui.koExtentions {
                     itemTemplate: itemTemplate,
                     selectionChanged: function(evt: any, ui: any) {
                         if (ui.items.length > 0) {
-                            data.value(ui.items[0].data[optionValue]);
+                            data.value(getValue(ui.items[0].data));
                         }
                     }
                 });
@@ -166,13 +178,9 @@ module nts.uk.ui.koExtentions {
                 _.forEach(columns, function(item, i) {
                     var charLength: number = item.length;
                     var width = charLength * maxWidthCharacter + 10;
-                    $dropDownOptions.find('.nts-combo-column-' + i).width(width);
-                    if (i != columns.length - 1) {
-                        $dropDownOptions.find('.nts-combo-column-' + i).css({ 'float': 'left' });
-                    }
+                    $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
                     totalWidth += width + 10;
                 });
-                $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                 container.css({ 'min-width': totalWidth });
             }
 

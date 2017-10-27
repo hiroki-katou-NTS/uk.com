@@ -1,0 +1,62 @@
+body {
+	overflow-y: hidden ;
+}
+
+#table-top {
+	margin-top: 13px;
+	margin-left: 76px;
+}
+
+#table-bottom {
+	margin-left: 170px;
+	margin-top: 5px;
+}
+
+.tbDay {
+	padding: 3px 0px;
+}
+
+#checkedBtn {
+	margin-left: 206px;
+}
+
+#bottom {
+	margin-top: 7px;
+	margin-left: 209px;
+}
+#okBtn{
+	width: 130px;
+    height: 47px;
+}
+#cancelBtn{
+	width: 90px;
+}
+
+.nts-first-radio>.ntsRadioBox:first-child {
+	background-color: #CCFFFF;
+	
+}
+.nts-second-radio>.ntsRadioBox:nth-child(2) {
+	background-color: #FDEADA;
+	
+}
+.nts-thirt-radio>.ntsRadioBox:nth-child(3) {
+	background-color: #DAEEF3;
+	
+}
+.ntsRadioBox{
+	margin: 3px;
+    padding: 5px;
+}
+.ntsCheckBox-label-bottom{
+	background-color: #F7EFD4;
+    padding: 3px;
+    margin: 10px;
+}
+
+div.form-label{
+	height: 30px;
+}
+#functions-area-bottom{
+	    height: 110px;
+}

@@ -85,12 +85,13 @@ module nts.uk.at.view.kmk012.a {
                     }
                    self.lstClosureHistory(dataRes);
                    self.selectCodeLstClosure(data[0]);
-                   self.detailClosure(data[0].id);
                 });
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+            /**
+             * function update UI by selected use class
+             */
             updateDataInit(useClass: number){
                 var self = this;
                 if (useClass == 0) {
@@ -105,6 +106,9 @@ module nts.uk.at.view.kmk012.a {
                 }
             }
             
+            /**
+             * function check first closure
+             */
             checkIsFirstClosure(): boolean{
                 var self = this;
                 if (self.closureModel.closureHistories().length > 0) {
@@ -121,7 +125,7 @@ module nts.uk.at.view.kmk012.a {
                 service.findByIdClosure(closureId).done(function(data: ClosureDto) {
                     self.closureModel.updateData(data);
                     self.selectCodeLstClosureHistory(data.closureSelected);
-                    self.detailClosureHistory(data.closureSelected);
+                    $("#selUseClassification").focus();
                 });
            }
             
@@ -287,7 +291,7 @@ module nts.uk.at.view.kmk012.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('closureId', self.closureModel.closureId());
                 nts.uk.ui.windows.setShared('startDate', self.closureHistoryModel.startDate());
-                nts.uk.ui.windows.sub.modal('/view/kmk/012/d/index.xhtml', 
+                nts.uk.ui.windows.sub.modeless('/view/kmk/012/d/index.xhtml', 
                 { title: '締め期間確認 ', dialogClass: 'no-close' }).onClosed(function(){
                     self.reloadPage(self.closureModel.closureId(), self.closureHistoryModel.startDate());    
                 });

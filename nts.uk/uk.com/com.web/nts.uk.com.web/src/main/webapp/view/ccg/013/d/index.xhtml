@@ -28,7 +28,7 @@
 				<div class="functions-area-content">
 					<div class="top-left-contents">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_47')}</div>
-						<div id="combo-box" class="cbb-system-data" data-bind="ntsComboBox: {
+						<div id="combo-box" tabindex="1" class="cbb-system-data" data-bind="ntsComboBox: {
 							options: systemList,
 							optionsValue: 'systemCode',
 							value: selectedSystemCode,
@@ -37,7 +37,7 @@
 							enable: true,
 							columns: [
 								{ prop: 'systemName', length: 10 }
-							]}, hasfocus: true"></div>
+							]}"></div>
 					</div>
 					
 					<div class="first-caret">
@@ -48,7 +48,7 @@
 						<div style="width: 295px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list1', 
 							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />	
 						<br/>	
-						<table class="left-data" id="multi-list1" data-bind="ntsGridList: {
+						<table class="left-data" id="multi-list1" tabindex="2" data-bind="ntsGridList: {
 								height: 320,
 								options: items,
 								optionsValue: 'primaryKey',
@@ -60,12 +60,12 @@
 					
 					<div class="move-function">
 						<button data-bind="click: add"><i class="icon icon-button-arrow-right"></i></button>
-						<button data-bind="click: remove"><i class="icon icon-button-arrow-left"></i></button>	
+						<button id="remove-items" data-bind="click: remove, enable: disableSwap"><i class="icon icon-button-arrow-left"></i></button>	
 					</div>
 					
 					<div class="right-contents">
 						<button id="d1_13" class="label caret-bottom" data-bind="style: {color: titleBar().textColor, 'background-color': titleBar().backgroundColor},text: titleBar().name">Button</button>
-						<table id="multi-list2" data-bind="ntsGridList: {
+						<table id="multi-list2" tabindex="3" data-bind="ntsGridList: {
 								height: 320,
 								options: newItems,
 								optionsValue: 'primaryKey',
@@ -81,7 +81,8 @@
 									targetSource: newItems,
 									primaryKey: 'primaryKey',
 									comId: '#multi-list2',
-									type: 'grid'
+									type: 'grid',
+									enable: disableSwap
 								}"
 							class="">
 						</div>

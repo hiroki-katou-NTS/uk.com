@@ -59,7 +59,7 @@ public class EraWebServices extends WebService {
 	}
 	@POST
 	@Path("addData")
-	public JavaTypeResult<EraDto>  addData(AddEraCommand command){
+	public EraDto  addData(AddEraCommand command){
 		return this.addEra.handle(command);
 	}
 	

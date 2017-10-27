@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1100,
+					height : 550
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="ksu006.c.service.js" />
+			<com:scriptfile path="ksu006.c.vm.js" />
+			<com:scriptfile path="ksu006.c.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="contents-area">
+				<div style="margin-left: 20px;">
+					<!-- Control C1 -->
+					<div style="margin: 20px 0px;">#{i18n.getText('KSU006_301')}</div>
+					
+					<!-- BEGIN C2_1 ~ C2_7 -->
+					<div>
+						<!-- BEGIN C2_1 ~ C2_2 -->
+							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_302')}</div>
+							<div id="dateRangePickerLog" tabindex="1" data-bind="ntsDateRangePicker: {
+									name: '#[KSU006_303]',
+									startName: '#[KSU006_304]',
+									endName: '#[KSU006_305]',
+									required: true,
+									enable: true,
+									showNextPrevious: false,
+									value: dateRange,
+									maxRange: 'none'}"></div>
+						<!-- END C2_1 ~ C2_2 -->
+						
+						<!-- BEGIN C2_3 ~ C2_6 -->
+							<div class="labelStatus" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_306')}</div>
+							<div tabindex="3" data-bind="ntsCheckBox: {
+								checked: isIncomplete,
+								enable: true,
+								text: '#{i18n.getText('KSU006_307')}'}">
+							</div>
+							<div tabindex="4" data-bind="ntsCheckBox: {
+								checked: isInterruption,
+								enable: true,
+								text: '#{i18n.getText('KSU006_308')}'}"></div>
+							<div tabindex="5" data-bind="ntsCheckBox: {
+								checked: isDone,
+								enable: true,
+								text: '#{i18n.getText('KSU006_309')}'}"></div>
+						<!-- END C2_3 ~ C2_6 -->
+						<button id="btnSearch" tabindex="6" data-bind="click: search">#{i18n.getText('KSU006_310')}</button>
+					</div><!-- END C2_1 ~ C2_7 -->
+					
+					<!-- BEGIN C3 -->
+					<div style="margin-top: 10px;"><table id="single-list" data-bind="ntsGridList: {
+							dataSource: dataLog,
+							primaryKey: 'executeId',
+							columns: listColumn,
+							multiple: false,
+							value: rowSelected,
+							enable: false,
+							rows: 10}, rended: dataLog"></table></div><!-- END C3 -->
+					
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<div id="process">
+					<button class="large" data-bind="click: closeDialog" tabindex="7">#{i18n.getText('KSU006_320')}</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

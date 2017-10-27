@@ -13,7 +13,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 //加給設定名称
-@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(20)
 public class BonusPaySettingName extends StringPrimitiveValue<BonusPaySettingName> {
 

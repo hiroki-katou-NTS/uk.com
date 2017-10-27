@@ -20,7 +20,9 @@ import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
+import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class WebMenuFinder {
@@ -30,6 +32,12 @@ public class WebMenuFinder {
 	
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
+	
+	@Inject
+	private I18NResourcesForUK ukResource;
+	
+	@Inject
+	private PersonalTyingRepository personalTyingRepository;
 
 	/**
 	 * Find a web menu by code
@@ -56,7 +64,7 @@ public class WebMenuFinder {
 	}
 	
 	/**
-	 * 
+	 * Find all item web menu
 	 * @return
 	 */
 	public List<WebMenuDto> findAll() {
@@ -79,9 +87,13 @@ public class WebMenuFinder {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public EditMenuBarDto getEditMenuBarDto() {
-		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class);
-		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class);
+		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, ukResource);
+		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, ukResource);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
 		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
@@ -139,6 +151,31 @@ public class WebMenuFinder {
 					trm.getSystem().value);
 		}).collect(Collectors.toList());
 		return treeMenus;
+	}
+	
+	/**
+	 * Find all Person
+	 * @param employeeId
+	 * @return
+	 */
+	public List<PersonTypeDto> findAllPerson(String employeeId) {
+		String companyId = AppContexts.user().companyId();
+		return personalTyingRepository.findAll(companyId, employeeId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList()); 
+	}
+
+	/**
+	 * Convert to Database
+	 * @param personalTying
+	 * @return
+	 */
+	private PersonTypeDto convertToDbType(PersonalTying personalTying) {
+		PersonTypeDto personTypeDto = new PersonTypeDto();
+		personTypeDto.setWebMenuCode(personalTying.getWebMenuCode());
+		personTypeDto.setEmployeeId(personalTying.getEmployeeId());
+		
+		return personTypeDto;
 	}
 
 }

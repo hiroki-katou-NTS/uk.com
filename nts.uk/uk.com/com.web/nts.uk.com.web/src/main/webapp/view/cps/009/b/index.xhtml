@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 350,
+					height :600
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps009.b.style.css" />
+			<com:scriptfile path="cps009.b.service.js" />
+			<com:scriptfile path="cps009.b.start.js" />
+			<com:scriptfile path="cps009.b.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="cf">
+				<div id='ctg'>
+					<div class='flex'>
+						<div data-bind="ntsFormLabel: {}" class='distane'>
+							<label id="ctg">#{i18n.getText('CPS009_31')}</label>
+						</div>
+						<label id="ctgName" style = "margin-top: 10px;" data-bind="text: categoryName"></label>
+					</div>
+					<div data-bind="ntsFormLabel: {}" class='distane'>
+						<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
+					</div>
+				</div>
+				<div id="itemLst">
+					<table id="grid_B">
+<!-- 						data-bind="ntsGridList: {
+						height: 300,
+						options: itemInitLst,
+						optionsValue: 'id',
+						columns: itemColumns,
+						multiple: true,
+						value: currentIdLst 
+				    }"--></table>
+				</div>
+				<div>
+					<div data-bind="ntsFormLabel: {}" class='distane'>
+						<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
+					</div>
+					<div id="B_009" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: roundingRules,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selectedRuleCode,
+						enable: true }" tabindex="4"></div>
+				</div>
+
+
+			</div>
+			<div id='functions-area-bottom'>
+				<button id="registration" class="proceed x-large" tabindex="5" data-bind="click: registerItems">#{i18n.getText('CPS009_29')}
+				</button>
+				<button id="cancel" tabindex="6" data-bind="click: closeDialog">#{i18n.getText('CPS009_30')}</button>
+
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

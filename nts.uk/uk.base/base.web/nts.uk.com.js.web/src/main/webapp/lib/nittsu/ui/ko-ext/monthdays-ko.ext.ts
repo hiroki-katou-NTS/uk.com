@@ -20,7 +20,8 @@ module nts.uk.ui.koExtentions {
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             
             let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
-            $container.attr("tabindex", "-1");
+            $container.removeAttr("tabindex");
+            $container.data("tabindex", tabIndex);
             
             $container.addClass("ntsControl ntsMonthDays_Container");
             $container.append("<div class='ntsMonthDays'/>");
@@ -68,7 +69,6 @@ module nts.uk.ui.koExtentions {
                     }
               });
             
-            $control.find("input").attr("tabindex", tabIndex);
         }
 
         /**
@@ -85,10 +85,12 @@ module nts.uk.ui.koExtentions {
             let $dayPicker = $container.find(".ntsDayPicker");
             if(enable !== false){
                 $monthPicker.igCombo('option', 'disabled', false);
-                $dayPicker.igCombo('option', 'disabled', false);            
+                $dayPicker.igCombo('option', 'disabled', false);    
+                $container.find("input").attr("tabindex", $container.data("tabindex"));            
             } else {
                 $monthPicker.igCombo('option', 'disabled', true);
                 $dayPicker.igCombo('option', 'disabled', true); 
+                $container.find("input").attr("tabindex", "-1");    
             }
             
             if(!nts.uk.util.isNullOrUndefined(value) && nts.uk.ntsNumber.isNumber(value)){
@@ -101,7 +103,6 @@ module nts.uk.ui.koExtentions {
             let currentDay = $dayPicker.igCombo( "selectedItems")[0].data.value;
             let currentMonth = $monthPicker.igCombo( "selectedItems")[0].data.value;
             data.value(currentMonth*100 + currentDay);
-            
         }
         
         static getMonths(): Array<any> {
@@ -117,10 +118,10 @@ module nts.uk.ui.koExtentions {
         static getDaysInMonth(month: number): Array<any> {
             
             let daysInMonth = moment(month, "MM").daysInMonth();
-            if (daysInMonth !== NaN) { 
-                if (month === 2){
-                    daysInMonth++;        
-                }
+            if (daysInMonth !== NaN) {  
+//                if (month === 2){
+//                    daysInMonth++;        
+//                }
                 let days = [];
                 while (days.length < daysInMonth){
                     days.push({text: days.length + 1, value: days.length + 1});        

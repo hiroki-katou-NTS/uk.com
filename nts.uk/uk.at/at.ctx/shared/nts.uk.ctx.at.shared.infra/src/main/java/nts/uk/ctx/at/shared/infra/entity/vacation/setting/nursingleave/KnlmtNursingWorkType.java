@@ -8,6 +8,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -31,8 +34,15 @@ public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
     private KnlmtNursingWorkTypePK knlmtNursingWorkTypePK;
     
     /** The work type code. */
-    @Column(name = "DAY_CD")
+    @Column(name = "WORK_TYPE_CD")
     private String workTypeCode;
+    
+    /** The knlmt nursing leave set. */
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name = "CID", referencedColumnName = "KNLMT_NURSING_LEAVE_SET.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "KNLMT_NURSING_LEAVE_SET.NURSING_TYPE", insertable = false, updatable = false)})
+    private KnlmtNursingLeaveSet knlmtNursingLeaveSet;
 
     /**
      * Instantiates a new kmfmt work type.
