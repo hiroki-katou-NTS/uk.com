@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.find.init.item;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 
 /**
@@ -9,6 +10,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
  */
 public class StringDataDto extends SaveDataDto {
 	@Getter
+	@Setter
 	private String value;
 
 	private StringDataDto(String value) {

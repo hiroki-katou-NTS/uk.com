@@ -9,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
+import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 
 /**
  * PerInfoInitValueSetItem
@@ -51,6 +52,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	private Integer dataType;
 
 	private Integer itemType;
+
+	private ItemCode itemCode;
 
 	/**
 	 * 
