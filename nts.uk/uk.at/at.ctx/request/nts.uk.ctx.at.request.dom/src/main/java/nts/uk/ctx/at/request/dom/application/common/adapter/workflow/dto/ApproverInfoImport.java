@@ -27,6 +27,10 @@ public class ApproverInfoImport {
 	private String name;
 	/**確定者*/
 	private int approvalAtr;
+	
+	private String representerSID;
+	
+	private String representerName;
 
 	public ApproverInfoImport(String jobId,String sid, String approvalPhaseId, boolean isConfirmPerson, int orderNumber,int approvalAtr) {
 		super();
@@ -40,5 +44,13 @@ public class ApproverInfoImport {
 
 	public void addEmployeeName(String name) {
 		this.name = name;
+	}
+	
+	public void addRepresenterSID(String representerSID) {
+		this.representerSID = representerSID;
+	}
+	
+	public void addRepresenterName(String representerName) {
+		this.representerName = representerName;
 	}
 }
