@@ -25,12 +25,12 @@ public class EmpCalAndSumExeLogDto {
 	/**
 	 * ID
 	 */
-	private long empCalAndSumExecLogID;
+	private String empCalAndSumExecLogID;
 
 	/**
 	 * 運用ケース
 	 */
-	private long caseSpecExeContentID;
+	private String caseSpecExeContentID;
 	
 	/**
 	 * 実行社員ID

@@ -9,9 +9,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.log.EmpCalAndSumExeLogFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
+import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSumByDate;
 
 @Path("at/record/log")
 @Produces("application/json")
@@ -37,6 +39,14 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	@Path("getbycode")
 	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogByID(InputEmpCalAndSum inputEmpCalAndSum){
 		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogById(inputEmpCalAndSum);
+		
 	}
 	
+	@POST
+	@Path("getallbydate")
+	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
+		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogByDate(inputEmpCalAndSumByDate);	
+		
+	}
+		
 }

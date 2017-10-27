@@ -3,9 +3,14 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
+import javax.persistence.EnumType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * ケース別実行内容
@@ -17,9 +22,9 @@ import nts.arc.layer.dom.AggregateRoot;
 public class CaseSpecExeContent extends AggregateRoot {
 
 	/**
-	 * ID
+	 * ID (運用ケース)
 	 */
-	private long caseSpecExeContentID;
+	private String caseSpecExeContentID;
 
 	/**
 	 * 並び順
@@ -34,5 +39,24 @@ public class CaseSpecExeContent extends AggregateRoot {
 	 * 設定情報
 	 */
 	private CalExeSettingInfor settingInformation;
+	
+	public static CaseSpecExeContent createFromJavaType(
+			String caseSpecExeContentID,
+			int orderNumber,
+			String useCaseName,
+			int executionContent,
+			int executionType
+			) {
+		return new CaseSpecExeContent(
+				caseSpecExeContentID,
+				orderNumber,
+				useCaseName,
+				new CalExeSettingInfor(
+						EnumAdaptor.valueOf(executionContent, ExecutionContent.class),
+						EnumAdaptor.valueOf(executionType, ExecutionType.class)
+						)
+				);
+		
+	}
 
 }

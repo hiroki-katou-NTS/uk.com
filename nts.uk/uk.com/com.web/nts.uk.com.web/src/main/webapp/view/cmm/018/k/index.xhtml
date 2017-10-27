@@ -33,7 +33,7 @@
 					<!--K1_8-->
 					<div id ="standardDate" tabindex="1" data-bind="ntsDatePicker: {value: standardDate, dateFormat: 'YYYY/MM/DD', name: '#[CMM018_74]'}"></div>
 					<!--K1_9  Caret-->
-					<button data-bind="" tabindex="2" id = "applyButton" class="caret-bottom">#{i18n.getText('CMM018_77')}</button>
+					<button data-bind="click: applyDataSearch" tabindex="2" id = "applyButton" class="caret-bottom">#{i18n.getText('CMM018_77')}</button>
 				</div>
 				<!--K1_3-->
 				<div class="typeSetting x-large" id = "typeSetting" style="margin-top: 5px" tabindex="3" data-bind="ntsSwitchButton: {
@@ -44,7 +44,7 @@
 									name: '#[CMM018_11]',
 									enable: true }"></div>
 				<!--K1_6 職場リスト-->
-				<div class="leftExtend" data-bind = "if: enableListWp">
+				<div class="leftExtend">
 					<div id="tree-grid"></div>	
 				</div>
 				<div class = "settingApprover">

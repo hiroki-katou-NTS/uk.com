@@ -155,6 +155,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return Optional.of(SWkpHistExport.builder()
 				.workplaceCode(wkpInfo.getWorkplaceCode().v())
 				.workplaceName(wkpInfo.getWorkplaceName().v())
+				.workplaceId(wkpInfo.getWorkplaceId())
 				.wkpDisplayName(wkpInfo.getWkpDisplayName().v())
 				.build());
 	}

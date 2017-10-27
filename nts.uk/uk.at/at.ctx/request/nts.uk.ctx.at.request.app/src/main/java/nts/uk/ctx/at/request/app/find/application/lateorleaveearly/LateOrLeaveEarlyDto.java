@@ -17,13 +17,12 @@ public class LateOrLeaveEarlyDto {
 		/** 申請ID */
 		private String appID;
 		
+		private Long version;
+		
 		private int postAtr;
 		
 		 /** 申請理由ID */
 			private String appReasonID;
-		
-		/** 申請者*/
-		private String applicantName;
 		
         /** 申請日*/
 		private GeneralDate applicationDate;
@@ -60,28 +59,22 @@ public class LateOrLeaveEarlyDto {
 		private String appReason;
 				
 		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain){
-			String appReasonID = domain.getApplicationReason().v().split(":")[0];
-			String appReasonString = domain.getApplicationReason().v().substring(appReasonID.length() + 1);
 			return new LateOrLeaveEarlyDto(
 					domain.getCompanyID(),
 					domain.getAppID(),
+					domain.getVersion(),
 					domain.getPrePostAtr().value,
-					appReasonID,
-					//Get ApplicationName
-					domain.getApplicantSID(),
+					domain.getAppReasonID(),
 					domain.getApplicationDate(),
 					domain.getActualCancelAtr(),
 					domain.getEarly1().value,
-					domain.getEarlyTime1().minute(),
+					domain.getEarlyTime1().v(),
 					domain.getLate1().value,
-			    	domain.getLateTime1().minute(),
+			    	domain.getLateTime1().v(),			    
 			     	domain.getEarly2().value,
-					domain.getEarlyTime2().minute(),
+					domain.getEarlyTime2().v(),
 			    	domain.getLate2().value,
-			    	domain.getLateTime2().minute(),
-			    	appReasonString);
-			
-	
-		
+			    	domain.getLateTime2().v(),
+			    	domain.getApplicationReason().v());
 		}
 }

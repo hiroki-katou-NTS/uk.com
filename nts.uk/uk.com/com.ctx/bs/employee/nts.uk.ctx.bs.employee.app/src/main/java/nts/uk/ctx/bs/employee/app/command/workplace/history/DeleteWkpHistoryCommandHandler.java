@@ -17,7 +17,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,10 +35,6 @@ public class DeleteWkpHistoryCommandHandler extends CommandHandler<DeleteWkpHist
     /** The wkp service. */
     @Inject
     private WorkplaceService wkpService;
-    
-    /** The wkp info repo. */
-    @Inject
-    private WorkplaceInfoRepository wkpInfoRepo;
     
     /** The Constant DATE_FORMAT. */
     private static final String DATE_FORMAT = "yyyy/MM/dd";
@@ -67,10 +62,7 @@ public class DeleteWkpHistoryCommandHandler extends CommandHandler<DeleteWkpHist
                 .collect(Collectors.toList());
         HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
         
-        // remove workplace info (remove child)
-        this.wkpInfoRepo.remove(companyId, command.getWorkplaceId(), command.getHistoryId());
-        
-        // remove workplace history (remove parent)
+        // remove workplace history (remove parent) and workplace infor
         this.wkpRepo.removeWkpHistory(companyId, command.getWorkplaceId(), command.getHistoryId());
         
         // update end date of previous workplace history

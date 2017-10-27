@@ -6,8 +6,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import shrVm = cmm018.shr.vmbase;
     import service = cmm018.k.service;
     export class ScreenModel{
-        //enable list workplace
-        enableListWp: KnockoutObservable<boolean> = ko.observable(true);
         appType: KnockoutObservable<String> = ko.observable('');
         standardDate: KnockoutObservable<Date> = ko.observable(new Date());
         //承認者指定種類
@@ -33,6 +31,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //→ & ←
         itemsSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
         currentCodeListSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
+        confirm: stirng = '';
         //職場リスト
         treeGrid: ITreeGrid = {
                 treeType: 1,
@@ -43,7 +42,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 isShowSelectButton: true,
                 baseDate: ko.observable(this.standardDate()),
                 selectedWorkplaceId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
-                //selectedWorkplaceId: this.multiSelectedWorkplaceId,
                 alreadySettingList: ko.observableArray([])
         };
         //選択可能な職位一覧
@@ -55,9 +53,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         formOne : number = 2; //誰か一人
         formAll: number = 1; //全員承認
         constructor(){
-            var self = this;            
-            //設定対象
+            var self = this;
+            //設定対象: get param from main: approverInfor(id & approvalAtr)
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
+            self.confirm = data.confirmedPerson;
             //change 承認形態
             self.selectFormSet.subscribe(function(newValues){
                 //承認形態が誰か一人を選択する場合
@@ -68,6 +67,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.cbbEnable(false);    
                 }
             });
+            self.getData();
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appTypeName);
@@ -81,45 +81,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.selectTypeSet(self.personSetting);    
                 }else{
                     $('#typeSetting').show();
-                    //設定種類
-                    self.selectTypeSet(data.selectTypeSet);
                 }
-                //承認者一覧                
-                if(data.approverInfor.length > 0){
-                    _.forEach(data.approverInfor, function(sID){
-                        if(self.selectTypeSet() === self.personSetting){
-                            service.getPersonInfor(sID).done(function(data: any){
-                                self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
-                            })                            
-                        }else{
-                            let job = new service.model.JobtitleInfor;
-                            job.positionId = sID;
-                            job.startDate = self.standardDate();
-                            job.companyId = "";
-                            job.positionCode = "";
-                            job.positionName = "";
-                            job.sequenceCode = "";
-                            job.endDate = new Date();
-                            service.getJobTitleName(job).done(function(data: any){
-                                self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName));
-                            })    
-                        }
-                                                    
-                    })    
-                }else{                    
-                    self.setDataForCbb();    
-                }
-                
-                
-                //確定者
-                var index = self.approverList().indexOf(data.confirmedPerson());
-                if(index != -1){
-                    self.selectedCbbCode(data.confirmedPerson());    
-                }else{
-                    self.selectedCbbCode("");
-                }
-                
-                
             }
             //基準日
             this.standardDate(new Date());
@@ -138,15 +100,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
-                self.approverList.removeAll();
                 self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
-                if(newValue == 0){
-                    self.enableListWp(true);
-                    $('#tree-grid').ntsTreeComponent(self.treeGrid);
-                }else{
-                    self.enableListWp(false);
-                }
             })
             //職場リスト            
             self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
@@ -167,12 +122,44 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var self = this;
             //add item in  dropdownlist
             self.itemListCbb.removeAll();
-            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない'));
+            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない',0));
             if(self.approverList().length > 0){
                 _.forEach(self.approverList(),function(item: shrVm.ApproverDtoK){
                     self.itemListCbb.push(item);    
                 })
+                self.selectedCbbCode(self.confirm); 
             }
+        }
+        getData(): JQueryPromise<any>{
+            let self = this;
+            let dfd = $.Deferred();
+            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
+             //承認者一覧              
+            if(data.approverInfor.length > 0){
+                _.forEach(data.approverInfor, function(sID){
+                    if(sID.approvalAtr === 0){
+                        service.getPersonInfor(sID.id).done(function(data: any){
+                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0));
+                        })                            
+                    }else{
+                        let job = new service.model.JobtitleInfor;
+                        job.positionId = sID.id;
+                        job.startDate = self.standardDate();
+                        job.companyId = "";
+                        job.positionCode = "";
+                        job.positionName = "";
+                        job.sequenceCode = "";
+                        job.endDate = new Date();
+                        service.getJobTitleName(job).done(function(data: any){
+                            self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1));
+                        })    
+                    }
+                })    
+            }else{                    
+                self.setDataForCbb();    
+            }
+            dfd.resolve();
+            return dfd.promise();    
         }
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
@@ -184,7 +171,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 employeeSearch.baseDate = self.standardDate();
                 employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
                 service.searchModeEmployee(employeeSearch).done(function(data: any){
-                    self.employeeList(self.toUnitModelList(data));
+                    let lstTmp = self.toUnitModelList(data);
+                    _.each(lstTmp, function(item){
+                        self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr))
+                    });
                 }).fail(function(res: any){
                     nts.uk.ui.dialog.alert(res.messageId);
                 })
@@ -192,11 +182,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }else{
                 service.getJobTitleInfor(self.standardDate()).done(function(data: string){
                     _.forEach(data, function(value: service.model.JobtitleInfor){
-                        var job = new shrVm.ApproverDtoK;
-                        
-                        job.id = value.positionId;
-                        job.code = value.positionCode;
-                        job.name = value.positionName;
+                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
                         self.employeeList.push(job);
                     })    
                 }).fail(function(res: any){
@@ -204,7 +190,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 })
             }    
         } 
-        
         
         //決定 button click
         submitClickButton(){
@@ -236,7 +221,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 dataRes.push({
                     id: item.sid,
                     code: item.scd,
-                    name: item.pname
+                    name: item.pname,
+                    approvalAtr: 0
                 });
             }
             return dataRes;
@@ -250,7 +236,14 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             
             return dfd.promise();
         }//end start
-        
+        /**
+         * load data new when base date is changed 
+         */
+        applyDataSearch(): void {
+             let self = this;
+             self.treeGrid.baseDate(this.standardDate());
+             $('#tree-grid').ntsTreeComponent(self.treeGrid);
+         }
     }//end ScreenModel
     interface ITreeGrid {
             treeType: number;

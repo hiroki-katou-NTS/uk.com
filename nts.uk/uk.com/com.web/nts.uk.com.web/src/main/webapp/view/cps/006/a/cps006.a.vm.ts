@@ -204,8 +204,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.start(command.categoryId);
                 });
             }).fail(function(res: any) {
-                dialog.alert(res.message);
-            })
+                dialog.alertError({ messageId: res.messageId});
+            });
 
         }
 

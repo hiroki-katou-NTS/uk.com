@@ -5,9 +5,10 @@
 	margin-left: 39px;
 	margin-top: 15px;
 }
-#comment{
-	margin-left: 311px;
-    padding-top: 8px;
+.comment{
+	width: 50px;
+    padding-left: 20px;
+	display: inline-block;
 }
 
 .message-td {
@@ -43,3 +44,6 @@
 .container {
     width: 1300px;
 }	
+.displayControlFalse {
+	display: none;
+}

@@ -10,8 +10,9 @@ import javax.transaction.Transactional;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import nts.arc.error.BusinessException;
+import nts.arc.error.I18NErrorMessage;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
@@ -20,6 +21,7 @@ import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoCl
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 @Transactional
@@ -38,7 +40,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 	PerInfoItemDefFinder itemDefFinder;
 
 	@Inject
-	IInternationalization text;
+	I18NResourcesForUK text;
 
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
@@ -62,10 +64,12 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 			if (!dto.isEmpty()) {
 				String alert = String.join(", ", dto.stream().map(m -> m.getItemName()).collect(Collectors.toList()));
 
-				throw new BusinessException(new RawErrorMessage(alert + " " + text.getItemName("Msg_201")));
+				throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_201").addRaw(alert).build()));
+				// new BusinessException(new RawErrorMessage(alert + " " +
+				// text.getItemName("Msg_201")));
 			}
 			
-			throw new BusinessException(new RawErrorMessage("Msg_201"));
+			throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_201").build()));
 		}
 
 		// エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する

@@ -191,12 +191,12 @@
 										<div class="div_line">
 											<div style="width: 190px"
 												data-bind="ntsSearchBox: {
-															targetKey: 'itemId',
+															targetKey: 'itemCode',
 															mode:'igGrid', 
 															comId:'init_list', 
 															items: initValueList , 
 															selected: initValueSelectedCode , 
-															selectedKey: 'settingId', 
+															selectedKey: 'itemCode', 
 															fields: ['itemName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
 															}" />
@@ -207,9 +207,8 @@
 												data-bind="ntsGridList: {								
 															height: 350,
 															dataSource: initValueList ,
-															primaryKey: 'itemId',
+															primaryKey: 'itemCode',
 															columns:[
-																	{ headerText: '#{i18n.getText('CAS001_8')}', key: 'itemId', width: 50, hidden : true},
 																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
 															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
 															multiple: false,
@@ -252,9 +251,8 @@
 											<div id="combo-box"
 												data-bind="ntsComboBox: {
 													options: categoryList,
-													optionsValue: 'id',
-													visibleItemsCount: 5,
-													value: categorySelectedId ,
+													optionsValue: 'code',
+													value: categorySelectedCode ,
 													optionsText: 'name',
 													editable: false ,
 													enable: true,
@@ -267,71 +265,16 @@
 									</div>
 									<div class="div_line">
 										<div id="cover_table">
-											<table id="table_item">
-												<tbody>
+											<table id="table_item" data-bind="if:itemList().length>0">
+												<tr>
+													<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
+													<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
+												</tr>
+												<tbody data-bind="foreach:itemList">
 													<tr>
-														<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
-														<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
-													</tr>
-													<tr>
-														<td>12312</td>
-														<td>12312</td>
+														<td
+															data-bind="text: itemName , css:{requiredCell: isRequired  }"></td>
+														<td class="disabledCell" data-bind="text: saveData.value "></td>
 													</tr>
 												</tbody>
 											</table>

@@ -12,7 +12,7 @@
 	width: 95px;
 }
 .m2-panel {
-	width: 550px;	
+	width: 645px;	
 	margin-bottom: 3px;
 	padding: 3px;
 }
@@ -20,10 +20,13 @@
 	margin-top: 7px;
 	margin-bottom: -5px;
 	margin-left: 5px;
-	width: 140px;
+	width: 100px;
+}
+.m2-label.limited-label {
+	width: 280px;
 }
 .m2-time-editor {
-	width: 80px;
+	width: 83px;
 }
 .m2DisableEdit {
 	color: #999999;

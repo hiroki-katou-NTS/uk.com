@@ -491,9 +491,11 @@ module nts.uk.com.view.cmm018.shr {
             approvalAtr: number;
             /**確定者*/
             confirmPerson: number;
+            /**confirmPerson Name*/
+            confirmName: string;
             constructor(approverId: string, jobTitleId: string,
                 employeeId: string, name: string,orderNumber: number,
-                approvalAtr: number, confirmPerson: number)
+                approvalAtr: number, confirmPerson: number, confirmName: string)
             {
                 this.approverId = approverId;
                 this.jobTitleId = jobTitleId;
@@ -502,6 +504,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.name = name;
                 this.approvalAtr = approvalAtr;
                 this.confirmPerson = confirmPerson;
+                this.confirmName = confirmName;
             }
             
         }
@@ -608,10 +611,13 @@ module nts.uk.com.view.cmm018.shr {
             id: string;
             code: string;
             name: string;
-            constructor(id: string, code: string, name: string){
+            /**区分  0: 個人(person) - 1: 職位(jobTitle)*/
+            approvalAtr: number;
+            constructor(id: string, code: string, name: string , approvalAtr: number){
                 this.id = id;
                 this.code = code;
                 this.name = name;    
+                this.approvalAtr = approvalAtr;
             }
         } 
         //__________KCP009_________

@@ -585,6 +585,8 @@ var nts;
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
+            var names = window['names'] || {};
+            var messages = window['messages'] || {};
             function getText(code, params) {
                 var text = names[code];
                 if (text) {
@@ -599,7 +601,7 @@ var nts;
                 var message = messages[messageId];
                 if (!message) {
                     var responseText_1 = "";
-                    nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function (res) {
+                    nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function (res) {
                         responseText_1 = res;
                     }).fail(function () {
                     });
@@ -607,6 +609,7 @@ var nts;
                         return messageId;
                     }
                     message = responseText_1;
+                    messages[messageId] = message;
                 }
                 message = formatParams(message, params);
                 message = formatCompCustomizeResource(message);
@@ -769,6 +772,28 @@ var nts;
                 return count;
             }
             text_3.countHalf = countHalf;
+            function limitText(str, maxlength, index) {
+                var idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+                return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
+            }
+            text_3.limitText = limitText;
+            function findIdxFullHafl(text, max, index) {
+                var count = 0;
+                for (var i = index; i < text.length; i++) {
+                    var c = text.charCodeAt(i);
+                    var charLength = 2;
+                    if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
+                        charLength = 1;
+                    }
+                    if (charLength + count <= max) {
+                        count += charLength;
+                    }
+                    else {
+                        return i;
+                    }
+                }
+                return text.length - index;
+            }
             function toOneByteAlphaNumberic(text) {
                 return text.replace(/[！-～　]/g, function (s) {
                     if (s === "　") {
@@ -3282,7 +3307,7 @@ var nts;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
                         this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
-                        this.defaultValue = (option && option.defaultValue) ? option.defaultValue : true;
+                        this.defaultValue = (option && option.defaultValue) ? option.defaultValue : "";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
@@ -6187,8 +6212,13 @@ var nts;
                                 return;
                             }
                             var selectionTypeOnFocusing = document.getSelection().type;
-                            var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
-                            $input.val(timeWithDayAttr.shortText);
+                            if (!nts.uk.util.isNullOrEmpty(data.value())) {
+                                var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
+                                $input.val(timeWithDayAttr.shortText);
+                            }
+                            else {
+                                $input.val("");
+                            }
                             if (selectionTypeOnFocusing === 'Range') {
                                 $input.select();
                             }
@@ -7600,6 +7630,7 @@ var nts;
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
+                        var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
                             $swap.parent().width(totalWidth);
@@ -7653,13 +7684,14 @@ var nts;
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
                                 initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
+                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                                 $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
                                 initSearchArea($searchRightContainer, grid2Id, data.searchMode);
+                                $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             }
-                            $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             $searchArea.height(SEARCH_AREA_HEIGHT);
                             gridHeight -= SEARCH_AREA_HEIGHT;
                         }
@@ -7672,7 +7704,7 @@ var nts;
                         var $grid1 = $swap.find(grid1Id);
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
                         var leftCriterion = _.map(leftColumns(), function (c) { return c.key === undefined ? c.prop : c.key; });
@@ -9131,6 +9163,7 @@ var nts;
                             enablePagination: false,
                             enableFinishButton: false,
                             autoFocus: false,
+                            enableKeyNavigation: false,
                             onStepChanged: function () {
                                 container.children('.steps').children('ul').children('li').removeClass('step-current');
                                 container.children('.steps').children('ul').children('li').removeClass('step-prev');
@@ -17663,6 +17696,8 @@ var nts;
                             || options.updateMode !== STICK)
                             return;
                         $cell.on(events.CLICK_EVT, function (evt) {
+                            if (evt.ctrlKey)
+                                return;
                             var $grid = $cell.closest("." + BODY_PRF + DETAIL);
                             var sticker = $grid.data(internal.STICKER);
                             if (!sticker || uk.util.isNullOrUndefined(sticker.data)
@@ -20579,7 +20614,7 @@ var nts;
                             var self = this;
                             self.$selector.on(events.MOUSE_DOWN, function (evt) {
                                 self.getTable();
-                                if (evt.ctrlKey && self.$table.data(NAMESPACE).determination)
+                                if (evt.ctrlKey && self.$table.closest("." + NAMESPACE).data(NAMESPACE).determination)
                                     return;
                                 self.click(evt);
                             });
@@ -21596,7 +21631,9 @@ var nts;
                     }
                     function clear($element) {
                         var cropper = $element.data("cropper");
-                        cropper.clear();
+                        if (!isNotNull(cropper)) {
+                            cropper.clear();
+                        }
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));

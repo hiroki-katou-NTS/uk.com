@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.RoundingEnumDto;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -22,6 +21,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class OptItemEnumDto.
@@ -77,7 +77,7 @@ public class OptItemEnumDto {
 	 *
 	 * @return the opt item enum dto
 	 */
-	public static OptItemEnumDto init(IInternationalization i18n) {
+	public static OptItemEnumDto init(I18NResourcesForUK i18n) {
 		OptItemEnumDto dto = new OptItemEnumDto();
 		dto.setEmpConditionAtr(EnumAdaptor.convertToValueNameList(EmpConditionAtr.class, i18n));
 		dto.setItemAtr(EnumAdaptor.convertToValueNameList(OptionalItemAtr.class, i18n));

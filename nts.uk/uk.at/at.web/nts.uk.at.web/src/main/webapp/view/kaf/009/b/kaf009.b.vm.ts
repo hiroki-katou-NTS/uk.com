@@ -75,13 +75,14 @@ module nts.uk.at.view.kaf009.b {
             prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
             useMulti : KnockoutObservable<boolean> = ko.observable(true);
             version : number  = 0;
-
+            isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
+            isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
+            
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 let self = this;
                 self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: false,
-                    placeholder: "Placeholder for text editor",
                     width: "500",
                     textalign: "left",
                 }));
@@ -96,6 +97,10 @@ module nts.uk.at.view.kaf009.b {
             startPage(appId : string): JQueryPromise<any> {
                 var self = this;
                 let dfd = $.Deferred();
+                let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
+                let initialSelection = 1; //1:申請時に決める（初期選択：勤務を変更する）
+                let notChange = 2; //2:変更しない
+                let change = 3; //3:変更する
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
                     self.employeeID = settingData.sid;
@@ -108,18 +113,44 @@ module nts.uk.at.view.kaf009.b {
                     //申請制限設定.申請理由が必須
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
-                        //send Mail
-                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
-                        //pre Post Enable
-                        self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);   
+                        //登録時にメールを送信する Visible
+                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false);  
                     }
-                    //pre Post display
+                    //事前事後区分 ※A１
+                    //申請表示設定.事前事後区分　＝　表示する　〇
+                    //申請表示設定.事前事後区分　＝　表示しない ×
                     self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+                    if(settingData.goBackSettingDto　!= undefined){
+                        //事前事後区分 Enable ※A２
+                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
+                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
+                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                        if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
+                          || settingData.goBackSettingDto.workChangeFlg == initialSelection){
+                            self.isWorkChange(true);
+                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
+                                self.workChangeAtr(false);
+                            }else{
+                                self.workChangeAtr(true);
+                            }
+                            
+                        }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
+                            self.isWorkChange(false);
+                            self.workChangeAtr(false);
+                        }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
+                            self.workChangeAtr(true);
+                            self.isWorkChange(true);
+                            self.workState(false);
+                        }
+                        
+                    }
                     //共通設定.複数回勤務
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
-                        //self.version = detailData.goBackDirectlyDto.version;
+                        self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
@@ -130,8 +161,13 @@ module nts.uk.at.view.kaf009.b {
                         self.multilContent(detailData.appReason);
                         self.selectedReason(detailData.appReasonId);
                         self.appDate(detailData.appDate);
+                        self.employeeName(detailData.employeeName);
                         //Set Value of control
                         self.setValueControl(detailData.goBackDirectlyDto);
+                        self.selectedGo.subscribe(value => { $("#inpStartTime1").ntsError("clear"); });
+                        self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
+                        self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
+                        self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
                     }).fail(function() {
                         dfd.resolve();
                     });
@@ -149,10 +185,23 @@ module nts.uk.at.view.kaf009.b {
                 promiseResult.done((result) => {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        }).fail(function(res: any) {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                location.reload();
+                            });
                         })
+                        .fail(function(res) { 
+                            if(res.optimisticLock == true){
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                                    location.reload();
+                                });    
+                            } else {
+                                if(res.messageId === "Msg_327"){
+                                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                                } else {
+                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                                }
+                            }
+                        });
                     }
                 });
             }
@@ -176,10 +225,14 @@ module nts.uk.at.view.kaf009.b {
                         } else if (res.messageId == "Msg_298") {
                             dfd.reject();
                             //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
-                            $('#inpStartTime1').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpStartTime2').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpEndTime1').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpEndTime2').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                            if(self.selectedGo2()==1){
+                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                            }
+                            if(self.selectedBack2()==1){
+                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                            }
                         } else{
                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });     
                         }
@@ -240,7 +293,7 @@ module nts.uk.at.view.kaf009.b {
             getCommand() {
                 let self = this; 
                 let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
-                //goBackCommand.version = self.version;
+                goBackCommand.version = self.version;
                 goBackCommand.appID = self.appID();
                 goBackCommand.workTypeCD = self.workTypeCd();
                 goBackCommand.siftCD = self.siftCD();

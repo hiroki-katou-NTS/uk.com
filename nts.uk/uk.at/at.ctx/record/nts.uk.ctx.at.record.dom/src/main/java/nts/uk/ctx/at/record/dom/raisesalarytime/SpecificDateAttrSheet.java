@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.raisesalarytime;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
+import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 
 /**
  * 
@@ -12,8 +13,8 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 @Getter
 public class SpecificDateAttrSheet {
 	
-	//特定日項目NO - primitive value
-	private String specificDateItemNo;
+	//特定日項目NO
+	private SpecificDateItemNo specificDateItemNo;
 
 	private SpecificDateAttr specificDateAttr;
 }

@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 import nts.uk.ctx.workflow.dom.agent.output.ApproverRepresenterOutput;
 
@@ -41,6 +42,12 @@ public class ApprovalAgencyInfoServiceImpl implements ApprovalAgencyInfoService 
 		for (String approveItem : approver) {
 			// duyệt list lấy được trong domain Agent
 			for (Agent agentAdapterDto : agents) {
+				if(CollectionUtil.isEmpty(agents)) {
+					outputFlag = false;
+					// add nguoi xac nhan vao
+					ApproverRepresenterOutput obj = new ApproverRepresenterOutput(approveItem, "Empty");
+					outputListApproverAndRepresenterSID.add(obj);
+				}
 				// nếu người xác nhận có trong list Agent
 				if (approveItem.equals(agentAdapterDto.getEmployeeId())) {
 					// ktra xem AgentAppType = No_Settings hay k

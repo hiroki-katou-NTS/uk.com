@@ -5,32 +5,21 @@ module nts.uk.at.view.kaf002.m1 {
         export class ScreenModel {
             stampAtr: KnockoutObservable<number> = ko.observable(1);
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
+            extendsModeDisplay: KnockoutObservable<boolean> = ko.observable(true);
             appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([]);
             supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
-            displayAllLabel: KnockoutObservable<string> = ko.observable(''); 
+            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'));
+            displayItemNo: number = this.supFrameNo;
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
-                        let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
-                        for(let i=self.supFrameNo+1;i<=10;i++) {
-                            self.appStampList.push(
-                                new vmbase.AppStampGoOutPermit(
-                                    self.stampAtr(),
-                                    i,
-                                    stampGoOutAtr,
-                                    new vmbase.CheckBoxTime(0,true,false),
-                                    new vmbase.CheckBoxLocation('','',true,false),
-                                    new vmbase.CheckBoxTime(0,true,false),
-                                    new vmbase.CheckBoxLocation('','',true,false)));    
-                        } 
-                    } else {
-                        self.appStampList.remove((o) => { return o.stampFrameNo() > self.supFrameNo });   
-                    } 
+                        self.refreshData();
+                    }
                 });        
             }
             
@@ -47,20 +36,7 @@ module nts.uk.at.view.kaf002.m1 {
                 if(data.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
                 if(data.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
                 if(data.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
-                let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
-                self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31')));
-                self.appStampList.removeAll();
-                for(let i=1;i<=self.supFrameNo;i++) {
-                    self.appStampList.push(
-                        new vmbase.AppStampGoOutPermit(
-                            self.stampAtr(),
-                            i,
-                            stampGoOutAtr,
-                            new vmbase.CheckBoxTime(0,true,false),
-                            new vmbase.CheckBoxLocation('','',true,false),
-                            new vmbase.CheckBoxTime(0,true,false),
-                            new vmbase.CheckBoxLocation('','',true,false)));    
-                } 
+                self.refreshData();
                 if(!nts.uk.util.isNullOrUndefined(appStampData)){
                     self.appStampList.removeAll();
                     _.forEach(appStampData, item => {
@@ -78,31 +54,40 @@ module nts.uk.at.view.kaf002.m1 {
                     });
                 }
                 self.stampAtr.subscribe((value)=>{ 
-                    self.appStampList.removeAll();
-                    let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
-                    for(let i=1;i<=self.supFrameNo;i++) {
-                        self.appStampList.push(
-                            new vmbase.AppStampGoOutPermit(
-                                value,
-                                i,
-                                stampGoOutAtr,
-                                new vmbase.CheckBoxTime(0,true,false),
-                                new vmbase.CheckBoxLocation('','',true,false),
-                                new vmbase.CheckBoxTime(0,true,false),
-                                new vmbase.CheckBoxLocation('','',true,false)));    
-                    } 
-                    switch(value){
-                        case 1: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'))); break;
-                        case 2: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_32'))); break;
-                        case 3: self.displayAllLabel(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_33'))); break;
-                        default: break;    
+                    if(value == 1){
+                        self.displayItemNo = self.extendsMode() ? 10 : self.supFrameNo;   
+                        self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1));      
+                    } else {
+                        self.displayItemNo = 2;
+                        self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1)); 
                     }
+                    self.refreshData();
                 });
+                nts.uk.ui.block.clear();
             }
             
             extendsModeEvent(){
                 var self = this;
-                self.extendsMode(!self.extendsMode());   
+                self.displayItemNo = 10;
+                self.extendsMode(!self.extendsMode());    
+                self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1)); 
+            }
+            
+            refreshData(){
+                var self = this;
+                let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
+                self.appStampList.removeAll();
+                for(let i=1;i<=self.displayItemNo;i++) {
+                    self.appStampList.push(
+                        new vmbase.AppStampGoOutPermit(
+                            self.stampAtr(),
+                            i,
+                            stampGoOutAtr,
+                            new vmbase.CheckBoxTime(null,true,false),
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxTime(null,true,false),
+                            new vmbase.CheckBoxLocation('','',true,false)));    
+                }     
             }
             
             findWorkLocationName(workLocationCD: string): string {
@@ -116,6 +101,7 @@ module nts.uk.at.view.kaf002.m1 {
             }
             
             register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
                     appID: "",
@@ -135,16 +121,22 @@ module nts.uk.at.view.kaf002.m1 {
                 service.insert(command)
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                         $('.cm-memo').focus();
                         nts.uk.ui.block.clear();
                     });    
                 })
                 .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});
+                    if(res.messageId === "Msg_327"){
+                        nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                    }
                 });  
             }
             
             update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
                     version: application.version,
@@ -165,15 +157,22 @@ module nts.uk.at.view.kaf002.m1 {
                 service.update(command)
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                         $('.cm-memo').focus();
                         nts.uk.ui.block.clear();
                     });     
                 })
                 .fail(function(res) { 
                     if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});    
+                        if(res.messageId === "Msg_327"){
+                            nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                        }
                     }
                 });  
             }

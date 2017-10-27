@@ -45,6 +45,7 @@
 								<div class="input_002">
 									<input id="email_auth"
 										data-bind="ntsTextEditor: {
+											name: '#[CMM050_4]',
 											value: emailAuth,
 											required: true,
 											option: {width: '230px'},
@@ -101,8 +102,10 @@
 								<div class="input_002">
 									<input id="password"
 										data-bind="ntsTextEditor: {
+											name: '#[CMM050_10]',
 											value: password,
 											required: true,
+											enable: authMethodEnable,
 											option: {textmode: 'password'},
                                            	constraint: 'Password'}" />
 								</div>
@@ -111,6 +114,7 @@
 					</table>
 					
 					<div class="method_info">
+						<p style="margin-bottom: 20px">#{i18n.getText('CMM050_11')}</p>
 						<table class="table_content_smtp">
 							<colgroup>
 								<col width="230px" />
@@ -128,10 +132,13 @@
 									<div>
 										<input id="smtp_port"
 											data-bind="ntsNumberEditor: {
+												name: '#[CMM050_12]',
 												value: smtpPort,
 												required: true,
-												option: {width: '230px', textalign: 'left'},
+												option: {width: '25px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
+	                                    
+	                                     <span>#{i18n.getText('CMM050_13')}</span>
 									</div>
 								</td>
 							</tr>
@@ -147,6 +154,7 @@
 									<div class="port_input">
 										<input id="smtp_server"
 											data-bind="ntsTextEditor: {
+												name: '#[CMM050_14]',
 												value: smtpServer,
 												required: true,
 												option: {width: '230px'},
@@ -155,6 +163,8 @@
 								</td>
 							</tr>
 						</table>
+						
+						<p style="margin: 20px 0" data-bind="visible: haveImapSetting">#{i18n.getText('CMM050_20')}</p>
 						<table class="table_content_imap" data-bind="visible: haveImapSetting">
 							<colgroup>
 								<col width="230px" />
@@ -172,10 +182,12 @@
 									<div class="port_input">
 										<input id="imap_port"
 											data-bind="ntsNumberEditor: {
+												name: '#[CMM050_21]',
 												value: imapPort,
 												required: true,
-												option: {width: '230px', textalign: 'left'},
+												option: {width: '25px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
+	                                     <span>#{i18n.getText('CMM050_22',['imapPort'])}</span>
 									</div>
 								</td>
 							</tr>
@@ -205,6 +217,7 @@
 									<div>
 										<input id="imap_server"
 											data-bind="ntsTextEditor: {
+												name: '#[CMM050_23]',
 												value: imapServer,
 												enable: imapServerEnable,
 												option: {width: '230px'},
@@ -214,6 +227,8 @@
 								</td>
 							</tr>
 						</table>
+						
+						<p style="margin: 20px 0" data-bind="visible: havePopSetting">#{i18n.getText('CMM050_15')}</p>
 						<table class="table_content_pop" data-bind="visible: havePopSetting">
 							<colgroup>
 								<col width="230px" />
@@ -230,10 +245,12 @@
 									<div>
 										<input id="pop_port"
 											data-bind="ntsNumberEditor: {
+												name: '#[CMM050_16]',
 												value: popPort,
 												required: true,
-												option: {width: '230px', textalign: 'left'},
+												option: {width: '25px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
+	                                    <span>#{i18n.getText('CMM050_17',['popPort'])}</span>
 									</div>
 								</td>
 							</tr>
@@ -270,6 +287,8 @@
 								</td>
 							</tr>
 						</table>
+						
+						<p style="margin: 20px 0" data-bind="visible: haveEncryptMethod">#{i18n.getText('CMM050_24')}</p>
 						<table class="table_content_setting_encrypt" data-bind="visible: haveEncryptMethod">
 							<colgroup>
 								<col width="230px" />

@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -50,6 +51,7 @@ public class KrcmtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	public int closureID;
 
 	@OneToMany(mappedBy="executionlog", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRCMT_EXECUTION_LOG")
 	public List<KrcmtExecutionLog> executionLogs;
 	
 	@Override
@@ -61,8 +63,8 @@ public class KrcmtEmpExecutionLog extends UkJpaEntity implements Serializable {
 		return new  KrcmtEmpExecutionLog(
 				new KrcmtEmpExecutionLogPK(
 						domain.getCompanyID(),
-						domain.getEmpCalAndSumExecLogID(),
-						domain.getCaseSpecExeContentID(),
+						String.valueOf(domain.getEmpCalAndSumExecLogID()),
+						String.valueOf(domain.getCaseSpecExeContentID()),
 						domain.getEmployeeID()),
 				domain.getExecutedMenu().value,
 				domain.getExecutionStatus().value,

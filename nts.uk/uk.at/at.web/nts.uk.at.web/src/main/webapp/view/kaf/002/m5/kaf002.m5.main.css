@@ -13,7 +13,7 @@
 	width: 80px;
 }
 .m5-time-editor {
-	width: 80px;
+	width: 83px;
 }
 .m5-inline-div {
 	display: inline-block;
@@ -148,7 +148,7 @@
 }
 
 #m5-div-c {
-	width: 402px;
+	width: 462px;
 	height: 350px;
 	outline-style: solid;
 	outline-color: #999999;
@@ -189,17 +189,17 @@
 	width: 100px;
 }
 #m5-table-c > tbody > tr > td:NTH-CHILD(2) {
-	min-width: 150px;
-	width: 150px;
+	min-width: 180px;
+	width: 180px;
 }
 #m5-table-c > tbody > tr > td:LAST-CHILD {
-	min-width: 150px;
-	width: 150px;
+	min-width: 180px;
+	width: 180px;
 	border-left: 1px solid #999999;
 }
 
 #m5-div-d {
-	width: 402px;
+	width: 462px;
 	height: 350px;
 	outline-style: solid;
 	outline-color: #999999;
@@ -240,12 +240,12 @@
 	width: 100px;
 }
 #m5-table-d > tbody > tr > td:NTH-CHILD(2) {
-	min-width: 150px;
-	width: 150px;
+	min-width: 180px;
+	width: 180px;
 }
 #m5-table-d > tbody > tr > td:LAST-CHILD {
-	min-width: 150px;
-	width: 150px;
+	min-width: 180px;
+	width: 180px;
 	border-left: 1px solid #999999;
 }
 

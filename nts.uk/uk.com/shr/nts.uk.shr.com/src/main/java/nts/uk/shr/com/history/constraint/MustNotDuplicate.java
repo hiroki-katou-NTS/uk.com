@@ -13,11 +13,11 @@ import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
  * @param <S>
  * @param <D>
  */
-public class MustNotDuplicate<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
-		implements HistoryConstraint<S, D>{
+public class MustNotDuplicate<H extends HistoryItem<S, D>, S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
+		implements HistoryConstraint<H, S, D>{
 
 	@Override
-	public void validateIfCanAdd(History<S, D> history, HistoryItem<S, D> itemToBeAdded) {
+	public void validateIfCanAdd(History<H, S, D> history, HistoryItem<S, D> itemToBeAdded) {
 		
 		boolean isDuplicated = history.items().stream()
 				.anyMatch(e -> isDuplicated(e.span().compare(itemToBeAdded.span())));
@@ -28,11 +28,11 @@ public class MustNotDuplicate<S extends GeneralPeriod<S, D>, D extends Comparabl
 	}
 
 	@Override
-	public void validateIfCanRemove(History<S, D> history, HistoryItem<S, D> itemToBeRemoved) {
+	public void validateIfCanRemove(History<H, S, D> history, HistoryItem<S, D> itemToBeRemoved) {
 	}
 
 	@Override
-	public void validateIfCanChangeSpan(History<S, D> history, HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	public void validateIfCanChangeSpan(History<H, S, D> history, HistoryItem<S, D> itemToBeChanged, S newSpan) {
 		
 		boolean isDuplicated = history.items().stream()
 				.anyMatch(e -> isDuplicated(e.span().compare(newSpan)));

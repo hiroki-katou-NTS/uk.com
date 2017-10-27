@@ -120,6 +120,11 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 								loginEmp);
 						//frame.getListApproveAccepted().add(approveAccepted);
 						approveAcceptedRepo.createApproverAccepted(representer, frame.getFrameID());
+						//chuyen trang thai nhung nguoi trong frame thanh DENIAL
+						frame.getListApproveAccepted().stream().forEach(x -> {
+							x.setApprovalATR(ApprovalAtr.DENIAL);
+							x.setRepresenterSID(loginEmp);
+						});
 					}
 				}
 			}

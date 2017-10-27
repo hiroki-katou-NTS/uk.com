@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
@@ -23,6 +22,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class WebMenuFinder {
@@ -34,7 +34,7 @@ public class WebMenuFinder {
 	private StandardMenuRepository standardMenuRepository;
 	
 	@Inject
-	private IInternationalization internationalization;
+	private I18NResourcesForUK ukResource;
 	
 	@Inject
 	private PersonalTyingRepository personalTyingRepository;
@@ -92,8 +92,8 @@ public class WebMenuFinder {
 	 * @return
 	 */
 	public EditMenuBarDto getEditMenuBarDto() {
-		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, internationalization);
-		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, internationalization);
+		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, ukResource);
+		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, ukResource);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
 		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)

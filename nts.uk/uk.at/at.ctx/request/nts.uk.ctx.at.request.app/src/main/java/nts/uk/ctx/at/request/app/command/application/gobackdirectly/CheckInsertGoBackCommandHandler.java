@@ -64,7 +64,8 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.appCommand.getEnteredPersonSID(),
 				command.appCommand.getReversionReason(), 
 				command.appCommand.getApplicationDate(),
-				command.appCommand.getAppReasonID() + ":" + command.appCommand.getApplicationReason(),
+				command.appCommand.getAppReasonID(),
+				command.appCommand.getApplicationReason(),
 				command.appCommand.getApplicationType(), 
 				command.appCommand.getApplicantSID(),
 				command.appCommand.getReflectPlanScheReason(), 
@@ -98,7 +99,7 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		
-		//登録ボタンをクリックする
+		//直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
 		goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp,appApprovalPhases);
 		
 	}

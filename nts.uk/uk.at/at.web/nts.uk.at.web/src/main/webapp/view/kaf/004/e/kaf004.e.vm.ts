@@ -3,71 +3,52 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     import service = nts.uk.at.view.kaf004.b.service;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // applicantName
-        applicantName: KnockoutObservable<string>;
+        applicantName: KnockoutObservable<string> = ko.observable("");
         // date editor
-        date: KnockoutObservable<string>;
+        date: KnockoutObservable<string>  = ko.observable(moment().format('YYYY/MM/DD'));
         //latetime editor
-        lateTime1: KnockoutObservable<number>;
-        lateTime2: KnockoutObservable<number>;
+        lateTime1: KnockoutObservable<number> = ko.observable(0);
+        lateTime2: KnockoutObservable<number> = ko.observable(0);
         //check send mail
-        sendMail: KnockoutObservable<boolean>;
+        sendMail: KnockoutObservable<boolean> = ko.observable(true);
         //check late
-        late1: KnockoutObservable<boolean>;
-        late2: KnockoutObservable<boolean>;
+        late1: KnockoutObservable<boolean> = ko.observable(false);
+        late2: KnockoutObservable<boolean> = ko.observable(false);
         //check early
-        early1: KnockoutObservable<boolean>;
-        early2: KnockoutObservable<boolean>;
+        early1: KnockoutObservable<boolean> = ko.observable(false);
+        early2: KnockoutObservable<boolean> = ko.observable(false);
         //labor time
-        earlyTime1: KnockoutObservable<number>;
-        earlyTime2: KnockoutObservable<number>;
+        earlyTime1: KnockoutObservable<number> = ko.observable(0);
+        earlyTime2: KnockoutObservable<number> = ko.observable(0);
         //combobox
-        ListTypeReason: KnockoutObservableArray<TypeReason>;
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
+        ListTypeReason: KnockoutObservableArray<TypeReason> = ko.observableArray([]);
+        itemName: KnockoutObservable<string> = ko.observable('');
+        currentCode: KnockoutObservable<number> = ko.observable(3);
+        selectedCode: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
-        appreason: KnockoutObservable<string>;
-        time: KnockoutObservable<string>;
+        appreason: KnockoutObservable<string> = ko.observable('');
         //Show Screen
-        showScreen: KnockoutObservable<string>;
-        postAtr: number;
-        
+        showScreen: KnockoutObservable<string> = ko.observable('');
+        postAtr: KnockoutObservable<number> = ko.observable(0);
+        isVisibleTimeF: KnockoutObservable<boolean> = ko.observable(true);
+        isLblTimeF: KnockoutObservable<boolean> = ko.observable(false);
+        //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
+        txtlateTime1: KnockoutObservable<string> = ko.observable('2:00');
+        txtearlyTime1: KnockoutObservable<string> = ko.observable('1:00');
+        txtEarlyTime2: KnockoutObservable<string> = ko.observable('0:30');
+        txtlateTime2: KnockoutObservable<string> = ko.observable('1:00');
+        version: number = 0;
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
-            //check sendMail
-            self.sendMail = ko.observable(true);
-            //date editor
-            self.date = ko.observable(new Date());
-            //time editor
-            self.lateTime1 = ko.observable(0);
-            self.lateTime2 = ko.observable(0);
-            //check late
-            self.late1 = ko.observable(false);
-            self.late2 = ko.observable(false);
-            // check early
-            self.early1 = ko.observable(false);
-            self.early2 = ko.observable(false);
-            //labor time 
-            self.earlyTime1 = ko.observable(0);
-            self.earlyTime2 = ko.observable(0);
-            //combobox
-            self.ListTypeReason = ko.observableArray([]);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable('0002');
-            //MultilineEditor 
-            self.appreason = ko.observable('');
             //Show Screen
-            self.showScreen = ko.observable('');
             self.startPage();
-            self.applicantName = ko.observable("");
         }
 
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             var self = this;
             var dfd = $.Deferred();
-
             service.getByCode(self.appID()).done(function(data) { 
                 self.ListTypeReason(data.listApplicationReasonDto);
                 self.applicantName(data.applicantName);
@@ -76,15 +57,36 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.date(data.lateOrLeaveEarlyDto.applicationDate);
                 self.lateTime1(data.lateOrLeaveEarlyDto.lateTime1);
                 self.lateTime2(data.lateOrLeaveEarlyDto.lateTime2);
-                self.late1(data.lateOrLeaveEarlyDto.late1);
-                self.late2(data.lateOrLeaveEarlyDto.late2);
-                self.early1(data.lateOrLeaveEarlyDto.early1);
-                self.early2(data.lateOrLeaveEarlyDto.early2);
+                self.late1(data.lateOrLeaveEarlyDto.late1 == 1 ? true : false);
+                self.late2(data.lateOrLeaveEarlyDto.late2 == 1 ? true : false);
+                self.early1(data.lateOrLeaveEarlyDto.early1 == 1 ? true : false);
+                self.early2(data.lateOrLeaveEarlyDto.early2 == 1 ? true : false);
                 self.earlyTime1(data.lateOrLeaveEarlyDto.earlyTime1);
                 self.earlyTime2(data.lateOrLeaveEarlyDto.earlyTime2);
                 self.showScreen(data.lateOrLeaveEarlyDto.postAtr == 1 ? 'F' : '');
-                self.postAtr = data.lateOrLeaveEarlyDto.postAtr;
+                self.postAtr(data.lateOrLeaveEarlyDto.postAtr);
+                self.version = data.lateOrLeaveEarlyDto.version;
+                self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
+                self.early1.subscribe(value => { $("#inpEarlyTime1").trigger("validate"); });
+                self.late2.subscribe(value => { $("#inpLate2").trigger("validate"); });
+                self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
+                if(self.showScreen() === 'F'){
+                    self.isVisibleTimeF(false);  
+                    self.isLblTimeF(true);
+                    
+                    
+                }else{
+                    self.isVisibleTimeF(true);
+                    self.isLblTimeF(false);
+                    self.txtEarlyTime2("");
+                    self.txtlateTime2("");  
+                    self.txtlateTime1("");
+                    self.txtearlyTime1(""); 
+                    $("#lblLateTime1").css("margin-left","0px");
+                    $("#lblLateTime2").css("margin-left","0px");
+                }
                 $("#inputdate").focus();
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
                
@@ -93,13 +95,19 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         
         update() {
             var self = this;
-
-            $(".nts-input").trigger("validate");
-            if (!$(".nts-input").ntsError("hasError")) {
+            if (!nts.uk.ui.errors.hasError()) {
+                //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
+                if(self.showScreen() === 'F'){
+                    self.lateTime1(self.late1() ? 120 : 0);
+                    self.earlyTime1(self.early1() ? 60: 0);
+                    self.lateTime2(self.late2() ? 60 : 0);
+                    self.earlyTime2(self.early2() ? 30 : 0);
+                }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
+                    version: self.version,
                     appID: self.appID(),
                     appDate: self.date(),
-                    prePostAtr: self.postAtr,
+                    postAtr: self.postAtr(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
                     lateTime1: self.lateTime1(),
@@ -114,9 +122,21 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     appApprovalPhaseCmds: self.approvalList
                 };
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
+                    });
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res);
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
+                    } else {
+                        if(res.messageId === "Msg_327"){
+                            nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                        }
+                    }
                 });
 
             }
@@ -131,9 +151,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     }
 
     interface LateOrLeaveEarly {
+        version: number;
         appID: string;
-        applicantName: string;
         appDate: string;
+        postAtr: number;
         sendMail: boolean
         late1: number;
         lateTime1: number;
@@ -145,5 +166,6 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         earlyTime2: number;
         reasonTemp: string;
         appReason: string;
+        appApprovalPhaseCmds: Array<any>;
     }
 }
