@@ -12,6 +12,7 @@ import nts.arc.error.I18NErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -87,15 +88,17 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				1, 
 				application.getApplicationType().value, 
 				application.getApplicationDate());
-		ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
-			throw new BusinessException("Msg_238");
-		} 
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
-			throw new BusinessException("Msg_238");
-		}
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
-			throw new BusinessException("Msg_324");
+		if(!CollectionUtil.isEmpty(approvalRootOutputs)){
+			ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
+				throw new BusinessException("Msg_238");
+			} 
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
+				throw new BusinessException("Msg_238");
+			}
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
+				throw new BusinessException("Msg_324");
+			}
 		}
 		
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する(Check thời gian hết hạn xin)
