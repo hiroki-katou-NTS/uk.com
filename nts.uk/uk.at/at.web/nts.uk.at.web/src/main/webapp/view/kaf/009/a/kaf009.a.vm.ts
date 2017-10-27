@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
                         //登録時にメールを送信する Visible
-                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
+                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false: true); 
                         
                     }
                     //事前事後区分 ※A１
