@@ -45,8 +45,8 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         }
         Workplace workplace = optional.get();
         // set end date of previous history
-        DatePeriod period = workplace.getWorkplaceHistory().get(ELEMENT_FIRST).getPeriod();
-        workplace.getWorkplaceHistory().get(ELEMENT_FIRST).setPeriod(period.newSpan(period.start(), endĐate));
+        DatePeriod period = workplace.items().get(ELEMENT_FIRST).span();
+        workplace.items().get(ELEMENT_FIRST).changeSpan(period.newSpan(period.start(), endĐate));
         this.workplaceRepo.update(workplace);
     }
 
@@ -62,21 +62,21 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         Workplace workplace = this.workplaceRepo.findByWorkplaceId(companyId, wkpId).get();
         
         List<String> lstHistIdRemoved = new ArrayList<>();
-        workplace.getWorkplaceHistory().forEach(wkpHistory -> {
-            if (wkpHistory.getPeriod().start().after(startDate)) {
+        workplace.items().forEach(wkpHistory -> {
+            if (wkpHistory.span().start().after(startDate)) {
                 // remove workplace history and workplace infor
-                this.workplaceRepo.removeWkpHistory(companyId, wkpId, wkpHistory.getHistoryId());
+                this.workplaceRepo.removeWkpHistory(companyId, wkpId, wkpHistory.identifier());
                 
                 // save history removed.
-                lstHistIdRemoved.add(wkpHistory.getHistoryId());
+                lstHistIdRemoved.add(wkpHistory.identifier());
             }
         });
         
         // delete WorkplaceHistory
-        workplace.getWorkplaceHistory().removeIf(item -> lstHistIdRemoved.contains(item.getHistoryId()));
+        workplace.items().removeIf(item -> lstHistIdRemoved.contains(item.identifier()));
         
         // update end date of workplace history latest current
-        this.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().getHistoryId(), HistoryUtil.getMaxDate());
+        this.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(), HistoryUtil.getMaxDate());
     }
 
 }

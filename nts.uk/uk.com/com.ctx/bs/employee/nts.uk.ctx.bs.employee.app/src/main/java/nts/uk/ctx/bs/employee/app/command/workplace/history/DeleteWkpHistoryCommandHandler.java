@@ -57,8 +57,8 @@ public class DeleteWkpHistoryCommandHandler extends CommandHandler<DeleteWkpHist
         Workplace workplace = optionalWorkplace.get();
         
         // valid history latest
-        List<String> lstHistoryId = workplace.getWorkplaceHistory().stream()
-                .map(item -> item.getHistoryId())
+        List<String> lstHistoryId = workplace.items().stream()
+                .map(item -> item.identifier())
                 .collect(Collectors.toList());
         HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
         

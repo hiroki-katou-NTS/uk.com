@@ -12,20 +12,24 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceConfig.
  */
-//職場構成
-@Getter
-public class WorkplaceConfig extends AggregateRoot {
+// 職場構成
+public class WorkplaceConfig extends AggregateRoot
+		implements PersistentResidentHistory<WorkplaceConfigHistory, DatePeriod, GeneralDate> {
 
 	/** The company id. */
-	//会社ID
+	// 会社ID
+	@Getter
 	private String companyId;
 
 	/** The wkp config history. */
-	//履歴
+	// 履歴
 	private List<WorkplaceConfigHistory> wkpConfigHistory;
 
 	/**
@@ -46,30 +50,31 @@ public class WorkplaceConfig extends AggregateRoot {
 	public WorkplaceConfig(WorkplaceConfigGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.wkpConfigHistory = memento.getWkpConfigHistory();
-		
-		// sort by end date, start date desc 
-        Collections.sort(this.wkpConfigHistory, new Comparator<WorkplaceConfigHistory>() {
-            @Override
-            public int compare(WorkplaceConfigHistory obj1, WorkplaceConfigHistory obj2) {
-            	return new CompareToBuilder()
-                		.append(obj2.getPeriod().end(), obj1.getPeriod().end())
-                		.append(obj2.getPeriod().start(), obj1.getPeriod().start())
-                		.toComparison();
-            }
-        });
+
+		// sort by end date, start date desc
+		Collections.sort(this.wkpConfigHistory, new Comparator<WorkplaceConfigHistory>() {
+			@Override
+			public int compare(WorkplaceConfigHistory obj1, WorkplaceConfigHistory obj2) {
+				return new CompareToBuilder()
+						.append(obj2.span().end(), obj1.span().end())
+						.append(obj2.span().start(), obj1.span().start()).toComparison();
+			}
+		});
 	}
-	
+
 	/**
 	 * Gets the wkp config history latest.
 	 *
 	 * @return the wkp config history latest
 	 */
 	public WorkplaceConfigHistory getWkpConfigHistoryLatest() {
-	    int indexLatestHist = 0;
-	    return this.wkpConfigHistory.get(indexLatestHist);
+		int indexLatestHist = 0;
+		return this.wkpConfigHistory.get(indexLatestHist);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -80,7 +85,9 @@ public class WorkplaceConfig extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -100,5 +107,12 @@ public class WorkplaceConfig extends AggregateRoot {
 		return true;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.com.history.History#items()
+	 */
+	@Override
+	public List<WorkplaceConfigHistory> items() {
+		return this.wkpConfigHistory;
+	}
+
 }

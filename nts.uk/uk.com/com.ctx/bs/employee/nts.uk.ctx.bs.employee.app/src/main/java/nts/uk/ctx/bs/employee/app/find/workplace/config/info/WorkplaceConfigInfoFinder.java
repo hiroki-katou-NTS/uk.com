@@ -74,7 +74,7 @@ public class WorkplaceConfigInfoFinder {
 		if (!optionalWkpConfig.isPresent()) {
 			return null;
 		}
-		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().getHistoryId();
+		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
 
 		return this.initTree(historyId);
 	}
@@ -94,7 +94,7 @@ public class WorkplaceConfigInfoFinder {
 		if (!optionalWkpConfig.isPresent()) {
 			return null;
 		}
-		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().getHistoryId();
+		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
 
 		return this.initTree(historyId);
 	}
@@ -131,10 +131,10 @@ public class WorkplaceConfigInfoFinder {
 			}
 			Workplace workplace = opWorkplace.get();
 			Optional<WorkplaceInfo> opWkpInfor = this.wkpInfoRepo.find(companyId,
-					item.getWorkplaceId(), workplace.getWkpHistoryLatest().getHistoryId());
+					item.getWorkplaceId(), workplace.getWkpHistoryLatest().identifier());
 			if (!opWkpInfor.isPresent()) {
 				throw new RuntimeException(String.format("Workplace Infor %s didn't exist.",
-						workplace.getWkpHistoryLatest().getHistoryId()));
+						workplace.getWkpHistoryLatest().identifier()));
 			}
 			lstWkpInfo.add(opWkpInfor.get());
 		});
