@@ -37,6 +37,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         txtearlyTime1: KnockoutObservable<string> = ko.observable('1:00');
         txtEarlyTime2: KnockoutObservable<string> = ko.observable('0:30');
         txtlateTime2: KnockoutObservable<string> = ko.observable('1:00');
+        version: number = 0;
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -63,7 +64,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.earlyTime1(data.lateOrLeaveEarlyDto.earlyTime1);
                 self.earlyTime2(data.lateOrLeaveEarlyDto.earlyTime2);
                 self.showScreen(data.lateOrLeaveEarlyDto.postAtr == 1 ? 'F' : '');
-                self.postAtr = data.lateOrLeaveEarlyDto.postAtr;
+                self.postAtr(data.lateOrLeaveEarlyDto.postAtr);
+                self.version = data.lateOrLeaveEarlyDto.version;
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
                 self.early1.subscribe(value => { $("#inpEarlyTime1").trigger("validate"); });
                 self.late2.subscribe(value => { $("#inpLate2").trigger("validate"); });
@@ -102,8 +104,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     self.earlyTime2(self.early2() ? 30 : 0);
                 }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
+                    version: self.version,
                     appID: self.appID(),
                     appDate: self.date(),
+                    postAtr: self.postAtr(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
                     lateTime1: self.lateTime1(),
@@ -118,9 +122,21 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     appApprovalPhaseCmds: self.approvalList
                 };
                 service.updateLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
+                    });
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res);
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                            location.reload();
+                        });    
+                    } else {
+                        if(res.messageId === "Msg_327"){
+                            nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                        }
+                    }
                 });
 
             }
@@ -135,9 +151,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     }
 
     interface LateOrLeaveEarly {
+        version: number;
         appID: string;
-        applicantName: string;
         appDate: string;
+        postAtr: number;
         sendMail: boolean
         late1: number;
         lateTime1: number;

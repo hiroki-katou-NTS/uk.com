@@ -60,7 +60,10 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		updateEntity.earlyTime2 = newEntity.earlyTime2;
 		updateEntity.late2 = newEntity.late2;
 		updateEntity.lateTime2 = newEntity.lateTime2;
+		updateEntity.version = newEntity.version;
+		updateEntity.kafdtApplication.version = newEntity.version;
 		this.commandProxy().update(updateEntity);
+		this.commandProxy().update(updateEntity.kafdtApplication);
 		
 	}
 
@@ -75,7 +78,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		KrqdtAppLateOrLeave appLateOrLeaveEntity = entity;
 		KafdtApplication applicationEntity = entity.kafdtApplication;
 		
-		return new LateOrLeaveEarly (
+		LateOrLeaveEarly lateOrLeaveEarly = new LateOrLeaveEarly (
 				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, 
 				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
 				 applicationEntity.prePostAtr,
@@ -107,11 +110,14 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				 appLateOrLeaveEntity.earlyTime2,
 			 	 appLateOrLeaveEntity.late2,
 				 appLateOrLeaveEntity.lateTime2);
+		lateOrLeaveEarly.setVersion(entity.version);
+		return lateOrLeaveEarly;
 	}
 	
 	private KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
 		return new KrqdtAppLateOrLeave (
 					new KrqdtAppLateOrLeavePK(domain.getCompanyID(), domain.getAppID()),
+					domain.getVersion(),
 					domain.getActualCancelAtr(),
 					domain.getEarly1().value,
 					domain.getEarlyTime1().v(),

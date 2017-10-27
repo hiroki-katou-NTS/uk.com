@@ -20,13 +20,13 @@ public class EmpCalAndSumExeLogFinder {
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
 	
-	private String companyID = AppContexts.user().companyId();
-	private String employeeID = AppContexts.user().employeeId();
+	 
 	/**
 	 * get All EmpCalAndSumExeLog
 	 * @return list EmpCalAndSumExeLog
 	 */
 	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(){
+		String companyID = AppContexts.user().companyId();
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
 				.getAllEmpCalAndSumExeLog(companyID)
 				.stream()
@@ -42,6 +42,8 @@ public class EmpCalAndSumExeLogFinder {
 	 * @return
 	 */
 	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogById(InputEmpCalAndSum inputEmpCalAndSum){
+		String companyID = AppContexts.user().companyId();
+		 String employeeID = AppContexts.user().employeeId();
 		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
 				.getEmpCalAndSumExeLogByID(companyID, inputEmpCalAndSum.getEmpCalAndSumExecLogID(), inputEmpCalAndSum.getOperationCaseID(), employeeID)
 				.map(c->EmpCalAndSumExeLogDto.fromDomain(c));
@@ -62,6 +64,7 @@ public class EmpCalAndSumExeLogFinder {
 	}
 
 	public List<EmpCalAndSumExeLogDto> getEmpCalAndSumExeLogByDate(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
+		String companyID = AppContexts.user().companyId();
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
 				.getAllEmpCalAndSumExeLogByDate(companyID, inputEmpCalAndSumByDate.getStartDate(), inputEmpCalAndSumByDate.getEndDate())
 				.stream()

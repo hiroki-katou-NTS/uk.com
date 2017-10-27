@@ -14,6 +14,8 @@ public class UpdateLateOrLeaveEarlyCommand {
 	/** 申請ID */
 	private String appID;
 	
+	private Long version;
+	
    /** 申請日*/
 	private GeneralDate applicationDate;
 	
