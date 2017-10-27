@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 
 /**
  * 
@@ -11,7 +12,8 @@ import lombok.Getter;
 @Getter
 public class TimeLeavingWork {
 	
-	private String workNo;
+	//勤務NO
+	private WorkNo workNo;
 	
 	private TimeActualStamp attendanceStamp;
 	

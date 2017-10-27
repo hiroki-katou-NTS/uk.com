@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.shorttimework;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -14,8 +15,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class ShortWorkingTimeSheet {
 
-	//短時間勤務枠NO - primitive value
-	private String shortWorkTimeFrameNo;
+	//短時間勤務枠NO
+	private ShortWorkTimFrameNo shortWorkTimeFrameNo;
 	
 	private ChildCareAttribute childCareAttr;
 
