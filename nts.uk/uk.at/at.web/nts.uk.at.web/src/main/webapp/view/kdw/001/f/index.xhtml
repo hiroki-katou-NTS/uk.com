@@ -35,7 +35,7 @@
 									value: dateValue, 
 									maxRange: 'oneYear'}"/>
 						<!-- F2_7 -->
-						<button id="button-search" class="large">#{i18n.getText('KDW001_43')}</button>
+						<button id="button-search" class="large" data-bind="click : search">#{i18n.getText('KDW001_43')}</button>
 					</div>
 					<!-- F2_3 -->
 					<div  class="panel">#{i18n.getText('KDW001_42')}</div>
@@ -46,40 +46,13 @@
 						data-bind="ntsGridList: {
 	                        width: 955,
 	                        height: 415,
-	                        options: listClassification,
+	                        options: empCalAndSumExeLog,
 	                        optionsValue: 'code',
 	                        columns: columns ,
 	                        multiple: false,
 	                        value: currentSelectedRow}">
 					</table>
-					<!-- <table>
-						<thead>
-							<tr class="bg-green">
-								F3_2 3 4 5 6 7 8
-								<th class="text" style="width: 100px;">#{i18n.getText('KDW001_73')}</th>
-								<th class="text" style="width: 130px;">#{i18n.getText('KDW001_74')}</th>
-								<th class="text" style="width: 120px;">#{i18n.getText('KDW001_75')}</th>
-								<th class="text" style="width: 160px;">#{i18n.getText('KDW001_76')}</th>
-								<th class="text" style="width: 230px;">#{i18n.getText('KDW001_77')}</th>
-								<th class="text" style="width: 110px;">#{i18n.getText('KDW001_78')}</th>
-								<th class="text" style="width: 100px;">#{i18n.getText('KDW001_79')}</th>
-							</tr>
-						</thead>
-						<tbody>
-							<com:ko-foreach bind="itemList">
-								<tr>
-									<td><span data-bind="text: $data.column1"></span></td>
-									<td><span data-bind="text: $data.column2"></span></td>
-									<td><span data-bind="text: $data.column3"></span></td>
-									<td><span data-bind="text: $data.column4"></span></td>
-									<td><span data-bind="text: $data.column5"></span></td>
-									<td><span data-bind="text: $data.column6"></span></td>
-									<td style="text-align: center;"><button class="button-reference" data-bind="click : $parent.openDialogI" >参照</button></td>
-								</tr>
-							</com:ko-foreach>
-							
-						</tbody>
-					</table> -->
+					<div data-bind="text : currentSelectedRow"> </div>
 				</div>
 			</div>
 		</ui:define>
