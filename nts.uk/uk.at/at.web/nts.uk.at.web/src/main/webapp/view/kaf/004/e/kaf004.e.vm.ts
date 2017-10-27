@@ -32,6 +32,11 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         postAtr: KnockoutObservable<number> = ko.observable(0);
         isVisibleTimeF: KnockoutObservable<boolean> = ko.observable(true);
         isLblTimeF: KnockoutObservable<boolean> = ko.observable(false);
+        //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
+        txtlateTime1: KnockoutObservable<string> = ko.observable('2:00');
+        txtearlyTime1: KnockoutObservable<string> = ko.observable('1:00');
+        txtEarlyTime2: KnockoutObservable<string> = ko.observable('0:30');
+        txtlateTime2: KnockoutObservable<string> = ko.observable('1:00');
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -51,10 +56,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.date(data.lateOrLeaveEarlyDto.applicationDate);
                 self.lateTime1(data.lateOrLeaveEarlyDto.lateTime1);
                 self.lateTime2(data.lateOrLeaveEarlyDto.lateTime2);
-                self.late1(data.lateOrLeaveEarlyDto.late1);
-                self.late2(data.lateOrLeaveEarlyDto.late2);
-                self.early1(data.lateOrLeaveEarlyDto.early1);
-                self.early2(data.lateOrLeaveEarlyDto.early2);
+                self.late1(data.lateOrLeaveEarlyDto.late1 == 1 ? true : false);
+                self.late2(data.lateOrLeaveEarlyDto.late2 == 1 ? true : false);
+                self.early1(data.lateOrLeaveEarlyDto.early1 == 1 ? true : false);
+                self.early2(data.lateOrLeaveEarlyDto.early2 == 1 ? true : false);
                 self.earlyTime1(data.lateOrLeaveEarlyDto.earlyTime1);
                 self.earlyTime2(data.lateOrLeaveEarlyDto.earlyTime2);
                 self.showScreen(data.lateOrLeaveEarlyDto.postAtr == 1 ? 'F' : '');
@@ -65,10 +70,18 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
                 if(self.showScreen() === 'F'){
                     self.isVisibleTimeF(false);  
-                    self.isLblTimeF(true);  
+                    self.isLblTimeF(true);
+                    
+                    
                 }else{
                     self.isVisibleTimeF(true);
-                    self.isLblTimeF(false);    
+                    self.isLblTimeF(false);
+                    self.txtEarlyTime2("");
+                    self.txtlateTime2("");  
+                    self.txtlateTime1("");
+                    self.txtearlyTime1(""); 
+                    $("#lblLateTime1").css("margin-left","0px");
+                    $("#lblLateTime2").css("margin-left","0px");
                 }
                 $("#inputdate").focus();
                 nts.uk.ui.block.clear();
@@ -81,6 +94,13 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         update() {
             var self = this;
             if (!nts.uk.ui.errors.hasError()) {
+                //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
+                if(self.showScreen() === 'F'){
+                    self.lateTime1(self.late1() ? 120 : 0);
+                    self.earlyTime1(self.early1() ? 60: 0);
+                    self.lateTime2(self.late2() ? 60 : 0);
+                    self.earlyTime2(self.early2() ? 30 : 0);
+                }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     appID: self.appID(),
                     appDate: self.date(),
