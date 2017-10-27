@@ -150,7 +150,7 @@ module nts.uk.at.view.kaf009.b {
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
-                        //self.version = detailData.goBackDirectlyDto.version;
+                        self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
@@ -185,10 +185,23 @@ module nts.uk.at.view.kaf009.b {
                 promiseResult.done((result) => {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        }).fail(function(res: any) {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                location.reload();
+                            });
                         })
+                        .fail(function(res) { 
+                            if(res.optimisticLock == true){
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                                    location.reload();
+                                });    
+                            } else {
+                                if(res.messageId === "Msg_327"){
+                                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
+                                } else {
+                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
+                                }
+                            }
+                        });
                     }
                 });
             }
@@ -280,7 +293,7 @@ module nts.uk.at.view.kaf009.b {
             getCommand() {
                 let self = this; 
                 let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
-                //goBackCommand.version = self.version;
+                goBackCommand.version = self.version;
                 goBackCommand.appID = self.appID();
                 goBackCommand.workTypeCD = self.workTypeCd();
                 goBackCommand.siftCD = self.siftCD();
