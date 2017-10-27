@@ -21,6 +21,7 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
+import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Path("i18n/resources")
@@ -77,8 +78,12 @@ public class I18NResourcesWebService {
 		builder.append(languageId);
 		builder.append("';");
 		
+		builder.append("var names=");
+		builder.append(createJsObject(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME)));
+		builder.append(";");
+		
 		builder.append("var messages=");
-		builder.append(createJsObject(this.i18n.loadAllForUser(languageId, companyId)));
+		builder.append(createJsObject(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.MESSAGE)));
 		builder.append(";");
 		
 		return builder.toString();
