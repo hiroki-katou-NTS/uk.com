@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.ArrayList;
@@ -9,17 +13,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -36,14 +39,10 @@ public class AttendanceItemsFinder {
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
-	
-	/** The frame adapter. */
-	@Inject
-	private FrameNoAdapter frameAdapter;
 
-	/** The opt item repo. */
+	/** The attd item linking finder. */
 	@Inject
-	private OptionalItemRepository optItemRepo;
+	private AttendanceItemLinkingFinder attdItemLinkingFinder;
 
 	public List<AttendanceItemDto> find() {
 		LoginUserContext login = AppContexts.user();
@@ -140,45 +139,57 @@ public class AttendanceItemsFinder {
 
 		return attendanceItemDtos;
 	}
-	
+
 	/**
 	 * Find by any item.
 	 *
-	 * @param anyItemNos the any item nos
-	 * @param formulaAtr the formula atr
-	 * @param performanceAtr the performance atr
+	 * @param request the request
 	 * @return the list
 	 * 
 	 * @author anhnm
 	 */
-	public List<FrameNoAdapterDto> findByAnyItem(AttdItemLinkRequest request) {
-		// find list optional item by attribute
-		Map<String, String> filteredByAtr = this.optItemRepo
-				.findByAtr(AppContexts.user().companyId(), request.getFormulaAtr()).stream()
-				.collect(Collectors.toMap(i -> i.getOptionalItemNo().v(), i -> i.getOptionalItemNo().v()));
+	public List<AttdItemDto> findByAnyItem(AttdItemLinkRequest request) {
+		// get list attendance item by atr
+		List<AttdItemDto> attdItems = this.findListByAttendanceAtr(this.convertToAttdItemType(request.getFormulaAtr()));
 
-		// filter list optional item by selectable list parameters.
-		Map<Integer, Integer> filteredBySelectableList = request.getAnyItemNos().stream()
-				.filter(itemNo -> filteredByAtr.containsKey(itemNo))
-				.collect(Collectors.toMap(i -> Integer.parseInt(i), i -> Integer.parseInt(i)));
+		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
+			// get attendance item linking
+			Map<Integer, Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
+					.collect(Collectors.toMap(item -> item.getAttendanceItemId(), item -> item.getAttendanceItemId()));
 
-		// return list AttendanceItemLinking after filtered by list optional item.
-		return this.frameAdapter.getByAnyItem(convertToFrameType(request.getPerformanceAtr())).stream()
-				.filter(item -> filteredBySelectableList.containsKey(item.getFrameNo())).collect(Collectors.toList());
+			// get list attendance item filtered by attdItemLinks
+			List<AttdItemDto> filtered = this.findAll().stream()
+					.filter(item -> attdItemLinks.containsKey(item.getAttendanceItemId())).collect(Collectors.toList());
 
+			// merge two list attendance items
+			attdItems.addAll(filtered);
+		}
+
+		return attdItems;
 	}
-	
+
 	/**
-	 * Convert to frame type.
+	 * Convert to attd item type.
 	 *
-	 * @param performanceAtr the performance atr
+	 * @param formulaAtr the formula atr
 	 * @return the int
 	 * 
 	 * @author anhnm
 	 */
-	private static final int convertToFrameType(int performanceAtr) {
-		final int MONTHLY_FRAME = 1;
-		final int DAILY_FRAME = 3;
-		return performanceAtr == PerformanceAtr.DAILY_PERFORMANCE.value ? DAILY_FRAME : MONTHLY_FRAME;
+	private int convertToAttdItemType(int formulaAtr) {
+		final int AMOUNT = OptionalItemAtr.AMOUNT.value;
+		final int NUMBER = OptionalItemAtr.NUMBER.value;
+		final int TIMTE = OptionalItemAtr.TIME.value;
+
+		if (formulaAtr == AMOUNT) {
+			return DailyAttendanceAtr.AmountOfMoney.value;
+		} else if (formulaAtr == NUMBER) {
+			return DailyAttendanceAtr.NumberOfTime.value;
+		} else if (formulaAtr == TIMTE) {
+			return DailyAttendanceAtr.Time.value;
+		} else {
+			throw new RuntimeException("value not found");
+		}
 	}
+
 }
