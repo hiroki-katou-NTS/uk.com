@@ -873,7 +873,12 @@ module ksu001.a.viewmodel {
          * open dialog C
          */
         openDialogC(): void {
+            let self = this;
             $('#popup-area3').ntsPopup('hide');
+            nts.uk.ui.windows.setShared('selectionCondition', self.selectedCodeTree());
+            nts.uk.ui.windows.setShared('startDate', self.dateTimePrev());
+            nts.uk.ui.windows.setShared('endDate', self.dateTimeAfter());
+            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/c/index.xhtml");
         }
 
