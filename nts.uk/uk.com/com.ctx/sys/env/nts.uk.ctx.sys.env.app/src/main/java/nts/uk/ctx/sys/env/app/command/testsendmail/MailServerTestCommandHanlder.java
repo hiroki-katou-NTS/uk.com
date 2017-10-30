@@ -12,7 +12,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.mail.send.MailContents;
 import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * The Class MailServerTestCommandHanlder.
@@ -36,7 +35,7 @@ public class MailServerTestCommandHanlder  extends CommandHandler<MailServerTest
 		
 		try {
 			this.mailSender.send(command.getMailFrom(), command.getMailTo(), contents);
-		} catch (SendMailFailedException e) {
+		} catch (Exception e) {
 			throw new BusinessException("Msg_535");
 		}
 		

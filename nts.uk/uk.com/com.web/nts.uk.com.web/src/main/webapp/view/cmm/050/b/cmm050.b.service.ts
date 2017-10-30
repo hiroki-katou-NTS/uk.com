@@ -36,7 +36,7 @@ module nts.uk.com.view.cmm050.b {
             subject: string;
             body: string;
             
-            constructor(subject: string = "dcm", body: string = "dcm"){
+            constructor(subject: string = "Mail test from server", body: string = "Hello, this is test message!!"){
                 this.subject = subject;
                 this.body = body;
             }

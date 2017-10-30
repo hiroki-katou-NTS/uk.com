@@ -16,6 +16,8 @@ module nts.uk.com.view.cmm050.a {
             haveImapSetting: KnockoutObservable<boolean>;
             haveEncryptMethod: KnockoutObservable<boolean>;
             
+            computedText: KnockoutComputed<string>;
+            
             //common info
             emailAuth: KnockoutObservable<string>;
             useAuth: KnockoutObservable<number>;
@@ -87,11 +89,21 @@ module nts.uk.com.view.cmm050.a {
                 _self.imapServerEnable = ko.observable(false);
                 _self.popServerEnable = ko.observable(false);
                 
+                _self.computedText = ko.computed(function() {
+                    if(_self.useAuth() == UseServer.USE){
+                       return nts.uk.resource.getText("CMM050_13", [25]);
+                    }else{
+                       return nts.uk.resource.getText("CMM050_13", [578]);
+                    } 
+                });
+                
                 _self.useAuth.subscribe(function(useAuthChanged){
                     if(useAuthChanged == UseServer.USE){
-                       _self.authMethodEnable(true);
+                        _self.authMethodEnable(true);
+                        _self.smtpPort(25);
                         _self.fillUI(_self.authMethod());
                     }else{
+                        _self.smtpPort(587);
                        _self.authMethodEnable(false);
                        _self.havePopSetting(false);
                        _self.haveImapSetting(false);
@@ -226,7 +238,7 @@ module nts.uk.com.view.cmm050.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let _self = this;
-               
+                
                 _self.loadMailServerSetting().done(function(data: MailServerFindDto){
       
                     //check visible
@@ -249,11 +261,16 @@ module nts.uk.com.view.cmm050.a {
                     }
                     
                     dfd.resolve();
+                    $('#email_auth').focus();
                 });
                 
                 return dfd.promise();
             }
             
+            
+            /**
+             * init UI
+             */
             private fillUI(authMethodChanged): void {
                 let _self = this;
                 switch(authMethodChanged){
