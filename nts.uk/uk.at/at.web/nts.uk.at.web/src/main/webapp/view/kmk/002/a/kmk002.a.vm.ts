@@ -778,6 +778,10 @@ module nts.uk.at.view.kmk002.a {
                     // convert dto to viewmodel
                     formula.fromDto(item);
 
+                    // force to mutate
+                    formula.timeDailyUnit.valueHasMutated();
+                    formula.timeMonthlyUnit.valueHasMutated();
+
                     return formula;
                 });
 
@@ -1305,7 +1309,7 @@ module nts.uk.at.view.kmk002.a {
                 self.calcAtrDs = Enums.ENUM_OPT_ITEM.calcAtr;
                 self.timeUnitDs = Enums.ENUM_OPT_ITEM.timeRounding.unit;
                 self.timeRoundingFullDs = Enums.ENUM_OPT_ITEM.timeRounding.rounding;
-                self.timeRoundingFilterdDs = self.timeRoundingFullDs.filter(item => item.fieldName != "Enum_Rounding_Down_Over");
+                self.timeRoundingFilterdDs = self.timeRoundingFullDs.filter(item => item.fieldName != "ROUNDING_DOWN_OVER");
                 self.timeRoundingDailyDs = ko.observableArray(self.timeRoundingFullDs);
                 self.timeRoundingMonthlyDs = ko.observableArray(self.timeRoundingFullDs);
                 self.amountUnitDs = Enums.ENUM_OPT_ITEM.amountRounding.unit;
@@ -1400,23 +1404,19 @@ module nts.uk.at.view.kmk002.a {
                 self.timeMonthlyUnit.subscribe(v => {
                     if (self.isTimeUnit15or30(v)) {
 
-                        // return if value unchanged
-                        if (self.isTimeUnit15or30(self.timeMonthlyUnitStash)) {
-                            return;
-                        }
-
                         // show full data source
                         self.timeRoundingMonthlyDs(self.timeRoundingFullDs);
-                    } else {
 
-                        // return if value unchanged
-                        if (!self.isTimeUnit15or30(self.timeMonthlyUnitStash)) {
-                            return;
-                        }
+                        // save new value to stash
+                        self.timeMonthlyUnitStash = v;
+                    } else {
 
                         // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
                         // from data source list
                         self.timeRoundingMonthlyDs(self.timeRoundingFilterdDs);
+
+                        // save new value to stash
+                        self.timeMonthlyUnitStash = v;
                     }
                 });
 
@@ -1424,23 +1424,19 @@ module nts.uk.at.view.kmk002.a {
                 self.timeDailyUnit.subscribe(v => {
                     if (self.isTimeUnit15or30(v)) {
 
-                        // return if value unchanged
-                        if (self.isTimeUnit15or30(self.timeDailyUnitStash)) {
-                            return;
-                        }
-
                         // show full data source
                         self.timeRoundingDailyDs(self.timeRoundingFullDs);
-                    } else {
 
-                        // return if value unchanged
-                        if (!self.isTimeUnit15or30(self.timeDailyUnitStash)) {
-                            return;
-                        }
+                        // save new value to stash
+                        self.timeDailyUnitStash = v;
+                    } else {
 
                         // Remove item ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over")
                         // from data source list
                         self.timeRoundingDailyDs(self.timeRoundingFilterdDs);
+
+                        // save new value to stash
+                        self.timeDailyUnitStash = v;
                     }
                 });
 
@@ -1772,10 +1768,6 @@ module nts.uk.at.view.kmk002.a {
                 self.symbolValue = dto.symbolValue;
                 self.orderNo = dto.orderNo;
 
-                // save to stash
-                self.formulaAtrStash = dto.formulaAtr;
-                self.calcAtrStash = dto.calcAtr;
-
                 // Calc setting
                 self.calcAtr(dto.calcAtr);
                 if (dto.formulaSetting) {
@@ -1801,6 +1793,12 @@ module nts.uk.at.view.kmk002.a {
                 self.amountMonthlyUnit(dto.monthlyRounding.amountUnit);
                 self.amountDailyRounding(dto.dailyRounding.amountRounding);
                 self.amountDailyUnit(dto.dailyRounding.amountUnit);
+
+                // save to stash
+                self.formulaAtrStash = dto.formulaAtr;
+                self.calcAtrStash = dto.calcAtr;
+                self.timeMonthlyUnitStash = dto.monthlyRounding.timeUnit;
+                self.timeDailyUnitStash = dto.dailyRounding.timeUnit;
 
             }
         }
