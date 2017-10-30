@@ -152,25 +152,30 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = currentItem.formatSelection(),
                 listItems: Array<SelectionItem> = self.listItems(),
+                _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName()),
                 oldIndex = _.findIndex(listItems, x => x.selectionItemId == currentItem.selectionItemId()),
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を更新する
-            service.updateDataSelectionItem(command).done(function() {
-                self.listItems.removeAll();
-                //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
-                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                    if (itemList && itemList.length) {
-                        itemList.forEach(x => self.listItems.push(x));
-                    }
+            if (_selectionItemName) {
+                alertError({ messageId: "Msg_513" });
+            } else {
+                service.updateDataSelectionItem(command).done(function() {
+                    self.listItems.removeAll();
+                    //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
+                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listItems.push(x));
+                        }
 
-                    let newItem = itemList[oldIndex];
-                    currentItem.selectionItemId(newItem.selectionItemId);
+                        let newItem = itemList[oldIndex];
+                        currentItem.selectionItemId(newItem.selectionItemId);
+                    });
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    self.listItems.valueHasMutated();
+
                 });
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                self.listItems.valueHasMutated();
-
-            });
+            }
         }
 
         //削除ボタン

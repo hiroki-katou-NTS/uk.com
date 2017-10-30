@@ -10,11 +10,34 @@
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.time.TimeWithDayAttr
-					nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
-					nts.uk.shr.com.primitive.sample.ResidenceCode
 					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingCode
 					nts.uk.ctx.bs.person.dom.person.setting.init.ValueSettingName
-					
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana
+					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
+					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameKana
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName
+					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName 
+					nts.uk.ctx.bs.person.dom.person.info.PersonMobile
+					nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress
+					nts.uk.ctx.bs.person.dom.person.info.Hobby
+					nts.uk.ctx.bs.person.dom.person.info.Taste
+					nts.uk.ctx.bs.person.dom.person.info.Nationality
+					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeMail
+					nts.uk.ctx.bs.employee.dom.employeeinfo.CompanyMobile
+					nts.uk.ctx.bs.employee.dom.employeeinfo.HiringType
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.PostalCode
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.Perfectures
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.CountryId
+				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddress1
+				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddressKana1
+				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddress2
+					nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddressKana2
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.PhoneNumber
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HomeSituationType
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HouseRent
    			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
 			<com:scriptfile path="cps009.a.service.js" />
@@ -142,12 +165,13 @@
 										<td colspan="2" class="input-units">
 											<!-- String  -->
 											<com:ko-if bind="(dataType() === 0)">
-												<input class="sub-input-units" data-bind="ntsTextEditor: {value: stringValue , constraint: 'CategoryName', required: true}" />
+												<input class="sub-input-units" data-bind="ntsTextEditor: {value: stringValue , constraint: constraint , required: true}" />
 											</com:ko-if> 
 											
 											<!-- number  --> 
 											<com:ko-if bind="(dataType() === 1)">
-												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { value: intValue, constraint: 'ResidenceCode', required: true}" />
+ 												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { value: intValue,  required: true}" /> 
+<!-- 													<input class="sub-input-units" data-bind="ntsTextEditor: {value: intValue , constraint: constraint , required: true}" /> -->
 											</com:ko-if>
 											
 											 <!-- date  --> 
