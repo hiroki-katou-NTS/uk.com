@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
 
 @Getter
-public class IncomeTaxDto extends CtgItemFixDto{
+public class ItemIncomeTaxDto extends CtgItemFixDto{
 	/**
 	 * domain: 家族所得税
 	 */
@@ -26,7 +26,7 @@ public class IncomeTaxDto extends CtgItemFixDto{
 	/** 控除対象区分*/
 	private int deductionTargetType;
 	
-	private IncomeTaxDto(String incomeTaxID, String familyMemberId, String sid,
+	private ItemIncomeTaxDto(String incomeTaxID, String familyMemberId, String sid,
 			GeneralDate startDate, GeneralDate endDate, boolean supporter, int disabilityType,
 			int deductionTargetType) {
 		super();
@@ -41,9 +41,9 @@ public class IncomeTaxDto extends CtgItemFixDto{
 		this.deductionTargetType = deductionTargetType;
 	}
 	
-	public static IncomeTaxDto createFromJavaType(String incomeTaxID, String familyMemberId, String sid,
+	public static ItemIncomeTaxDto createFromJavaType(String incomeTaxID, String familyMemberId, String sid,
 			GeneralDate startDate, GeneralDate endDate, boolean supporter, int disabilityType,
 			int deductionTargetType){
-		return new IncomeTaxDto(incomeTaxID, familyMemberId, sid, startDate, endDate, supporter, disabilityType, deductionTargetType);
+		return new ItemIncomeTaxDto(incomeTaxID, familyMemberId, sid, startDate, endDate, supporter, disabilityType, deductionTargetType);
 	}
 }

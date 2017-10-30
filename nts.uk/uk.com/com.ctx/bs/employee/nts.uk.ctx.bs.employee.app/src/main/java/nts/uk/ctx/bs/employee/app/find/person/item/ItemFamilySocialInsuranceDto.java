@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
 
 @Getter
-public class FamilySocialInsuranceDto extends CtgItemFixDto{
+public class ItemFamilySocialInsuranceDto extends CtgItemFixDto{
 	/**
 	 * 家族社会保険
 	 */
@@ -28,7 +28,7 @@ public class FamilySocialInsuranceDto extends CtgItemFixDto{
 	/** 基礎年金番号*/
 	private String basicPensionNumber;
 
-	private FamilySocialInsuranceDto(String familyMemberId, String sid, String socailInsuaranceId,
+	private ItemFamilySocialInsuranceDto(String familyMemberId, String sid, String socailInsuaranceId,
 			GeneralDate startDate, GeneralDate endDate, boolean nursingCare, boolean healthInsuranceDependent,
 			boolean nationalPensionNo3, String basicPensionNumber){
 		super();
@@ -43,10 +43,10 @@ public class FamilySocialInsuranceDto extends CtgItemFixDto{
 		this.nationalPensionNo3 = nationalPensionNo3;
 		this.basicPensionNumber = basicPensionNumber;
 	}
-	public static FamilySocialInsuranceDto createFromJavaType(String familyMemberId, String sid, String socailInsuaranceId,
+	public static ItemFamilySocialInsuranceDto createFromJavaType(String familyMemberId, String sid, String socailInsuaranceId,
 			GeneralDate startDate, GeneralDate endDate, boolean nursingCare, boolean healthInsuranceDependent,
 			boolean nationalPensionNo3, String basicPensionNumber) {
-		return new FamilySocialInsuranceDto(familyMemberId, sid, socailInsuaranceId, startDate, endDate, nursingCare,
+		return new ItemFamilySocialInsuranceDto(familyMemberId, sid, socailInsuaranceId, startDate, endDate, nursingCare,
 				healthInsuranceDependent, nationalPensionNo3, basicPensionNumber);
 	}
 }

@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 @AllArgsConstructor
-public class CurrentJobPosDto{
+public class ItemCurrentJobPosDto{
 	/**職務職位ID（兼務） sub job position id*/
 	private String subJobPosId;
 	/**所属部門ID affiliation department id*/

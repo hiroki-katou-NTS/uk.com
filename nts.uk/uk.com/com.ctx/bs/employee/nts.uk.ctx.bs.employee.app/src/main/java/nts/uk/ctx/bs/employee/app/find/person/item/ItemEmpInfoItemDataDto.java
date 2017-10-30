@@ -9,7 +9,7 @@ import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 
 @Data
 @AllArgsConstructor
-public class EmpInfoItemDataDto {
+public class ItemEmpInfoItemDataDto {
 	private String perInfoDefId; 
 	private String recordId; 
 	private String perInfoCtgId;
