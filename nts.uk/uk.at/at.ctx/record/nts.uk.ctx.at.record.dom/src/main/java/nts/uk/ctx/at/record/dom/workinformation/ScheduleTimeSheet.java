@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workinformation;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -13,7 +14,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class ScheduleTimeSheet {
+public class ScheduleTimeSheet extends DomainObject{
 	
 	private WorkNo workNo;
 	

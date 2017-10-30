@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.personallaborcondition;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.personallaborcondition.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
@@ -11,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionGet
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -20,20 +22,21 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditionGetMemento {
 
 	/** The entity. */
-	private KshmtPerLaborCond entity;
+	private KshmtPerLaborCond entityCondition;
+	
+	/** The entity single days. */
+	private List<KshmtSingleDaySche> entitySingleDays ;
 
 	/**
 	 * Instantiates a new jpa personal labor condition get memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entityCondition the entity condition
+	 * @param entitySingleDays the entity single days
 	 */
-	public JpaPersonalLaborConditionGetMemento(KshmtPerLaborCond entity) {
-		if (entity.getKshmtPerLaborCondPK() == null) {
-			entity.setKshmtPerLaborCondPK(new KshmtPerLaborCondPK());
-		}
-
-		this.entity = entity;
+	public JpaPersonalLaborConditionGetMemento(KshmtPerLaborCond entityCondition,
+			List<KshmtSingleDaySche> entitySingleDays) {
+		this.entityCondition = entityCondition;
+		this.entitySingleDays = entitySingleDays;
 	}
 
 	/*
@@ -44,7 +47,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public UseAtr getScheduleManagementAtr() {
-		return UseAtr.valueOf(this.entity.getSchedMgmtAtr());
+		return UseAtr.valueOf(this.entityCondition.getSchedMgmtAtr());
 	}
 
 	/*
@@ -55,8 +58,8 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public BreakdownTimeDay getHolidayAddTimeSet() {
-		return new BreakdownTimeDay(new AttendanceTime(this.entity.getHdAddOneDay()),
-				new AttendanceTime(this.entity.getHdAddMorning()), new AttendanceTime(this.entity.getHdAddAfternoon()));
+		return new BreakdownTimeDay(new AttendanceTime(this.entityCondition.getHdAddOneDay()),
+				new AttendanceTime(this.entityCondition.getHdAddMorning()), new AttendanceTime(this.entityCondition.getHdAddAfternoon()));
 	}
 
 	/*
@@ -67,8 +70,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PersonalWorkCategory(new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
 	}
 
 	/*
@@ -79,8 +81,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public PersonalDayOfWeek getWorkDayOfWeek() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PersonalDayOfWeek(new JpaPersonalDayOfWeekGetMemento(this.entitySingleDays));
 	}
 
 	/*
@@ -91,8 +92,8 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public DatePeriod getPeriod() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DatePeriod(this.entityCondition.getKshmtPerLaborCondPK().getStartYmd(),
+				this.entityCondition.getKshmtPerLaborCondPK().getEndYmd());
 	}
 
 	/*
@@ -103,8 +104,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public String getEmployeeId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entityCondition.getKshmtPerLaborCondPK().getSid();
 	}
 
 	/*
@@ -115,8 +115,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public UseAtr getAutomaticEmbossSetAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return UseAtr.valueOf(this.entityCondition.getAutoEmbossSetAtr());
 	}
 
 }

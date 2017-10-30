@@ -8,4 +8,6 @@ public interface TemporaryAbsenceRepository {
 
 	Optional<TemporaryAbsence> getBySid(String sid, GeneralDate referenceDate);
 	
+	Optional<TemporaryAbsence> getByTempAbsenceId(String tempAbsenceId);
+	
 }

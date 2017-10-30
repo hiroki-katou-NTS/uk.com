@@ -9,7 +9,7 @@ $(function(){
     });
     $("#header").append($pumpkin);
     $("#master-content").append("<div id='fof'><div></div><canvas></canvas></div>");
-    $("#master-content").append("<div id='particles-js'></div>");
+    $("#fof").append("<div id='particles-js'></div>");
     $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/nts.uk.com.web/view/sample/catalog/css/animate.css'));
     $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/nts.uk.com.web/view/sample/catalog/css/404.css'));
     $.getScript('/nts.uk.com.web/view/sample/catalog/script/404.js');

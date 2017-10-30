@@ -80,7 +80,7 @@ public class WorkplaceConfigFinder {
         if (!optionalWkpConfig.isPresent()) {
             throw new RuntimeException(String.format("Not have %s", workplaceDto.getStartDate()));
         }
-        String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().getHistoryId();
+        String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
 
         return this.validWokplaceHierarchy(companyId, historyId, workplaceDto.getWorkplaceId());
     }

@@ -121,7 +121,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initDateRanger() {
             var self = this;
             self.dateRanger.subscribe((dateRange) => {
-                if (dateRange) {
+                if (dateRange && dateRange.startDate && dateRange.endDate) {
                     self.selectedDate(dateRange.startDate);
                     var elementDate = dateRange.startDate;
                     while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {

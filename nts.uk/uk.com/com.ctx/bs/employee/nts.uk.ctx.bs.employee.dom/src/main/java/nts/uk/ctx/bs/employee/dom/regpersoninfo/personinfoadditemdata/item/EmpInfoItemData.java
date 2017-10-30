@@ -9,11 +9,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
+import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 
 @NoArgsConstructor
 @Getter
 @Setter
 public class EmpInfoItemData extends AggregateRoot {
+
+	private ItemCode itemCode;
 
 	private String perInfoDefId;
 
@@ -27,8 +30,8 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private DataState dataState;
 
-	public EmpInfoItemData(String perInfoDefId, String recordId, String perInfoCtgId, String itemName,
-			IsRequired isRequired, DataState dataState) {
+	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
+			String itemName, IsRequired isRequired, DataState dataState) {
 		super();
 		this.perInfoDefId = perInfoDefId;
 		this.recordId = recordId;
@@ -37,11 +40,11 @@ public class EmpInfoItemData extends AggregateRoot {
 		this.dataState = dataState;
 	}
 
-	public static EmpInfoItemData createFromJavaType(String perInfoDefId, String recordId, String perInfoCtgId,
-			String itemName, int isRequired, int dataStateType, String stringValue, BigDecimal intValue,
-			GeneralDate dateValue) {
+	public static EmpInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
+			String perInfoCtgId, String itemName, int isRequired, int dataStateType, String stringValue,
+			BigDecimal intValue, GeneralDate dateValue) {
 
-		return new EmpInfoItemData(perInfoDefId, recordId, perInfoCtgId, itemName,
+		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, itemName,
 				EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
 						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
 

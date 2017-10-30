@@ -44,7 +44,7 @@ public class AppStamp extends Application {
 	private AppStampOnlineRecord appStampOnlineRecords;
 
 	public AppStamp(String CompanyID, String applicationID, PrePostAtr prePostAtr, GeneralDate inputDate,
-			String enteredPersonSID, AppReason reversionReason, GeneralDate applicationDate,
+			String enteredPersonSID, AppReason reversionReason, GeneralDate applicationDate, String appReasonID, 
 			AppReason applicationReason, ApplicationType applicationType, String applicantSID,
 			ReflectPlanScheReason reflectPlanScheReason, GeneralDate reflectPlanTime,
 			ReflectPlanPerState reflectPlanState, ReflectPlanPerEnforce reflectPlanEnforce,
@@ -54,7 +54,7 @@ public class AppStamp extends Application {
 			List<AppStampGoOutPermit> appStampGoOutPermits, List<AppStampWork> appStampWorks,
 			List<AppStampCancel> appStampCancels, AppStampOnlineRecord appStampOnlineRecords) {
 		super(CompanyID, applicationID, prePostAtr, inputDate, enteredPersonSID, reversionReason, applicationDate,
-				applicationReason, applicationType, applicantSID, reflectPlanScheReason, reflectPlanTime,
+				appReasonID, applicationReason, applicationType, applicantSID, reflectPlanScheReason, reflectPlanTime,
 				reflectPlanState, reflectPlanEnforce, reflectPerScheReason, reflectPerTime, reflectPerState,
 				reflectPerEnforce, startDate, endDate, listPhase);
 		this.stampRequestMode = stampRequestMode;
@@ -77,6 +77,7 @@ public class AppStamp extends Application {
 				enteredPersonSID, 
 				new AppReason(""), 
 				appDate, 
+				"",
 				new AppReason(""),  
 				ApplicationType.STAMP_APPLICATION, 
 				applicantSID, 

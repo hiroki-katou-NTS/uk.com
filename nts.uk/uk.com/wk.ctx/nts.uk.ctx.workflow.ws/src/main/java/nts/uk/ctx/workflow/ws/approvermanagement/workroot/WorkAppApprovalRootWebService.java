@@ -29,6 +29,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
@@ -154,5 +155,10 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("find/confirmRootType")
 	public List<EnumConstant> findConfirmRootType() {
 		return EnumAdaptor.convertToValueNameList(ConfirmationRootType.class);
+	}
+	@POST
+	@Path("find/wpInfo")
+	public WorkplaceImport getWpInfo(String workplaceId){
+		return comFinder.getWpInfo(workplaceId);
 	}
 }

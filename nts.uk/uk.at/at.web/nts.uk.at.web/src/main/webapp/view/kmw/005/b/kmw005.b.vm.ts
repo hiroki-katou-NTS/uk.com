@@ -17,14 +17,14 @@ module nts.uk.at.view.kmw005.b {
             lockHistList: KnockoutObservableArray<ActualLockHistFind>;
             lockHist: ActualLockHist;
             lockHistColumn: KnockoutObservableArray<any>;
+            
             constructor() {
                 let self = this;
                 self.closureColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
                     { headerText: getText('KMW005_18'), key: 'closureName', width: 100 }
                 ]);
-                
-                var closures: ClosureDto[] = getShared('ClosureList');
+                var closures: ClosureDto[] = getShared('ActualLock');
                 self.closureList = ko.observableArray(closures);
                 self.selectedClosure = ko.observable(0);
                 self.selectedClosure.subscribe(function(data: number) {
@@ -54,7 +54,7 @@ module nts.uk.at.view.kmw005.b {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 blockUI.invisible();
-                // Selected the First Closure in list
+                // Selected first Closure in list
                 self.selectedClosure(self.closureList()[0].closureId);
                 blockUI.clear();
                 // Focus on Target YearMonth
@@ -71,7 +71,7 @@ module nts.uk.at.view.kmw005.b {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
-                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 46px;")
+                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 17px; height: 17px; background-size: 17px 17px; margin-left: 46px;")
             }
             
             /**

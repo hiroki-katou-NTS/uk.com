@@ -48,6 +48,7 @@ table.contents-header thead tr th{
 
 .modeB{
     color: #000;
+    font-weight: bold;
     background-color: #CFF1A5;	
     padding: 0 2px;
     border: 1px solid #CCC;

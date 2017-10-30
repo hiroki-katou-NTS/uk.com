@@ -12,6 +12,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.i.main.css" />
 			<com:scriptfile path="kdw001.i.start.js" />
+			<com:scriptfile path="../f/kdw001.f.vm.js" />
 			<com:scriptfile path="kdw001.i.vm.js" />
 			<com:scriptfile path="kdw001.i.service.js" />
 		</ui:define>
@@ -27,14 +28,14 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_77')}</div>
 						</td>
 						<!-- I1_2 -->
-						<td colspan="2">入社日を変更した</td>
+						<td colspan="2" data-bind="text:executedMenuJapan"></td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- I1_4 -->
-						<td>11月度</td>
+						<td data-bind="text : processingMonthName"></td>
 						<!-- I1_5 -->
 						<td>01：末締めI1-4</td>
 					</tr>
@@ -43,7 +44,7 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- I1_6 -->
-						<td colspan="2">2016/11/01 ～ 2016/11/30</td>
+						<td colspan="2"><span data-bind="text: periodStartDate"></span> ～ <span data-bind="text: periodEndDate"></span></td>
 					</tr>
 					<tr>
 						<td>

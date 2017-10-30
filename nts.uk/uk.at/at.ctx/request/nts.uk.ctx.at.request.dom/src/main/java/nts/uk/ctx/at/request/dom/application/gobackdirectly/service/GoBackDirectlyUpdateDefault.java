@@ -43,6 +43,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Override
 	public void update(GoBackDirectly goBackDirectly, Application application) {
 		this.updateGoBackDirectly(goBackDirectly);
+		application.setVersion(goBackDirectly.getVersion());
 		appRepo.updateApplication(application);
 	}
 

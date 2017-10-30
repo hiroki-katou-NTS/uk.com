@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
@@ -40,7 +40,7 @@ public class GetDataAppCfDetailFinder {
 	private OtherCommonAlgorithm otherCommonAlgorithm; 
 	//closure ID
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
