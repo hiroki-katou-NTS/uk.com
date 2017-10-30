@@ -26,18 +26,28 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			+ " ON empl.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcmtExecutionLogPK.empCalAndSumExecLogID "
 			+ " WHERE " + ".krcmtEmpExecutionLogPK.companyID = :companyID " + " AND el.executionContent = 0";
 
-	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c "
-			+ "JOIN KrcmtExecutionLog d ON c.krcmtEmpExecutionLogPK.companyID = d.krcmtExecutionLogPK.companyID "
-			+ "AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = d.krcmtExecutionLogPK.empCalAndSumExecLogID "
-			+ "AND c.krcmtEmpExecutionLogPK.caseSpecExeContentID = d.krcmtExecutionLogPK.caseSpecExeContentID "
-			+ "AND c.krcmtEmpExecutionLogPK.employeeID = d.krcmtExecutionLogPK.employeeID "
-			+ "WHERE d.krcmtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+//	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c "
+//			+ "JOIN KrcmtExecutionLog d ON c.krcmtEmpExecutionLogPK.companyID = d.krcmtExecutionLogPK.companyID "
+//			+ "AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = d.krcmtExecutionLogPK.empCalAndSumExecLogID "
+//			+ "AND c.krcmtEmpExecutionLogPK.caseSpecExeContentID = d.krcmtExecutionLogPK.caseSpecExeContentID "
+//			+ "AND c.krcmtEmpExecutionLogPK.employeeID = d.krcmtExecutionLogPK.employeeID "
+//			+ "WHERE d.krcmtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private final String UPDATE_LOG_INFO = "UPDATE KrcmtExecutionLog a" + " SET a.processStatus = 1"
 			+ " WHERE a.krcmtExecutionLogPK.empCalAndSumExecLogID = empCalAndSumExecLogID"
 			+ " AND a.executionContent = 0 ";
 
-	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
+//	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
+//			+ " ON empl.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcmtExecutionLogPK.empCalAndSumExecLogID " 
+//			+ " WHERE "
+//			+ ".krcmtEmpExecutionLogPK.companyID = :companyID "
+//			+ " AND el.executionContent = 0";
+
+	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c " 		
+			+" WHERE c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID " ;
+
+	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG
+			+ " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
 
 	/**

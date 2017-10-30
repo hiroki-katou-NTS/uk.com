@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 
 public class I18NResourceContainer<T extends I18NResourceItem> {
 	
@@ -40,6 +41,25 @@ public class I18NResourceContainer<T extends I18NResourceItem> {
 		return this.items.entrySet().stream().collect(Collectors.toMap(
 				es -> es.getKey(),
 				es -> es.getValue().content()));
+	}
+	
+	public Map<String, String> createContentsMapByClassId(String classId) {
+		return this.items.entrySet().stream()
+				.filter(es -> es.getValue().resourceType() == I18NResourceType.ITEM_NAME)
+				.map(es -> (ProgramResourceItem)(es.getValue()))
+				.filter(item -> item.getProgramId().equals(classId))
+				.collect(Collectors.toMap(
+						item -> item.identifier(),
+						item -> item.content()));
+	}
+	
+	public Map<String, String> createContentsMapByResourceType(I18NResourceType resourceType) {
+		return this.items.entrySet().stream()
+				.filter(es -> es.getValue().resourceType() == resourceType)
+				.map(es -> (I18NResourceItem)(es.getValue()))
+				.collect(Collectors.toMap(
+						item -> item.identifier(),
+						item -> item.content()));
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -28,8 +28,14 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID,
-			String operationCaseID, String employeeID);
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID,String operationCaseID, String employeeID);
+	
+	/**
+	 * get list EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * @param empCalAndSumExecLogID
+	 * @return
+	 */
+	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 
 	/**
 	 * KIF 001 3 日別実績の作成処理
@@ -47,8 +53,6 @@ public interface EmpCalAndSumExeLogRepository {
 	 * 
 	 */
 	void updateLogInfo(String empCalAndSumExecLogID);
-
-	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID);
 
 	/**
 	 * get all EmpCalAndSumExeLog by startDate and endDate

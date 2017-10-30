@@ -34,7 +34,7 @@ public class CaseSpecExeContent extends AggregateRoot {
 	/**
 	 * 運用ケース名
 	 */
-	private String useCaseName;
+	private UseCaseName useCaseName;
 	/**
 	 * 設定情報
 	 */
@@ -50,7 +50,7 @@ public class CaseSpecExeContent extends AggregateRoot {
 		return new CaseSpecExeContent(
 				caseSpecExeContentID,
 				orderNumber,
-				useCaseName,
+				new UseCaseName(useCaseName),
 				new CalExeSettingInfor(
 						EnumAdaptor.valueOf(executionContent, ExecutionContent.class),
 						EnumAdaptor.valueOf(executionType, ExecutionType.class)
