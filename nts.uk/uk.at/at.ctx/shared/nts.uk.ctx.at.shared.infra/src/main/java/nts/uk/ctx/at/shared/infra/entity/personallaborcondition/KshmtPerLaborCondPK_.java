@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.personallaborcondition;
 
-import java.util.Date;
-
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class KshmtPerLaborCondPK_.
@@ -19,9 +19,9 @@ public class KshmtPerLaborCondPK_ {
 	public static volatile SingularAttribute<KshmtPerLaborCondPK, String> sid;
 	
 	/** The start ymd. */
-	public static volatile SingularAttribute<KshmtPerLaborCondPK, Date> startYmd;
+	public static volatile SingularAttribute<KshmtPerLaborCondPK, GeneralDate> startYmd;
 	
 	/** The end ymd. */
-	public static volatile SingularAttribute<KshmtPerLaborCondPK, Date> endYmd;
+	public static volatile SingularAttribute<KshmtPerLaborCondPK, GeneralDate> endYmd;
 	
 }

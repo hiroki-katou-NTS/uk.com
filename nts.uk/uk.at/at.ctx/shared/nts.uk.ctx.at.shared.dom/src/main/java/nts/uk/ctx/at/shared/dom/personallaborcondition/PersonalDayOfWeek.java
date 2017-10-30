@@ -44,4 +44,34 @@ public class PersonalDayOfWeek extends DomainObject{
 	// 金曜日
 	private Optional<SingleDaySchedule> friday;
 	
+	
+	/**
+	 * Instantiates a new personal day of week.
+	 *
+	 * @param memento the memento
+	 */
+	public PersonalDayOfWeek(PersonalDayOfWeekGetMemento memento) {
+		this.saturday = memento.getSaturday();
+		this.sunday = memento.getSunday();
+		this.monday = memento.getMonday();
+		this.thursday = memento.getThursday();
+		this.wednesday = memento.getWednesday();
+		this.tuesday = memento.getTuesday();
+		this.friday = memento.getFriday();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PersonalDayOfWeekSetMemento memento){
+		memento.setSaturday(this.saturday);
+		memento.setSunday(this.sunday);
+		memento.setMonday(this.monday);
+		memento.setThursday(this.thursday);
+		memento.setWednesday(this.wednesday);
+		memento.setTuesday(this.tuesday);
+		memento.setFriday(this.friday);
+	}
 }

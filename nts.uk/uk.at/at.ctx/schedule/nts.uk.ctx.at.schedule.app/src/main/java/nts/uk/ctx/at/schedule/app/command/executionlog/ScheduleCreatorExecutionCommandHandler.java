@@ -65,6 +65,8 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
@@ -179,6 +181,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The sc employment status adapter. */
 	@Inject
 	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
+	
+	/** The personal labor condition repository. */
+	@Inject
+	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -385,26 +391,37 @@ public class ScheduleCreatorExecutionCommandHandler
 		// loop start period date => end period date
 		while(command.getToDate().before(this.nextDay(domain.getPeriod().end().date()))){
 			
-			// get status employment
-			EmploymentStatusDto employmentStatus = this.getStatusEmployment(personalWorkScheduleCreSet.getEmployeeId(),
-					GeneralDate.legacyDate(command.getToDate()));
+			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
+					.findById(personalWorkScheduleCreSet.getEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
 			
-			// status employment equal RETIREMENT (退職)
-			if(employmentStatus.getStatusOfEmployment() == RETIREMENT){
-				return;
-			}
-			
-			// status employment not equal BEFORE_JOINING (入社前)
-			if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
-				Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-						.find(domain.getExecutionEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
+			if (optionalPersonalLaborCondition.isPresent()) {
 
-				// check exist data basic schedule
-				if (optionalBasicSchedule.isPresent()) {
+				PersonalLaborCondition personalLaborCondition = optionalPersonalLaborCondition.get();
+				if (personalLaborCondition.getScheduleManagementAtr()
+						.equals(nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr.USE)) {
+					// get status employment
+					EmploymentStatusDto employmentStatus = this.getStatusEmployment(
+							personalWorkScheduleCreSet.getEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
 
-					BasicSchedule basicSchedule = optionalBasicSchedule.get();
-					this.createWorkScheduleByImplementAtr(command, basicSchedule, personalWorkScheduleCreSet);
+					// status employment equal RETIREMENT (退職)
+					if (employmentStatus.getStatusOfEmployment() == RETIREMENT) {
+						return;
+					}
+
+					// status employment not equal BEFORE_JOINING (入社前)
+					if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
+						Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
+								.find(domain.getExecutionEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
+
+						// check exist data basic schedule
+						if (optionalBasicSchedule.isPresent()) {
+
+							BasicSchedule basicSchedule = optionalBasicSchedule.get();
+							this.createWorkScheduleByImplementAtr(command, basicSchedule, personalWorkScheduleCreSet);
+						}
+					}
 				}
+
 			}
 			// (button Interrupt)
 			command.setToDate(this.nextDay(command.getToDate()));
