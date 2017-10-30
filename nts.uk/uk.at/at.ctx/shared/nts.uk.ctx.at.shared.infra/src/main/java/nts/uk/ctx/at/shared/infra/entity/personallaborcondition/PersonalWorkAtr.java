@@ -59,7 +59,11 @@ public enum PersonalWorkAtr {
 
 	/** The outside law break time. */
 	// 法外休出時
-	OUTSIDE_LAW_BREAK_TIME(12, "Enum_PersonalWorkAtr_outsideLawBreakTime", "法外休出時");
+	OUTSIDE_LAW_BREAK_TIME(12, "Enum_PersonalWorkAtr_outsideLawBreakTime", "法外休出時"),
+	
+	/** The holiday attendance time. */
+	// 祝日出勤時
+	HOLIDAY_ATTENDANCE_TIME(13, "Enum_PersonalWorkAtr_holidayAttendanceTime", "祝日出勤時");
 
 	/** The value. */
 	public final int value;

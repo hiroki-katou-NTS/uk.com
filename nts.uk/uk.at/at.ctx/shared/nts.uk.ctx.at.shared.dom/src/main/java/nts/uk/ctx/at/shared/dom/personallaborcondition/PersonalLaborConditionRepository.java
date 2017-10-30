@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.personallaborcondition;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface PersonalLaborConditionRepository.

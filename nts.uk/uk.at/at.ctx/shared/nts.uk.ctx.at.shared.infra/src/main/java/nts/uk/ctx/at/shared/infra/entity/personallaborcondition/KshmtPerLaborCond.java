@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.entity.personallaborcondition;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -77,27 +76,6 @@ public class KshmtPerLaborCond extends UkJpaEntity implements Serializable {
      */
     public KshmtPerLaborCond(KshmtPerLaborCondPK kshmtPerLaborCondPK) {
         this.kshmtPerLaborCondPK = kshmtPerLaborCondPK;
-    }
-
-
-    /**
-     * Instantiates a new kshmt per labor cond.
-     *
-     * @param sid the sid
-     * @param startYmd the start ymd
-     * @param endYmd the end ymd
-     */
-    public KshmtPerLaborCond(String sid, Date startYmd, Date endYmd) {
-        this.kshmtPerLaborCondPK = new KshmtPerLaborCondPK(sid, startYmd, endYmd);
-    }
-
-    /**
-     * Gets the kshmt per labor cond PK.
-     *
-     * @return the kshmt per labor cond PK
-     */
-    public KshmtPerLaborCondPK getKshmtPerLaborCondPK() {
-        return kshmtPerLaborCondPK;
     }
 
     /**
