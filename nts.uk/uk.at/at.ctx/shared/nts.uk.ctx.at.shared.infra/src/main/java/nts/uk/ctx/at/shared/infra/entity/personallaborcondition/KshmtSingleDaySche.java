@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -29,6 +30,9 @@ public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The Constant DEFAULT_TIME. */
+    public static final int DEFAULT_TIME = 0;
     
     /** The kshmt single day sche PK. */
     @EmbeddedId
@@ -75,6 +79,20 @@ public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
     /** The start 2. */
     @Column(name = "START_2")
     private Integer start2;
+    
+    /**
+     * Default time zone.
+     */
+    public void defaultTimeZone(){
+    	this.useAtr1 = UseAtr.NOTUSE.value;
+    	this.cnt1 = DEFAULT_TIME;
+    	this.start1 = DEFAULT_TIME;
+    	this.end1 = DEFAULT_TIME;
+    	this.useAtr2 = UseAtr.NOTUSE.value;
+    	this.cnt2 = DEFAULT_TIME;
+    	this.start2 = DEFAULT_TIME;
+    	this.end2 = DEFAULT_TIME;
+    }
 
     /**
      * Instantiates a new kshmt single day sche.

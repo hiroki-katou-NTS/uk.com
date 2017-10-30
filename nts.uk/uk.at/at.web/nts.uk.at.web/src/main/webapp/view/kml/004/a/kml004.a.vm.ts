@@ -118,8 +118,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let dfd = $.Deferred();
             service.getItem().done((lstItem: Array<IEvalOrder>) => {
                 if (lstItem.length == 0) {
-                    $("#swap-list-grid1").igGrid("container").focus();
                     nts.uk.ui.dialog.info({ messageId: "Msg_458" }).then(()=> {
+                        $("#swap-list-grid1").igGrid("container").focus();
                         nts.uk.ui.windows.close();        
                     });
                 } else {
@@ -183,6 +183,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let part = [];
             $("#code-text").trigger("validate");
             $("#nameCtg").trigger("validate");
+            $("#memo").trigger("validate");
             var i = 0;
             _.forEach(self.selectedOption().totalEvalOrders(), function(item) {
                 part.push({
@@ -218,7 +219,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         });
                     }).fail(function(res) {
                         if(res.messageId == 'Msg_363'){
-                            $('#swap-list-grid2').ntsError('set', res);
+                            $('#swap-list-grid2').igGrid("container").focus();
                         }
                         nts.uk.ui.dialog.alertError(res.message);
                     }).always(()=>{
@@ -240,7 +241,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             $('#code-text').ntsError('set', res);
                         }
                         if(res.messageId == 'Msg_363'){
-                            $('#swap-list-grid2').ntsError('set', res);
+                            $('#swap-list-grid2').igGrid("container").focus();
                         }
                         nts.uk.ui.dialog.alertError(res.message);
                     }).always(()=>{
@@ -281,38 +282,41 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 }
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.remove(ko.toJS(self.selectedOption())).done(function() {
-                    self.lstCate([]);
-                    self.getData().done(function() {
-                        // if number of item from list after delete == 0 
-                        if (self.lstCate().length == 0) {
-                            self.newMode();
-                            return;
-                        }
-                        // delete the last item
-                        if (count == ((self.lstCate().length))) {
-                            self.selectedCode(self.lstCate()[count - 1].categoryCode);
-                            return;
-                        }
-                        // delete the first item
-                        if (count == 0) {
-                            self.selectedCode(self.lstCate()[0].categoryCode);
-                            return;
-                        }
-                        // delete item at mediate list 
-                        else if (count > 0 && count < self.lstCate().length) {
-                            self.selectedCode(self.lstCate()[count].categoryCode);
-                            return;
-                        }
-                    })
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                var dataTranfer = {
+                    categoryCode: self.selectedOption().categoryCode()
+                };
+                service.remove(dataTranfer).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.lstCate([]);
+                        self.getData().done(function() {
+                            // if number of item from list after delete == 0 
+                            if (self.lstCate().length == 0) {
+                                self.newMode();
+                                return;
+                            }
+                            // delete the last item
+                            if (count == ((self.lstCate().length))) {
+                                self.selectedCode(self.lstCate()[count - 1].categoryCode);
+                                return;
+                            }
+                            // delete the first item
+                            if (count == 0) {
+                                self.selectedCode(self.lstCate()[0].categoryCode);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if (count > 0 && count < self.lstCate().length) {
+                                self.selectedCode(self.lstCate()[count].categoryCode);
+                                return;
+                            }
+                        });
+                    });
                 }).always(()=>{
                     nts.uk.ui.block.clear();    
                 });
             }).ifCancel(() => {
                 nts.uk.ui.block.clear();
             });
-            $("#code-text").focus();
         }
 
         /** click close button **/

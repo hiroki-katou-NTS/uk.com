@@ -30,4 +30,28 @@ public class TimeZone extends DomainObject{
 	/** The end. */
 	// 終了
 	private TimeWithDayAttr end;
+
+	/**
+	 * Instantiates a new time zone.
+	 *
+	 * @param useAtr the use atr
+	 */
+	public TimeZone(UseAtr useAtr) {
+		this.useAtr = useAtr;
+	}
+	
+	/**
+	 * Default time zone.
+	 *
+	 * @param times the times
+	 * @param start the start
+	 * @param end the end
+	 */
+	public void defaultTimeZone(int times, int start, int end) {
+		this.times = times;
+		this.start = new TimeWithDayAttr(start);
+		this.end = new TimeWithDayAttr(end);
+	}
+	
+	
 }

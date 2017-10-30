@@ -113,10 +113,10 @@ html, body{background: #000 url(images/bg-halloween-7.jpg) center top no-repeat;
 #header {background:#5e3885 url(images/halloween-decoration.png) repeat-x; background-size: auto 90%; color:#197a32;}
 #header .pumpkin {content:'';display:block;position:absolute;top:0;left:0;right:0;margin:auto;height:138px;width:138px;background:url(images/pumpkin.png) center top;background-size:100% 100%;z-index:3;}
 #header .pumpkin.changed {background:url(images/pumpkin-2.png) center top;background-size:100% 100%;}
-#master-content{position:relative;}
+#master-content{}
 #functions-area{background-color:#25153c;border-bottom: 2px solid #e55d00;}
-#contents-area{position:relative;background:transparent;border-color:#5e3885;box-shadow: 4px 4px 13px 3px rgba(0,0,0,0.45); width:85%; margin: 60px auto 20px;z-index:2;}
-#side-menu{position:relative; background:rgba(255,255,255,0.475); box-shadow:-1px 0 2px 0 rgba(255,255,255,0.15) inset;}
+#contents-area{/*position:relative;*/background:transparent;border-color:#5e3885;box-shadow: 4px 4px 13px 3px rgba(0,0,0,0.45); width:85%; margin: 60px auto 20px;}
+#side-menu{position:relative;background:rgba(255,255,255,0.475); box-shadow:-1px 0 2px 0 rgba(255,255,255,0.15) inset;}
 #side-menu h1{position:relative;background:#5e3885 url(images/web-icon.png) right top no-repeat; background-size: auto 90%;; border:none; padding-left:30px; color:#fbef40;}
 #side-menu h1:before{content:'';position:absolute;bottom:-2px;left:0;width:100%;background:#25153c url(images/dirt-sprite.png); background-size:auto 100%; height:4px;}
 #side-menu h1:after{content:'';position:absolute;top:-3px;left:-5px;width:100%;height:35px;background:url(images/zombie-hand-icon.png) 2px top no-repeat;background-size:auto 100%;}
