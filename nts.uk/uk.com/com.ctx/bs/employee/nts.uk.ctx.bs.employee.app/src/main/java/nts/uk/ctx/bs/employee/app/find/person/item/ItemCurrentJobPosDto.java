@@ -1,12 +1,12 @@
-package nts.uk.ctx.bs.person.dom.person.adapter;
+package nts.uk.ctx.bs.employee.app.find.person.item;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-@Data
+@Getter
 @AllArgsConstructor
-public class SubJobPosImport {
+public class ItemCurrentJobPosDto{
 	/**職務職位ID（兼務） sub job position id*/
 	private String subJobPosId;
 	/**所属部門ID affiliation department id*/
