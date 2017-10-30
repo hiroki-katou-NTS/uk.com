@@ -22,7 +22,7 @@ public class OverTimeInput{
 	 */
 	private String appID;
 	/**
-	 * 残業申請時間設定ID
+	 * 勤怠項目ID
 	 */
 	private AttendanceID attendanceID;
 	/**

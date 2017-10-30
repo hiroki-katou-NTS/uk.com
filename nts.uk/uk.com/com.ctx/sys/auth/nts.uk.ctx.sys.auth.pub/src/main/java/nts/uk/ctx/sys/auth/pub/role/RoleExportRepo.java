@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.role;
 
+import java.util.List;
+
 /**
  * The Interface RoleExportRepo.
  */
@@ -13,7 +15,7 @@ public interface RoleExportRepo {
 	 * Find by id.
 	 *
 	 * @param roleId the role id
-	 * @return the role export
+	 * @return the list
 	 */
-	RoleExport findById(String roleId);
+	List<RoleExport> findById(String roleId);
 }

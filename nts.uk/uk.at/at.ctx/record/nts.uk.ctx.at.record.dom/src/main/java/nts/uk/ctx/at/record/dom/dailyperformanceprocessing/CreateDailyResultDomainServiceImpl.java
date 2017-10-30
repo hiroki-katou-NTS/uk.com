@@ -2,33 +2,52 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 
+@Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
-	
+
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	
+	@Inject
+	private CreateDailyResultEmployeeDomainService createDailyResultEmployeeDomainService;
 
 	@Override
-	public boolean createDailyResult(List<String> emloyeeIds, int reCreateAttr, BigDecimal startDate,
-			BigDecimal endDate, int executionAttr, String empCalAndSumExecLogID) {
+	public int createDailyResult(List<String> emloyeeIds, int reCreateAttr, GeneralDate startDate,
+			GeneralDate endDate, int executionAttr, String empCalAndSumExecLogID) {
 		
-		//日別作成を実行するかチェックする
-		List<EmpCalAndSumExeLog> empCalAndSumExeLogs = this.empCalAndSumExeLogRepository.getListByExecutionContent(empCalAndSumExecLogID, 0);
-		
-		//④ログ情報（実行ログ）を更新する
-		//パラメータ「実行区分」＝手動　の場合
-		if(executionAttr == 0){
-			
+		/**
+		 * 正常終了 : 0
+		 */
+		int endStatus = 0;
+
+		// ③日別実績の作成処理
+		// 日別作成を実行するかチェックする
+		Optional<EmpCalAndSumExeLog> exeLogDailyCreation = this.empCalAndSumExeLogRepository
+				.getListByExecutionContent(empCalAndSumExecLogID, 0);
+		if (exeLogDailyCreation.isPresent()) {
+			// パラメータ「実行区分」＝手動 の場合
+			if (executionAttr == 0) {
+				this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID);
+			}
+		} else {
+			endStatus = 0;
 		}
-		//ログ情報（実行ログ）を更新する - フロー終了 ( flow end)
 		
-		
-		return false;
+		emloyeeIds.forEach(f -> {
+			//社員1人分の処理
+			this.createDailyResultEmployeeDomainService.createDailyResultEmployee(f, startDate, endDate);
+		});
+
+		return endStatus;
 	}
 
 }

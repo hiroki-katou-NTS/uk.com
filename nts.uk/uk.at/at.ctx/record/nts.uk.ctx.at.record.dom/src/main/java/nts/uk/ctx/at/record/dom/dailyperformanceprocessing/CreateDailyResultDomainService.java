@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
 
-import java.math.BigDecimal;
 import java.util.List;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -13,6 +14,6 @@ import java.util.List;
  */
 public interface CreateDailyResultDomainService {
 
-	boolean createDailyResult(List<String> emloyeeIds, int reCreateAttr, BigDecimal startDate, BigDecimal endDate, int executionAttr, String empCalAndSumExecLogID);
+	int createDailyResult(List<String> emloyeeIds, int reCreateAttr, GeneralDate startDate, GeneralDate endDate, int executionAttr, String empCalAndSumExecLogID);
 	
 }

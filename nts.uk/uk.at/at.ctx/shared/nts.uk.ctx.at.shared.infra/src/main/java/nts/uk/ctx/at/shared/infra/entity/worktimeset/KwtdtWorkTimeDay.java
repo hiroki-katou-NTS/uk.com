@@ -27,30 +27,12 @@ public class KwtdtWorkTimeDay extends UkJpaEntity{
 	@Column(name="USE_ATR")
 	public int useAtr;
 	
-	@Column(name="AM_START_CLOCK")
-	public int a_m_StartClock;
+	@Column(name="START_TIME")
+	public int start;
 	
-	@Column(name="AM_START_ATR")
-	public int a_m_StartAtr;
+	@Column(name="END_TIME")
+	public int end;
 	
-	@Column(name="AM_END_CLOCK")
-	public int a_m_EndClock;
-	
-	@Column(name="AM_END_ATR")
-	public int a_m_EndAtr;
-	
-	@Column(name="PM_START_CLOCK")
-	public int p_m_StartClock;
-	
-	@Column(name="PM_START_ATR")
-	public int p_m_StartAtr;
-	
-	@Column(name="PM_END_CLOCK")
-	public int p_m_EndClock;
-	
-	@Column(name="PM_END_ATR")
-	public int p_m_EndAtr;
-
 	@Override
 	protected Object getKey() {
 		return kwtdpWorkTimeDayPK;

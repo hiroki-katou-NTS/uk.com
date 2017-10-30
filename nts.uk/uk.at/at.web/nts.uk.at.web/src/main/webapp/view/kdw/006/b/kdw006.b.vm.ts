@@ -18,8 +18,8 @@ module nts.uk.at.view.kdw006 {
             constructor() {
                 let self = this;
                 self.tabs = ko.observableArray([
-                    new TabModel({ id: 'B', name: getText('KDW006_20') }),
-                    new TabModel({ id: 'C', name: getText('KDW006_21'), active: true }),
+                    new TabModel({ id: 'B', name: getText('KDW006_20'), active: true }), 
+                    new TabModel({ id: 'C', name: getText('KDW006_21') }),
                     new TabModel({ id: 'D', name: getText('KDW006_22') }),
                     new TabModel({ id: 'E', name: getText('KDW006_23') }),
                     new TabModel({ id: 'G', name: getText('KDW006_58') })

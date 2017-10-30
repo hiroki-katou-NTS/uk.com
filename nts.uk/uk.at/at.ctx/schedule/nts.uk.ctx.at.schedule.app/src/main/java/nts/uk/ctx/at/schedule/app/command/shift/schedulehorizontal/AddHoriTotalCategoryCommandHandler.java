@@ -1,19 +1,22 @@
 package nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.swing.text.html.Option;
+import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+@Transactional
 @Stateless
 public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTotalCategoryCommand> {
 	@Inject
@@ -21,25 +24,31 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 
 	@Override
 	protected void handle(CommandHandlerContext<AddHoriTotalCategoryCommand> context) {
+		AddHoriTotalCategoryCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		List<TotalEvalOrder> totalEvalOrders = null;
-		if(context.getCommand().getTotalEvalOrders() != null){
-			totalEvalOrders = context.getCommand().getTotalEvalOrders()
-								.stream()
-								.map(x -> x.toDomainOrder(companyId, context.getCommand().getCategoryCode()))
-								.collect(Collectors.toList());
+		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
+//		List<HoriTotalCNTSet> horiCntSets = new ArrayList<>();
+		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, data.getCategoryCode());
+		// check duplicate code
+		if(horiOld.isPresent()){
+			throw new BusinessException("Msg_3");
+		}
+		// check list 集計項目一覧 exsisted or not
+		if(data.getTotalEvalOrders() == null || data.getTotalEvalOrders().size() == 0){
+			throw new BusinessException("Msg_363");
+		}
+		// get total eval order list
+		if(data.getTotalEvalOrders() != null){
+			totalEvalOrders = data.getTotalEvalOrders().stream()
+					.map(x -> x.toDomainOrder(companyId, data.getCategoryCode()))
+					.collect(Collectors.toList());
 		}
 		HoriTotalCategory hori = HoriTotalCategory.createFromJavaType(companyId, 
-																	context.getCommand().getCategoryCode(), 
-																	context.getCommand().getCategoryName(), 
-																	context.getCommand().getMemo(), 
+																	data.getCategoryCode(), 
+																	data.getCategoryName(), 
+																	data.getMemo(), 
 																	totalEvalOrders);
-		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, 
-																	context.getCommand().getCategoryCode());
-		if(horiOld.isPresent()){
-			throw new RuntimeException("入力したコードは、既に登録されています。");
-		}else{
-			horiRep.insertCate(hori);
-		}
+		hori.validate();
+		horiRep.insertCate(hori);
 	}
 }

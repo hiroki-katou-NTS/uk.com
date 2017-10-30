@@ -73,17 +73,9 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		int early2 = lateOrLeaveEarly.getEarly2().value;
 
 		String applicationReason = lateOrLeaveEarly.getApplicationReason().v();
-		String appReasonID = "";
-		String appReason = "";
-		if (applicationReason.indexOf(":") != -1) {
-			if(!applicationReason.equals(":")) {
-				appReasonID = applicationReason.split(":")[0];
-				appReason = applicationReason.substring(appReasonID.length() + ":".length());
-			}
-		}
 		
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(appReason)) {
+				&& Strings.isEmpty(applicationReason)) {
 			throw new BusinessException("Msg_115");
 		}
 

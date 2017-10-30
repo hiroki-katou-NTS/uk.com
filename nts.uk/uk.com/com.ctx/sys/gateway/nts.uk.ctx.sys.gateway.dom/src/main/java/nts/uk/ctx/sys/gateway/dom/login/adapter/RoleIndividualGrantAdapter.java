@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.login.adapter;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 
 /**
@@ -24,7 +25,8 @@ public interface RoleIndividualGrantAdapter {
 	 * Gets the by user.
 	 *
 	 * @param userId the user id
+	 * @param date the date
 	 * @return the by user
 	 */
-	RoleIndividualGrantImport getByUser (String userId);
+	RoleIndividualGrantImport getByUser (String userId,GeneralDate date);
 }
