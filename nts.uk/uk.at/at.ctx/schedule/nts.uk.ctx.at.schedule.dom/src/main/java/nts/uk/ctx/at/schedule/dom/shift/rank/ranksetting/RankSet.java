@@ -14,9 +14,13 @@ import nts.uk.ctx.at.schedule.dom.shift.rank.RankCode;
 @Getter
 @AllArgsConstructor
 public class RankSet extends AggregateRoot {
-	// ランクコード
+	/**
+	 * ランクコード
+	 */
 	private RankCode rankCode;
-	// 社員ID
+	/**
+	 * 社員ID
+	 */
 	private String sId;
 
 	public static RankSet createFromJavaType(String rankCode, String sId) {

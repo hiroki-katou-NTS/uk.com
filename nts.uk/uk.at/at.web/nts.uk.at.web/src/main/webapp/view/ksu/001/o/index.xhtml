@@ -18,20 +18,14 @@
 		<div id="group-button">
 			<button tabindex="37">#{i18n.getText('KSU001_69')}</button>
 			<button tabindex="38">#{i18n.getText('KSU001_70')}</button>
-			<button tabindex="39" id="stick-undo">
-				<img src="undo.png" style="width: 15px;" />
-			</button>
-			<button tabindex="40" data-bind="click: openDialogO1">
-				<img src="popup.png"
-					style="width: 13px; margin-left: -4px; padding-bottom: 5px;" />
-			</button>
+			<button tabindex="40" id="image100" data-bind="click: openDialogO1"></button>
 		</div>
 	</div>
 	<div id="set-work-time">
 		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
 		<input tabindex="31" id="time-edit1"
-			data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" /> <span
-			id="spelcial">#{i18n.getText('KSU001_66')}</span> <input tabindex="32" id="time-edit2"
+			data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" /> <span>#{i18n.getText('KSU001_66')}</span> <input
+			tabindex="32" id="time-edit2"
 			data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
 		<button tabindex="33" class="reserved">#{i18n.getText('KSU001_67')}</button>
 		<button tabindex="34">#{i18n.getText('KSU001_68')}</button>

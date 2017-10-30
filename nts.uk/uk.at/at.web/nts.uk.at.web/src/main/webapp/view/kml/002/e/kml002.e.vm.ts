@@ -17,9 +17,16 @@ module nts.uk.at.view.kml002.e.viewmodel {
         roundingCd: KnockoutObservable<number>;
         processingList: KnockoutObservableArray<any>;
         selectedProcessing: KnockoutObservable<number>;
+        attrLabel: KnockoutObservable<String>;
+        itemNameLabel: KnockoutObservable<String>;
         
         constructor() {
             var self = this;
+            
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            self.attrLabel = ko.observable(data.attribute);
+            self.itemNameLabel = ko.observable(data.itemName);
             
             self.itemsB = ko.observableArray([]);
             self.rightItemsB = ko.observableArray([]);

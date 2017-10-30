@@ -19,6 +19,7 @@ public class UpdateInitValueSettingCommand {
 	// thằng con ctgId
 	private String perInfoCtgId;
 	
+	// những item của ctg
 	List<UpdateItemInitValueSettingCommand> itemLst;
 	
 	

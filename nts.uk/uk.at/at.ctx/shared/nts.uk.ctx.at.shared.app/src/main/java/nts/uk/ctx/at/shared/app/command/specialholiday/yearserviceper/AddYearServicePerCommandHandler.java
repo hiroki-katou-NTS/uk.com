@@ -51,9 +51,8 @@ public class AddYearServicePerCommandHandler extends CommandHandlerWithResult<Ad
 																				context.getCommand().getYearServiceCode());
 		if(yearServicePerOld.isPresent()){
 			throw new BusinessException("Msg_3");
-		}else{
-			yearServicePerRep.insertPer(yearServicePer);
 		}
+		yearServicePerRep.insertPer(yearServicePer);
 		return errors;
 	}
 	

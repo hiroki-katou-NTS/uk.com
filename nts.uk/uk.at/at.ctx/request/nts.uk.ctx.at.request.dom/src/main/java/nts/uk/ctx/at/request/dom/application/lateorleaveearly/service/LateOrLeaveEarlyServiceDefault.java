@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
@@ -42,7 +42,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	ApplicationSettingRepository applicationSetting;
 	
 	@Inject 
-	EmployeeAdapter employeeAdapter;
+	EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
 	ApplicationDeadlineRepository deadlineRepository;	

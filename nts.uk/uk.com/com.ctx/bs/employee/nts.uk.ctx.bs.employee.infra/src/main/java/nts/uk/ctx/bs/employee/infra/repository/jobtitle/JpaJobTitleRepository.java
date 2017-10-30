@@ -44,12 +44,12 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 		List<BsymtJobHist> listEntity = jobTitle.getJobTitleHistory().stream()
 				.map(jobTitleHistory -> {
 					BsymtJobHistPK pk = new BsymtJobHistPK(jobTitle.getCompanyId().v(),
-							jobTitleHistory.getHistoryId(), jobTitle.getJobTitleId());
+							jobTitleHistory.identifier(), jobTitle.getJobTitleId());
 					BsymtJobHist entity = this.queryProxy().find(pk, BsymtJobHist.class)
 							.orElse(new BsymtJobHist());
 					entity.setBsymtJobHistPK(pk);
-					entity.setStartDate(jobTitleHistory.getPeriod().start());
-					entity.setEndDate(jobTitleHistory.getPeriod().end());
+					entity.setStartDate(jobTitleHistory.span().start());
+					entity.setEndDate(jobTitleHistory.span().end());
 					return entity;
 				}).collect(Collectors.toList());
 

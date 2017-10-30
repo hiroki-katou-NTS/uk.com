@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCNTSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 /**
  * 
@@ -11,14 +16,12 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 @Data
 @AllArgsConstructor
 public class TotalEvalOrderCommand {
-	/**会社ID**/
-	private String companyId;
-	/** カテゴリコード */
-	private String categoryCode;
 	/** 集計項目NO */
-	private Integer totalItemNo;
+	private int totalItemNo;
 	/** 並び順 */
 	private Integer dispOrder;
+	private HoriCalDaysSetCommand horiCalDaysSet;
+	private List<HoriTotalCNTSetCommand> cntSetls;
 	
 	/**
 	 * convert total eval order to domain
@@ -27,6 +30,14 @@ public class TotalEvalOrderCommand {
 	 * @return
 	 */
 	public TotalEvalOrder toDomainOrder(String companyId, String categoryCode){
-		return TotalEvalOrder.createFromJavaType(companyId, categoryCode, totalItemNo, dispOrder);
+		HoriCalDaysSet horiCalDaysSet = this.horiCalDaysSet != null 
+				? this.horiCalDaysSet.toDomainCalSet(companyId, categoryCode, totalItemNo)
+				: null;
+		List<HoriTotalCNTSet> calsetList = this.cntSetls != null
+				? this.cntSetls.stream().map(c -> c.toDomainCNTSet(companyId, c.getCategoryCode(), c.getTotalItemNo(), c.getTotalTimeNo())).collect(Collectors.toList())
+				: null;
+		return TotalEvalOrder.createFromJavaType(companyId, categoryCode, 
+												totalItemNo, dispOrder, 
+												horiCalDaysSet, calsetList);
 	}
 }

@@ -1,6 +1,7 @@
 module cps007.a.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
+    import error = nts.uk.ui.dialog.alertError;
     import text = nts.uk.resource.getText;
 
     let __viewContext: any = window['__viewContext'] || {},
@@ -32,7 +33,7 @@ module cps007.a.vm {
                 let maps = _(x.itemsClassification)
                     .map((x, i) => (x.layoutItemType == 2) ? i : -1)
                     .filter(x => x != -1).value();
-                
+
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
                         _.remove(x.itemsClassification, (m: IItemClassification) => {
@@ -80,7 +81,7 @@ module cps007.a.vm {
 
             // エラーメッセージ（#Msg_202,２つ以上配置されている項目名）を表示する
             if (!!itemids.length) {
-                alert(text('Msg_202'));
+                error({ messageId: 'Msg_202' });
                 return;
             }
 
@@ -93,7 +94,8 @@ module cps007.a.vm {
                 });
             }).fail((mes) => {
                 unblock();
-                alert(mes.message);
+                console.log(mes);
+                error({ messageId: mes.messageId, messageParams: mes.parameterIds });
             });
         }
     }

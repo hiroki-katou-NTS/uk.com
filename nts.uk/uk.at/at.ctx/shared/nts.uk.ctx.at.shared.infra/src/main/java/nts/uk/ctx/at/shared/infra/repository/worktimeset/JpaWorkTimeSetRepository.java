@@ -10,14 +10,14 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset.TimeDayAtr;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeDay;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeNightShift;
+import nts.uk.ctx.at.shared.dom.worktimeset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtdtWorkTimeDay;
 import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtspWorkTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtstWorkTimeSet;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -34,6 +34,11 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs";
+	public static final int FIRST_ITEM = 0;
+	public static final int SECOND_ITEM = 1;
+	public static final int TRUE_NUMBER = 1;
+	public static final int TIME_ZONE_SIZE_1 = 1;
+	public static final int TIME_ZONE_SIZE_2 = 2;
 	
 	@Override
 	public List<WorkTimeSet> findByCompanyID(String companyID) {
@@ -68,7 +73,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	}
 
 	@Override
-	public List<WorkTimeSet> findByStart(String companyID, List<String> siftCDs, int startAtr, int startClock) {
+	public List<WorkTimeSet> findByStart(String companyID, List<String> siftCDs, int startClock) {
 		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
 		int i = 0;
 		// query code 500 each, because limit record request by database
@@ -89,11 +94,21 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		List<WorkTimeSet> result1 = result.stream().filter(x -> {
 			Boolean rs1 = false;
 			Boolean rs2 = false;
-			if(x.getWorkTimeDay1()!=null){
-				if(x.getWorkTimeDay1().getA_m_StartAtr().value==startAtr&&x.getWorkTimeDay1().getA_m_StartCLock()==startClock) rs1 = true;
+			if (x.getPrescribedTimezoneSetting().getTimezone().size() >= TIME_ZONE_SIZE_1) {
+				Timezone timezone1 = x.getPrescribedTimezoneSetting().getTimezone().get(FIRST_ITEM);
+				if (timezone1 != null) {
+					if (timezone1.getStart().equals(new TimeWithDayAttr(startClock))) {
+						rs1 = true;
+					}
+				}
 			}
-			if(x.getWorkTimeDay2()!=null){
-				if(x.getWorkTimeDay2().getA_m_StartAtr().value==startAtr&&x.getWorkTimeDay2().getA_m_StartCLock()==startClock) rs2 = true;
+			if (x.getPrescribedTimezoneSetting().getTimezone().size() >= TIME_ZONE_SIZE_2) {
+				Timezone timezone2 = x.getPrescribedTimezoneSetting().getTimezone().get(SECOND_ITEM);
+				if (timezone2 != null) {
+					if (timezone2.getStart().equals(new TimeWithDayAttr(startClock))) {
+						rs2 = true;
+					}
+				}
 			}
 			return rs1||rs2;
 		}).collect(Collectors.toList());
@@ -101,7 +116,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	}
 
 	@Override
-	public List<WorkTimeSet> findByEnd(String companyID, List<String> siftCDs, int endAtr, int endClock) {
+	public List<WorkTimeSet> findByEnd(String companyID, List<String> siftCDs, int endClock) {
 		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
 		int i = 0;
 		// query code 500 each, because limit record request by database
@@ -122,11 +137,21 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		List<WorkTimeSet> result1 = result.stream().filter(x -> {
 			Boolean rs1 = false;
 			Boolean rs2 = false;
-			if(x.getWorkTimeDay1()!=null){
-				if(x.getWorkTimeDay1().getP_m_EndAtr().value==endAtr&&x.getWorkTimeDay1().getP_m_EndClock()==endClock) rs1 = true;
+			if (x.getPrescribedTimezoneSetting().getTimezone().size() >= TIME_ZONE_SIZE_1) {
+				Timezone timezone1 = x.getPrescribedTimezoneSetting().getTimezone().get(FIRST_ITEM);
+				if (timezone1 != null) {
+					if (timezone1.getEnd().equals(new TimeWithDayAttr(endClock))) {
+						rs1 = true;
+					}
+				}
 			}
-			if(x.getWorkTimeDay2()!=null){
-				if(x.getWorkTimeDay2().getP_m_EndAtr().value==endAtr&&x.getWorkTimeDay2().getP_m_EndClock()==endClock) rs2 = true;
+			if (x.getPrescribedTimezoneSetting().getTimezone().size() >= TIME_ZONE_SIZE_2) {
+				Timezone timezone2 = x.getPrescribedTimezoneSetting().getTimezone().get(SECOND_ITEM);
+				if (timezone2 != null) {
+					if (timezone2.getEnd().equals(new TimeWithDayAttr(endClock))) {
+						rs2 = true;
+					}
+				}
 			}
 			return rs1||rs2;
 		}).collect(Collectors.toList());
@@ -134,7 +159,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	}
 
 	@Override
-	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> siftCDs, int startAtr, int startClock, int endAtr, int endClock) {
+	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> siftCDs, int startClock, int endClock) {
 		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
 		int i = 0;
 		// query code 500 each, because limit record request by database
@@ -155,21 +180,19 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		List<WorkTimeSet> result1 = result.stream().filter(x -> {
 			Boolean rs1 = false;
 			Boolean rs2 = false;
-			if(x.getWorkTimeDay1()!=null){
-				if(x.getWorkTimeDay1().getA_m_StartAtr().value==startAtr&&
-					x.getWorkTimeDay1().getA_m_StartCLock()==startClock&&	
-					x.getWorkTimeDay1().getP_m_EndAtr().value==endAtr&&
-					x.getWorkTimeDay1().getP_m_EndClock()==endClock) {
+			if (x.getPrescribedTimezoneSetting().getTimezone().size() >= TIME_ZONE_SIZE_1) {
+				Timezone timezone1 = x.getPrescribedTimezoneSetting().getTimezone().get(FIRST_ITEM);
+				if (timezone1.getStart().equals(new TimeWithDayAttr(startClock))
+						&& timezone1.getEnd().equals(new TimeWithDayAttr(endClock))) {
 					rs1 = true;
 				}
 			}
-			if(x.getWorkTimeDay2()!=null){
-				if(x.getWorkTimeDay2().getA_m_StartAtr().value==startAtr&&
-					x.getWorkTimeDay2().getA_m_StartCLock()==startClock&&	
-					x.getWorkTimeDay2().getP_m_EndAtr().value==endAtr&&
-					x.getWorkTimeDay2().getP_m_EndClock()==endClock){
+			if (x.getPrescribedTimezoneSetting().getTimezone().size() >= TIME_ZONE_SIZE_2) {
+				Timezone timezone2 = x.getPrescribedTimezoneSetting().getTimezone().get(SECOND_ITEM);
+				if (timezone2.getStart().equals(new TimeWithDayAttr(startClock))
+						&& timezone2.getEnd().equals(new TimeWithDayAttr(endClock))) {
 					rs2 = true;
-				} 
+				}
 			}
 			return rs1||rs2;
 		}).collect(Collectors.toList());
@@ -181,48 +204,30 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	 * @param kwtstWorkTimeSet Work Time Set entity object
 	 * @return Work Time Set domain object
 	 */
-	private WorkTimeSet convertToDomainWorkTimeSet(KwtstWorkTimeSet kwtstWorkTimeSet){
-		WorkTimeDay workTimeDay1 = null;
-		WorkTimeDay workTimeDay2 = null;
-		List<WorkTimeDay> workTimeDays = kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainWorkTimeDay(x)).collect(Collectors.toList());
-		if(workTimeDays.size()>=2){
-			workTimeDay1 = workTimeDays.get(0);
-			workTimeDay2 = workTimeDays.get(1);
-		} else if(workTimeDays.size()>=1){
-			workTimeDay1 = workTimeDays.get(0);
+	private WorkTimeSet convertToDomainWorkTimeSet(KwtstWorkTimeSet kwtstWorkTimeSet) {
+		if (kwtstWorkTimeSet == null) {
+			return null;
 		}
-		return new WorkTimeSet(
-				kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, 
-				kwtstWorkTimeSet.rangeTimeDay,
-				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, 
-				kwtstWorkTimeSet.additionSetID, 
-				EnumAdaptor.valueOf(kwtstWorkTimeSet.nightShiftAtr, WorkTimeNightShift.class), 
-				workTimeDay1,
-				workTimeDay2,
-				kwtstWorkTimeSet.startDateClock, 
-				kwtstWorkTimeSet.predetermineAtr
-		);
+		TimeWithDayAttr morningEndTime = new TimeWithDayAttr(kwtstWorkTimeSet.morningEndTime);
+		TimeWithDayAttr afternoonStartTime = new TimeWithDayAttr(kwtstWorkTimeSet.afternoonStartTime);
+		List<Timezone> timezones = kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainTimezone(x))
+				.collect(Collectors.toList());
+		return new WorkTimeSet(kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, kwtstWorkTimeSet.rangeTimeDay,
+				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, kwtstWorkTimeSet.additionSetID,
+				kwtstWorkTimeSet.nightShiftAtr == TRUE_NUMBER ? true : false,
+				new PrescribedTimezoneSetting(morningEndTime, afternoonStartTime, timezones),
+				kwtstWorkTimeSet.startDateClock, kwtstWorkTimeSet.predetermineAtr == TRUE_NUMBER ? true : false);
 	}
 	
 	/**
-	 * convert Work Time Day entity object to Work Time Day domain object
+	 * convert Work Time Day entity object to Work Time Day domain object.
+	 *
 	 * @param kwtdtWorkTimeDay Work Time Day entity object
 	 * @return Work Time Day domain object
 	 */
-	private WorkTimeDay convertToDomainWorkTimeDay(KwtdtWorkTimeDay kwtdtWorkTimeDay){
-		return new WorkTimeDay(
-			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.companyID, 
-			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.siftCD, 
-			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.timeNumberCnt, 
-			EnumAdaptor.valueOf(kwtdtWorkTimeDay.useAtr, UseSetting.class),
-			kwtdtWorkTimeDay.a_m_StartClock, 
-			EnumAdaptor.valueOf(kwtdtWorkTimeDay.a_m_StartAtr, TimeDayAtr.class), 
-			kwtdtWorkTimeDay.a_m_EndClock, 
-			EnumAdaptor.valueOf(kwtdtWorkTimeDay.a_m_EndAtr, TimeDayAtr.class),
-			kwtdtWorkTimeDay.p_m_StartClock, 
-			EnumAdaptor.valueOf(kwtdtWorkTimeDay.p_m_StartAtr, TimeDayAtr.class),
-			kwtdtWorkTimeDay.p_m_EndClock, 
-			EnumAdaptor.valueOf(kwtdtWorkTimeDay.p_m_EndAtr, TimeDayAtr.class)
-		);
+	private Timezone convertToDomainTimezone(KwtdtWorkTimeDay kwtdtWorkTimeDay) {
+		return new Timezone(EnumAdaptor.valueOf(kwtdtWorkTimeDay.useAtr, UseSetting.class),
+				kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.timeNumberCnt, new TimeWithDayAttr(kwtdtWorkTimeDay.start),
+				new TimeWithDayAttr(kwtdtWorkTimeDay.end));
 	}
 }

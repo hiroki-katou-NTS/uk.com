@@ -9,17 +9,10 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 790,
+					width : 850,
 					height : 670
 				};
 			</script>
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt -->
-<!-- 			</com:ValidatorScript> -->
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../main.css" />
 			<com:scriptfile path="kml002.d.vm.js" />
@@ -34,11 +27,13 @@
 			<div id="contents-area">
 				<table class="cal-formula-form-data">
 					<tr>
+						<!-- D1_1 -->
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_18')}</div></td>
-						<td>レイアウトコード</td>
+						<td><span data-bind="text: attrLabel"></span></td>
 						<td></td>
+						<!-- D1_3 -->
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_19')}</div></td>
-						<td>レイアウトコード</td>
+						<td><span data-bind="text: itemNameLabel"></span></td>
 					</tr>
 				</table>
 				
@@ -46,18 +41,19 @@
 				
 				<div class="grid-area-d"
 					data-bind="ntsPanel:{width: '310px', height: '400px', direction: 'right', showIcon: false, visible: true}">
-					<div class="cbx-checked-d" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
-					
-					<div class="search-box"
-						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
-						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
-						
+					<!-- D2_2 -->
+					<div tabindex="1" class="cbx-checked-d" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
+					<!-- D2_6 -->
+					<div class="search-box" tabindex="2"
+						data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'id', comId: 'treegridItems', 
+						items: items, selected: currentCodeList, selectedKey: 'id', fields: ['name'], mode: 'igGrid'}" />
+					<!-- D2_8 -->
 					<table id="treegridItems"
 						data-bind="ntsGridList: {
 							width: 300,
 							height: 300,
 							options: items,
-							optionsValue: 'code',
+							optionsValue: 'id',
 							columns: columns,
 							multiple: true,
 							value: currentCodeList
@@ -66,18 +62,21 @@
 				</div>
 				
 				<div class="function-btns-d">
-					<button class="addition">#{i18n.getText('KML002_37')}</button>
-					<button class="subtraction">#{i18n.getText('KML002_38')}</button>
-					<button class="left-btn"><i class="icon icon-button-arrow-left"></i></button>
+					<!-- D3_1 -->
+					<button tabindex="4" class="addition" data-bind="click: add">#{i18n.getText('KML002_37')}</button>
+					<!-- D3_2 -->
+					<button tabindex="5" class="subtraction" data-bind="click: sub">#{i18n.getText('KML002_38')}</button>
+					<!-- D3_3 -->
+					<button tabindex="6" class="left-btn" data-bind="click: back"><i class="icon icon-button-arrow-left"></i></button>
 				</div>
-				
+				<!-- D4_1 -->
 				<div class="right-tbl-d">
 					<table id="treegridItems"
 						data-bind="ntsGridList: {
-							width: 300,
+							width: 370,
 							height: 300,
 							options: rightItems,
-							optionsValue: 'code',
+							optionsValue: 'id',
 							columns: rightItemcolumns,
 							multiple: true,
 							value: currentRightCodeList
@@ -89,9 +88,11 @@
 			
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area-bottom">
-				<button id="submit-btn" class="x-large proceed"
+				<!-- D6_1 -->
+				<button id="submit-btn" class="x-large proceed" tabindex="7"
 					data-bind="click: submit">#{i18n.getText('KML002_40')}</button>
-				<button id="cancel-btn" data-bind="click: cancel"
+				<!-- D6_2 -->
+				<button id="cancel-btn" data-bind="click: cancel" tabindex="8"
 					class="large">#{i18n.getText('KML002_41')}</button>
 			</div>
 			<!-- END FUNCTION AREA-->

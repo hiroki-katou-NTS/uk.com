@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.ac.find.grant;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
@@ -33,6 +34,15 @@ public class RoleIndividualGrantAdapterImpl implements RoleIndividualGrantAdapte
 	@Override
 	public RoleIndividualGrantImport getByUserAndRole(String userId, RoleType roleType) {
 		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUserAndRoleType(userId, roleType.value);
+		return new RoleIndividualGrantImport(export.getRoleId());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter#getByUser(java.lang.String)
+	 */
+	@Override
+	public RoleIndividualGrantImport getByUser(String userId,GeneralDate date) {
+		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUser(userId,date);
 		return new RoleIndividualGrantImport(export.getRoleId());
 	}
 }

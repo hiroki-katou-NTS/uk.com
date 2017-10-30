@@ -110,18 +110,18 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
                         //登録時にメールを送信する Visible
-                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
-                        
+                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false: true); 
+                        //事前事後区分 Enable ※A２
+                        //申請種類別設定.事前事後区分を変更できる 〇
+                        //申請種類別設定.事前事後区分を変更できない  ×
+                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
                     }
                     //事前事後区分 ※A１
                     //申請表示設定.事前事後区分　＝　表示する　〇
                     //申請表示設定.事前事後区分　＝　表示しない ×
                     self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
                     if(settingData.goBackSettingDto　!= undefined){
-                        //事前事後区分 Enable ※A２
-                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
-                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
-                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                        
                         //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
                         //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
                         if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
@@ -187,9 +187,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             service.insertGoBackDirect(self.getCommand()).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                //clean Screen 
-                self.cleanScreen();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    location.reload();
+                });
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
             }).then(function(){
@@ -269,10 +269,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         checkUse(){
             let self = this;
-            if (self.selectedGo() == 0 
-                && self.selectedBack()== 0 
-                && self.selectedGo2() == 0 
-                && self.selectedBack2()== 0) {
+            if ((!self.useMulti() && self.selectedGo() == 0 && self.selectedBack()== 0)
+                || (self.useMulti() && self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0)) {
                 //直行直帰区分＝なし
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
                     self.checkRegister();
