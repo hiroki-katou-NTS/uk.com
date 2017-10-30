@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.i18n.custom.IInternationalization;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingDto;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSe
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class MonthlyPatternSettingFinder.
@@ -35,10 +35,6 @@ public class MonthlyPatternSettingFinder {
 	/** The monthly pattern repository. */
 	@Inject
 	private MonthlyPatternRepository monthlyPatternRepository;
-	
-	/** The internationalization. */
-	@Inject
-	private IInternationalization internationalization;
 	
     /** The Constant NONE_SETTING. */
     public static final String NONE_SETTING = "KSM005_43";
@@ -82,7 +78,7 @@ public class MonthlyPatternSettingFinder {
 				monthlyPattern.get().saveToMemento(info);
 			}
 			else {
-				info.setName(internationalization.getItemName(NONE_SETTING).get());
+				info.setName(TextResource.localize(NONE_SETTING));
 			}
 			dto.setInfo(info);
 		}

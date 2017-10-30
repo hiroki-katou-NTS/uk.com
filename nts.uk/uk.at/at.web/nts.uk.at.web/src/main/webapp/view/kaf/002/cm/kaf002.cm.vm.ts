@@ -3,7 +3,6 @@ module nts.uk.at.view.kaf002.cm {
         import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
         import service = nts.uk.at.view.kaf002.shr.service;
         import kaf002 = nts.uk.at.view.kaf002;
-        let __viewContext: any = window["__viewContext"] || {};
         export class ScreenModel {
             m1: kaf002.m1.viewmodel.ScreenModel;
             m2: kaf002.m2.viewmodel.ScreenModel;
@@ -13,7 +12,7 @@ module nts.uk.at.view.kaf002.cm {
             stampRequestMode: KnockoutObservable<number> = ko.observable(0);
             screenMode: KnockoutObservable<number> = ko.observable(0);
             resultDisplay: KnockoutObservable<number> = ko.observable(0);
-            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/20"),'',moment(new Date()).format("YYYY/MM/20"),'','','',0));
+            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/DD"),'',moment(new Date()).format("YYYY/MM/DD"),'','','',0));
             inputReasons: KnockoutObservableArray<vmbase.InputReason> = ko.observableArray([new vmbase.InputReason('','')]);
             currentReason: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
@@ -82,7 +81,9 @@ module nts.uk.at.view.kaf002.cm {
                 } else {
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
-                    self.currentReason(_.first(self.inputReasons()).id);
+                    if(self.inputReasonsDisp() == 1 && self.inputReasons().length != 0){
+                        self.currentReason(_.first(self.inputReasons()).id);
+                    }
                 }
                 _.forEach(approvalList, appPhase => {
                     _.forEach(appPhase.approverDtos, appFrame => {
@@ -96,9 +97,7 @@ module nts.uk.at.view.kaf002.cm {
             
             register(){
                 var self = this;
-                if(self.inputReasonsDisp()==1) {
-                    self.application().titleReason(_.find(self.inputReasons(), o => o.id = self.currentReason()).id);
-                }
+                self.application().titleReason(self.currentReason());
                 switch(self.stampRequestMode()){
                     case 0: self.m1.register(self.application(), self.approvalList);break;    
                     case 1: self.m2.register(self.application(), self.approvalList);break;  
@@ -111,11 +110,7 @@ module nts.uk.at.view.kaf002.cm {
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                if(self.inputReasonsDisp()==1) {
-                    self.application().titleReason(self.currentReason());
-                } else {
-                    self.application().titleReason('');    
-                }
+                self.application().titleReason(self.currentReason());
                 switch(self.stampRequestMode()){
                     case 0: self.m1.update(self.application(), approvalList);break;    
                     case 1: self.m2.update(self.application(), approvalList);break;  

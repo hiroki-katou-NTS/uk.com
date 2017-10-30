@@ -110,8 +110,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.37'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.47.2'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.37.1'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.48.1'
 	}
 }
 //=============com.file↓===========================================
@@ -291,6 +291,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 	}
 }
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub') {
@@ -684,6 +685,15 @@ project (':com.web:nts.uk.com.web') {
 		runtime project(':shr:nts.uk.shr.ws')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		
+		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
+		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+		
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 

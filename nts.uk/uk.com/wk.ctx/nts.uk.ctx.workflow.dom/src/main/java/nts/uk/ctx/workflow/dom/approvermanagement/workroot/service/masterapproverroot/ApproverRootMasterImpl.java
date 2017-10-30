@@ -277,6 +277,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		
 		//Lap de lay du lieu theo app type
 		for(ApplicationType appType: ApplicationType.values()) {
+			if(appType == ApplicationType.APPLICATION_36) {
+				continue;
+			}		
 			Optional<CompanyApprovalRoot> comApps = lstComs
 					.stream()
 					.filter(x -> x.getApplicationType() == appType)

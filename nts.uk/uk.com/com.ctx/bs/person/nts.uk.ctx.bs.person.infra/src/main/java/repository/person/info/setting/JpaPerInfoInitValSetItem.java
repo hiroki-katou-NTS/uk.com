@@ -32,6 +32,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
 			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
 
+
 	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			+ " ITEM.requiredAtr, "
 			+ " SE.settingItemPk.settingId, SE.refMethodAtr, SE.saveDataType, SE.stringValue, SE.intValue, SE.dateValue,"
@@ -53,15 +54,16 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " AND (SE.settingItemPk.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId OR SE.settingItemPk.perInfoItemDefId IS NULL)"
 			+ " ORDER BY E.disporder";
-	//
+
 	// SONNLB
 	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue"
-			+ " FROM  PpemtPersonInitValueSettingItem b" + " LEFT JOIN PpemtPerInfoItem c"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd"
+			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
 			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " LEFT JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd";
-
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemOrder po "
+			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
+			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd  ORDER BY po.disporder";
 	// SONNLB
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -252,6 +254,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
+
+		domain.setItemCode(entity[10] == null ? "" : entity[10].toString());
 
 		return domain;
 

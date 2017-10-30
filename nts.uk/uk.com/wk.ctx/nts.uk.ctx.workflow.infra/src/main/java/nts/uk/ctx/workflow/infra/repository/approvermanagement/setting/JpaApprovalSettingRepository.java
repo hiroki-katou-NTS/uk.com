@@ -15,14 +15,10 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	private final String SQL_FIND = "SELECT c FROM WwfstApprovalSetting c WHERE c.companyId = :companyId";
 
 	@Override
-	public PrincipalApprovalFlg getPrincipalByCompanyId(String companyId) {
-		Optional<PrincipalApprovalFlg> data =  this.queryProxy().query(SQL_FIND, WwfstApprovalSetting.class)
+	public Optional<PrincipalApprovalFlg> getPrincipalByCompanyId(String companyId) {
+		return this.queryProxy().query(SQL_FIND, WwfstApprovalSetting.class)
 				.setParameter("companyId", companyId)
 				.getSingle(c-> EnumAdaptor.valueOf(c.principalApprovalFlg, PrincipalApprovalFlg.class));
-		if(!data.isPresent()) {
-			return null;
-		}
-		return data.get();
 	}
 	
 }

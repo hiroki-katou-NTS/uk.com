@@ -53,9 +53,9 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 	private JobTitleImport toImport(JobTitleExport ex) {
 		return new JobTitleImport(
 				ex.getCompanyId(), 
-				ex.getPositionId(), 
-				ex.getPositionCode(), 
-				ex.getPositionName(), 
+				ex.getJobTitleId(), 
+				ex.getJobTitleCode(), 
+				ex.getJobTitleName(), 
 				ex.getSequenceCode(), 
 				ex.getStartDate(), 
 				ex.getEndDate());

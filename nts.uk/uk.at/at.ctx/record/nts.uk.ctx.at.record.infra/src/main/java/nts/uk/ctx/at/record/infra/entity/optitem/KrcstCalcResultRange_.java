@@ -17,13 +17,13 @@ public class KrcstCalcResultRange_ {
 	public static volatile SingularAttribute<KrcstCalcResultRange, KrcstCalcResultRangePK> krcstCalcResultRangePK;
 
 	/** The emp appl atr. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, Short> empApplAtr;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> empApplAtr;
 
 	/** The upper limit atr. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, Short> upperLimitAtr;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> upperLimitAtr;
 
 	/** The lower limit atr. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, Short> lowerLimitAtr;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> lowerLimitAtr;
 
 	/** The upper time range. */
 	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> upperTimeRange;

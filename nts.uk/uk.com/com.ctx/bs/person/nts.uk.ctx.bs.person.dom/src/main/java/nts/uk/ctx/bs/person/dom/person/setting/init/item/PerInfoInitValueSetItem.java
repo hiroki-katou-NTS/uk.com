@@ -11,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonCategoryItemData;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
+import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 
 /**
  * The AggregateRoot 個人情報初期値設定項目 PerInfoInitValueSetItem
@@ -49,7 +50,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	// 日付
 	private GeneralDate dateValue;
-
+	
 	// thêm dataType của item defined
 	private Integer dataType;
 

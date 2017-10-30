@@ -7,7 +7,8 @@ module nts.uk.com.view.cmm018.shr {
             getNameAppType: "workflow/approvermanagement/workroot/find/applicationType",
             updateRoot: "workflow/approvermanagement/workroot/updateRoot",
             getInfoEmployee: "workflow/approvermanagement/workroot/getInforPerson",
-            getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin"
+            getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
+            getNameConfirmType: "workflow/approvermanagement/workroot/find/confirmRootType"
         }
         
         export function updateHistory(data): JQueryPromise<any> {
@@ -30,6 +31,9 @@ module nts.uk.com.view.cmm018.shr {
         }
         export function getInfoEmLogin(): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getInfoEmLogin);
+        }
+        export function getNameConfirmType(): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getNameConfirmType);
         }
     } 
 }

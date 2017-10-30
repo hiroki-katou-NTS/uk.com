@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.workinformation;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -19,6 +20,6 @@ public class KrcmtWorkScheduleTimePK implements Serializable {
 	public String employeeId;
 
 	@Column(name = "WORK_NO")
-	public String workNo;	
+	public BigDecimal workNo;	
 
 }

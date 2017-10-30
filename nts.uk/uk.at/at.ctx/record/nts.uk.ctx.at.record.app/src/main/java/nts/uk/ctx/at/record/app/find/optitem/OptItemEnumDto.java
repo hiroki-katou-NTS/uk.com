@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class OptItemEnumDto.
@@ -76,22 +77,22 @@ public class OptItemEnumDto {
 	 *
 	 * @return the opt item enum dto
 	 */
-	public static OptItemEnumDto init() {
+	public static OptItemEnumDto init(I18NResourcesForUK i18n) {
 		OptItemEnumDto dto = new OptItemEnumDto();
-		dto.setEmpConditionAtr(EnumAdaptor.convertToValueNameList(EmpConditionAtr.class));
-		dto.setItemAtr(EnumAdaptor.convertToValueNameList(OptionalItemAtr.class));
-		dto.setPerformanceAtr(EnumAdaptor.convertToValueNameList(PerformanceAtr.class));
-		dto.setUseAtr(EnumAdaptor.convertToValueNameList(OptionalItemUsageAtr.class));
-		dto.setFormulaAtr(EnumAdaptor.convertToValueNameList(OptionalItemAtr.class));
-		dto.setCalcAtr(EnumAdaptor.convertToValueNameList(CalculationAtr.class));
-		dto.setMinusSegment(EnumAdaptor.convertToValueNameList(MinusSegment.class));
-		dto.setOperatorAtr(EnumAdaptor.convertToValueNameList(OperatorAtr.class));
-		dto.setSettingMethod(EnumAdaptor.convertToValueNameList(SettingMethod.class));
-		dto.setDispOrder(EnumAdaptor.convertToValueNameList(SettingItemOrder.class));
-		dto.setAddSubAtr(EnumAdaptor.convertToValueNameList(AddSubOperator.class));
-		dto.setAmountRounding(RoundingEnumDto.amount());
-		dto.setTimeRounding(RoundingEnumDto.time());
-		dto.setNumberRounding(RoundingEnumDto.number());
+		dto.setEmpConditionAtr(EnumAdaptor.convertToValueNameList(EmpConditionAtr.class, i18n));
+		dto.setItemAtr(EnumAdaptor.convertToValueNameList(OptionalItemAtr.class, i18n));
+		dto.setPerformanceAtr(EnumAdaptor.convertToValueNameList(PerformanceAtr.class, i18n));
+		dto.setUseAtr(EnumAdaptor.convertToValueNameList(OptionalItemUsageAtr.class, i18n));
+		dto.setFormulaAtr(EnumAdaptor.convertToValueNameList(OptionalItemAtr.class, i18n));
+		dto.setCalcAtr(EnumAdaptor.convertToValueNameList(CalculationAtr.class, i18n));
+		dto.setMinusSegment(EnumAdaptor.convertToValueNameList(MinusSegment.class, i18n));
+		dto.setOperatorAtr(EnumAdaptor.convertToValueNameList(OperatorAtr.class, i18n));
+		dto.setSettingMethod(EnumAdaptor.convertToValueNameList(SettingMethod.class, i18n));
+		dto.setDispOrder(EnumAdaptor.convertToValueNameList(SettingItemOrder.class, i18n));
+		dto.setAddSubAtr(EnumAdaptor.convertToValueNameList(AddSubOperator.class, i18n));
+		dto.setAmountRounding(RoundingEnumDto.amount(i18n));
+		dto.setTimeRounding(RoundingEnumDto.time(i18n));
+		dto.setNumberRounding(RoundingEnumDto.number(i18n));
 
 		return dto;
 	}

@@ -23,13 +23,30 @@
 
 .overtime-border td {
 	border: solid grey 1px;
-	text-align: center;
 	padding-top: 3px;
 	padding-bottom: 3px;
 	padding-right: 5px;
 	padding-left: 5px;
-	min-width: 30px;
-	max-width: 250px;
+}
+
+.overtime-border .tdno {
+	text-align: center;
+	width: 25px;
+}
+
+.overtime-border .tdbutton {
+	text-align: center;
+	width: 25px;
+}
+
+.overtime-border .tdname {
+	min-width: 45px;
+	max-width: 100px;
+}
+
+.overtime-border .tdbreakdown {
+	text-align: center;
+	width: 50px;
 }
 
 .overtime-border input {
@@ -37,6 +54,10 @@
 }
 
 .overtime-border .overtime {
+	width: 50px;
+}
+
+.overtime-border .rate {
 	width: 35px;
 }
 
@@ -56,8 +77,8 @@
 
 .sixtySetting {
 	float: left;
-	margin-left: 60px;
-	max-width: 70%;
+	margin-left: 30px;
+	max-width: 960px;
 }
 
 #contents-left, #contents-right {
@@ -166,6 +187,6 @@
 	margin-right: 43%;
 }
 
-.selectionVaction{
+.selectionVaction {
 	width: 96px;
 }

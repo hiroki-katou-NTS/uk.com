@@ -5,7 +5,7 @@
 			<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
 		</div>
-		<!--事前事後区分 -->
+		<!--事前事後区分-->
 		<div class="valign-center control-group "
 			data-bind="if: prePostDisp()">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
@@ -23,25 +23,23 @@
 		</div>
 		<div class="valign-center control-group">
 			<!--申請日付 -->
-			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
-<!-- 			<input tabindex="6" id="inputdate" -->
-<!-- 				data-bind="ntsTimeEditor: { -->
-<!-- 					name: '#[KAF009_12]',	 -->
-<!-- 					required:true,  -->
-<!-- 					value: appDate,  -->
-<!-- 					inputFormat: 'date'}" /> -->
+			<div class="lblTitle" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div tabindex="6" id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
 		</div>
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitle" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div>
 						<input tabindex="7" class="row-cell-margin" id="inpStartTime1"
-							data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
+							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
+															constraint:'TimeWithDayAttr',
+															value: timeStart1, 
+															enable: true, 
+															readonly: false }" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
 					<div tabindex="10" class="row-cell-margin"
@@ -55,8 +53,8 @@
 								value: selectedGo,
 								enable: true }">
 					</div>
-					<div class="row-cell-margin">
-						(<label class=""
+					<div class="row-cell-margin lblComment">
+						(<label 
 							data-bind="text: commentGo1,style:{color:colorGo, fontWeight:fontWeightGo() > 0 ? 'bold':'normal'}"></label>)
 					</div>
 				</div>
@@ -64,7 +62,11 @@
 				<div class="cell valign-center">
 					<div class="row-cell-margin">
 						<input tabindex="8" id="inpEndTime1"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
+							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
+															constraint:'TimeWithDayAttr', 
+															value: timeEnd1, 
+															enable: true, 
+															readonly: false}" />
 					</div>
 
 					<div tabindex="11" class="row-cell-margin"
@@ -78,8 +80,8 @@
 								value: selectedBack,
 								enable: true }">
 					</div>
-					<div class="row-cell-margin">
-						(<label
+					<div class="row-cell-margin lblComment">
+						(<label 
 							data-bind="text: commentBack1,style:{color:colorBack, fontWeight:fontWeightBack() > 0 ? 'bold':'normal'}"></label>)
 					</div>
 				</div>
@@ -87,7 +89,7 @@
 					<!--選択場所　Button-->
 					<button tabindex="9" id="btnLocation1" class="location-button"
 						data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
-					<label
+					<label id = "lblLocation"
 						data-bind="text : workLocationCD() + '   ' + workLocationName()"></label>
 				</div>
 			</div>
@@ -97,12 +99,14 @@
 		<div class="valign-center control-group" data-bind="if: useMulti()">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitle" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div>
 						<input tabindex="12" class="row-cell-margin" id="inpStartTime2"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
+							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直行',
+															constraint:'TimeWithDayAttr',
+															value: timeStart2}" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
 					<div tabindex="15" class="row-cell-margin"
@@ -116,15 +120,17 @@
 								value: selectedGo2,
 								enable: true }">
 					</div>
-					<div class="row-cell-margin">
-						(<label
+					<div class="row-cell-margin lblComment">
+						(<label 
 							data-bind="text: commentGo2,style:{color:colorGo, fontWeight:fontWeightGo() > 0 ? 'bold':'normal'}"></label>)
 					</div>
 				</div>
 				<div class="cell valign-center">
 					<div>
 						<input tabindex="13" class="row-cell-margin" id="inpEndTime2"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
+							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直帰', 
+															constraint:'TimeWithDayAttr',
+															value: timeEnd2}" />
 					</div>
 					<div tabindex="16" class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
@@ -137,7 +143,7 @@
 								value: selectedBack2,
 								enable: true }">
 					</div>
-					<div class="row-cell-margin">
+					<div class="row-cell-margin lblComment">
 						(<label
 							data-bind="text: commentBack2,style:{color:colorBack, fontWeight:fontWeightBack() > 0 ? 'bold':'normal'}"></label>)
 					</div>
@@ -152,7 +158,7 @@
 		</div>
 		<!--勤務を変更する -->
 		<!--Work Change-->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind ="visible: isWorkChange">
 			<div tabindex="17" data-bind="visible: workState(), ntsCheckBox: { checked: workChangeAtr , enable: workState(), text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<HR data-bind="visible : typeSiftVisible()" />
 			<div class="table" data-bind="visible : typeSiftVisible()">
@@ -164,7 +170,7 @@
 						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
-					<button tabindex="18" class="workSelect" data-bind="enable: workChangeAtr, click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
+					<button tabindex="18" id="workSelect" data-bind="enable: workChangeAtr, click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<label class="lblWorkTypeCd"
@@ -201,7 +207,7 @@
 	<!--RIGHT CONTENT -->
 	<div class="right-contents">
 		<div class="panel panel-gray-bg panel-frame">
-			背景色も枠線もなし <label>#{i18n.getText('KAF009_30')} :</label> <BR /> <BR />
+			<label>#{i18n.getText('KAF009_30')} :</label> <BR /> <BR />
 			<label>#{i18n.getText('KAF009_31')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_32')}
 				:</label> <BR /> <label>#{i18n.getText('KAF009_33')} :</label> <BR /> <BR />
 			<label>#{i18n.getText('KAF009_34')} :</label> <BR /> <label>#{i18n.getText('KAF009_35')}

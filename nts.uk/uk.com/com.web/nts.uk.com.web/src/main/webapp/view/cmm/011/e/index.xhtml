@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 460,
-					height : 290
+					width : 500,
+					height : 470
 				};
 			</script>
 			
@@ -33,7 +33,7 @@
 					<div id="start-date" tabindex="1"
 						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
 					<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span>
-					<span>#{i18n.getText('CMM011_27')}</span>
+					<span data-bind="text: endDate"></span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

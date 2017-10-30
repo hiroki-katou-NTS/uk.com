@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
 				nts.uk.shr.com.time.TimeWithDayAttr
-				nts.uk.ctx.at.request.dom.application.common.AppReason
+				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../shr/kaf000.shr.vm.js"/>
@@ -20,7 +20,7 @@
 			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
 			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
 			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
-			<com:stylefile path="../../009/b/kaf009.b.style.css" />
+			<com:stylefile path="../../009/share/kaf009.share.style.css" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
 			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
@@ -49,16 +49,31 @@
 					<!-- B1_3 -->
 					<button data-bind="click: btnAfter, enable: enableAfter"><i class="icon icon-button-arrow-right"></i></button>
 					<!-- B1_4 -->
-					<button class="proceed" data-bind="click: btnApprove, enable: enableApprove">#{i18n.getText('KAF000_15')}</button>
+					<button class="proceed" data-bind="click: btnApprove, 
+													enable: displayButtonControl().enableApproval,
+													css: { displayControlFalse: !displayButtonControl().displayApproval() }">#{i18n.getText('KAF000_15')}</button>
+					<div class="comment" data-bind="css: { displayControlFalse: !displayButtonControl().displayApprovalLabel() }">
+						<label>【承認】</label>
+					</div>
 					<!-- B1_5 -->
-					<button data-bind="click: btnDeny, enable: enableDeny" >#{i18n.getText('KAF000_16')}</button>
+					<button data-bind="click: btnDeny, 
+									enable: displayButtonControl().enableDeny,
+									css: { displayControlFalse: !displayButtonControl().displayDeny() }" >#{i18n.getText('KAF000_16')}</button>
+					<div class="comment" data-bind="css: { displayControlFalse: !displayButtonControl().displayDenyLabel() }">
+						<label>【否認】</label>
+					</div>
 					<!-- B1_6 -->
-					<button >#{i18n.getText('KAF000_17')}</button>
+					<button data-bind="enable: displayButtonControl().enableRemand,
+									css: { displayControlFalse: !displayButtonControl().displayRemand() }">#{i18n.getText('KAF000_17')}</button>
 					<!-- B1_7 -->
-					<button data-bind="click: btnRelease, enable: enableRelease" >#{i18n.getText('KAF000_18')}</button>
+					<button data-bind="click: btnRelease, 
+									enable: displayButtonControl().enableRelease,
+									css: { displayControlFalse: !displayButtonControl().displayRelease() }" >#{i18n.getText('KAF000_18')}</button>
 					
 					<!-- B1_8 -->
-					<button class="proceed" data-bind="click: update , enable : enableRegistration">#{i18n.getText('KAF000_19')}</button>	
+					<button class="proceed" data-bind="click: update, 
+													enable : displayButtonControl().enableUpdate, 
+													css: { displayControlFalse: !displayButtonControl().displayUpdate() }">#{i18n.getText('KAF000_19')}</button>	
 					<!-- <div data-bind="with: screenModel.cm" style="display: inline-block">
 						<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
 					</div> -->
@@ -71,14 +86,15 @@
 					<button data-bind="click: btnSendEmail" >#{i18n.getText('KAF000_22')}</button>
 					
 					<!-- B1_12 -->
-					<button  class="danger" data-bind="click: btnDelete , enable : enableDelete" >#{i18n.getText('KAF000_23')}</button>
+					<button  class="danger" data-bind="click: btnDelete , 
+													enable : displayButtonControl().enableDelete,
+													css: { displayControlFalse: !displayButtonControl().displayDelete() }" >#{i18n.getText('KAF000_23')}</button>
 					
 					<!-- B1_13 -->
-					<button  class="danger" data-bind="click: btnCancel , enable : enableCancel">#{i18n.getText('KAF000_24')}</button>
+					<button  class="danger" data-bind="click: btnCancel , 
+													enable : displayButtonControl().enableCancel,
+													css: { displayControlFalse: !displayButtonControl().displayCancel() }">#{i18n.getText('KAF000_24')}</button>
 					<br></br>
-					<div id="comment"> 
-						<label data-bind=" visible : visibleApproval">【承認】</label><label style="margin-left: 25px;" data-bind=" visible : visibleDenial">【否認】</label>
-					</div>
 				</div>
 			
 			<div id="contents-area">
@@ -100,17 +116,20 @@
 					</table>
 				</div>
 				<!-- row2 -->
-				<div id="message-area" style="margin-top: 16px;">
+				<div id="message-area" style="margin-top: 16px;" data-bind="css: { displayControlFalse: !displayButtonControl().displayReturnReasonPanel() }">
 					<!-- B3_1 -->
 					<div class="message-td" >#{i18n.getText('KAF000_1')}</div>
 					<div class="message-td" data-bind="text : reasonApp"></div>
 				</div>
 				<!-- row 2 -->
-				<div style=" margin-top: 16px;margin-left: 39px;float: left;">
+				<div style=" margin-top: 16px;margin-left: 39px;float: left;" data-bind="css: { displayControlFalse: !displayButtonControl().displayReturnReasonLabel() }">
 					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_28')}</div>
 				</div>	
 				<div style=" margin-top: 16px;">
-					<textarea style="width: 687px;height: 50px;" data-bind="ntsMultilineEditor: { value: reasonToApprover , constraint: 'ResidenceCode'}" />
+					<textarea style="width: 687px;height: 50px;" data-bind="ntsMultilineEditor: { value: reasonToApprover, 
+																								constraint: 'ResidenceCode',
+																								enable: displayButtonControl().enableReturnReason},
+																			css: { displayControlFalse: !displayButtonControl().displayReturnReason() }" />
 					
 				</div>
 				

@@ -1,4 +1,64 @@
 module nts.uk.at.view.kaf009.share {
+    export class ScreenModel {
+        //MultilineEditor
+        requiredReason : KnockoutObservable<boolean> = ko.observable(false);
+        //menu-bar 
+        enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
+        prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
+        prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
+        isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
+        //勤務を変更する 
+        workChangeAtr: KnockoutObservable<boolean> = ko.observable(false);
+        workState : KnockoutObservable<boolean> = ko.observable(true);
+        startPage(settingData: any): JQueryPromise<any>{
+            var self = this;
+            var dfd = $.Deferred();
+            let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
+            let initialSelection = 1; //1:申請時に決める（初期選択：勤務を変更する）
+            let notChange = 2; //2:変更しない
+            let change = 3; //3:変更する
+            //申請制限設定.申請理由が必須
+            self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
+            if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
+                //登録時にメールを送信する Visible
+                self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false); 
+                
+            }
+            //事前事後区分 ※A１
+            //申請表示設定.事前事後区分　＝　表示する　〇
+            //申請表示設定.事前事後区分　＝　表示しない ×
+            self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+            if(settingData.goBackSettingDto　!= undefined){
+                //事前事後区分 Enable ※A２
+                //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
+                //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
+                self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
+                  || settingData.goBackSettingDto.workChangeFlg == initialSelection){
+                    self.isWorkChange(true);
+                    if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
+                        self.workChangeAtr(false);
+                    }else{
+                        self.workChangeAtr(true);
+                    }
+                    
+                }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
+                    self.isWorkChange(false);
+                    self.workChangeAtr(false);
+                }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
+                    self.workChangeAtr(true);
+                    self.isWorkChange(true);
+                    self.workState(false);
+                }
+                
+            }
+            return dfd.promise();
+        }    
+    }
+    
+    
     export module common {
         /**
          * GoBackDirect item

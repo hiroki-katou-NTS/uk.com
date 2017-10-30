@@ -20,29 +20,29 @@ import nts.arc.layer.ws.WebService;
 @Produces("application/json")
 public class PerInfoInitValueSettingCtgWebservice extends WebService {
 
+	// sonnlb code start
 	@Inject
 	private PerInfoInitValueSettingCtgFinder cgtFinder;
-	
+	// sonnlb code end
+
 	@Inject
 	private PerInfoInitValueSettingFinder finder;
-	
+
 	@Inject
 	private UpdateInitValueSettingHandler update;
-	
+
 	@POST
 	@Path("find/{settingId}")
 	public PerInitValueSettingDto getAllInitValueSetting(@PathParam("settingId") String settingId) {
 		return this.finder.getAllInitValueSetting(settingId);
 	}
-	
-	
+
 	@POST
 	@Path("update")
 	public void update(UpdateInitValueSettingCommand command) {
-		 this.update.handle(command);
+		this.update.handle(command);
 	}
-	
-	// sonnlb
+	// sonnlb code start
 
 	@POST
 	@Path("findAllBySetId/{settingId}")
@@ -50,5 +50,6 @@ public class PerInfoInitValueSettingCtgWebservice extends WebService {
 		return this.cgtFinder.getAllCategoryBySetId(settingId);
 	}
 
-	// sonnlb
+	// sonnlb code end
+
 }

@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
@@ -24,7 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
  * The Class SubmitLoginFormOneCommandHandler.
  */
 @Stateless
-public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLoginFormOneCommand> {
+public class SubmitLoginFormOneCommandHandler extends LoginBaseCommand<SubmitLoginFormOneCommand> {
 
 	/** The user repository. */
 	@Inject
@@ -38,7 +37,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
+	protected void internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
 
 		SubmitLoginFormOneCommand command = context.getCommand();
 		String loginId = command.getLoginId();
@@ -63,6 +62,12 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 
 		// check time limit
 		this.checkLimitTime(user);
+		
+//		//set info to session
+//		this.setLoggedInfo(user.get());
+//		
+//		//set role Id for LoginUserContextManager
+//		this.setRoleId(user.get().getUserId());
 	}
 
 	/**

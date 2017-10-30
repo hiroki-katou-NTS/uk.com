@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,7 +30,7 @@ public class AppStampGoOutPermit extends DomainObject {
 	/**
 	 * 開始時刻
 	 */
-	private Integer startTime;
+	private TimeWithDayAttr startTime;
 	
 	/**
 	 * 開始場所
@@ -39,7 +40,7 @@ public class AppStampGoOutPermit extends DomainObject {
 	/**
 	 * 終了時刻
 	 */
-	private Integer endTime;
+	private TimeWithDayAttr endTime;
 	
 	/**
 	 * 終了場所
@@ -52,9 +53,9 @@ public class AppStampGoOutPermit extends DomainObject {
 		this.stampAtr = stampAtr;
 		this.stampFrameNo = stampFrameNo;
 		this.stampGoOutAtr = stampGoOutAtr;
-		this.startTime = startTime;
+		this.startTime = startTime == null ? null : new TimeWithDayAttr(startTime);
 		this.startLocation = startLocation;
-		this.endTime = endTime;
+		this.endTime = endTime == null ? null : new TimeWithDayAttr(endTime);
 		this.endLocation = endLocation;
 	}
 }

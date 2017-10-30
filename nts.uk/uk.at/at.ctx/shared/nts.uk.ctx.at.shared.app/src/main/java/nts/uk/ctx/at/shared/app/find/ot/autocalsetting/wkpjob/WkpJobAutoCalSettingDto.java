@@ -22,10 +22,10 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingSet
 public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	
 	/** The wkp id. */
-	private WorkplaceId wkpId;
+	private String wkpId;
 
 	/** The job id. */
-	private JobTitleId jobId;
+	private String jobId;
 	
 	/** The normal OT time. */
 	private AutoCalOvertimeSettingDto normalOTTime;
@@ -50,7 +50,7 @@ public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		this.wkpId = workplaceId;
+		this.wkpId = workplaceId.v();
 		
 	}
 	
@@ -59,7 +59,7 @@ public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	 */
 	@Override
 	public void setJobId(JobTitleId positionId) {
-		this.jobId = positionId;
+		this.jobId = positionId.v();
 		
 	}
 

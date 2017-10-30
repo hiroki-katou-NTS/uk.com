@@ -48,6 +48,31 @@
             return count;
         }
         
+        export function limitText(str: string, maxlength: number, index?: number) : string {
+            let idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+            return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
+        }
+        
+        function findIdxFullHafl(text: string, max: number, index: number) {
+            var count = 0;
+            for (var i = index; i < text.length; i++) {
+                var c = text.charCodeAt(i);
+                let charLength = 2;
+                // 0x20 ～ 0x80: 半角記号と半角英数字
+                // 0xff61 ～ 0xff9f: 半角カタカナ
+                if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
+                    charLength = 1;
+                }
+                
+                if (charLength + count <= max) {
+                    count += charLength;
+                } else {
+                    return i;    
+                }
+            }
+            return text.length - index;
+        }
+        
         export function toOneByteAlphaNumberic(text: string){
             return text.replace(/[！-～　]/g, function(s) {
                 if(s === "　" ){
@@ -617,7 +642,7 @@
             }
 
             format(source: any): string {
-                if (!isFinite(source)) {
+                if (nts.uk.util.isNullOrEmpty(source) || !isFinite(source)) {
                     return source;
                 }
                 let timeWithDayAttr = time.minutesBased.clock.dayattr.create(source);

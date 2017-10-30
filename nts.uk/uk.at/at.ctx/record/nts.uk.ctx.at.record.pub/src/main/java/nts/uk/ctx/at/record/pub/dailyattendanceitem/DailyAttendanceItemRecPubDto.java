@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.record.pub.dailyattendanceitem;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * 
  * @author nampt
  *
  */
-@Getter
+@Data
+@Builder
 public class DailyAttendanceItemRecPubDto {
 	
 	private String companyId;

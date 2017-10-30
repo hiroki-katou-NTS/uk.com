@@ -10,6 +10,11 @@
 	min-width: 200px;
 }
 
+#contents-left {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
 #contents-right {
 	padding-left: 40px !important;
 }
@@ -27,4 +32,12 @@
 
 .padding-right {
 	padding-right: 15px;
+}
+
+.height-50 {
+	height: 50px;
+}
+
+.help-btn {
+	width: 33px;
 }

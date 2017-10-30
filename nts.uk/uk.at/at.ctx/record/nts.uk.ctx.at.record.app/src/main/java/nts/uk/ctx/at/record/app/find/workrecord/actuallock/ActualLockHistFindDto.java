@@ -8,6 +8,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistorySetMemento;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockSetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  * Instantiates a new actual lock hist find dto.
  */
 @Data
-public class ActualLockHistFindDto implements ActualLockHistorySetMemento {
+public class ActualLockHistFindDto implements ActualLockHistorySetMemento, ActualLockSetMemento {
 
 	/** The closure id. */
 	private int closureId;
@@ -102,10 +103,6 @@ public class ActualLockHistFindDto implements ActualLockHistorySetMemento {
 	@Override
 	public void setLockDateTime(GeneralDateTime lockDateTime) {
 		this.lockDateTime = lockDateTime.toString();
-		// SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd
-		// HH:mm:ss");
-		// this.lockDateTime = simpleDateFormat.format(
-		// Date.from(lockDateTime.localDateTime().atZone(ZoneId.systemDefault()).toInstant()));
 	}
 
 	/*

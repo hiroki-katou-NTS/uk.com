@@ -40,8 +40,7 @@ public class PerInfoInitValueSettingCtgFinder {
 		return ctgLst;
 	}
 
-	// sonnlb
-
+	// sonnlb code start
 	public List<InitCtgDto> getAllCategoryBySetId(String settingId) {
 
 		List<InitCtgDto> settingList;
@@ -52,6 +51,6 @@ public class PerInfoInitValueSettingCtgFinder {
 
 	}
 
-	// sonnlb
+	// sonnlb code end
 
 }

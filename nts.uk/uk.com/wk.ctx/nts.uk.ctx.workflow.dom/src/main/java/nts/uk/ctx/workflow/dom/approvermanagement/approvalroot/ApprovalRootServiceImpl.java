@@ -22,13 +22,11 @@ import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ErrorFlag;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -129,7 +127,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 							.findByBaseDateOfCommon(cid, baseDate);
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
-						result = comAppRoots.stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
+						result = companyAppRootsOfCom.stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
 								.collect(Collectors.toList());
 						this.adjustmentData(cid, sid, baseDate, result);
 					}
@@ -171,79 +169,20 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 		appDatas.stream().forEach(x -> {
 			List<ApprovalPhase> appPhase = this.approvalPhaseRepository.getAllIncludeApprovers(cid, x.getBranchId())
 					.stream().filter(f -> f.getBrowsingPhase() == 0).collect(Collectors.toList());
-			x.setBeforeApprovers(appPhase);
+			x.setBeforePhases(appPhase);
 			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
-			x.setAfterApprovers(phases);
+			x.setAdjustedPhases(phases);
 			// 7.承認ルートの異常チェック
 			ErrorFlag errorFlag = ErrorFlag.NO_ERROR;
 			if (CollectionUtil.isEmpty(appPhase)) {
 				errorFlag = ErrorFlag.NO_APPROVER;
 			} else {
-				errorFlag = this.checkError(appPhase, phases);
+				errorFlag = x.getAfterPhases().checkError(appPhase);
 			}
 
 			x.setErrorFlag(errorFlag);
 		});
 		return appDatas;
-	}
-
-	/**
-	 * 7.承認ルートの異常チェック
-	 */
-	@Override
-	public ErrorFlag checkError(List<ApprovalPhase> beforeDatas, List<ApprovalPhaseOutput> afterDatas) {
-		ErrorFlag errorFlag = ErrorFlag.NO_ERROR;
-		for (ApprovalPhase phase : beforeDatas) {
-			if (!CollectionUtil.isEmpty(phase.getApprovers())) {
-				int approverCounts = 0;
-				List<ApproverInfo> afterApprovers = new ArrayList<>();
-				if (!CollectionUtil.isEmpty(afterDatas)) {
-					afterApprovers = afterDatas.stream()
-							.filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get()
-							.getApprovers();
-					approverCounts = afterApprovers.size();
-				}
-				// int approverCounts = afterApprovers.size();
-
-				// １フェーズにトータルの実際の承認者 > 10
-				if (approverCounts > 10) {
-					errorFlag = ErrorFlag.APPROVER_UP_10;
-					break;
-				}
-
-				// １フェーズにトータルの実際の承認者 <= 0
-				if (approverCounts <= 0) {
-					errorFlag = ErrorFlag.NO_APPROVER;
-					break;
-				}
-
-				// approvers count > 0 and < 10
-				if (phase.getApprovalForm() == ApprovalForm.SINGLE_APPROVED) {
-					List<Approver> befApprovers = phase.getApprovers().stream()
-							.filter(x -> x.getConfirmPerson() == ConfirmPerson.CONFIRM).collect(Collectors.toList());
-
-					if (!CollectionUtil.isEmpty(befApprovers)) {
-						// 確定者あるドメインモデル「承認者」から変換した実際の承認者がいるかチェックする
-						Optional<ApproverInfo> approver = afterApprovers.stream().map(x -> {
-							Optional<Approver> impBef = befApprovers.stream()
-									.filter(y -> y.getApproverId().equals(x.getSid())).findFirst();
-							if (!impBef.isPresent()) {
-								return null;
-							}
-							return x;
-						}).findFirst();
-
-						if (!approver.isPresent()) {
-							errorFlag = ErrorFlag.NO_CONFIRM_PERSON;
-							break;
-						}
-					}
-				}
-
-			}
-		}
-
-		return errorFlag;
 	}
 
 	/**
@@ -278,24 +217,23 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			if (CollectionUtil.isEmpty(approversResult)) {
 				break;
 			}
-			
+
 			List<String> approverIds = approversResult.stream().map(x -> x.getSid()).collect(Collectors.toList());
 			// 3-1.承認代行情報の取得処理
 			ApprovalAgencyInfoOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(cid, approverIds);
 			// remove approvers with agency is PASS
 			List<String> agencyAppIds = agency.getListApproverAndRepresenterSID().stream()
-					.filter(x -> x.getRepresenter().equals("Pass")).map(x -> x.getApprover())
+					.filter(x -> x.isPass()).map(x -> x.getApprover())
 					.collect(Collectors.toList());
 			approverIds.removeAll(agencyAppIds);
 
 			// get 承認設定
-			PrincipalApprovalFlg appSetting = this.approvalSettingRepository.getPrincipalByCompanyId(cid);
-			if (!Objects.isNull(appSetting)) {
-				if (appSetting == PrincipalApprovalFlg.NOT_PRINCIPAL) {
+			this.approvalSettingRepository.getPrincipalByCompanyId(cid).ifPresent(a -> {
+				if (a == PrincipalApprovalFlg.NOT_PRINCIPAL) {
 					// 申請本人社員IDを承認者IDリストから消す
 					approverIds.remove(sid);
 				}
-			}
+			});
 
 			// remove duplicate data
 			phaseResult.addApproverList(removeDuplicateSid(approversResult.stream().filter(x -> {
