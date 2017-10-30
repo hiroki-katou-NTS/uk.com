@@ -58,12 +58,57 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.enable(false);
             }
             
+            var devChange = false;
+            
             self.checked.subscribe(function(value) {
-                self.displayItemsRule(self.allItem(), self.catCode(), value);
+                if(!devChange){
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => { 
+                        devChange = false;
+                        
+                        self.displayItemsRule(self.allItem(), self.catCode(), value);
+                        self.rightItems.removeAll();
+                    }).ifNo(() => { 
+                        devChange = true;
+                        
+                        if(value) {
+                            self.checked(false);
+                            return;
+                        } else {
+                            self.checked(true);
+                            return;
+                        }
+                    })
+                }
+                
+                devChange = false;
             }); 
             
             self.catCode.subscribe(function(value) {
-                self.displayItemsRule(self.allItem(), value, false);
+                if(!devChange){
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_193" }).ifYes(() => { 
+                        devChange = false;
+                        
+                        if(value == 0) {
+                            self.displayItemsRule(self.allItem(), value, self.checked());
+                            self.rightItems.removeAll();
+                        } else {
+                            self.items(_.filter(self.allItem(), ['itemType', GrantPeriodicMethod.EXTERNAL]));
+                            self.rightItems.removeAll();
+                        }
+                    }).ifNo(() => { 
+                        devChange = true;
+                        
+                        if(value == 0) {
+                            self.catCode(1);
+                            return;
+                        } else {
+                            self.catCode(0);
+                            return;
+                        }
+                    })
+                }
+                
+                devChange = false;
             }); 
             
             self.enableReturn = ko.observable(true);
@@ -142,14 +187,12 @@ module nts.uk.at.view.kml002.c.viewmodel {
             let temp = [];
             
             if(category == 0 && display) {
-                self.items(_.filter(allItems, ['itemType', 0]));
+                self.items(_.filter(allItems, ['itemType', GrantPeriodicMethod.SCHEDULE]));
             } else if (category == 0 && !display) {
                 self.items(_.filter(allItems, function(item: ItemModel) {
-                    return item.itemType == 0 || item.itemType == 1;
+                    return item.itemType == GrantPeriodicMethod.DAILY || item.itemType == GrantPeriodicMethod.SCHEDULE;
                 }));
-            } else if (category == 1) {
-                self.items(_.filter(allItems, ['itemType', 2]));
-            }      
+            }   
         }
         
         /**
@@ -245,6 +288,8 @@ module nts.uk.at.view.kml002.c.viewmodel {
         submit() {
             var self = this;
             
+            
+            
             nts.uk.ui.windows.close();
         }
         
@@ -277,4 +322,13 @@ module nts.uk.at.view.kml002.c.viewmodel {
             this.name = name;       
         }
     } 
+    
+    export enum GrantPeriodicMethod {
+        /** 0- 日次の勤怠項目 **/
+        DAILY = 0,
+        /** 1- 予定項目 **/
+        SCHEDULE,
+        /** 2- 外部予算実績項目 **/
+        EXTERNAL
+    }
 }
