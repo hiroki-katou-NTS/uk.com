@@ -35,4 +35,15 @@ public class TargetPersonWebService {
 	public TargetPersonDto getTargetPersonById(@PathParam("empCalAndSumExecLogId") String empCalAndSumExecLogId){
 		return this.finder.getTargetPersonByID(empCalAndSumExecLogId);
 	}
+	
+	/**
+	 * get list TargetPerson by empCalAndSumExecLogId
+	 * @param empCalAndSumExecLogId
+	 * @return
+	 */
+	@POST
+	@Path("getbyempid/{empCalAndSumExecLogId}")
+	public List<TargetPersonDto> getTargetPersonByEmpId(@PathParam("empCalAndSumExecLogId") String empCalAndSumExecLogId){
+		return this.finder.getListTargetPersonByEmpId(empCalAndSumExecLogId);
+	}
 }
