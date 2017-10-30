@@ -16,7 +16,6 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class TargetPerson extends AggregateRoot{
 
-	
 	/**
 	 * 社員ID
 	 */
