@@ -1254,18 +1254,18 @@ module nts.uk.at.view.kmk002.a {
                 this.timeDailyUnitStash = null;
 
                 // Rounding
-                this.timeMonthlyRounding = ko.observable(null);
-                this.timeMonthlyUnit = ko.observable(null);
-                this.timeDailyRounding = ko.observable(null);
-                this.timeDailyUnit = ko.observable(null);
-                this.numberMonthlyRounding = ko.observable(null);
-                this.numberMonthlyUnit = ko.observable(null);
-                this.numberDailyRounding = ko.observable(null);
-                this.numberDailyUnit = ko.observable(null);
-                this.amountMonthlyRounding = ko.observable(null);
-                this.amountMonthlyUnit = ko.observable(null);
-                this.amountDailyRounding = ko.observable(null);
-                this.amountDailyUnit = ko.observable(null);
+                this.timeMonthlyRounding = ko.observable(0);
+                this.timeMonthlyUnit = ko.observable(1);
+                this.timeDailyRounding = ko.observable(0);
+                this.timeDailyUnit = ko.observable(1);
+                this.numberMonthlyRounding = ko.observable(0);
+                this.numberMonthlyUnit = ko.observable(0);
+                this.numberDailyRounding = ko.observable(0);
+                this.numberDailyUnit = ko.observable(0);
+                this.amountMonthlyRounding = ko.observable(0);
+                this.amountMonthlyUnit = ko.observable(1);
+                this.amountDailyRounding = ko.observable(0);
+                this.amountDailyUnit = ko.observable(1);
 
                 // initial data source
                 this.initDatasource();
@@ -1509,7 +1509,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private getDefaultItemSelection(): ItemSelectionDto {
                 let data = <ItemSelectionDto>{};
-                data.minusSegment = 1;
+                data.minusSegment = 0;
                 data.attendanceItems = []
                 return data;
             }

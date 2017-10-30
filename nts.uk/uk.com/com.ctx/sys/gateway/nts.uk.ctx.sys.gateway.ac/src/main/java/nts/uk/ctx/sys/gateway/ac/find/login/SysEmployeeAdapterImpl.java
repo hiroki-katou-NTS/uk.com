@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
@@ -24,7 +26,10 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	/** The employee info pub. */
 	@Inject
 	private EmployeeInfoPub employeeInfoPub;
-
+	
+	/** The emp info by cid sid pub. */
+	@Inject
+	private EmpInfoByCidSidPub empInfoByCidSidPub;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -48,5 +53,16 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 
 		// Return
 		return Optional.empty();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getByPid(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<EmployeeImport> getByPid(String companyId, String pid) {
+		EmpInfoByCidSidExport emExport = empInfoByCidSidPub.getEmpInfoBySidCid(pid, companyId);
+		EmployeeImport emImport = new EmployeeImport(emExport.getCid(), emExport.getPid(), emExport.getSid(),
+				emExport.getScd());
+		return Optional.of(emImport);
 	}
 }

@@ -4,18 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
@@ -40,9 +48,13 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 	@Inject
 	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
 
+	@Inject 
+	private RoleAdapter roleAdapter;
+	
 	@Inject
 	private LoginUserContextManager manager;
-
+	
+	private static final Integer FIST_COMPANY = 0;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -79,10 +91,56 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 //				com.getCompanyCode(), em.getEmployeeId(), em.getEmployeeCode());
 //	}
 	
+	protected void initSession(User user) {
+		List<String> lstCompanyId = this.getListCompany(user);
+		if (lstCompanyId.isEmpty()) {
+
+		} else {
+			// get employee
+			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
+					user.getAssociatedPersonId());
+			// save to session
+			if (opEm.isPresent()) {
+				// TODO get company info
+
+				this.setLoggedInfo(user, opEm.get(), "TODO companyCode");
+			}
+		}
+		this.setRoleId(user.getUserId());
+	}
+	
+	protected List<String> getListCompany(User user) {
+		List<String> lstCompanyId = new ArrayList<String>();
+		// get roleIndividualGrant
+		RoleIndividualGrantImport individualGrant = roleIndividualGrantAdapter.getByUser(user.getUserId(),
+				GeneralDate.today());
+		// get roles by roleId
+		List<RoleImport> lstRole = roleAdapter.getAllById(individualGrant.getRoleId());
+		// TODO get list employee imported by User associated Id #No.124
+		List<EmployeeImport> lstEm = Arrays.asList();
+
+		// merge duplicate companyId from lstRole and lstEm
+		for (RoleImport item : lstRole) {
+			if (item.getCompanyId() != null) {
+				lstCompanyId.add(item.getCompanyId());
+			}
+		}
+
+		for (EmployeeImport em : lstEm) {
+			boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
+				return em.getCompanyId().equals(item);
+			});
+			if (!haveComId) {
+				lstCompanyId.add(em.getCompanyId());
+			}
+		}
+		return lstCompanyId;
+	}
 	protected EmployeeImport getEmployeeInfo(String companyId, String employeeCode) {
 		// TODO
 		EmployeeImport em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode).get();
 		return em;
+//		return null;
 	}
 	
 	protected CompanyInformationImport getCompanyInfo(String companyId) {

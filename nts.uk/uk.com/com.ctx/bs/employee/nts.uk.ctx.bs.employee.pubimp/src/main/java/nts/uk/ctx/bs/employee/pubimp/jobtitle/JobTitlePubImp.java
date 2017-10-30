@@ -135,8 +135,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.jobTitleName(jobInfo.getJobTitleName().v())
 				.sequenceCode(
 						jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
-				.startDate(jobTitleHistory.getPeriod().start())
-				.endDate(jobTitleHistory.getPeriod().end()).build());
+				.startDate(jobTitleHistory.span().start())
+				.endDate(jobTitleHistory.span().end())
+				.build());
 	}
 
 	/*
@@ -161,8 +162,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					.jobTitleName(jobInfo.getJobTitleName().v())
 					.sequenceCode(jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v()
 							: null)
-					.startDate(jobTitleHistory.getPeriod().start())
-					.endDate(jobTitleHistory.getPeriod().end()).build();
+					.startDate(jobTitleHistory.span().start())
+					.endDate(jobTitleHistory.span().end())
+					.build();
 		}).collect(Collectors.toList());
 	}
 

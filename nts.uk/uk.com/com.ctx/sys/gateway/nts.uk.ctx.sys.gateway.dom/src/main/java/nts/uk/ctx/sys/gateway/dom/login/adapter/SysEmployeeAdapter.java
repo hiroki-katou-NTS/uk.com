@@ -21,4 +21,13 @@ public interface SysEmployeeAdapter {
 	 * @return the current info by scd
 	 */
 	Optional<EmployeeImport> getCurrentInfoByScd(String companyId,String employeeCode);
+	
+	/**
+	 * Gets the by pid.
+	 *
+	 * @param companyId the company id
+	 * @param pid the pid
+	 * @return the by pid
+	 */
+	Optional<EmployeeImport> getByPid(String companyId, String pid);
 }
