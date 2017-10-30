@@ -3,8 +3,8 @@ module nts.uk.com.view.cmm050.b {
     
     export module viewmodel {
         export class ScreenModel {
-            emailAuth: KnockoutObservable<string>;
-            emailAuth1: KnockoutObservable<string>;
+            emailFrom: KnockoutObservable<string>;
+            emailTo: KnockoutObservable<string>;
             
             emailAuthOption: any;
             
@@ -13,8 +13,8 @@ module nts.uk.com.view.cmm050.b {
                 
                 let params = getShared('CMM050Params');
                 
-                _self.emailAuth = ko.observable(params.emailAuth);
-                _self.emailAuth1 = ko.observable(null);
+                _self.emailFrom = ko.observable(params.emailAuth);
+                _self.emailTo = ko.observable(params.emailAuth);
                 _self. emailAuthOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "350px"
                 }));
@@ -27,9 +27,26 @@ module nts.uk.com.view.cmm050.b {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * test send mail
+             */
             public testSendMail() {
-                //TODO: pending
-                nts.uk.ui.windows.close();
+                let _self = this;
+                var dfd = $.Deferred<void>();
+                
+                var data = new model.MailServerTest(
+                        _self.emailFrom(),
+                        _self.emailTo(),
+                        new model.MailContents());
+                
+                service.testMailServerSetting(data).done(function(){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_534" });
+                    dfd.resolve();
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                });
+                
+                return dfd.promise();
             }
         }
     }
