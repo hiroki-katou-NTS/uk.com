@@ -1,4 +1,3 @@
-import getCell = nts.uk.ui.ig.grid.header.getCell;
 module nts.uk.com.view.cps009.a {
 
     let __viewContext: any = window["__viewContext"] || {};
@@ -6,8 +5,8 @@ module nts.uk.com.view.cps009.a {
     __viewContext.ready(function() {
 
         var screenModel = new viewmodel.ViewModel();
-
         __viewContext["viewModel"] = screenModel;
         __viewContext.bind(__viewContext["viewModel"]);
+
     });
 }
