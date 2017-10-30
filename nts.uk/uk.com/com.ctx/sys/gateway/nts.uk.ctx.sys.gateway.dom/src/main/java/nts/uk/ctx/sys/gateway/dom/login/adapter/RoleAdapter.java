@@ -2,20 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.auth.pub.role;
+package nts.uk.ctx.sys.gateway.dom.login.adapter;
 
 import java.util.List;
 
-/**
- * The Interface RoleExportRepo.
- */
-public interface RoleExportRepo {
+import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
+
+public interface RoleAdapter {
 	
 	/**
-	 * Find by id.
+	 * Gets the all by id.
 	 *
 	 * @param roleId the role id
-	 * @return the list
+	 * @return the all by id
 	 */
-	List<RoleExport> findById(String roleId);
+	List<RoleImport> getAllById(String roleId);
 }

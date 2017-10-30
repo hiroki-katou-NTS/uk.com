@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.auth.infra.repository.role;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -29,7 +29,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<Role> findById(String roleId) {
+	public List<Role> findById(String roleId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -45,8 +45,10 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.id), roleId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		SacmtRole sacmtRole = em.createQuery(cq).getSingleResult();
-		return Optional.of(new Role(new JpaRoleGetMemento(sacmtRole)));
+		List<SacmtRole> sacmtRoles = em.createQuery(cq).getResultList();
+		return sacmtRoles.stream().map(sacmtRole -> {
+			return new Role(new JpaRoleGetMemento(sacmtRole));
+		}).collect(Collectors.toList());
 	}
 
 }
