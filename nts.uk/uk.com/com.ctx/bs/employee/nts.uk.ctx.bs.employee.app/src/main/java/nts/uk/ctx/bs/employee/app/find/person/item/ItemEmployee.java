@@ -25,7 +25,7 @@ public class ItemEmployee extends CtgItemFixDto{
 		this.joinDate = joinDate;
 	}
 	
-	public ItemEmployee createFromJavaType(String personId, String employeeId, String employeeCode, String employeeMail,
+	public static ItemEmployee createFromJavaType(String personId, String employeeId, String employeeCode, String employeeMail,
 			GeneralDate retirementDate, GeneralDate joinDate){
 		return new ItemEmployee(personId, employeeId, employeeCode, employeeMail, retirementDate, joinDate);
 	}

@@ -19,10 +19,13 @@ import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.Famil
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsuranceRepository;
 import nts.uk.ctx.bs.employee.dom.person.ParamForGetPerItem;
 import nts.uk.ctx.bs.employee.dom.person.PerInfoCtgDomainService;
+import nts.uk.ctx.bs.employee.dom.position.jobposition.JobPositionMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -67,8 +70,12 @@ public class EmpPerInfoCategoryFinder {
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
 	@Inject
 	EmployeeRepository employeeRepository;
+	
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
+	
+	@Inject
+	private TemporaryAbsenceRepository temporaryAbsenceRepository;
 
 	/**
 	 * get person ctg infor and list of item children
@@ -103,7 +110,7 @@ public class EmpPerInfoCategoryFinder {
 			List<PersonInfoItemDefinition> lstPerInfoItemDef = perInfoCtgDomainService
 					.getPerItemDef(new ParamForGetPerItem(perInfoCtg, parentInfoId, roleId == null ? "" : roleId,
 							companyId, contractCode, loginEmpId.equals(employeeId)));
-			CtgItemFixDto ctgItemFixDto = getCtgItemFix(perInfoCtg, parentInfoId);
+			CtgItemFixDto ctgItemFixDto = getEmployeeCtgItemFix(perInfoCtg, parentInfoId);
 			CtgItemOptionalDto ctgItemOptionalDto = getCtgItemOptionDto(employeeId,
 					perInfoCtg.getPersonInfoCategoryId());
 			EmpPerCtgInfoDto empPerCtgInfoDto = new EmpPerCtgInfoDto();
@@ -181,7 +188,7 @@ public class EmpPerInfoCategoryFinder {
 	 * @param parentInfoId
 	 * @return CtgItemFixDto
 	 */
-	private CtgItemFixDto getCtgItemFix(PersonInfoCategory perInfoCtg, String parentInfoId) {
+	private CtgItemFixDto getEmployeeCtgItemFix(PersonInfoCategory perInfoCtg, String parentInfoId) {
 		CtgItemFixDto ctgItemFixDto = new CtgItemFixDto();
 		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			switch (perInfoCtg.getCategoryCode().v()) {
@@ -211,15 +218,39 @@ public class EmpPerInfoCategoryFinder {
 			case "CS00013":
 				List<SubJobPosition> lstSubJobPos = subJobPosRepository.getSubJobPosByDeptId(parentInfoId);
 				ctgItemFixDto = CtgItemFixDto
-						.createSetCurJobPos(lstSubJobPos
-								.stream().map(x -> new ItemCurrentJobPosDto(x.getSubJobPosId(), x.getAffiDeptId(),
+						.createSetCurJobPos(lstSubJobPos.stream()
+								.map(x -> new ItemCurrentJobPosDto(x.getSubJobPosId(), x.getAffiDeptId(),
 										x.getJobTitleId(), x.getStartDate(), x.getEndDate()))
 								.collect(Collectors.toList()));
+				break;
+			}
+
+		}
+		return ctgItemFixDto;
+	}
+
+	private CtgItemFixDto getEmployeeCtgItemFix(EmployeeDto employee, PersonInfoCategory perInfoCtg,
+			String parentInfoId) {
+		CtgItemFixDto ctgItemFixDto = new CtgItemFixDto();
+		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+			switch (perInfoCtg.getCategoryCode().v()) {
+			case "CS00002":
+				ctgItemFixDto = CtgItemFixDto.createEmployee(employee.getPersonId(), employee.getEmployeeId(),
+						employee.getEmployeeCode(), employee.getEmployeeMail(), employee.getRetirementDate(),
+						employee.getJoinDate());
+				break;
+			case "CS00008":
+				TemporaryAbsence temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(parentInfoId).get();
+				ctgItemFixDto = CtgItemFixDto.createLeaveHoliday(temporaryAbsence.getEmployeeId(), temporaryAbsence.getTempAbsenceId(), 
+						temporaryAbsence.getTempAbsenceType().value, temporaryAbsence.getStartDate(), temporaryAbsence.getEndDate(), 
+						temporaryAbsence.getTempAbsenceReason(), temporaryAbsence.getFamilyMemberId(), temporaryAbsence.getBirthDate(), temporaryAbsence.getMulPregnancySegment());
+				break;
+			case "CS00009":
+				JobPositionMain
 				break;
 			}
 		}
 		return ctgItemFixDto;
 	}
-	
 
 }

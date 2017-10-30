@@ -15,7 +15,7 @@ public enum CtgItemType {
 	//社員 Employee
 	EMPLOYEE(5),
 	//休職休業
-	LEAVE_HOLIDAY(6),
+	TEMPORARY_ABSENCE(6),
 	//職務職位
 	JOB_POS_MAIN(7),
 	//所属職場
