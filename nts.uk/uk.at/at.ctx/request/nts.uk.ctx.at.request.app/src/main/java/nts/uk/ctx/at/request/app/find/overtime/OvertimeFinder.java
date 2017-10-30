@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.find.overtime;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +12,8 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -20,12 +21,16 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -56,11 +61,21 @@ public class OvertimeFinder {
 	@Inject
 	private AppTypeDiscreteSettingRepository discreteRepo;
 	
+	@Inject
+	private EmployeeRequestAdapter employeeAdapter;
+	
+	@Inject 
+	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
+	
+	@Inject
+	private AppEmploymentSettingRepository appEmploymentSettingRepository;
+	
+	
 	public OverTimeDto getAllOvertime(String url,String appDate,int uiType){
 		
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto applicationDto = new ApplicationDto();
-		List<OverTimeInstruct> overtimeInstructs = new ArrayList<>();
+		OverTimeInstruct overtimeInstruct = new OverTimeInstruct();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		int rootAtr = 1;
@@ -82,7 +97,7 @@ public class OvertimeFinder {
 			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getUserAtr().value;
 			if(useAtr == UseAtr.USE.value){
 				if(appDate != null){
-					overtimeInstructs = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.today(), GeneralDate.localDate(LocalDate.parse(appDate)), employeeID);
+					overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.localDate(LocalDate.parse(appDate)), employeeID);
 				}
 			}
 		}
@@ -93,7 +108,7 @@ public class OvertimeFinder {
 		// 事前事後区分を取得
 			getDisplayPrePost(companyID, applicationDto, result, uiType);
 		// 07_勤務種類取得: lay loai di lam
-		
+			getWorkType(companyID,employeeID,result);
 		return null;
 	}
 	// 事前事後区分を取得
@@ -123,4 +138,35 @@ public class OvertimeFinder {
 			}
 		}
 	}
+	private void getWorkType(String companyID,String employeeID,OverTimeDto result){
+		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
+		
+		Optional<RequestAppDetailSetting> requestAppDetailSetting = requestOfEachWorkplaceRepository.getRequestDetail(companyID, workplaceID, ApplicationType.OVER_TIME_APPLICATION.value);
+		if(requestAppDetailSetting.isPresent()){
+			// 時刻計算利用チェック
+			if(requestAppDetailSetting.get().getTimeCalUseAtr().value == UseAtr.USE.value){
+				//アルゴリズム「社員所属雇用履歴を取得」を実行する
+				SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID,employeeID,GeneralDate.today());
+				if(sEmpHistImport != null){
+					// ドメインモデル「申請別対象勤務種類」を取得
+					List<AppEmployWorkType> employWorkTypes = this.appEmploymentSettingRepository.getEmploymentWorkType(companyID, sEmpHistImport.getEmploymentCode(), ApplicationType.OVER_TIME_APPLICATION.value);
+					if(employWorkTypes != null){
+						// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
+					}else{
+						/*
+						 * ドメインモデル「勤務種類」を取得
+						 * anh chinh lam
+						 */
+						/*
+						 *  ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
+						 *  doi xac nhan
+						 */
+						
+					}
+				}
+			}
+		}
+		
+	}
+	
 }
