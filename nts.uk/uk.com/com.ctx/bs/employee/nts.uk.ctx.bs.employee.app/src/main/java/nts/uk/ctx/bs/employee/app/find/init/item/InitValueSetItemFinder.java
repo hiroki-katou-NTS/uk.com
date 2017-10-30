@@ -49,21 +49,26 @@ public class InitValueSetItemFinder {
 		if (hasItemSameAsLogin(initListItem)) {
 
 			switch (categoryCd) {
-			// 社員基本情報
+			//Employee- 社員基本情報
 			case "CS00002":
 				resultItemList = loadEmployeeInfo(resultItemList, companyId, employeeId);
 				break;
-			case "CS00011":
-
+			// 休職・休業
+			case "CS00008":
 				break;
-			case "CS00010":
-
-				break;
+			// 職務職位履歴
 			case "CS00009":
 
 				break;
-			case "CS00008":
+			// 所属職場
+			case "CS00010":
+
 				break;
+			//AffiliationDepartment- 所属部門
+			case "CS00011":
+
+				break;
+
 			}
 			resultItemList.addAll(loadInfoItemList(categoryCd));
 
@@ -97,21 +102,21 @@ public class InitValueSetItemFinder {
 		}
 	}
 
-	private List<InitValueSettingItemDto> loadEmployeeInfo(List<InitValueSettingItemDto> resultItemList,
-			String companyId, String employeeId) {
+	private List<InitValueSettingItemDto> loadEmployeeInfo(List<InitValueSettingItemDto> initItemList, String companyId,
+			String employeeId) {
 
 		List<InitValueSettingItemDto> returnList = new ArrayList<InitValueSettingItemDto>();
 
 		Optional<Employee> empDomain = this.empBasicInfoRepo.findBySid(companyId, employeeId);
 		if (empDomain.isPresent()) {
-			returnList = mergeEmpBasicInfoAndItemDefListToListDto(empDomain.get(), resultItemList);
+			returnList = mergeEmpBasicInfoAndItemDefListToListDto(empDomain.get(), initItemList);
 		}
 		return returnList;
 
 	}
 
 	private InitValueSettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
-		return InitValueSettingItemDto.createFromJavaType(domain.getItemCode().v(), domain.getItemName(),
+		return InitValueSettingItemDto.createFromJavaType(domain.getItemCode(), domain.getItemName(),
 				domain.getIsRequired().value, domain.getSaveDataType().value, domain.getDateValue(),
 				domain.getIntValue().v(), domain.getStringValue().v());
 	}
@@ -150,9 +155,6 @@ public class InitValueSetItemFinder {
 			case "IS00028":
 				itemDto.setData(empDomain.getListEntryJobHist().get(empDomain.getListEntryJobHist().size() - 1)
 						.getRetirementDate());
-				break;
-
-			default:
 				break;
 			}
 		}
