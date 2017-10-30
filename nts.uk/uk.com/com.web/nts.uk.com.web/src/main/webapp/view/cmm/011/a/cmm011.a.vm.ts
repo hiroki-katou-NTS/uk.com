@@ -227,6 +227,13 @@ module nts.uk.com.view.cmm011.a {
              */
             public openWkpConfigDialog() {
                 let self = this;
+                let dateRange: any = {};
+                dateRange.start = self.strDWorkplace();
+                dateRange.end = self.endDWorkplace();
+                
+                // share date range
+                nts.uk.ui.windows.setShared("DateRange", dateRange);
+                
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
                     let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
                     if (!dialogData) {
@@ -323,6 +330,7 @@ module nts.uk.com.view.cmm011.a {
              * showMessageError
              */
             public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
                 if (!res.businessException) {
                     return;
                 }
@@ -363,8 +371,14 @@ module nts.uk.com.view.cmm011.a {
                 // subscribe
                 self.lstWorkplace.subscribe(dataList => {
                     if (!dataList || dataList.length < 1) {
-                        $('#wkpCd').focus();
+                        
+                        // didn't exist workplace
                         self.parentModel.isNewMode(true);
+                        
+                        // set focus
+                        $('#wkpCd').focus();
+                        
+                        // create new workplace history
                         self.parentModel.workplaceHistory().newHistory();
                         return;
                     }
@@ -413,7 +427,14 @@ module nts.uk.com.view.cmm011.a {
                     dfd.resolve();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
-                    self.parentModel.showMessageError(res);
+
+                    if (res.messageId == "Msg_373") {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_373" }).then(() => {
+                            self.lstWorkplace([]);
+                        });
+                    } else {
+                        self.parentModel.showMessageError(res);
+                    }
                 });
                 return dfd.promise();
             }

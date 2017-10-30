@@ -51,7 +51,24 @@ module nts.uk.com.view.cmm011 {
                 let self = this;
                 _.forEach(self.lstWpkHistory(), (item: IHistory) => {
                     item.textDisplay = item.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.endDate;
-                })
+                });
+            }
+            
+            /**
+             * findHistIdByDate
+             */
+            public findHistIdByDate(start: string, end: string): string {
+                let self = this;
+                let histId: string = null;
+                if (self.lstWpkHistory().length <= 0) {
+                    return histId;
+                }
+                let result: Array<IHistory> = self.lstWpkHistory().filter(item => item.startDate == start
+                    && item.endDate == end);
+                if (result.length > 0) {
+                    histId = result[0].historyId;
+                }
+                return histId;
             }
             
             /**
