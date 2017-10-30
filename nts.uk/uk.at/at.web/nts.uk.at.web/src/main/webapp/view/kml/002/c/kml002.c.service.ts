@@ -9,12 +9,18 @@ module nts.uk.at.view.kml002.c.service {
     /**
      *  Find data by code
      */
-    export function getDailyItems(attribute: number): JQueryPromise<DailyItemsDto> {
+    export function getDailyItems(attribute: number): BaseItemsDto {
         var path = nts.uk.text.format(servicePath.getDailyItems, attribute);
         return nts.uk.request.ajax("at", path);
     }  
     
-    export interface DailyItemsDto {
+    export interface BaseItemsDto {
+        dailyAttItems: Array<BaseItem>,    
+        scheduleItems: Array<BaseItem>,        
+        externalItems: Array<BaseItem>  
+    }
+    
+    export interface BaseItem {
         id: number,
         itemId: string,
         itemName: string,

@@ -118,8 +118,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let dfd = $.Deferred();
             service.getItem().done((lstItem: Array<IEvalOrder>) => {
                 if (lstItem.length == 0) {
-                    $("#swap-list-grid1").igGrid("container").focus();
                     nts.uk.ui.dialog.info({ messageId: "Msg_458" }).then(()=> {
+                        $("#swap-list-grid1").igGrid("container").focus();
                         nts.uk.ui.windows.close();        
                     });
                 } else {
@@ -183,6 +183,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let part = [];
             $("#code-text").trigger("validate");
             $("#nameCtg").trigger("validate");
+            $("#memo").trigger("validate");
             var i = 0;
             _.forEach(self.selectedOption().totalEvalOrders(), function(item) {
                 part.push({
@@ -218,7 +219,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         });
                     }).fail(function(res) {
                         if(res.messageId == 'Msg_363'){
-                            $('#swap-list-grid2').ntsError('set', res);
+                            $('#swap-list-grid2').igGrid("container").focus();
                         }
                         nts.uk.ui.dialog.alertError(res.message);
                     }).always(()=>{
@@ -240,7 +241,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             $('#code-text').ntsError('set', res);
                         }
                         if(res.messageId == 'Msg_363'){
-                            $('#swap-list-grid2').ntsError('set', res);
+                            $('#swap-list-grid2').igGrid("container").focus();
                         }
                         nts.uk.ui.dialog.alertError(res.message);
                     }).always(()=>{

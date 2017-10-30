@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 780,
+					width : 800,
 					height : 700
 				};
 			</script>
@@ -59,12 +59,11 @@
 					<div class="cbx-checked" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('KML002_27')}' }"></div>
 					
 					<div class="search-box"
-						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
-						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
-						
+						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegridItems', 
+						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name'], mode: 'igGrid'}" />
 					<table id="treegridItems"
 						data-bind="ntsGridList: {
-							width: 300,
+							width: 320,
 							height: 300,
 							options: items,
 							optionsValue: 'code',
@@ -78,13 +77,13 @@
 				<div class="function-btns">
 					<button class="addition" data-bind="click: addition">#{i18n.getText('KML002_37')}</button>
 					<button class="subtraction" data-bind="click: subtraction">#{i18n.getText('KML002_38')}</button>
-					<button class="left-btn" data-bind="click: returnItems"><i class="icon icon-button-arrow-left"></i></button>
+					<button class="left-btn" data-bind="click: returnItems, enable: enableReturn"><i class="icon icon-button-arrow-left"></i></button>
 				</div>
 				
 				<div class="right-tbl">
 					<table id="treegridItems"
 						data-bind="ntsGridList: {
-							width: 300,
+							width: 320,
 							height: 300,
 							options: rightItems,
 							optionsValue: 'code',
