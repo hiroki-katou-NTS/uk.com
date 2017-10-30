@@ -246,7 +246,6 @@ public class EmpPerInfoCategoryFinder {
 						temporaryAbsence.getTempAbsenceReason(), temporaryAbsence.getFamilyMemberId(), temporaryAbsence.getBirthDate(), temporaryAbsence.getMulPregnancySegment());
 				break;
 			case "CS00009":
-				JobPositionMain
 				break;
 			}
 		}
