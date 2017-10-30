@@ -43,13 +43,8 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	
 	@Override
 	public void appReasonCheck(String titleReason, String detailReason, AppStamp appStamp) {
-		String tReason = Strings.trimToNull(titleReason);
-		String dReason = Strings.trimToNull(detailReason);
-		if(Strings.isEmpty(tReason)&&Strings.isEmpty(dReason)){
-			appStamp.setApplicationReason(new AppReason(""));
-		} else {
-			appStamp.setApplicationReason(new AppReason(tReason+": "+dReason));
-		}
+		appStamp.setAppReasonID(titleReason);
+		appStamp.setApplicationReason(new AppReason(detailReason));
 	}
 
 	@Override
@@ -66,7 +61,7 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
-				Strings.isEmpty(appStamp.getApplicationReason().v())){
+				Strings.isEmpty(appStamp.getAppReasonID()+appStamp.getApplicationReason().v())){
 					throw new BusinessException("Msg_115");
 		}
 		appStamp.customValidate();

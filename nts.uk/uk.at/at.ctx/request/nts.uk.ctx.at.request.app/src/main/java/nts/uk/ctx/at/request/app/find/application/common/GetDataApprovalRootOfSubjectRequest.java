@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -38,7 +40,7 @@ public class GetDataApprovalRootOfSubjectRequest {
 				x.getBeforeApprovers().stream().forEach(y -> {
 					Collections.sort(y.getApprovers(), Comparator.comparing(ApproverInfoImport :: getOrderNumber));
 					y.getApprovers().stream().forEach(z ->{
-						if(z.getJobId().isEmpty()) {
+						if(Strings.isNotBlank(z.getJobId())) {
 							List<ConcurrentEmployeeRequest> lstEmployeeByJob = employeeAdapter.getConcurrentEmployee(companyID, z.getJobId(), generalDate);
 							String employeeName = "";
 							for(ConcurrentEmployeeRequest concurr: lstEmployeeByJob) {
