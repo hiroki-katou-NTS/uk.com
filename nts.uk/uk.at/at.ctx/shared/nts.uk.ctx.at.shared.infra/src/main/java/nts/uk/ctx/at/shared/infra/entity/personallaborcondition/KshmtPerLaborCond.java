@@ -14,11 +14,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtPerLaborCond.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHMT_PER_LABOR_COND")
 public class KshmtPerLaborCond extends UkJpaEntity implements Serializable {

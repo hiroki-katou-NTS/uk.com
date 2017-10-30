@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.personallaborcondition;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -17,9 +18,9 @@ public interface PersonalLaborConditionRepository {
 	 * Find by id.
 	 *
 	 * @param employeeId the employee id
-	 * @param period the period
+	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	public Optional<PersonalLaborCondition> findById(String employeeId, DatePeriod period);
+	public Optional<PersonalLaborCondition> findById(String employeeId, GeneralDate baseDate);
 
 }

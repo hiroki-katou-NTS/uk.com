@@ -43,5 +43,36 @@ public class PersonalWorkCategory extends DomainObject{
 	/** The holiday attendance time. */
 	// 祝日出勤時
 	private Optional<SingleDaySchedule> holidayAttendanceTime;
+	
+	
+	/**
+	 * Instantiates a new personal work category.
+	 *
+	 * @param memento the memento
+	 */
+	public PersonalWorkCategory(PersonalWorkCategoryGetMemento memento) {
+		this.holidayWork = memento.getHolidayWork();
+		this.holidayTime = memento.getHolidayTime();
+		this.weekdayTime = memento.getWeekdayTime();
+		this.publicHolidayWork = memento.getPublicHolidayWork();
+		this.inLawBreakTime = memento.getInLawBreakTime();
+		this.outsideLawBreakTime = memento.getOutsideLawBreakTime();
+		this.holidayAttendanceTime = memento.getHolidayAttendanceTime();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PersonalWorkCategorySetMemento memento){
+		memento.setHolidayWork(this.holidayWork);
+		memento.setHolidayTime(this.holidayTime);
+		memento.setWeekdayTime(this.weekdayTime);
+		memento.setPublicHolidayWork(this.publicHolidayWork);
+		memento.setInLawBreakTime(this.inLawBreakTime);
+		memento.setOutsideLawBreakTime(this.outsideLawBreakTime);
+		memento.setHolidayAttendanceTime(this.holidayAttendanceTime);
+	}
 
 }
