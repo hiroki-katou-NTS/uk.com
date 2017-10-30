@@ -45,8 +45,8 @@
 					<div tabindex="1" class="cbx-checked-d" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
 					<!-- D2_6 -->
 					<div class="search-box" tabindex="2"
-						data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list', 
-						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+						data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'id', comId: 'treegridItems', 
+						items: items, selected: currentCodeList, selectedKey: 'id', fields: ['name'], mode: 'igGrid'}" />
 					<!-- D2_8 -->
 					<table id="treegridItems"
 						data-bind="ntsGridList: {
