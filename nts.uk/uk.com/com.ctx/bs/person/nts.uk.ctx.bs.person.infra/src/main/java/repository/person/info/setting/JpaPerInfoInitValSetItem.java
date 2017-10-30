@@ -13,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.person.dom.person.info.category.CategoryCode;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
@@ -31,15 +32,28 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
 			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
 
-	private final String SEL_ALL_ITEM = " SELECT c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr, b.saveDataType, b.stringValue, b.intValue, b.dateValue, d.dataType, d.itemType , e.disporder  "
-			+ " FROM PpemtPerInfoItem c " + " INNER JOIN PpemtPerInfoItemCm d "
-			+ " ON c.itemCd = d.ppemtPerInfoItemCmPK.itemCd " + " INNER JOIN PpemtPerInfoItemOrder e "
-			+ " ON  c.ppemtPerInfoItemPK.perInfoItemDefId = e.ppemtPerInfoItemPK.perInfoItemDefId "
-			+ " AND c.perInfoCtgId = e.perInfoCtgId " + " LEFT JOIN PpemtPersonInitValueSettingItem b "
-			+ " ON b.settingItemPk.perInfoItemDefId = c.ppemtPerInfoItemPK.perInfoItemDefId "
-			+ " AND b.settingItemPk.perInfoCtgId = c.perInfoCtgId" + " AND b.settingItemPk.settingId =:settingId "
-			+ " WHERE c.abolitionAtr = 0" + " AND c.perInfoCtgId =:perInfoCtgId" + " ORDER BY e.disporder";
+
+	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
+			+ " ITEM.requiredAtr, "
+			+ " SE.settingItemPk.settingId, SE.refMethodAtr, SE.saveDataType, SE.stringValue, SE.intValue, SE.dateValue,"
+			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd "
+			// 10 11 12 13 14
+			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
+			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
+
+			+ " INNER JOIN  PpemtPerInfoItem ITEM" + " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
+			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " AND ITEM.perInfoCtgId =:perInfoCtgId"
+
+			+ " INNER JOIN PpemtPerInfoItemOrder E"
+			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
+			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
+
+			+ " LEFT JOIN PpemtPersonInitValueSettingItem SE"
+			+ " ON CTG.ppemtPerInfoCtgPK.perInfoCtgId = SE.settingItemPk.perInfoCtgId"
+			+ " AND SE.settingItemPk.settingId =:settingId AND SE.settingItemPk.perInfoCtgId =:perInfoCtgId"
+			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
+			+ " AND (SE.settingItemPk.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId OR SE.settingItemPk.perInfoItemDefId IS NULL)"
+			+ " ORDER BY E.disporder";
 
 	// SONNLB
 	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
@@ -50,7 +64,6 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " INNER JOIN PpemtPerInfoItemOrder po "
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
 			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd  ORDER BY po.disporder";
-
 	// SONNLB
 
 	private final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -150,6 +163,17 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			domain.setItemType(Integer.valueOf(entity[11].toString()));
 		}
 
+		if (entity[13] != null) {
+			domain.setItemCode(entity[13].toString());
+		}
+
+		if (entity[14] != null) {
+			//domain.setCtgCode(entity[14].toString());
+			domain.setCtgCode("CO00001");
+		}
+		if (entity[13] != null && entity[14] != null) {
+			domain.setConstraint(PerInfoInitValueSetItem.processs("CO00001", entity[13].toString()));
+		}
 		return domain;
 
 	}
@@ -176,8 +200,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
-				.setParameter("settingId", settingId).getList(c -> toDomain(c));
+		List<PerInfoInitValueSetItem> x = this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
+				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("settingId", settingId)
+				.getList(c -> toDomain(c));
+		return x;
 
 	}
 
@@ -229,7 +255,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
 
-		domain.setItemCode(new ItemCode(entity[10] == null ? "" : entity[10].toString()));
+		domain.setItemCode(entity[10] == null ? "" : entity[10].toString());
 
 		return domain;
 

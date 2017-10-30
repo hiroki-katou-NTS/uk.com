@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
-import nts.uk.ctx.bs.employee.app.find.person.item.CurrentJobPosDto;
-import nts.uk.ctx.bs.employee.app.find.person.item.EmpInfoItemDataDto;
+import nts.uk.ctx.bs.employee.app.find.person.item.ItemCurrentJobPosDto;
+import nts.uk.ctx.bs.employee.app.find.person.item.ItemEmpInfoItemDataDto;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
@@ -166,7 +166,7 @@ public class EmpPerInfoCategoryFinder {
 				.map(x -> new EmpInfoCtgDataDto(x.getRecordId(), x.getPersonInfoCtgId(), x.getEmployeeId())).get());
 		ctgItemOptionalDto.setLstEmpInfoItemData(empInfoItemDataRepository
 				.getAllInfoItemByRecordId(ctgItemOptionalDto.getEmpInfoCtgData().getRecordId()).stream()
-				.map(x -> new EmpInfoItemDataDto(x.getPerInfoDefId(), x.getRecordId(), x.getPerInfoCtgId(),
+				.map(x -> new ItemEmpInfoItemDataDto(x.getPerInfoDefId(), x.getRecordId(), x.getPerInfoCtgId(),
 						x.getItemName(), x.getIsRequired().value, x.getDataState().getDataStateType().value,
 						x.getDataState().getStringValue(), x.getDataState().getNumberValue(),
 						x.getDataState().getDateValue()))
@@ -212,7 +212,7 @@ public class EmpPerInfoCategoryFinder {
 				List<SubJobPosition> lstSubJobPos = subJobPosRepository.getSubJobPosByDeptId(parentInfoId);
 				ctgItemFixDto = CtgItemFixDto
 						.createSetCurJobPos(lstSubJobPos
-								.stream().map(x -> new CurrentJobPosDto(x.getSubJobPosId(), x.getAffiDeptId(),
+								.stream().map(x -> new ItemCurrentJobPosDto(x.getSubJobPosId(), x.getAffiDeptId(),
 										x.getJobTitleId(), x.getStartDate(), x.getEndDate()))
 								.collect(Collectors.toList()));
 				break;

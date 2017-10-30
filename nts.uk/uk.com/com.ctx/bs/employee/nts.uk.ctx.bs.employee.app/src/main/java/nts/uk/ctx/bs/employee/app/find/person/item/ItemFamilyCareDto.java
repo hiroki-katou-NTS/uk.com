@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
 
 @Getter
-public class FamilyCareDto extends CtgItemFixDto{
+public class ItemFamilyCareDto extends CtgItemFixDto{
 	/**
 	 *  家族介護
 	 */
@@ -22,7 +22,7 @@ public class FamilyCareDto extends CtgItemFixDto{
 	/** 支援介護区分*/
 	private int careClassifi;
 
-	private FamilyCareDto(String familyCareId, String familyId, String sid, GeneralDate startDate,
+	private ItemFamilyCareDto(String familyCareId, String familyId, String sid, GeneralDate startDate,
 			GeneralDate endDate, int careClassifi){
 		super();
 		this.ctgItemType = CtgItemType.FAMILY_CARE;
@@ -33,9 +33,9 @@ public class FamilyCareDto extends CtgItemFixDto{
 		this.endDate = endDate;
 		this.careClassifi = careClassifi;
 	}
-	public static FamilyCareDto createFromJavaType(String familyCareId, String familyId, String sid, GeneralDate startDate,
+	public static ItemFamilyCareDto createFromJavaType(String familyCareId, String familyId, String sid, GeneralDate startDate,
 			GeneralDate endDate, int careClassifi) {
-		return new FamilyCareDto(familyCareId, familyId, sid, startDate, endDate,
+		return new ItemFamilyCareDto(familyCareId, familyId, sid, startDate, endDate,
 				careClassifi);
 	}
 }

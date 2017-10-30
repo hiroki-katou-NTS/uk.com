@@ -13,9 +13,17 @@ public enum CtgItemType {
 	//所属部門ID（兼務） CurrJobPos
 	CURR_JOB_POS(4),
 	//社員 Employee
-	EMPLOYEE(5);
+	EMPLOYEE(5),
 	//休職休業
-	
+	LEAVE_HOLIDAY(6),
+	//職務職位
+	JOB_POS_MAIN(7),
+	//所属職場
+	ASSIGNED_WORKPLACE(8),
+	//所属部門
+	AFFI_DEPARMENT(9),
+	//所属部門（兼務）
+	CURRENT_AFF_DEPARTMENT(10);
 	
 	public final int value;
 }
