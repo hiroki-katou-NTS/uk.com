@@ -6,62 +6,63 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="contentView">
+		<div class="contentC">
 			<div>
 				<label>#{i18n.getText('KSC001_2')}</label>
 			</div>
 			
 			<div class="labelSchedule">
 				<label >#{i18n.getText('KSC001_3')}</label>
-				<div class="selectSchedule" data-bind="ntsSwitchButton: {
-					options: selectSchedules,
-					optionsValue: 'code',
+				<div class="selectImplementAtr" data-bind="ntsSwitchButton: {
+					options: selectImplementAtr,
+					optionsValue: 'id',
 					optionsText: 'name',
-					value: selectedRuleCode,
+					value: selectedImplementAtrCode,
 					enable: true }"></div>
 					<button class="helpButton" tabindex="-1" data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
 			</div>
-			
-			<div class="radioboxCase">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_4')}' }" />
+			<div class="selectionCase">
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrAllCase, enable: isReCreate, optionText: '#{i18n.getText('KSC001_4')}' }" />
+				</div>
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrOnlyUnConfirm, enable: isReCreate, optionText: '#{i18n.getText('KSC001_5')}' }" />
+				</div>	
+					<div class="radioboxCase">
+					<label>#{i18n.getText('KSC001_6')}</label>
+				</div>
+				<div class="radioboxProcessExecutionAtr">
+					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrRebuild, enable: isReCreate, optionText: '#{i18n.getText('KSC001_7')}' }" />
+				</div>
+				<div class="radioboxProcessExecutionAtr">
+					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrReconfig, enable: isReCreate, optionText: '#{i18n.getText('KSC001_8')}' }" />
+				</div>	
+				
+				<div class="checkboxSetting">
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetWorkingHours,enable: isReSetting }">#{i18n.getText('KSC001_15')}</div>
+					<div data-bind="ntsCheckBox: { checked: resetTimeChildCare,enable: isReSetting }">#{i18n.getText('KSC001_13')}</div>
+				</div>
+				<div class="checkboxSetting">
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetDirectLineBounce,enable: isReSetting }">#{i18n.getText('KSC001_11')}</div>
+					<div data-bind="ntsCheckBox: { checked: resetAbsentHolidayBusines,enable: isReSetting }">#{i18n.getText('KSC001_14')}</div>
+				</div>
+				<div class="checkboxSetting">
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: resetMasterInfo,enable: isReSetting }">#{i18n.getText('KSC001_12')}</div>
+					<div data-bind="ntsCheckBox: { checked: resetTimeAssignment,enable: isReSetting }">#{i18n.getText('KSC001_16')}</div>
+				</div>
 			</div>
-			<div class="radioboxCase">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_5')}' }" />
-			</div>	
-			
-			<div class="radioboxCase">
-				<label>#{i18n.getText('KSC001_6')}</label>
-			</div>
-			<div class="radioboxProcessClassification">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_7')}' }" />
-			</div>
-			<div class="radioboxProcessClassification">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_8')}' }" />
-			</div>	
-			
-			<div class="checkboxSetting">
-				<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_15')}</div>
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_13')}</div>
-			</div>
-			<div class="checkboxSetting">
-				<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_11')}</div>
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_14')}</div>
-			</div>
-			<div class="checkboxSetting">
-				<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_12')}</div>
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_16')}</div>
-			</div>
-			
 			<div class="checkboxSettingEnd">
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_17')}</div>
+				<div data-bind="ntsCheckBox: { checked: confirm }">#{i18n.getText('KSC001_17')}</div>
 			</div>
-			
 			<div class="labelSettingEnd">
 				<label>#{i18n.getText('KSC001_18')}</label>
 			</div>
-			
-			<button class="large">#{i18n.getText('KSC001_19')}</button>
-			<button class="proceed x-large">#{i18n.getText('KSC001_20')}</button>
+			<div class="buttonBeginPrevious">
+				<button data-bind="click: previousPageC">#{i18n.getText('KSC001_19')}</button>
+			</div>
+			<div class="buttonBeginNext">
+				<button class="proceed large" data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+			</div>
 		</div>
 		
 	</ui:composition>

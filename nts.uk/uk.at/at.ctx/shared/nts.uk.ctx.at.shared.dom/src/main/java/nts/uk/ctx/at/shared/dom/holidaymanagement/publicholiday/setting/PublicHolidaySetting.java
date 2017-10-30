@@ -16,4 +16,6 @@ public class PublicHolidaySetting extends AggregateRoot {
 	private String companyId;
 	private boolean publicHolidayManagement;
 	private PublicHolidayManagementClassification publicHolidayManagementCls;
+	private int transferPublicHolidayMinus;
+	private PublicHolidayCarryOverDeadline carryOverDeadline;
 }

@@ -14,8 +14,9 @@
 				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-				<com:scriptfile path="ksc001.b.vm.js" />
 				<com:scriptfile path="ksc001.b.start.js" />
+				<com:scriptfile path="ksc001.b.service.js" />
+				<com:scriptfile path="ksc001.b.vm.js" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -29,16 +30,14 @@
 				<div tabindex="-1" id="contents-area">
 					<div tabindex="-1" id="wizard" data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}"  class="cf" style="width: 1200px;">
 						<div class="header" tabindex="-1">
-							<div class="image" data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
-							<div class="content">再集計</div>
+							<div class="image" data-icon="20.png"></div>
+							<div class="content">#{i18n.getText('KSC001_41')}</div>
 						</div>
 						<div class="steps" tabindex="-1">
-							<div class="step-1">再集計</div>
-							<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする</div>
-							<div class="step-3">対象社員を選ぶ</div>
-							<div class="step-4">対象社員を選ぶ</div>
-							<div class="step-5">対象社員を選ぶ</div>
-							<div class="end step-6">実行</div>
+							<div class="step-1">#{i18n.getText('KSC001_42')}</div>
+							<div class="step-2">#{i18n.getText('KSC001_43')}</div>
+							<div class="step-3">#{i18n.getText('KSC001_44')}</div>
+							<div class="end step-4">#{i18n.getText('KSC001_45')}</div>
 						</div>
 						<div class="contents" tabindex="-1">
 							<div class="step-1" tabindex="-1">
@@ -47,10 +46,12 @@
 							<div class="step-2" tabindex="-1">
 								<ui:include src="c.xhtml" />
 							</div>
-							<div class="step-3">contents step3</div>
-							<div class="step-4">contents step4</div>
-							<div class="step-5">contents step5</div>
-							<div class="step-6">contents step6</div>
+							<div class="step-3" tabindex="-1">
+								<ui:include src="d.xhtml" />
+							</div>
+							<div class="step-4" tabindex="-1">
+								<ui:include src="e.xhtml" />
+							</div>
 						</div>
 						
 					</div>

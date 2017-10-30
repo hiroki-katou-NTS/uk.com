@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UpdateHoriTotalCategoryCommand {
-	/**会社ID**/
-	private String companyId;
 	/** カテゴリコード */
 	private String categoryCode;
 	/** カテゴリ名称 */

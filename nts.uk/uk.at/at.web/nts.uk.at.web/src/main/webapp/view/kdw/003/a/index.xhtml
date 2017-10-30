@@ -26,7 +26,7 @@
 			<ui:define name="content">
 				<div id="functions-area">
 					<div id="function-content">
-						<button class="proceed">#{i18n.getText('KDW003_4')}</button>
+						<button class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDW003_4')}</button>
 						<button>#{i18n.getText('KDW003_5')}</button>
 						<button>#{i18n.getText('KDW003_6')}</button>
 						<button>#{i18n.getText('KDW003_12')}</button>

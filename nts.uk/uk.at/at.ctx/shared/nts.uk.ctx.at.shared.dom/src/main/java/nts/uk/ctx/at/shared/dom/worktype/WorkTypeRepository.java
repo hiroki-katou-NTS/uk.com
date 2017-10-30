@@ -70,6 +70,15 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
+	
+	/**
+	 * Find work type set.
+	 *
+	 * @param companyId the company id
+	 * @param closeAtr the close atr
+	 * @return the list
+	 */
+	List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr);
 
 	/**
 	 * Insert workType to DB
