@@ -29,5 +29,28 @@ public class SingleDaySchedule extends DomainObject{
 	/** The work time code. */
 	// 就業時間帯コード
 	private Optional<WorkTimeCode> workTimeCode;
+	
+	
+	/**
+	 * Instantiates a new single day schedule.
+	 *
+	 * @param memento the memento
+	 */
+	public SingleDaySchedule(SingleDayScheduleGetMemento memento) {
+		this.workTypeCode = memento.getWorkTypeCode();
+		this.workingHours = memento.getWorkingHours();
+		this.workTimeCode = memento.getWorkTimeCode();
+	}
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(SingleDayScheduleSetMemento memento){
+		memento.setWorkTypeCode(this.workTypeCode);
+		memento.setWorkTimeCode(this.workTimeCode);
+		memento.setWorkingHours(workingHours);
+	}
+	
 }

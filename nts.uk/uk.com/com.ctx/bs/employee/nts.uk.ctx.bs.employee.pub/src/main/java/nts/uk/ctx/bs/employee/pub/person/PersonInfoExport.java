@@ -26,7 +26,6 @@ public class PersonInfoExport {
 	/** The employee name. */
 	private String employeeName;
 
-	
 	/** The companyMail. */
 	private String companyMail;
 	

@@ -26,9 +26,9 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			 	<p style="margin: 10px 0 20px 0">
-			 		#{i18n.getText('CMM050_26')}
-			 	</p>
+			 	<p style="margin: 10px 0 10px 45px" data-bind="text: getLabelPreview().first"></p>
+			 	<p style="margin: 10px 0 10px 45px" data-bind="text: getLabelPreview().second"></p>
+			 	<p style="margin: 10px 0 20px 45px" data-bind="text: getLabelPreview().third"></p>
 				<div class="form-input">
 					<div class="label_style">
 						<div
@@ -37,7 +37,7 @@
 								required: true }">#{i18n.getText('CMM050_27')}</div>
 					</div>
 					<div class="input">
-						<input id="email_auth"
+						<input id="email1"
 							data-bind="ntsTextEditor: {
 								name: '#[CMM050_27]',
 								value: emailFrom,
@@ -54,7 +54,7 @@
 					</div>
 					<div class="input">
 						
-						<input id="email_auth"
+						<input id="email2"
 							data-bind="ntsTextEditor: {
 								name: '#[CMM050_28]',
 								value: emailTo,

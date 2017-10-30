@@ -16,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -58,7 +59,7 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 	 * @see nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository#findByUser(java.lang.String)
 	 */
 	@Override
-	public Optional<RoleIndividualGrant> findByUser(String userId) {
+	public Optional<RoleIndividualGrant> findByUser(String userId,GeneralDate date) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -74,6 +75,8 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 		predicateList.add(criteriaBuilder.equal(
 				root.get(SacmtRoleIndiviGrant_.sacmtRoleIndiviGrantPK).get(SacmtRoleIndiviGrantPK_.userId), userId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get(SacmtRoleIndiviGrant_.strD), date));
+		predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get(SacmtRoleIndiviGrant_.endD), date));
 
 		SacmtRoleIndiviGrant sacmtRoleIndiviGrant = em.createQuery(cq).getSingleResult();
 		return Optional.of(new RoleIndividualGrant(new JpaRoleIndiviGrantGetMemento(sacmtRoleIndiviGrant)));

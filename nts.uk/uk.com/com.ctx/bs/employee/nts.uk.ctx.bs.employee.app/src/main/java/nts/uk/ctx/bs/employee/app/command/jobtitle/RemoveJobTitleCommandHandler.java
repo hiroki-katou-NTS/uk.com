@@ -57,13 +57,13 @@ public class RemoveJobTitleCommandHandler extends CommandHandler<RemoveJobTitleC
 		
 		// Compare date
 		GeneralDate endDate = command.getEndDate();
-		GeneralDate historyStartDate = lastestHistory.getPeriod().start();
+		GeneralDate historyStartDate = lastestHistory.span().start();
 		if (endDate.before(historyStartDate)) {
 			throw new BusinessException("Msg_467");
 		} else if (endDate.equals(historyStartDate)) {
 			// Remove JobTitle lastest history + JobTitle associated info
-			this.jobTitleRepository.removeHistory(companyId, command.getJobTitleId(), lastestHistory.getHistoryId());
-			this.jobTitleInfoRepository.remove(companyId, command.getJobTitleId(), lastestHistory.getHistoryId());
+			this.jobTitleRepository.removeHistory(companyId, command.getJobTitleId(), lastestHistory.identifier());
+			this.jobTitleInfoRepository.remove(companyId, command.getJobTitleId(), lastestHistory.identifier());
 		} else {
 			// Update JobTitle lastest history
 			this.jobTitleHistoryService.updateLastestHistory(companyId, command.getJobTitleId(), endDate);

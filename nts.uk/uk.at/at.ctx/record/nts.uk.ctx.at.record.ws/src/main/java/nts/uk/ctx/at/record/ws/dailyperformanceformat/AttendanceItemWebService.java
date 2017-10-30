@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttendanceItemsFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
 
 @Path("at/record/businesstype")
 @Produces("application/json")
@@ -53,8 +52,8 @@ public class AttendanceItemWebService extends WebService {
 	 * @author anhnm
 	 */
 	@POST
-	@Path("attendanceItem/linking")
-	public List<FrameNoAdapterDto> getAttdItemLinkingByAnyItem(AttdItemLinkRequest request) {
+	@Path("attendanceItem/daily/findbyanyitem")
+	public List<AttdItemDto> getAttdItemLinkingByAnyItem(AttdItemLinkRequest request) {
 		return this.attendanceItemsFinder.findByAnyItem(request);
 	}
 

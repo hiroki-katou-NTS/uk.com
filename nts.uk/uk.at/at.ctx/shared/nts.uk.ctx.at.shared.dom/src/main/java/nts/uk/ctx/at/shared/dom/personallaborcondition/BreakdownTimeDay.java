@@ -25,4 +25,18 @@ public class BreakdownTimeDay extends DomainObject{
 	/** The afternoon. */
 	// 午後
 	private AttendanceTime afternoon;
+
+	/**
+	 * Instantiates a new breakdown time day.
+	 *
+	 * @param oneDay the one day
+	 * @param morning the morning
+	 * @param afternoon the afternoon
+	 */
+	public BreakdownTimeDay(AttendanceTime oneDay, AttendanceTime morning, AttendanceTime afternoon) {
+		this.oneDay = oneDay;
+		this.morning = morning;
+		this.afternoon = afternoon;
+	}
+	
 }

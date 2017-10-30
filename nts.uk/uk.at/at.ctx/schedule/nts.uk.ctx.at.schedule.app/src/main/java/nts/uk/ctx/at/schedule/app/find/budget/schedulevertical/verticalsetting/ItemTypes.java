@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ItemTypes {
-	/** 0- + **/
+	/** 0- 日次の勤怠項目 **/
 	DAILY(0),
-	/** 1- - **/
+	/** 1- 予定項目 **/
 	SCHEDULE(1),	
-	/** 2- x **/
+	/** 2- 外部予算実績項目 **/
 	EXTERNAL(2);
 	
 	public final int value;
