@@ -38,7 +38,9 @@
 					data-bind="click : remove, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_4')}</button>
 
 				<button id="A1_008" tabindex="4">#{i18n.getText('CPS017_50')}</button>
-				<button id="A1_003" tabindex="5">#{i18n.getText('CPS017_3')}</button>
+				
+				<button id="A1_003" data-bind="click: openDialogB"  tabindex="5">#{i18n.getText('CPS017_3')}</button>
+				
 				<button id="A1_007" tabindex="6">#{i18n.getText('CPS017_49')}</button>
 
 			</div>
@@ -112,7 +114,7 @@
 							<label>#{i18n.getText('CPS017_13')}</label>
 						</div>
 						<span class="col1" data-bind="text: selectionItemName"></span>
-					</div>
+					</div> 
 
 
 					<div id="register">

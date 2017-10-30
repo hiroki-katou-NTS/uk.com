@@ -32,7 +32,7 @@
 }
 
 #sel_item_grid_container {
-	width: 200px !important;
+	width: 250px !important;
 }
 
 #sel_item_grid {
@@ -54,7 +54,8 @@
 }
 
 #history_lst_grid_container {
-	width: 235px !important;
+	width: 266px !important;
+	height: 140px !important;
 }
 
 .col1 {
@@ -99,9 +100,6 @@
 .formlabel {
 	margin-top: 10px;
 }
-
-
-
 
 .valign-center {
 	vertical-align: middle !important;
