@@ -17,7 +17,7 @@ module nts.uk.ui.jqueryExtentions {
             $container.removeAttr("tabindex");
             $container.append("<div class='switch_master_language_container'/>");
             $container.append("<div class='language_select_container'/>");
-            $container.find(".switch_master_language_container").append("<button class='ntsButton auto-height ntsSwitchLanguage'>他言語切替</button>");
+            $container.find(".switch_master_language_container").append("<button class='ntsButton ntsSwitchLanguage'>他言語切替</button>");
             let $button = $container.find(".ntsSwitchLanguage"); 
             let $languageSelect = $container.find(".language_select_container");
             $button.attr("tabindex", tabIndex).click(function(evt){       
