@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsettin
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.VerticalSettingCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.VerticalSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting.BaseItemsDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting.DailyItemsParamDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting.VerticalSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting.VerticalSettingFinder;
 
@@ -48,10 +49,10 @@ public class VerticalSettingWebService {
 	}
 	
 	/** Find Daily Items by attribute. */
-	@Path("getDailyItems/{attribute}")
+	@Path("getDailyItems")
 	@POST
-	public BaseItemsDto getDailyItems(@PathParam("attribute") int attribute) {
-		return verticalSettingFinder.getDailyItems(attribute);
+	public List<BaseItemsDto> getDailyItems(DailyItemsParamDto param) {
+		return verticalSettingFinder.getDailyItems(param);
 	}
 	
 	/** Add new vertical cal set. */

@@ -4,58 +4,118 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.personallaborcondition;
 
+import java.util.List;
+
+import nts.uk.ctx.at.shared.dom.personallaborcondition.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionGetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaPersonalLaborConditionGetMemento.
  */
-public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditionGetMemento{
+public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditionGetMemento {
 
+	/** The entity. */
+	private KshmtPerLaborCond entityCondition;
+	
+	/** The entity single days. */
+	private List<KshmtSingleDaySche> entitySingleDays ;
+
+	/**
+	 * Instantiates a new jpa personal labor condition get memento.
+	 *
+	 * @param entityCondition the entity condition
+	 * @param entitySingleDays the entity single days
+	 */
+	public JpaPersonalLaborConditionGetMemento(KshmtPerLaborCond entityCondition,
+			List<KshmtSingleDaySche> entitySingleDays) {
+		this.entityCondition = entityCondition;
+		this.entitySingleDays = entitySingleDays;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getScheduleManagementAtr()
+	 */
 	@Override
 	public UseAtr getScheduleManagementAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return UseAtr.valueOf(this.entityCondition.getSchedMgmtAtr());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getHolidayAddTimeSet()
+	 */
 	@Override
 	public BreakdownTimeDay getHolidayAddTimeSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BreakdownTimeDay(new AttendanceTime(this.entityCondition.getHdAddOneDay()),
+				new AttendanceTime(this.entityCondition.getHdAddMorning()), new AttendanceTime(this.entityCondition.getHdAddAfternoon()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getWorkCategory()
+	 */
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PersonalWorkCategory(new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getWorkDayOfWeek()
+	 */
 	@Override
 	public PersonalDayOfWeek getWorkDayOfWeek() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PersonalDayOfWeek(new JpaPersonalDayOfWeekGetMemento(this.entitySingleDays));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getPeriod()
+	 */
 	@Override
 	public DatePeriod getPeriod() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DatePeriod(this.entityCondition.getKshmtPerLaborCondPK().getStartYmd(),
+				this.entityCondition.getKshmtPerLaborCondPK().getEndYmd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getEmployeeId()
+	 */
 	@Override
 	public String getEmployeeId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entityCondition.getKshmtPerLaborCondPK().getSid();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalLaborConditionGetMemento#getAutomaticEmbossSetAtr()
+	 */
 	@Override
 	public UseAtr getAutomaticEmbossSetAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return UseAtr.valueOf(this.entityCondition.getAutoEmbossSetAtr());
 	}
 
 }

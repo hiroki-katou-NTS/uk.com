@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.dom.personallaborcondition;
 
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * The Interface PersonalLaborConditionSetMemento.
+ */
 public interface PersonalLaborConditionSetMemento {
 	
 	/**

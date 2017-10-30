@@ -72,34 +72,36 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 }
                 let listPhase = self.approvalRoot().beforeApprovers; 
                 let approvalList = [];
-                for(let x = 1; x <= listPhase.length; x++){
-                    let phaseLoop = listPhase[x-1];
-                    let appPhase = new shrvm.model.AppApprovalPhase(
-                        "",
-                        "",
-                        phaseLoop.approvalForm,
-                        x,
-                        0,
-                        []); 
-                    for(let y = 1; y <= phaseLoop.approvers.length; y++){
-                        let frameLoop = phaseLoop.approvers[y-1];
-                        let appFrame = new shrvm.model.ApprovalFrame(
+                if(!nts.uk.util.isNullOrUndefined(listPhase)){
+                    for(let x = 1; x <= listPhase.length; x++){
+                        let phaseLoop = listPhase[x-1];
+                        let appPhase = new shrvm.model.AppApprovalPhase(
                             "",
-                            y,
-                            []);
-                        let appAccepted = new shrvm.model.ApproveAccepted(
                             "",
-                            frameLoop.sid,
+                            phaseLoop.approvalForm,
+                            x,
                             0,
-                            frameLoop.confirmPerson ? 1 : 0,
-                            "",
-                            "",
-                            frameLoop.sid);
-                        appFrame.listApproveAccepted.push(appAccepted);
-                        appPhase.listFrame.push(appFrame);   
-                    };
-                    approvalList.push(appPhase);    
-                };
+                            []); 
+                        for(let y = 1; y <= phaseLoop.approvers.length; y++){
+                            let frameLoop = phaseLoop.approvers[y-1];
+                            let appFrame = new shrvm.model.ApprovalFrame(
+                                "",
+                                y,
+                                []);
+                            let appAccepted = new shrvm.model.ApproveAccepted(
+                                "",
+                                frameLoop.sid,
+                                0,
+                                frameLoop.confirmPerson ? 1 : 0,
+                                "",
+                                "",
+                                frameLoop.sid);
+                            appFrame.listApproveAccepted.push(appAccepted);
+                            appPhase.listFrame.push(appFrame);   
+                        };
+                        approvalList.push(appPhase);    
+                    }
+                }
                 self.approvalList = approvalList;
                 dfd.resolve(data);    
             }).fail(function (res: any){

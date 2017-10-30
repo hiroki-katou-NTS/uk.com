@@ -35,6 +35,11 @@ public class OverTimeDto {
 	 * 勤務種類コード
 	 */
 	private String workTypeCode;
+	
+	/**
+	 * 勤務種類名称
+	 */
+	private String workTypeName;
 	/**
 	 * 就業時間帯
 	 */

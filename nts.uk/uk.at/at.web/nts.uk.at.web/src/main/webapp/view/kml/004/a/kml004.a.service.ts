@@ -33,7 +33,7 @@ module nts.uk.at.view.kml004.a.service {
         return nts.uk.request.ajax(paths.add, command);    
     }
     
-    export function remove(command: viewmodel.TotalCategory): JQueryPromise<void>{
+    export function remove(command: any): JQueryPromise<void>{
         return nts.uk.request.ajax(paths.remove, command);    
     }
 }

@@ -68,8 +68,10 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 				approvalPhaseImport.getApprovers().stream().forEach(approverInfoImport -> {
 					representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
 					.map(y -> {
-						approverInfoImport.addRepresenterSID(y.getRepresenter());
-						approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+						if(!y.getRepresenter().equals("Empty")){
+							approverInfoImport.addRepresenterSID(y.getRepresenter());
+							approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+						}
 						return null;
 					}).orElse(null);
 				});
