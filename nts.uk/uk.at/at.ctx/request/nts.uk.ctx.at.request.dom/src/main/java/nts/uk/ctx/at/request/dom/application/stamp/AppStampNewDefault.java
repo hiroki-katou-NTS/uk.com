@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -67,22 +67,17 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	public void appStampRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
-		appStampRegistration(appStamp);
-		approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
+		appStampRegistration(appStamp, appApprovalPhases);
 	}
 	
 	// 打刻申請の新規登録
-	private void appStampRegistration(AppStamp appStamp) {
-		/*newBeforeRegister.processBeforeRegister(
-				appStamp.getCompanyID(), 
-				appStamp.getApplicantSID(), 
-				appStamp.getApplicationDate(), 
-				appStamp.getPrePostAtr(), 
-				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
-				appStamp.getApplicationType().value);*/
-		// registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
+	private void appStampRegistration(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+		appStamp.setListPhase(appApprovalPhases);
+		newBeforeRegister.processBeforeRegister(appStamp);
+		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
 		appStampRepository.addStamp(appStamp);
-		// newAfterRegister.processAfterRegister(appStamp);
+		approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
+		newAfterRegister.processAfterRegister(appStamp);
 	}
 	
 	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){

@@ -3,9 +3,10 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -27,6 +28,9 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 	@Inject 
 	private AfterApprovalProcess afterApprovalProcess;
 	
+	@Inject
+	private ApplicationRepository appRepo;
+	
 	@Override
 	public void detailAfterRelease(Application application, String loginID) {
 		List<AppApprovalPhase> appApprovalPhaseList = application.getListPhase();
@@ -43,7 +47,7 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 			
 			// ループ中の承認フェーズに承認者がいる
 			// không có approver trong phase thì chuyển phase
-			if(approverList.size() < 1 ) continue;
+			if(approverList.size() < 1 ) continue;	
 			
 			// ループ中の承認フェーズには承認を行ったか( kiểm tra approve phase đang xử lý đã được xác nhận chưa)
 			// không có thì chuyển phase
@@ -67,20 +71,22 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 					// có thì thay đổi approveAccepted
 					if(approveAccepted.getApproverSID().equals(loginID)||approveAccepted.getRepresenterSID().equals(loginID)){
 						approveAccepted.setApprovalATR(ApprovalAtr.UNAPPROVED);
-						approveAccepted.setApproverSID("");
-						approveAccepted.setRepresenterSID("");
+						// clear ApproverSID and RepresenterSID ???
+						// approveAccepted.setApproverSID("");
+						// approveAccepted.setRepresenterSID("");
 					}
 				}
 			}
 			
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
+			
 		}
 		
 		if(!cancelFlag) return;
 		
 		// 「反映情報」．実績反映状態を「未反映」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「未反映」)
 		application.setReflectPerState(ReflectPlanPerState.NOTREFLECTED);
-		
+		appRepo.updateApplication(application);
 		// ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする(update domain 「申請」 và 「承認情報」「反映情報」 tương ứng)
 		// 情報メッセージ（Msg_221）(hiển thị message thông báo （Msg_221）)
 	}

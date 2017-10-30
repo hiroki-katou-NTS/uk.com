@@ -7,6 +7,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import lombok.val;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.scoped.session.SessionContextProvider;
@@ -48,10 +49,10 @@ public class SampleSessionWebService extends WebService {
 				"12345678");
 		
 		this.lucmanager.roleIdSetter()
-				.forAttendance("at1", "at2")
-				.forPayroll("pr1", null)
-				.forPersonnel(null, null)
-				.forPersonalInfo("pi1", "pi2");
+				.forAttendance("at1")
+				.forPayroll("pr1")
+				.forPersonnel(null)
+				.forPersonalInfo("pi1");
 		
 		val loggedin = AppContexts.user();
 		val roles = loggedin.roles();

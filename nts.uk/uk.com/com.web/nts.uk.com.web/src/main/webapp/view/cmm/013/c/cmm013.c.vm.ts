@@ -45,6 +45,7 @@ module nts.uk.com.view.cmm013.c {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_571" }).then(() => {
                                 // Load sequence register screen
                                 nts.uk.ui.windows.sub.modal('/view/cmm/013/f/index.xhtml').onClosed(() => {
+                                    // Reload data after register
                                     _self.loadSequenceList()
                                         .done((data: SequenceMaster[]) => {                        
                                             if (data && data.length > 0) {

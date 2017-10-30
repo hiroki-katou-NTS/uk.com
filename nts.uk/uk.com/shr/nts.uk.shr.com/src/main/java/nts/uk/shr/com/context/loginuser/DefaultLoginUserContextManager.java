@@ -39,25 +39,46 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 
 		return new RoleIdSetter() {
 			@Override
-			public RoleIdSetter forAttendance(String forPersonInCharge, String forGeneral) {
-				roles.setRoleIdsForAttendance(forPersonInCharge, forGeneral);
+			public RoleIdSetter forAttendance(String roleId) {
+				roles.setRoleIdForAttendance(roleId);
 				return this;
 			}
 			@Override
-			public RoleIdSetter forPayroll(String forPersonInCharge, String forGeneral) {
-				roles.setRoleIdsForPayroll(forPersonInCharge, forGeneral);
+			public RoleIdSetter forPayroll(String roleId) {
+				roles.setRoleIdForPayroll(roleId);
 				return this;
 			}
 			@Override
-			public RoleIdSetter forPersonnel(String forPersonInCharge, String forGeneral) {
-				roles.setRoleIdsForPersonnel(forPersonInCharge, forGeneral);
+			public RoleIdSetter forPersonnel(String roleId) {
+				roles.setRoleIdForPersonnel(roleId);
 				return this;
 			}
 			@Override
-			public RoleIdSetter forPersonalInfo(String forPersonInCharge, String forGeneral) {
-				roles.setRoleIdsforPersonalInfo(forPersonInCharge, forGeneral);
+			public RoleIdSetter forPersonalInfo(String roleId) {
+				roles.setRoleIdforPersonalInfo(roleId);
+				return this;
+			}
+			@Override
+			public RoleIdSetter forOfficeHelper(String roleId) {
+				roles.setRoleIdforOfficeHelper(roleId);
+				return this;
+			}
+			@Override
+			public RoleIdSetter forSystemAdmin(String roleId) {
+				roles.setRoleIdforSystemAdmin(roleId);
+				return this;
+			}
+			@Override
+			public RoleIdSetter forCompanyAdmin(String roleId) {
+				roles.setRoleIdforCompanyAdmin(roleId);
 				return this;
 			}
 		};
+	}
+
+	@Override
+	public void setLanguage(String basic, String forPersonName) {
+		// TODO Auto-generated method stub
+		
 	}
 }

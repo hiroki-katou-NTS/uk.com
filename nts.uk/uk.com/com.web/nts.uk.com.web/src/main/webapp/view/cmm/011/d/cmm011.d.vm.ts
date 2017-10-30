@@ -9,10 +9,6 @@ module nts.uk.com.view.cmm011.d {
                 let self = this;
                 self.startDate = ko.observable('');
                 self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
-                
-                self.startDate.subscribe((newValue) => {
-//                    nts.uk.ui.windows.getSelf().setSize(290, 500);
-                });
             }
             
             /**
@@ -56,34 +52,26 @@ module nts.uk.com.view.cmm011.d {
                         historyId: '',
                         period: {
                             startDate: self.startDate(),
-                            endDate: new Date("9999-12-31")
+                            endDate: new Date(self.endDate())
                         }
                     }
                 }
             }
             
+            
             /**
              * validate
              */
-            private validate(): boolean {
+            private validate() {
                 let self = this;
-                
-                // clear all error
-                self.clearError();
-                
-                $('#start-date').ntsEditor('validate');
-                
-                if ($('.nts-input').ntsError('hasError')) {
-                    return false;
-                }
-                return true;
-            }
-            
-            /**
-             * clearError
-             */
-            private clearError() {
+
+                // clear error
                 $('#start-date').ntsError('clear');
+
+                // validate
+                $('#start-date').ntsEditor('validate');
+
+                return !$('.nts-input').ntsError('hasError');
             }
             
             /**

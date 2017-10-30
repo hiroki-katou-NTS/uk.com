@@ -28,11 +28,13 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+                // Check is cancel.
+                if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+                    return;
+                }
                 //view all code of selected item 
                 var output = nts.uk.ui.windows.getShared('outputCDL008');
-                if (output) {
-                    self.selectWorkplaceIds(output.selectedCode);
-                }
+                self.selectWorkplaceIds(output);
             })
         }
     }

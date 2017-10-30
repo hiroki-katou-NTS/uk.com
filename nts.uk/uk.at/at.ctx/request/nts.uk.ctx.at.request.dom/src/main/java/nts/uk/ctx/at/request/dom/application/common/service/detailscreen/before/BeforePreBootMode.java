@@ -3,32 +3,63 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.CanBeApprovedOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DecideAgencyExpiredOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-
+/**
+ * 14-2.詳細画面起動前モードの判断
+ * @author dudt
+ *
+ */
 public interface BeforePreBootMode {
-	
-	public DetailedScreenPreBootModeOutput getDetailedScreenPreBootMode(Application applicationData, GeneralDate baseDate);
+	/**
+	 * 詳細画面起動前モードの判断
+	 * @param applicationData
+	 * @param baseDate
+	 * @return
+	 */
+	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(Application applicationData, GeneralDate baseDate);
 	/** Can be Approved
-	 *14-2.詳細画面起動前モードの判断- 3 */
+	 *3.承認できるかの判断
+	 * */
 	public CanBeApprovedOutput canBeApproved(Application applicationData, ReflectPlanPerState status);
-		
+	/**
+	 * 2.承認状況の判断(差し戻し)
+	 * @param appApprovalPhase
+	 * @return
+	 */
 	public CanBeApprovedOutput approvedRemand(AppApprovalPhase appApprovalPhase);
-	
+	/**
+	 * 1.承認状況の判断(承認済)
+	 * @param appApprovalPhase
+	 * @return
+	 */
 	public CanBeApprovedOutput approvedApproved(AppApprovalPhase appApprovalPhase);
-	
-	public DecideAgencyExpiredOutput decideAgencyExpired(List<ApproveAccepted> lstApprover);
+	/**
+	 * 3.承認状況の判断(否認)
+	 * @param appApprovalPhase
+	 * @return
+	 */
+	public CanBeApprovedOutput approvedDential(AppApprovalPhase appApprovalPhase);
+	/**
+	 * 4.承認状況の判断(未承認)
+	 * @param appApprovalPhase
+	 * @return
+	 */
+	public CanBeApprovedOutput approvedUnapproved(AppApprovalPhase appApprovalPhase);
+	/**
+	 * 6.代行者期限切れの判断
+	 * @param lstApprover
+	 * @return
+	 */
+	public boolean decideAgencyExpired(List<String> listApprovers);
 	/**Decide by Approver
-	 * 14-2.詳細画面起動前モードの判断- 2*/
+	 * 2.承認者かの判断*/
 	public boolean decideByApprover(Application applicationData);
 	
-	/** 14-2 3-5.承認中の承認フェーズの判断 */
-	public boolean checkFlag(Application applicationData, int dispOrder);
+	/** 5.承認中の承認フェーズの判断*/
+	public boolean checkApprovalProgressPhase(Application applicationData, int dispOrder);
 	
 }

@@ -1,8 +1,11 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 
 /**
  * The Interface JobTitleInfoSetMemento.
@@ -21,14 +24,21 @@ public interface JobTitleInfoSetMemento {
 	 *
 	 * @param jobTitleHistoryId the new job title history id
 	 */
-	public void setJobTitleHistoryId(HistoryId jobTitleHistoryId);
+	public void setJobTitleHistoryId(String jobTitleHistoryId);
+	
+	/**
+	 * Sets the checks if is manager.
+	 *
+	 * @param isManager the new checks if is manager
+	 */
+	public void setIsManager(boolean isManager);
 	
 	/**
 	 * Sets the job title id.
 	 *
 	 * @param jobTitleId the new job title id
 	 */
-	public void setJobTitleId(JobTitleId jobTitleId);
+	public void setJobTitleId(String jobTitleId);
 	
 	/**
 	 * Sets the job title code.

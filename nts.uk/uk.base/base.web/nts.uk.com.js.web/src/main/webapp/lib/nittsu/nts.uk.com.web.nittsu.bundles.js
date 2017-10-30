@@ -585,6 +585,8 @@ var nts;
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
+            var names = window['names'] || {};
+            var messages = window['messages'] || {};
             function getText(code, params) {
                 var text = names[code];
                 if (text) {
@@ -599,7 +601,7 @@ var nts;
                 var message = messages[messageId];
                 if (!message) {
                     var responseText_1 = "";
-                    nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function (res) {
+                    nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function (res) {
                         responseText_1 = res;
                     }).fail(function () {
                     });
@@ -607,6 +609,7 @@ var nts;
                         return messageId;
                     }
                     message = responseText_1;
+                    messages[messageId] = message;
                 }
                 message = formatParams(message, params);
                 message = formatCompCustomizeResource(message);
@@ -769,6 +772,28 @@ var nts;
                 return count;
             }
             text_3.countHalf = countHalf;
+            function limitText(str, maxlength, index) {
+                var idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+                return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
+            }
+            text_3.limitText = limitText;
+            function findIdxFullHafl(text, max, index) {
+                var count = 0;
+                for (var i = index; i < text.length; i++) {
+                    var c = text.charCodeAt(i);
+                    var charLength = 2;
+                    if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
+                        charLength = 1;
+                    }
+                    if (charLength + count <= max) {
+                        count += charLength;
+                    }
+                    else {
+                        return i;
+                    }
+                }
+                return text.length - index;
+            }
             function toOneByteAlphaNumberic(text) {
                 return text.replace(/[！-～　]/g, function (s) {
                     if (s === "　") {
@@ -1207,7 +1232,7 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
-                    if (!isFinite(source)) {
+                    if (nts.uk.util.isNullOrEmpty(source) || !isFinite(source)) {
                         return source;
                     }
                     var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
@@ -3282,10 +3307,14 @@ var nts;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
                         this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
+                        this.defaultValue = (option && option.defaultValue) ? option.defaultValue : "";
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText) && !util.isNullOrEmpty(this.defaultValue)) {
+                            inputText = this.defaultValue;
+                        }
+                        else if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
@@ -4129,6 +4158,11 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
+                function addError(errorBody, msg, id, idx) {
+                    var row = $("<tr/>");
+                    row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");
+                    row.appendTo(errorBody);
+                }
                 function bundledErrors(errors) {
                     var id = uk.util.randomId();
                     $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
@@ -4136,10 +4170,17 @@ var nts;
                     container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
                         "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
                     var errorBody = container.find("tbody");
+                    var idxCount = 0;
                     _.forEach(errors["messageId"], function (id, idx) {
-                        var row = $("<tr/>");
-                        row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");
-                        row.appendTo(errorBody);
+                        if ($.isArray(errors.messages[id])) {
+                            _.forEach(errors.messages[id], function (m) {
+                                addError(errorBody, m, id, idx + idxCount + 1);
+                                idxCount++;
+                            });
+                        }
+                        else {
+                            addError(errorBody, errors.messages[id], id, idx + idxCount + 1);
+                        }
                     });
                     var functionArea = container.find("#functions-area-bottom");
                     functionArea.append("<button class='ntsButton ntsClose large'/>");
@@ -4397,6 +4438,7 @@ var nts;
                         this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+                        this.defaultValue = (option !== undefined && option.defaultValue !== undefined) ? option.defaultValue : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                     }
                     return TimeEditorOption;
@@ -4699,9 +4741,16 @@ var nts;
                         var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
-                        var enable = ko.unwrap(data.enable);
+                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
+                        var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
+                        if (dropDownAttachedToBody === null) {
+                            if ($(element).closest(".ui-iggrid").length != 0)
+                                dropDownAttachedToBody = true;
+                            else
+                                dropDownAttachedToBody = false;
+                        }
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
                         var distanceColumns = '     ';
@@ -4760,7 +4809,7 @@ var nts;
                                 dataSource: options,
                                 valueKey: data.optionsValue,
                                 visibleItemsCount: visibleItemsCount,
-                                dropDownAttachedToBody: false,
+                                dropDownAttachedToBody: dropDownAttachedToBody,
                                 textKey: 'nts-combo-label',
                                 mode: comboMode,
                                 disabled: !enable,
@@ -5894,6 +5943,7 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.init = function ($input, data) {
+                        var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
@@ -5905,10 +5955,10 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        var validator = this.getValidator(data);
                         $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -5919,6 +5969,7 @@ var nts;
                         });
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -5929,6 +5980,7 @@ var nts;
                         });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
+                                var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -5947,6 +5999,7 @@ var nts;
                             }
                         });
                         $input.on('validate', (function (e) {
+                            var validator = self.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -6118,6 +6171,10 @@ var nts;
                             var css = data.mode === "year" ? { "padding-right": "20px" } : { "padding-right": "35px" };
                             $input.css(css);
                         }
+                        if (!nts.uk.util.isNullOrEmpty(option.defaultValue)
+                            && nts.uk.util.isNullOrEmpty(data.value())) {
+                            data.value(option.defaultValue);
+                        }
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
@@ -6135,7 +6192,8 @@ var nts;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
                         var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-                        return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+                        var validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
+                        return new validation.TimeValidator(name, constraintName, validateOption);
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -6154,8 +6212,13 @@ var nts;
                                 return;
                             }
                             var selectionTypeOnFocusing = document.getSelection().type;
-                            var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
-                            $input.val(timeWithDayAttr.shortText);
+                            if (!nts.uk.util.isNullOrEmpty(data.value())) {
+                                var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
+                                $input.val(timeWithDayAttr.shortText);
+                            }
+                            else {
+                                $input.val("");
+                            }
                             if (selectionTypeOnFocusing === 'Range') {
                                 $input.select();
                             }
@@ -6924,10 +6987,11 @@ var nts;
                             container.igGrid("dataBind");
                         }
                         else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
+                            var sources_1 = options.slice();
                             var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
-                                var itemX = _.find(sources, function (s) {
-                                    return s[optionsValue] === item[optionsValue];
+                                var itemX = _.find(sources_1, function (s) {
+                                    return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
                                     filteredSource_2.push(itemX);
@@ -7380,6 +7444,7 @@ var nts;
                                     component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                 }
                                 var srh = $container.data("searchObject");
+                                $input.val("");
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
@@ -7565,6 +7630,7 @@ var nts;
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
+                        var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
                             $swap.parent().width(totalWidth);
@@ -7618,13 +7684,14 @@ var nts;
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
                                 initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
+                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                                 $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
                                 initSearchArea($searchRightContainer, grid2Id, data.searchMode);
+                                $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             }
-                            $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             $searchArea.height(SEARCH_AREA_HEIGHT);
                             gridHeight -= SEARCH_AREA_HEIGHT;
                         }
@@ -7637,7 +7704,7 @@ var nts;
                         var $grid1 = $swap.find(grid1Id);
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
                         var leftCriterion = _.map(leftColumns(), function (c) { return c.key === undefined ? c.prop : c.key; });
@@ -8648,6 +8715,7 @@ var nts;
                         var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
                         var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
                         var extColumns = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
+                        var initialExpandDepth = ko.unwrap(data.initialExpandDepth);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var rows = ko.unwrap(data.rows);
@@ -8683,7 +8751,8 @@ var nts;
                                 }
                                 else {
                                     if (ko.isObservable(data.value)) {
-                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
+                                        data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
+                                        data.value.valueHasMutated();
                                     }
                                 }
                             }
@@ -8724,7 +8793,7 @@ var nts;
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
-                            initialExpandDepth: 10,
+                            initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
                             features: features
                         });
@@ -9094,6 +9163,7 @@ var nts;
                             enablePagination: false,
                             enableFinishButton: false,
                             autoFocus: false,
+                            enableKeyNavigation: false,
                             onStepChanged: function () {
                                 container.children('.steps').children('ul').children('li').removeClass('step-current');
                                 container.children('.steps').children('ul').children('li').removeClass('step-prev');
@@ -9314,138 +9384,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCharsetSetting'] = new NtsCharsetSettingBindingHandler();
             })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var importSettingForm;
-            (function (importSettingForm) {
-                var ImportSettingForm = (function () {
-                    function ImportSettingForm(option) {
-                        this.defaultOption = {
-                            selector: ".import-setting-trigger",
-                            features: [
-                                { name: 'Encoding' }
-                            ],
-                            onClosed: $.noop()
-                        };
-                        this.isInit = false;
-                        this.EncodeTypes = [
-                            {
-                                value: 0,
-                                fieldName: "ShiftJIS",
-                                localizedName: "Shift-JIS"
-                            },
-                            {
-                                value: 1,
-                                fieldName: "UTF8",
-                                localizedName: "UTF-8"
-                            },
-                            {
-                                value: 2,
-                                fieldName: "UTF8BOM",
-                                localizedName: "UTF-8 BOM"
-                            },
-                        ];
-                        this.init(option);
-                    }
-                    ImportSettingForm.prototype.init = function (option) {
-                        var self = this;
-                        if (self.isInit === false) {
-                            var rootScreen = nts.uk.ui.windows.container.windows["MAIN_WINDOW"];
-                            var currentScreen = nts.uk.ui.windows.getSelf();
-                            var $rootBody = $(rootScreen.globalContext.document).find("body");
-                            self.isInit = true;
-                            self.option = $.extend({}, this.defaultOption, option);
-                            self.$dialog = $("<div id='" + nts.uk.util.randomId() + "'/>")
-                                .css({
-                                padding: '0px',
-                                overflow: 'hidden'
-                            })
-                                .appendTo($rootBody)
-                                .dialog({
-                                autoOpen: false,
-                                modal: true,
-                                width: 500,
-                                height: 400,
-                                closeOnEscape: false,
-                                open: function () {
-                                    self.result = undefined;
-                                },
-                                close: function (event) {
-                                    self.option.onClosed.call(this, self.result);
-                                }
-                            });
-                            var $dialogTemplate = $("<div class='import-setting-container'/>").append("<div id='functions-area-bottom'/>").append("<div class='import-setting-body'/>");
-                            self.buildEncodeType($dialogTemplate);
-                            var $proccedButton = $("<button class='x-large proceed'>決定</button>").on("click", function (event) {
-                                self.result = {
-                                    encodeType: self.getEncodeType(),
-                                    linebreakCode: null,
-                                    fileFormat: null,
-                                    includeHeader: null
-                                };
-                                self.$dialog.dialog("close");
-                            });
-                            var $closeButton = $("<button class='large'>キャンセル</button>").on("click", function (event) { self.$dialog.dialog("close"); });
-                            $dialogTemplate.find("#functions-area-bottom").append($proccedButton).append($closeButton);
-                            $dialogTemplate.appendTo(self.$dialog);
-                            $(self.option.selector).on("click.ImportSettingForm", self.show.bind(self));
-                        }
-                    };
-                    ImportSettingForm.prototype.destroy = function () {
-                        var self = this;
-                        if (self.isInit) {
-                            self.isInit = false;
-                            self.$encodeTypeCombo.igCombo("destroy");
-                            self.$dialog.dialog("destroy").remove();
-                            $(self.option.selector).off("click.ImportSettingForm");
-                        }
-                    };
-                    ImportSettingForm.prototype.refresh = function (option) {
-                        this.destroy();
-                        this.init(option || this.option);
-                    };
-                    ImportSettingForm.prototype.show = function () {
-                        if (this.isInit)
-                            this.$dialog.dialog("open");
-                    };
-                    ImportSettingForm.prototype.hide = function () {
-                        if (this.isInit)
-                            this.$dialog.dialog("close");
-                    };
-                    ImportSettingForm.prototype.buildEncodeType = function ($dialogTemplate) {
-                        var self = this;
-                        self.$encodeTypeCombo = $("<div id='" + nts.uk.util.randomId() + "' class='encode-type'/>").appendTo($dialogTemplate.find(".import-setting-body"));
-                        self.$encodeTypeCombo.igCombo({
-                            visibleItemsCount: 5,
-                            dataSource: self.EncodeTypes,
-                            valueKey: "value",
-                            textKey: 'localizedName',
-                            mode: "dropdown",
-                            placeHolder: '',
-                            tabIndex: -1,
-                            enableClearButton: false
-                        });
-                        var dialogZindex = self.$dialog.closest(".ui-dialog").css("z-index");
-                        var $encodeTypeDropdown = self.$encodeTypeCombo.igCombo("dropDown").css("z-index", Number(dialogZindex) + 10);
-                    };
-                    ImportSettingForm.prototype.getEncodeType = function () {
-                        var self = this;
-                        var encodeType = _.find(self.EncodeTypes, function (item) {
-                            return item.value == self.$encodeTypeCombo.igCombo("value");
-                        });
-                        return encodeType;
-                    };
-                    return ImportSettingForm;
-                }());
-                importSettingForm.ImportSettingForm = ImportSettingForm;
-            })(importSettingForm = ui.importSettingForm || (ui.importSettingForm = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11171,6 +11109,60 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsGrid;
                 (function (ntsGrid) {
+                    var storage;
+                    var dist;
+                    (function (dist) {
+                        dist.REMOTE = "Remote";
+                        function query(features) {
+                            storage = new Local();
+                            var store = feature.find(features, feature.STORAGE);
+                            if (!store)
+                                return;
+                            if (store.type === dist.REMOTE) {
+                                storage = new Remote(store.loadPath, store.savePath);
+                            }
+                        }
+                        dist.query = query;
+                        var Local = (function () {
+                            function Local() {
+                            }
+                            Local.prototype.getItem = function (key) {
+                                var dfd = $.Deferred();
+                                dfd.resolve(uk.localStorage.getItem(key));
+                                return dfd.promise();
+                            };
+                            Local.prototype.setItemAsJson = function (key, value) {
+                                var dfd = $.Deferred();
+                                uk.localStorage.setItemAsJson(key, value);
+                                dfd.resolve(true);
+                                return dfd.promise();
+                            };
+                            return Local;
+                        }());
+                        dist.Local = Local;
+                        var Remote = (function () {
+                            function Remote(loadPath, savePath) {
+                                this.loadPath = loadPath;
+                                this.savePath = savePath;
+                            }
+                            Remote.prototype.getItem = function (key) {
+                                var dfd = $.Deferred();
+                                uk.request.ajax(this.loadPath, { value: key }).done(function (widths) {
+                                    dfd.resolve(uk.util.optional.of(widths));
+                                });
+                                return dfd.promise();
+                            };
+                            Remote.prototype.setItemAsJson = function (key, value) {
+                                var dfd = $.Deferred();
+                                uk.request.ajax(this.savePath, { key: key, columns: value }).done(function (res) {
+                                    dfd.resolve(res);
+                                });
+                                return dfd.promise();
+                            };
+                            return Remote;
+                        }());
+                        dist.Remote = Remote;
+                    })(dist || (dist = {}));
                     $.fn.ntsGrid = function (options) {
                         var self = this;
                         if (typeof options === "string") {
@@ -11194,9 +11186,38 @@ var nts;
                         $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
+                        var cbHeaderColumns = [];
+                        var cbSelectionColumns = {};
                         var formatColumn = function (column) {
                             if (column.hidden)
                                 return column;
+                            if (column.showHeaderCheckbox) {
+                                column.headerText = ntsControls.createHeaderCheckbox({
+                                    controlDef: {
+                                        options: { value: 1, text: column.headerText },
+                                        optionsValue: 'value',
+                                        optionsText: 'text'
+                                    }
+                                }, column.key);
+                                cbHeaderColumns.push(column.key);
+                                cbSelectionColumns[column.key] = {
+                                    selectAll: false, quantity: 0,
+                                    onSelect: function (value) {
+                                        var fs = this;
+                                        if (value && ++fs.quantity === options.dataSource.length) {
+                                            fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
+                                            fs.selectAll = true;
+                                        }
+                                        else if (!value && fs.quantity > 0) {
+                                            fs.quantity--;
+                                            if (fs.selectAll) {
+                                                fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", false);
+                                                fs.selectAll = false;
+                                            }
+                                        }
+                                    }
+                                };
+                            }
                             if (!uk.util.isNullOrUndefined(column.group)) {
                                 var cols = _.map(column.group, formatColumn);
                                 column.group = cols;
@@ -11251,6 +11272,7 @@ var nts;
                                     deleteRow: deleteRow,
                                     initValue: value,
                                     rowObj: rowObj,
+                                    showHeaderCheckbox: column.showHeaderCheckbox,
                                     enable: isEnable
                                 };
                                 var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
@@ -11262,8 +11284,19 @@ var nts;
                                     var $gridCell = $self.igGrid("cellById", rowId, column.key);
                                     if (!$gridCell)
                                         return;
-                                    if ($($gridCell.children()[0]).children().length === 0)
-                                        $("." + controlCls).append(ntsControl.draw(data));
+                                    if ($($gridCell.children()[0]).children().length === 0) {
+                                        var $control = ntsControl.draw(data);
+                                        $("." + controlCls).append($control);
+                                        if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
+                                            var cbSelectCols = $self.data(internal.CB_SELECTED) || {};
+                                            var cbColConf_1 = cbSelectCols[column.key];
+                                            if (cbColConf_1) {
+                                                $control.on("change", function () {
+                                                    cbColConf_1.onSelect($(this).find("input[type='checkbox']").is(":checked"));
+                                                });
+                                            }
+                                        }
+                                    }
                                     ntsControl.$containedGrid = $self;
                                     var c = {
                                         id: rowId,
@@ -11281,10 +11314,12 @@ var nts;
                         options.columns = columns;
                         updating.addFeature(options);
                         options.autoCommit = true;
+                        dist.query(options.ntsFeatures);
                         events.onCellClick($(self));
                         copyPaste.ifOn($(self), options);
-                        events.afterRendered(options);
+                        events.afterRendered(options, cbSelectionColumns);
                         columnSize.init($(self), options.columns);
+                        ntsControls.bindCbHeaderColumns(options, cbHeaderColumns, cbSelectionColumns);
                         $(this).data(internal.CONTROL_TYPES, columnControlTypes);
                         $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
                         sheet.load.setup($(self), options);
@@ -11316,6 +11351,7 @@ var nts;
                         feature_1.HIDING = "Hiding";
                         feature_1.SHEET = "Sheet";
                         feature_1.DEMAND_LOAD = "LoadOnDemand";
+                        feature_1.STORAGE = "Storage";
                         function replaceBy(options, featureName, newFeature) {
                             var replaceId;
                             _.forEach(options.features, function (feature, id) {
@@ -11934,59 +11970,91 @@ var nts;
                     var columnSize;
                     (function (columnSize) {
                         function init($grid, columns) {
-                            if (initValueExists($grid))
-                                return;
-                            var columnWidths = {};
-                            _.forEach(columns, function (col, index) {
-                                columnWidths[col.key] = parseInt(col.width);
+                            initValueExists($grid).done(function (res) {
+                                if (res)
+                                    return;
+                                var columnWidths = {};
+                                _.forEach(columns, function (col, index) {
+                                    flat(col, columnWidths);
+                                });
+                                saveAll($grid, columnWidths);
                             });
-                            saveAll($grid, columnWidths);
                         }
                         columnSize.init = init;
+                        function flat(col, columnWidths) {
+                            if (col.group) {
+                                _.forEach(col.group, function (sCol) {
+                                    flat(sCol, columnWidths);
+                                });
+                                return;
+                            }
+                            columnWidths[col.key] = parseInt(col.width);
+                        }
                         function load($grid) {
                             var storeKey = getStorageKey($grid);
-                            uk.localStorage.getItem(storeKey).ifPresent(function (columns) {
-                                var widthColumns = JSON.parse(columns);
-                                setWidths($grid, widthColumns);
-                                return null;
+                            storage.getItem(storeKey).done(function (widths) {
+                                widths.ifPresent(function (columns) {
+                                    var widthColumns;
+                                    try {
+                                        widthColumns = JSON.parse(columns);
+                                    }
+                                    catch (e) {
+                                        widthColumns = columns;
+                                    }
+                                    setWidths($grid, widthColumns);
+                                    return null;
+                                });
                             });
                         }
                         columnSize.load = load;
                         function save($grid, columnKey, columnWidth) {
                             var storeKey = getStorageKey($grid);
-                            var columnsWidth = uk.localStorage.getItem(storeKey);
-                            var widths = {};
-                            if (columnsWidth.isPresent()) {
-                                widths = JSON.parse(columnsWidth.get());
-                                widths[columnKey] = columnWidth;
+                            if (storage instanceof dist.Local) {
+                                var columnsWidth = uk.localStorage.getItem(storeKey);
+                                var widths = {};
+                                if (columnsWidth.isPresent()) {
+                                    widths = JSON.parse(columnsWidth.get());
+                                    widths[columnKey] = columnWidth;
+                                }
+                                else {
+                                    widths[columnKey] = columnWidth;
+                                }
+                                uk.localStorage.setItemAsJson(storeKey, widths);
                             }
-                            else {
-                                widths[columnKey] = columnWidth;
+                            else if (storage instanceof dist.Remote) {
+                                var width = {};
+                                width[columnKey] = columnWidth;
+                                storage.setItemAsJson(storeKey, width);
                             }
-                            uk.localStorage.setItemAsJson(storeKey, widths);
                         }
                         columnSize.save = save;
                         function saveAll($grid, widths) {
                             var storeKey = getStorageKey($grid);
-                            var columnWidths = uk.localStorage.getItem(storeKey);
-                            if (!columnWidths.isPresent()) {
-                                uk.localStorage.setItemAsJson(storeKey, widths);
-                            }
+                            storage.getItem(storeKey).done(function (columnWidths) {
+                                if (!columnWidths.isPresent()) {
+                                    storage.setItemAsJson(storeKey, widths);
+                                }
+                            });
                         }
                         function initValueExists($grid) {
+                            var dfd = $.Deferred();
                             var storeKey = getStorageKey($grid);
-                            var columnWidths = uk.localStorage.getItem(storeKey);
-                            return columnWidths.isPresent();
+                            storage.getItem(storeKey).done(function (columnWidths) {
+                                dfd.resolve(columnWidths.isPresent());
+                            });
+                            return dfd.promise();
                         }
                         function getStorageKey($grid) {
                             return uk.request.location.current.rawUrl + "/" + $grid.attr("id");
                         }
                         function loadOne($grid, columnKey) {
                             var storeKey = getStorageKey($grid);
-                            uk.localStorage.getItem(storeKey).ifPresent(function (columns) {
-                                var widthColumns = JSON.parse(columns);
-                                setWidth($grid, columnKey, widthColumns[columnKey]);
-                                return null;
+                            storage.getItem(storeKey).done(function (widths) {
+                                widths.ifPresent(function (columns) {
+                                    var widthColumns = JSON.parse(columns);
+                                    setWidth($grid, columnKey, widthColumns[columnKey]);
+                                    return null;
+                                });
                             });
                         }
                         columnSize.loadOne = loadOne;
@@ -12208,6 +12276,49 @@ var nts;
                             };
                         }
                         ntsControls.drawLabel = drawLabel;
+                        function createHeaderCheckbox(data, key) {
+                            var defaultOptions = {
+                                update: $.noop,
+                                initValue: false,
+                                enable: true
+                            };
+                            var options = $.extend({}, defaultOptions, data);
+                            return new CheckBox().draw(options).addClass("nts-grid-header-control-" + key).prop("outerHTML");
+                        }
+                        ntsControls.createHeaderCheckbox = createHeaderCheckbox;
+                        function bindCbHeaderColumns(options, columns, selectionColumns) {
+                            options.headerCellRendered = function (evt, ui) {
+                                var $grid = $(ui.owner.element);
+                                var column = _.remove(columns, function (c) { return c === ui.columnKey; });
+                                if (!column || column.length === 0)
+                                    return;
+                                var columnConf = selectionColumns[column[0]];
+                                if (columnConf) {
+                                    selectionColumns[column[0]].th = ui.th;
+                                }
+                                $(ui.th).find(".nts-grid-header-control-" + column[0]).find("input[type='checkbox']")
+                                    .on("change", function () {
+                                    var $cb = $(this);
+                                    var selected = $cb.is(":checked");
+                                    _.forEach(options.dataSource, function (r) {
+                                        if (!r)
+                                            return;
+                                        updating.updateCell($grid, r[options.primaryKey], ui.columnKey, selected, undefined, true);
+                                    });
+                                    var cbSelectCols = $grid.data(internal.CB_SELECTED);
+                                    var cbSelectConf = cbSelectCols[column[0]];
+                                    if (!cbSelectConf)
+                                        return;
+                                    cbSelectConf.selectAll = selected;
+                                    if (selected) {
+                                        cbSelectConf.quantity = options.dataSource.length;
+                                        return;
+                                    }
+                                    cbSelectConf.quantity = 0;
+                                });
+                            };
+                        }
+                        ntsControls.bindCbHeaderColumns = bindCbHeaderColumns;
                         var NtsControlBase = (function () {
                             function NtsControlBase() {
                                 this.readOnly = false;
@@ -12245,7 +12356,7 @@ var nts;
                                 }).appendTo($checkBoxLabel);
                                 var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
                                 if (checkBoxText && checkBoxText.length > 0)
-                                    var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
+                                    var label = $("<span class='label'></span>").html(checkBoxText).appendTo($checkBoxLabel);
                                 $checkBoxLabel.appendTo($wrapper);
                                 var checked = initValue !== undefined ? initValue : true;
                                 $wrapper.data("readonly", this.readOnly);
@@ -13157,10 +13268,11 @@ var nts;
                             return Handler;
                         }());
                         events.Handler = Handler;
-                        function afterRendered(options) {
+                        function afterRendered(options, cbSelectionColumns) {
                             options.rendered = function (evt, ui) {
                                 var $grid = $(evt.target);
                                 events.Handler.pull($grid, options).turnOn();
+                                $(this).data(internal.CB_SELECTED, cbSelectionColumns);
                                 var $fixedTbl = fixedColumns.getFixedTable($grid);
                                 if ($fixedTbl.length > 0) {
                                     if (feature.isEnable(options.ntsFeatures, feature.COPY_PASTE))
@@ -14002,6 +14114,7 @@ var nts;
                     (function (internal) {
                         internal.CONTROL_TYPES = "ntsControlTypesGroup";
                         internal.COMBO_SELECTED = "ntsComboSelection";
+                        internal.CB_SELECTED = "ntsCheckboxSelection";
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
                         internal.SHEETS = "ntsGridSheets";
@@ -14414,53 +14527,96 @@ var nts;
                 var ntsPopup;
                 (function (ntsPopup) {
                     var DATA_INSTANCE_NAME = 'nts-popup-panel';
-                    $.fn.ntsPopup = function () {
-                        if (arguments.length === 1) {
-                            var p = arguments[0];
-                            if (_.isPlainObject(p)) {
-                                return init.apply(this, arguments);
-                            }
+                    ;
+                    $.fn.ntsPopup = handler;
+                    function handler(action, option) {
+                        var $control = $(this);
+                        if (typeof action !== 'string') {
+                            handler.call(this, "init", action);
                         }
-                        if (typeof arguments[0] === 'string') {
-                            return handleMethod.apply(this, arguments);
-                        }
-                    };
-                    function init(param) {
-                        var popup = new NtsPopupPanel($(this), param.position);
-                        var dismissible = param.dismissible === false;
-                        _.defer(function () {
-                            if (!dismissible) {
-                                $(window).mousedown(function (e) {
-                                    if ($(e.target).closest(popup.$panel).length === 0) {
-                                        popup.hide();
-                                    }
-                                });
-                            }
-                        });
-                        return popup.$panel;
-                    }
-                    function handleMethod() {
-                        var methodName = arguments[0];
-                        var popup = $(this).data(DATA_INSTANCE_NAME);
-                        switch (methodName) {
+                        switch (action) {
+                            case 'init':
+                                init($control, option);
+                                break;
                             case 'show':
-                                popup.show();
+                                show($control);
                                 break;
                             case 'hide':
-                                popup.hide();
+                                hide($control);
                                 break;
                             case 'destroy':
-                                popup.hide();
-                                popup.destroy();
+                                destroy($control);
                                 break;
                             case 'toggle':
-                                popup.toggle();
+                                toggle($control);
                                 break;
                         }
                     }
+                    function init(control, option) {
+                        control.addClass("popup-panel").css("z-index", 100).show();
+                        var defaultoption = {
+                            trigger: "",
+                            position: {
+                                my: 'left top',
+                                at: 'left bottom',
+                                of: control.siblings('.show-popup')
+                            },
+                            showOnStart: false,
+                            dismissible: true
+                        };
+                        var setting = $.extend({}, defaultoption, option);
+                        control.data("option", setting);
+                        $(setting.trigger).on("click.popup", function (e) {
+                            show(control);
+                        });
+                        if (setting.dismissible) {
+                            $(window).on("mousedown.popup", function (e) {
+                                if (!$(e.target).is(control)
+                                    && control.has(e.target).length === 0
+                                    && !$(e.target).is(setting.trigger)) {
+                                    hide(control);
+                                }
+                            });
+                        }
+                        if (setting.showOnStart)
+                            show(control);
+                        else
+                            hide(control);
+                        return control;
+                    }
+                    function show(control) {
+                        control.css({
+                            visibility: 'visible',
+                        });
+                        control.position(control.data("option").position);
+                        return control;
+                    }
+                    function hide(control) {
+                        control.css({
+                            visibility: 'hidden',
+                            top: "-9999px",
+                            left: "-9999px"
+                        });
+                        return control;
+                    }
+                    function destroy(control) {
+                        hide(control);
+                        $(control.data("option").trigger).off("click.popup");
+                        $(window).off("click.popup");
+                        return control;
+                    }
+                    function toggle(control) {
+                        var isDisplaying = control.css("visibility");
+                        if (isDisplaying === 'hidden') {
+                            show(control);
+                        }
+                        else {
+                            hide(control);
+                        }
+                        return control;
+                    }
                     var NtsPopupPanel = (function () {
-                        function NtsPopupPanel($panel, position) {
-                            this.position = position;
+                        function NtsPopupPanel($panel, option) {
                             var parent = $panel.parent();
                             this.$panel = $panel
                                 .data(DATA_INSTANCE_NAME, this)
@@ -14468,37 +14624,9 @@ var nts;
                                 .appendTo(parent);
                             this.$panel.css("z-index", 100);
                         }
-                        NtsPopupPanel.prototype.show = function () {
-                            this.$panel
-                                .css({
-                                visibility: 'hidden',
-                                display: 'block'
-                            })
-                                .position(this.position)
-                                .css({
-                                visibility: 'visible'
-                            });
-                        };
-                        NtsPopupPanel.prototype.hide = function () {
-                            this.$panel.css({
-                                display: 'none'
-                            });
-                        };
-                        NtsPopupPanel.prototype.destroy = function () {
-                            this.$panel = null;
-                        };
-                        NtsPopupPanel.prototype.toggle = function () {
-                            var isDisplaying = this.$panel.css("display");
-                            if (isDisplaying === 'none') {
-                                this.show();
-                            }
-                            else {
-                                this.hide();
-                            }
-                        };
                         return NtsPopupPanel;
                     }());
-                })(ntsPopup || (ntsPopup = {}));
+                })(ntsPopup = jqueryExtentions.ntsPopup || (jqueryExtentions.ntsPopup = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -17568,6 +17696,8 @@ var nts;
                             || options.updateMode !== STICK)
                             return;
                         $cell.on(events.CLICK_EVT, function (evt) {
+                            if (evt.ctrlKey)
+                                return;
                             var $grid = $cell.closest("." + BODY_PRF + DETAIL);
                             var sticker = $grid.data(internal.STICKER);
                             if (!sticker || uk.util.isNullOrUndefined(sticker.data)
@@ -20484,7 +20614,7 @@ var nts;
                             var self = this;
                             self.$selector.on(events.MOUSE_DOWN, function (evt) {
                                 self.getTable();
-                                if (evt.ctrlKey && self.$table.data(NAMESPACE).determination)
+                                if (evt.ctrlKey && self.$table.closest("." + NAMESPACE).data(NAMESPACE).determination)
                                     return;
                                 self.click(evt);
                             });
@@ -20978,6 +21108,346 @@ var nts;
         (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
+                var NtsImageEditorBindingHandler = (function () {
+                    function NtsImageEditorBindingHandler() {
+                    }
+                    NtsImageEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
+                        var zoomble = nts.uk.util.isNullOrUndefined(data.zoomble) ? false : ko.unwrap(data.zoomble);
+                        var width = nts.uk.util.isNullOrUndefined(data.width) ? 600 : ko.unwrap(data.width);
+                        var freeResize = nts.uk.util.isNullOrUndefined(data.freeResize) ? true : ko.unwrap(data.freeResize);
+                        var resizeRatio = nts.uk.util.isNullOrUndefined(data.resizeRatio) ? 1 : ko.unwrap(data.resizeRatio);
+                        var height = nts.uk.util.isNullOrUndefined(data.height) ? 600 : ko.unwrap(data.height);
+                        var croppable = false;
+                        var helper = new ImageEditorHelper();
+                        var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
+                        var constructSite = new ImageEditorConstructSite($element, helper);
+                        var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
+                        $container.append($uploadArea);
+                        if (editable === true) {
+                            croppable = true;
+                            var confirm_1 = { checked: ko.observable(true) };
+                            $(element).data('checkbox', confirm_1);
+                            var $editContainer = $("<div>", { "class": "edit-action-container image-editor-area" });
+                            $container.append($editContainer);
+                            constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
+                        }
+                        constructSite.buildActionArea();
+                        constructSite.buildUploadAction();
+                        constructSite.buildImagePreviewArea();
+                        constructSite.buildFileChangeHandler();
+                        var customOption = {
+                            aspectRatio: freeResize ? 0 : resizeRatio,
+                            dragMode: croppable ? "crop" : "none",
+                            modal: false
+                        };
+                        constructSite.buildImageLoadedHandler(zoomble, customOption);
+                        constructSite.buildSrcChangeHandler();
+                        constructSite.buildImageDropEvent();
+                        $element.find(".image-holder").width(width).height(height);
+                        return { 'controlsDescendantBindings': true };
+                    };
+                    NtsImageEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor(), $element = $(element), confirm = $(element).data('checkbox'), $checkbox = $element.find('.comfirm-checkbox');
+                        if (!nts.uk.util.isNullOrEmpty($checkbox)) {
+                            ko.bindingHandlers["ntsCheckBox"].update($checkbox[0], function () {
+                                return confirm;
+                            }, allBindingsAccessor, viewModel, bindingContext);
+                        }
+                    };
+                    return NtsImageEditorBindingHandler;
+                }());
+                var ImageEditorConstructSite = (function () {
+                    function ImageEditorConstructSite($root, helper) {
+                        this.$root = $root;
+                        this.helper = helper;
+                    }
+                    ImageEditorConstructSite.prototype.buildCheckBoxArea = function (allBindingsAccessor, viewModel, bindingContext) {
+                        var self = this;
+                        var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
+                        var $editContainer = this.$root.find(".edit-action-container");
+                        $editContainer.append($checkboxHolder);
+                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
+                        var $comment = $("<div>", { "class": "crop-description cf" });
+                        $checkboxHolder.append(this.$checkbox);
+                        $checkboxHolder.append($comment);
+                        var $cropAreaIcon = $("<div>", { "class": "crop-icon inline-container" });
+                        var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
+                        var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
+                        var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
+                        $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
+                        $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
+                        $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
+                        var checkboxId = nts.uk.util.randomId();
+                        ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
+                            return self.$root.data('checkbox');
+                        }, allBindingsAccessor, viewModel, bindingContext);
+                    };
+                    ImageEditorConstructSite.prototype.buildActionArea = function () {
+                        this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
+                        this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+                        this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
+                            .appendTo(this.$imageNameLbl.parent());
+                        this.$uploadBtn = $("<button>", { "class": "upload-btn" })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+                        var $uploadArea = this.$root.find(".image-upload-container");
+                        $uploadArea.append(this.$uploadBtn.parent());
+                        $uploadArea.append(this.$imageNameLbl.parent());
+                        $uploadArea.append(this.$inputFile.parent());
+                    };
+                    ImageEditorConstructSite.prototype.buildImagePreviewArea = function () {
+                        this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
+                        this.$previewArea.appendTo(this.$root.find(".image-editor-container"));
+                        var imagePreviewId = nts.uk.util.randomId();
+                        var $imageHolder = $("<div>", { "class": "image-holder image-editor-component" }).appendTo(this.$previewArea);
+                        this.$imagePreview = $("<img>", { "class": "image-preview", "id": imagePreviewId }).appendTo($imageHolder);
+                    };
+                    ImageEditorConstructSite.prototype.buildUploadAction = function () {
+                        var self = this;
+                        self.$uploadBtn.text("参照").click(function (evt) {
+                            self.$inputFile.click();
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildImageDropEvent = function () {
+                        var self = this;
+                        self.$previewArea.on('drop dragdrop', function (evt, ui) {
+                            event.preventDefault();
+                            var files = evt.originalEvent["dataTransfer"].files;
+                            if (!nts.uk.util.isNullOrEmpty(files)) {
+                                var firstImageFile = self.helper.getFirstFile(files);
+                                if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                                    self.assignImageToView(firstImageFile);
+                                }
+                            }
+                        });
+                        this.$previewArea.on('dragenter', function (event) {
+                            event.preventDefault();
+                        });
+                        this.$previewArea.on('dragleave', function (evt, ui) {
+                        });
+                        this.$previewArea.on('dragover', function (event) {
+                            event.preventDefault();
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildImageLoadedHandler = function (zoomble, customOption) {
+                        var self = this;
+                        self.$root.data("img-status", self.buildImgStatus("not init", 0));
+                        self.$imagePreview.on('load', function () {
+                            var image = new Image();
+                            image.src = self.$imagePreview.attr("src");
+                            image.onload = function () {
+                                self.$imageSizeLbl.text("　(大きさ " + this.height + "x" + this.width + "　　サイズ " + self.helper.getFileSize(self.$root.data("size")) + ")");
+                                if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
+                                    self.cropper.destroy();
+                                }
+                                var option = {
+                                    viewMode: 1,
+                                    guides: false,
+                                    autoCrop: false,
+                                    highlight: false,
+                                    zoomable: zoomble,
+                                    crop: function (e) {
+                                    }, cropstart: function (e) {
+                                    }
+                                };
+                                jQuery.extend(option, customOption);
+                                self.cropper = new Cropper(self.$imagePreview[0], option);
+                                self.$root.data("cropper", self.cropper);
+                                self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                                var evtData = {
+                                    size: self.$root.data("size"),
+                                    height: this.height,
+                                    width: this.width,
+                                    name: self.$root.data("file-name"),
+                                    fileType: self.$root.data("file-type")
+                                };
+                                self.$root.trigger("imgloaded", evtData);
+                            };
+                        }).on("error", function () {
+                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildImgStatus = function (status, statusCode) {
+                        return {
+                            imgOnView: statusCode === 4 ? true : false,
+                            imgStatus: status,
+                            imgStatusCode: statusCode
+                        };
+                    };
+                    ImageEditorConstructSite.prototype.buildSrcChangeHandler = function () {
+                        var self = this;
+                        self.$root.bind("srcchanging", function (evt, query) {
+                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                            var target = self.helper.getUrl(query);
+                            var xhr = self.getXRequest();
+                            if (xhr === null) {
+                                self.destroyImg();
+                                return;
+                            }
+                            xhr.open('GET', target);
+                            xhr.responseType = 'blob';
+                            xhr.onload = function (e) {
+                                if (this.status == 200) {
+                                    if (xhr.response.type.indexOf("image") >= 0) {
+                                        var reader = new FileReader();
+                                        reader.readAsDataURL(xhr.response);
+                                        reader.onload = function () {
+                                            self.helper.getFileNameFromUrl().done(function (fileName) {
+                                                var fileType = xhr.response.type.split("/")[1], fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
+                                                self.backupData(null, fileName, fileType, xhr.response.size);
+                                                self.$imagePreview.attr("src", reader.result);
+                                            });
+                                        };
+                                    }
+                                    else {
+                                        self.destroyImg();
+                                    }
+                                }
+                                else {
+                                    self.destroyImg();
+                                }
+                            };
+                            xhr.send();
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.destroyImg = function () {
+                        var self = this;
+                        nts.uk.ui.dialog.alert("画像データが正しくないです。。");
+                        self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                        self.backupData(null, "", "", 0);
+                        self.$imagePreview.attr("src", "");
+                        self.$imageSizeLbl.text("");
+                        if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
+                            self.cropper.destroy();
+                        }
+                        self.$root.data("cropper", self.cropper);
+                    };
+                    ImageEditorConstructSite.prototype.getXRequest = function () {
+                        if (typeof XDomainRequest != "undefined") {
+                            return new XDomainRequest();
+                        }
+                        else if (typeof XMLHttpRequest != "undefined") {
+                            return new XMLHttpRequest();
+                        }
+                        else if (window.ActiveXObject) {
+                            return new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        else {
+                            return null;
+                        }
+                    };
+                    ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
+                        var self = this;
+                        self.$inputFile.change(function () {
+                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                            if (nts.uk.util.isNullOrEmpty(this.files)) {
+                                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                                return;
+                            }
+                            self.assignImageToView(this.files[0]);
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.assignImageToView = function (file) {
+                        var self = this;
+                        if (FileReader && file) {
+                            var fr = new FileReader();
+                            fr.onload = function () {
+                                self.$imagePreview.attr("src", fr.result);
+                                self.backupData(file, file.name, file.type.split("/")[1], file.size);
+                            };
+                            fr.onerror = function () {
+                                self.destroyImg();
+                            };
+                            fr.readAsDataURL(file);
+                        }
+                    };
+                    ImageEditorConstructSite.prototype.backupData = function (file, name, format, size) {
+                        var self = this;
+                        self.$root.data("file", file);
+                        self.$root.data("file-name", name);
+                        self.$root.data("file-type", format);
+                        self.$root.data("size", size);
+                        self.$imageNameLbl.text(name);
+                    };
+                    return ImageEditorConstructSite;
+                }());
+                var ImageEditorHelper = (function () {
+                    function ImageEditorHelper(query, extensions) {
+                        this.IMAGE_EXTENSION = [".png", ".jpg", ".jpeg"];
+                        this.BYTE_SIZE = 1024;
+                        this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+                        this.data = query;
+                        if (!nts.uk.util.isNullOrUndefined(extensions)) {
+                            this.IMAGE_EXTENSION = extensions;
+                        }
+                    }
+                    ImageEditorHelper.prototype.toStringExtension = function () {
+                        return this.IMAGE_EXTENSION.join(",");
+                    };
+                    ImageEditorHelper.prototype.getFirstFile = function (files) {
+                        var IMAGE_EXTENSION = this.IMAGE_EXTENSION;
+                        return _.find(files, function (file) {
+                            return _.find(IMAGE_EXTENSION, function (ie) {
+                                return file.type.indexOf(ie.replace(".", "")) >= 0;
+                            }) !== undefined;
+                        });
+                    };
+                    ImageEditorHelper.prototype.getFileSize = function (originalSize) {
+                        var i = 0, result = originalSize;
+                        while (result > 5 * this.BYTE_SIZE) {
+                            result = result / this.BYTE_SIZE;
+                            i++;
+                        }
+                        var idx = i < this.SIZE_UNITS.length ? i : this.SIZE_UNITS.length - 1;
+                        return uk.ntsNumber.trunc(result) + this.SIZE_UNITS[idx];
+                    };
+                    ImageEditorHelper.prototype.getUrl = function (query) {
+                        if (!nts.uk.util.isNullOrUndefined(query)) {
+                            this.data = query;
+                        }
+                        if (!this.isOutSiteUrl(this.data.url)) {
+                            return this.data.url;
+                        }
+                        else {
+                            return "http://cors-anywhere.herokuapp.com/" + this.data.url;
+                        }
+                    };
+                    ImageEditorHelper.prototype.getFileNameFromUrl = function () {
+                        var dfd = $.Deferred();
+                        var urlElements = this.data.url.split("/"), fileName = urlElements[urlElements.length - 1];
+                        if (this.data.isOutSiteUrl) {
+                            dfd.resolve(fileName);
+                        }
+                        else {
+                            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + fileName).done(function (res) {
+                                dfd.resolve(res.originalName);
+                            }).fail(function (error) {
+                                dfd.reject(error);
+                            });
+                        }
+                        return dfd.promise();
+                    };
+                    ImageEditorHelper.prototype.isOutSiteUrl = function (url) {
+                        return url.indexOf(nts.uk.request.location.siteRoot.rawUrl) < 0;
+                    };
+                    return ImageEditorHelper;
+                }());
+                ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_23) {
+            var koExtentions;
+            (function (koExtentions) {
                 var NtsFunctionPanelBindingHandler = (function () {
                     function NtsFunctionPanelBindingHandler() {
                     }
@@ -21012,7 +21482,7 @@ var nts;
                                 });
                             }
                         });
-                        container.mouseleave(function (evt, ui) {
+                        container.mouseleave(function (evt) {
                             var current = header.find(".function-item");
                             itemAreas.find(".function-item-container").hide("fast", function () {
                                 current.data("dbClick", true);
@@ -21049,7 +21519,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -21080,6 +21550,92 @@ var nts;
                         });
                     }
                 })(ntsEditor || (ntsEditor = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var isNotNull = nts.uk.util.isNullOrUndefined;
+                var ntsImageEditor;
+                (function (ntsImageEditor) {
+                    $.fn.ntsImageEditor = function (method, option) {
+                        var $element = $(this);
+                        switch (method) {
+                            case "upload": {
+                                return uploadImage($element, option);
+                            }
+                            case "selectByFileId": {
+                                return downloadImage($element, option);
+                            }
+                            case "showByUrl": {
+                                return viewByUrl($element, option);
+                            }
+                            case "clear": {
+                                return clear($element);
+                            }
+                            case "getImgStatus": {
+                                return getImgStatus($element);
+                            }
+                            default:
+                                return;
+                        }
+                    };
+                    function getImgStatus($element) {
+                        return $element.data("img-status");
+                    }
+                    function uploadImage($element, option) {
+                        var dfd = $.Deferred();
+                        var dataFile = $element.find(".image-preview").attr("src");
+                        if (!isNotNull(dataFile)) {
+                            var cropper = $element.data("cropper");
+                            var cropperData = cropper.getData(true);
+                            var formData = {
+                                "fileName": $element.data("file-name"),
+                                "stereoType": isNotNull(option) ? "image" : option.stereoType,
+                                "file": dataFile,
+                                "format": $element.data("file-type"),
+                                "x": cropperData.x,
+                                "y": cropperData.y,
+                                "width": cropperData.width,
+                                "height": cropperData.height,
+                                "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked()
+                            };
+                            nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
+                                if (data !== undefined && data.businessException) {
+                                    dfd.reject(data);
+                                }
+                                else {
+                                    dfd.resolve(data);
+                                }
+                            }).fail(function () {
+                                dfd.reject({ message: "Please check your network", messageId: "1" });
+                            });
+                        }
+                        else {
+                            dfd.reject({ message: "Please select file", messageId: "0" });
+                        }
+                        return dfd.promise();
+                    }
+                    function downloadImage($element, fileId) {
+                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
+                    }
+                    function viewByUrl($element, sourceUrl) {
+                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
+                    }
+                    function clear($element) {
+                        var cropper = $element.data("cropper");
+                        if (!isNotNull(cropper)) {
+                            cropper.clear();
+                        }
+                    }
+                })(ntsImageEditor || (ntsImageEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21196,7 +21752,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsAccordionBindingHandler = (function () {
@@ -21272,282 +21828,6 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_24) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsImageEditorBindingHandler = (function () {
-                    function NtsImageEditorBindingHandler() {
-                    }
-                    NtsImageEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
-                        var zoomble = nts.uk.util.isNullOrUndefined(data.zoomble) ? false : ko.unwrap(data.zoomble);
-                        var width = nts.uk.util.isNullOrUndefined(data.width) ? 600 : ko.unwrap(data.width);
-                        var freeResize = nts.uk.util.isNullOrUndefined(data.freeResize) ? true : ko.unwrap(data.freeResize);
-                        var resizeRatio = nts.uk.util.isNullOrUndefined(data.resizeRatio) ? 1 : ko.unwrap(data.resizeRatio);
-                        var height = nts.uk.util.isNullOrUndefined(data.height) ? 600 : ko.unwrap(data.height);
-                        var croppable = false;
-                        var helper = new ImageEditorHelper();
-                        var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
-                        var constructSite = new ImageEditorConstructSite($element, helper);
-                        var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
-                        $container.append($uploadArea);
-                        if (editable === true) {
-                            croppable = true;
-                            var confirm_1 = { checked: ko.observable(true) };
-                            $(element).data('checkbox', confirm_1);
-                            var $editContainer = $("<div>", { "class": "edit-action-container image-editor-area" });
-                            $container.append($editContainer);
-                            constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
-                        }
-                        constructSite.buildActionArea();
-                        constructSite.buildUploadAction();
-                        constructSite.buildImagePreviewArea();
-                        constructSite.buildFileChangeHandler();
-                        var customOption = {
-                            aspectRatio: freeResize ? 0 : resizeRatio,
-                            dragMode: croppable ? "crop" : "none"
-                        };
-                        constructSite.buildImageLoadedHandler(zoomble, customOption);
-                        constructSite.buildSrcChangeHandler();
-                        constructSite.buildImageDropEvent();
-                        $element.find(".image-holder").width(width).height(height);
-                        return { 'controlsDescendantBindings': true };
-                    };
-                    NtsImageEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $element = $(element), confirm = $(element).data('checkbox'), $checkbox = $element.find('.comfirm-checkbox');
-                        if (!nts.uk.util.isNullOrEmpty($checkbox)) {
-                            ko.bindingHandlers["ntsCheckBox"].update($checkbox[0], function () {
-                                return confirm;
-                            }, allBindingsAccessor, viewModel, bindingContext);
-                        }
-                    };
-                    return NtsImageEditorBindingHandler;
-                }());
-                var ImageEditorConstructSite = (function () {
-                    function ImageEditorConstructSite($root, helper) {
-                        this.$root = $root;
-                        this.helper = helper;
-                    }
-                    ImageEditorConstructSite.prototype.buildCheckBoxArea = function (allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this;
-                        var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
-                        var $editContainer = this.$root.find(".edit-action-container");
-                        $editContainer.append($checkboxHolder);
-                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
-                        var $comment = $("<div>", { "class": "crop-description cf" });
-                        $checkboxHolder.append(this.$checkbox);
-                        $checkboxHolder.append($comment);
-                        var $cropAreaIcon = $("<div>", { "class": "crop-icon inline-container" });
-                        var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
-                        var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
-                        var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
-                        $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
-                        $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
-                        $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
-                        var checkboxId = nts.uk.util.randomId();
-                        ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
-                            return self.$root.data('checkbox');
-                        }, allBindingsAccessor, viewModel, bindingContext);
-                    };
-                    ImageEditorConstructSite.prototype.buildActionArea = function () {
-                        this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
-                        this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
-                            .appendTo(this.$imageNameLbl.parent());
-                        this.$uploadBtn = $("<button>", { "class": "upload-btn" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        var $uploadArea = this.$root.find(".image-upload-container");
-                        $uploadArea.append(this.$uploadBtn.parent());
-                        $uploadArea.append(this.$imageNameLbl.parent());
-                        $uploadArea.append(this.$inputFile.parent());
-                    };
-                    ImageEditorConstructSite.prototype.buildImagePreviewArea = function () {
-                        this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
-                        this.$previewArea.appendTo(this.$root.find(".image-editor-container"));
-                        var imagePreviewId = nts.uk.util.randomId();
-                        var $imageHolder = $("<div>", { "class": "image-holder image-editor-component" }).appendTo(this.$previewArea);
-                        this.$imagePreview = $("<img>", { "class": "image-preview", "id": imagePreviewId }).appendTo($imageHolder);
-                    };
-                    ImageEditorConstructSite.prototype.buildUploadAction = function () {
-                        var self = this;
-                        self.$uploadBtn.text("参照").click(function (evt) {
-                            self.$inputFile.click();
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildImageDropEvent = function () {
-                        var self = this;
-                        self.$previewArea.on('drop dragdrop', function (evt, ui) {
-                            event.preventDefault();
-                            var files = evt.originalEvent["dataTransfer"].files;
-                            if (!nts.uk.util.isNullOrEmpty(files)) {
-                                var firstImageFile = self.helper.getFirstFile(files);
-                                if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                                    self.assignImageToView(firstImageFile);
-                                }
-                            }
-                        });
-                        this.$previewArea.on('dragenter', function (event) {
-                            event.preventDefault();
-                        });
-                        this.$previewArea.on('dragleave', function (evt, ui) {
-                        });
-                        this.$previewArea.on('dragover', function (event) {
-                            event.preventDefault();
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildImageLoadedHandler = function (zoomble, customOption) {
-                        var self = this;
-                        self.$imagePreview.on('load', function () {
-                            var image = new Image();
-                            image.src = self.$imagePreview.attr("src");
-                            image.onload = function () {
-                                self.$imageSizeLbl.text("　(大きさ " + this.height + "x" + this.width + "　　サイズ " + self.helper.getFileSize(self.$root.data("size")) + ")");
-                                if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
-                                    self.cropper.destroy();
-                                }
-                                var option = {
-                                    viewMode: 1,
-                                    guides: false,
-                                    autoCrop: false,
-                                    highlight: false,
-                                    zoomable: zoomble,
-                                    crop: function (e) {
-                                    }, cropstart: function (e) {
-                                    }
-                                };
-                                jQuery.extend(option, customOption);
-                                self.cropper = new Cropper(self.$imagePreview[0], option);
-                                self.$root.data("cropper", self.cropper);
-                            };
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildSrcChangeHandler = function () {
-                        var self = this;
-                        self.$root.bind("srcchanging", function (evt, query) {
-                            var target = self.helper.getUrl(query);
-                            var xhr = new XMLHttpRequest();
-                            xhr.open('GET', target);
-                            xhr.responseType = 'blob';
-                            xhr.onload = function (e) {
-                                if (this.status == 200) {
-                                    var reader = new FileReader();
-                                    reader.readAsDataURL(xhr.response);
-                                    reader.onload = function () {
-                                        self.helper.getFileNameFromUrl().done(function (fileName) {
-                                            var fileType = xhr.response.type.split("/")[1], fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
-                                            self.backupData(null, fileName, fileType, xhr.response.size);
-                                            self.$imagePreview.attr("src", reader.result);
-                                        });
-                                    };
-                                }
-                            };
-                            xhr.send();
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
-                        var self = this;
-                        self.$inputFile.change(function () {
-                            if (nts.uk.util.isNullOrEmpty(this.files)) {
-                                return;
-                            }
-                            self.assignImageToView(this.files[0]);
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.assignImageToView = function (file) {
-                        var self = this;
-                        if (FileReader && file) {
-                            var fr = new FileReader();
-                            fr.onload = function () {
-                                self.$imagePreview.attr("src", fr.result);
-                                self.backupData(file, file.name, file.type.split("/")[1], file.size);
-                            };
-                            fr.readAsDataURL(file);
-                        }
-                    };
-                    ImageEditorConstructSite.prototype.backupData = function (file, name, format, size) {
-                        var self = this;
-                        self.$root.data("file", file);
-                        self.$root.data("file-name", name);
-                        self.$root.data("file-type", format);
-                        self.$root.data("size", size);
-                        self.$imageNameLbl.text(name);
-                    };
-                    return ImageEditorConstructSite;
-                }());
-                var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(query, extensions) {
-                        this.IMAGE_EXTENSION = [".png", ".jpg", ".jpeg"];
-                        this.BYTE_SIZE = 1024;
-                        this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-                        this.data = query;
-                        if (!nts.uk.util.isNullOrUndefined(extensions)) {
-                            this.IMAGE_EXTENSION = extensions;
-                        }
-                    }
-                    ImageEditorHelper.prototype.toStringExtension = function () {
-                        return this.IMAGE_EXTENSION.join(",");
-                    };
-                    ImageEditorHelper.prototype.getFirstFile = function (files) {
-                        var IMAGE_EXTENSION = this.IMAGE_EXTENSION;
-                        return _.find(files, function (file) {
-                            return _.find(IMAGE_EXTENSION, function (ie) {
-                                return file.type.indexOf(ie.replace(".", "")) >= 0;
-                            }) !== undefined;
-                        });
-                    };
-                    ImageEditorHelper.prototype.getFileSize = function (originalSize) {
-                        var i = 0, result = originalSize;
-                        while (result > 5 * this.BYTE_SIZE) {
-                            result = result / this.BYTE_SIZE;
-                            i++;
-                        }
-                        var idx = i < this.SIZE_UNITS.length ? i : this.SIZE_UNITS.length - 1;
-                        return uk.ntsNumber.trunc(result) + this.SIZE_UNITS[idx];
-                    };
-                    ImageEditorHelper.prototype.getUrl = function (query) {
-                        if (!nts.uk.util.isNullOrUndefined(query)) {
-                            this.data = query;
-                        }
-                        if (!this.isOutSiteUrl(this.data.url)) {
-                            return this.data.url;
-                        }
-                        else {
-                            return "http://cors-anywhere.herokuapp.com/" + this.data.url;
-                        }
-                    };
-                    ImageEditorHelper.prototype.getFileNameFromUrl = function () {
-                        var dfd = $.Deferred();
-                        var urlElements = this.data.url.split("/"), fileName = urlElements[urlElements.length - 1];
-                        if (this.data.isOutSiteUrl) {
-                            dfd.resolve(fileName);
-                        }
-                        else {
-                            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + fileName).done(function (res) {
-                                dfd.resolve(res.originalName);
-                            }).fail(function (error) {
-                                dfd.reject(error);
-                            });
-                        }
-                        return dfd.promise();
-                    };
-                    ImageEditorHelper.prototype.isOutSiteUrl = function (url) {
-                        return url.indexOf(nts.uk.request.location.siteRoot.rawUrl) < 0;
-                    };
-                    return ImageEditorHelper;
-                }());
-                ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
             })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21558,75 +21838,20 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var isNotNull = nts.uk.util.isNullOrUndefined;
-                var ntsImageEditor;
-                (function (ntsImageEditor) {
-                    $.fn.ntsImageEditor = function (method, option) {
-                        var $element = $(this);
-                        switch (method) {
-                            case "upload": {
-                                return uploadImage($element, option);
-                            }
-                            case "selectByFileId": {
-                                return downloadImage($element, option);
-                            }
-                            case "showByUrl": {
-                                return viewByUrl($element, option);
-                            }
-                            case "clear": {
-                                return clear($element);
-                            }
-                            default:
-                                return;
-                        }
-                    };
-                    function uploadImage($element, option) {
-                        var dfd = $.Deferred();
-                        var dataFile = $element.find(".image-preview").attr("src");
-                        if (!isNotNull(dataFile)) {
-                            var cropper = $element.data("cropper");
-                            var cropperData = cropper.getData(true);
-                            var formData = {
-                                "fileName": $element.data("file-name"),
-                                "stereoType": isNotNull(option) ? "image" : option.stereoType,
-                                "file": dataFile,
-                                "format": $element.data("file-type"),
-                                "x": cropperData.x,
-                                "y": cropperData.y,
-                                "width": cropperData.width,
-                                "height": cropperData.height,
-                                "crop": $element.data('checkbox').checked()
-                            };
-                            nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
-                                if (data !== undefined && data.businessException) {
-                                    dfd.reject(data);
-                                }
-                                else {
-                                    dfd.resolve(data);
-                                }
-                            }).fail(function () {
-                                dfd.reject({ message: "Please check your network", messageId: "0" });
-                            });
-                        }
-                        else {
-                            dfd.reject({ message: "Please select file", messageId: "0" });
-                        }
-                        return dfd.promise();
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLetBindingHandler = (function () {
+                    function NtsLetBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+                            return { controlsDescendantBindings: true };
+                        };
+                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
                     }
-                    function downloadImage($element, fileId) {
-                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
-                    }
-                    function viewByUrl($element, sourceUrl) {
-                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
-                    }
-                    function clear($element) {
-                        var cropper = $element.data("cropper");
-                        cropper.clear();
-                    }
-                })(ntsImageEditor || (ntsImageEditor = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+                    return NtsLetBindingHandler;
+                }());
+                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

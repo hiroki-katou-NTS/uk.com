@@ -13,7 +13,6 @@ import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.JobTitleHistoryDto;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
 /**
@@ -23,8 +22,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 @Setter
 public class SaveJobTitleHistoryCommand {
 
-    /** The is add mode. */
-    private Boolean isAddMode;
+    /** The is create mode. */
+    private Boolean isCreateMode;
     
     /** The job title id. */
     private String jobTitleId;
@@ -76,8 +75,8 @@ public class SaveJobTitleHistoryCommand {
 		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento#getJobTitleId()
 		 */
 		@Override
-		public JobTitleId getJobTitleId() {
-			return new JobTitleId(this.saveCommand.getJobTitleId());
+		public String getJobTitleId() {
+			return this.saveCommand.getJobTitleId();
 		}
 
 		/* (non-Javadoc)

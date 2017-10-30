@@ -406,4 +406,19 @@ public class ProgramIdConsts {
 	
 	public static final String CDL004 = "CDL004";
 
+	public static final String KDW003B = "KDW003B";
+	
+	public static final String CMM018A = "CMM018A";
+
+	public static final String CMM018I = "CMM018I";
+	
+	public static final String CMM018J = "CMM018J";
+
+	public static final String CMM018K = "CMM018K";
+
+	public static final String CMM018L = "CMM018L";
+
+	public static final String CMM018M = "CMM018M";
+
+	public static final String CMM018N = "CMM018N";
 }

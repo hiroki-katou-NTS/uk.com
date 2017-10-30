@@ -8,93 +8,83 @@ module nts.uk.com.view.cps009.b.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
-        itemInitLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        itemInitLst: Array<any> = [];
         currentIdLst: KnockoutObservableArray<any> = ko.observableArray([]);
         itemColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_33'), key: 'itemCode', width: 200 },
-            { headerText: 'itemCode', key: 'itemName', width: 150, hidden: true }
+            { headerText: text('CPS009_33'), key: 'itemName', width: 200 },
         ]);
 
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-
+        categoryName: KnockoutObservable<string> = ko.observable('');
         constructor() {
 
             let self = this;
             self.roundingRules = ko.observableArray([
-                { code: '1', name: '四捨五入' },
-                { code: '2', name: '切り上げ' },
-                { code: '3', name: '切り捨て' }
+                { code: '1', name: ReferenceMethodType.NOSETTING },
+                { code: '2', name: ReferenceMethodType.FIXEDVALUE },
+                { code: '3', name: ReferenceMethodType.SAMEASLOGIN }
             ]);
             self.selectedRuleCode = ko.observable(1);
-
-            self.start();
         }
 
-        start() {
+        start(): JQueryPromise<any> {
 
-            let self = this;
-            self.itemInitLst.removeAll();
-            for (let i = 0; i < 10; i++) {
-                self.itemInitLst.push(new ItemInitValue(
-                    {
-                        id: i.toString(),
-                        itemCode: "000" + i.toString(),
-                        itemName: "A"
-                    }));
+            let self = this,
+                dfd = $.Deferred();
+            self.itemInitLst = [];
+            let param = getShared('CPS009B_PARAM') || { categoryName: '', itemInitLst: [] };
+            self.categoryName('会社');
+            self.itemInitLst.push(new ItemInitValue('AA', "000", "A", true, false));
+            for (let i = 0; i < 8; i++) {
+                self.itemInitLst.push(new ItemInitValue(i.toString(), "000" + i.toString(),
+                "A" + i.toString(),false,false));
             }
+            dfd.resolve();
+            return dfd.promise();
         }
-        
-        registerItems(){
+
+        registerItems() {
+            let self = this;
+            setShared('CPS009B_DATA', {
+                refMethodType: self.selectedRuleCode(),
+                lstItemSelected: self.currentIdLst()
+            });
             close();
-        
         }
-        
-        closeDialog(){
+
+        closeDialog() {
+            setShared('CPS009B_DATA', null);
             close();
         }
-
-
-
-
-    }
-
-    export interface IItemInitValue {
-        id: string;
-        itemCode: string;
-        itemName: string;
-
     }
 
     export class ItemInitValue {
-        id: KnockoutObservable<string>;
+        id: string;
         itemCode: string;
         itemName: string;
-
-        constructor(params: IItemInitValue) {
-
+        isRequired: boolean;
+        isCheckBox: boolean;
+        constructor(id: string, itemCode: string,
+            itemName: string, isRequired: boolean,
+            isCheckBox: boolean) {
             let self = this;
-
-            self.id = ko.observable(params.id || "");
-
-            self.itemCode = params.itemCode || "";
-
-            self.itemName = params.itemName || "";
-
+            self.id = id;
+            self.itemCode = itemCode;
+            self.itemName = itemName;
+            self.isRequired = isRequired;
+            self.isCheckBox = isCheckBox;
         }
-
-        setData(params: any) {
-
-            let self = this;
-
-            self.id(params.id || "");
-
-            self.itemCode = params.itemCode || "";
-
-            self.itemName = params.itemName || "";
-        }
-
     }
-
+    export enum ReferenceMethodType {
+        NOSETTING = '設定なし',
+        FIXEDVALUE = '固定値',
+        SAMEASLOGIN = 'ログイン者と同じ'
+    }
+    export class BParam {
+        code: string;
+        name: string;
+        isRequired: boolean;
+    }
 }

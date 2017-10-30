@@ -1,2 +1,9 @@
-input.nts-editor.nts-input.reset-element{width: 45px;}
-input.nts-editor.nts-input.reset-element{text-align: center; width: 45px ; margin :0px 25px 0px 35px;}
+input.nts-editor.nts-input.reset-element{text-align: center; margin :0px 25px 0px 35px;}
+
+.frame004 {
+	float: right;
+	height: 400px !important;
+	width: 250px;
+	margin-top: 20px;
+	margin-left: 100px !important;
+}

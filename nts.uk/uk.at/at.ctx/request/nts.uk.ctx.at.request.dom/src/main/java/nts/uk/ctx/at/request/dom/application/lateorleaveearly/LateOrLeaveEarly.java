@@ -6,20 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**
  * 
  * @author hieult
- *
+ *遅刻早退取消申請
  */
 @Getter
 public class LateOrLeaveEarly extends Application {
@@ -62,7 +62,6 @@ public class LateOrLeaveEarly extends Application {
 			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
 			int reflectPerScheReason, GeneralDate reflectPerTime, int reflectPerState,
 			int reflectPerEnforce,GeneralDate startDate,GeneralDate endDate,List<AppApprovalPhase> listPhase,
-			//int actualCancelAtr, 
 			int early1, int earlyTime1, int late1, int lateTime1,
 			int early2, int earlyTime2, int late2, int lateTime2) {
 		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), inputDate, enteredPersonSID,
@@ -74,7 +73,6 @@ public class LateOrLeaveEarly extends Application {
 				EnumAdaptor.valueOf(reflectPerEnforce, ReflectPlanPerEnforce.class),startDate,endDate,listPhase);
 		this.companyID = companyID;
 		this.appID = appID;
-	//	this.actualCancelAtr = actualCancelAtr;
 		this.early1 = EnumAdaptor.valueOf(early1, Select.class);
 		this.earlyTime1 = new TimeDay(earlyTime1);
 		this.late1 = EnumAdaptor.valueOf(late1, Select.class);

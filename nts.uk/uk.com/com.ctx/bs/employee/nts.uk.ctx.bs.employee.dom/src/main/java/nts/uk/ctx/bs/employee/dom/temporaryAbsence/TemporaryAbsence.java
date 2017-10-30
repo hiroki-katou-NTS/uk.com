@@ -31,10 +31,10 @@ public class TemporaryAbsence extends AggregateRoot{
 	/**出産日 birth date*/
 	private GeneralDate birthDate;
 	/**多胎妊娠区分 Multiple pregnancy segment*/
-	private boolean mulPregnancySegment;
+	private int mulPregnancySegment;
 	
 	public static TemporaryAbsence createSimpleFromJavaType(String employeeId, String tempAbsenceId, int tempAbsenceType,
-			GeneralDate startDate, GeneralDate endDate, String tempAbsenceReason, String familyMemberId, GeneralDate birthDate, boolean  mulPregnancySegment){
+			GeneralDate startDate, GeneralDate endDate, String tempAbsenceReason, String familyMemberId, GeneralDate birthDate, int  mulPregnancySegment){
 		return new TemporaryAbsence(employeeId, tempAbsenceId, EnumAdaptor.valueOf(tempAbsenceType, TempAbsenceType.class), 
 				startDate, endDate, tempAbsenceReason, familyMemberId,birthDate, mulPregnancySegment);
 	}

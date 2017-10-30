@@ -8,137 +8,88 @@ module nts.uk.at.view.kaf009.b {
             //current Data
             curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
             //申請者
-            employeeName: KnockoutObservable<string>;
+            employeeName: KnockoutObservable<string> = ko.observable("");
             //Pre-POST
-            prePostSelected: KnockoutObservable<number>;
-            workEnable: KnockoutObservable<boolean>;
-            workVisible: KnockoutObservable<boolean>;
-            typeSiftVisible: KnockoutObservable<boolean>;
+            prePostSelected: KnockoutObservable<number> = ko.observable(1);
+            workState : KnockoutObservable<boolean> = ko.observable(true);;
+            typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
-            appDate: KnockoutObservable<string>;
+            appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
             //TIME LINE 1
-            timeStart1: KnockoutObservable<number>;
-            timeEnd1: KnockoutObservable<number>;
+            timeStart1: KnockoutObservable<number> = ko.observable(0);
+            timeEnd1: KnockoutObservable<number> = ko.observable(0);   
             //場所名前 
-            workLocationCD: KnockoutObservable<string>;
-            workLocationName: KnockoutObservable<string>;
+            workLocationCD: KnockoutObservable<string> = ko.observable('');
+            workLocationName: KnockoutObservable<string> = ko.observable('');
             //comment 
-            commentGo1: KnockoutObservable<string>;
-            commentBack1: KnockoutObservable<string>;
+            commentGo1: KnockoutObservable<string> = ko.observable('');
+            commentBack1: KnockoutObservable<string> = ko.observable('');
             //switch button selected
-            selectedBack: any;
-            selectedGo: any;
-            //TIME LINE 2
-            timeStart2: KnockoutObservable<number>;
-            timeEnd2: KnockoutObservable<number>;
-            //場所名前 
-            workLocationCD2: KnockoutObservable<string>;
-            workLocationName2: KnockoutObservable<string>;
-            //comment
-            commentGo2: KnockoutObservable<string>;
-            commentBack2: KnockoutObservable<string>;
-            //color, font Weight
-            colorGo: KnockoutObservable<string>;
-            colorBack: KnockoutObservable<string>;
-            fontWeightGo: KnockoutObservable<number>;
-            fontWeightBack: KnockoutObservable<number>;
+            selectedBack: any = ko.observable(1);
+            selectedGo: any = ko.observable(1);
             //Back Home 2
-            selectedBack2: any;
+            selectedBack2: any = ko.observable(1);
             //Go Work 2
-            selectedGo2: any;
+            selectedGo2: any = ko.observable(1);
+            //TIME LINE 2
+            timeStart2: KnockoutObservable<number> = ko.observable(0);
+            timeEnd2: KnockoutObservable<number> = ko.observable(0);
+            //場所名前 
+            workLocationCD2: KnockoutObservable<string> = ko.observable('');
+            workLocationName2: KnockoutObservable<string> = ko.observable('');
+            //comment
+            commentGo2: KnockoutObservable<string> = ko.observable('');
+            commentBack2: KnockoutObservable<string> = ko.observable('');
+            //color, font Weight
+            colorGo: KnockoutObservable<string> = ko.observable('#000000');
+            colorBack: KnockoutObservable<string> = ko.observable('#000000');
+            fontWeightGo: KnockoutObservable<number> = ko.observable(0);
+            fontWeightBack: KnockoutObservable<number> = ko.observable(0);
+            
             //勤務を変更する 
-            workChangeAtr: KnockoutObservable<boolean>;
+            workChangeAtr: KnockoutObservable<boolean> = ko.observable(true);
             //勤務種類
-            workTypeCd: KnockoutObservable<string>;
-            workTypeName: KnockoutObservable<string>;
+            workTypeCd: KnockoutObservable<string> = ko.observable('');
+            workTypeName: KnockoutObservable<string> = ko.observable('');
             //勤務種類
-            siftCD: KnockoutObservable<string>;
-            siftName: KnockoutObservable<string>;
+            siftCD: KnockoutObservable<string> = ko.observable('');
+            siftName: KnockoutObservable<string> = ko.observable('');
             //comboBox 定型理由
-            reasonCombo: KnockoutObservableArray<common.ComboReason>;
-            selectedReason: KnockoutObservable<string>;
+            reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
+            selectedReason: KnockoutObservable<string> = ko.observable('');
             //MultilineEditor
-            multilContent: KnockoutObservable<string>;
+            requiredReason : KnockoutObservable<boolean> = ko.observable(false);
+            multilContent: KnockoutObservable<string> = ko.observable('');
             multiOption: any;
             //Insert command
-            command: KnockoutObservable<common.GoBackCommand>;
+            command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
             //list Work Location 
-            locationData: Array<common.IWorkLocation>;
-            approvalSource: Array<any> = [];
-            
-            employeeID : string ="";
+            locationData: Array<common.IWorkLocation>= [];;
+            //Approval 
+            approvalSource: Array<common.AppApprovalPhase> = [];
+            employeeID : string = "";
+            //appID : KnockoutObservable<string> = ko.observable('');
+            //menu-bar 
             enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
-        
             prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
-            
             prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
+            useMulti : KnockoutObservable<boolean> = ko.observable(true);
+            version : number  = 0;
+            isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
+            isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
             
-            requiredReason : KnockoutObservable<boolean> = ko.observable(false);
-
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
-                var self = this;
-                self.command = ko.observable(null);
-                self.locationData = [];
-                //申請者
-                self.employeeName = ko.observable("");
-                //申請日付
-                self.appDate = ko.observable(moment().format('YYYY/MM/DD'));
-                //PRE_POST Switch Button
-                self.prePostSelected = ko.observable(1);
-                self.workEnable = ko.observable(true);
-                self.workVisible = ko.observable(true);
-                self.typeSiftVisible = ko.observable(true);
-                //time Value 
-                self.timeStart1 = ko.observable(0);
-                self.timeEnd1 = ko.observable(0);
-                self.timeStart2 = ko.observable(0);
-                self.timeEnd2 = ko.observable(0);
-                //switch button Selected
-                self.selectedGo = ko.observable(1);
-                self.selectedBack = ko.observable(1);
-                //Go Work 2
-                self.selectedGo2 = ko.observable(1);
-                //BackHome 2
-                self.selectedBack2 = ko.observable(1);
-                //Work Location 
-                self.workLocationCD = ko.observable('');
-                self.workLocationName = ko.observable('');
-                //Work Location 2
-                self.workLocationCD2 = ko.observable('');
-                self.workLocationName2 = ko.observable('');
-                //comment 
-                self.commentGo1 = ko.observable('');
-                self.commentBack1 = ko.observable('');
-                self.commentGo2 = ko.observable('');
-                self.commentBack2 = ko.observable('');
-                self.colorGo = ko.observable('#000000');
-                self.colorBack = ko.observable('#000000');
-                self.fontWeightGo = ko.observable(0);
-                self.fontWeightBack = ko.observable(0);
-
-                //Checkbox 勤務を変更する
-                self.workChangeAtr = ko.observable(true);
-                self.workTypeCd = ko.observable('');
-                self.workTypeName = ko.observable('');
-                self.siftCD = ko.observable('');
-                self.siftName = ko.observable('');
-                //ComboBox Reason
-                self.reasonCombo = ko.observableArray([]);
-                self.selectedReason = ko.observable('');
-                //MultilineEditor 
-                self.multilContent = ko.observable('');
+                let self = this;
                 self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: false,
                     placeholder: "Placeholder for text editor",
                     width: "500",
                     textalign: "left",
                 }));
-                //勤務を変更する
-                self.workChangeAtr.subscribe(function(value) {
-                    self.workEnable(value);
-                });
-                self.startPage(currentApp.appID);
+                //self.startPage(currentApp.appID);
+                self.startPage(self.appID());
+                //self.appID(currentApp.appID);
             }
 
             /**
@@ -147,9 +98,12 @@ module nts.uk.at.view.kaf009.b {
             startPage(appId : string): JQueryPromise<any> {
                 var self = this;
                 let dfd = $.Deferred();
+                let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
+                let initialSelection = 1; //1:申請時に決める（初期選択：勤務を変更する）
+                let notChange = 2; //2:変更しない
+                let change = 3; //3:変更する
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
-                    debugger;
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -157,14 +111,53 @@ module nts.uk.at.view.kaf009.b {
                     self.employeeName(settingData.employeeName);
                     //set Common Setting
                     self.setGoBackSetting(settingData.goBackSettingDto);
+                    //申請制限設定.申請理由が必須
+                    self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
+                    if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
+                        //登録時にメールを送信する Visible
+                        self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false);  
+                    }
+                    //事前事後区分 ※A１
+                    //申請表示設定.事前事後区分　＝　表示する　〇
+                    //申請表示設定.事前事後区分　＝　表示しない ×
+                    self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+                    if(settingData.goBackSettingDto　!= undefined){
+                        //事前事後区分 Enable ※A２
+                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
+                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
+                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                        if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
+                          || settingData.goBackSettingDto.workChangeFlg == initialSelection){
+                            self.isWorkChange(true);
+                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
+                                self.workChangeAtr(false);
+                            }else{
+                                self.workChangeAtr(true);
+                            }
+                            
+                        }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
+                            self.isWorkChange(false);
+                            self.workChangeAtr(false);
+                        }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
+                            self.workChangeAtr(true);
+                            self.isWorkChange(true);
+                            self.workState(false);
+                        }
+                        
+                    }
+                    //共通設定.複数回勤務
+                    self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
+                        //self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
                         self.workLocationName(detailData.workLocationName1);
-                        self.workLocationName2(detailData.workLocationName2);
+                        self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
                         self.selectedReason(detailData.appReasonId);
@@ -184,12 +177,64 @@ module nts.uk.at.view.kaf009.b {
              */
             update() {
                 let self = this;
-                let appId: string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
-                service.updateGoBackDirect(self.getCommand(appId)).done(function() {
-                    alert("Update Done");
-                }).fail(function() {
-
-                })
+                var promiseResult = self.checkBeforeUpdate();
+                promiseResult.done((result) => {
+                    if (result) {
+                        service.updateGoBackDirect(self.getCommand()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        }).fail(function(res: any) {
+                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                        })
+                    }
+                });
+            }
+            
+            
+            checkBeforeUpdate(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred();
+                //check before Insert 
+                if (self.checkUse()) {
+                    service.checkBeforeChangeGoBackDirect(self.getCommand()).done(function() {
+                        dfd.resolve(true);
+                    }).fail(function(res) {
+                        if (res.messageId == "Msg_297") {
+                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
+                                dfd.resolve(true);
+                            }).ifNo(function() {
+                                nts.uk.ui.block.clear();
+                                dfd.resolve(false);
+                            });
+                        } else if (res.messageId == "Msg_298") {
+                            dfd.reject();
+                            //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
+                            $('#inpStartTime1').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpStartTime2').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpEndTime1').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpEndTime2').ntsError('set', { messageId: "Msg_298" });
+                        } else{
+                           nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });     
+                        }
+                    })
+                }
+                return dfd;
+            }
+            
+            /**
+             * アルゴリズム「直行直帰するチェック」を実行する
+             */
+            checkUse(){
+                let self = this;
+                if (self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0) {
+                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
+                        return true;
+                    }).ifNo(function() {
+                        nts.uk.ui.block.clear();
+                        return false;
+                    });
+                } else {
+                    return true;
+                }
             }
 
 
@@ -202,7 +247,7 @@ module nts.uk.at.view.kaf009.b {
                 service.getAllLocation().done(function(data: any) {
                     _.forEach(data, function(value) {
                         if(!nts.uk.util.isNullOrUndefined(value)){
-                            arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                            arrTemp.push({ workLocationCode: value.workLocationCD == null ? '': value.workLocationCD, workLocationName: value.workLocationName == null ? '' : value.workLocationName});
                         }
                     });
                     self.locationData = arrTemp;
@@ -222,86 +267,85 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * 1: insert 
-         * 2: update 
-         * 3: delete
-         */
-            getCommand(appId :string) {
-                let self = this;
-                let command: common.GoBackCommand = new common.GoBackCommand();
-                command.appID = appId;
-                //command.appDate = self.appDate();
-                command.workTypeCD = self.workTypeCd();
-                command.siftCD = self.siftCD();
-                command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
-                command.goWorkAtr1 = self.selectedGo();
-                command.backHomeAtr1 = self.selectedBack();
-                command.workTimeStart1 = self.timeStart1();
-                command.workTimeEnd1 = self.timeEnd1();
-                command.goWorkAtr2 = self.selectedGo2();
-                command.backHomeAtr2 = self.selectedBack2();
-                command.workTimeStart2 = self.timeStart2();
-                command.workTimeEnd2 = self.timeEnd2();
-                command.workLocationCD1 = self.workLocationCD();
-                command.workLocationCD2 = self.workLocationCD2();
-                command.appCommand = new common.ApplicationCommand(
+             * 2: update 
+             */
+            getCommand() {
+                let self = this; 
+                let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
+                //goBackCommand.version = self.version;
+                goBackCommand.appID = self.appID();
+                goBackCommand.workTypeCD = self.workTypeCd();
+                goBackCommand.siftCD = self.siftCD();
+                goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+                goBackCommand.goWorkAtr1 = self.selectedGo();
+                goBackCommand.backHomeAtr1 = self.selectedBack();
+                goBackCommand.workTimeStart1 = self.timeStart1();
+                goBackCommand.workTimeEnd1 = self.timeEnd1();
+                goBackCommand.goWorkAtr2 = self.selectedGo2();
+                goBackCommand.backHomeAtr2 = self.selectedBack2();
+                goBackCommand.workTimeStart2 = self.timeStart2();
+                goBackCommand.workTimeEnd2 = self.timeEnd2();
+                goBackCommand.workLocationCD1 = self.workLocationCD();
+                goBackCommand.workLocationCD2 = self.workLocationCD2();
+                
+                
+                let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
                     self.selectedReason(),
                     self.prePostSelected(),
                     self.appDate(),
-                    self.employeeName(),
+                    self.employeeID,
                     self.multilContent(),
                     self.appDate(),
                     self.multilContent(),
-                    self.employeeName(),
+                    self.employeeID,
                     self.appDate(),
                     self.appDate(),
                     self.appDate(),
                     self.appDate());
-                return command;
+                
+                let commandTotal = {
+                    goBackCommand : goBackCommand,
+                    appCommand : appCommand,
+                    appApprovalPhaseCmds : self.approvalList
+                    }
+                return commandTotal;
             }
 
             /**
-         * Set common Setting 
-         */
+             * Set common Setting 
+             */
             setGoBackSetting(data: common.GoBackDirectSetting) {
                 let self = this;
                 if (data != undefined) {
                     self.commentGo1(data.commentContent1);
-                    self.commentGo2(data.commentContent2);
-                    self.commentBack1(data.commentContent1);
+                    self.commentGo2(data.commentContent1);
+                    self.commentBack1(data.commentContent2);
                     self.commentBack2(data.commentContent2);
                     self.colorGo(data.commentFontColor1);
                     self.colorBack(data.commentFontColor2);
                     self.fontWeightGo(data.commentFontWeight1);
                     self.fontWeightBack(data.commentFontWeight2);
                     switch (data.workChangeFlg) {
-                        case 0: {
-
-                            break;
-                        }
-                        case 1: {
-                            //self.workChangeAtr(true);
-                            break;
-                        }
+                        //直行直帰申請共通設定.勤務の変更　＝　申請時に決める
                         case 2: {
-                            self.workVisible(false);
-                            break;
-                        }
-                        default: {
-                            //self.workChangeAtr(true);
-                            self.workVisible(false);
+                            self.workState(false);
                             self.typeSiftVisible(false);
                             break;
                         }
-
+                        case 3: {
+                            self.workState(false);
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
                     }
-                    self.workEnable(data.workChangeFlg == 1 ? true : false);
                 }
             }
 
             /**
-         * set data from Server 
-         */
+             * set data from Server 
+             */
             setValueControl(data: common.GoBackDirectData) {
                 let self = this;
                 if (!nts.uk.util.isNullOrUndefined(data)) {
@@ -310,13 +354,13 @@ module nts.uk.at.view.kaf009.b {
                     self.timeEnd1(data.workTimeEnd1);
                     self.selectedGo(data.goWorkAtr1);
                     self.selectedBack(data.backHomeAtr1);
-                    self.workLocationCD(data.workLocationCD1);
+                    self.workLocationCD(data.workLocationCD1 == null ? '' : data.workLocationCD1);
                     //Line 2
-                    self.timeStart2(data.workTimeStart2);
+                    self.timeStart2(data.workTimeStart2  == null ? '' : data.workTimeStart2);
                     self.timeEnd2(data.workTimeEnd2);
                     self.selectedGo2(data.goWorkAtr2);
                     self.selectedBack2(data.backHomeAtr2);
-                    self.workLocationCD2(data.workLocationCD2);
+                    self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);
                     //workType, Sift
                     self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
                     self.workTypeCd(data.workTypeCD);
@@ -325,8 +369,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * set reason 
-         */
+             * set reason 
+             */
             setReasonControl(data: Array<common.ReasonDto>) {
                 let self = this;
                 let comboSource: Array<common.ComboReason> = [];
@@ -338,8 +382,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * KDL010_勤務場所選択を起動する
-         */
+             * KDL010_勤務場所選択を起動する
+             */
             openLocationDialog(line: number) {
                 let self = this;
                 nts.uk.ui.block.invisible();

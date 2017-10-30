@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 900, height: 1200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kdw001.e.style.css" />
+			<com:scriptfile path="kdw001.e.start.js" />
+			<com:scriptfile path="kdw001.e.service.js" />
+			<com:scriptfile path="kdw001.e.vm.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+			<div id="contents-area">
+				<div style="margin-bottom: 10px;">
+					<table>
+
+						<tr>
+							<td class="fixcolor">#{i18n.getText('KDW001_24')}</td>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+
+						</tr>
+						<tr>
+							<td class="fixcolor">#{i18n.getText('KDW001_25')}</td>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+						<tr>
+							<td class="fixcolor">#{i18n.getText('KDW001_26')}</td>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+						<tr>
+							<td class="fixcolor" rowspan="4">#{i18n.getText('KDW001_27')}</td>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+						<tr>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+						<tr>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+						<tr>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+					</table>
+				</div>
+				<label>#{i18n.getText('KDW001_29')}</label>
+				<div style="margin-top: 10px; margin-bottom: 10px;">
+					<table>
+						<tr>
+							<td class="fixcolor">#{i18n.getText('KDW001_15')}</td>
+							<td>YYYY/MM/DD hh：mm：ssで表示</td>
+						</tr>
+					</table>
+				</div>
+				<div class="valign-center control-group">
+					<label>#{i18n.getText('KDW001_30')}</label>
+
+					<div tabindex="1" id="combo-box"
+						data-bind="ntsComboBox: {
+						options: itemList,
+						optionsValue: 'code',
+						visibleItemsCount: 5,
+						value: selectedCode,
+						optionsText: 'name',
+						enable: true,
+						columns: [
+							{ prop: 'code', length: 4 },
+						]}"></div>
+					<button tabindex="2">#{i18n.getText('KDW001_31')}</button>
+				</div>
+				<table id="single-list"
+					data-bind="ntsGridList: {								
+						height: 350,
+						dataSource: items,
+						primaryKey: 'code',
+						columns: columns,
+						multiple: false,
+						value: currentCode
+					}"></table>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="4">#{i18n.getText('KDW001_38')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

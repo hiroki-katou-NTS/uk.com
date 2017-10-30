@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -17,6 +17,8 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -27,6 +29,9 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 
 	@Inject
 	ApplicationReasonRepository appFormRepo;
+	
+	@Inject 
+	WorkManagementMultipleRepository workManagerRepo;
 	
 	@Inject 
 	EmployeeAdapter employeeAdapter;
@@ -46,9 +51,6 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 				1, 
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
 				null);
-		
-		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
-		startCheckErrorService.checkError(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
 		//アルゴリズム「直行直帰基本データ」を実行する 
 		GoBackDirectBasicData dataSetting = new GoBackDirectBasicData();
 		//dataSetting.sID(AppContexts.user().employeeId());
@@ -66,6 +68,11 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		dataSetting.setAppCommonSettingOutput(appCommonSetting);
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
 		startCheckErrorService.checkError(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+		//共通設定.複数回勤務
+		Optional<WorkManagementMultiple> workManagement = workManagerRepo.findByCode(companyID);
+		if(workManagement.isPresent()) {
+			dataSetting.setDutiesMulti(workManagement.get().getUseATR().value == 1 ? true : false);
+		}
 		return dataSetting;
 	}
 

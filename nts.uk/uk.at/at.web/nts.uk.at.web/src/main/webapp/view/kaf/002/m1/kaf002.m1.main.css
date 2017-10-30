@@ -16,7 +16,7 @@
 	width: 95px;
 }
 .m1-panel {
-	width: 500px;	
+	width: 645px;	
 	margin-bottom: 3px;
 	padding: 3px;
 }
@@ -26,8 +26,11 @@
 	margin-left: 5px;
 	width: 100px;
 }
+.m1-label.limited-label {
+	width: 280px;
+}
 .m1-time-editor {
-	width: 80px;
+	width: 83px;
 }
 .m1-switch > .nts-switch-button {
 	width: 80px;

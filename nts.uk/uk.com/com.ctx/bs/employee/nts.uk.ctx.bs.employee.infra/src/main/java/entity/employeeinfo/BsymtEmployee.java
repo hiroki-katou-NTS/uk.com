@@ -3,7 +3,6 @@ package entity.employeeinfo;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,6 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYEE")
+//社員基本情報
 public class BsymtEmployee extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

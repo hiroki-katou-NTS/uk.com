@@ -593,6 +593,11 @@ module nts.uk.ui {
             return handlers;
         };
         
+        function addError(errorBody: JQuery, msg: string, id: string, idx: number){
+            let row = $("<tr/>");
+            row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");   
+            row.appendTo(errorBody);  
+        }
         
         export function bundledErrors(errors) {
             let id = util.randomId();
@@ -601,10 +606,16 @@ module nts.uk.ui {
             container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
                     "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
             let errorBody = container.find("tbody");
-            _.forEach(errors["messageId"], function(id, idx){ 
-                let row = $("<tr/>");
-                row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");   
-                row.appendTo(errorBody);     
+            let idxCount = 0;
+            _.forEach(errors["messageId"], function(id, idx: number){ 
+                if ($.isArray(errors.messages[id])) {
+                   _.forEach(errors.messages[id], function (m) {
+                        addError(errorBody, m , id, idx + idxCount + 1); 
+                        idxCount++;
+                   }); 
+                } else {
+                    addError(errorBody, errors.messages[id], id, idx + idxCount + 1); 
+                }  
             });
             let functionArea = container.find("#functions-area-bottom");
             functionArea.append("<button class='ntsButton ntsClose large'/>");

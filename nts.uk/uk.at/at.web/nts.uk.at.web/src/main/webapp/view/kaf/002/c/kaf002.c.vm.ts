@@ -19,29 +19,29 @@ module nts.uk.at.view.kaf002.c {
             }
             
             startPage(appID: string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 var dfdCommonSet = service.newScreenFind();
                 var dfdAppStamp = service.findByAppID(appID);
                 $.when(dfdCommonSet, dfdAppStamp).done((commonSetData, appStampData) => {
                     self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
-                    self.cm.start(commonSetData, appStampData, self.approvalList);
+                    self.cm.start(commonSetData, appStampData, self.approvalList);   
                     dfd.resolve(); 
                 })
                 .fail(function(res) { 
-                    dfd.reject(res); 
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); T
+                        nts.uk.ui.block.clear();
+                    });
+                    dfd.reject(res);  
                 });
                 return dfd.promise();
-            }
-
-            register() {
-                var self = this;
-                self.cm.register();
             }
             
             update(){
                 var self = this;
-                self.cm.register();
+                self.cm.update(self.approvalList);
             }
         }
     }

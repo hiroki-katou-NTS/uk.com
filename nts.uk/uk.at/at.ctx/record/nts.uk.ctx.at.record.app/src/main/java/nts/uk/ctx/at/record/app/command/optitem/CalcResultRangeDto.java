@@ -67,7 +67,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public CalcRangeCheck getLowerLimit() {
-		return this.upperCheck ? CalcRangeCheck.SET : CalcRangeCheck.NOT_SET;
+		return this.lowerCheck ? CalcRangeCheck.SET : CalcRangeCheck.NOT_SET;
 	}
 
 	/*

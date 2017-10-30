@@ -42,11 +42,7 @@ public class KrqdtAppStamp extends UkJpaEntity {
 	@Column(name="APP_TIME")
 	public Integer appTime;
 	
-	@OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, orphanRemoval = true)
-	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
-	})
+	@OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, mappedBy = "krqdtAppStamp", orphanRemoval = true)
 	public KafdtApplication kafdtApplication;
 	
 	@OneToMany(targetEntity=KrqdtAppStampDetail.class, cascade = CascadeType.ALL, mappedBy = "krqdtAppStamp", orphanRemoval = true)

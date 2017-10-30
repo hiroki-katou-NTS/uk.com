@@ -4,9 +4,6 @@ module nts.uk.com.view.cmm018.l {
             date: KnockoutObservable<Date>;
             constructor() {
                 var self = this;
-                //self.date = ko.observable('20000101');
-//                var currentDate = (new Date()).toISOString().split('T')[0];
-//                self.date = ko.observable(currentDate);
                 self.date =ko.observable(new Date())
             }
             //閉じるボタン

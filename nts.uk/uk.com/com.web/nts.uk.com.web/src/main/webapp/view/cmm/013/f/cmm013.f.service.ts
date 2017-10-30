@@ -9,19 +9,11 @@ module nts.uk.com.view.cmm013.f {
          *  Service paths
          */
         var servicePath: any = {
-            findMaxOrder: "bs/employee/jobtitle/sequence/findMaxOrder",
             findAllSequenceMaster: "bs/employee/jobtitle/sequence/findAll",
             findBySequenceCode: "bs/employee/jobtitle/sequence/find",
             saveSequenceMaster: "bs/employee/jobtitle/sequence/save",
             removeSequenceMaster: "bs/employee/jobtitle/sequence/remove",
         };
-        
-        /**
-         * findMaxOrder
-         */
-        export function findMaxOrder(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findMaxOrder);
-        }
         
         /**
          * findAllSequenceMaster

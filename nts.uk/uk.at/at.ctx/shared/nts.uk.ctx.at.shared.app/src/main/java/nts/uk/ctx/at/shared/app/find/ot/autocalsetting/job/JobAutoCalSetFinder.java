@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.ot.autocalsetting.job;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -32,7 +34,7 @@ public class JobAutoCalSetFinder {
 	public JobAutoCalSettingDto getJobAutoCalSetting(String jobId) {
 		String companyId = AppContexts.user().companyId();
 
-		Optional<JobAutoCalSetting> opt = this.jobAutoCalSettingRepository.getAllJobAutoCalSetting(companyId, jobId);
+		Optional<JobAutoCalSetting> opt = this.jobAutoCalSettingRepository.getJobAutoCalSetting(companyId, jobId);
 
 		if (!opt.isPresent()) {
 			return null;
@@ -43,5 +45,18 @@ public class JobAutoCalSetFinder {
 		opt.get().saveToMemento(dto);
 
 		return dto;
+	}
+	
+	public List<JobAutoCalSettingDto> getAllJobAutoCalSetting(){
+		String companyId = AppContexts.user().companyId();
+
+		List<JobAutoCalSetting> listAll = this.jobAutoCalSettingRepository.getAllJobAutoCalSetting(companyId);
+		
+		return listAll.stream().map(e -> {
+			JobAutoCalSettingDto dto = new JobAutoCalSettingDto();
+			e.saveToMemento(dto);
+			
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

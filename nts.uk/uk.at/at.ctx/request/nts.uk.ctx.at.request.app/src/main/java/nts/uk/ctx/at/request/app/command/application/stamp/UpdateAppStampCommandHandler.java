@@ -11,13 +11,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author Doan Duy Hung
@@ -41,6 +42,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
+	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private AppStampDetailDomainService applicationStampDetailDomainService;
@@ -53,18 +56,18 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyID, 
-						"", 
-						"", 
+						appApprovalPhaseCmd.appID, 
+						appApprovalPhaseCmd.phaseID, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
 						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyID, 
-								"", 
+								approvalFrame.frameID, 
 								approvalFrame.dispOrder, 
 								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyID, 
-										"", 
+										approveAccepted.appAcceptedID, 
 										approveAccepted.approverSID,
 										ApprovalAtr.UNAPPROVED.value,
 										approveAccepted.confirmATR,
@@ -82,10 +85,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.PREDICT,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -122,10 +125,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -156,6 +159,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					).collect(Collectors.toList()),
 					null,
 					null);
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_CANCEL: 
@@ -163,10 +167,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -191,6 +195,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ONLINE_RECORD: 
@@ -198,10 +203,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -223,6 +228,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case OTHER:
@@ -230,10 +236,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					new AppReason(""),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -264,6 +270,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					).collect(Collectors.toList()),
 					null,
 					null);
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			default:

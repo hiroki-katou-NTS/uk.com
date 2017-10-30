@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-
 /**
  * The Interface WorkHierarchyGetMemento.
  */
@@ -16,7 +14,7 @@ public interface WorkplaceHierarchyGetMemento {
 	 *
 	 * @return the workplace id
 	 */
-	WorkplaceId getWorkplaceId();
+    String getWorkplaceId();
 
     /**
      * Gets the hierarchy code.

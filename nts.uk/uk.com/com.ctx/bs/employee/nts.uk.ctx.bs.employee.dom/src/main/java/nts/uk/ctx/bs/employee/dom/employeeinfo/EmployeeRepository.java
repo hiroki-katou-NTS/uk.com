@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 /**
  * The Interface EmployeeRepository.
@@ -87,17 +88,54 @@ public interface EmployeeRepository {
 	Boolean isDuplicateEmpCode(String companyId, String employeeCode);
 
 	Boolean isDuplicateCardNo(String companyId, String cardNumber);
-	
-	//laitv
+
+	// laitv
+	/**
+	 * Get Employee Info
+	 * 
+	 * @param employeeId
+	 * @return
+	 */
 	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
-	
+
+	/**
+	 * Get Employee Info
+	 * 
+	 * @param employeeId
+	 * @return
+	 */
 	Optional<Object[]> getEmployeeDetailToDelete(String employeeId);
+	
+	/**
+	 * Get list EmployeeDelete
+	 * @return
+	 */
 
 	List<Object[]> getAllEmployeeInfoToDelete();
+
+	
+
+	/**
+	 * Update Employee
+	 * @param domain
+	 */
+	void updateEmployee(Employee domain);
+	
+	/**
+	 * @param employeeId
+	 * @param companyId
+	 * @param systemDate
+	 * RequestList #101
+	 * @return the optional
+	 */
+	Optional<Employee> findBySidCidSystemDate(String companyId, String personId , GeneralDate systemDate);
+	
 	/**
 	 * 
-	 * temporary delete Employee 
-	 * @param domain: DeleteEmpManagement
+	 * @param companyId
+	 * @return
 	 */
-	void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement);
+	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
+	
+	List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId );
 }

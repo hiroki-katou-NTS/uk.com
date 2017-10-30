@@ -16,33 +16,43 @@ import nts.arc.layer.dom.AggregateRoot;
  * @return the imap info
  */
 @Getter
+// メールサーバー								
 public class MailServer extends AggregateRoot {
 
 	/** The company id. */
+	// 会社ID
 	private String companyId;
 
 	/** The use authentication. */
+	// メール送信認証
 	private UseAuthentication useAuthentication;
 
 	/** The encryption method. */
+	// 暗号化方式
 	private EncryptionMethod encryptionMethod;
 
 	/** The authentication method. */
+	// 認証方式
 	private AuthenticationMethod authenticationMethod;
 
 	/** The email authentication. */
+	// 認証用メールアドレス
 	private EmailAuthentication emailAuthentication;
 
 	/** The password. */
+	// パスワード
 	private Password password;
 
 	/** The smtp info. */
+	// SMTP情報
 	private SmtpInfo smtpInfo;
 
 	/** The pop info. */
+	// POP情報
 	private PopInfo popInfo;
 
 	/** The imap info. */
+	// IMAP情報
 	private ImapInfo imapInfo;
 
 	/**

@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -36,6 +37,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> {
+	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Inject
 	private AppStampNewDomainService applicationStampNewDomainService;
@@ -51,9 +54,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						companyID, 
 						"", 
 						"", 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class), 
 						appApprovalPhaseCmd.dispOrder, 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
+						ApprovalAtr.UNAPPROVED, 
 						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyID, 
 								"", 
@@ -77,9 +80,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 				appStamp = AppStamp.createFromJavaType(
 					companyID, 
 					PrePostAtr.PREDICT,
-					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 					employeeID, 
-					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 					employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					appStampCmd.getAppStampGoOutPermitCmds().stream().map(
@@ -101,9 +104,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
 						PrePostAtr.POSTERIOR,
-						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 						employeeID, 
-						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
@@ -127,9 +130,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 				appStamp = AppStamp.createFromJavaType(
 						companyID,  
 						PrePostAtr.POSTERIOR,
-						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 						employeeID, 
-						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
@@ -147,9 +150,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
 						PrePostAtr.POSTERIOR,
-						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 						employeeID, 
-						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
@@ -164,9 +167,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
 						PrePostAtr.POSTERIOR,
-						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getInputDate(), DATE_FORMAT), 
 						employeeID, 
-						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,

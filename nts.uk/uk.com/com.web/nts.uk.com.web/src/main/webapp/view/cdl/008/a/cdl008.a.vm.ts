@@ -43,7 +43,8 @@ module nts.uk.com.view.cdl008.a {
                     baseDate: self.baseDate,
                     isDialog: true,
                     selectedWorkplaceId : null, 
-                    maxRows: 12
+                    maxRows: 12, 
+                    tabindex: 1
                 }
                 if (self.isMultiple) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
@@ -60,12 +61,12 @@ module nts.uk.com.view.cdl008.a {
                 var self = this;
                 if(self.isMultiple){
                     if(!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
                         return;    
                     }    
                 }else {
                      if(!self.selectedSelWorkplace || !self.selectedSelWorkplace()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
                         return;    
                     }      
                 }
@@ -74,13 +75,14 @@ module nts.uk.com.view.cdl008.a {
                 if (!self.isMultiple) {
                     selectedCode = self.selectedSelWorkplace();
                 }
-                nts.uk.ui.windows.setShared('outputCDL008', { selectedCode: selectedCode });
+                nts.uk.ui.windows.setShared('outputCDL008',  selectedCode);
                 nts.uk.ui.windows.close();    
             }
             /**
              * close windows
              */
             private closeWindows(): void{
+                nts.uk.ui.windows.setShared('CDL008Cancel', true);
                 nts.uk.ui.windows.close();  
             }
         }

@@ -1,7 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,5 +57,9 @@ public class Approver extends DomainObject{
 	}
 	public void updateApproverId(String approverId){
 		this.approverId = approverId;
+	}
+	
+	public boolean isConfirmer() {
+		return this.confirmPerson == ConfirmPerson.CONFIRM;
 	}
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceSetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK;
@@ -70,9 +69,9 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento {
      * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId)
      */
     @Override
-    public void setWorkplaceId(WorkplaceId workplaceId) {
+    public void setWorkplaceId(String workplaceId) {
         this.lstEntity.forEach(entity -> {
-            entity.getBsymtWorkplaceHistPK().setWkpid(workplaceId.v());
+            entity.getBsymtWorkplaceHistPK().setWkpid(workplaceId);
         });
     }
 
@@ -86,7 +85,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento {
     public void setWorkplaceHistory(List<WorkplaceHistory> lstWkpHistory) {
         // convert list workplace history to map by key historyId
         Map<String, DatePeriod> mapWkpHist = lstWkpHistory.stream().collect(Collectors.toMap(
-                item -> ((WorkplaceHistory) item).getHistoryId().v(), item -> ((WorkplaceHistory) item).getPeriod()));
+                item -> ((WorkplaceHistory) item).getHistoryId(), item -> ((WorkplaceHistory) item).getPeriod()));
 
         // set period
         this.lstEntity.forEach(entity -> {

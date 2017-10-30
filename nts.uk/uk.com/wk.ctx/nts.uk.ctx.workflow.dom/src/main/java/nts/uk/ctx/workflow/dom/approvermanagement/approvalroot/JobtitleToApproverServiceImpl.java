@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,12 +15,14 @@ import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SearchSetFlg;
 
 /**
  * 3.職位から承認者へ変換する
@@ -39,7 +42,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	@Inject
 	private JobAssignSettingRepository jobAssignSetRepository;
 	@Inject
-	private WorkplaceAdapter wkApproverAdapter;
+	private WorkplaceApproverAdapter wkApproverAdapter;
 
 	/**
 	 * 3.職位から承認者へ変換する
@@ -48,7 +51,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	@Override
 	public List<ApproverInfo> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
-		boolean isApper = compareRank(cid, sid, baseDate, jobTitleId);
+		boolean isApper = checkIfApproverIsGreaterThanRequester(cid, sid, baseDate, jobTitleId);
 		if (isApper) {
 			String wkpId = this.wkApproverAdapter.getWorkplaceId(cid, sid, baseDate);
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
@@ -58,14 +61,16 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 
 			// lấy domain 「職位別のサーチ設定」
-			Optional<JobtitleSearchSet> job = this.jobtitleSearchSetRepository.finById(cid, jobTitleId);
-			if (job.isPresent()) {
+			boolean needsSearch = this.jobtitleSearchSetRepository.finById(cid, jobTitleId)
+						.map(s -> s.needsSearch())
+							.orElse(false);
+			if (needsSearch) {
 				List<String> wkpIds = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
 				wkpIds.remove(0);
 
 				// 上位職場が存在する(not exist wkpId 上位)
 				if (CollectionUtil.isEmpty(wkpIds)) {
-					return null;
+					Collections.emptyList();
 				}
 
 				// 上位職場の先頭から最後ループ
@@ -80,7 +85,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -92,18 +97,21 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 * @param jobTitleId
 	 * @return
 	 */
-	private boolean compareRank(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
+	private boolean checkIfApproverIsGreaterThanRequester(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		JobTitleImport jobOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
 		// 承認者の
 		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
-		// 申請の
-		JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(),
-				baseDate);
-		if (jobOfApprover == null || jobOfRequest == null) {
-			return false;
-		}
-		if (jobOfRequest.getSequenceCode().compareTo(jobOfApprover.getSequenceCode()) < 0) {
-			return true;
+		if (jobOfEmp != null) {
+			// 申請の
+			JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(),
+					baseDate);
+			if (jobOfApprover == null || jobOfRequest == null) {
+				return false;
+			}
+			if (jobOfRequest.isGreaterThan(jobOfRequest)) {
+				return true;
+			}
+
 		}
 
 		return false;
@@ -121,24 +129,22 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 * @return
 	 */
 	private List<ApproverInfo> getByWkp(String cid, String wkpId, GeneralDate baseDate, String jobTitleId) {
-		List<ApproverInfo> approvers = new ArrayList<>();
+		
 		// 承認者の
 		List<ConcurrentEmployeeImport> employeeList = this.employeeAdapter.getConcurrentEmployee(cid, jobTitleId,
 				baseDate);
 		JobAssignSetting assignSet = this.jobAssignSetRepository.findById(cid);
 		if (assignSet.getIsConcurrently()) {
 			// 本務兼務区分が兼務の対象者を除く
-			List<ConcurrentEmployeeImport> concurrentList = employeeList.stream().filter(x -> {
-				return x.getJobCls() == 1;
-			}).collect(Collectors.toList());
-			employeeList.removeAll(concurrentList);
+			employeeList.removeIf(x -> x.isConcurrent());
 		}
 		
+		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
 			String wkpIdOfEmp = this.wkApproverAdapter.getWorkplaceId(cid, emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp)) {
-				//truyền tạm approvalAtr = 1 
-				approvers.add(new ApproverInfo(emp.getJobId(), emp.getEmployeeId(), null, null, null, emp.getPersonName(),1));
+				// truyền tạm approvalAtr = 1
+				approvers.add(ApproverInfo.create(emp));
 			}
 		}
 		return approvers;

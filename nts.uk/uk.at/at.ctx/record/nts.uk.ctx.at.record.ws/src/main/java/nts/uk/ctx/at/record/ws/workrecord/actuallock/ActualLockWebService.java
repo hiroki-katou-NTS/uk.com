@@ -14,8 +14,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.workrecord.actuallock.ActualLockSaveCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.actuallock.ActualLockSaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.actuallock.ActualLockFindDto;
-import nts.uk.ctx.at.record.app.find.workrecord.actuallock.ActualLockFinder1;
+import nts.uk.ctx.at.record.app.find.workrecord.actuallock.ActualLockFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.actuallock.ActualLockFinderDto;
 import nts.uk.ctx.at.record.app.find.workrecord.actuallock.ActualLockHistFindDto;
 
@@ -26,17 +28,15 @@ import nts.uk.ctx.at.record.app.find.workrecord.actuallock.ActualLockHistFindDto
 @Produces(MediaType.APPLICATION_JSON)
 public class ActualLockWebService extends WebService {
 
-//	@Inject
-//	private ActualLockFinder actualLockRepo;
-//	
-//	@Inject
-//	private ActualLockHistFinder actualLockHistRepo;
-	
+
 	/** The lock finder. */
-@Inject
-	private ActualLockFinder1 lockFinder; 
+	@Inject
+	private ActualLockFinder lockFinder;
 	
-	
+	/** The actual lock save handle. */
+	@Inject
+	private ActualLockSaveCommandHandler actualLockSaveHandle;
+
 	/**
 	 * Find all.
 	 *
@@ -47,7 +47,7 @@ public class ActualLockWebService extends WebService {
 	public List<ActualLockFinderDto> findAll() {
 		return this.lockFinder.findAll();
 	}
-	
+
 	/**
 	 * Find hist by target YM.
 	 *
@@ -62,6 +62,12 @@ public class ActualLockWebService extends WebService {
 		return this.lockFinder.findHistByTargetYM(closureId, targetYM);
 	}
 	
+	@POST
+	@Path("findHistByClosure/{closureId}")
+	public List<ActualLockHistFindDto> findHistByClosure(@PathParam("closureId") int closureId) {
+		return this.lockFinder.findHistByClosure(closureId);
+	}
+
 	/**
 	 * Find lock by closure id.
 	 *
@@ -73,4 +79,16 @@ public class ActualLockWebService extends WebService {
 	public ActualLockFindDto findLockByClosureId(@PathParam("closureId") int closureId) {
 		return this.lockFinder.findById(closureId);
 	}
+	
+	/**
+	 * Save lock.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("saveLock")
+	public Boolean saveLock(ActualLockSaveCommand command) {
+		return this.actualLockSaveHandle.handle(command);
+	}
+	
 }

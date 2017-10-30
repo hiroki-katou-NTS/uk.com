@@ -16,4 +16,8 @@ import lombok.NoArgsConstructor;
 public class ApproverRepresenterOutput {
 	String approver;
 	String representer;
+	
+	public boolean isPass() {
+		return this.representer.equals("Pass");
+	}
 }

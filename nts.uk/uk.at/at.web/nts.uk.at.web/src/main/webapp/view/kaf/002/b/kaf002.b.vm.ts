@@ -11,6 +11,7 @@ module nts.uk.at.view.kaf002.b {
             stampRequestMode: number = 0;
             screenMode: number = 0;
             employeeID: string = '';
+            autoSendMail: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 __viewContext.transferred.ifPresent(data => {
@@ -19,23 +20,37 @@ module nts.uk.at.view.kaf002.b {
                 });
                 self.cm = new kaf002.cm.viewmodel.ScreenModel(self.stampRequestMode, self.screenMode);
                 self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
-                self.startPage().done((commonSet: vmbase.AppStampNewSetDto)=>{
+                self.startPage()
+                .done((commonSet: vmbase.AppStampNewSetDto)=>{
+                    self.autoSendMail(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true : false);
                     self.employeeID = commonSet.employeeID;
                     self.kaf000_a2.start(
                         self.employeeID, 
                         employmentRootAtr, 
                         applicationType, 
-                        moment(new Date()).format("YYYY/MM/DD")).done(()=>{
-                        self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);    
+                        moment(new Date()).format("YYYY/MM/DD"))
+                    .done(()=>{
+                        if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalList)){
+                            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
+                        } else {
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);  
+                        }  
                     }).fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                            nts.uk.ui.block.clear();
+                        });
                     });   
                 }).fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                        nts.uk.ui.block.clear();
+                    });
                 }); 
             }
             
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 service.newScreenFind()
@@ -44,7 +59,10 @@ module nts.uk.at.view.kaf002.b {
                         dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                            nts.uk.ui.block.clear();
+                        });
                         dfd.reject(res); 
                     });
                 return dfd.promise();
@@ -53,11 +71,6 @@ module nts.uk.at.view.kaf002.b {
             register() {
                 var self = this;
                 self.cm.register();
-            }
-            
-            update() {
-                var self = this;
-                self.cm.update();
             }
             
             performanceReference(){

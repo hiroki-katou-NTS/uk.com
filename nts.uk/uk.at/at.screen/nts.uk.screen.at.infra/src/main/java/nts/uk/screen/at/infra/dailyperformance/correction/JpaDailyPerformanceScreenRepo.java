@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import entity.employeeinfo.BsymtEmployee;
+import entity.person.info.BpsmtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KrcmtDailyAttendanceItem;
@@ -28,22 +29,22 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVac
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
-import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
-import nts.uk.screen.at.app.dailyperformance.correction.ClosureDto;
-import nts.uk.screen.at.app.dailyperformance.correction.Com60HVacationDto;
-import nts.uk.screen.at.app.dailyperformance.correction.CompensLeaveComDto;
-import nts.uk.screen.at.app.dailyperformance.correction.DPAttendanceItem;
-import nts.uk.screen.at.app.dailyperformance.correction.DPAttendanceItemControl;
-import nts.uk.screen.at.app.dailyperformance.correction.DPBusinessTypeControl;
-import nts.uk.screen.at.app.dailyperformance.correction.DPErrorDto;
-import nts.uk.screen.at.app.dailyperformance.correction.DPErrorSettingDto;
-import nts.uk.screen.at.app.dailyperformance.correction.DPSheetDto;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceEmployeeDto;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.DateRange;
-import nts.uk.screen.at.app.dailyperformance.correction.FormatDPCorrectionDto;
-import nts.uk.screen.at.app.dailyperformance.correction.SubstVacationDto;
-import nts.uk.screen.at.app.dailyperformance.correction.YearHolidaySettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.Com60HVacationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.CompensLeaveComDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPBusinessTypeControl;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -66,6 +67,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_CLASSIFICATION = "SELECT c FROM CclmtClassification c WHERE c.cclmtClassificationPK.cid = :companyId";
 
 	private final static String SEL_EMPLOYEE;
+
+	private final static String SEL_PERSON = "SELECT p FROM BpsmtPerson p WHERE p.bpsmtPersonPk.pId IN :lstPersonId";
 
 	private final static String SEL_DP_TYPE_CONTROL;
 
@@ -114,35 +117,39 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_CLOSURE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append(
-				"SELECT e FROM BsymtEmployment e WHERE e.bsymtEmploymentPK.cid = :companyId");
+		builderString.append("SELECT e FROM BsymtEmployment e WHERE e.bsymtEmploymentPK.cid = :companyId");
 		SEL_EMPLOYMENT_BY_CLOSURE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT w FROM CwpmtWorkplace w JOIN ");
+		builderString.append("SELECT w FROM BsymtWorkplaceInfo w JOIN ");
 		builderString.append("KmnmtAffiliWorkplaceHist a ");
 		builderString.append("WHERE a.kmnmtAffiliWorkplaceHistPK.empId = :sId ");
 		builderString.append("AND a.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate ");
 		builderString.append("AND a.endD >= :baseDate ");
-		builderString.append("AND w.cwpmtWorkplacePK.wkpid = a.kmnmtAffiliWorkplaceHistPK.wkpId ");
-		builderString.append("AND w.cwpmtWorkplacePK.strD <= :baseDate ");
-		builderString.append("AND w.cwpmtWorkplacePK.endD >= :baseDate");
+		builderString.append("AND w.bsymtWorkplaceInfoPK.wkpid = a.kmnmtAffiliWorkplaceHistPK.wkpId ");
+		builderString.append("AND w.bsymtWorkplaceHist.strD <= :baseDate ");
+		builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT s FROM BsymtEmployee s ");
-//		builderString.append("JOIN KmnmtAffiliClassificationHist c ");
-//		builderString.append("JOIN KmnmtAffiliEmploymentHist e ");
-//		builderString.append("JOIN KmnmtAffiliJobTitleHist j ");
+		// builderString.append("JOIN KmnmtAffiliClassificationHist c ");
+		// builderString.append("JOIN KmnmtAffiliEmploymentHist e ");
+		// builderString.append("JOIN KmnmtAffiliJobTitleHist j ");
 		builderString.append("JOIN KmnmtAffiliWorkplaceHist w ");
 		builderString.append("WHERE w.kmnmtAffiliWorkplaceHistPK.wkpId IN :lstWkp ");
-//		builderString.append("AND e.kmnmtEmploymentHistPK.emptcd IN :lstEmp ");
-//		builderString.append("AND j.kmnmtJobTitleHistPK.jobId IN :lstJob ");
-//		builderString.append("AND c.kmnmtClassificationHistPK.clscd IN :lstClas ");
+		// builderString.append("AND e.kmnmtEmploymentHistPK.emptcd IN :lstEmp
+		// ");
+		// builderString.append("AND j.kmnmtJobTitleHistPK.jobId IN :lstJob ");
+		// builderString.append("AND c.kmnmtClassificationHistPK.clscd IN
+		// :lstClas ");
 		builderString.append("AND s.bsymtEmployeePk.sId = w.kmnmtAffiliWorkplaceHistPK.empId ");
-//		builderString.append("OR s.bsymtEmployeePk.sId = e.kmnmtEmploymentHistPK.empId ");
-//		builderString.append("OR s.bsymtEmployeePk.sId = j.kmnmtJobTitleHistPK.empId ");
-//		builderString.append("OR s.bsymtEmployeePk.sId = c.kmnmtClassificationHistPK.empId ");
+		// builderString.append("OR s.bsymtEmployeePk.sId =
+		// e.kmnmtEmploymentHistPK.empId ");
+		// builderString.append("OR s.bsymtEmployeePk.sId =
+		// j.kmnmtJobTitleHistPK.empId ");
+		// builderString.append("OR s.bsymtEmployeePk.sId =
+		// c.kmnmtClassificationHistPK.empId ");
 		SEL_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -242,8 +249,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<String> getListEmployment() {
 		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, BsymtEmployment.class)
-				.setParameter("companyId", AppContexts.user().companyId())
-				.getList().stream().map(e -> {
+				.setParameter("companyId", AppContexts.user().companyId()).getList().stream().map(e -> {
 					return e.getBsymtEmploymentPK().getCode();
 				}).collect(Collectors.toList());
 	}
@@ -251,9 +257,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Map<String, String> getListWorkplace(String employeeId, DateRange dateRange) {
 		Map<String, String> lstWkp = new HashMap<>();
-		this.queryProxy().query(SEL_WORKPLACE, CwpmtWorkplace.class).setParameter("sId", employeeId)
+		this.queryProxy().query(SEL_WORKPLACE, BsymtWorkplaceInfo.class).setParameter("sId", employeeId)
 				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().forEach(w -> {
-					lstWkp.put(w.getCwpmtWorkplacePK().getWkpid(), w.getWkpname());
+					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
 		return lstWkp;
 	}
@@ -269,22 +275,22 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		return this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployee.class)
-//				.setParameter("lstClas", lstClassification)
-//				.setParameter("lstEmp", lstEmployment)
-//				.setParameter("lstJob", lstJobTitle)
-				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList().stream()
-				.map(s -> {
-					if (s.bsymtEmployeePk.sId.equals(AppContexts.user().employeeId())) {
-						return new DailyPerformanceEmployeeDto(s.bsymtEmployeePk.sId,
-								s.employeeCode, "", lstWorkplace.values().stream().findFirst().get(),
-								"", true);
-					} else {
-						return new DailyPerformanceEmployeeDto(s.bsymtEmployeePk.sId,
-								s.employeeCode, "", lstWorkplace.values().stream().findFirst().get(),
-								"", false);
-					}
-				}).collect(Collectors.toList());
+		List<BsymtEmployee> lstEmployee = this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployee.class)
+				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList();
+		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
+				.setParameter("lstPersonId", lstEmployee.stream().map((employee) -> {
+					return employee.personId;
+				}).collect(Collectors.toList())).getList();
+		return lstEmployee.stream().map((employee) -> {
+			for (BpsmtPerson person : lstPerson) {
+				if (person.bpsmtPersonPk.pId.equals(employee.personId)) {
+					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeePk.sId, employee.employeeCode,
+							person.personName, lstWorkplace.values().stream().findFirst().get(), "", false);
+				}
+			}
+			return new DailyPerformanceEmployeeDto(employee.bsymtEmployeePk.sId, employee.employeeCode, "",
+					lstWorkplace.values().stream().findFirst().get(), "", false);
+		}).collect(Collectors.toList());
 	}
 
 	@Override

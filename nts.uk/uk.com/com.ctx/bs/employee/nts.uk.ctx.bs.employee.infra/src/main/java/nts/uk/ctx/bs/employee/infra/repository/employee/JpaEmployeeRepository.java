@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import entity.employeeinfo.BsymtEmployee;
+import entity.employeeinfo.BsymtEmployeePk;
 import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
+import entity.layout.PpemtMaintenanceLayout;
+import entity.layout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -24,6 +27,7 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagement;
 import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagementPK;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
@@ -91,7 +95,21 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId "
 			+ " WHERE a.bsymtDeleteEmpManagementPK.sid = :sid";
+	
+	public final String SELECT_BY_SID_CID_SYSTEMDATE = "SELECT c FROM BsymtEmployee c "
+			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+			+ " WHERE c.companyId = :companyId " + " AND c.personId = :personId"
+			+ " AND d.bsymtJobEntryHistoryPk.entryDate <= :systemDate" + " AND d.retireDate >= :systemDate";
 
+	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca "
+			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
+
+	
 	/**
 	 * convert entity BsymtEmployee to domain Employee
 	 * 
@@ -116,19 +134,34 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				entity.hiringType, entity.retireDate, entity.bsymtJobEntryHistoryPk.entryDate, entity.adoptDate);
 		return domain;
 	}
-
-	private BsymtDeleteEmpManagement toEntityDeleteEmpManagent(DeleteEmpManagement domain) {
-		BsymtDeleteEmpManagementPK pk = new BsymtDeleteEmpManagementPK(domain.getSid());
-		BsymtDeleteEmpManagement entity = new BsymtDeleteEmpManagement();
-		entity.setBsymtDeleteEmpManagementPK(pk);
-		entity.setReason(domain.getReasonRemoveEmp().toString());
-		entity.setIsDeleted(0); // 0 : false
-		entity.setDeleteDate(domain.getDeleteDate());
-		
+	
+	private BsymtEmployee toEntityEmployee(Employee domain) {
+		BsymtEmployee entity = new BsymtEmployee();
+		entity.bsymtEmployeePk = new BsymtEmployeePk(domain.getSId().toString());
+		entity.companyId = domain.getCompanyId();
+		entity.companyMail = domain.getCompanyMail().v();
+		entity.companyMobile = domain.getCompanyMobile().v();
+		entity.employeeCode = domain.getSCd().v();
+		entity.personId = domain.getPId();
+		entity.companyMobileMail = domain.getMobileMail().v();
 		return entity;
-		
-		
 	}
+	
+	// mapping 
+		private PersonInfoCategory createDomainPerInfoCtgFromEntity(Object[] c) {
+			String personInfoCategoryId = String.valueOf(c[0]);
+			String categoryCode = String.valueOf(c[1]);
+			String categoryName = String.valueOf(c[2]);
+			int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
+			String categoryParentCd = (c[4] != null) ? String.valueOf(c[4]) : null;
+			int categoryType = Integer.parseInt(String.valueOf(c[5]));
+			int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
+			int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
+			return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
+					categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
+		}
+
+
 	@Override
 	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
 		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployee.class)
@@ -306,11 +339,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	}
 
 	@Override
-	public void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement) {
-		this.commandProxy().insert(toEntityDeleteEmpManagent(deleteEmpManagement));
-	}
-
-	@Override
 	public List<Object[]> getAllEmployeeInfoToDelete() {
 		List<Object[]> lst = this.queryProxy().query(GET_ALL_EMPLOYEE_INFO_TO_DELETE).getList();
 		return lst;
@@ -322,6 +350,53 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		Optional<Object[]> empDetailInfo = this.queryProxy().query(GET_EMPLOYEE_DETAIL_INFO_TO_DELETE)
 				.setParameter("sid", employeeId).getSingle();
 		return empDetailInfo;
+	}
+
+	@Override
+	public void updateEmployee(Employee domain) {
+		this.commandProxy().update(toEntityEmployee(domain));
+	}
+
+	@Override
+	public Optional<Employee> findBySidCidSystemDate(String companyId, String personId, GeneralDate systemDate) {
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID_CID_SYSTEMDATE, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("personId", personId)
+				.setParameter("systemDate", systemDate).getSingleOrNull();
+
+		Employee emp = new Employee();
+		if (entity != null) {
+			emp = toDomainEmployee(entity);
+
+			if (!entity.listEntryHist.isEmpty()) {
+				emp.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(emp);
+	}
+
+	
+	/**
+	 * case : Employee Selected trùng với employee đang nhập 
+	 */
+	@Override
+	public List<PersonInfoCategory> getAllPerInfoCtg(String companyId) {
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1, Object[].class)
+				.setParameter("cid", companyId).getList(c -> {
+					return createDomainPerInfoCtgFromEntity(c);
+				});
+		
+	}
+
+	
+	/**
+	 * case : Employee Selected khác với employee đang nhập 
+	 */
+	@Override
+	public List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

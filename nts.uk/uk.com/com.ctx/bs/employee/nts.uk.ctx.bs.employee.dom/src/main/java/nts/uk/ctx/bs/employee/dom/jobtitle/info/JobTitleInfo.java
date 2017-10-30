@@ -7,17 +7,10 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 
 /**
  * The Class JobTitleInfo.
- */
-
-/**
- * Gets the sequence code.
- *
- * @return the sequence code
  */
 @Getter
 // 職位情報
@@ -29,11 +22,15 @@ public class JobTitleInfo extends AggregateRoot {
 
 	/** The job title history id. */
 	// 職位履歴ID
-	private HistoryId jobTitleHistoryId;
+	private String jobTitleHistoryId;
 
+	/** The is manager. */
+	// 管理職とする
+	private boolean isManager;
+	
 	/** The job title id. */
 	// 職位ID
-	private JobTitleId jobTitleId;
+	private String jobTitleId;
 
 	/** The job title code. */
 	// 職位コード
@@ -45,13 +42,13 @@ public class JobTitleInfo extends AggregateRoot {
 
 	/** The sequence code. */
 	// 序列コード
-	private SequenceCode sequenceCode;
-
+	private SequenceCode sequenceCode;	
+	
 	/**
 	 * Instantiates a new job title info.
 	 */
 	public JobTitleInfo() {
-
+		super();
 	}
 
 	/**
@@ -62,6 +59,7 @@ public class JobTitleInfo extends AggregateRoot {
 	public JobTitleInfo(JobTitleInfoGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.jobTitleHistoryId = memento.getJobTitleHistoryId();
+		this.isManager = memento.getIsManager();
 		this.jobTitleId = memento.getJobTitleId();
 		this.jobTitleCode = memento.getJobTitleCode();
 		this.jobTitleName = memento.getJobTitleName();
@@ -76,6 +74,7 @@ public class JobTitleInfo extends AggregateRoot {
 	public void saveToMemento(JobTitleInfoSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setJobTitleHistoryId(this.jobTitleHistoryId);
+		memento.setIsManager(this.isManager);
 		memento.setJobTitleId(this.jobTitleId);
 		memento.setJobTitleCode(this.jobTitleCode);
 		memento.setJobTitleName(this.jobTitleName);
@@ -89,9 +88,10 @@ public class JobTitleInfo extends AggregateRoot {
 	 * @return the job title info
 	 */
 	public JobTitleInfo clone(String historyId) {
-		JobTitleInfo newEntity = new JobTitleInfo();
+		final JobTitleInfo newEntity = new JobTitleInfo();
 		newEntity.companyId = this.companyId;
-		newEntity.jobTitleHistoryId = new HistoryId(historyId);
+		newEntity.jobTitleHistoryId = historyId;
+		newEntity.isManager = this.isManager;
 		newEntity.jobTitleId = this.jobTitleId;
 		newEntity.jobTitleCode = this.jobTitleCode;
 		newEntity.jobTitleName = this.jobTitleName;

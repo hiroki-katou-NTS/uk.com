@@ -14,7 +14,7 @@ public interface SelectedAttendanceItemSetMemento {
 	 *
 	 * @param id the new att item id
 	 */
-	void setAttItemId(String id);
+	void setAttItemId(int id);
 
 	/**
 	 * Sets the operator.

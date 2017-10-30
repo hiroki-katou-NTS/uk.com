@@ -35,7 +35,7 @@
 						#{i18n.getText('CMM011_5')}</button>
 				<button class="proceed" tabindex="1" data-bind="click: saveWorkplace,
 					enable:  (isNewMode() ? true : isWkpConfigHistLatest()) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMM011_6')}</button>
-				<button class="proceed" tabindex="3" data-bind="click: removeWorkplace,
+				<button class="danger" tabindex="3" data-bind="click: removeWorkplace,
 					enable: isNewMode() ? false : isWkpConfigHistLatest" style="margin-left: 200px;">#{i18n.getText('CMM011_7')}</button>
 				<!-- END A1_1 ~ A1_3 -->
 			</div>
@@ -46,13 +46,11 @@
 					<div id="left-content-top"
 						class="bg-green caret-bottom caret-inline caret-background">
 						<div class="cf">
-							<div data-bind="ntsFormLabel: {}" style="margin-right: 10px;">#{i18n.getText('CMM011_2')}</div>
+							<div data-bind="ntsFormLabel: {}" style="margin-right: 18px;">#{i18n.getText('CMM011_2')}</div>
 							<span data-bind="text: strDWorkplace"></span>
-							<label data-bind="enable: isNewMode() ? false : isWkpConfigHistLatest"
-								style="margin-left: 10px;margin-right: 10px;">#{i18n.getText('CMM011_26')}</label>
-							<span data-bind="text: endDWorkplace, enable: isNewMode() ? false : isWkpConfigHistLatest"></span>
-							<button class="pull-right" tabindex="9" data-bind="click: openWkpConfigDialog,
-								enable: isNewMode() ? false : isWkpConfigHistLatest">#{i18n.getText('CMM011_21')}</button>
+							<label style="margin-left: 8px;margin-right: 8px;">#{i18n.getText('CMM011_26')}</label>
+							<span data-bind="text: endDWorkplace"></span>
+							<button class="pull-right" tabindex="6" data-bind="click: openWkpConfigDialog">#{i18n.getText('CMM011_21')}</button>
 						</div>
 					</div>
 					<!-- END A2_1 ~ A2_6 -->
@@ -60,7 +58,7 @@
 					<!-- BEGIN A3_1 ~ A4_4 -->
 					<div id="left-content-bottom" class="caret-right caret-background bg-green" data-bind="with: treeWorkplace">
 						<i class="icon icon-searchbox"></i>
-						<div tabindex="12" data-bind=" ntsSearchBox: {
+						<div tabindex="7" data-bind=" ntsSearchBox: {
 							targetKey: 'workplaceId',
 							mode: 'igTree',
 							comId: 'single-tree-grid',
@@ -70,9 +68,10 @@
 							childField: 'childs',
 							fields: ['name', 'code']}" style="width: 280px;"></div>
 							
-						<table id="single-tree-grid" class="cf" tabindex="13" data-bind="ntsTreeGridView:{
-								width: 360,
+						<table id="single-tree-grid" class="cf" tabindex="8" data-bind="ntsTreeGridView:{
+								width: 385,
 								height: calHeightTree(),
+								name: '#[CMM011_8]',
 								dataSource: lstWorkplace,
 								value: selectedWpkId,
 								primaryKey: 'workplaceId',
@@ -98,7 +97,7 @@
 						<tr data-bind="with: workplaceHistory">
 							<td class="first-row" style="vertical-align: top;"><div
 									data-bind="ntsFormLabel: {constraint: 'WorkplaceCode'}">#{i18n.getText('Com_Workplace')}</div></td>
-							<td><div id="list-box" tabindex="14" data-bind="ntsListBox: {
+							<td><div id="list-box" tabindex="9" data-bind="ntsListBox: {
 								options: lstWpkHistory,
 								optionsValue: 'historyId',
 								optionsText: 'textDisplay',
@@ -110,11 +109,11 @@
 									{ key: 'textDisplay', length: 15 }
 								]}"></div></td>
 							<td>
-								<div><button tabindex="15" data-bind="click: addWkpHistoryDialog,
+								<div><button tabindex="10" data-bind="click: addWkpHistoryDialog,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_10')}</button></div>
-								<div style="margin: 5px 0px;"><button tabindex="16" data-bind="click: updateWkpHistoryDialog,
+								<div style="margin: 5px 0px;"><button tabindex="11" data-bind="click: updateWkpHistoryDialog,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_11')}</button></div>
-								<div><button tabindex="17" data-bind="click: deleteWkpHistory,
+								<div><button tabindex="12" data-bind="click: deleteWkpHistory,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_12')}</button></div>
 							</td>
 							<td></td>
@@ -127,7 +126,7 @@
 						<tr>
 							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceCode'}">
 								#{i18n.getText('CMM011_13')}</div></td>
-							<td><div><input id="wkpCd" tabindex="18" data-bind="ntsTextEditor: {
+							<td><div><input id="wkpCd" tabindex="13" data-bind="ntsTextEditor: {
 											value: workplaceCode,
 											name: '#[CMM011_13]',
 											constraint: 'WorkplaceCode',
@@ -138,7 +137,7 @@
 											enable: isNewMode()}" /></div></td>
 							<td><div data-bind="ntsFormLabel: {required: true, constraint: 'OutsideWorkplaceCode'}">
 								#{i18n.getText('CMM011_14')}</div></td>
-							<td><div><input tabindex="19" data-bind="ntsTextEditor: {
+							<td><div><input tabindex="14" data-bind="ntsTextEditor: {
 											value: externalCode,
 											name: '#[CMM011_14]',
 											constraint: 'OutsideWorkplaceCode',
@@ -153,7 +152,7 @@
 						<tr>
 							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceName'}">
 								#{i18n.getText('CMM011_15')}</div></td>
-							<td><div><input id="wkpName" tabindex="20" data-bind="ntsTextEditor: {
+							<td><div><input id="wkpName" tabindex="15" data-bind="ntsTextEditor: {
 											value: workplaceName,
 											name: '#[CMM011_15]',
 											constraint: 'WorkplaceName',
@@ -168,9 +167,9 @@
 						
 						<!-- BEGIN A9_1 ~ A9_2 -->
 						<tr>
-							<td class="td-detail"><div data-bind="ntsFormLabel: {}">
+							<td class="td-detail"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceDisplayName'}">
 								#{i18n.getText('CMM011_16')}</div></td>
-							<td colspan="2"><div><input id="wkpDisplayName" tabindex="21" data-bind="ntsTextEditor: {
+							<td colspan="2"><div><input id="wkpDisplayName" tabindex="16" data-bind="ntsTextEditor: {
 											value: wkpDisplayName,
 											name: '#[CMM011_16]',
 											constraint: 'WorkplaceDisplayName',
@@ -186,7 +185,7 @@
 						<tr>
 							<td class="td-detail"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceGenericName'}">
 								#{i18n.getText('CMM011_17')}</div></td>
-							<td colspan="4"><div><input id="wkpFullName" tabindex="22" data-bind="ntsTextEditor: {
+							<td colspan="4"><div><input id="wkpFullName" tabindex="17" data-bind="ntsTextEditor: {
 											value: wkpFullName,
 											name: '#[CMM011_17]',
 											constraint: 'WorkplaceGenericName',

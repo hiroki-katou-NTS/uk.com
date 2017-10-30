@@ -2,91 +2,79 @@ package nts.uk.shr.com.context.loginuser.role;
 
 import java.io.Serializable;
 
-import lombok.RequiredArgsConstructor;
-
 public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	
-	private RolesForOneBusinessWork forAttendance = new RolesForOneBusinessWork(null, null);
-	private RolesForOneBusinessWork forPayroll = new RolesForOneBusinessWork(null, null);
-	private RolesForOneBusinessWork forPersonnel = new RolesForOneBusinessWork(null, null);
-	private RolesForOneBusinessWork forPersonalInfo = new RolesForOneBusinessWork(null, null);
-	private RolesForOneBusinessWork forSystemAdmin = new RolesForOneBusinessWork(null, null);
-	private RolesForOneBusinessWork forCompanyAdmin = new RolesForOneBusinessWork(null, null);
+	private String forAttendance = null;
+	private String forPayroll = null;
+	private String forPersonnel = null;
+	private String forPersonalInfo = null;
+	private String forOfficeHelper = null;
+	private String forSystemAdmin = null;
+	private String forCompanyAdmin = null;
 	
 	@Override
 	public String forAttendance() {
-		return this.forAttendance.getRoleId();
+		return this.forAttendance;
 	}
 
 	@Override
 	public String forPayroll() {
-		return this.forPayroll.getRoleId();
+		return this.forPayroll;
 	}
 
 	@Override
 	public String forPersonnel() {
-		return this.forPersonnel.getRoleId();
+		return this.forPersonnel;
 	}
 
 	@Override
 	public String forPersonalInfo() {
-		return this.forPersonalInfo.getRoleId();
+		return this.forPersonalInfo;
+	}
+
+	@Override
+	public String forOfficeHelper() {
+		return this.forOfficeHelper;
 	}
 
 	@Override
 	public String forSystemAdmin() {
-		return this.forSystemAdmin.getRoleId();
+		return this.forSystemAdmin;
 	}
 
 	@Override
 	public String forCompanyAdmin() {
-		return this.forCompanyAdmin.getRoleId();
+		return this.forCompanyAdmin;
 	}
 
-	public void setRoleIdsForAttendance(String forPersonInCharge, String forGeneral) {
-		this.forAttendance = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	public void setRoleIdForAttendance(String roleId) {
+		this.forAttendance = roleId;
 	}
 
-	public void setRoleIdsForPayroll(String forPersonInCharge, String forGeneral) {
-		this.forPayroll = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	public void setRoleIdForPayroll(String roleId) {
+		this.forPayroll = roleId;
 	}
 
-	public void setRoleIdsForPersonnel(String forPersonInCharge, String forGeneral) {
-		this.forPersonnel = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	public void setRoleIdForPersonnel(String roleId) {
+		this.forPersonnel = roleId;
 	}
 
-	public void setRoleIdsforPersonalInfo(String forPersonInCharge, String forGeneral) {
-		this.forPersonalInfo = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	public void setRoleIdforPersonalInfo(String roleId) {
+		this.forPersonalInfo = roleId;
 	}
 
-	public void setRoleIdsforSystemAdmin(String forPersonInCharge, String forGeneral) {
-		this.forSystemAdmin = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	public void setRoleIdforOfficeHelper(String roleId) {
+		this.forOfficeHelper = roleId;
 	}
 
-	public void setRoleIdsforCompanyAdmin(String forPersonInCharge, String forGeneral) {
-		this.forCompanyAdmin = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	public void setRoleIdforSystemAdmin(String roleId) {
+		this.forSystemAdmin = roleId;
 	}
 
-	@RequiredArgsConstructor
-	private static class RolesForOneBusinessWork implements Serializable {
-		
-		/** serialVersionUID */
-		private static final long serialVersionUID = 1L;
-		
-		private final String forPersonInCharge;
-		private final String forGeneral;
-		
-		public String getRoleId() {
-			if (this.forPersonInCharge != null) {
-				return this.forPersonInCharge;
-			} else if (this.forGeneral != null) {
-				return this.forGeneral;
-			} else {
-				return null;
-			}
-		}
+	public void setRoleIdforCompanyAdmin(String roleId) {
+		this.forCompanyAdmin = roleId;
 	}
 }

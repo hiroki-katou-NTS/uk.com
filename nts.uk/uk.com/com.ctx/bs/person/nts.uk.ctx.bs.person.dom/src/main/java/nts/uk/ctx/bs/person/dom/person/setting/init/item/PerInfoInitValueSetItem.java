@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.init.item;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,10 +9,12 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonCategoryItemData;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
+import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 
 /**
- * PerInfoInitValueSetItem
+ * The AggregateRoot 個人情報初期値設定項目 PerInfoInitValueSetItem
  * 
  * @author lanlt
  *
@@ -47,8 +50,24 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	// 日付
 	private GeneralDate dateValue;
+	
+	// thêm dataType của item defined
+	private Integer dataType;
+
+	// thêm itemType của item defined
+	private Integer itemType;
+
+	// thêm itemCode của item defined
+	private String itemCode;
+
+	// thêm categoryCode của CategoryInfo
+	private String ctgCode;
+
+	// thêm constraint để validate cho chính mình
+	private String constraint;
 
 	/**
+	 * constructor agrerate root of 個人情報初期値設定項目PerInfoInitValSettingItem
 	 * 
 	 * @param perInfoItemDefId
 	 * @param settingId
@@ -74,6 +93,46 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.dateValue = dateValue;
 	}
 
+	/**
+	 * constructor for loading item of cps009
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param itemName
+	 * @param isRequired
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param stringValue
+	 * @param intValue
+	 * @param dateValue
+	 * @param dataType
+	 * @param itemType
+	 * @param itemCode
+	 * @param ctgCode
+	 */
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
+			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
+			StringValue stringValue, IntValue intValue, GeneralDate dateValue, Integer dataType, Integer itemType,
+			String itemCode, String ctgCode) {
+		super();
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.perInfoCtgId = perInfoCtgId;
+		this.itemName = itemName;
+		this.isRequired = isRequired;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.stringValue = stringValue;
+		this.intValue = intValue;
+		this.dateValue = dateValue;
+		this.dataType = dataType;
+		this.itemType = itemType;
+		this.itemCode = itemCode;
+		this.ctgCode = ctgCode;
+		this.processs(ctgCode, itemCode);
+	}
+
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
 			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
 			StringValue stringValue, IntValue intValue, GeneralDate dateValue) {
@@ -92,6 +151,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	/**
 	 * Constructor as domain
+	 * 
 	 * @param perInfoItemDefId
 	 * @param settingId
 	 * @param perInfoCtgId
@@ -111,8 +171,51 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
 	}
 
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+	}
+
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType, SaveDataType saveDataType, StringValue stringValue) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.stringValue = stringValue;
+	}
+
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType, SaveDataType saveDataType, IntValue intValue) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.intValue = intValue;
+	}
+
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType, SaveDataType saveDataType, GeneralDate date) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.dateValue = date;
+	}
+
 	/**
 	 * Constructor for diplay at screen A
+	 * 
 	 * @param perInfoItemDefId
 	 * @param settingId
 	 * @param perInfoCtgId
@@ -134,6 +237,98 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
 				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new StringValue(stringValue),
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
+	}
+
+	/**
+	 * Hàm này dùng để lưu các kiểu referenceType không thuộc kiểu fixedValue
+	 * PerInfoInitValueSetItem
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param refMethodType
+	 * @return
+	 */
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class));
+	}
+
+	/**
+	 * convert to String type
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param stringValue
+	 * @return
+	 */
+
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType, int saveDataType, String stringValue) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new StringValue(stringValue));
+	}
+
+	/**
+	 * convert to Int Type
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param intValue
+	 * @return
+	 */
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType, int saveDataType, Integer intValue) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(new BigDecimal(intValue)));
+	}
+
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType, int saveDataType, GeneralDate date) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), date);
+	}
+
+	/**
+	 * update settingId
+	 * 
+	 * @param settingId
+	 */
+
+	public void updateInitSetId(String settingId) {
+		this.settingId = settingId;
+	}
+
+	public static String processs(String categoryCode, String itemCode) {
+		PersonCategoryItemData item = new PersonCategoryItemData();
+		for (Map.Entry ctg : item.CategoryMap.entrySet()) {
+			if (ctg.getKey() == categoryCode) {
+				Map<String, String> itemChild = (Map<String, String>) ctg.getValue();
+				for (Map.Entry itemSub : itemChild.entrySet()) {
+					if(itemSub.getKey().equals(itemCode)) {
+						return itemSub.getValue().toString();
+						
+					}
+				}
+
+			}
+
+		}
+		return "";
 	}
 
 }

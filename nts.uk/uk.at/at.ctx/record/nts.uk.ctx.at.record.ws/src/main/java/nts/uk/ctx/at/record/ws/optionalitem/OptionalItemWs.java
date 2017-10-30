@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.optitem.OptItemEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class OptionalItemWs.
@@ -34,6 +35,10 @@ public class OptionalItemWs extends WebService {
 	/** The save. */
 	@Inject
 	private OptionalItemSaveCommandHandler handler;
+
+	/** The i 18 n. */
+	@Inject
+	private I18NResourcesForUK i18n;
 
 	/**
 	 * Find.
@@ -76,7 +81,7 @@ public class OptionalItemWs extends WebService {
 	@POST
 	@Path("getenum")
 	public OptItemEnumDto getEnum() {
-		return OptItemEnumDto.init();
+		return OptItemEnumDto.init(i18n);
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.init.category;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PerInfoInitValSetCtgRepository {
 	// sonnlb
@@ -10,27 +11,37 @@ public interface PerInfoInitValSetCtgRepository {
 	 * @param initValueSettingId
 	 * @return List<PerInfoInitValSetCtg>
 	 */
-	List<PerInfoInitValueSettingCtg> getAllCategoryBySetId(String initValueSettingId);
+	List<InitValSettingCtg> getAllCategoryBySetId(String initValueSettingId);
 
 	// sonnlb
+
 	/**
-	 * getAllCategory isAbortlition: false employeeType = 2 categoryType # 2 vs
-	 * #5 category_parent_cd: not set
+	 * getAllInitValueCtg
 	 * 
-	 * @param initValueSettingId
-	 * @return
+	 * @param settingId
+	 * @return List<PerInfoInitValueSettingCtg>
 	 */
-	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId);
+	List<PerInfoInitValSetCtg> getAllInitValueCtg(String settingId);
+
+	/**
+	 * getAllCategory isAbortlition: false employeeType = 2 categoryType # 2 vs #5
+	 * category_parent_cd: not set
+	 * 
+	 * @param initValueSettingId,
+	 *            String settingId
+	 * @return List<PerInfoInitValueSettingCtg>
+	 */
+	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId);
 
 	/**
 	 * getDetailInitValSetCtg
 	 * 
-	 * @param initValueSettingId
-	 * @param initValueSettingCtgId
+	 * @param settingId
+	 * @param perInfoCtgId
 	 * @return PerInfoInitValSetCtg
 	 */
 
-	PerInfoInitValSetCtg getDetailInitValSetCtg(String initValueSettingId, String initValueSettingCtgId);
+	Optional<PerInfoInitValSetCtg> getDetailInitValSetCtg(String settingId, String perInfoCtgId);
 
 	/**
 	 * add PerInfoInitValSetCtg
@@ -49,8 +60,23 @@ public interface PerInfoInitValSetCtgRepository {
 	/**
 	 * delete PerInfoInitValSetCtg
 	 * 
-	 * @param initValueSettingCtgId
+	 * @param perInfoCtgId,
+	 *            settingId
 	 */
-	void delete(String initValueSettingCtgId);
+	void delete(String perInfoCtgId, String settingId);
+	
+	
+	/**
+	 * delete PerInfoInitValSetCtg
+	 * 
+	 * @param settingId
+	 */
+	void delete(String settingId);
+	
+	/**
+	 * add All list category
+	 * @param lstCtg
+	 */
+	void addAllCtg(List<PerInfoInitValSetCtg> lstCtg);
 
 }

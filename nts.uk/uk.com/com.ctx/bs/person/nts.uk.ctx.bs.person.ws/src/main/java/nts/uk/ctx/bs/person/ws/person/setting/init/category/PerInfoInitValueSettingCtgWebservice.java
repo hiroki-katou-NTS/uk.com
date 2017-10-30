@@ -8,32 +8,48 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.person.setting.init.category.PerInfoInitValueSettingCtgDto;
+import command.person.setting.init.UpdateInitValueSettingCommand;
+import command.person.setting.init.UpdateInitValueSettingHandler;
+import find.person.setting.init.PerInfoInitValueSettingFinder;
+import find.person.setting.init.PerInitValueSettingDto;
+import find.person.setting.init.category.InitCtgDto;
 import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 
 @Path("ctx/bs/person/info/setting/init/ctg")
 @Produces("application/json")
 public class PerInfoInitValueSettingCtgWebservice extends WebService {
 
+	// sonnlb code start
 	@Inject
-	private PerInfoInitValueSettingCtgFinder finder;
+	private PerInfoInitValueSettingCtgFinder cgtFinder;
+	// sonnlb code end
+
+	@Inject
+	private PerInfoInitValueSettingFinder finder;
+
+	@Inject
+	private UpdateInitValueSettingHandler update;
 
 	@POST
-	@Path("findAll")
-	public List<PerInfoInitValueSettingCtg> getAllInitValueSetting() {
-		return this.finder.getAllCategory();
+	@Path("find/{settingId}")
+	public PerInitValueSettingDto getAllInitValueSetting(@PathParam("settingId") String settingId) {
+		return this.finder.getAllInitValueSetting(settingId);
 	}
 
-	// sonnlb
+	@POST
+	@Path("update")
+	public void update(UpdateInitValueSettingCommand command) {
+		this.update.handle(command);
+	}
+	// sonnlb code start
 
 	@POST
 	@Path("findAllBySetId/{settingId}")
-	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(@PathParam("settingId") String settingId) {
-		return this.finder.getAllCategoryBySetId(settingId);
+	public List<InitCtgDto> getAllCategoryBySetId(@PathParam("settingId") String settingId) {
+		return this.cgtFinder.getAllCategoryBySetId(settingId);
 	}
 
-	// sonnlb
+	// sonnlb code end
 
 }

@@ -29,8 +29,12 @@ public class PersonInfoItemGroupFinder {
 	 * @return
 	 */
 	public List<PersonInfoItemGroupDto> getAllPersonInfoGroup() {
-		return this.repo.getAll().stream().map(item -> PersonInfoItemGroupDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return this.repo.getAll().stream().map(item -> {
+			if (getAllItemDf(item.getPersonInfoItemGroupID()).size() > 0) {
+				return PersonInfoItemGroupDto.fromDomain(item);
+			}
+			return null;
+		}).filter(m -> m != null).collect(Collectors.toList());
 	}
 
 	/**

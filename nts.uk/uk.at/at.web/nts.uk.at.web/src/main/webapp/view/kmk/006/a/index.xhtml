@@ -26,13 +26,13 @@
 				<li data-bind="click: onSelectCompany"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
 				<li
-					data-bind="click: onSelectWorkplace, visible: useUnitAutoCalSettingModel.useWkpSet"><a
+					data-bind="click: onSelectWorkplace, visible: useUnitAutoCalSettingModel().useWkpSet"><a
 					tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
 				<li
-					data-bind="click: onSelectJobTitle, visible: useUnitAutoCalSettingModel.useJobSet"><a
+					data-bind="click: onSelectJobTitle, visible: useUnitAutoCalSettingModel().useJobSet"><a
 					tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Jobtitle')}</a></li>
 				<li
-					data-bind="click: onSelectWkpJob, visible: useUnitAutoCalSettingModel.useJobwkpSet"><a
+					data-bind="click: onSelectWkpJob, visible: useUnitAutoCalSettingModel().useJobwkpSet"><a
 					tabindex="-1" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('KMK006_6')}</a></li>
 			</ul>
 		</ui:define>

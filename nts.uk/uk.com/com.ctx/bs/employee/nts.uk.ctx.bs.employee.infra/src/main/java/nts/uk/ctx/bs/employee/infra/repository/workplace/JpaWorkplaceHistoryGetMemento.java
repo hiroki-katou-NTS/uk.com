@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -38,8 +37,8 @@ public class JpaWorkplaceHistoryGetMemento implements WorkplaceHistoryGetMemento
 	 * getHistoryId()
 	 */
 	@Override
-	public HistoryId getHistoryId() {
-		return new HistoryId(this.historyId);
+	public String getHistoryId() {
+		return this.historyId;
 	}
 
 	/*

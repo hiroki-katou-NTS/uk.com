@@ -32,6 +32,16 @@ public interface PerInfoInitValueSettingRepository {
 	Optional<PerInfoInitValueSetting> getDetailInitValSetting(String companyId, String setCode);
 
 	/**
+	 * getDetailInitValSetting
+	 * 
+	 * @param companyId
+	 * @param setCode
+	 * @return PerInfoInitValueSetting
+	 */
+
+	Optional<PerInfoInitValueSetting> getDetailInitValSetting(String companyId, String setCode, String settingId);
+
+	/**
 	 * update PerInfoInitValueSetting
 	 * 
 	 * @param domain
@@ -46,11 +56,12 @@ public interface PerInfoInitValueSettingRepository {
 	void insert(PerInfoInitValueSetting domain);
 
 	/**
-	 * delete initValueSettingId
-	 * 
-	 * @param initValueSettingId
+	 * delete by companyId, settingId, settingCode
+	 * @param companyId
+	 * @param settingId
+	 * @param settingCode
 	 */
-	void delete(String initValueSettingId);
+	void delete(String companyId,String settingId, String settingCode);
 
 	// sonnlb
 

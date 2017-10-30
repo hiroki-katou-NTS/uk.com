@@ -19,9 +19,6 @@ module nts.uk.com.view.cmm018.j {
                                     { code: 0, name: nts.uk.resource.getText("CMM018_54") },
                                     { code: 1, name: nts.uk.resource.getText("CMM018_55") }
                                 ]);
-                let lstItem = [];
-                lstItem.push(new vmbase.UpdateHistoryDto('1','1'));
-                lstItem.push(new vmbase.UpdateHistoryDto('0','2'));
                 var data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM');
                 self.dataSource = data;
                 self.beginStartDate = ko.observable(moment(self.dataSource.startDate).add(1, 'days').format("YYYY/MM/DD"));
@@ -46,14 +43,14 @@ module nts.uk.com.view.cmm018.j {
                 //data
                 let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
                 if(self.isUpdate()) {//TH: edit
-                //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
-                    if(self.newStartDate() < self.beginStartDate()){
-                        //エラーメッセージ(Msg_156)(error mesage (Msg_156))
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")  }).then(function(res){
-                            block.clear();
-                        });
-                        return;
-                    }
+//                //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
+//                    if(self.newStartDate() < self.beginStartDate()){
+//                        //エラーメッセージ(Msg_156)(error mesage (Msg_156))
+//                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")  }).then(function(res){
+//                            block.clear();
+//                        });
+//                        return;
+//                    }
                     //履歴編集を実行する(Update history)
                     servicebase.updateHistory(dataFix).done(function(){
                         //情報メッセージ（Msg_15）(Show message Msg_15)
@@ -62,9 +59,9 @@ module nts.uk.com.view.cmm018.j {
                             close();
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            block.clear();
-                        });       
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")}).then(function(res){
+                                block.clear();
+                        });      
                     });
                 } else {//TH: delete
                     //削除する期間が最新なのかチェックする (Check history the last)
@@ -94,9 +91,12 @@ module nts.uk.com.view.cmm018.j {
                                 close();
                             });
                         }).fail(function(res){
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-                               block.clear();
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")}).then(function(res){
+                                block.clear();
                             });
+//                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+//                               block.clear();
+//                            });
                         });
                     }).ifNo(function(){
                         block.clear();        

@@ -5,9 +5,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 
 /**
  * 
@@ -24,8 +24,8 @@ public class ProcessCancelImpl implements ProcessCancel {
 	public void detailScreenCancelProcess(String companyID, String appID) {
 		//get application by appID
 		Application app = appRepo.getAppById(companyID, appID).get();
-		//change ReflectPlanPerState = canceled
-		app.setReflectPerState(ReflectPlanPerState.CANCELED);
+		//change ReflectPlanPerState = WAITCANCEL
+		app.setReflectPerState(ReflectPlanPerState.WAITCANCEL);
 		//update application
 		appRepo.updateApplication(app);
 	}

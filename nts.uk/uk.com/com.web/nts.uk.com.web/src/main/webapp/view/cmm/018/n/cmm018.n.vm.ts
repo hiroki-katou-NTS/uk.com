@@ -79,7 +79,10 @@ export module viewmodel {
                 let items : ItemModel[] = [];
                 items.push( new ItemModel("",  "共通ルート"));
                 _.forEach(data, function(value: any){
-                    items.push(new ItemModel(value.value, value.localizedName));
+                    if(value.value !== 14){
+                        items.push(new ItemModel(value.value, value.localizedName));
+                    }
+                    
                 })
                 
                 self.applicationType(items);
@@ -108,11 +111,10 @@ export module viewmodel {
             
             //対象社員を選択したかをチェックする(kiểm tra đã chọn nhân viên chưa?)
             //対象者未選択(chưa chọn nhân viên)
-            //tam thoi comment de test
-//            if(self.selectedEmployee().length <= 0){
-//                nts.uk.ui.dialog.alertError({ messageId: "Msg_184"});
-//                return;
-//            }
+            if(self.selectedEmployee().length <= 0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_184"});
+                return;
+            }
             //出力対象申請を選択したかチェックする(check đã chọn đơn xin để xuất ra chưa?)
             //出力対象未選択(chưa chọn đối tượng output)
             if(self.currentAppType().length <= 0){
@@ -122,30 +124,17 @@ export module viewmodel {
             //xuat file
             var data = new service.model.appInfor();
 //            data.baseDate = self.baseDate();
-            data.baseDate = new Date('2017-10-10 00:00:00');
+            data.baseDate = self.baseDate();
             
             //fix tam du lieu
             //data.lstEmpIds = self.selectedEmployee();
             var lstEmpIds : string[] = [];
-            lstEmpIds.push("90000000-0000-0000-0000-000000000003");
-//            lstEmpIds.push("000426a2-181b-4c7f-abc8-6fff9f4f983a");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000001");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000002");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000003");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000004");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000005");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000007");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000008");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000013");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000014");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000015");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000016");
-            data.lstEmpIds = lstEmpIds;
+            data.lstEmpIds = self.selectedEmployee();
             data.lstApps = self.currentAppType();
             var isCommon = _.find(self.currentAppType(), function(value){
                 return value  === "";    
             })
-            if(isCommon !== undefined || isCommon !== null){
+            if(!nts.uk.util.isNullOrUndefined(isCommon)){
                 data.rootAtr = 0;
                 data.lstApps.removeItem("");
             }else{

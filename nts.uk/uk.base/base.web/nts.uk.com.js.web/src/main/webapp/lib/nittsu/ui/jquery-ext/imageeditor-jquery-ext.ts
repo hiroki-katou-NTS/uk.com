@@ -19,9 +19,16 @@ module nts.uk.ui.jqueryExtentions {
                 case "clear": {
                     return clear($element);     
                 } 
+                case "getImgStatus": {
+                    return getImgStatus($element);     
+                } 
                 default: 
                     return; 
             }            
+        }
+         
+        function getImgStatus($element: JQuery){
+            return $element.data("img-status");
         }
 
         function uploadImage($element: JQuery, option){
@@ -34,15 +41,15 @@ module nts.uk.ui.jqueryExtentions {
                 let cropperData = cropper.getData(true);
                 
                 var formData = {
-                        "fileName": $element.data("file-name"),
+                        "fileName": $element.data("file-name"), 
                         "stereoType": isNotNull(option) ? "image" : option.stereoType,
                         "file": dataFile,
                         "format": $element.data("file-type"),
                         "x": cropperData.x,
-                        "y": cropperData.y,
+                        "y": cropperData.y, 
                         "width": cropperData.width,
                         "height": cropperData.height,
-                        "crop": $element.data('checkbox').checked() 
+                        "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {
@@ -52,7 +59,7 @@ module nts.uk.ui.jqueryExtentions {
                         dfd.resolve(data);
                     }
                 }).fail(function() {
-                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                    dfd.reject({ message: "Please check your network", messageId: "1" });
                 });
             }
             else {
@@ -72,7 +79,9 @@ module nts.uk.ui.jqueryExtentions {
             
         function clear($element: JQuery){
             let cropper = $element.data("cropper");
-            cropper.clear();
+            if (!isNotNull(cropper)) {
+                cropper.clear();    
+            }
         }   
     }
 }

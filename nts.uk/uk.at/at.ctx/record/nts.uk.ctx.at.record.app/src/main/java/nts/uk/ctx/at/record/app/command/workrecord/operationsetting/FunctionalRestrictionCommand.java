@@ -4,7 +4,7 @@
 package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmationOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
 
 /**
  * @author danpv
@@ -41,12 +41,12 @@ public class FunctionalRestrictionCommand {
 	private boolean useSupervisorConfirm;
 
 	// * エラーがある場合の上司確認
-	private ConfirmationOfManagerOrYouself supervisorConfirmError;
+	private ConfirmOfManagerOrYouself supervisorConfirmError;
 
 	// * 本人確認を利用する
 	private boolean useConfirmByYourself;
 
 	// * エラーがある場合の本人確認
-	private ConfirmationOfManagerOrYouself yourselfConfirmError;
+	private ConfirmOfManagerOrYouself yourselfConfirmError;
 
 }

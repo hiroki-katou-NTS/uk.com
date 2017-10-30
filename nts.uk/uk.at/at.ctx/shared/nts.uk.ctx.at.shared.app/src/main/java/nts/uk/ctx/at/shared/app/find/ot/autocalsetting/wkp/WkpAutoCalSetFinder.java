@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.ot.autocalsetting.wkp;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -32,7 +34,7 @@ public class WkpAutoCalSetFinder {
 	public WkpAutoCalSettingDto getWkpAutoCalSetting(String wkpId) {
 		String companyId = AppContexts.user().companyId();
 
-		Optional<WkpAutoCalSetting> opt = this.wkpAutoCalSettingRepository.getAllWkpAutoCalSetting(companyId, wkpId);
+		Optional<WkpAutoCalSetting> opt = this.wkpAutoCalSettingRepository.getWkpAutoCalSetting(companyId, wkpId);
 
 		if (!opt.isPresent()) {
 			return null;
@@ -43,5 +45,24 @@ public class WkpAutoCalSetFinder {
 		opt.get().saveToMemento(dto);
 
 		return dto;
+	}
+	
+	
+	/**
+	 * Gets the all wkp auto cal setting.
+	 *
+	 * @return the all wkp auto cal setting
+	 */
+	public List<WkpAutoCalSettingDto> getAllWkpAutoCalSetting() {
+		String companyId = AppContexts.user().companyId();
+
+		List<WkpAutoCalSetting> listAll = this.wkpAutoCalSettingRepository.getAllWkpAutoCalSetting(companyId);
+		
+		return listAll.stream().map(e -> {
+			WkpAutoCalSettingDto dto = new WkpAutoCalSettingDto();
+			e.saveToMemento(dto);
+			
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

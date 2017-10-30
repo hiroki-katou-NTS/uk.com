@@ -6,7 +6,6 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace.config.info;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoSetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfo;
@@ -50,9 +49,9 @@ public class JpaWorkplaceConfigInfoSetMemento implements WorkplaceConfigInfoSetM
      * workplace.HistoryId)
      */
     @Override
-    public void setHistoryId(HistoryId historyId) {
+    public void setHistoryId(String historyId) {
         this.lstEntity.forEach(entity -> {
-            entity.getBsymtWkpConfigInfoPK().setCid(historyId.v());
+            entity.getBsymtWkpConfigInfoPK().setHistoryId(historyId);
         });
     }
 
@@ -63,8 +62,15 @@ public class JpaWorkplaceConfigInfoSetMemento implements WorkplaceConfigInfoSetM
      * WorkplaceConfigInfoSetMemento#setWkpHierarchy(java.util.List)
      */
     @Override
-    public void setWkpHierarchy(List<WorkplaceHierarchy> wkpHierarchy) {
-        this.lstEntity.forEach(entity -> new JpaWorkplaceHierarchySetMemento(entity));
+    public void setWkpHierarchy(List<WorkplaceHierarchy> lstWkpHierarchy) {
+        lstWkpHierarchy.forEach(wkpHierarchy -> {
+            BsymtWkpConfigInfo entity = this.lstEntity.stream()
+                    .filter(item -> item.getBsymtWkpConfigInfoPK().getWkpid().equals(wkpHierarchy.getWorkplaceId()))
+                    .findFirst()
+                    .get();
+            JpaWorkplaceHierarchySetMemento memento = new JpaWorkplaceHierarchySetMemento(entity);
+            wkpHierarchy.saveToMemento(memento);
+        });
     }
 
 }

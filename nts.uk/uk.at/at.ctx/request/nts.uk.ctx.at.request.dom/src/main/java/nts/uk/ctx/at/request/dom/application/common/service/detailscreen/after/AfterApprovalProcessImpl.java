@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -52,14 +52,15 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
 	@Override
-	public List<String> detailScreenAfterApprovalProcess(Application application) {
+	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
 		String companyID = AppContexts.user().companyId();
 		List<String> listMailReceived = new ArrayList<>();
-		//アルゴリズム「承認情報の整理」を実行する
-		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(application);
+		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
+		application = reflectionInfoService.organizationOfApprovalInfo(application, approverMemo);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
+		appRepo.updateApplication(application);
 		// get domain 申請種類別設定
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
 		// 承認処理時に自動でメールを送信するが trueの場合
@@ -110,8 +111,8 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	@Override
 	public List<String> actualReflectionStateDecision(String appID, String phaseID, ApprovalAtr approvalAtr) {
 		// 承認者一覧
-		List<String> lstApprover = new ArrayList<>();
-		List<String> lstNotApprover = new ArrayList<>();
+		List<String> lstApproved = new ArrayList<>();
+		List<String> lstNotApproved = new ArrayList<>();
 		List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phaseID);
 		for(ApprovalFrame approvalFrame : listFrame ) {
 			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository.getAllApproverAccepted(approvalFrame.getCompanyID(), approvalFrame.getFrameID());
@@ -121,21 +122,21 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 			if(frame.getListApproveAccepted() !=null) {
 				for(ApproveAccepted x : frame.getListApproveAccepted()){
 					if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
-						lstApprover.add(x.getApproverSID());
+						lstApproved.add(x.getApproverSID());
 					};
 					if (x.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
-						lstNotApprover.add(x.getApproverSID());
+						lstNotApproved.add(x.getApproverSID());
 					};	
 				}
 			}
 		}
 		// Get distinct List Approver
-		lstApprover.stream().distinct().collect(Collectors.toList());
-		lstNotApprover.stream().distinct().collect(Collectors.toList());
+		lstApproved.stream().distinct().collect(Collectors.toList());
+		lstNotApproved.stream().distinct().collect(Collectors.toList());
 		if (approvalAtr == ApprovalAtr.APPROVED) {
-			return lstApprover;
+			return lstApproved;
 		} else {
-			return lstNotApprover;
+			return lstNotApproved;
 		}
 	}
 	/**
@@ -182,7 +183,6 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	 */
 	@Override
 	public void  judgmentActualReflection(Application application) {
-		boolean allApprovedFlg = false;
 		String companyID = AppContexts.user().companyId();
 		String appID = application.getApplicationID();
 		if(application.getListPhase() != null) {
@@ -193,11 +193,8 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					if(!lstApprover.isEmpty()) {
 						// 承認者の代行情報リスト
 						AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApprover);
-						if(agency.isFlag()) {
-							allApprovedFlg = true;
-						// 返す結果の全承認者パス設定フラグがfalse(全承認者パス設定フラグ=false)
-						}else {
-							allApprovedFlg = false;
+						//返す結果の全承認者パス設定フラグがtrue(全承認者パス設定フラグ = true)
+						if(!agency.isFlag()) {
 							return;
 						}
 					}
@@ -206,12 +203,6 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					// 「反映情報」．実績反映状態を「反映待ち」にする
 					application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
 					return;
-				}
-				// 「反映情報」．実績反映状態を「反映待ち」にする
-				if (allApprovedFlg) {
-					phase.changeApprovalATR(ApprovalAtr.APPROVED);
-				}else {
-					phase.changeApprovalATR(ApprovalAtr.UNAPPROVED);
 				}
 				
 			}

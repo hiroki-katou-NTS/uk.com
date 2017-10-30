@@ -33,7 +33,7 @@ public class JpaSelectedAttendanceItemGetMemento implements SelectedAttendanceIt
 	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItemGetMemento#getAttItemId()
 	 */
 	@Override
-	public String getAttItemId() {
+	public int getAttItemId() {
 		return this.entity.getKrcmtCalcItemSelectionPK().getAttendanceItemId();
 	}
 

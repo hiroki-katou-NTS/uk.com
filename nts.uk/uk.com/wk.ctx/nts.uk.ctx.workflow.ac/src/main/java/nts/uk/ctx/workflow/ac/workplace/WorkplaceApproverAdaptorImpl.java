@@ -13,14 +13,14 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 
 /**
  * The Class WorkplaceApproverAdaptorImpl.
  */
 @Stateless
-public class WorkplaceApproverAdaptorImpl implements WorkplaceAdapter {
+public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 
 	/** The wp pub. */
 	@Inject
