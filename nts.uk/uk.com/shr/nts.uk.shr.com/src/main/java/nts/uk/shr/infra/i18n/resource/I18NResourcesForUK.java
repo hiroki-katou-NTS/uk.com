@@ -68,7 +68,7 @@ public class I18NResourcesForUK implements I18NResources {
 				.map(content -> this.contentProcessor.process(LanguageConsts.DEFAULT_LANGUAGE_ID, content, params));
 	}
 	
-	public Map<String, String> loadAllForUser() {
+	public Map<String, String> loadForUserByClassId(String classId) {
 		
 		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
 		String companyId = DefaultSettingKeys.COMPANY_ID;
@@ -78,13 +78,13 @@ public class I18NResourcesForUK implements I18NResources {
 			companyId = AppContexts.user().companyId();
 		}
 		
-		return this.loadAllForUser(languageId, companyId);
+		return this.loadForUserByClassId(languageId, classId, companyId);
 	}
 	
-	public Map<String, String> loadAllForUser(String languageId, String companyId) {
+	public Map<String, String> loadForUserByClassId(String languageId, String classId, String companyId) {
 		
-		val toMerge = this.defaultResources.createContentsMap(languageId);
-		val customizedMap = this.customizedResources.createContentsMap(languageId, companyId);
+		val toMerge = this.defaultResources.createContentsMapByClassId(languageId, classId);
+		val customizedMap = this.customizedResources.createContentsMapByClassId(languageId, classId, companyId);
 		
 		customizedMap.forEach((resourceId, contents) -> {
 			toMerge.put(resourceId, contents);
@@ -92,4 +92,30 @@ public class I18NResourcesForUK implements I18NResources {
 
 		return toMerge;
 	}
+	
+	public Map<String, String> loadForUserByResourceType(I18NResourceType resourceType) {
+
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		
+		if (AppContexts.user().hasLoggedIn()) {
+			languageId = AppContexts.user().language().basicLanguageId();
+			companyId = AppContexts.user().companyId();
+		}
+		
+		return this.loadForUserByResourceType(languageId, companyId, resourceType);
+	}
+	
+	public Map<String, String> loadForUserByResourceType(String languageId, String companyId, I18NResourceType resourceType) {
+		
+		val toMerge = this.defaultResources.createContentsMapByResourceType(languageId, resourceType);
+		val customizedMap = this.customizedResources.createContentsMapByResourceType(languageId, companyId, resourceType);
+		
+		customizedMap.forEach((resourceId, contents) -> {
+			toMerge.put(resourceId, contents);
+		});
+
+		return toMerge;
+	}
+	
 }
