@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
@@ -63,6 +64,7 @@ public class ExecutionLogDto {
 	 * start time - end time
 	 */
 	private ExecutionTime executionTime;
+	
 	
 	/**
 	 * 処理状況
