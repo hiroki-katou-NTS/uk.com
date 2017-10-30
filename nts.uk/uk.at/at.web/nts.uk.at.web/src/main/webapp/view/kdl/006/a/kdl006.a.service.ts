@@ -77,19 +77,19 @@ module nts.uk.at.view.kdl006.a {
                 viewText: string;
                 
                 // Columns
-                columnText1: KnockoutObservable<string>;
+                columnText1: string;
                 columnCheck1: boolean;
                 
-                columnText2: KnockoutObservable<string>;
+                columnText2: string;
                 columnCheck2: boolean;
                 
-                columnText3: KnockoutObservable<string>;
+                columnText3: string;
                 columnCheck3: boolean;
                 
-                columnText4: KnockoutObservable<string>;
+                columnText4: string;
                 columnCheck4: boolean;
                 
-                columnText5: KnockoutObservable<string>;
+                columnText5: string;
                 columnCheck5: boolean;
             }   
             
