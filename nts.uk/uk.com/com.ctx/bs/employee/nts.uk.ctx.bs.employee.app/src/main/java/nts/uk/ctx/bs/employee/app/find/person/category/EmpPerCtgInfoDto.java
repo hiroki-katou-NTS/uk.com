@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.app.find.person.item.EmpPersonInfoItemDefDto;
+import nts.uk.ctx.bs.employee.app.find.person.item.ItemEmpPersonInfoItemDefDto;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 
@@ -25,7 +25,7 @@ public class EmpPerCtgInfoDto {
 	private boolean isAbolition;
 	private int systemRequired;
 	private int isExistedItemLst;
-	private List<EmpPersonInfoItemDefDto> itemLst;
+	private List<ItemEmpPersonInfoItemDefDto> itemLst;
 	private CtgItemFixDto ctgItemDto;
 	private CtgItemOptionalDto ctgItemOptionalDto;	
 	
@@ -37,7 +37,7 @@ public class EmpPerCtgInfoDto {
 		this.isAbolition = personInfoCategory.getIsAbolition().value > 0;
 		if(lstPersonInfoItemDefinition != null)
 			this.itemLst = lstPersonInfoItemDefinition.stream()
-				.map(x -> new EmpPersonInfoItemDefDto(x.getPerInfoItemDefId(),
+				.map(x -> new ItemEmpPersonInfoItemDefDto(x.getPerInfoItemDefId(),
 						x.getPerInfoCategoryId(), x.getItemName().v(), x.getIsAbolition().value,
 						x.getSystemRequired().value)).collect(Collectors.toList());
 		this.ctgItemDto = ctgItemDto;

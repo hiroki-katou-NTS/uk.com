@@ -6,6 +6,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 public class AssignedWorkplace extends AggregateRoot{
+	
 	/**Employee id*/
 	//// 社員ID
 	private String employeeId;
