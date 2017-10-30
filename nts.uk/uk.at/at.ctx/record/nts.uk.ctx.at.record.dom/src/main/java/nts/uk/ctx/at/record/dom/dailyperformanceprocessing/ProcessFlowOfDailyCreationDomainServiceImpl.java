@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,15 +24,18 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
+	
+	@Inject
+	private CreateDailyResultDomainService createDailyResultDomainService;
 
 	@Override
 	public boolean processFlowOfDailyCreation(int executionAttr, BigDecimal startDate, BigDecimal endDate,
-			String executionID, String empCalAndSumExecLogID) {
+			String executionID, String empCalAndSumExecLogID, int reCreateAttr) {
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		String employeeID = AppContexts.user().employeeId();
-		
+
 		//①実行方法を取得する
 		List<EmpCalAndSumExeLog> empCalAndSumExeLogs = this.empCalAndSumExeLogRepository.getAllEmpCalAndSumExeLog(companyId);
 		
@@ -53,8 +57,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		}).collect(Collectors.toList());
 		
 		//各処理の実行
-		
-		
+		//this.createDailyResultDomainService.createDailyResult(personIdList, reCreateAttr, startDate, endDate, executionAttr, empCalAndSumExecLogID);
 		
 		return false;
 	}

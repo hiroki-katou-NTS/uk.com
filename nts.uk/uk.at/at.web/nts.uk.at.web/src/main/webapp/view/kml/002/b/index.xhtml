@@ -35,10 +35,10 @@
 				<table class="cal-formula-form-data">
 					<tr>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_18')}</div></td>
-						<td>レイアウトコード</td>
+						<td><span data-bind="text: attrLabel"></span></td>
 						<td></td>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_19')}</div></td>
-						<td>レイアウトコード</td>
+						<td><span data-bind="text: itemNameLabel"></span></td>
 					</tr>
 				</table>
 				
@@ -58,16 +58,16 @@
 								options: radioForm,
 								optionsValue: 'id',
 								optionsText: 'name',
-								value: selectedLeftId,
+								value: settingMethod1,
 								enable: true}"></div>
 						</td>
 						<td>
 							<div class="project-item" data-bind="ntsComboBox: {
-								options: projectItem,
+								options: verticalCalItems,
 								optionsValue: 'itemCode',
 								value: selectedItem1,
 								optionsText: 'itemName',
-								enable: enableProjectItem1,
+								enable: enableVerticalCalItem1,
 								columns: [
 									{ prop: 'itemName', length: 10 }
 								]}"></div>
@@ -88,25 +88,25 @@
 								options: radioForm,
 								optionsValue: 'id',
 								optionsText: 'name',
-								value: selectedRightId,
+								value: settingMethod2,
 								enable: true}"></div>
 						</td>
 						<td>
 							<div class="project-item" data-bind="ntsComboBox: {
-								options: projectItem,
+								options: verticalCalItems,
 								optionsValue: 'itemCode',
 								value: selectedItem2,
 								optionsText: 'itemName',
-								enable: enableProjectItem2,
+								enable: enableVerticalCalItem2,
 								columns: [
 									{ prop: 'itemName', length: 10 }
 								]}"></div>
 						</td>
 					</tr>
 					<tr>
-						<td><input class="numerical" data-bind="ntsNumberEditor: { value: numerical1, enable: enableNumerical1 }" /></td>						
+						<td><input class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem1, enable: enableVerticalInputItem1 }" /></td>						
 						
-						<td><input class="numerical" data-bind="ntsNumberEditor: { value: numerical2, enable: enableNumerical2 }" /></td>
+						<td><input class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem2, enable: enableVerticalInputItem2 }" /></td>
 					</tr>
 				</table>
 			</div>

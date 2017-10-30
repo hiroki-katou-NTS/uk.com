@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ksu/001/ntsExCalendar/nts-exCalendar.css"
+				of="/nts.uk.at.web" />
+			<com:stylefile
+				path="/view/ksu/001/ntsExCalendar/fullcalendar.min.css"
+				of="/nts.uk.at.web" />
+			<com:scriptfile
+				path="/view/ksu/001/ntsExCalendar/fullcalendar.min.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile
+				path="/view/ksu/001/ntsExCalendar/exCalendar-ko-ext.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/ksu/001/ntsExCalendar/locale-all.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile path="vm.js" />
+			<com:scriptfile path="start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="content" class="cf">
+					<div id="calendar"
+						data-bind="ntsExCalendar:{startDate: startDate, endDate: endDate, value: selectedIds}"></div>
+					<button data-bind="click: result">Result</button>
+					<br /> <span data-bind="text: dayIsChecked"></span>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

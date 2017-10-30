@@ -13,11 +13,17 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 @AllArgsConstructor
 public class Team extends AggregateRoot {
-	// 職場ID
+	/**
+	 *  職場ID
+	 */
 	private String workPlaceId;
-	// コード
+	/**
+	 *  コード
+	 */
 	private TeamCode teamCode;
-	// 名称
+	/**
+	 *  名称
+	 */
 	private TeamName teamName;
 
 	public static Team createFromJavaType(String workPlaceId, String teamCode, String teamName) {

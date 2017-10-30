@@ -73,14 +73,14 @@ module nts.uk.com.view.cmm050.a {
                 _self.password = ko.observable("");
                 _self.encryptionMethod = ko.observable(0);
                 
-                _self.smtpPort = ko.observable(0);
+                _self.smtpPort = ko.observable(587);
                 _self.smtpServer = ko.observable("");
                 
-                _self.imapPort = ko.observable(0);
+                _self.imapPort = ko.observable(143);
                 _self.imapUseServer = ko.observable(0);
                 _self.imapServer = ko.observable("");
                 
-                _self.popPort = ko.observable(0);
+                _self.popPort = ko.observable(110);
                 _self.popUseServer = ko.observable(0);
                 _self.popServer = ko.observable("");
                 
@@ -97,7 +97,7 @@ module nts.uk.com.view.cmm050.a {
                        _self.haveImapSetting(false);
                        _self.haveEncryptMethod(false);
                     }
-                });
+                }); 
                 
                 _self.authMethod.subscribe(function(authMethodChanged){
                     _self.fillUI(authMethodChanged);
@@ -118,6 +118,35 @@ module nts.uk.com.view.cmm050.a {
                        _self.popServerEnable(false);
                     }
                 });
+                 
+                _self.emailAuth.subscribe(function(emailString){
+                   if(emailString.trim().length <= 0){
+                        _self.emailAuth(emailString.trim());
+                    }
+                });
+                _self.password.subscribe(function(pass){
+                   if(pass.trim().length <= 0){
+                        _self.password(pass.trim());
+                    }
+                });
+                
+                 _self.popServer.subscribe(function(popServer){
+                   if(popServer.trim().length <= 0){
+                        _self.popServer(popServer.trim());
+                    }
+                });
+
+                _self.imapServer.subscribe(function(imapServer){
+                   if(imapServer.trim().length <= 0){
+                        _self.imapServer(imapServer.trim());
+                    }
+                });
+                
+                _self.smtpServer.subscribe(function(smtpServer){
+                   if(smtpServer.trim().length <= 0){
+                        _self.smtpServer(smtpServer.trim());
+                    }
+                });
             }
             
             /**
@@ -125,7 +154,7 @@ module nts.uk.com.view.cmm050.a {
              */
             public registerMailSetting() {
                 let _self = this;
-                 
+                            
                 // Validate
                 if (_self.hasError()) {
                     // validate input pop info

@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="contentE">
+			<div>
+				<label>#{i18n.getText('KSC001_28')}</label>
+			</div>
+			<div class="lableCaseAll cf">
+				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_29')}</div>
+				<div class="labelContents"  data-bind="foreach: lstLabelInfomation">
+					<label data-bind="text: $data"/>
+				</div>
+			</div>
+			<div class="lableCaseAll cf">
+				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_30')}</div>
+				<label class="labelCenter" data-bind="text: infoCreateMethod"></label>
+			</div>
+			<div class="lableCaseAll cf">
+				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+				<label class="labelCenter" data-bind="text: infoPeriodDate"></label>
+			</div>	
+			<div class="lableCaseAll cf">
+				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_32')}</div>
+				<label class="labelCenter" data-bind="text: lengthEmployeeSelected"></label>
+			</div>	
+			<div class="buttonBeginPrevious">
+				<button data-bind="click: previousPageE">#{i18n.getText('KSC001_33')}</button>
+			</div>
+			<div class="buttonBeginNext">
+				<button class="proceed large" data-bind="click: finish">#{i18n.getText('KSC001_34')}</button>
+			</div>
+		</div>
+		
+	</ui:composition>
+</body>
+</html>

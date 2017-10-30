@@ -41,8 +41,7 @@ public class Closure extends AggregateRoot {
 	/**
 	 * Instantiates a new closure.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public Closure(ClosureGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -55,8 +54,7 @@ public class Closure extends AggregateRoot {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(ClosureSetMemento memento) {
 		memento.setCompanyId(this.companyId);

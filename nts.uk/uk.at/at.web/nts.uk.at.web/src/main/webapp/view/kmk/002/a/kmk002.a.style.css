@@ -21,3 +21,10 @@
 	height: 20px;
 	background-size: 20px 20px;
 }
+.nts-fixed-table {
+	border-left: solid #CCC 1px;
+	border-right: solid #CCC 1px;
+	border-bottom: solid #CCC 1px;
+	width: 878px;
+	overflow-x: scroll;
+}
