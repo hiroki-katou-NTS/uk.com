@@ -58,33 +58,12 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.enable(false);
             }
             
+            self.checked.subscribe(function(value) {
+                self.displayItemsRule(self.allItem(), self.catCode(), value);
+            }); 
+            
             self.catCode.subscribe(function(value) {
-                if(value == 0){
-                    self.enable(true);
-                    var temp = [];
-                    
-                    for(var i = 0; i < self.allItem().length; i++) {
-                        if(self.allItem()[i].itemType == 0 || self.allItem()[i].itemType == 1) {                            
-                            temp.push(new ItemModel(self.allItem()[i].code, self.allItem()[i].name, self.allItem()[i].itemType));
-                        }
-                    }
-                    
-                    self.items.removeAll();
-                    self.items(temp);
-                } else {
-                    self.enable(false);
-                    self.allItem(self.items());
-                    var temp = [];
-                    
-                    for(var i = 0; i < self.allItem().length; i++) {
-                        if(self.allItem()[i].itemType == 2) {
-                            temp.push(new ItemModel(self.allItem()[i].code, self.allItem()[i].name, self.allItem()[i].itemType));
-                        }
-                    }
-                    
-                    self.items.removeAll();
-                    self.items(temp);
-                }
+                self.displayItemsRule(self.allItem(), value, false);
             }); 
             
             self.enableReturn = ko.observable(true);
@@ -104,9 +83,9 @@ module nts.uk.at.view.kml002.c.viewmodel {
             var dfd = $.Deferred();
             
             $.when(self.getData()).done(function() {
-                                
+                 
                 if (self.allItem().length > 0) {
-                    self.items(self.allItem());
+                    self.displayItemsRule(_.clone(self.allItem()), self.catCode(), self.checked());
                 }
                 
                 dfd.resolve();
@@ -128,25 +107,20 @@ module nts.uk.at.view.kml002.c.viewmodel {
             self.allItem([]);
             
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
-            
-            service.getDailyItems(data.attributeId).done(function(data) {
+            var dailyAttendanceAtrs = [];
+            dailyAttendanceAtrs.push(5);
+            var param = {
+                dailyAttendanceItemAtrs: dailyAttendanceAtrs ,
+                scheduleAtr: data.attributeId,
+                budgetAtr: data.attributeId,
+                unitAtr: 0
+            };
+            service.getDailyItems(param).done(function(data) {
                 let temp = [];
-                let dailyItems = _.sortBy(data.dailyAttItems, ['companyId', 'dispOrder']);
-                let scheduleItems = _.sortBy(data.scheduleItems, ['companyId', 'dispOrder']);              
-                let externalItems = _.sortBy(data.externalItems, ['companyId', 'dispOrder']);
+                let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 
-                _.forEach(dailyItems, function(item) {
+                _.forEach(items, function(item: service.BaseItemsDto) {
                     var name = item.itemName + nts.uk.resource.getText("KML002_43");
-                    temp.push(new ItemModel(item.id, name, item.itemType));
-                });
-                
-                _.forEach(scheduleItems, function(item) {
-                    var name = item.itemName + nts.uk.resource.getText("KML002_42");
-                    temp.push(new ItemModel(item.id, name, item.itemType));
-                });
-                
-                _.forEach(externalItems, function(item) {
-                    var name = item.itemName + nts.uk.resource.getText("KML002_44");
                     temp.push(new ItemModel(item.id, name, item.itemType));
                 });
                 
@@ -161,6 +135,24 @@ module nts.uk.at.view.kml002.c.viewmodel {
         }
         
         /**
+         * Display items rule.
+         */
+        displayItemsRule(allItems: any, category: number, display: boolean) {
+            let self = this;
+            let temp = [];
+            
+            if(category == 0 && display) {
+                self.items(_.filter(allItems, ['itemType', 0]));
+            } else if (category == 0 && !display) {
+                self.items(_.filter(allItems, function(item: ItemModel) {
+                    return item.itemType == 0 || item.itemType == 1;
+                }));
+            } else if (category == 1) {
+                self.items(_.filter(allItems, ['itemType', 2]));
+            }      
+        }
+        
+        /**
          * Addition function.
          */
         addition() {
@@ -170,7 +162,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             } else {
                 _.forEach(self.currentCodeList(), function(item){
-                    var item = _.find(self.items(), function(o) { return o.code == Number(item); });
+                    var item = _.find(self.items(), function(o) { return o.code == item.toString(); });
                     
                     let i = self.rightItems().length;
                     

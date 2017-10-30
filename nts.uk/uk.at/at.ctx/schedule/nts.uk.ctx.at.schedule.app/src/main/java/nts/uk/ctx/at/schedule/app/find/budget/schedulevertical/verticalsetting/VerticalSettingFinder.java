@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.app.find.scheduleitemmanagement.ScheduleItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemDto;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
@@ -75,43 +74,38 @@ public class VerticalSettingFinder {
 	 *
 	 * @return the list
 	 */
-	public BaseItemsDto getDailyItems(int attribute) {
+	public List<BaseItemsDto> getDailyItems(DailyItemsParamDto param) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
-		
-		BaseItemsDto items = new BaseItemsDto();
 
 		// Get daily data
-		List<BaseItem> dailyItems = new ArrayList<>();
-		List<BaseItem> scheItems = new ArrayList<>();
-		List<BaseItem> extenalItems = new ArrayList<>();
-		List<Integer> attr = new ArrayList<>();
-		attr.add(DailyAttendanceAtr.TIME.value);
+		List<BaseItemsDto> baseItems = new ArrayList<>();
 		
-		List<ScDailyAttendanceItemDto> dailyAttendanceItems = this.dailyAttItemRepository.findByAtr(companyId, attr);
+		List<ScDailyAttendanceItemDto> dailyAttendanceItems = this.dailyAttItemRepository.findByAtr(companyId, param.getDailyAttendanceItemAtrs());
 		
 		for(int i = 0; i < dailyAttendanceItems.size(); i++) {	
-			BaseItem dailyItem = new BaseItem();
+			BaseItemsDto dailyItem = new BaseItemsDto();
 			String itemId = Integer.toString(dailyAttendanceItems.get(i).getAttendanceItemId());
+			String id = itemId + "" + ItemTypes.DAILY.value;
 			
 			dailyItem.setCompanyId(companyId);
-			dailyItem.setId(i);
+			dailyItem.setId(id);
 			dailyItem.setItemId(itemId);
 			dailyItem.setItemName(dailyAttendanceItems.get(i).getAttendanceName());
 			dailyItem.setItemType(ItemTypes.DAILY.value);
 			dailyItem.setDispOrder(dailyAttendanceItems.get(i).getDisplayNumber());
 			
-			dailyItems.add(dailyItem);
-			items.setDailyAttItems(dailyItems);
+			baseItems.add(dailyItem);
 		}
 		
 		// Get schedule data
-		List<ScheduleItemDto> scheduleItems = this.scheduleRepository.findAllScheduleItemByAtr(companyId, attribute).stream().map(c -> ScheduleItemDto.fromDomain(c))
+		List<ScheduleItemDto> scheduleItems = this.scheduleRepository.findAllScheduleItemByAtr(companyId, param.getScheduleAtr())
+				.stream().map(c -> ScheduleItemDto.fromDomain(c))
 				.collect(Collectors.toList());
 
 		for(int i = 0; i < scheduleItems.size(); i++) {
-			BaseItem scheduleItem = new BaseItem();
-			int id = items.getDailyAttItems().size() + i;
+			BaseItemsDto scheduleItem = new BaseItemsDto();
+			String id = scheduleItems.get(i).getScheduleItemId() + "" + ItemTypes.SCHEDULE.value;
 			
 			scheduleItem.setCompanyId(companyId);
 			scheduleItem.setId(id);
@@ -120,17 +114,17 @@ public class VerticalSettingFinder {
 			scheduleItem.setItemType(ItemTypes.SCHEDULE.value);
 			scheduleItem.setDispOrder(scheduleItems.get(i).getDispOrder());
 			
-			scheItems.add(scheduleItem);
-			items.setScheduleItems(scheItems);
+			baseItems.add(scheduleItem);
 		}
 		
 		// Get external data
-		List<ExternalBudgetDto> externalItems = this.externalBudgerRepository.findByAtr(companyId, attribute, UnitAtr.DAILY.value).stream().map(c -> ExternalBudgetDto.fromDomain(c))
+		List<ExternalBudgetDto> externalItems = this.externalBudgerRepository.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
+				.stream().map(c -> ExternalBudgetDto.fromDomain(c))
 				.collect(Collectors.toList());
 				
 		for(int i = 0; i < externalItems.size(); i++) {
-			BaseItem externalItem = new BaseItem();
-			int id = items.getDailyAttItems().size() + items.getScheduleItems().size() + i;
+			BaseItemsDto externalItem = new BaseItemsDto();
+			String id = externalItems.get(i).getExternalBudgetCode() + "" + ItemTypes.EXTERNAL.value;
 			
 			externalItem.setCompanyId(companyId);
 			externalItem.setId(id);
@@ -139,10 +133,9 @@ public class VerticalSettingFinder {
 			externalItem.setItemType(ItemTypes.EXTERNAL.value);
 			externalItem.setDispOrder(Integer.parseInt(externalItems.get(i).getExternalBudgetCode()));
 			
-			extenalItems.add(externalItem);
-			items.setExternalItems(extenalItems);
+			baseItems.add(externalItem);
 		}
 		
-		return items;
+		return baseItems;
 	}
 }
