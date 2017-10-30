@@ -15,7 +15,7 @@ public class AssignedWorkplace extends AggregateRoot{
 	 * assigned workplace id
 	 */
 	//職場ID
-	private AssignedWorkplaceId assignedWorkplaceId;
+	private String assignedWorkplaceId;
 	
 	/** The history id. */
 	//履歴ID
