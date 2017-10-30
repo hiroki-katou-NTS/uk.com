@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
@@ -17,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
 public class ActualWorkingTimeOfDaily {
 	
 	//割増時間
-	private List<PremiumTimeOfDailyPerformance	> premiumTimeOfDailyPerformances;
+	private PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance;
 	
 	//拘束差異時間
 	private AttendanceTime constraintDifferenceTime;

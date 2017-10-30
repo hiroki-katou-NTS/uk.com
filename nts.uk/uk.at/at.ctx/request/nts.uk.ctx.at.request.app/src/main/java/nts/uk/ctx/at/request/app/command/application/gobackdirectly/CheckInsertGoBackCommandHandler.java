@@ -98,7 +98,7 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		
-		//登録ボタンをクリックする
+		//直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
 		goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp,appApprovalPhases);
 		
 	}

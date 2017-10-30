@@ -95,13 +95,19 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				if(checkAllApproval) {
 					continue;
 				}
-				//ログイン者が承認者かチェックする(check xem người login có phải người xác nhận hay không)				
-				lstApprover.stream().filter(x -> x.getApproverSID().equals(loginEmp)).forEach(y -> {
-					//if文がtrue
-					//(ループ中の「承認枠」)承認区分=「承認済」、承認者=ログイン者の社員ID、代行者=空
-					y.setApprovalATR(ApprovalAtr.APPROVED);
-					y.setRepresenterSID("");
-				});
+				//ログイン者が承認者かチェックする(check xem người login có phải người xác nhận hay không)
+				boolean isLogin = false;
+				for(ApproveAccepted approveAccepted : lstApprover) {
+					if(approveAccepted.getApproverSID().equals(loginEmp)) {
+						approveAccepted.setApprovalATR(ApprovalAtr.APPROVED);
+						approveAccepted.setRepresenterSID("");
+						isLogin = true;
+						break;
+					}
+				}
+				if(isLogin) {
+					continue;
+				}
 				//if文がfalse
 				List<String> lstApproverIds = lstApprover.stream().map(x -> x.getApproverSID())
 						.collect(Collectors.toList());
@@ -121,6 +127,11 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 								new Reason(approverMemo), 
 								loginEmp);
 						lstApprover.add(representer);
+						//chuyen trang thai nhung nguoi trong frame thanh APPROVED
+						lstApprover.stream().forEach(x ->{
+							x.setApprovalATR(ApprovalAtr.APPROVED);
+							x.setRepresenterSID(loginEmp);
+						});
 					}
 				}
 				

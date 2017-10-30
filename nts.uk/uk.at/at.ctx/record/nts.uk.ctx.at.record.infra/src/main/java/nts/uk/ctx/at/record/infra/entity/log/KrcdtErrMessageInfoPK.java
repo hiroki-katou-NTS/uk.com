@@ -19,7 +19,7 @@ public class KrcdtErrMessageInfoPK implements Serializable {
 	public String employeeID;
 	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
-	public long empCalAndSumExecLogID;
+	public String empCalAndSumExecLogID;
 	
 	@Column(name = "RESOURCE_ID")
 	public String resourceID;

@@ -61,8 +61,25 @@ public class BcmmtCompany extends UkJpaEntity implements Serializable {
     @Column(name = "ABOLITION_ATR")
     public int abolitionAtr;
     
+    /** 人事システム */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "PERSONAL_SYSTEM")
+    public int personSystem;
     
+    /** 就業システム  */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "EMPLOYMENT_SYSTEM")
+    public int employmentSystem;
+    
+    /** 給与システム */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "PAYROLL_SYSTEM")
+    public int payrollSystem;
 
+    
     /**
      * Instantiates a new cmnmt company.
      */

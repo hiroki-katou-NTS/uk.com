@@ -19,13 +19,14 @@ module nts.uk.at.view.kaf002.c {
             }
             
             startPage(appID: string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 var dfdCommonSet = service.newScreenFind();
                 var dfdAppStamp = service.findByAppID(appID);
                 $.when(dfdCommonSet, dfdAppStamp).done((commonSetData, appStampData) => {
                     self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
-                    self.cm.start(commonSetData, appStampData, self.approvalList);
+                    self.cm.start(commonSetData, appStampData, self.approvalList);   
                     dfd.resolve(); 
                 })
                 .fail(function(res) { 

@@ -29,7 +29,7 @@ __viewContext.ready(function () {
                             },
         { key: "workTimeName", headerText: "就業時間", width: "100px", handlerType: "roundTrip", 
             supplier: function(data: any, rowIndex: any, columnKey) { 
-                        nts.uk.ui.windows.sub.modal("/view/sample/extable/dialog/sample.xhtml").onClosed(function() { 
+                        nts.uk.ui.windows.sub.modal("/view/sample/component/extable/dialog/sample.xhtml").onClosed(function() { 
                             let id = nts.uk.util.randomId().substr(0, 6);
                             $("#extable2").exTable("roundGet", id + "  休憩");
                             $("#extable2").exTable("rowId", rowIndex, id);

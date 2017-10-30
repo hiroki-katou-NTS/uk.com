@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementOperationSettingDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementOperationSettingDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * 
@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class AgreementOperationSettingFinder {
 	
-	@Inject IInternationalization internationalization;
+	@Inject I18NResourcesForUK ukResource;
 
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
@@ -41,13 +41,13 @@ public class AgreementOperationSettingFinder {
 		Optional<AgreementOperationSetting> agreementOperationSetting = this.agreementOperationSettingRepository
 				.find(companyId);
 
-		List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(StartingMonthType.class, internationalization);
+		List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(StartingMonthType.class, ukResource);
 		List<EnumConstant> numberTimesOverLimitTypeEnum = EnumAdaptor
-				.convertToValueNameList(TimeOverLimitType.class, internationalization);
-		List<EnumConstant> closingDateTypeEnum = EnumAdaptor.convertToValueNameList(ClosingDateType.class, internationalization);
-		List<EnumConstant> closingDateAtrEnum = EnumAdaptor.convertToValueNameList(ClosingDateAtr.class, internationalization);
-		List<EnumConstant> yearlyWorkTableAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class, internationalization);
-		List<EnumConstant> alarmListAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class, internationalization);
+				.convertToValueNameList(TimeOverLimitType.class, ukResource);
+		List<EnumConstant> closingDateTypeEnum = EnumAdaptor.convertToValueNameList(ClosingDateType.class, ukResource);
+		List<EnumConstant> closingDateAtrEnum = EnumAdaptor.convertToValueNameList(ClosingDateAtr.class, ukResource);
+		List<EnumConstant> yearlyWorkTableAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class, ukResource);
+		List<EnumConstant> alarmListAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class, ukResource);
 
 		agreementOperationSettingDto.setAlarmListAtrEnum(alarmListAtrEnum);
 		agreementOperationSettingDto.setClosingDateAtrEnum(closingDateAtrEnum);

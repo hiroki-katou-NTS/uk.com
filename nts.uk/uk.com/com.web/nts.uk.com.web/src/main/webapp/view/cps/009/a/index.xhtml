@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A1_001" tabindex="1" data-bind="click: openDDialog">#{i18n.getText('CPS009_3')}</button>
-				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS009_4')}</button>
+				<button id="A1_002" class="proceed" data-bind="click: update" tabindex="2">#{i18n.getText('CPS009_4')}</button>
 				<button id="A1_003" data-bind="click: openCDialog" tabindex="3">#{i18n.getText('CPS009_5')}</button>
 				<button id="A1_004" class="danger" data-bind="click: deleteInitValue" tabindex="4">#{i18n.getText('CPS009_6')}</button>
 				<div class='float-right'>
@@ -56,7 +56,7 @@
 								data-bind="ntsTextEditor: {
 								value: currentCategory().settingCode ,
 								constraint: 'ValueSettingCode',
-								enable: true,
+								enable: false,
 								immediate: false}"></input>
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
@@ -136,10 +136,11 @@
 
 										</td>
 
+						 			<com:ko-if bind="(refMethodType() === 1)"> 
 										<td colspan="2" class="input-units">
 											<!-- String  -->
 											<com:ko-if bind="(dataType() === 0)">
-												<input class="sub-input-units" data-bind="ntsTextEditor: {value: perInfoItemDefId , constraint: 'CategoryName', required: true}" />
+												<input class="sub-input-units" data-bind="ntsTextEditor: {value: stringValue , constraint: 'CategoryName', required: true}" />
 											</com:ko-if> 
 											
 											<!-- number  --> 
@@ -181,6 +182,12 @@
 											</com:ko-if>
 
 										</td>
+ 										</com:ko-if> 
+ 										<com:ko-if bind="(refMethodType() === 0 || refMethodType() === 2 || refMethodType() === 3 || refMethodType() === 4 || refMethodType() === 5 || refMethodType() === 6 || refMethodType() === 7 || refMethodType() === 8)"> 
+ 										<td colspan="2" class="input-units">
+ 										<span></span>
+ 										</td>
+ 										</com:ko-if>
 
 									</tbody>
 								</table>

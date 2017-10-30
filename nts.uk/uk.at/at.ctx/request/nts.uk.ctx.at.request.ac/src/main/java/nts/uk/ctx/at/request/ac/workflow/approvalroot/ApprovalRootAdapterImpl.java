@@ -87,25 +87,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		return temp;
 		
 	}
-	/**
-	 * convert ApprovalRootImport to ApprovalRootExport
-	 * @param export
-	 * @return
-	 */
-	private ApprovalRootExport convertApprovalRootExport(ApprovalRootImport approvalRootImport) {
-		return new ApprovalRootExport(
-				approvalRootImport.getCompanyId(),
-				approvalRootImport.getWorkplaceId(),
-				approvalRootImport.getApprovalId(),
-				approvalRootImport.getEmployeeId(),
-				approvalRootImport.getHistoryId(),
-				approvalRootImport.getStartDate(),
-				approvalRootImport.getEndDate(),
-				approvalRootImport.getBranchId(),
-				approvalRootImport.getAnyItemApplicationId()
-				);
-		
-	}
+
 	/**
 	 * covert ApprovalPhaseExport -> ApprovalPhaseImport
 	 * @param approvalPhaseExport
@@ -125,22 +107,6 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		
 	}
 	
-	/**
-	 * covert ApprovalPhaseImport -> ApprovalPhaseExport
-	 * @param approvalPhaseExport
-	 * @return
-	 */
-	private ApprovalPhaseExport convertApprovalPhaseExport(ApprovalPhaseImport  approvalPhaseImport) {
-		return new  ApprovalPhaseExport(
-				approvalPhaseImport.getCompanyId(),
-				approvalPhaseImport.getBranchId(),
-				approvalPhaseImport.getApprovalPhaseId(),
-				approvalPhaseImport.getApprovalForm(),
-				approvalPhaseImport.getBrowsingPhase(),
-				approvalPhaseImport.getOrderNumber()
-				);
-		
-	}
 	
 	private ApproverInfoImport convertApproverInfoImport(ApproverInfoExport approverInfoExport) {
 		String companyID = AppContexts.user().companyId();
@@ -156,7 +122,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 			temp.addEmployeeName(employeeAdapter.getEmployeeName(approverInfoExport.getSid()));
 		}
 		if(approverInfoExport.getApprovalAtr() ==1) {
-			temp.addEmployeeName(syJobTitlePub.findByJobId(companyID, approverInfoExport.getJobId(), GeneralDate.today()).get().getPositionName());
+			temp.addEmployeeName(syJobTitlePub.findByJobId(companyID, approverInfoExport.getJobId(), GeneralDate.today()).get().getJobTitleName());
 
 		}
 		return temp;

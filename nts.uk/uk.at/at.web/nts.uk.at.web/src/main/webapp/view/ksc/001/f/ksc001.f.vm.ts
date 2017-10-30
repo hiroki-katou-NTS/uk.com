@@ -118,16 +118,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                         // update state on screen
                         if (res.running || res.succeeded || res.cancelled) {
-                            _.forEach(res.taskDatas, item => {
-                                if (item.key == 'TOTAL_RECORD') {
-                                    self.totalRecord(item.valueAsNumber);
-                                }
-                                if (item.key == 'SUCCESS_CNT') {
-                                    self.numberSuccess(item.valueAsNumber);
-                                }
-                                if (item.key == 'FAIL_CNT') {
-                                    self.numberFail(item.valueAsNumber);
-                                }
+                            service.findScheduleExecutionLogInfoById(self.inputData.executionId).done(function(data){
+                                self.totalRecord(data.totalNumber);
+                                self.numberSuccess(data.totalNumberCreated);
+                                self.numberFail(data.totalNumberError);
                             });
                         }
                         self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));

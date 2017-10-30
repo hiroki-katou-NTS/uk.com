@@ -14,7 +14,11 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 public interface LateOrLeaveEarlyService {
 	
 	boolean isExist(String companyID, String appID);
-	
+	/**
+	 * 事前制約をチェックする (Kiểm tra 事前制約)
+	 * ドメインモデル「遅刻早退取消申請」の新規登録する
+	 * @param lateOrLeaveEarly
+	 */
 	void createLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly);
 	
 	void updateLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly);

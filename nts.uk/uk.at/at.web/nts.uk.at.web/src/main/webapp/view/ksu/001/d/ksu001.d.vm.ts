@@ -13,16 +13,17 @@ module ksu001.d.viewmodel {
 
         //KCP005
         listComponentOption: any;
-        selectedCode: KnockoutObservable<string>;
-        multiSelectedCode: KnockoutObservableArray<string>;
-        isShowAlreadySet: KnockoutObservable<boolean>;
-        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        isDialog: KnockoutObservable<boolean>;
-        isShowNoSelectRow: KnockoutObservable<boolean>;
-        isMultiSelect: KnockoutObservable<boolean>;
-        isShowWorkPlaceName: KnockoutObservable<boolean>;
-        isShowSelectAllButton: KnockoutObservable<boolean>;
+        selectedCode: KnockoutObservable<string> = ko.observable('');
+        multiSelectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
+        isShowAlreadySet: KnockoutObservable<boolean> = ko.observable(false);
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
+        isDialog: KnockoutObservable<boolean> = ko.observable(false);
+        isShowNoSelectRow: KnockoutObservable<boolean> = ko.observable(false);
+        isMultiSelect: KnockoutObservable<boolean> = ko.observable(false);
+        isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(false);
+        isShowSelectAllButton: KnockoutObservable<boolean> = ko.observable(false);
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+
         //ExCalendar
         startDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").startDate);
         endDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").endDate);
@@ -30,19 +31,6 @@ module ksu001.d.viewmodel {
 
         constructor() {
             let self = this;
-
-            self.selectedCode = ko.observable('1');
-            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-            self.isShowAlreadySet = ko.observable(false);
-            self.alreadySettingList = ko.observableArray([
-                { code: '1', isAlreadySetting: true },
-                { code: '2', isAlreadySetting: true }
-            ]);
-            self.isDialog = ko.observable(false);
-            self.isShowNoSelectRow = ko.observable(false);
-            self.isMultiSelect = ko.observable(false);
-            self.isShowWorkPlaceName = ko.observable(false);
-            self.isShowSelectAllButton = ko.observable(false);
 
             _.each(getShared("dataForScreenD").empItems, (x) => {
                 self.employeeList.push({ code: x.empCd, name: x.empName });
@@ -53,16 +41,33 @@ module ksu001.d.viewmodel {
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectType: SelectType.NO_SELECT,
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                isShowSelectAllButton: self.isShowSelectAllButton()
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                maxRows: 15
             };
 
             $('#component-items-list').ntsListComponent(self.listComponentOption);
+        }
+        /**
+         * decision
+         */
+        decision(): void {
+            let self = this;
+            if (self.selectedCode().length === 0) {
+                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_499'));
+                return;
+            }
+            if (self.selectedIds().length === 0) {
+                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_500'));
+                return;
+            }
+
+            nts.uk.ui.windows.close();
         }
 
         /**

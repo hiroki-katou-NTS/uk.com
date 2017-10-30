@@ -29,7 +29,7 @@ public class WorkTimeSet extends AggregateRoot {
 	private boolean nightShift;
 	
 	/** The prescribed timezone setting. */
-	//所定時間帯設定
+	//所定時間帯
 	private PrescribedTimezoneSetting prescribedTimezoneSetting;
 	
 	/** The start date clock. */

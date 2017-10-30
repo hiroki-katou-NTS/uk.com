@@ -160,9 +160,9 @@
 						<div style="width: 65%; float: left">
 							<div style="margin-bottom: 17px" id="combo-box"
 								data-bind="ntsComboBox: {
-									options: itemList,
+									options: backgroundColorList,
 									optionsValue: 'code',
-									value: selectedCode,
+									value: selectedBackgroundColor,
 									optionsText: 'name',
 									enable: true,
 									columns: [
@@ -253,7 +253,7 @@
 				<div id="popup-area8" class="popup-area popup-panel"
 					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 100px;">
 					<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_342')}</div>
-					<span>2017/12/12</span><br /> <span>#{i18n.getText('KSU001_343')}</span>
+					<span data-bind="text: selectedDate"></span><br /> <span>#{i18n.getText('KSU001_343')}</span>
 					<hr />
 					<div>
 						<input style="width: 130px"
@@ -286,29 +286,29 @@
 					<div class="ml-20">
 						<div>
 							<div class="popup-div">
-								<div id="color-1" class="square"></div>
+								<div class="square bg-schedule-uncorrectable"></div>
 								<span>#{i18n.getText('KSU001_310')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-2" class="square"></div>
+								<div class="square bg-daily-alter-self"></div>
 								<span>#{i18n.getText('KSU001_311')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-3" class="square"></div>
+								<div class="square bg-daily-alter-other"></div>
 								<span>#{i18n.getText('KSU001_312')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div id="color-4" class="square"></div>
+								<div class="square bg-daily-reflect-application"></div>
 								<span>#{i18n.getText('KSU001_313')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-5" class="square"></div>
+								<div class="square bg-schedule-fixed"></div>
 								<span>#{i18n.getText('KSU001_5')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-6" class="square"></div>
+								<div class="square bg-schedule-support"></div>
 								<span>#{i18n.getText('KSU001_314')}</span>
 							</div>
 						</div>
@@ -336,21 +336,21 @@
 					<div class="ml-20">
 						<div>
 							<div class="popup-div">
-								<div id="color-10" class="square"></div>
+								<div class="square bg-schedule-saturday"></div>
 								<span>#{i18n.getText('KSU001_318')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-11" class="square"></div>
+								<div class="square bg-schedule-sunday"></div>
 								<span>#{i18n.getText('KSU001_319')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div id="color-12" class="square"></div>
+								<div class="square bg-schedule-that-day"></div>
 								<span>#{i18n.getText('KSU001_320')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-13" class="square"></div>
+								<div class="square bg-schedule-specific-date"></div>
 								<span>#{i18n.getText('KSU001_21')}</span>
 							</div>
 						</div>
@@ -360,22 +360,22 @@
 					<hr />
 					<div class="ml-20">
 						<div>
-							<div class="popup-div" style="width: 305px !important">
-								<div id="color-14" class="square"></div>
+							<div class="popup-div" style="width: 285px !important">
+								<div class="square bg-schedule-no-health-insurance"></div>
 								<span>#{i18n.getText('KSU001_322')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-15" class="square"></div>
+								<div class="square bg-schedule-no-empl-insurance"></div>
 								<span>#{i18n.getText('KSU001_323')}</span>
 							</div>
 						</div>
 						<div>
-							<div class="popup-div" style="width: 305px !important">
-								<div id="color-16" class="square"></div>
+							<div class="popup-div" style="width: 285px !important">
+								<div class="square bg-schedule-no-empl-health-insurance"></div>
 								<span>#{i18n.getText('KSU001_324')}</span>
 							</div>
 							<div class="popup-div">
-								<div id="color-6" class="square"></div>
+								<div class="square bg-schedule-support"></div>
 								<span>#{i18n.getText('KSU001_314')}</span>
 							</div>
 						</div>

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
@@ -76,6 +77,17 @@ public class Formula extends AggregateRoot {
 		this.symbol = memento.getSymbol();
 		this.monthlyRounding = memento.getMonthlyRounding();
 		this.dailyRounding = memento.getDailyRounding();
+
+		this.validateSymbol();
+	}
+
+	/**
+	 * Validate symbol.
+	 */
+	private void validateSymbol() {
+		if (this.symbol.greaterThan("ZZ")) {
+			throw new BusinessException("Msg_508");
+		}
 	}
 
 	/**

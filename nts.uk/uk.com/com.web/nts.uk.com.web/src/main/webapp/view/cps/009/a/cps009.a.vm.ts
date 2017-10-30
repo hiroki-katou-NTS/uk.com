@@ -43,37 +43,34 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.currentCategory().currentItemId.subscribe(function(value: string) {
                 if (value) {
                     self.currentCategory().itemList.removeAll();
+                    service.getAllItemByCtgId(self.initSettingId(), value).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
+                        if (item.length > 0) {
+                            let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
+                                return new PerInfoInitValueSettingItemDto({
+                                    perInfoItemDefId: obj.perInfoItemDefId, settingId: obj.settingId,
+                                    perInfoCtgId: obj.perInfoCtgId, itemName: obj.itemName,
+                                    isRequired: obj.isRequired, refMethodType: obj.refMethodType,
+                                    saveDataType: obj.saveDataType, stringValue: obj.stringValue,
+                                    intValue: obj.intValue, dateValue: obj.dateValue,
+                                    value: obj.value, itemType: obj.itemType,
+                                    dataType: obj.dataType
+                                });
 
-                    for (let i = 0; i < Math.floor((Math.random() * 8) + 1); i++) {
-                        if (i % 2 === 0) {
-                            self.currentCategory().itemList.push(new PerInfoInitValueSettingItemDto({
-                                perInfoItemDefId: i.toString(), settingId: i.toString(),
-                                perInfoCtgId: i.toString(), itemName: "A",
-                                isRequired: 0, refMethodType: i % 4,
-                                saveDataType: i % 3, stringValue: i.toString(),
-                                intValue: i.toString(), dateValue: i.toString(),
-                                value: i.toString(), itemType: i % 6,
-                                dataType: i % 7
-                            }));
+                            });
+                            self.currentCategory().itemList.removeAll();
+                            self.currentCategory().itemList(itemConvert);
+                            self.currentCategory().itemList.valueHasMutated();
                         } else {
-                            self.currentCategory().itemList.push(new PerInfoInitValueSettingItemDto({
-                                perInfoItemDefId: i.toString(), settingId: i.toString(),
-                                perInfoCtgId: i.toString(), itemName: "A",
-                                isRequired: 1, refMethodType: i % 4,
-                                saveDataType: i % 3, stringValue: i.toString(),
-                                intValue: i.toString(), dateValue: i.toString(),
-                                value: i.toString(), itemType: i % 6,
-                                dataType: i % 7
-                            }));
+                            self.currentCategory().itemList.removeAll();
+                            self.currentCategory().itemList([]);
+                            self.currentCategory().itemList.valueHasMutated();
 
                         }
+                    })
 
-                    }
                     self.currentCategory().itemList.valueHasMutated();
 
                 }
-
-
             });
 
         }
@@ -89,8 +86,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     if (id === undefined) {
                         if (self.initValSettingLst().length > 0) {
                             self.initSettingId(self.initValSettingLst()[0].settingId);
-                        }else{
-                             self.initSettingId("");
+                        } else {
+                            self.initSettingId("");
                         }
                     } else {
                         self.initSettingId(id);
@@ -234,257 +231,287 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                         close();
                     });
-                })
+                });
             }).ifNo(() => {
                 return;
+            });
+        }
+
+        // cap nhat init value
+        update() {
+            let self = this,
+                updateObj = {
+                    settingId: self.initSettingId(),
+                    settingName: self.currentCategory().settingName(),
+                    perInfoCtgId: self.currentCategory().currentItemId(),
+                    itemLst: _.map(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto){
+                         return {
+                             perInfoItemDefId : obj.perInfoItemDefId,
+                             itemName: obj.itemName,
+                             isRequired : obj.isRequired,
+                             refMethodType : obj.refMethodType,
+                             itemType : obj.itemType,
+                             dataType: obj.dataType,
+                             saveDataType : obj.saveDataType,
+                             stringValue: obj.stringValue,
+                             intValue: obj.intValue,
+                             dateValue: obj.dateValue,
+                             dateWithDay : obj.dateWithDay,
+                             timePoint: obj.timePoint,
+                             value: obj.value,
+                             selectedRuleCode : obj.selectedRuleCode,
+                             selectedCode : obj.selectedCode
+                             };
+                         })
+                };
+
+            service.update(updateObj).done(function(data){
+                console.log(data);
             })
+        }
+}
 
 
+export class InitValueSettingDetail {
+    settingCode: KnockoutObservable<string>;
+    settingName: KnockoutObservable<string>;
+    ctgList: KnockoutObservableArray<any>;
+    currentItemId: KnockoutObservable<string> = ko.observable('');
+    ctgColums: KnockoutObservableArray<any> = ko.observableArray([
+        { headerText: '', key: 'perInfoCtgId', width: 100, hidden: true },
+        { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
+        { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
+    ]);
+    itemList: KnockoutObservableArray<any>;
+    constructor(params: IInitValueSettingDetail) {
+        let self = this;
+        self.settingCode = ko.observable(params.settingCode);
+        self.settingName = ko.observable(params.settingName);
+        self.ctgList = ko.observableArray(params.ctgList);
+        self.itemList = ko.observableArray(params.itemList || []);
 
+
+    }
+
+    setData(params: IInitValueSettingDetail) {
+        let self = this;
+        self.settingCode(params.settingCode);
+        self.settingName(params.settingName);
+        self.ctgList(params.ctgList);
+        if (self.ctgList().length > 0) {
+            self.currentItemId(params.ctgList[0].perInfoCtgId);
+        } else {
+            self.currentItemId('');
         }
     }
+}
 
 
-    export class InitValueSettingDetail {
-        settingCode: KnockoutObservable<string>;
-        settingName: KnockoutObservable<string>;
-        ctgList: KnockoutObservableArray<any>;
-        currentItemId: KnockoutObservable<string> = ko.observable('');
-        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: '', key: 'perInfoCtgId', width: 100, hidden: true },
-            { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
-            { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
-        ]);
-        itemList: KnockoutObservableArray<any>;
-        constructor(params: IInitValueSettingDetail) {
-            let self = this;
-            self.settingCode = ko.observable(params.settingCode);
-            self.settingName = ko.observable(params.settingName);
-            self.ctgList = ko.observableArray(params.ctgList);
-            self.itemList = ko.observableArray(params.itemList || []);
+// obj list bên trái
+export interface IInitValueSetting {
+    companyId?: string;
+    settingId: string;
+    settingCode: string;
+    settingName: string;
+}
 
-
-        }
-
-        setData(params: IInitValueSettingDetail) {
-            let self = this;
-            self.settingCode(params.settingCode);
-            self.settingName(params.settingName);
-            self.ctgList(params.ctgList);
-            if (self.ctgList().length > 0) {
-                self.currentItemId(params.ctgList[0].perInfoCtgId);
-            } else {
-                self.currentItemId('');
-            }
-        }
+export class InitValueSetting {
+    companyId: string;
+    settingId: string;
+    settingCode: string;
+    settingName: string;
+    constructor(params: IInitValueSetting) {
+        this.settingId = params.settingId;
+        this.settingCode = params.settingCode;
+        this.settingName = params.settingName;
     }
 
+}
 
-    // obj list bên trái
-    export interface IInitValueSetting {
-        companyId?: string;
-        settingId: string;
-        settingCode: string;
-        settingName: string;
+export interface ICategoryInfo {
+    perInfoCtgId: string;
+    categoryName: string;
+    setting: boolean;
+}
+
+export class CategoryInfo {
+    perInfoCtgId: string;
+    categoryName: string;
+    setting: boolean;
+    constructor(params: ICategoryInfo) {
+        this.perInfoCtgId = params.perInfoCtgId;
+        this.categoryName = params.categoryName;
+        this.setting = params.setting;
     }
+}
 
-    export class InitValueSetting {
-        companyId: string;
-        settingId: string;
-        settingCode: string;
-        settingName: string;
-        constructor(params: IInitValueSetting) {
-            this.settingId = params.settingId;
-            this.settingCode = params.settingCode;
-            this.settingName = params.settingName;
-        }
+export interface IInitValue {
+    id: string;
+    itemName: string;
+    comboxValue: string;
+    value: string;
+}
 
+export class InitValue {
+    id: string;
+    itemName: string;
+    comboxValue: string;
+    value: string;
+    constructor(params: IInitValue) {
+        this.id = params.id;
+        this.itemName = params.itemName;
+        this.comboxValue = params.comboxValue;
+        this.value = params.value;
     }
+}
 
-    export interface ICategoryInfo {
-        perInfoCtgId: string;
-        categoryName: string;
-        setting: boolean;
+export interface IInitValueSettingDetail {
+    settingCode: string;
+    settingName: string;
+    ctgList?: Array<any>;
+    itemList?: Array<any>;
+}
+
+function makeIcon(value, row) {
+    if (value == "false")
+        return '';
+    return '<i class=\"icon icon-dot\"></i>';
+}
+
+export class ItemModel {
+    code: string;
+    name: string;
+
+    constructor(code: string, name: string) {
+        this.code = code;
+        this.name = name;
     }
+}
 
-    export class CategoryInfo {
-        perInfoCtgId: string;
-        categoryName: string;
-        setting: boolean;
-        constructor(params: ICategoryInfo) {
-            this.perInfoCtgId = params.perInfoCtgId;
-            this.categoryName = params.categoryName;
-            this.setting = params.setting;
-        }
-    }
+export interface IPerInfoInitValueSettingItemDto {
 
-    export interface IInitValue {
-        id: string;
-        itemName: string;
-        comboxValue: string;
-        value: string;
-    }
+    // đoạn này dùng để  hiển thị
+    perInfoItemDefId: string;
+    settingId?: string;
+    perInfoCtgId: string;
+    itemName: string;
+    isRequired: number;
+    refMethodType: number;
+    //dành cho cột 2 - combo
+    itemType: number; //日付　型-1; 統合ログインコード-2; 口座名１～口座名５-3; .....
+    listComboItem: Array<any> = [];
 
-    export class InitValue {
-        id: string;
-        itemName: string;
-        comboxValue: string;
-        value: string;
-        constructor(params: IInitValue) {
-            this.id = params.id;
-            this.itemName = params.itemName;
-            this.comboxValue = params.comboxValue;
-            this.value = params.value;
-        }
-    }
+    //trường này dùng để dataType
+    dataType: number;
 
-    export interface IInitValueSettingDetail {
-        settingCode: string;
-        settingName: string;
-        ctgList?: Array<any>;
-        itemList?: Array<any>;
-    }
+    // đoạn này dùng để lưu dữ liệu        
+    saveDataType: number;
+    stringValue?: string;
+    intValue?: number;
+    dateValue?: string;
+    dateWithDay?: number;
+    timePoint?: string;
+    value? any;
+}
 
-    function makeIcon(value, row) {
-        if (value == "false")
-            return '';
-        return '<i class=\"icon icon-dot\"></i>';
-    }
+export class PerInfoInitValueSettingItemDto {
+    perInfoItemDefId: KnockoutObservable<string>;
+    settingId: KnockoutObservable<string>;
+    perInfoCtgId: KnockoutObservable<string>;
+    itemName: KnockoutObservable<string>;
+    isRequired: KnockoutObservable<number>;
 
-    export class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-
-    export interface IPerInfoInitValueSettingItemDto {
-
-        // đoạn này dùng để  hiển thị
-        perInfoItemDefId: string;
-        settingId?: string;
-        perInfoCtgId: string;
-        itemName: string;
-        isRequired: number;
-        refMethodType: number;
-        //dành cho cột 2 - combo
-        itemType: number; //日付　型-1; 統合ログインコード-2; 口座名１～口座名５-3; .....
-        listComboItem: Array<any> = [];
-
-        //trường này dùng để dataType
-        dataType: number;
-
-        // đoạn này dùng để lưu dữ liệu        
-        saveDataType: number;
-        stringValue?: string;
-        intValue?: number;
-        dateValue?: string;
-        dateWithDay?: number;
-        timePoint?: string;
-        value? any;
-    }
-
-    export class PerInfoInitValueSettingItemDto {
-        perInfoItemDefId: KnockoutObservable<string>;
-        settingId: KnockoutObservable<string>;
-        perInfoCtgId: KnockoutObservable<string>;
-        itemName: KnockoutObservable<string>;
-        isRequired: KnockoutObservable<number>;
-
-        refMethodType: KnockoutObservable<number>;
-        itemType: KnockoutObservable<number>;
-        listComboItem: KnockoutObservableArray<any>;
-        selectedRuleCode: KnockoutObservable<string>;
+    refMethodType: KnockoutObservable<number>;
+    itemType: KnockoutObservable<number>;
+    listComboItem: KnockoutObservableArray<any>;
+    selectedRuleCode: KnockoutObservable<string>;
 
 
-        dataType: KnockoutObservable<number>;
+    dataType: KnockoutObservable<number>;
 
-        saveDataType: KnockoutObservable<number>;
-        stringValue: KnockoutObservable<string>;
-        intValue: KnockoutObservable<number>;
-        dateValue: KnockoutObservable<String>;
-        dateWithDay: KnockoutObservable<number>;
-        timePoint: KnockoutObservable<string>;
-        value: KnockoutObservable<string> = ko.observable("");
+    saveDataType: KnockoutObservable<number>;
+    stringValue: KnockoutObservable<string>;
+    intValue: KnockoutObservable<number>;
+    dateValue: KnockoutObservable<String>;
+    dateWithDay: KnockoutObservable<number>;
+    timePoint: KnockoutObservable<string>;
+    value: KnockoutObservable<string> = ko.observable("");
 
-        // trường hợp datatype là kiểu selection
-        selection: KnockoutObservableArray<any>;
-        selectedCode: KnockoutObservable<string>;
-        constructor(params: IPerInfoInitValueSettingItemDto) {
-            let self = this;
-            self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
-            self.settingId = ko.observable(params.settingId || "");
-            self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
-            self.itemName = ko.observable(params.itemName || "");
+    // trường hợp datatype là kiểu selection
+    selection: KnockoutObservableArray<any>;
+    selectedCode: KnockoutObservable<string>;
+    constructor(params: IPerInfoInitValueSettingItemDto) {
+        let self = this;
+        self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
+        self.settingId = ko.observable(params.settingId || "");
+        self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
+        self.itemName = ko.observable(params.itemName || "");
 
-            self.isRequired = ko.observable(params.isRequired || 0);
-            self.refMethodType = ko.observable(params.refMethodType || 0);
+        self.isRequired = ko.observable(params.isRequired || 0);
+        self.refMethodType = ko.observable(params.refMethodType || 0);
 
-            self.saveDataType = ko.observable(params.saveDataType || 0);
-            self.stringValue = ko.observable(params.stringValue || "");
-            self.intValue = ko.observable(params.intValue || 0);
+        self.saveDataType = ko.observable(params.saveDataType || 0);
+        self.stringValue = ko.observable(params.stringValue || "");
+        self.intValue = ko.observable(params.intValue || 0);
 
-            self.dateValue = ko.observable(params.dateValue || "99991221");
-            self.dateWithDay = ko.observable(params.dateWithDay || 0);
-            self.timePoint = ko.observable(params.timePoint || "");
-
-
-            self.itemType = ko.observable(params.itemType || 0);
-            self.dataType = ko.observable(params.dataType || 0);
-            self.selectedRuleCode = ko.observable("");
-            if (params.itemType === 0) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "ログイン者と同じ" },
-                    { code: 4, name: "入力日と同じ" },
-                    { code: 5, name: "システム日付と同じ" }]);
-            } else if (params.itemType === 1) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "社員コードと同じ" }]);
-            } else if (params.itemType === 2) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "氏名と同じ" }]);
-            } else if (params.itemType === 3) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "氏名（カナ）と同じ" }]);
-            } else if (params.itemType === 4) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "ログイン者と同じ" }]);
-            } else if (params.itemType === 5 || params.itemType === 6) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "ログイン者と同じ" }]);
-            }
+        self.dateValue = ko.observable(params.dateValue || "99991221");
+        self.dateWithDay = ko.observable(params.dateWithDay || 0);
+        self.timePoint = ko.observable(params.timePoint || "");
 
 
-            if (params.refMethodType === 1) {
-                ko.observable(params.stringValue);
-            } else if (params.refMethodType === 2) {
-                ko.observable(params.intValue);
-            } else if (params.refMethodType === 3) {
-                ko.observable(params.dateValue);
-            }
-
-            self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
+        self.itemType = ko.observable(params.itemType || 0);
+        self.dataType = ko.observable(params.dataType || 0);
+        self.selectedRuleCode = ko.observable("");
+        if (params.itemType === 0) {
+            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                { code: 2, name: "固定値" },
+                { code: 3, name: "ログイン者と同じ" },
+                { code: 4, name: "入力日と同じ" },
+                { code: 5, name: "システム日付と同じ" }]);
+        } else if (params.itemType === 1) {
+            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                { code: 2, name: "固定値" },
+                { code: 3, name: "社員コードと同じ" }]);
+        } else if (params.itemType === 2) {
+            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                { code: 2, name: "固定値" },
+                { code: 3, name: "氏名と同じ" }]);
+        } else if (params.itemType === 3) {
+            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                { code: 2, name: "固定値" },
+                { code: 3, name: "氏名（カナ）と同じ" }]);
+        } else if (params.itemType === 4) {
+            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                 { code: 2, name: "固定値" },
                 { code: 3, name: "ログイン者と同じ" }]);
-            self.selectedCode = ko.observable("");
+        } else if (params.itemType === 5 || params.itemType === 6) {
+            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                { code: 2, name: "固定値" },
+                { code: 3, name: "ログイン者と同じ" }]);
         }
-    }
 
-    export interface IPerInfoInitValueSettingDto {
-        companyId?: string;
-        settingId: string;
-        settingCode: string;
-        settingName: string;
 
+        if (params.refMethodType === 1) {
+            ko.observable(params.stringValue);
+        } else if (params.refMethodType === 2) {
+            ko.observable(params.intValue);
+        } else if (params.refMethodType === 3) {
+            ko.observable(params.dateValue);
+        }
+
+        self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
+            { code: 2, name: "固定値" },
+            { code: 3, name: "ログイン者と同じ" }]);
+        self.selectedCode = ko.observable("");
     }
+}
+
+export interface IPerInfoInitValueSettingDto {
+    companyId?: string;
+    settingId: string;
+    settingCode: string;
+    settingName: string;
+
+}
 
 }

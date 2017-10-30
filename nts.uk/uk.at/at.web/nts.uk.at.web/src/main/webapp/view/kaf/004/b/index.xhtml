@@ -46,25 +46,44 @@
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF004_12')}</div>
 							<!-- Datepicker -->
 							<div id="inputdate" tabindex="1"
-								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',required: true,name: '#[KAF004_41]' }"></div>
+								data-bind="ntsDatePicker: {value: date, 
+															dateFormat: 'YYYY/MM/DD',
+															required: true,
+															name: '#[KAF004_41]' }"></div>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
 							<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
-							<input
-								data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time' , required: late1,name:'#[KAF004_42]'}" />
+							<input id ="inpLate1"
+								data-bind="ntsTimeEditor: {value: lateTime1, 
+															inputFormat: 'time',
+															mode: 'time' , 
+															required: late1,
+															name:'#[KAF004_42]'}" />
 							<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
-							<input
-								data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time' ,required: early1 ,name: '#[KAF004_43]'}" />
+							<input id = "inpEarlyTime1"
+								data-bind="ntsTimeEditor: {value: earlyTime1, 
+															inputFormat: 'time',
+															mode: 'time' ,
+															required: early1 ,
+															name: '#[KAF004_43]'}" />
 							<br />
 							<com:ko-if bind="displayOrder() != 0">
 							<div class="valign-center control-group row4">
 								<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
-								<input class="col1"
-									data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time' ,required: late2,name: '#[KAF004_45]'}" />
+								<input class="col1" id = "inpLate2"
+									data-bind="ntsTimeEditor: {value: lateTime2, 
+															   inputFormat: 'time',
+															   mode: 'time' ,
+															   required: late2,
+															   name: '#[KAF004_45]'}" />
 								<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
-								<input class="col2"
-									data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time' ,required: early2 ,name: '#[KAF004_46]'}" />
+								<input class="col2" id = "inpEarlyTime2"
+									data-bind="ntsTimeEditor: {value: earlyTime2, 
+																inputFormat: 'time',
+																mode: 'time' ,
+																required: early2 ,
+																name: '#[KAF004_46]'}" />
 							</div>
 							</com:ko-if>
 						</div>

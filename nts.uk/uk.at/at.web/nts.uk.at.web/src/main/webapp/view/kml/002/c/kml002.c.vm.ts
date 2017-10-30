@@ -6,6 +6,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
         categoryItems: KnockoutObservableArray<any>;
         catCode: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
         rightItemcolumns: KnockoutObservable<any>;
         currentRightCodeList: KnockoutObservableArray<any>;
         rightItems: KnockoutObservableArray<NewItemModel>;
@@ -44,6 +45,21 @@ module nts.uk.at.view.kml002.c.viewmodel {
             self.catCode = ko.observable(0);
             
             self.checked = ko.observable(true);
+            self.enable = ko.observable(true);
+            
+            if(self.catCode() === 0) {
+                self.enable(true);
+            } else {
+                self.enable(false);
+            }
+            
+            self.catCode.subscribe(function(value) {
+                if(value == 0){
+                    self.enable(true);
+                } else {
+                    self.enable(false);
+                }
+            });  
         }
 
         /**
@@ -53,9 +69,19 @@ module nts.uk.at.view.kml002.c.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
+            self.items([]);
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             
+            service.getDailyItems(data.attributeId).done(function(data) {
+                _.forEach(data, function(item) {
+                    self.items.push(new ItemModel(item.id, item.itemName));
+                });
+                
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
             
-            dfd.resolve();
             return dfd.promise();
         }
         

@@ -15,7 +15,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.gul.collection.CollectionUtil;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class ExtBudgetErrorExportService.
@@ -42,7 +42,7 @@ public class ExeErrorLogExportService extends ExportService<String> {
 
     /** The internationalization. */
     @Inject
-    private IInternationalization internationalization;
+    private I18NResourcesForUK internationalization;
 
     /** The employee adapter. */
 	@Inject
@@ -101,7 +101,7 @@ public class ExeErrorLogExportService extends ExportService<String> {
     private List<String> finHeader() {
         List<String> lstHeader = new ArrayList<>();
         for (String nameId : LST_NAME_ID_HEADER) {
-            Optional<String> optional = this.internationalization.getItemName(nameId);
+            Optional<String> optional = this.internationalization.localize(nameId);
             if (!optional.isPresent()) {
                 throw new RuntimeException("NameId of header not found.");
             }
