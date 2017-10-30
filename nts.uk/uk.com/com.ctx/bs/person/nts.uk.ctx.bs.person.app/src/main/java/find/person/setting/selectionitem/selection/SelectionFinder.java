@@ -36,43 +36,27 @@ public class SelectionFinder {
 
 	// check history ID:
 	public List<SelectionItemOrderDto> getHistIdSelection(String histId) {
-
 		List<SelectionItemOrderDto> orderList = new ArrayList<SelectionItemOrderDto>();
-
+		
 		// lay selection
 		List<Selection> selectionList = this.selectionRepo.getAllHistorySelection(histId);
+		
 		// kiem tra so luong item lay duoc
 		if (selectionList.isEmpty()) {
-
 			return orderList;
 		} else {
-
-			// xu ly neu item >0
-
-			//String selectionId = selectionList.get(0).getSelectionID();
-			
 			String getByHisId = selectionList.get(0).getHistId();
-			
-			// step1 :lay thang OrderAndDefaultValuesOfOption va map no ve
-			// SelectionItemOrderDto
-
 			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(getByHisId);
 
 			if (!orderDomainlst.isEmpty()) {
 				orderList = orderDomainlst.stream().map(i -> {
 					Selection selectionItem = selectionList.stream()
 							.filter(s -> s.getSelectionID().equals(i.getSelectionID())).findFirst().orElse(null);
-					
-						return SelectionItemOrderDto.fromSelectionOrder(i, selectionItem);
-					
-
+					return SelectionItemOrderDto.fromSelectionOrder(i, selectionItem);
 				}).collect(Collectors.toList());
 			}
 
-			// step 2: tra ve list sau khi map xong
 			return orderList;
-			// neu item == 0
-
 		}
 
 		// Optional<Selection> optHist =

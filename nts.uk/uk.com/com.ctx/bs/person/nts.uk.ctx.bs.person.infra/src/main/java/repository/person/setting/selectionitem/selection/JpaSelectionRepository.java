@@ -26,6 +26,8 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	private static final String SELECT_ALL_SELECTION_CD = SELECT_ALL
 			+ " WHERE si.selectionCd = :selectionCd AND si.histId = :histId";
 
+	private static final String SELECT_ALL_HISTORY_IDfdsfdsfsd = SELECT_ALL + " WHERE si.histId = :histId";
+
 	@Override
 	public void add(Selection selection) {
 		this.commandProxy().insert(toEntity(selection));
@@ -84,6 +86,12 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	public List<Selection> geSelectionList(String selectionCd, String histId) {
 		return queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
 				.setParameter("selectionCd", selectionCd).setParameter("histId", histId).getList(c -> toDomain(c));
+
+	}
+
+	@Override
+	public List<String> getAllHist(String histId) {
+		return queryProxy().query(SELECT_ALL_HISTORY_ID, String.class).setParameter("histId", histId).getList();
 
 	}
 

@@ -14,5 +14,13 @@ public class AddSelectionHistoryCommand {
 	private String companyCode;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
+	private String hisId;
+	
+	private String selectionCD;
+	private String selectionName;
+	private String externalCD;
+	private String memoSelection;
+	private int disporder;
+	private int initSelection;
 
 }
