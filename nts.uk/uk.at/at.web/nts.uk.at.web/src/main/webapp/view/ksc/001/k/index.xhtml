@@ -7,9 +7,16 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 500 };</script>
+			<script>
+				var dialogSize = {
+					width : 850,
+					height : 650
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksc001.k.main.css" />
 			<com:scriptfile path="ksc001.k.vm.js" />
+			<com:scriptfile path="ksc001.k.service.js" />
 			<com:scriptfile path="ksc001.k.start.js" />
 		</ui:define>
 
@@ -17,41 +24,31 @@
 			<div id="contents-area">
 				<div class="lable-line">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-					<label>2016/11/01~2016/11/30</label>
+					<label data-bind="text: targetRange()"></label>
 				</div>
 				<div class="lable-line">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_78')}</div>
-					<label>30人</label>
+					<label data-bind="text: errorNumber()"></label>
 				</div>
-				<button class="large button-right" >#{i18n.getText('KSC001_54')}</button>
-				<table id="fixed-table">
-							<colgroup>
-								<col width="150px"/>
-								<col width="150px"/>
-								<col width="100px"/>
-								<col width="100px"/>
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_56')}</th>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_57')}</th>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_57')}</th>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_58')}</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><label>A00000003</label></td>
-									<td><label>日通 3郎</label></td>
-									<td><label>作成済み</label></td>
-									<td><label>作成済み</label></td>
-								</tr>
-								
-							</tbody>
-				</table>
+				<div>
+					<button tabindex="1" data-bind="click: exportError"
+						class="large button-right">#{i18n.getText('KSC001_54')}</button>
+				</div>
+				<div>
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+					height: 400,
+					dataSource: items,
+					primaryKey: 'id',
+					columns: columns,
+					multiple: false,
+					value: currentCode,
+					rows: 10}">
+					</table>
+				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
+				<button id="btn-close" tabindex="2" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

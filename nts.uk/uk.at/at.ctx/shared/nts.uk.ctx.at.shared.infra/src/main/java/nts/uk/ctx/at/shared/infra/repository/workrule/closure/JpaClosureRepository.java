@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -99,6 +100,54 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#findAllUse(
+	 * java.lang.String)
+	 */
+	@Override
+	public List<Closure> findAllUse(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
+		CriteriaQuery<KclmtClosure> cq = criteriaBuilder.createQuery(KclmtClosure.class);
+
+		// root data
+		Root<KclmtClosure> root = cq.from(KclmtClosure.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+		
+		// is use closure 
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosure_.useClass),
+				UseClassification.UseClass_Use.value));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by closure id asc
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
+
+		// create query
+		TypedQuery<KclmtClosure> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,6 +159,56 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	public Optional<Closure> findById(String companyId, int closureId) {
 		return this.queryProxy().find(new KclmtClosurePK(companyId, closureId), KclmtClosure.class)
 				.map(c -> this.toDomain(c));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#findByListId(
+	 * java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<Closure> findByListId(String companyId, List<Integer> closureIds) {
+
+		// check closure id empty
+		if (CollectionUtil.isEmpty(closureIds)) {
+			return new ArrayList<>();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
+		CriteriaQuery<KclmtClosure> cq = criteriaBuilder.createQuery(KclmtClosure.class);
+
+		// root data
+		Root<KclmtClosure> root = cq.from(KclmtClosure.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+
+		// in closure id
+		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId).in(closureIds));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by closure id asc
+		cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
+
+		// create query
+		TypedQuery<KclmtClosure> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -192,5 +291,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
+
+	
 
 }
