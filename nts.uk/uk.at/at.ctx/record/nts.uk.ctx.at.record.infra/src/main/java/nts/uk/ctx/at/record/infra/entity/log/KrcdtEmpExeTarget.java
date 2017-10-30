@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -21,13 +20,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EMP_EXE_TARGET")
-public class KrcmtEmpExeTarget extends UkJpaEntity implements Serializable  {
+@Table(name = "KRCDT_EMP_EXE_TARGET")
+public class KrcdtEmpExeTarget extends UkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KrcmtEmpExeTargetPK krcmtEmpExeTargetPK;
+	public KrcdtEmpExeTargetPK krcdtEmpExeTargetPK;
 	
 	@Column(name = "EXECUTION_CONTENT")
 	public int executionContent;
@@ -37,7 +36,7 @@ public class KrcmtEmpExeTarget extends UkJpaEntity implements Serializable  {
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtEmpExeTargetPK;
+		return this.krcdtEmpExeTargetPK;
 	}
 
 }

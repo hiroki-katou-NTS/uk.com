@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtEmpExecutionLogPK implements Serializable  {
+public class KrcdtEmpExecutionLogPK implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 

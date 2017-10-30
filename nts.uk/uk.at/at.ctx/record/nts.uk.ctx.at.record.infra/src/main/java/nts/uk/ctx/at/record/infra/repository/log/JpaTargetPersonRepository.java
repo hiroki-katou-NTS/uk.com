@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.infra.entity.log.KrcmtEmpExeTarget;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTarget;
 
 @Stateless
 public class JpaTargetPersonRepository extends JpaRepository implements TargetPersonRepository {
@@ -31,22 +31,22 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 	private final String SELECT_BY_LOG_ID = SELECT_FROM_TARGET 
 			+ "WHERE c.krcmtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
 	
-	private TargetPerson toDomain(KrcmtEmpExeTarget entity) {
-		return new TargetPerson(entity.krcmtEmpExeTargetPK.employeeId, entity.krcmtEmpExeTargetPK.empCalAndSumExecLogID,
+	private TargetPerson toDomain(KrcdtEmpExeTarget entity) {
+		return new TargetPerson(entity.krcdtEmpExeTargetPK.employeeId, entity.krcdtEmpExeTargetPK.empCalAndSumExecLogID,
 				new ComplStateOfExeContents(EnumAdaptor.valueOf(entity.executionContent, ExecutionContent.class),
 						EnumAdaptor.valueOf(entity.executionState, EmployeeExecutionStatus.class)));
 	}
 
 	@Override
 	public List<TargetPerson> getAllTargetPerson(String employeeID) {
-		List<TargetPerson> data = this.queryProxy().query(SELECT_ALL_TARGET, KrcmtEmpExeTarget.class)
+		List<TargetPerson> data = this.queryProxy().query(SELECT_ALL_TARGET, KrcdtEmpExeTarget.class)
 				.setParameter("employeeId", employeeID).getList(c -> toDomain(c));
 		return data;
 	}
 
 	@Override
 	public Optional<TargetPerson> getTargetPersonByID(String employeeID, String empCalAndSumExecLogId) {
-		Optional<TargetPerson> data = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcmtEmpExeTarget.class)
+		Optional<TargetPerson> data = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
 				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId)
 				.getSingle(c -> toDomain(c));
 		return data;
@@ -54,13 +54,13 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 
 	@Override
 	public List<TargetPerson> getTargetPersonById(String empCalAndSumExecLogId) {
-		return this.queryProxy().query(SELECT_TARGET_PERSON, KrcmtEmpExeTarget.class)
+		return this.queryProxy().query(SELECT_TARGET_PERSON, KrcdtEmpExeTarget.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getList(f -> toDomain(f));
 		}
 
 	@Override
 	public List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID) {
-		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID , KrcmtEmpExeTarget.class)
+		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID , KrcdtEmpExeTarget.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.getList(c -> toDomain(c));
 		return data;

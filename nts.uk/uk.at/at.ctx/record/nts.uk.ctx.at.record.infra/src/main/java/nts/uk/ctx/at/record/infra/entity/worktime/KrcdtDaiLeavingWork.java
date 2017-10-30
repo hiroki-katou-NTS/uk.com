@@ -21,13 +21,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_LEAVING_WORK")
-public class KrcmtDaiLeavingWork extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAI_LEAVING_WORK")
+public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtDaiLeavingWorkPK krcmtDaiLeavingWorkPK;
+	public KrcdtDaiLeavingWorkPK krcdtDaiLeavingWorkPK;
 	
 	@Column(name = "WORK_TIMES")
 	public BigDecimal workTimes;
@@ -40,7 +40,7 @@ public class KrcmtDaiLeavingWork extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtDaiLeavingWorkPK;
+		return this.krcdtDaiLeavingWorkPK;
 	}
 
 }

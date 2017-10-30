@@ -30,13 +30,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_PER_WORK_INFO")
-public class KrcmtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAI_PER_WORK_INFO")
+public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtDaiPerWorkInfoPK krcmtDaiPerWorkInfoPK;
+	public KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK;
 	
 	@Column(name = "RECORD_WORK_WORKTYPE_CODE")
 	public String recordWorkWorktypeCode;
@@ -66,22 +66,22 @@ public class KrcmtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	public BigDecimal ymd;
 
 	@OneToMany(mappedBy="daiPerWorkInfo", cascade = CascadeType.ALL)
-	public List<KrcmtWorkScheduleTime> scheduleTimes;
+	public List<KrcdtWorkScheduleTime> scheduleTimes;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtDaiPerWorkInfoPK;
+		return this.krcdtDaiPerWorkInfoPK;
 	}
 	
 	public WorkInfoOfDailyPerformance toDomain() {
-		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(this.krcmtDaiPerWorkInfoPK.employeeId,
+		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(this.krcdtDaiPerWorkInfoPK.employeeId,
 			new WorkInformation(this.recordWorkWorktimeCode, this.recordWorkWorktypeCode),
 			new WorkInformation(this.scheduleWorkWorktimeCode, this.recordWorkWorktypeCode),
 			EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 			EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
 			EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class),
 			GeneralDate.fromString(this.ymd.toString(), "yyyyMMdd"),
-			KrcmtWorkScheduleTime.toDomain(scheduleTimes));
+			KrcdtWorkScheduleTime.toDomain(scheduleTimes));
 		return domain;
 	}
 

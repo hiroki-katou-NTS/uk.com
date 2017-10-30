@@ -27,13 +27,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EMP_EXECUTION_LOG")
-public class KrcmtEmpExecutionLog extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_EMP_EXECUTION_LOG")
+public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtEmpExecutionLogPK krcmtEmpExecutionLogPK;
+	public KrcdtEmpExecutionLogPK krcdtEmpExecutionLogPK;
 
 	@Column(name = "EXECUTED_MENU")
 	public int executedMenu;
@@ -52,16 +52,16 @@ public class KrcmtEmpExecutionLog extends UkJpaEntity implements Serializable {
 
 	@OneToMany(mappedBy="executionlog", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRCMT_EXECUTION_LOG")
-	public List<KrcmtExecutionLog> executionLogs;
+	public List<KrcdtExecutionLog> executionLogs;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtEmpExecutionLogPK;
+		return this.krcdtEmpExecutionLogPK;
 	}
 	
-	public static KrcmtEmpExecutionLog toEntity(EmpCalAndSumExeLog domain) {
-		return new  KrcmtEmpExecutionLog(
-				new KrcmtEmpExecutionLogPK(
+	public static KrcdtEmpExecutionLog toEntity(EmpCalAndSumExeLog domain) {
+		return new  KrcdtEmpExecutionLog(
+				new KrcdtEmpExecutionLogPK(
 						domain.getCompanyID(),
 						String.valueOf(domain.getEmpCalAndSumExecLogID()),
 						String.valueOf(domain.getCaseSpecExeContentID()),
@@ -71,16 +71,16 @@ public class KrcmtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				domain.getExecutionDate(),
 				domain.getProcessingMonth().v(),
 				domain.getClosureID(),
-				domain.getExecutionLogs().stream().map(c->KrcmtExecutionLog.toEntity(c)).collect(Collectors.toList())
+				domain.getExecutionLogs().stream().map(c->KrcdtExecutionLog.toEntity(c)).collect(Collectors.toList())
 				);
 	}
 	
 	public EmpCalAndSumExeLog toDomain() {
 		return EmpCalAndSumExeLog.createFromJavaType(
-				this.krcmtEmpExecutionLogPK.companyID, 
-				this.krcmtEmpExecutionLogPK.empCalAndSumExecLogID, 
-				this.krcmtEmpExecutionLogPK.caseSpecExeContentID, 
-				this.krcmtEmpExecutionLogPK.employeeID, 
+				this.krcdtEmpExecutionLogPK.companyID, 
+				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID, 
+				this.krcdtEmpExecutionLogPK.caseSpecExeContentID, 
+				this.krcdtEmpExecutionLogPK.employeeID, 
 				this.executedMenu, 
 				this.executedStatus,
 				this.executedDate, 

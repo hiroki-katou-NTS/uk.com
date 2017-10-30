@@ -25,21 +25,18 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EXECUTION_LOG")
-public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_EXECUTION_LOG")
+public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtExecutionLogPK krcmtExecutionLogPK;
+	public KrcdtExecutionLogPK krcdtExecutionLogPK;
 	/**
 	 * エラーの有無
 	 */
 	@Column(name = "EXISTENCE_ERROR")
 	public int existenceError;
-
-	@Column(name = "EXECUTE_CONTENT_BY_CASE_ID")
-	public int executeContenByCaseID;
 
 	@Column(name = "EXECUTION_CONTENT")
 	public int executionContent;
@@ -72,24 +69,24 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 		@JoinColumn(name="OPERATION_CASE_ID", referencedColumnName="OPERATION_CASE_ID", insertable = false, updatable = false),
         @JoinColumn(name="SID", referencedColumnName="SID", insertable = false, updatable = false)
     })
-	public KrcmtEmpExecutionLog executionlog;
+	public KrcdtEmpExecutionLog executionlog;
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtExecutionLogPK;
+		return this.krcdtExecutionLogPK;
 	}
 	
-	public static KrcmtExecutionLog toEntity(ExecutionLog domain) {
-		return new KrcmtExecutionLog(
-				 new KrcmtExecutionLogPK(
+	public static KrcdtExecutionLog toEntity(ExecutionLog domain) {
+		return new KrcdtExecutionLog(
+				 new KrcdtExecutionLogPK(
 					 domain.getCompanyID(),
 					 String.valueOf(domain.getEmpCalAndSumExecLogID()),
 					 String.valueOf(domain.getCaseSpecExeContentID()),
-					domain.getEmployeeID(),
-				     domain.getExecutedLogID()
+					 domain.getEmployeeID(),
+				     domain.getExecutedLogID(),
+					 domain.getExecuteContenByCaseID()
 					),
 				 domain.getExistenceError().value,
-				 domain.getExecuteContenByCaseID(),
 				 domain.getExecutionContent().value,
 				 domain.getExecutionTime().getStartTime(),
 				 domain.getExecutionTime().getEndTime(),
@@ -103,13 +100,13 @@ public class KrcmtExecutionLog extends UkJpaEntity implements Serializable {
 	
 	public ExecutionLog toDomain() {
 		return ExecutionLog.createFromJavaType(
-				this.krcmtExecutionLogPK.companyID, 
-				this.krcmtExecutionLogPK.empCalAndSumExecLogID, 
-				this.krcmtExecutionLogPK.caseSpecExeContentID, 
-				this.krcmtExecutionLogPK.employeeID, 
-				this.krcmtExecutionLogPK.executedLogID, 
+				this.krcdtExecutionLogPK.companyID, 
+				this.krcdtExecutionLogPK.empCalAndSumExecLogID, 
+				this.krcdtExecutionLogPK.caseSpecExeContentID, 
+				this.krcdtExecutionLogPK.employeeID, 
+				this.krcdtExecutionLogPK.executedLogID, 
+				this.krcdtExecutionLogPK.executeContenByCaseID, 
 				this.existenceError, 
-				this.executeContenByCaseID, 
 				this.executionContent, 
 				this.executionStartDate,
 				this.executionEndDate, 

@@ -23,13 +23,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_WORK_SCHEDULE_TIME")
-public class KrcmtWorkScheduleTime extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_WORK_SCHEDULE_TIME")
+public class KrcdtWorkScheduleTime extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtWorkScheduleTimePK krcmtWorkScheduleTimePK;
+	public KrcdtWorkScheduleTimePK krcdtWorkScheduleTimePK;
 	
 	@Column(name = "ATTENDANCE")
 	public Integer attendance;
@@ -39,27 +39,27 @@ public class KrcmtWorkScheduleTime extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
     @JoinColumn(name="SID", referencedColumnName="SID", insertable = false, updatable = false)
-	public KrcmtDaiPerWorkInfo daiPerWorkInfo;
+	public KrcdtDaiPerWorkInfo daiPerWorkInfo;
 	
-	public KrcmtWorkScheduleTime(KrcmtWorkScheduleTimePK krcmtWorkScheduleTimePK, Integer attendance,
+	public KrcdtWorkScheduleTime(KrcdtWorkScheduleTimePK krcmtWorkScheduleTimePK, Integer attendance,
 			Integer leaveWork) {
 		super();
-		this.krcmtWorkScheduleTimePK = krcmtWorkScheduleTimePK;
+		this.krcdtWorkScheduleTimePK = krcmtWorkScheduleTimePK;
 		this.attendance = attendance;
 		this.leaveWork = leaveWork;
 	}
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtWorkScheduleTimePK;
+		return this.krcdtWorkScheduleTimePK;
 	}
 	
 	public ScheduleTimeSheet toDomain() {
-		ScheduleTimeSheet domain = new ScheduleTimeSheet(this.krcmtWorkScheduleTimePK.workNo, this.attendance, this.leaveWork);
+		ScheduleTimeSheet domain = new ScheduleTimeSheet(this.krcdtWorkScheduleTimePK.workNo, this.attendance, this.leaveWork);
 		return domain;
 	}
 	
-	public static List<ScheduleTimeSheet> toDomain(List<KrcmtWorkScheduleTime> entities) {
+	public static List<ScheduleTimeSheet> toDomain(List<KrcdtWorkScheduleTime> entities) {
 		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 

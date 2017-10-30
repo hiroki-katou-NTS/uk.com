@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtExecutionLogPK implements Serializable {
+public class KrcdtExecutionLogPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -29,6 +29,8 @@ public class KrcmtExecutionLogPK implements Serializable {
 	
 	@Column(name = "EXECUTED_LOG_ID")
 	public String executedLogID;
-
+	
+	@Column(name = "EXECUTE_CONTENT_BY_CASE_ID")
+	public int executeContenByCaseID;
 
 }

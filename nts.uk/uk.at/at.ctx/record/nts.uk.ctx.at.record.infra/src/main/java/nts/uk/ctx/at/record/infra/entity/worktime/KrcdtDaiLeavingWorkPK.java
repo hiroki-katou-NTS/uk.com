@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workinformation;
+package nts.uk.ctx.at.record.infra.entity.worktime;
 
 import java.io.Serializable;
 
@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtDaiPerWorkInfoPK implements Serializable {
+public class KrcdtDaiLeavingWorkPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "SID")
 	public String employeeId;
+
 
 }
