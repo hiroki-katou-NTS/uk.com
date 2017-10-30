@@ -6,14 +6,14 @@ package nts.uk.ctx.bs.person.dom.person.setting.init.item;
 import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * IntValue
  * @author lanlt
  *
  */
-@StringMaxLength(30)
+@DecimalRange(max = "30", min = "0")
 public class IntValue extends DecimalPrimitiveValue<IntValue>{
 
 	public IntValue(BigDecimal rawValue) {
