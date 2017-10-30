@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
@@ -117,6 +118,11 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public List<ActualLock> findByListId(String companyId, List<Integer> closureIds) {
+		// check empty closure id 
+		if(CollectionUtil.isEmpty(closureIds)){
+			return new ArrayList<>();
+		}
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
