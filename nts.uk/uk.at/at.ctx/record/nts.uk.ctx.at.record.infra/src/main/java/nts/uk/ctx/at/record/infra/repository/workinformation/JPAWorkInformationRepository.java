@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformationRepository;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcmtDaiPerWorkInfo;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 
 /**
  * 
@@ -22,7 +22,7 @@ public class JPAWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId) {
-		return this.queryProxy().query(FIND_BY_ID, KrcmtDaiPerWorkInfo.class)
+		return this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class)
 				.setParameter("employeeId", employeeId).getSingle(c -> c.toDomain());
 	}
 

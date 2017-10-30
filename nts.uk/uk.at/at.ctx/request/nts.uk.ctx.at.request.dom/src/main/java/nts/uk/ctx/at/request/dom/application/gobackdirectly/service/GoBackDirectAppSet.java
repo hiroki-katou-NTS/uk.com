@@ -21,6 +21,7 @@ public class GoBackDirectAppSet {
 	String appReasonId;
 	String appReason;
 	String appDate;
+	String employeeName;
 
 	DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput;
 
