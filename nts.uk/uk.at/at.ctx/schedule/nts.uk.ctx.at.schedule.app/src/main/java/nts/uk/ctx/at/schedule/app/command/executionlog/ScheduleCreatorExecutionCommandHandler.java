@@ -20,7 +20,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
@@ -276,7 +275,7 @@ public class ScheduleCreatorExecutionCommandHandler
 					// check processExecutionAtr reconfig
 					if (command.getContent().getReCreateContent()
 							.getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value) {
-						this.resetSchedule();
+						this.resetSchedule(command, domain, scheduleExecutionLog);
 					} else {
 
 						// check parameter CreateMethodAtr
@@ -299,10 +298,30 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/**
 	 * Reset schedule.
+	 *
+	 * @param command the command
+	 * @param creator the creator
+	 * @param domain the domain
 	 */
 	// スケジュールを再設定する
-	private void resetSchedule(){
-		
+	private void resetSchedule(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
+			ScheduleExecutionLog domain) {
+		// get to day by start period date
+		command.setToDate(domain.getPeriod().start().date());
+
+		// loop start period date => end period date
+		while (command.getToDate().before(this.nextDay(domain.getPeriod().end().date()))) {
+
+			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(creator.getEmployeeId(),
+					GeneralDate.legacyDate(command.getToDate()));
+			if (optionalBasicSchedule.isPresent()
+					&& command.getContent().getReCreateContent().getReCreateAtr().equals(ReCreateAtr.ONLYUNCONFIRM)
+					&& optionalBasicSchedule.get().getConfirmedAtr().equals(ConfirmedAtr.CONFIRMED)) {
+			}
+
+			// (button Interrupt)
+			command.setToDate(this.nextDay(command.getToDate()));
+		}
 	}
 	
 
