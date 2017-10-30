@@ -5,17 +5,21 @@
 package nts.uk.ctx.at.request.ac.bs;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
@@ -24,11 +28,8 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
  * The Class EmployeeAdaptorImpl.
  */
 @Stateless
-public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
+public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
-	/** The employee pub. */
-	@Inject
-	private SyEmployeePub employeePub;
 
 	/** The employment pub. */
 	@Inject
@@ -40,7 +41,8 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 	
 	@Inject
 	private IPersonInfoPub personPub;
-	
+	@Inject
+	private SyEmployeePub syEmployeePub;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,4 +112,17 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 	public String empEmail(String sID) {
 		return this.personPub.getPersonInfo(sID).getCompanyMail();
 	}
+
+	@Override
+	public List<ConcurrentEmployeeRequest> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate) {
+		List<ConcurrentEmployeeRequest>  data = syEmployeePub.getConcurrentEmployee(companyId, jobId, baseDate)
+				.stream()
+				.map(x -> new ConcurrentEmployeeRequest(x.getEmployeeId(),
+						x.getEmployeeCd(),
+						x.getPersonName(),
+						x.getJobId(),
+						x.getJobCls().value)).collect(Collectors.toList());
+		return data;
+	}
+	
 }

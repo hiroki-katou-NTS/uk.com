@@ -12,11 +12,12 @@ import nts.arc.error.I18NErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
@@ -40,7 +41,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
 	private ApplicationDeadlineRepository appDeadlineRepository;
@@ -71,7 +72,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		
 		// 登録可能期間のチェック(１年以内)(check thời gian có thế đăng ký (trong vong 1 năm)
 		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getEndDate())) {
-			throw new BusinessException("Msg_276");			
+			throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_276").addRaw(application.getEndDate().toString(DATE_FORMAT)).build()));
 		}
 		
 		// 過去月のチェック(check tháng quá khứ)
@@ -87,15 +88,17 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				1, 
 				application.getApplicationType().value, 
 				application.getApplicationDate());
-		ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
-			throw new BusinessException("Msg_238");
-		} 
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
-			throw new BusinessException("Msg_238");
-		}
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
-			throw new BusinessException("Msg_324");
+		if(!CollectionUtil.isEmpty(approvalRootOutputs)){
+			ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
+				throw new BusinessException("Msg_238");
+			} 
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
+				throw new BusinessException("Msg_238");
+			}
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
+				throw new BusinessException("Msg_324");
+			}
 		}
 		
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する(Check thời gian hết hạn xin)

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -34,7 +34,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	WorkManagementMultipleRepository workManagerRepo;
 	
 	@Inject 
-	EmployeeAdapter employeeAdapter;
+	EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject 
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;

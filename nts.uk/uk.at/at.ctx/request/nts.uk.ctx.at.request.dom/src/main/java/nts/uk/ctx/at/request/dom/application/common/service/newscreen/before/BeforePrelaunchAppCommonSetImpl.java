@@ -10,7 +10,7 @@ import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -31,7 +31,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	private ApplicationSettingRepository appSettingRepository;
 	
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
 	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;

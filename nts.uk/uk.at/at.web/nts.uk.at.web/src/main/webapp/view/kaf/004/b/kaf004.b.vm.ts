@@ -126,22 +126,11 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     appApprovalPhaseCmds: self.kaf000_a2.approvalList
                 };
                 service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        /** Clear screen after Registry*/
-                        self.date(moment().format('YYYY/MM/DD'));
-                        self.late1(false);
-                        self.late2(false);
-                        self.lateTime1(null);
-                        self.lateTime2(null);
-                        self.early1(false);
-                        self.early2(false);
-                        self.earlyTime1(null);
-                        self.earlyTime2(null);
-                        self.appreason(null);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                         location.reload();
                     });
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res);
+                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
                 });
 
             }
