@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.workplace.info;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,6 +38,12 @@ public class WorkplaceInfoWebService extends WebService {
     @POST
     public WorkplaceInfoDto getWorkplaceInfoByHistoryId(WkpInfoFindObject findObj) {
         return this.workplaceInfoFinder.find(findObj);
+    }
+    
+    @Path("findWorkplaceInfo")
+    @POST
+    public List<WorkplaceInfoDto> getWorkplaceInfoByCidAndBaseDate() {
+        return this.workplaceInfoFinder.findWorkPlaceAndBaseDate();
     }
 
 }

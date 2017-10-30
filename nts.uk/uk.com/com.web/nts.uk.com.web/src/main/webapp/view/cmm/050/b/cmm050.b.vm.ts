@@ -3,8 +3,8 @@ module nts.uk.com.view.cmm050.b {
     
     export module viewmodel {
         export class ScreenModel {
-            emailAuth: KnockoutObservable<string>;
-            emailAuth1: KnockoutObservable<string>;
+            emailFrom: KnockoutObservable<string>;
+            emailTo: KnockoutObservable<string>;
             
             emailAuthOption: any;
             
@@ -13,11 +13,22 @@ module nts.uk.com.view.cmm050.b {
                 
                 let params = getShared('CMM050Params');
                 
-                _self.emailAuth = ko.observable(params.emailAuth);
-                _self.emailAuth1 = ko.observable(null);
+                _self.emailFrom = ko.observable(params.emailAuth);
+                _self.emailTo = ko.observable(params.emailAuth);
                 _self. emailAuthOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "350px"
                 }));
+                
+               _self.emailFrom.subscribe(function(emailString){
+                   if(emailString.trim().length <= 0){
+                        _self.emailFrom(emailString.trim());
+                    }
+                });
+               _self.emailTo.subscribe(function(emailString){
+                   if(emailString.trim().length <= 0){
+                        _self.emailTo(emailString.trim());
+                    }
+               });
             }
             
              /**
@@ -27,9 +38,90 @@ module nts.uk.com.view.cmm050.b {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * test send mail
+             */
             public testSendMail() {
-                //TODO: pending
-                nts.uk.ui.windows.close();
+                let _self = this;
+                var dfd = $.Deferred<void>();
+                
+                if(_self.emailFrom().length <= 0){
+                     $('#email1').ntsError('set', {messageId:"Msg_533"});
+                    return;
+                }
+                 if(_self.emailTo().length <= 0){
+                     $('#email2').ntsError('set', {messageId:"Msg_539"});
+                    return;
+                }
+                
+                 // Validate
+                if (_self.hasError()) {
+                    return;
+                }
+                
+                var data = new model.MailServerTest(
+                        _self.emailFrom(),
+                        _self.emailTo(),
+                        new model.MailContents());
+                
+                service.testMailServerSetting(data).done(function(){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_534" });
+                    dfd.resolve();
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                });
+                
+                return dfd.promise();
+            }
+            
+            /**
+             * getLabelPreview
+             */
+            public getLabelPreview(): any {
+                let _self = this;
+                
+                let nameJP: string = nts.uk.resource.getText("CMM050_26");
+                let lstComponent: string[] = nameJP.split("\n");
+                
+                let result: any = {first: null, second: null};
+                
+                if (lstComponent.length <= 0) {
+                    result.first = nameJP;
+                } else {
+                    result.first = lstComponent[0];
+                    result.second = lstComponent[1];
+                    result.third = lstComponent[2];
+                }
+                return result;
+            }
+            
+            /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                let _self = this;
+                _self.clearErrors();
+               
+                $('#email1').ntsEditor("validate");
+                $('#email2').ntsEditor("validate");
+                
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+    
+                 // Clear errors
+                $('#email1').ntsEditor("clear");
+                $('#email2').ntsEditor("clear");
+               
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
             }
         }
     }

@@ -10,7 +10,6 @@ module nts.uk.at.view.kmw005.a {
 
         export class ScreenModel {
             actualLockList: KnockoutObservableArray<ActualLockFind>;
-//            selectedClosure: KnockoutObservable<number>;
             actualLockColumn: KnockoutObservableArray<any>;
             actualLock: ActualLock;
             dailyActualLockOpt: KnockoutObservableArray<any>;
@@ -23,19 +22,15 @@ module nts.uk.at.view.kmw005.a {
                 var self = this;
                 self.actualLock = new ActualLock();
                 self.actualLockList = ko.observableArray<ActualLockFind>([]);
-//                self.selectedClosure = ko.observable(1);
-//                self.selectedClosure.subscribe(function(data: number) {
-//                    self.bindActualLock(data);
-//                });
                 self.actualLock.closureId.subscribe(function(data: number) {
                     self.bindActualLock(data);
                 });
                 self.actualLockColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
-                    { headerText: getText('KMW005_3'), key: 'closureName', width: 100 },
+                    { headerText: getText('KMW005_3'), key: 'closureName', width: 105 },
                     { headerText: getText('KMW005_4'), key: 'period', width: 200 },
-                    { headerText: getText('KMW005_5'), key: 'dailyLockState', width: 90, formatter: lockIcon },
-                    { headerText: getText('KMW005_6'), key: 'monthlyLockState', width: 90, formatter: lockIcon }
+                    { headerText: getText('KMW005_5'), key: 'dailyLockState', width: 70, formatter: lockIcon },
+                    { headerText: getText('KMW005_6'), key: 'monthlyLockState', width: 70, formatter: lockIcon }
                 ]);
 
                 self.dailyActualLockOpt = ko.observableArray([
@@ -54,7 +49,7 @@ module nts.uk.at.view.kmw005.a {
             }
 
             /**
-             * start page data 
+             * start page
              */
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -137,7 +132,6 @@ module nts.uk.at.view.kmw005.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
                     
-//                    self.bindActualLock(self.actualLock.closureId());
                     // Reload Page
                     blockUI.invisible();
                     service.findAllActualLock().done(function(data) {
@@ -155,7 +149,6 @@ module nts.uk.at.view.kmw005.a {
                         }
                         self.actualLockList(dataRes);
                         self.addLockIcon();
-//                        self.actualLock.closureId(data[0].closureId);
                     })
                     blockUI.clear();
                 }).fail(function(res) {
@@ -169,12 +162,12 @@ module nts.uk.at.view.kmw005.a {
              */
             private openDialog(): void {
                 let self = this;
-                let parrentData = [];
-                parrentData = self.actualLockList().map(item => {
+                let actualLocks = [];
+                actualLocks = self.actualLockList().map(item => {
                     return item.toClosureDto();
                 });
                 
-                setShared('ClosureList', parrentData, true);
+                setShared('ActualLock', actualLocks, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kmw/005/b/index.xhtml").onClosed(function() {
                     var output = getShared('childData');
@@ -189,7 +182,7 @@ module nts.uk.at.view.kmw005.a {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
-                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 27px;")
+                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 20px;")
             }
         }
 
@@ -273,7 +266,6 @@ module nts.uk.at.view.kmw005.a {
             }
 
             updateLock(dto: ActualLockFindDto): void {
-//                this.closureId(dto.closureId);
                 this.dailyLockState(dto.dailyLockState);
                 this.monthlyLockState(dto.monthlyLockState);
             }

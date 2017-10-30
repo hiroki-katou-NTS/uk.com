@@ -98,13 +98,12 @@
 										enable: true,
 										immediate: false}"></input>
 								</div>
-
-								<table id="grid">
-									<thead>
+								<table class="contents-header">
+								<thead>
 										<tr>
-											<td colspan="2">#{i18n.getText('CPS009_21')}</td>
+											<td class="input-units" colspan="2">#{i18n.getText('CPS009_21')}</td>
 
-											<td colspan="2">
+											<td class="input-units" colspan="2">
 												<button id="A2_012" data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')}
 												</button>
 												<button id="help"
@@ -113,15 +112,18 @@
 
 											<td class="input-units">#{i18n.getText('CPS009_23')}</td>
 										</tr>
-									</thead>
+								</thead>
+								</table>
+
+								<table class="contents-data">
+								
 									<tbody data-bind="foreach: currentCategory().itemList()">
 
 										<td id="name" colspan="2" class="input-units"
 											data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}"><span
 											class="months-input " data-bind="text: itemName" /></td>
 
-										<td class="input-units"
-											data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}">
+										<td class="input-units">
 											<div id="combo-box"
 												data-bind="ntsComboBox: {
 												options: listComboItem,
@@ -136,7 +138,7 @@
 
 										</td>
 
-						 			<com:ko-if bind="(refMethodType() === 1)"> 
+ 						 	 		<com:ko-if bind="(selectedRuleCode() === 2 )">   
 										<td colspan="2" class="input-units">
 											<!-- String  -->
 											<com:ko-if bind="(dataType() === 0)">
@@ -145,7 +147,7 @@
 											
 											<!-- number  --> 
 											<com:ko-if bind="(dataType() === 1)">
-												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { value: stringValue, constraint: 'ResidenceCode', required: true}" />
+												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { value: intValue, constraint: 'ResidenceCode', required: true}" />
 											</com:ko-if>
 											
 											 <!-- date  --> 
@@ -158,7 +160,7 @@
 											<com:ko-if bind="(dataType() === 3)">
 												<input class="sub-input-units"
 													data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
-													 value: dateWithDay, enable: true, readonly: true, required: true }" />
+													 value: dateWithDay, enable: true, readonly: false, required: true }" />
 											</com:ko-if>
 											
 											 <!-- timepoint  --> 
@@ -182,12 +184,14 @@
 											</com:ko-if>
 
 										</td>
- 										</com:ko-if> 
- 										<com:ko-if bind="(refMethodType() === 0 || refMethodType() === 2 || refMethodType() === 3 || refMethodType() === 4 || refMethodType() === 5 || refMethodType() === 6 || refMethodType() === 7 || refMethodType() === 8)"> 
+ 									</com:ko-if>   
+									<com:ko-if bind="(selectedRuleCode() === 0 || selectedRuleCode() === 1 || selectedRuleCode() === 3 
+	 										|| selectedRuleCode() === 4 || selectedRuleCode() === 5 || selectedRuleCode() === 6 
+	 										|| selectedRuleCode() === 7 || selectedRuleCode() === 8 || selectedRuleCode() === undefined)"> 
  										<td colspan="2" class="input-units">
  										<span></span>
  										</td>
- 										</com:ko-if>
+ 										</com:ko-if> 
 
 									</tbody>
 								</table>

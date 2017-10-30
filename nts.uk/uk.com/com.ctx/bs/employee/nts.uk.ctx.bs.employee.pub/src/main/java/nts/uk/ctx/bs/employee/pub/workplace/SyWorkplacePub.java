@@ -65,6 +65,6 @@ public interface SyWorkplacePub {
 	 * @param baseDate the base date
 	 * @return the workplace id
 	 */
-	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
+	String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate);
 
 }

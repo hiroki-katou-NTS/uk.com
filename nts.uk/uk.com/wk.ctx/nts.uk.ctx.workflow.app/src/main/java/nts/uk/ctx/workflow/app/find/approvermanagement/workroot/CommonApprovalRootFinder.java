@@ -101,6 +101,24 @@ public class CommonApprovalRootFinder {
 		}
 	}
 	/**
+	 * get work place info (id, code, name)
+	 * @param workplaceId
+	 * @return
+	 */
+	public WorkplaceImport getWpInfo(String workplaceId){
+		GeneralDate baseDate = GeneralDate.today();
+		Optional<WorkplaceImport> wpInfo = adapterWp.findByWkpId(workplaceId, baseDate);
+		String name = "";
+		String code = "";
+		WorkplaceImport wpResult = null;
+		if(wpInfo.isPresent()){
+			code = wpInfo.get().getWkpCode();
+			name = wpInfo.get().getWkpName();
+		}
+		wpResult = new WorkplaceImport(workplaceId, code, name);
+		return wpResult;
+	}
+	/**
 	 * get All Company Approval Root(grouping by history)
 	 * @param data
 	 * @return

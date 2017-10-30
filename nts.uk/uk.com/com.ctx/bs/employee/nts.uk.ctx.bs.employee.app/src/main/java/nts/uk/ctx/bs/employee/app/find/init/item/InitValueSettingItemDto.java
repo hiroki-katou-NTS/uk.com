@@ -14,6 +14,8 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 @Value
 public class InitValueSettingItemDto {
 
+	private String itemCode;
+
 	private String itemName;
 
 	private int isRequired;
@@ -41,12 +43,27 @@ public class InitValueSettingItemDto {
 		return resultDto;
 	}
 
-	public static InitValueSettingItemDto createFromJavaType(String itemName, int isRequired, int saveDataValue,
-			GeneralDate dateValue, BigDecimal intValue, String stringValue) {
+	public static InitValueSettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
+			int saveDataValue, GeneralDate dateValue, BigDecimal intValue, String stringValue) {
 
-		return new InitValueSettingItemDto(itemName, isRequired,
+		return new InitValueSettingItemDto(itemCode, itemName, isRequired,
 				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue));
 
+	}
+
+	public void setData(String value) {
+		StringDataDto saveData = (StringDataDto) this.saveData;
+		saveData.setValue(value);
+	}
+
+	public void setData(int value) {
+		NumberDataDto saveData = (NumberDataDto) this.saveData;
+		saveData.setValue(value);
+	}
+
+	public void setData(GeneralDate value) {
+		DateDataDto saveData = (DateDataDto) this.saveData;
+		saveData.setValue(value);
 	}
 
 }

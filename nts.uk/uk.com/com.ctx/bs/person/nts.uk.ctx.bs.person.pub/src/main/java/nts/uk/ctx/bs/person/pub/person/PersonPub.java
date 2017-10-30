@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.person.pub.person;
@@ -18,4 +18,13 @@ public interface PersonPub {
 	 * @return the list
 	 */
 	List<PubPersonDto> findByPersonIds(List<String> personIds);
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param personId the person id
+	 * @return the person info export
+	 */
+	// RequestList #86
+	PersonInfoExport findById(String personId);
 }
