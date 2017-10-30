@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workinformation;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +13,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -62,9 +60,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "WORK_NO")
 	public String workNo;
 
-	@Column(name = "YMD")
-	public BigDecimal ymd;
-
 	@OneToMany(mappedBy="daiPerWorkInfo", cascade = CascadeType.ALL)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
 	
@@ -80,7 +75,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 			EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 			EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
 			EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class),
-			GeneralDate.fromString(this.ymd.toString(), "yyyyMMdd"),
+			this.krcdtDaiPerWorkInfoPK.ymd,
 			KrcdtWorkScheduleTime.toDomain(scheduleTimes));
 		return domain;
 	}
