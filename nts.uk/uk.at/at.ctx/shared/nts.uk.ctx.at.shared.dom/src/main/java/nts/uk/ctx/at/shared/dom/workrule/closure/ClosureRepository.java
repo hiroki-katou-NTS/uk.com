@@ -50,5 +50,14 @@ public interface ClosureRepository {
 	 * @return the optional
 	 */
 	Optional<Closure> findById(String companyId, int closureId);
+	
+	/**
+	 * Find by list id.
+	 *
+	 * @param companyId the company id
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	List<Closure> findByListId(String companyId, List<Integer> closureIds);
 
 }
