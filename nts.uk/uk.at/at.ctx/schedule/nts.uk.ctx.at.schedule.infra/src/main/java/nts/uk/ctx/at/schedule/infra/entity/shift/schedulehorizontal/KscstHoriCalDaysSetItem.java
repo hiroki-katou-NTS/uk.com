@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -29,16 +32,24 @@ public class KscstHoriCalDaysSetItem extends UkJpaEntity implements Serializable
 	public KscstHoriCalDaysSetPK kscstHoriCalDaysSetPK;
 	/** 半日カウント区分 **/
 	@Column(name = "HALF_DAY_ATR")
-	public Integer halfDay;
+	public int halfDay;
 	/** 年休カウント区分 **/
 	@Column(name = "YEAR_HD_ATR")
-	public Integer yearHd;
+	public int yearHd;
 	/** 特休カウント区分 **/
 	@Column(name = "SPHD_ATR")
-	public Integer specialHoliday;
+	public int specialHoliday;
 	/** 積休カウント区分 **/
 	@Column(name = "HAVY_HD_ATR")
-	public Integer heavyHd;
+	public int heavyHd;
+	// one cal day set to one eval order
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "CATEGORY_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "TOTAL_ITEM_NO", referencedColumnName = "TOTAL_ITEM_NO", insertable = false, updatable = false)
+	})
+	public KscmtTotalEvalOrderItem kscmtTotalEvalOrderItem;
+	
 	@Override
 	protected Object getKey() {
 		return kscstHoriCalDaysSetPK;

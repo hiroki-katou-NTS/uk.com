@@ -53,12 +53,12 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
             throw new RuntimeException(String.format("Workplace %s not existed.", command.getWkpIdSelected()));
         }
         Workplace workplace = optionalWkp.get();
-        GeneralDate startDWkpHistLatest = workplace.getWkpHistoryLatest().getPeriod().start();
+        GeneralDate startDWkpHistLatest = workplace.getWkpHistoryLatest().span().start();
         
         if (command.getStartDWkpConfigInfo().equals(startDWkpHistLatest)) {
             // remove workplace history and workplace infor
             this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(),
-                    workplace.getWkpHistoryLatest().getHistoryId());
+                    workplace.getWkpHistoryLatest().identifier());
         } else {
             if (command.getStartDWkpConfigInfo().before(startDWkpHistLatest)) {
                 List<String> lstHistIdRemove = this.findHistory(workplace, command.getStartDWkpConfigInfo());
@@ -70,7 +70,7 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
             }
             int dayOfAgo = -1;
             // update end date of workplace history latest
-            this.wkpService.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().getHistoryId(),
+            this.wkpService.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(),
                     command.getStartDWkpConfigInfo().addDays(dayOfAgo));
         }
         
@@ -87,12 +87,12 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
      * @return the list
      */
     private List<String> findHistory(Workplace workplace, GeneralDate startDWkpConfigInfo) {
-        List<String> lstHistoryId = workplace.getWorkplaceHistory().stream()
-                .filter(wkpHistory -> startDWkpConfigInfo.before(wkpHistory.getPeriod().start()))
-                .map(wkpHistory -> wkpHistory.getHistoryId())
+        List<String> lstHistoryId = workplace.items().stream()
+                .filter(wkpHistory -> startDWkpConfigInfo.before(wkpHistory.span().start()))
+                .map(wkpHistory -> wkpHistory.identifier())
                 .collect(Collectors.toList());
         // delete object
-        workplace.getWorkplaceHistory().removeIf(wkpHistory -> lstHistoryId.contains(wkpHistory.getHistoryId()));
+        workplace.items().removeIf(wkpHistory -> lstHistoryId.contains(wkpHistory.identifier()));
         
         return lstHistoryId;
     }

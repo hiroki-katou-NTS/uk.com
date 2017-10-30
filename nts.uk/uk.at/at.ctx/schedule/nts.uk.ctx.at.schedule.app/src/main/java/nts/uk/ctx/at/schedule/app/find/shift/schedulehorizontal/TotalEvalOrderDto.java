@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,4 +17,6 @@ public class TotalEvalOrderDto {
 	private Integer totalItemNo;
 	/** 並び順 */
 	private Integer dispOrder;
+	private HoriCalDaySetDto horiCalDaySet;
+	private List<HoriTotalCNTSetDto> cntSetls;
 }

@@ -8,14 +8,14 @@ module nts.uk.at.view.kdw001.f {
             startDateString: KnockoutObservable<any>;
             endDateString: KnockoutObservable<any>;
             //table
-            listClassification : KnockoutObservableArray<any>;
             columns: Array<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
             
             //InputEmpCalAndSumByDate
             inputEmpCalAndSumByDate : KnockoutObservable<model.InputEmpCalAndSumByDate>;
             //obj EmpCalAndSumExeLog 
-            empCalAndSumExeLog :  KnockoutObservable<model.EmpCalAndSumExeLog>;
+            empCalAndSumExeLog :  KnockoutObservableArray<model.EmpCalAndSumExeLog>;
+            empCalAndSumExeLogItem :KnockoutObservable<model.EmpCalAndSumExeLog>;
             
             constructor() {
                 let self = this;
@@ -28,34 +28,23 @@ module nts.uk.at.view.kdw001.f {
                 self.startDateString = ko.observable('');
                 self.endDateString = ko.observable(new Date());
                 //table
-                self.listClassification = ko.observableArray([]);
                 self.currentSelectedRow = ko.observable(null);
                 
                 //inputEmpCalAndSumByDate (startDate and endDate)
                 self.inputEmpCalAndSumByDate  = ko.observable(
                                 new model.InputEmpCalAndSumByDate(self.dateValue().startDate,self.dateValue().endDate));
                 //obj EmpCalAndSumExeLog
-                self.empCalAndSumExeLog = ko.observable(null);
+                self.empCalAndSumExeLog = ko.observableArray([]);
+                self.empCalAndSumExeLogItem = ko.observable(null);
                 
-                let temp = [];
-                for (let i = 1; i <= 15; i++) {
-                    temp.push({
-                         date: "2017/01/0"+i, 
-                         code :"A00000"+i,
-                         name :"name "+i,
-                         timeclose :"time close "+i,
-                         menu :"menu"+i,
-                         result :"result "+i,
-                         detail : "参照 "});
-                }
-                self.listClassification(temp);
+
                 self.columns = [
                     { headerText: getText('KDW001_73'), key: 'executionDate', width: 100 },
-                    { headerText: getText('KDW001_74'), key: 'caseSpecExeContentID', width: 120 },
+                    { headerText: getText('KDW001_74'), key: 'empCalAndSumExecLogID', width: 120 },
                     { headerText: getText('KDW001_75'), key: 'caseSpecExeContentID', width: 100 },
-                    { headerText: getText('KDW001_76'), key: 'processingMonth', width: 150 },
-                    { headerText: getText('KDW001_77'), key: 'caseSpecExeContentID', width: 200 },
-                    { headerText: getText('KDW001_78'), key: 'executedMenu', width: 160 },
+                    { headerText: getText('KDW001_76'), key: 'processingMonthName', width: 150 },
+                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200 },
+                    { headerText: getText('KDW001_78'), key: 'executedMenuName', width: 160 },
                     { headerText: getText('KDW001_79'), key: 'executionStatus', width: 100, 
                         template: '<button data-bind="click :openDialogI">参照</button>', 
                         columnCssClass: "colStyleButton",
@@ -89,7 +78,24 @@ module nts.uk.at.view.kdw001.f {
                 service.getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate).done(function(data){
                     //_.sortBy(self.empCalAndSumExeLog(data), 'executionDate');
                     data = _.orderBy(data, ['executionDate'], ['desc']);
-                    self.empCalAndSumExeLog(data);
+                    self.empCalAndSumExeLog([]);
+                    for(let i = 0; i< data.length;i++){
+                        self.empCalAndSumExeLogItem(new model.EmpCalAndSumExeLog(
+                                    data[i].empCalAndSumExecLogID,
+                                    data[i].caseSpecExeContentID,
+                                    data[i].employeeID,
+                                    data[i].executedMenu,
+                                    data[i].executionStatus,
+                                    data[i].executionDate,
+                                    data[i].processingMonth,
+                                    data[i].closureID,
+                                    data[i].executionLogs
+                                ));
+                        
+                        self.empCalAndSumExeLog.push(
+                              self.empCalAndSumExeLogItem()
+                            );
+                    }
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -107,7 +113,9 @@ module nts.uk.at.view.kdw001.f {
             
             //open dialog I
             openDialogI(){
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/i/index.xhtml");    
+                var empCalAndSumExecLogID = this.currentSelectedRow();
+                nts.uk.ui.windows.setShared("openI", this.currentSelectedRow());  
+                nts.uk.ui.windows.sub.modal("/view/kdw/001/i/index.xhtml");
             }
         }//end screenModel
     }//end viewmodel
@@ -123,9 +131,12 @@ module nts.uk.at.view.kdw001.f {
             caseSpecExeContentID : string;
             employeeID : string;
             executedMenu : number;
+            executedMenuName : string;
+            executedMenuJapan : string;
             executionStatus : number;
             executionDate : string;
             processingMonth : number;
+            processingMonthName : string;
             closureID : number;
             executionLogs : Array<ExecutionLog>;
             constructor(empCalAndSumExecLogID :string,
@@ -141,9 +152,23 @@ module nts.uk.at.view.kdw001.f {
                 this.caseSpecExeContentID = caseSpecExeContentID;
                 this.employeeID = employeeID;
                 this.executedMenu = executedMenu;
+                if(executedMenu ==0){
+                    this.executedMenuName = "詳細実行";
+                }else{
+                    this.executedMenuName = "domain4";
+                }
+                
+                if(executedMenu ==0){
+                    this.executedMenuJapan = "選択して実行";
+                }else{
+                    this.executedMenuJapan = "ケース別実行";
+                }
+                    
+                
                 this.executionStatus = executionStatus;
                 this.executionDate = executionDate;
                 this.processingMonth = processingMonth;
+                this.processingMonthName =  processingMonth + "月度";
                 this.closureID = closureID;
                 this.executionLogs = executionLogs;
             }
@@ -193,11 +218,11 @@ module nts.uk.at.view.kdw001.f {
          * class ExecutionTime
          */
         export class ExecutionTime{
-            startDate : string;
-            endDate : string;
-            constructor(startDate : string,endDate : string){
-                this.startDate = startDate;
-                this.endDate = endDate;
+            startTime : string;
+            endTime : string;
+            constructor(startTime : string,endTime : string){
+                this.startTime = startTime;
+                this.endTime = endTime;
             }
         }//end class ExecutionTime
         
@@ -217,7 +242,12 @@ module nts.uk.at.view.kdw001.f {
          * class ObjectPeriod
          */
         export class ObjectPeriod{
-            
+            startDate: string;
+            endDate: string;
+            constructor(startDate: string, endDate: string) {
+                this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
+                this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
+            }
         }//end class ObjectPeriod
         
         /**

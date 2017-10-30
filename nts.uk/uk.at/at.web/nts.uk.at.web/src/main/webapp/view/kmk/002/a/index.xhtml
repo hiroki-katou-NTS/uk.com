@@ -43,7 +43,7 @@
                      </table>
                   </div>
                   <!-- Optional Item view model -->
-                  <div id="right-content" class="pull-left" style="width: 70%">
+                  <div id="right-content" class="pull-left" style="width: 68%">
                      <com:ko tag="with" bind="optionalItem">
                         <table class="control-group">
                            <tr>
@@ -353,7 +353,7 @@
                                     	<com:ko tag="if" bind="isTimeSelected()">
                                        <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_37]',
-                                          options: timeRoundingDs,
+                                          options: timeRoundingDailyDs,
                                           optionsValue: 'value',
                                           value: timeDailyRounding,
                                           optionsText: 'localizedName',
@@ -435,7 +435,7 @@
                                     <com:ko tag="if" bind="isTimeSelected()">
                                        <div style="width: 150px" data-bind="ntsComboBox: {
                                           name: '#[KMK002_39]',
-                                          options: timeRoundingDs,
+                                          options: timeRoundingMonthlyDs,
                                           optionsValue: 'value',
                                           value: timeMonthlyRounding,
                                           optionsText: 'localizedName',
