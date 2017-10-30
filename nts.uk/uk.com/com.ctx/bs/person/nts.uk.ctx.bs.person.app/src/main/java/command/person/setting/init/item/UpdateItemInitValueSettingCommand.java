@@ -1,7 +1,5 @@
 package command.person.setting.init.item;
 
-import java.util.List;
-
 import lombok.Value;
 
 /**
@@ -33,11 +31,11 @@ public class UpdateItemInitValueSettingCommand {
 	
 	private String stringValue;
 	
-	private Integer number;
+	private int intValue;
 	
 	private String selectedCode;
 	
-	private String selectedRuleCode;
+	private int selectedRuleCode;
 	
 	
 
