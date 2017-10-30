@@ -15,9 +15,11 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthDto;
@@ -41,6 +43,9 @@ public class ClosureWs {
 	/** The save. */
 	@Inject
 	private ClosureSaveCommandHandler save;
+	
+	@Inject
+	private CurrentClosureFinder currentClosureFinder;
 	
 	
 	/**
@@ -138,6 +143,12 @@ public class ClosureWs {
 		dto.setBeforeClosureDate(beforeClosureDate);
 		dto.setAfterClosureDate(afterClosureDate);
 		return dto;
+	}
+	
+	@POST
+	@Path("findCurrentClosure")
+	public List<CurrentClosureDto> findStartEndDate(){
+		return this.currentClosureFinder.findCurrentClosure();
 	}
 	
 }

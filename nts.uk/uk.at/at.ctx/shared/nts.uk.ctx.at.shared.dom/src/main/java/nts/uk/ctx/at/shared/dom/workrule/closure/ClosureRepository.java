@@ -7,8 +7,6 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.YearMonth;
-
 /**
  * The Interface ClosureRepository.
  */
@@ -44,5 +42,14 @@ public interface ClosureRepository {
 	 * @return the optional
 	 */
 	Optional<Closure> findById(String companyId, int closureId);
+
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @param useAtr the use atr
+	 * @return the list
+	 */
+	List<Closure> findAllActive(String companyId, UseClassification useAtr);
 
 }
