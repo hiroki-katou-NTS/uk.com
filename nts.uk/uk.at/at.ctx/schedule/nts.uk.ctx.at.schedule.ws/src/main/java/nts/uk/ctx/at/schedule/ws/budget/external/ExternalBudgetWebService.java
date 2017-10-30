@@ -28,6 +28,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.Execution
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.external.ParamExternalBudget;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
@@ -68,6 +69,18 @@ public class ExternalBudgetWebService extends WebService {
 	@Path("findallexternalbudget")
 	public List<ExternalBudgetDto> getAllExternalBudget() {
 		return this.find.findAll();
+	}
+	
+	/**
+	 * get External Budget by atr 
+	 * @param param
+	 * @return
+	 * author: Hoang Yen
+	 */
+	@POST
+	@Path("findByAtr")
+	public List<ExternalBudgetDto> getByAtr(ParamExternalBudget param){
+		return this.find.findByAtr(param);
 	}
 	
 	/**

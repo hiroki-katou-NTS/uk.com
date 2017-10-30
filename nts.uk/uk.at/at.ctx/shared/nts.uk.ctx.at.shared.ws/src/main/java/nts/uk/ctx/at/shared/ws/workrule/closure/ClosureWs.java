@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
@@ -44,9 +46,16 @@ public class ClosureWs {
 	@Inject
 	private ClosureSaveCommandHandler save;
 	
+	
+	/** The current closure finder. */
 	@Inject
 	private CurrentClosureFinder currentClosureFinder;
 	
+	/** The Constant CLOSURE_ID_BEGIN. */
+	public static final int CLOSURE_ID_BEGIN = 1;
+	
+	/** The Constant THREE_MONTH. */
+	public static final int THREE_MONTH = 3;
 	
 	/**
 	 * Find all.
@@ -70,6 +79,43 @@ public class ClosureWs {
 	@Path("findById/{closureId}")
 	public ClosureFindDto findById(@PathParam("closureId") int closureId){
 		return this.finder.findById(closureId);
+	}
+	
+	/**
+	 * Find period by id.
+	 *
+	 * @param closureId the closure id
+	 * @return the period
+	 */
+	@POST
+	@Path("findPeriodById/{closureId}")
+	public DayMonthOutDto findPeriodById(@PathParam("closureId") int closureId) {
+		return new DayMonthOutDto(this.finder.findByIdGetMonthDay(closureId));
+	}
+	
+	/**
+	 * Check three month.
+	 *
+	 * @param baseDate the base date
+	 * @return the boolean
+	 */
+	@POST
+	@Path("checkThreeMonth")
+	public Boolean checkThreeMonth(CheckSaveDto checksave) {
+		DatePeriod period = this.finder.findByIdGetMonthDay(CLOSURE_ID_BEGIN);
+		return (period.start().month() + THREE_MONTH < checksave.getBaseDate().month());
+	}
+	
+	/**
+	 * Check month max.
+	 *
+	 * @param baseDate the base date
+	 * @return the boolean
+	 */
+	@POST
+	@Path("checkMonthMax")
+	public Boolean checkMonthMax(CheckSaveDto checksave) {
+		return checksave.getBaseDate().before(this.finder.getMaxStartDateClosure());
 	}
 	
 	

@@ -4,10 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.role;
 
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
@@ -28,11 +26,12 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findById(java.lang.String)
 	 */
 	@Override
-	public RoleExport findById(String roleId) {
-		Optional<Role> opRole = roleRepo.findById(roleId);
-		if (opRole.isPresent()) {
-			Role role = opRole.get();
-			return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v());
+	public List<RoleExport> findById(String roleId) {
+		List<Role> lstRole = roleRepo.findById(roleId);
+		if (!lstRole.isEmpty()) {
+			return lstRole.stream().map(role -> {
+				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v());
+			}).collect(Collectors.toList());
 		}
 		return null;
 	}
