@@ -101,12 +101,12 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 			return;
 		}
 		int previousDay = -1;
-		GeneralDate updatedEndDate = newEntity.getLastestHistory().getPeriod().start().addDays(previousDay);
-		this.jobTitleHistoryService.updateHistory(companyId, currentHistory.getHistoryId(), updatedEndDate);
+		GeneralDate updatedEndDate = newEntity.getLastestHistory().span().start().addDays(previousDay);
+		this.jobTitleHistoryService.updateHistory(companyId, currentHistory.identifier(), updatedEndDate);
 
 		// Add new JobTitleInfo for new history id
-		this.addJobTitleInfo(companyId, jobTitle.getJobTitleId(), currentHistory.getHistoryId(),
-				newEntity.getLastestHistory().getHistoryId());
+		this.addJobTitleInfo(companyId, jobTitle.getJobTitleId(), currentHistory.identifier(),
+				newEntity.getLastestHistory().identifier());
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 
 		// Validate
 		this.validHistory(Boolean.FALSE, previousHistory, updateEntity.getLastestHistory(),
-				updateEntity.getLastestHistory().getHistoryId().equals(jobTitle.getLastestHistory().getHistoryId()));
+				updateEntity.getLastestHistory().identifier().equals(jobTitle.getLastestHistory().identifier()));
 
 		// Add new history
 		this.jobTitleRepository.update(updateEntity);
@@ -147,8 +147,8 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 			return;
 		}
 		int previousDay = -1;
-		GeneralDate updatedEndDate = updateEntity.getLastestHistory().getPeriod().start().addDays(previousDay);
-		this.jobTitleHistoryService.updateHistory(companyId, previousHistory.getHistoryId(), updatedEndDate);
+		GeneralDate updatedEndDate = updateEntity.getLastestHistory().span().start().addDays(previousDay);
+		this.jobTitleHistoryService.updateHistory(companyId, previousHistory.identifier(), updatedEndDate);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		}
 
 		// Valid start date
-		if (currentHistory.getPeriod().start().afterOrEquals(newHistory.getPeriod().start())) {
+		if (currentHistory.span().start().afterOrEquals(newHistory.span().start())) {
 			isError = true;
 			if (isCreateMode) {
 				// Add mode

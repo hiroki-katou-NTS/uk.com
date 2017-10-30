@@ -92,7 +92,7 @@ public class RemoveJobTitleHistoryCommandHandler extends CommandHandler<RemoveJo
 		}
 
 		// Can only remove the lastest history
-		if (!jobTitleInfo.getLastestHistory().getHistoryId().equals(removeHistoryId)) {
+		if (!jobTitleInfo.getLastestHistory().identifier().equals(removeHistoryId)) {
 			isError = true;
 			exceptions.addMessage("Msg_55");
 		}
