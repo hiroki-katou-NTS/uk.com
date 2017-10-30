@@ -1,0 +1,50 @@
+#contents-area {
+	margin-left: 25px
+}
+
+#time-edit1, #time-edit2 {
+	text-align: center !important;
+	width: 43px !important;
+}
+
+#set-work-type {
+	margin: 15px 0px
+}
+
+#set-work-type>* {
+	vertical-align: middle;
+}
+
+#combo-box2 {
+	margin: 15px 0 10px 105px;
+}
+
+.mw-90 {
+	min-width: 100px
+}
+
+#clear {
+	float: right;
+	margin-right: 25px;
+	margin-bottom: 10px
+}
+
+#table-date {
+	margin-bottom: 10px
+}
+
+#table-date table, #table-date th, #table-date td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	width: 930px;
+	height: 26px;
+	text-align: center;
+}
+
+#table-date th {
+	background-color: #EDFAC2
+}
+
+#table-date td {
+	font-size: smaller;
+}

@@ -7,18 +7,25 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 420 };</script>
+			<script>var dialogSize = { width: 700, height: 420 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.team.TeamName
+				nts.uk.ctx.at.schedule.dom.shift.team.TeamCode
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.lx.main.css" />
 			<com:scriptfile path="ksu001.lx.vm.js" />
+			<com:scriptfile path="ksu001.lx.service.js" />
 			<com:scriptfile path="ksu001.lx.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button>#{i18n.getText('KSU001_1130')}</button>
-				<button class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1131')}</button>
-				<button class="danger">#{i18n.getText('KSU001_1132')}</button>
+				<button data-bind="click : cleanForm,enable : isEnable">#{i18n.getText('KSU001_1130')}</button>
+				<button class="proceed"
+					data-bind="click : saveData, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1131')}</button>
+				<button class="danger"
+					data-bind="click: removeData, enable:!isCreated()">#{i18n.getText('KSU001_1132')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_1133')}</button>
 			</div>
 			<div id="contents-area">
@@ -30,13 +37,13 @@
 								primaryKey: 'code'	,
 								columns: columnsTeam,
 								multiple: false,
-								value: selectedTeam
+								value: selectedTeam,
 							}"></table>
 				</div>
 				<div id="content-right">
-					 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_1137')}</div>
-					 <input data-bind="ntsTextEditor: {value: teamCode}" />
-					 <input data-bind="ntsTextEditor: {value: teamName}" />
+					<div data-bind="ntsFormLabel: {constraint:['TeamCode','TeamName'],required: true}">#{i18n.getText('KSU001_1137')}</div>
+					<input id="input-teamCode" data-bind="ntsTextEditor: {value: teamCode, enable: enableCode, constraint:'TeamCode',required: true}" />
+					<input id="input-teamName" data-bind="ntsTextEditor: {value: teamName, constraint:'TeamName',required: true}" />
 				</div>
 			</div>
 		</ui:define>

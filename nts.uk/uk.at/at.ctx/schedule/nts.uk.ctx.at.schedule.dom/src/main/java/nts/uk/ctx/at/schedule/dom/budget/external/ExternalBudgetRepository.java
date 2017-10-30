@@ -8,6 +8,15 @@ public interface ExternalBudgetRepository {
 	 * get all Item of external budget
 	 */
 	List<ExternalBudget> findAll(String companyId);
+	/**
+	 * find External Budget by budgetAtr and unitAtr
+	 * @param companyId
+	 * @param budgetAtr
+	 * @param unitAtr
+	 * @return
+	 * author: Hoang Yen
+	 */
+	List<ExternalBudget> findByAtr(String companyId, int budgetAtr, int unitAtr);
 
 	/*
 	 * get Item of external budget by Budget Code

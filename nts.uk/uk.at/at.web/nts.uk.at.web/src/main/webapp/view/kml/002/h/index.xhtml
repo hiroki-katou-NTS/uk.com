@@ -7,12 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.PersonalGrantDateCode -->
-<!-- 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.PersonalGrantDateName -->
-<!-- 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateYear -->
-<!-- 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateMonth -->
-<!-- 			</com:ValidatorScript> -->
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalCd
+				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalName
+			</com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -45,7 +43,7 @@
 				<span class="title" data-bind="text: title"></span>
 				
 				<com:ko-if bind="currentTab()=='H'">
-					<button class="proceed" data-bind="click: $parent.viewmodelH.registrationBtn.bind($parent.viewmodelH)">#{i18n.getText('KML002_2')}</button>
+					<button class="proceed" data-bind="click: $parent.viewmodelH.addFixedVertical.bind($parent.viewmodelH)">#{i18n.getText('KML002_2')}</button>
 				</com:ko-if>
 				
 				<com:ko-if bind="currentTab()=='A'">
@@ -71,87 +69,29 @@
 							</tr>
 						</THEAD>
 						
-						<TBODY>
+						<TBODY data-bind="foreach: items">
 							<tr>
-								<td>#{i18n.getText('KML002_85')}</td>
+								<td data-bind="text: fixedVerticalName"></td>
 								<td>
 									<div class="cf"
 										data-bind="ntsSwitchButton: {
-										options: $parent.viewmodelH.useCls,
+										options: $parent.useCls,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: $parent.viewmodelH.useClsSelected,
-										enable: true }"></div>
+										value: $data.useAtr,
+										enable: true }">
+										</div>
 								</td>
 								<td>
-									<button class="advance-setting">#{i18n.getText('KML002_9')}</button>
-								</td>
-							</tr>
-							<tr>
-								<td>#{i18n.getText('KML002_86')}</td>
-								<td>
-									<div class="cf"
-										data-bind="ntsSwitchButton: {
-										options: $parent.viewmodelH.useCls,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.viewmodelH.useClsSelected,
-										enable: true }"></div>
-								</td>
-								<td>
-									<button class="advance-setting">#{i18n.getText('KML002_84')}</button>
-								</td>
-							</tr>
-							<tr>
-								<td>#{i18n.getText('KML002_87')}</td>
-								<td>
-									<div class="cf"
-										data-bind="ntsSwitchButton: {
-										options: $parent.viewmodelH.useCls,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.viewmodelH.useClsSelected,
-										enable: true }"></div>
-								</td>
-								<td>
-									
-								</td>
-							</tr>
-							<tr>
-								<td>#{i18n.getText('KML002_87')}</td>
-								<td>
-									<div class="cf"
-										data-bind="ntsSwitchButton: {
-										options: $parent.viewmodelH.useCls,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.viewmodelH.useClsSelected,
-										enable: true }"></div>
-								</td>
-								<td>
-									
-								</td>
-							</tr>
-							<tr>
-								<td>#{i18n.getText('KML002_88')}</td>
-								<td>
-									<div class="cf"
-										data-bind="ntsSwitchButton: {
-										options: $parent.viewmodelH.useCls,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.viewmodelH.useClsSelected,
-										enable: true }"></div>
-								</td>
-								<td>
-									<button class="advance-setting">#{i18n.getText('KML002_84')}</button>
+									<com:ko-if bind="fixedItemAtr() == 0 || fixedItemAtr() == 1 || fixedItemAtr() == 6">
+										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr())" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
+									</com:ko-if>
 								</td>
 							</tr>
 						</TBODY>
 					</table>
 				</div>
 			</div>
-			
 			<div id="tabpanel-a" role="tabpanel" class="screen-a"
 				data-bind="with: viewmodelA">
 				<ui:include src="../a/index.xhtml" />

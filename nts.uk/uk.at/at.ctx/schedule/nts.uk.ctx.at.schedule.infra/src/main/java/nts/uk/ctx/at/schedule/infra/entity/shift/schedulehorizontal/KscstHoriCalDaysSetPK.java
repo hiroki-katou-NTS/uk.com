@@ -23,4 +23,7 @@ public class KscstHoriCalDaysSetPK implements Serializable{
 	/** カテゴリコード **/
 	@Column(name = "CATEGORY_CD")
 	public String categoryCode;
+	/** 集計項目NO */
+	@Column(name = "TOTAL_ITEM_NO")
+	public int totalItemNo;
 }
