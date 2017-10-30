@@ -83,7 +83,6 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 					command.getDisporder(), command.getInitSelection());
 
 			this.selectionOrderRepo.add(domainSelectionOrder);
-			;
 		}
 
 		return newHistId;
