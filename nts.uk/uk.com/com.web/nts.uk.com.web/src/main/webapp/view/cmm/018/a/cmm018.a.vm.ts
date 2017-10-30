@@ -970,7 +970,7 @@ module nts.uk.com.view.cmm018.a {
                 self.approverInfor([]);
                 let formSetting = obj.approvalForm == 0 ? 1 : obj.approvalForm;
                 let confirmedPerson = '';
-                _.each(obj.approver, function(item, index){
+                _.each(obj.approver, function(item){
                     if(item.approvalAtr == 0){
                        self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr}); 
                         if(item.confirmPerson == 1){
@@ -982,9 +982,6 @@ module nts.uk.com.view.cmm018.a {
                         confirmedPerson = item.jobTitleId;
                         }
                     }
-//                    if(item.confirmPerson == 1){
-//                        confirmedPerson = index;
-//                    }    
                 });
                 let appType = vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
                 let appTypeName;
@@ -1960,19 +1957,22 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;
                 block.grayout();
                 self.approverInfor([]);
-                let confirmedPerson = -1;
-//                let approvalAtr = obj.approver[0] == null ? 0 : obj.approver[0].approvalAtr;
+                let confirmedPerson ='';
                 let formSetting = obj.approvalForm == 0 ? 1 : obj.approvalForm;
                 _.each(obj.approver, function(item, index){
-                    if(item.approvalAtr == 0){//person
-                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr});
-                    }else{//job title
-                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr});
+                    if(item.approvalAtr == 0){
+                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr}); 
+                        if(item.confirmPerson == 1){
+                        confirmedPerson = item.employeeId;
                     }
-                    if(item.confirmPerson == 1){
-                            confirmedPerson = index;
-                       }
+                    }else{
+                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr});
+                        if(item.confirmPerson == 1){
+                        confirmedPerson = item.jobTitleId;
+                        }
+                    }
                 });
+                
                 let appType =  vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
                 let appTypeName;
                 if(appType != undefined){
@@ -1980,8 +1980,6 @@ module nts.uk.com.view.cmm018.a {
                 }else{
                     appTypeName = '共通';
                 }
-                //確定者 code
-//                self.confirmedPerson(obj.approvalForm);
                 setShared("CMM018K_PARAM", { 
                                         appTypeName: appTypeName, //設定する対象申請名 : app name
                                         formSetting: formSetting,//1: 全員確認、2：誰か一人: 1ng xac nhan or nhieu ng xac nhan
