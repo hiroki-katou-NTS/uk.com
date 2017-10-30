@@ -1,5 +1,5 @@
 module nts.uk.at.view.kmk002.c {
-    import DailyAttendanceItemDto = service.model.DailyAttendanceItemDto;
+    import DailyAttendanceItemDto = service.model.AttendanceItemDto;
     import AttdItemLinkRequest = service.model.AttdItemLinkRequest;
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
     import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
@@ -8,26 +8,26 @@ module nts.uk.at.view.kmk002.c {
     export module viewmodel {
         export class ScreenModel {
 
-            lstDailyAttendanceItem: KnockoutObservableArray<DailyAttendanceItemDto>;
-            selectCodeDailyAttendanceItem: KnockoutObservableArray<number>;
-            checkSelectDailyAttendanceItem: KnockoutObservable<number>;
-            checkMul: KnockoutObservable<boolean>;
-            columns: any;
+            leftItems: KnockoutObservableArray<DailyAttendanceItemDto>;
+            rightItems: KnockoutObservableArray<AttendanceItemDto>;
+            selectedLeftItem: KnockoutObservableArray<number>;
+            selectedRightItem: KnockoutObservable<number>;
+            minusSegment: KnockoutObservable<boolean>;
+            columnsLeft: any;
             columnsRight: any;
-            lstSelectDailyAttendanceItem: KnockoutObservableArray<AttendanceItemDto>;
             formulaAtr: string;
             formulaName: string;
 
             constructor() {
-                var self = this;
-                self.checkSelectDailyAttendanceItem = ko.observable(0);
-                self.lstDailyAttendanceItem = ko.observableArray([]);
-                self.selectCodeDailyAttendanceItem = ko.observableArray([]);
-                self.lstSelectDailyAttendanceItem = ko.observableArray([]);
-                self.checkMul = ko.observable(false);
+                let self = this;
+                self.selectedRightItem = ko.observable(null);
+                self.leftItems = ko.observableArray([]);
+                self.selectedLeftItem = ko.observableArray([]);
+                self.rightItems = ko.observableArray([]);
+                self.minusSegment = ko.observable(false);
 
                 // data source
-                self.columns = ko.observableArray([
+                self.columnsLeft = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
@@ -52,16 +52,47 @@ module nts.uk.at.view.kmk002.c {
                 // Set param to view model.
                 self.fromDto(param);
 
+                // load attendance items
+                self.loadAttendanceItems(param).done(() => dfd.resolve());
+
+                return dfd.promise();
+            }
+
+            /**
+             * Load attendance items.
+             */
+            private loadAttendanceItems(param: ParamToC): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
                 // create request object
                 let request = <AttdItemLinkRequest>{};
                 request.anyItemNos = param.selectableOptItemNos;
                 request.formulaAtr = param.formulaAtr;
                 request.performanceAtr = param.performanceAtr;
 
-                service.findByAnyItem(request).done(data => {
-                    self.lstDailyAttendanceItem(data);
-                    dfd.resolve();
-                });
+                // get list attendance item
+                if (param.performanceAtr == 1) {
+                    // get list daily attendance item
+                    service.findDailyAttdItem(request).done(data => {
+                        self.leftItems(data);
+
+                        // remove selected items from left table.
+                        self.removeItemFromLeftTable(param.itemSelection.attendanceItems);
+
+                        dfd.resolve();
+                    });
+                } else {
+                    // get list monthly attendance item
+                    service.findMonthlyAttdItem(request).done(data => {
+                        self.leftItems(data);
+
+                        // remove selected items from left table.
+                        self.removeItemFromLeftTable(param.itemSelection.attendanceItems);
+
+                        dfd.resolve();
+                    });
+                }
                 return dfd.promise();
             }
 
@@ -73,8 +104,8 @@ module nts.uk.at.view.kmk002.c {
 
                 // set return value
                 let dto = <ItemSelectionDto>{};
-                dto.minusSegment = self.checkMul() == true ? 1 : 0;
-                dto.attendanceItems = self.lstSelectDailyAttendanceItem();
+                dto.minusSegment = self.minusSegment() == true ? 1 : 0;
+                dto.attendanceItems = self.rightItems();
                 nts.uk.ui.windows.setShared('returnFromC', dto);
 
                 // close dialog.
@@ -89,70 +120,102 @@ module nts.uk.at.view.kmk002.c {
             }
 
             /**
-             * add method add by click button ADD
+             * Remove selected items from left table.
              */
-            private addMethodAdd(): void {
-                var self = this;
-                var updateData: DailyAttendanceItemDto[] = [];
-                var selectData: AttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
-                for (var item of self.lstDailyAttendanceItem()) {
-                    var selected: boolean = false;
-                    for (var itemSelect of self.selectCodeDailyAttendanceItem()) {
-                        if (item.attendanceItemId == itemSelect) {
-                            selected = true;
-                        }
-                    }
-                    if (!selected) {
-                        updateData.push(item);
-                    } else {
-                        selectData.push(self.toSelectDto(item, AddSubOperator.ADD));
-                    }
-                }
-                self.lstDailyAttendanceItem(updateData);
-                self.lstSelectDailyAttendanceItem(selectData);
+            private removeItemFromLeftTable(listItem: Array<AttendanceItemDto>): void {
+                let self = this;
+                _.forEach(listItem, item => {
+                    self.leftItems.remove(i => i.attendanceItemId == item.attendanceItemId);
+                });
             }
 
             /**
-             * add method sub by click button SUB
+             * Event on click add button
              */
-            private addMethodSub(): void {
-                var self = this;
-                var updateData: DailyAttendanceItemDto[] = [];
-                var selectData: AttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
-                for (var item of self.lstDailyAttendanceItem()) {
-                    var selected: boolean = false;
-                    for (var itemSelect of self.selectCodeDailyAttendanceItem()) {
-                        if (item.attendanceItemId == itemSelect) {
-                            selected = true;
-                        }
-                    }
-                    if (!selected) {
-                        updateData.push(item);
-                    } else {
-                        selectData.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
-                    }
+            private onClickAdd(): void {
+                let self = this;
+                if (self.selectedLeftItem()) {
+                    _.forEach(self.selectedLeftItem(), id => {
+                        // get selected item by selected id
+                        let item = _.find(self.leftItems(), item => item.attendanceItemId == id);
+
+                        // push item to right table
+                        self.rightItems.push(self.toSelectDto(item, AddSubOperator.ADD));
+
+                        // remove item from left table
+                        self.leftItems.remove(item);
+                    });
+                    // sort right table
+                    self.sortRightTable();
+
+                    // clear selected item
+                    self.selectedLeftItem([]);
                 }
-                self.lstDailyAttendanceItem(updateData);
-                self.lstSelectDailyAttendanceItem(selectData);
             }
 
             /**
-             * function by click button back
+             * Event on click subtract button
              */
-            private gobackSelectItem(): void {
-                var self = this;
-                var updateData: DailyAttendanceItemDto[] = self.lstDailyAttendanceItem();
-                var selectData: AttendanceItemDto[] = [];
-                for (var item of self.lstSelectDailyAttendanceItem()) {
-                    if (item.attendanceItemId == self.checkSelectDailyAttendanceItem()) {
-                        updateData.push(self.toBackDto(item));
-                    } else {
-                        selectData.push(item);
-                    }
+            private onClickSubtract(): void {
+                let self = this;
+                if (self.selectedLeftItem()) {
+                    _.forEach(self.selectedLeftItem(), id => {
+                        // get selected item by selected id
+                        let item = _.find(self.leftItems(), item => item.attendanceItemId == id);
+
+                        // push item to right table
+                        self.rightItems.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
+
+                        // remove item from left table
+                        self.leftItems.remove(item);
+                    });
+                    // sort right table
+                    self.sortRightTable();
+
+                    // clear selected item
+                    self.selectedLeftItem([]);
                 }
-                self.lstDailyAttendanceItem(updateData);
-                self.selectCodeDailyAttendanceItem([]);
-                self.lstSelectDailyAttendanceItem(selectData);
+            }
+
+            /**
+             * Event on click back button
+             */
+            private onClickBack(): void {
+                let self = this;
+                if (self.selectedRightItem()) {
+                    let item = _.find(self.rightItems(),
+                        item => item.attendanceItemId == self.selectedRightItem());
+
+                    // push item to left table
+                    self.leftItems.push(self.toBackDto(item));
+
+                    // remove item from right table
+                    self.rightItems.remove(item);
+
+                    // sort left table
+                    self.sortLeftTable();
+
+                    // clear selected item.
+                    self.selectedRightItem(null);
+                }
+            }
+
+            /**
+             * Sort list attendance item by attendance item Id.
+             */
+            private sortLeftTable(): void {
+                let self = this;
+                let sortedList = _.sortBy(self.leftItems(), item => item.attendanceItemId);
+                self.leftItems(sortedList);
+            }
+
+            /**
+             * Sort right table.
+             */
+            private sortRightTable(): void {
+                let self = this;
+                let sortedList = _.sortBy(self.rightItems(), item => item.attendanceItemId);
+                self.rightItems(sortedList);
             }
 
             /**
@@ -162,8 +225,8 @@ module nts.uk.at.view.kmk002.c {
                 let self = this;
                 self.formulaAtr = dto.formulaAtrName;
                 self.formulaName = dto.formulaName;
-                self.lstSelectDailyAttendanceItem(dto.itemSelection.attendanceItems);
-                self.checkMul(dto.itemSelection.minusSegment == 1 ? true : false);
+                self.rightItems(dto.itemSelection.attendanceItems);
+                self.minusSegment(dto.itemSelection.minusSegment == 1 ? true : false);
             }
 
             /**
