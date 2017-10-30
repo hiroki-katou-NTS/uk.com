@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -18,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
  * @author nampt
- * 日別実績の勤務情報.勤務予定時間帯
+ * 日別実績の勤務情報.予定時間帯
  *
  */
 @NoArgsConstructor
@@ -38,7 +39,10 @@ public class KrcdtWorkScheduleTime extends UkJpaEntity implements Serializable {
 	public Integer leaveWork;
 	
 	@ManyToOne
-    @JoinColumn(name="SID", referencedColumnName="SID", insertable = false, updatable = false)
+	@JoinColumns({
+	    @JoinColumn(name="SID", referencedColumnName="SID", insertable = false, updatable = false),
+	    @JoinColumn(name="YMD", referencedColumnName="YMD", insertable = false, updatable = false)
+	})
 	public KrcdtDaiPerWorkInfo daiPerWorkInfo;
 	
 	public KrcdtWorkScheduleTime(KrcdtWorkScheduleTimePK krcmtWorkScheduleTimePK, Integer attendance,
