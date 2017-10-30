@@ -25,9 +25,9 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	@EmbeddedId
 	public KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK;
 	
-//	@Version
-//	@Column(name="EXCLUS_VER")
-//	public Long version;
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
 	
 	@Column(name="WORK_TYPE_CD")
 	public String workTypeCD;

@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.gateway.app.command.login;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.dom.login.User;
@@ -63,17 +62,23 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 	 */
 	protected abstract void internalHanler(CommandHandlerContext<T> context);
 
-	protected void setLoggedInfo(User user) {
-		EmployeeImport em = this.getEmployeeInfo("", "");
-		CompanyInformationImport com = this.getCompanyInfo("");
-		if (em == null || com == null) {
-			throw new BusinessException("");
-		}
+	protected void setLoggedInfo(User user,EmployeeImport em,String companyCode) {
 		//set info to session 
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
-				com.getCompanyCode(), em.getEmployeeId(), em.getEmployeeCode());
+				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
 
+//	protected void setLoggedInfo(User user) {
+//		EmployeeImport em = this.getEmployeeInfo("",user.getAssociatedPersonId());
+//		CompanyInformationImport com = this.getCompanyInfo("");
+//		if (em == null || com == null) {
+//			throw new BusinessException("");
+//		}
+//		//set info to session 
+//		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
+//				com.getCompanyCode(), em.getEmployeeId(), em.getEmployeeCode());
+//	}
+	
 	protected EmployeeImport getEmployeeInfo(String companyId, String employeeCode) {
 		// TODO
 		EmployeeImport em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode).get();
@@ -88,26 +93,39 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 	
 	protected void setRoleId(String userId)
 	{
+		// 就業
+		if (this.getRoleId(userId, RoleType.EMPLOYMENT) != null) {
+			manager.roleIdSetter().forPersonnel(this.getRoleId(userId, RoleType.EMPLOYMENT));
+		}
+		
+		// 給与
+		if (this.getRoleId(userId, RoleType.SALARY) != null) {
+			manager.roleIdSetter().forPayroll(this.getRoleId(userId, RoleType.SALARY));
+		}
+		
+		//人事
+		
+		
+		// オフィスヘルパー
+		if (this.getRoleId(userId, RoleType.OFFICE_HELPER) != null) {
+			manager.roleIdSetter().forOfficeHelper(this.getRoleId(userId, RoleType.OFFICE_HELPER));
+		}
+		
+		//会計
+		//マイナンバー
+		//グループ会社管理
+		
+		// 会社管理者
 		if (this.getRoleId(userId, RoleType.COMPANY_MANAGER) != null) {
 			manager.roleIdSetter().forCompanyAdmin(this.getRoleId(userId, RoleType.COMPANY_MANAGER));
 		}
 
+		//システム管理者
 		if (this.getRoleId(userId, RoleType.SYSTEM_MANAGER) != null) {
 			manager.roleIdSetter().forSystemAdmin(this.getRoleId(userId, RoleType.SYSTEM_MANAGER));
 		}
-
-		if (this.getRoleId(userId, RoleType.OFFICE_HELPER) != null) {
-			manager.roleIdSetter().forOfficeHelper(this.getRoleId(userId, RoleType.OFFICE_HELPER));
-		}
-
-		if (this.getRoleId(userId, RoleType.SALARY) != null) {
-			manager.roleIdSetter().forPayroll(this.getRoleId(userId, RoleType.SALARY));
-		}
-
-		if (this.getRoleId(userId, RoleType.EMPLOYMENT) != null) {
-			manager.roleIdSetter().forPersonnel(this.getRoleId(userId, RoleType.EMPLOYMENT));
-		}
-
+		
+		//個人情報
 		if (this.getRoleId(userId, RoleType.PERSONAL_INFO) != null) {
 			manager.roleIdSetter().forPersonalInfo(this.getRoleId(userId, RoleType.PERSONAL_INFO));
 		}

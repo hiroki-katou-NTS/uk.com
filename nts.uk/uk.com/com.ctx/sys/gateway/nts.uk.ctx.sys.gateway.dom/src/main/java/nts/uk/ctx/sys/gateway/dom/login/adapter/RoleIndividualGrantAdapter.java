@@ -19,4 +19,12 @@ public interface RoleIndividualGrantAdapter {
 	 * @return the by user and role
 	 */
 	RoleIndividualGrantImport getByUserAndRole (String userId,RoleType roleType);
+	
+	/**
+	 * Gets the by user.
+	 *
+	 * @param userId the user id
+	 * @return the by user
+	 */
+	RoleIndividualGrantImport getByUser (String userId);
 }

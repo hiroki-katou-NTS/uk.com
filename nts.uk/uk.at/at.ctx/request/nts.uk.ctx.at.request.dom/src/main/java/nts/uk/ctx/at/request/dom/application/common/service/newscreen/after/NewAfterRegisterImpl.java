@@ -12,7 +12,7 @@ import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -52,7 +52,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 	private MailSender mailSender;
 	
 	@Inject
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	
 	public void processAfterRegister(Application application){
 		

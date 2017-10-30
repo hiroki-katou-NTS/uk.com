@@ -12,7 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -37,7 +37,7 @@ public class LateOrLeaveEarlyFinder {
 	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject 
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	
 	/** アルゴリズム「1-1.新規画面起動前申請共通設定を取得する」を実行する (Thực thi 「1-1.新規画面起動前申請共通設定を取得する」) */
 	@Inject
@@ -60,8 +60,8 @@ public class LateOrLeaveEarlyFinder {
 
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID =  AppContexts.user().employeeId();
-		String applicantName = employeeAdapter.getEmployeeName(employeeID);
+		String employeeID = "";
+		String applicantName = "";
 	
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
 		 
@@ -85,7 +85,12 @@ public class LateOrLeaveEarlyFinder {
 			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
 			if(lateOrLeaveEarlyOp.isPresent()){
 				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarlyOp.get()); 
+				employeeID = lateOrLeaveEarlyOp.get().getApplicantSID();
+				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
+		} else {
+			employeeID = AppContexts.user().employeeId();
+			applicantName = employeeAdapter.getEmployeeName(employeeID);
 		}
 
 		return new ScreenLateOrLeaveEarlyDto(lateOrLeaveEarlyDto, listApplicationReasonDto, 

@@ -19,6 +19,7 @@
 			<com:scriptfile set="IGNITE" />
 			
 			<com:stylefile path="cmm050.b.main.css" />
+			<com:scriptfile path="cmm050.b.service.js" />
 			<com:scriptfile path="cmm050.b.start.js" />
 			<com:scriptfile path="cmm050.b.vm.js" />
 		</ui:define>
@@ -38,7 +39,8 @@
 					<div class="input">
 						<input id="email_auth"
 							data-bind="ntsTextEditor: {
-								value: emailAuth,
+								name: '#[CMM050_27]',
+								value: emailFrom,
 								option: emailAuthOption,
                                 constraint: 'EmailAuthentication'}" />
                     </div>
@@ -54,7 +56,8 @@
 						
 						<input id="email_auth"
 							data-bind="ntsTextEditor: {
-								value: emailAuth1,
+								name: '#[CMM050_28]',
+								value: emailTo,
 								option: emailAuthOption,
                                 constraint: 'EmailAuthentication'}" />
 					</div>

@@ -212,6 +212,11 @@ module nts.uk.com.view.cmm011.b {
                     let detail: IHistory = self.getSelectedHistoryByHistId();
                     self.parentModel.startDate(detail.startDate);
                     self.parentModel.endDate(detail.endDate);
+                    
+                    // set selection mode
+                    if (!self.isSelectedLatestHistory()) {
+                        self.screenMode(ScreenMode.SelectionMode);
+                    }
                 });
             }
             

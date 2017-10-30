@@ -13,7 +13,7 @@ public interface AssignedWorkplaceMemento {
 	 * Get assigned workplace id
 	 * @return assigned workplace id
 	 * */
-	public AssignedWorkplaceId getAssignedWorkplaceId();
+	public String getAssignedWorkplaceId();
 	
 	/**
 	 * Get history id
@@ -37,7 +37,7 @@ public interface AssignedWorkplaceMemento {
 	 * Set assigned workplace
 	 * @param assigned workplace id
 	 * */
-	public void setAssignedWorkplaceId(AssignedWorkplaceId assignedWorkplaceId);
+	public void setAssignedWorkplaceId(String assignedWorkplaceId);
 	
 	/**
 	 * Set history id

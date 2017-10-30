@@ -21,4 +21,12 @@ public interface RoleIndividualGrantRepository {
 	 * @return the optional
 	 */
 	Optional<RoleIndividualGrant> findByUserAndRole(String userId,RoleType roleType);
+	
+	/**
+	 * Find by user.
+	 *
+	 * @param userId the user id
+	 * @return the optional
+	 */
+	Optional<RoleIndividualGrant> findByUser(String userId);
 }

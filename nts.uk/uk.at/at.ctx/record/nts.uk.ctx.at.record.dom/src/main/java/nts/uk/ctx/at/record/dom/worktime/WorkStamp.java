@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -12,7 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class WorkStamp {
+public class WorkStamp extends DomainObject{
 	
 	//丸め後の時刻
 	private TimeWithDayAttr AfterRoundingTime;
