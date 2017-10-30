@@ -13,7 +13,6 @@ import command.person.setting.init.UpdateInitValueSettingHandler;
 import find.person.setting.init.PerInfoInitValueSettingFinder;
 import find.person.setting.init.PerInitValueSettingDto;
 import find.person.setting.init.category.InitCtgDto;
-import find.person.setting.init.category.PerInfoInitValueSettingCtgDto;
 import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.arc.layer.ws.WebService;
 
