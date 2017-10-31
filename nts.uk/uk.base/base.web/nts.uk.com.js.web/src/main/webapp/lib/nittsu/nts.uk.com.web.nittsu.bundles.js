@@ -8814,23 +8814,31 @@ var nts;
                                 $treegrid.data("autoExpanding", true);
                                 var holder = $treegrid.data("expand");
                                 if (!nts.uk.util.isNullOrEmpty(holder.nodes)) {
+                                    var expandedIds_1 = [];
                                     _.forEach(holder.nodes, function (node) {
                                         $treegrid.igTreeGrid("expandRow", node.getNode());
+                                        expandedIds_1.push(node.getNode());
                                     });
-                                    setTimeout(function () {
-                                        var selecteds = $treegrid.ntsTreeView("getSelected");
-                                        if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                                            var firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
-                                            if (firstId !== undefined) {
-                                                var row2 = $treegrid.igTreeGrid("rowById", firstId);
+                                    var selecteds = $treegrid.ntsTreeView("getSelected");
+                                    if (!nts.uk.util.isNullOrUndefined(selecteds)) {
+                                        var firstId_1 = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
+                                        if (firstId_1 !== undefined) {
+                                            var parentIds = Helper.getAllParentId($treegrid, firstId_1, optionsValue, optionsChild);
+                                            _.forEach(parentIds, function (node) {
+                                                if (expandedIds_1.indexOf(node) < 0) {
+                                                    $treegrid.igTreeGrid("expandRow", node);
+                                                }
+                                            });
+                                            setTimeout(function () {
+                                                var row2 = $treegrid.igTreeGrid("rowById", firstId_1);
                                                 var container = $treegrid.igTreeGrid("scrollContainer");
                                                 var totalH = _.sumBy(row2.prevAll(), function (e) { return $(e).height(); });
                                                 if (totalH > height - HEADER_HEIGHT) {
                                                     container.scrollTop(totalH);
                                                 }
-                                            }
+                                            }, 200);
                                         }
-                                    }, 200);
+                                    }
                                 }
                                 $treegrid.data("autoExpanding", false);
                             }
@@ -8941,6 +8949,41 @@ var nts;
                         return ids;
                     }
                     Helper.flatTree = flatTree;
+                    function getAllParentId(tree, id, nodeKey, childKey) {
+                        var source = _.cloneDeep(tree.igTreeGrid("option", "dataSource"));
+                        var parentIds = [];
+                        _.forEach(source, function (node) {
+                            var result = checkIfInBranch(node, id, nodeKey, childKey);
+                            if (result.inThis) {
+                                parentIds = [node[nodeKey]].concat(result.ids);
+                                return false;
+                            }
+                        });
+                        return parentIds;
+                    }
+                    Helper.getAllParentId = getAllParentId;
+                    function checkIfInBranch(source, id, nodeKey, childKey) {
+                        if (source[nodeKey] === id) {
+                            return {
+                                inThis: true,
+                                ids: []
+                            };
+                        }
+                        else {
+                            var result_3 = {
+                                inThis: false,
+                                ids: []
+                            };
+                            _.forEach(source[childKey], function (node) {
+                                result_3 = checkIfInBranch(node, id, nodeKey, childKey);
+                                if (result_3.inThis) {
+                                    result_3.ids = [node[nodeKey]].concat(result_3.ids);
+                                    return false;
+                                }
+                            });
+                            return result_3;
+                        }
+                    }
                 })(Helper || (Helper = {}));
                 var ExpandNode = (function () {
                     function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {

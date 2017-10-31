@@ -136,24 +136,33 @@ module nts.uk.ui.koExtentions {
                     $treegrid.data("autoExpanding", true);
                     let holder: ExpandNodeHolder = $treegrid.data("expand");
                     if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
+                        let expandedIds: Array<string> = [];
                         _.forEach(holder.nodes, function(node: ExpandNode){
-                            $treegrid.igTreeGrid("expandRow", node.getNode());        
+                            $treegrid.igTreeGrid("expandRow", node.getNode());
+                            expandedIds.push(node.getNode());        
                         });
                         
-                        setTimeout(function(){
-                            let selecteds = $treegrid.ntsTreeView("getSelected");
-                            if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                                let firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id
-                                if (firstId !== undefined) {
+                        let selecteds = $treegrid.ntsTreeView("getSelected");
+                        if (!nts.uk.util.isNullOrUndefined(selecteds)) {
+                            let firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id
+                            if (firstId !== undefined) {
+                                let parentIds = Helper.getAllParentId($treegrid, firstId, optionsValue, optionsChild);
+                                _.forEach(parentIds, function(node: string){
+                                    if(expandedIds.indexOf(node) < 0){
+                                        $treegrid.igTreeGrid("expandRow", node);        
+                                    }        
+                                });
+                                
+                                setTimeout(function(){
                                     let row2 = $treegrid.igTreeGrid("rowById", firstId);      
                                     var container = $treegrid.igTreeGrid("scrollContainer");
                                     let totalH = _.sumBy(row2.prevAll(), function(e){ return $(e).height();});
                                     if(totalH > height - HEADER_HEIGHT) {
                                         container.scrollTop(totalH);        
-                                    }         
-                                }
-                            } 
-                        }, 200);
+                                    }
+                                }, 200);         
+                            }
+                        } 
                     }
                     
                     $treegrid.data("autoExpanding", false);   
@@ -284,6 +293,44 @@ module nts.uk.ui.koExtentions {
             });
             
             return ids;
+        }
+        
+        export function getAllParentId(tree: JQuery, id: string, nodeKey: string, childKey: string): Array<string> {
+            let source = _.cloneDeep(tree.igTreeGrid("option", "dataSource"));
+            let parentIds = [];
+            
+            _.forEach(source, function(node){
+                let result = checkIfInBranch(node, id, nodeKey, childKey);   
+                if(result.inThis){
+                    parentIds = [node[nodeKey]].concat(result.ids);
+                    return false;
+                } 
+            });
+            
+            return parentIds;
+        }
+        
+        function checkIfInBranch(source: any, id: string, nodeKey: string, childKey: string): any{
+            if (source[nodeKey] === id) {
+                return { 
+                    inThis: true,
+                    ids: []
+                };
+            } else {
+                let result = { 
+                    inThis: false,
+                    ids: []
+                };
+                _.forEach(source[childKey], function(node){
+                    result = checkIfInBranch(node, id, nodeKey, childKey);    
+                    if (result.inThis) {
+                        result.ids = [node[nodeKey]].concat(result.ids);
+                        return false;
+                    }
+                });
+                return result;
+                
+            }
         }
     }
 
