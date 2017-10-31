@@ -47,7 +47,7 @@ public class PersonCategoryItemData {
 		itemData.put("IO00003", "FullName");
 		itemData.put("IO00004", "FullNameKana");
 		itemData.put("IO00005", "BusinessName");
-		itemData.put("IO00006", "BusinessEnglIOhName");
+		itemData.put("IO00006", "BusinessEnglishName");
 		itemData.put("IO00007", "BusinessOtherName");
 		itemData.put("IO00008", "FullName");
 		itemData.put("IO00009", "FullNameKana");
