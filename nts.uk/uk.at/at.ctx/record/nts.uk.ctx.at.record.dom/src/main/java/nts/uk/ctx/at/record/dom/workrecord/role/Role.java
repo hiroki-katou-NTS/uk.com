@@ -5,15 +5,15 @@ import lombok.Getter;
 @Getter
 public class Role {
 
-	private String companyId;
+	private String roleCode;
 
 	private String roleId;
 
 	private String roleName;
 
-	public Role(String companyId, String roleId, String roleName) {
+	public Role(String roleCode, String roleId, String roleName) {
 		super();
-		this.companyId = companyId;
+		this.roleCode = roleCode;
 		this.roleId = roleId;
 		this.roleName = roleName;
 	}

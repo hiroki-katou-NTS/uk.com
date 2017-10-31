@@ -30,7 +30,7 @@ public class EmploymentRoleFinder {
 			throw new BusinessException("Msg_398");
 		}
 		List<EmployeeRoleDto> results = roleAdapter.getRolesById(companyId, roleIds).stream().map(item -> {
-			return new EmployeeRoleDto(item.getRoleId(), item.getRoleName());
+			return new EmployeeRoleDto(item.getRoleId(), item.getRoleCode(), item.getRoleName());
 		}).collect(Collectors.toList());
 		if (results.isEmpty()) {
 			throw new BusinessException("Msg_398");
