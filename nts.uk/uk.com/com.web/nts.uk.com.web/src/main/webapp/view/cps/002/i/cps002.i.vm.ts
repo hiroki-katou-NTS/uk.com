@@ -10,7 +10,8 @@ module cps002.i.vm {
 
     export class ViewModel {
         imageId: KnockoutObservable<string> = ko.observable("");
-        
+        isChange: KnockoutObservable<boolean> = ko.observable(false);
+        isInit = true;
         constructor(){  
             let self = this;         
         }
@@ -19,19 +20,31 @@ module cps002.i.vm {
             self.imageId(getShared("imageId"));
             if(self.imageId() != ""){
                 self.getImage();
+                $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                    if (!self.isInit) {
+                        self.isChange(true);
+                        return;
+                    }
+                    self.isInit = false;
+                });
             }
+            
         }
         upload(){
             let self = this;
             nts.uk.ui.block.grayout();
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            if($("#test").data("cropper").cropped)
+                self.isChange(true);
             if(isImageLoaded.imgOnView){
-                $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
-                    self.imageId(data.id);
-                    nts.uk.ui.block.clear();
-                    setShared("imageId", self.imageId());
-                    self.close();
-                });
+                if (self.isChange()) {
+                    $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
+                        self.imageId(data.id);
+                        nts.uk.ui.block.clear();
+                        setShared("imageId", self.imageId());
+                        self.close();
+                    });
+                }
             }else self.close();
             
         }

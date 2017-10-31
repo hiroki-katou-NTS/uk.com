@@ -46,6 +46,7 @@ module cps001.e.vm {
             let self = this;
             nts.uk.ui.block.grayout();
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
