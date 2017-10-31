@@ -647,6 +647,7 @@ module nts.uk.com.view.cmm018.a {
                 self.enableDelete(false);
                 let paramI: vmbase.IData_Param = null;
                 self.checkAddHistory(false);
+                let overLap = false;
                 let lstAppType: Array<vmbase.ApplicationType> = [];
                 if(self.listHistory() == null || self.listHistory().length == 0 ){//tao moi tu dau
                     lstAppType.push(new vmbase.ApplicationType(null,'',0));
@@ -663,6 +664,7 @@ module nts.uk.com.view.cmm018.a {
                 }else{
                     //最新の期間履歴の重なるフラグをチェックする(check 重なるフラグ của period history mới nhất)
                     if(self.listHistory()[0].overLap == '※' || self.listHistory()[0].overLap  == true){
+                        overLap = true;
                         //item is selected
                         itemCurrent = self.findHistory(self.currentCode());
                         //最新の期間履歴を選択するかチェックする(check có đang chọn period history mới nhất hay không)
@@ -676,7 +678,6 @@ module nts.uk.com.view.cmm018.a {
                             block.clear();
                             return;  
                         }
-                                
                         if(itemCurrent.startDate != histLAst.startDate){
                             //エラーメッセージ(Msg_181)(error message (Msg_181))
                             dialog.alertError({ messageId: "Msg_181" });
@@ -689,6 +690,7 @@ module nts.uk.com.view.cmm018.a {
                     let appType = null;
                     let employRootAtr = null;
                     let startDate = ''
+                    itemCurrent = self.findHistory(self.currentCode());
                     //TH: tab company
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
                         //Check dang chon item vua moi them
@@ -849,7 +851,7 @@ module nts.uk.com.view.cmm018.a {
                                                     item.person.applicationType, item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
                                 }); 
                             }
-                                self.cpA(self.convertlistRoot(lstRoot,false));
+                                self.cpA(self.convertlistRoot(lstRoot,overLap));
                         }
                         tmp.push(old);
                     }
@@ -1548,6 +1550,7 @@ module nts.uk.com.view.cmm018.a {
                     if(codeChanged == '-1' || codeChanged == '' ){
                         return;
                     }
+                    self.enableDeleteB(true);
                     //TH: company
                     if(self.tabSelectedB()==0){
                         if(self.dataIB() != null){
@@ -2203,6 +2206,7 @@ module nts.uk.com.view.cmm018.a {
                     if(data == null){
                         return;
                     }
+                    self.enableDeleteB(false);
                     __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataIB(data);
                     let lst = data.lstAppType;
