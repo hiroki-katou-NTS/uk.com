@@ -64,7 +64,7 @@ public class RequestAppDetailSetting extends DomainObject {
 	/**
 	 * 出退勤時刻初期表示区分
 	 */
-	public DisplayFlg atworkTimeBeginDisFlg;	
+	public AtWorkAtr atworkTimeBeginDisFlg;	
 	/**
 	 * 実績から外出を初期表示する
 	 */
@@ -108,7 +108,7 @@ public class RequestAppDetailSetting extends DomainObject {
 						EnumAdaptor.valueOf(lateOrLeaveAppSettingFlg, SettingFlg.class),
 						EnumAdaptor.valueOf(breakInputFieldDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(breakTimeDisFlg, DisplayFlg.class),
-						EnumAdaptor.valueOf(atworkTimeBeginDisFlg, DisplayFlg.class),
+						EnumAdaptor.valueOf(atworkTimeBeginDisFlg, AtWorkAtr.class),
 						EnumAdaptor.valueOf(goOutTimeBeginDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(timeCalUseAtr, UseAtr.class),
 						EnumAdaptor.valueOf(timeInputUseAtr, UseAtr.class),
