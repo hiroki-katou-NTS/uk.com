@@ -16,7 +16,10 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsGridList'].init(element, () => data, allBindingsAccessor, viewModel, bindingContext);
 
-            $(element).find('tbody.ui-iggrid-tablebody').sortable({
+            $(element).find('tbody.ui-iggrid-tablebody')
+            .sortable({
+                axis: "y",
+                scroll: false,
                 update: function(event, ui) {
                     optionsSorted.removeAll();
                     _($(event.target).find('tr'))

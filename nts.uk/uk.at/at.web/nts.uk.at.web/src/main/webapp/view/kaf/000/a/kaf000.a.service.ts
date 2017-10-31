@@ -1,13 +1,19 @@
- module kaf000.a.service{
+ module nts.uk.at.view.kaf000.a.service{
     var paths = {
-        getAllPhaseByAppID: "at/request/appapprovalphase/getallphase",
-        getAllFrameByPhaseID: "at/request/approvalframe/getallframe"
+        getDataApprovalRoot : "at/request/application/getdataapprovalroot",
+        getMessageDeadline : "at/request/application/getmessagedeadline"
     }
-    export function getAllPhaseByAppID(appID) : JQueryPromise<Array<any>>{
-        return nts.uk.request.ajax("at",paths.getAllPhaseByAppID+"/"+appID);
-    }
-    export function getAllFrameByPhaseID(phaseID) : JQueryPromise<Array<any>>{
-        return nts.uk.request.ajax("at",paths.getAllFrameByPhaseID+"/"+phaseID);
-    }
+     /**
+      * get all Data Approval Root 
+      */
+     export function getDataApprovalRoot(objApprovalRootInput: any ) : JQueryPromise<Array<any>>{
+         return nts.uk.request.ajax("at",paths.getDataApprovalRoot,objApprovalRootInput);
+     }
      
+     /**
+      * get getMessageDeadline
+      */
+     export function getMessageDeadline(applicationMeta: any ) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.getMessageDeadline, applicationMeta);
+     }
  }

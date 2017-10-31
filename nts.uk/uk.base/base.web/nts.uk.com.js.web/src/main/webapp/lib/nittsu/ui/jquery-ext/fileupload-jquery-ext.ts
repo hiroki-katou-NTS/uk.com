@@ -18,18 +18,39 @@ module nts.uk.ui.jqueryExtentions {
             }
 
             if (fileInput !== undefined) {
-                let file: File[] = fileInput.files;
-                if (file.length > 0) {
+                let files: File[] = fileInput.files;
+                if (files.length > 0) {
+                    // Check file is deleted on Chrome
+                    if (files[0].size == 0) {
+                        dfd.reject({ message: nts.uk.resource.getMessage("Msg_158"), messageId: "Msg_158" });
+                        return dfd.promise();
+                    }
+                    
                     var formData = new FormData();
                     formData.append("stereotype", option.stereoType);
-                    formData.append("userfile", file[0]);
-                    formData.append("filename", file[0].name);
-                    return nts.uk.request.uploadFile(formData, option);
-                } else {
-                    dfd.reject({ message: "please select file", messageId: "-1" });
+                    formData.append("userfile", files[0]);
+                    formData.append("filename", files[0].name);
+                    nts.uk.request.uploadFile(formData, option).done(function(data, textStatus, jqXHR) {
+                        // Business Exception
+                        if (data !== undefined && data.businessException) {
+                            if (option.onFail) option.onFail();
+                            dfd.reject(data);
+                        }
+                        else {
+                            if (option.onSuccess) option.onSuccess();
+                            dfd.resolve(data);
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        // Client Exception
+                        dfd.reject({ message: "Please check your network", messageId: "0" });
+                    });
                 }
-            } else {
-                dfd.reject({ messageId: "0", message: "can not find control" });
+                else {
+                    dfd.reject({ message: "Please select file", messageId: "0" });
+                }
+            }
+            else {
+                dfd.reject({ messageId: "0", message: "Can not find control" });
             }
             return dfd.promise();
         }

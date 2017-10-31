@@ -17,6 +17,8 @@ import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdatePremiumIt
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 
 /**
  * 
@@ -77,5 +79,17 @@ public class PersonCostCalculationWebService extends WebService{
 	@Path("updatePremiumItem")
 	public void update(List<UpdatePremiumItemCommand> command){
 		this.updatePremiumItemCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("attendancePremiumItem")
+	public List<AttendanceTypePriServiceDto> findAttendanceType(){
+		//人数：0
+		return this.personCostCalculationSettingFinder.atTypes(0);
+	}
+	@POST
+	@Path("attendancePremiumName")
+	public List<AttendanceNamePriniumDto> findAttendanceName(List<Integer> dailyAttendanceItemIds){
+		return this.personCostCalculationSettingFinder.atNames(dailyAttendanceItemIds);
 	}
 }

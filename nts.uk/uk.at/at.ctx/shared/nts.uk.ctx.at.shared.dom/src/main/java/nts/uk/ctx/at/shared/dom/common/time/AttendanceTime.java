@@ -18,7 +18,7 @@ public class AttendanceTime extends TimeDurationPrimitiveValue<AttendanceTime> {
 	 * @param rawValue
 	 *            the raw value
 	 */
-	public AttendanceTime(Long rawValue) {
+	public AttendanceTime(Integer rawValue) {
 		super(rawValue);
 	}
 }

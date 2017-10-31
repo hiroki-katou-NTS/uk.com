@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.shared.infra.entity.specialholiday;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -18,25 +21,28 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KshstGrantDatePer extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-		/* 主キー */
-		@EmbeddedId
-		public KshstGrantDateComPK kshstGrantDateComPK;
-		
-		/* 名称 */
-		@Column(name = "GRANT_DATE_NAME")
-		public int grantDateName;
-		
-		/* 一律基準日 */
-		@Column(name = "GRANT_DATE")
-		public int grantDate;
-		
-		/* 付与基準日 */
-		@Column(name = "GRANT_DATE_ATR")
-		public int grantDateAtr;
+	/* 主キー */
+	@EmbeddedId
+	public KshstGrantDatePerPK kshstGrantDatePerPK;
+	
+	/* 名称 */
+	@Column(name = "PERSONAL_GRANT_DATE_NAME")
+	public String personalGrantDateName;
+	
+	/* 一律基準日 */
+	@Column(name = "GRANT_DATE")
+	public int grantDate;
+	
+	/* 付与基準日 */
+	@Column(name = "GRANT_DATE_ATR")
+	public int grantDateAtr;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantDatePer", orphanRemoval = true)
+	public List<KshstGrantDatePerSet> grantDatePerSet;
+	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return kshstGrantDatePerPK;
 	}
 }

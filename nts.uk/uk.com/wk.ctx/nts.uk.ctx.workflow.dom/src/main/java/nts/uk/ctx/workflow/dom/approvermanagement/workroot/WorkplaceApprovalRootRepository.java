@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,10 +35,11 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param workplaceId
 	 * @param endDate
 	 * @param applicationType
+	 * @param employmentRootAtr
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate,
-			Integer applicationType);
+			Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(就業ルート区分(申請か、確認か、任意項目か))
@@ -50,7 +50,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, Date baseDate, int appType);
+	List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType);
 
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(共通の)
@@ -60,7 +60,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param baseDate
 	 * @return WorkplaceApprovalRoots
 	 */
-	List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, Date baseDate);
+	List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate);
 
 	/**
 	 * add Workplace Approval Root
@@ -68,6 +68,12 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param wpAppRoot
 	 */
 	void addWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot);
+	/**
+	 * add All Workplace Approval Root
+	 * 
+	 * @param wpAppRoot
+	 */
+	void addAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot);
 
 	/**
 	 * update Workplace Approval Root
@@ -75,6 +81,12 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param wpAppRoot
 	 */
 	void updateWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot);
+	/**
+	 * update All Workplace Approval Root
+	 * 
+	 * @param wpAppRoot
+	 */
+	void updateAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot);
 
 	/**
 	 * delete Person Approval Root
@@ -84,4 +96,20 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param historyId
 	 */
 	void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId);
+	/**
+	 * ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
+	 * @param companyID
+	 * @param baseDate・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
+	 * @return
+	 */
+	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate);
+	/**
+	 * get Work place Approval Root By type
+	 * @param companyId
+	 * @param workplaceId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType, int employmentRootAtr);
 }

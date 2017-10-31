@@ -7,16 +7,29 @@ package nts.uk.ctx.sys.gateway.ac.find.login;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 
 /**
- * The Class EmployeeAdapterImpl.
+ * The Class SysEmployeeAdapterImpl.
  */
 @Stateless
 public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 
+	/** The employee info pub. */
+	@Inject
+	private EmployeeInfoPub employeeInfoPub;
+	
+	/** The emp info by cid sid pub. */
+	@Inject
+	private EmpInfoByCidSidPub empInfoByCidSidPub;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -25,13 +38,31 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	 * .lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<EmployeeDto> getByEmployeeCode(String companyId, String employeeCode) {
-		// mock data
-		if (employeeCode.equals("123000000000")) {
-			EmployeeDto em = new EmployeeDto("busiName", "personalId", "111111111111111111111111111111111111", employeeCode);
+	public Optional<EmployeeImport> getCurrentInfoByScd(String companyId, String employeeCode) {
+		Optional<EmployeeInfoDtoExport> opEmployee = employeeInfoPub.getEmployeeInfo(companyId,
+				employeeCode, GeneralDate.today());
+
+		// Check exist
+		if (opEmployee.isPresent()) {
+			EmployeeInfoDtoExport employee = opEmployee.get();
+			// convert dto
+			EmployeeImport em = new EmployeeImport(employee.getCompanyId(), employee.getPersonId(),
+					employee.getEmployeeId(), employee.getEmployeeCode());
 			return Optional.of(em);
-		} else {
-			return Optional.empty();
 		}
+
+		// Return
+		return Optional.empty();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getByPid(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<EmployeeImport> getByPid(String companyId, String pid) {
+		EmpInfoByCidSidExport emExport = empInfoByCidSidPub.getEmpInfoBySidCid(pid, companyId);
+		EmployeeImport emImport = new EmployeeImport(emExport.getCid(), emExport.getPid(), emExport.getSid(),
+				emExport.getScd());
+		return Optional.of(emImport);
 	}
 }

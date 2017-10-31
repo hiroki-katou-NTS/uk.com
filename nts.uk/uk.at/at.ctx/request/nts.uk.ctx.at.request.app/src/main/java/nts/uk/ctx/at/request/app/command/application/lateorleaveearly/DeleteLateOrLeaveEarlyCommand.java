@@ -10,5 +10,6 @@ import lombok.Value;
 @Value
 public class DeleteLateOrLeaveEarlyCommand {
 	
+	private String companyID;
 	private String appID;
 }

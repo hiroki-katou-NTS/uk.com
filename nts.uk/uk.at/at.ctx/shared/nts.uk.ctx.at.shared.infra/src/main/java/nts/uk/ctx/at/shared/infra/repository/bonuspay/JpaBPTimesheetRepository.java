@@ -75,8 +75,8 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 
 	private BonusPayTimesheet toBonusPayTimesheetDomain(KbpmtBPTimesheet kbpmtBPTimesheet) {
 		return BonusPayTimesheet.createFromJavaType(kbpmtBPTimesheet.kbpmtBPTimesheetPK.timeSheetNO,
-				kbpmtBPTimesheet.useAtr.intValue(), kbpmtBPTimesheet.timeItemId, kbpmtBPTimesheet.startTime.longValue(),
-				kbpmtBPTimesheet.endTime.longValue(), kbpmtBPTimesheet.roundingTimeAtr.intValue(),
+				kbpmtBPTimesheet.useAtr.intValue(), kbpmtBPTimesheet.timeItemId, kbpmtBPTimesheet.startTime.intValue(),
+				kbpmtBPTimesheet.endTime.intValue(), kbpmtBPTimesheet.roundingTimeAtr.intValue(),
 				kbpmtBPTimesheet.roundingAtr.intValue());
 	}
 

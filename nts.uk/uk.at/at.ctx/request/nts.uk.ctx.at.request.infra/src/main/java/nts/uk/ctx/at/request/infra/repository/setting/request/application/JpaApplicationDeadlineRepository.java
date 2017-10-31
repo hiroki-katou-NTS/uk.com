@@ -13,36 +13,29 @@ import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDe
 @Stateless
 public class JpaApplicationDeadlineRepository extends JpaRepository implements ApplicationDeadlineRepository{
 	private static final String FINDBYCLOSURE = "SELECT c "
-			+ "FROM KrqstAppDeadline "
-			+ "WHERE c.krqstAppDeadlinePK.companyId = :company "
+			+ "FROM KrqstAppDeadline c "
+			+ "WHERE c.krqstAppDeadlinePK.companyId = :companyId "
 			+ "AND c.krqstAppDeadlinePK.closureId = :closureId";
-	private static final String FINDBYAPPTYPE = "SELECT c "
-			+ "FROM KrqstAppDeadline "
-			+ "WHERE c.krqstAppDeadlinePK.companyId = :company "
-			+ "AND c.krqstAppDeadlinePK.appType = :appType";
-			
-	private static final String FINDBYCLOSUREANDAPPTYPE= "SELECT c "
-			+ "FROM KrqstAppDeadline "
-			+ "WHERE c.krqstAppDeadlinePK.companyId = :company "
-			+ "AND c.krqstAppDeadlinePK.closureId = :closureId "
-			+ "AND c.krqstAppDeadlinePK.appType = :appType ";
+	private static final String FINDBYCOMPANY = "SELECT c "
+			+ "FROM KrqstAppDeadline c "
+			+ "WHERE c.krqstAppDeadlinePK.companyId = :company ";
+
 	/**
 	 * get deadline setting by closureId
 	 */
 	@Override
-	public List<ApplicationDeadline> getDeadlineByClosureId(String companyId, int closureId) {
-		List<ApplicationDeadline> data = this.queryProxy()
+	public Optional<ApplicationDeadline> getDeadlineByClosureId(String companyId, int closureId) {
+		Optional<ApplicationDeadline> data = this.queryProxy()
 				.query(FINDBYCLOSURE, KrqstAppDeadline.class)
 				.setParameter("companyId", companyId)
 				.setParameter("closureId", closureId)
-				.getList(c -> toDomain(c));
+				.getSingle(c -> toDomain(c));
 
 		return data;
 	}
 	private ApplicationDeadline toDomain(KrqstAppDeadline c) {
 		return ApplicationDeadline.createSimpleFromJavaType(c.krqstAppDeadlinePK.companyId,
 				c.krqstAppDeadlinePK.closureId, 
-				c.krqstAppDeadlinePK.appType, 
 				c.useAtr, 
 				c.deadline, 
 				c.deadlineCriteria);
@@ -53,26 +46,12 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 	@Override
 	public List<ApplicationDeadline> getDeadlineByAppType(String companyId, int appType) {
 		List<ApplicationDeadline> data = this.queryProxy()
-				.query(FINDBYAPPTYPE, KrqstAppDeadline.class)
+				.query(FINDBYCOMPANY, KrqstAppDeadline.class)
 				.setParameter("companyId", companyId)
-				.setParameter("appType", appType)
 				.getList(c -> toDomain(c));
 
 		return data;
 	}
-	/**
-	 * get dealine setting by closure id and app type
-	 */
-	@Override
-	public Optional<ApplicationDeadline> getDeadlineByClosurIdAndAppType(String companyId, int closureId, int appType) {
-		Optional<ApplicationDeadline> data = this.queryProxy()
-				.query(FINDBYCLOSUREANDAPPTYPE, KrqstAppDeadline.class)
-				.setParameter("companyId", companyId)
-				.setParameter("closureId", closureId)
-				.setParameter("appType", appType)
-				.getSingle(c -> toDomain(c));
 
-		return data;
-	}
 
 }

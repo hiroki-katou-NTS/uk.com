@@ -21,15 +21,6 @@ public class KafdtApproveAcceptedPK implements Serializable {
 	public String companyID;
 
 	@NotNull
-	@Column(name = "PHASE_ID")
-	public String phaseID;
-	
-	@NotNull
-	@Column(name = "DISPORDER")
-	public int dispOrder;
-	
-	@NotNull
-	@Column(name = "APPROVER_SID")
-	public String approverSID;
-	
+	@Column(name = "APP_ACCEPTED_ID")
+	public String appAccedtedID;
 }

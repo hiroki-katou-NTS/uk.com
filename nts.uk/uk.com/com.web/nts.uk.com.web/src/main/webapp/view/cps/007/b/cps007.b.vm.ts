@@ -30,12 +30,15 @@ module cps007.b.vm {
             cat.id.subscribe(x => {
                 if (x) {
                     service.getCategory(x).done((data: IItemCategory) => {
-                        if (data) {
+                        if (data && !data.isAbolition) {
                             cat.categoryType(data.categoryType);
                             cat.categoryName(data.categoryName);
 
                             // get all item in category
-                            service.getItemDefinitions(data.id).done((data: Array<IItemDefinition>) => self.allItems(data));
+                            service.getItemDefinitions(data.id).done((data: Array<IItemDefinition>) => {
+                                data = _.filter(data, x => !x.isAbolition);
+                                self.allItems(data)
+                            });
                         } else {
                             cat.id(undefined);
                         }
@@ -84,6 +87,7 @@ module cps007.b.vm {
         id: string;
         categoryName?: string;
         categoryType?: number;
+        isAbolition?: number;
     }
 
     class ItemCategory {

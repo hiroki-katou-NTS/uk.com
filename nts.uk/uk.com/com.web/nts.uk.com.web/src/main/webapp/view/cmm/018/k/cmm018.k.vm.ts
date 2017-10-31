@@ -3,10 +3,11 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import getShared = nts.uk.ui.windows.getShared;
     import windows = nts.uk.ui.windows;
     import resource = nts.uk.resource;
-    import UnitModel = kcp.share.list.UnitModel;
     import shrVm = cmm018.shr.vmbase;
     import service = cmm018.k.service;
     export class ScreenModel{
+        //enable list workplace
+        enableListWp: KnockoutObservable<boolean> = ko.observable(true);
         appType: KnockoutObservable<String> = ko.observable('');
         standardDate: KnockoutObservable<Date> = ko.observable(new Date());
         //承認者指定種類
@@ -14,9 +15,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         selectTypeSet: KnockoutObservable<number> = ko.observable(0);
         //承認形態
         formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
-        selectFormSet: KnockoutObservable<number> = ko.observable(0);
+        selectFormSet: KnockoutObservable<number> = ko.observable(null);
         currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        employeeList: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
         multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
         approverList : KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
         currentApproveCodeLst: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -32,6 +33,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //→ & ←
         itemsSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
         currentCodeListSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
+        confirm: string = '';
         //職場リスト
         treeGrid: ITreeGrid = {
                 treeType: 1,
@@ -42,43 +44,46 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 isShowSelectButton: true,
                 baseDate: ko.observable(this.standardDate()),
                 selectedWorkplaceId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
-                //selectedWorkplaceId: this.multiSelectedWorkplaceId,
                 alreadySettingList: ko.observableArray([])
         };
         //選択可能な職位一覧
-        
-        
+        //承認者の登録(個人別)
+        personTab : number = 2;
+        //設定種類
+        personSetting: number = 0; //個人設定
+        //承認形態
+        formOne : number = 2; //誰か一人
+        formAll: number = 1; //全員承認
         constructor(){
-            var self = this;            
-            //設定対象
-            let data: any = getShared('CMM008K_PARAM');            
+            var self = this;
+            //設定対象: get param from main: approverInfor(id & approvalAtr)
+            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
+            self.confirm = data.confirmedPerson;
+            //change 承認形態
+            self.selectFormSet.subscribe(function(newValues){
+                //承認形態が誰か一人を選択する場合
+                if(newValues === self.formOne){
+                    self.cbbEnable(true);
+                }else{
+                    //承認形態が全員承認を選択する場合
+                    self.cbbEnable(false);    
+                }
+            });
+            self.getData();
             if(data !== undefined){
                 //設定する対象申請名
-                self.appType(data.appType);
+                self.appType(data.appTypeName);
                 //承認形態
                 self.selectFormSet(data.formSetting);                
                 
                 self.setDataForSwapList(self.selectTypeSet());
-                //承認者一覧
-                self.approverList(data.approverInfor);
-                self.setDataForCbb();
-                //確定者
-                var index = self.approverList().indexOf(data.confirmedPerson());
-                if(index != -1){
-                    self.selectedCbbCode(data.confirmedPerson());    
-                }else{
-                    self.selectedCbbCode("");
-                }
                 //承認者の登録(個人別): 非表示
-                if(data.tab === 0){
+                if(data.tab === self.personTab){
                     $('#typeSetting').hide();
-                    self.selectTypeSet(0);    
+                    self.selectTypeSet(self.personSetting);    
                 }else{
                     $('#typeSetting').show();
-                    //設定種類
-                    self.selectTypeSet(data.selectTypeSet);
                 }
-                
             }
             //基準日
             this.standardDate(new Date());
@@ -86,115 +91,158 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.typeSetting.push(new ButtonSelect(0, resource.getText('CMM018_56')));
             self.typeSetting.push(new ButtonSelect(1, resource.getText('CMM018_57')));
             //承認形態
-            self.formSetting.push(new ButtonSelect(0, resource.getText('CMM018_63')));
-            self.formSetting.push(new ButtonSelect(1, resource.getText('CMM018_66')));
+            self.formSetting.push(new ButtonSelect(1, resource.getText('CMM018_63')));
+            self.formSetting.push(new ButtonSelect(2, resource.getText('CMM018_66')));
             
             //選択された承認者一覧
             self.columns = ko.observableArray([
-                    { headerText: 'id', prop: 'id', width: '0%' },
+                    { headerText: 'id', prop: 'id', width: '0%', hidden: true },
                     { headerText: resource.getText('CMM018_69'), prop: 'code', width: '40%' },
                     { headerText: resource.getText('CMM018_70'), prop: 'name', width: '60%' }
                 ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
+                self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
+                if(newValue == 0){
+                    self.enableListWp(true);
+                    $('#tree-grid').ntsTreeComponent(self.treeGrid);
+                }else{
+                    self.enableListWp(false);
+                }
             })
             //職場リスト            
             self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
                 self.setDataForSwapList(self.selectTypeSet());                
             })
-            //change 承認形態
-            self.selectFormSet.subscribe(function(newValues){
-                //承認形態が誰か一人を選択する場合
-                if(newValues === 0){
-                    self.cbbEnable(true);
-                }else{
-                    //承認形態が全員承認を選択する場合
-                    self.cbbEnable(false);    
-                }
-            })
-            
             //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
             self.approverList.subscribe(function(){
                 self.setDataForCbb();
             })
             
+            //check 
+            $('#swap-list').on("swaplistgridsizeexceed", function(evt, $list, max) { 
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_300'});
+            })
         }// end constructor
         
         setDataForCbb(){
             var self = this;
             //add item in  dropdownlist
             self.itemListCbb.removeAll();
-            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない'));
+            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない',0));
             if(self.approverList().length > 0){
-                _.forEach(self.approverList(),function(item){
+                _.forEach(self.approverList(),function(item: shrVm.ApproverDtoK){
                     self.itemListCbb.push(item);    
                 })
+                self.selectedCbbCode(self.confirm); 
             }
+        }
+        getData(): JQueryPromise<any>{
+            let self = this;
+            let dfd = $.Deferred();
+            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
+             //承認者一覧              
+            if(data.approverInfor.length > 0){
+                _.forEach(data.approverInfor, function(sID){
+                    if(sID.approvalAtr === 0){
+                        service.getPersonInfor(sID.id).done(function(data: any){
+                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0));
+                        })                            
+                    }else{
+                        let job = new service.model.JobtitleInfor;
+                        job.positionId = sID.id;
+                        job.startDate = self.standardDate();
+                        job.companyId = "";
+                        job.positionCode = "";
+                        job.positionName = "";
+                        job.sequenceCode = "";
+                        job.endDate = new Date();
+                        service.getJobTitleName(job).done(function(data: any){
+                            self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1));
+                        })    
+                    }
+                })    
+            }else{                    
+                self.setDataForCbb();    
+            }
+            dfd.resolve();
+            return dfd.promise();    
         }
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
             var self = this;
+            
             //個人設定 (employee setting)
-            if(selectTypeSet === 0){
+            if(selectTypeSet === self.personSetting){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
                 employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
                 service.searchModeEmployee(employeeSearch).done(function(data: any){
-                    self.employeeList(self.toUnitModelList(data));
+                    let lstTmp = self.toUnitModelList(data);
+                    _.each(lstTmp, function(item){
+                        self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr))
+                    });
                 }).fail(function(res: any){
                     nts.uk.ui.dialog.alert(res.messageId);
                 })
             //職位設定(job setting)
             }else{
-            
-                
+                service.getJobTitleInfor(self.standardDate()).done(function(data: string){
+                    _.forEach(data, function(value: service.model.JobtitleInfor){
+                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
+                        self.employeeList.push(job);
+                    })    
+                }).fail(function(res: any){
+                    nts.uk.ui.dialog.alert(res.messageId);
+                })
             }    
         } 
-        
         
         //決定 button click
         submitClickButton(){
             var self = this;
-            setShared("CMM008K_PARAM", { 
-                                        appType: self.appType(), //設定する対象申請名 
+            let data: shrVm.KData = { appType: self.appType(), //設定する対象申請名 
                                         formSetting: self.selectFormSet(),//承認形態
                                         approverInfor: self.approverList(),//承認者一覧
                                         confirmedPerson: self.selectedCbbCode(), //確定者
-                                        selectTypeSet: self.selectTypeSet()
-                                        });
+                                        selectTypeSet: self.selectTypeSet(),
+                                        approvalFormName: self.selectFormSet() == self.formAll ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
+                                        }
+            setShared("CMM018K_DATA",data );
             nts.uk.ui.windows.close();
         }
         
         //キャンセル button click
         closeDialog(){
+             setShared("CMM018K_DATA",null);
             nts.uk.ui.windows.close();
         }       
 
         /**
          * function convert dto to model init data 
          */        
-        public toUnitModelList(dataList: service.model.EmployeeSearchDto[]): Array<UnitModel> {
-            var dataRes: UnitModel[] = [];
+        public toUnitModelList(dataList: service.model.EmployeeSearchDto[]): Array<shrVm.ApproverDtoK> {
+            var dataRes: shrVm.ApproverDtoK[] = [];
 
             for (var item: service.model.EmployeeSearchDto of dataList) {
                 dataRes.push({
+                    id: item.sid,
                     code: item.scd,
-                    name: item.pName
+                    name: item.pname,
+                    approvalAtr: 0
                 });
             }
             return dataRes;
         }
-        
-        // start function
-        start(): JQueryPromise<any>{
-            var self = this;
-            var dfd = $.Deferred<any>();
-            
-            
-            return dfd.promise();
-        }//end start
-        
+        /**
+         * load data new when base date is changed 
+         */
+        applyDataSearch(): void {
+             let self = this;
+             self.treeGrid.baseDate(this.standardDate());
+             $('#tree-grid').ntsTreeComponent(self.treeGrid);
+         }
     }//end ScreenModel
     interface ITreeGrid {
             treeType: number;

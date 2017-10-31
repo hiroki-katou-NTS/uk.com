@@ -3,14 +3,15 @@ package nts.uk.ctx.at.shared.infra.repository.specialholiday.yearservice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservicecom.YearServiceCom;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceComRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearservicecom.YearServiceCom;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.YearServiceSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.repository.YearServiceComRepository;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceCom;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceComPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceset.KshstYearServiceSet;
@@ -32,7 +33,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 	private static YearServiceSet toDomainSet(KshstYearServiceSet entity){
 		YearServiceSet domain  = YearServiceSet.createFromJavaType(entity.kshstYearServiceSetPK.companyId,
 																	entity.kshstYearServiceSetPK.specialHolidayCode,
-																	entity.kshstYearServiceSetPK.yearServiceType,
+																	entity.kshstYearServiceSetPK.yearServiceNo,
 																	entity.year,
 																	entity.month, 
 																	entity.date);
@@ -47,7 +48,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		val entity = new KshstYearServiceSet();
 		entity.kshstYearServiceSetPK = new KshstYearServiceSetPK(domain.getCompanyId(),
 																	domain.getSpecialHolidayCode(),
-																	domain.getYearServiceType());
+																	domain.getYearServiceNo());
 		entity.year = domain.getYear();
 		entity.month = domain.getMonth();
 		entity.date = domain.getDate();
@@ -82,6 +83,13 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		val entity = new KshstYearServiceCom();
 		entity.kshstYearServiceComPK = new KshstYearServiceComPK(domain.getCompanyId(), domain.getSpecialHolidayCode());
 		entity.lengthServiceYearAtr = domain.getLengthServiceYearAtr();
+		
+		if (domain.getYearServiceSets() != null) {
+			entity.listYearServiceSet =  domain.getYearServiceSets().stream()
+					.map(x -> toEntitySet(x))
+					.collect(Collectors.toList());
+		}
+		
 		return entity;
 	}
 
@@ -111,9 +119,9 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		for(YearServiceSet item : yearServiceSetLs){
 			KshstYearServiceSet entity = toEntitySet(item);
 			KshstYearServiceSet oldEntity = this.queryProxy().find(entity.kshstYearServiceSetPK, KshstYearServiceSet.class).get();
-			oldEntity.setYear(entity.year);
-			oldEntity.setMonth(entity.month);
-			oldEntity.setDate(entity.date);
+			oldEntity.year = entity.year;
+			oldEntity.month = entity.month;
+			oldEntity.date = entity.date;
 			this.commandProxy().update(oldEntity);
 		}
 	}
@@ -125,7 +133,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		}
 	}
 	@Override
-	public Optional<YearServiceSet> findSet(String companyId, int specialHolidayCode, int yearServiceType) {
+	public Optional<YearServiceSet> findSet(String companyId, String specialHolidayCode, int yearServiceType) {
 		return this.queryProxy().find(new KshstYearServiceSetPK(companyId, specialHolidayCode, yearServiceType), KshstYearServiceSet.class).map(c->toDomainSet(c));
 	}
 	@Override
@@ -143,7 +151,12 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 	public void updateCom(YearServiceCom yearServiceCom) {
 		KshstYearServiceCom entity = toEntityCom(yearServiceCom);
 		KshstYearServiceCom oldEntity = this.queryProxy().find(entity.kshstYearServiceComPK, KshstYearServiceCom.class).get();
-		oldEntity.setLengthServiceYearAtr(entity.lengthServiceYearAtr);
+		oldEntity.lengthServiceYearAtr = entity.lengthServiceYearAtr;
+		if (yearServiceCom.getYearServiceSets() != null) {
+			oldEntity.listYearServiceSet =  yearServiceCom.getYearServiceSets().stream()
+					.map(x -> toEntitySet(x))
+					.collect(Collectors.toList());
+		}
 		this.commandProxy().update(oldEntity);
 	}
 	@Override
@@ -151,7 +164,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		this.commandProxy().insert(toEntityCom(yearServiceCom));
 	}
 	@Override
-	public Optional<YearServiceCom> findCom(String companyId, int specialHolidayCode) {
+	public Optional<YearServiceCom> findCom(String companyId, String specialHolidayCode) {
 		return this.queryProxy().find(new KshstYearServiceComPK(companyId, specialHolidayCode), KshstYearServiceCom.class).map(c->toDomainCom(c));
 	}
 	

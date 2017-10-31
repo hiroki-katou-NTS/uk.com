@@ -23,5 +23,13 @@ public class KfnmtAttendanceLinkPK implements Serializable {
 	/* 枠NO */
 	@Column(name = "FRAME_NO")
 	public BigDecimal frameNo;
+
+	/*乖離時間名称*/
+	@Column(name = "TYPE_OF_ITEM")
+	public BigDecimal typeOfItem;
+	
+	/*乖離時間使用設定*/
+	@Column(name = "FRAME_CATEGORY")
+	public BigDecimal frameCategory;
 	
 }

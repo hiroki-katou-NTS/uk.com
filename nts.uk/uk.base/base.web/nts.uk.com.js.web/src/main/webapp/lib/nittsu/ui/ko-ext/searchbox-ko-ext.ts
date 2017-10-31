@@ -170,9 +170,10 @@ module nts.uk.ui.koExtentions {
                 buttonWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
                     if(component.length === 0){
-                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");     
                     }
                     let srh: SearchPub= $container.data("searchObject");
+                    $input.val("");
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
@@ -194,24 +195,27 @@ module nts.uk.ui.koExtentions {
             
             let search = function (searchKey: string){
                 if (targetMode) {
-                    let selectedItems;
+                    let selectedItems, isMulti;
                     if (targetMode == 'igGrid') {
                         if(component.length === 0){
                             component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
                         }
                         selectedItems = component.ntsGridList("getSelected");
+                        isMulti = component.igGridSelection('option', 'multipleSelection');
                     } else if (targetMode == 'igTree') {
                         selectedItems = component.ntsTreeView("getSelected");
+                        isMulti = component.igTreeGridSelection('option', 'multipleSelection');
+                    } else if (targetMode == 'igTreeDrag') {
+                        selectedItems = component.ntsTreeDrag("getSelected");  
+                        isMulti = component.ntsTreeDrag('option', 'isMulti') ;  
                     }
                     
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
                     if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
-                        return;        
+                        return false;        
                     }
-                    let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
-                        : component.igTreeGridSelection('option', 'multipleSelection')
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
 //                    let selectedValue;
@@ -250,29 +254,34 @@ module nts.uk.ui.koExtentions {
                         component.ntsTreeView("setSelected", selectedProperties);
                         component.trigger("selectionchanged");
                         //selected(selectedValue);
+                    } else if(targetMode == 'igTreeDrag'){
+                        component.ntsTreeDrag("setSelected", selectedProperties);
                     }
                     _.defer(function() {
                         component.trigger("selectChange");    
                     });
                     
                     $container.data("searchKey", searchKey);  
-                }    
+                }
+                return true;    
             }
             
             var nextSearch = function() {
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
-                    return;        
+                    return false;        
                 }
-                search(searchKey);    
+                return search(searchKey);    
             }
             $input.keydown(function(event) {
                 if (event.which == 13) {
                     event.preventDefault();
-                    nextSearch();
+                    let result = nextSearch();
                     _.defer(() => {
-                        $input.focus();                
+                        if(result){
+                            $input.focus();         
+                        }                
                     });
                 }
             });

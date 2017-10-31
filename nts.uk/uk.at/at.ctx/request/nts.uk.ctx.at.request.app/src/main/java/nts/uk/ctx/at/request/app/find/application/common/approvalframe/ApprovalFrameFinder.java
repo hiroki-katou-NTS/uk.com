@@ -33,5 +33,11 @@ public class ApprovalFrameFinder {
 				.stream().map(approvalFrame -> ApprovalFrameDto.fromDomain(approvalFrame)).collect(Collectors.toList());
 	}
 	
+	public List<ApprovalFrameDto> getAllApproverByListPhaseID(List<String> listPhaseID ) {
+		String companyID = AppContexts.user().companyId();
+		return this.approvalFrameRepository.getListFrameByListPhase(companyID, listPhaseID)
+				.stream().map(approvalFrame -> ApprovalFrameDto.fromDomain(approvalFrame)).collect(Collectors.toList());
+	}
+	
 	
 }

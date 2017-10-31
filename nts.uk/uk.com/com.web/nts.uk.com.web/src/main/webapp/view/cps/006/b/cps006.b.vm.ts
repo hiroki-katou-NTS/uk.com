@@ -13,8 +13,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         columns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', prop: 'id', width: 100, hidden: true },
-            { headerText: getText('CPS006_15'), prop: 'itemName', width: 150 },
-            { headerText: getText('CPS006_16'), prop: 'isAbolition', width: 50, formatter: makeIcon },
+            { headerText: getText('CPS006_16'), prop: 'itemName', width: 185 },
+            { headerText: getText('CPS006_17'), prop: 'isAbolition', width: 50, formatter: makeIcon },
         ]);
 
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
@@ -63,6 +63,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 self.isRequired(newItem.isRequired);
 
                 self.ckbIsAbolition(newItem.isAbolition === 1 ? true : false);
+
 
             });
 
@@ -221,11 +222,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genDatatypeValueText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
-
             switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
                 case 1:
                     return getText('Enum_DataTypeValue_STRING');
@@ -241,11 +241,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_DataTypeValue_SELECTION');
             }
 
+
         }
 
         genStringItemDataTypeText() {
             let self = this;
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -260,7 +261,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringItemTypeText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -282,23 +283,23 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringNumericItemMinusText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
 
             switch (self.currentItem().itemTypeState.dataTypeState.numericItemMinus) {
                 case 0:
-                    return getText('Enum_NumericItemMinus_NO');
+                    return getText('CPS006_55');
                 case 1:
-                    return getText('Enum_NumericItemMinus_YES');
+                    return getText('CPS006_54');
             }
         }
 
         genDateTypeText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -317,7 +318,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -326,11 +327,23 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         }
 
-        genParamDisplayOrder() {
+        itemType() {
+            let self = this;
+
+            if (self.currentItem().itemTypeState == null) {
+
+                return 1;
+            }
+
+            return self.currentItem().itemTypeState.itemType;
+
+        }
+
+        genParamDisplayOrder(paramList) {
             let self = this,
                 disPlayOrderArray = [];
 
-            for (let i of self.itemInfoDefList()) {
+            for (let i of paramList) {
 
                 var item = {
                     id: i.id,
@@ -343,39 +356,55 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             return disPlayOrderArray;
         }
+        
+        genTime(time){
+            
+            return nts.uk.time.parseTime(time, false).format();
+            
+        
+        }
 
         OpenCDL022Modal() {
 
             let self = this,
-                command;
-
-            setShared('CDL020_PARAMS', self.genParamDisplayOrder());
+                command,
+                paramList = [];
 
             block.invisible();
 
-            nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
+            service.getItemInfoDefList(self.currentCategory.id, true).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
-                if (!getShared('CDL020_VALUES')) {
-                    block.clear();
-                    return;
-                }
+                paramList = self.genParamDisplayOrder(itemInfoDefList);
 
-                command = {
-                    categoryId: self.currentCategory.id,
-                    orderItemList: getShared('CDL020_VALUES')
-                }
+                setShared('CDL020_PARAMS', paramList);
 
-                service.SetOrder(command).done(function() {
+                nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                    self.loadDataForGrid().done(function() {
-
+                    if (!getShared('CDL020_VALUES')) {
                         block.clear();
+                        return;
+                    }
+
+                    command = {
+                        categoryId: self.currentCategory.id,
+                        orderItemList: getShared('CDL020_VALUES')
+                    }
+
+                    service.SetOrder(command).done(function() {
+
+                        self.loadDataForGrid().done(function() {
+
+                            block.clear();
+                        });
+
                     });
+
 
                 });
 
-
             });
+
+
         }
 
 
@@ -400,6 +429,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         requireChangable: number;
         dispOrder: number;
         itemTypeState: any;
+        selectionItemRefType : any;
     }
 
     export class ItemInfoDef {
@@ -415,6 +445,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         requireChangable: number;
         dispOrder: number;
         itemTypeState: any;
+        selectionItemRefType : any;
 
         constructor(data: IItemInfoDef) {
 
@@ -430,6 +461,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             this.requireChangable = data ? data.requireChangable : 0;
             this.dispOrder = data ? data.dispOrder : 0;
             this.itemTypeState = data ? data.itemTypeState : null;
+            this.selectionItemRefType = data ? data.selectionItemRefType  : null;
 
         }
 

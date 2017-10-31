@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
 /**
@@ -79,8 +79,8 @@ public class ClosureFindDto implements ClosureSetMemento{
 	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth)
 	 */
 	@Override
-	public void setClosureMonth(ClosureMonth month) {
-		this.month = month.getProcessingDate().v();
+	public void setClosureMonth(CurrentMonth month) {
+		this.month = month.getProcessingYm().v();
 	}
 
 	/*
@@ -97,6 +97,5 @@ public class ClosureFindDto implements ClosureSetMemento{
 			return dto;
 		}).collect(Collectors.toList());
 	}
-	
 
 }

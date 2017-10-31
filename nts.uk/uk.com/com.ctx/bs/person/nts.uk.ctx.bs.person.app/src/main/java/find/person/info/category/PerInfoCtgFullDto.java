@@ -11,4 +11,5 @@ public class PerInfoCtgFullDto {
 	private int isAbolition;
 	private int categoryType;
 	private int isFixed;
+
 }

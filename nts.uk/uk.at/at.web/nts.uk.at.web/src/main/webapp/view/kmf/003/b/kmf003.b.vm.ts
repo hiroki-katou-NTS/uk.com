@@ -90,9 +90,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 self.items.push(new Item(item));
             }
             
-            for(var i = data.length; i < 20; i++) {
+            for(var j = data.length; j < 20; j++) {
                 var item : IItem = {
-                    grantYearHolidayNo: i + 1,
+                    grantYearHolidayNo: j + 1,
                     conditionNo: self.conditionData.conditionNo,
                     yearHolidayCode: self.conditionData.code,
                     lengthOfServiceYears: null,
@@ -120,7 +120,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 var dateSelected = moment.utc(monthDay, "MMDDYY"); 
                 var grantHolidayTblList = [];
                 _.forEach(self.items(), function(item) {
-                     if (item.lengthOfServiceYears() != null && item.lengthOfServiceMonths() != null) {
+                     if (item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || item.limitedHalfHdCnt() != null) {
                          grantHolidayTblList.push({
                             grantYearHolidayNo: item.grantYearHolidayNo(),
                             conditionNo: item.conditionNo(),
@@ -134,54 +134,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                             grantSimultaneity: item.grantSimultaneity() ? 1 : 0
                         });
                     }
-                });
+                }); 
                 
-                //勤続年数、0年0ヶ月は登録不可
-                for(var i = 0; i < grantHolidayTblList.length; i++) {
-                    if(Number(grantHolidayTblList[i].lengthOfServiceYears) == 0 && Number(grantHolidayTblList[i].lengthOfServiceMonths) == 0){
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_268" });
-                        return;
-                    }
-                }   
-                
-                //重複した勤続年数の登録不可
-                var valueArr = grantHolidayTblList.map(function(item){ return item.lengthOfServiceYears });
-                var isDuplicate = valueArr.some(function(item, idx){ 
-                    return valueArr.indexOf(item) != idx 
-                });
-                
-                if(isDuplicate){
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_266" });
+                // if no data then return
+                if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
+                    return;
                 }
-                
-                //勤続年数は上から昇順になっていること
-                for(var i = 0; i < grantHolidayTblList.length; i++) {
-                    if(grantHolidayTblList[i + 1] != undefined){
-                        if(grantHolidayTblList[i].lengthOfServiceYears > grantHolidayTblList[i + 1].lengthOfServiceYears){
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_269" });
-                            return;
-                        }
-                    }
-                }   
-                
-                //勤続年数が入力されている場合、付与日数を入力すること
-                //付与日数が入力されている場合、勤続年数を入力すること
-                for(var i = 0; i < grantHolidayTblList.length; i++) {
-                    var item = grantHolidayTblList[i];
-                    // 勤続年数が入力されている場合、付与日数を入力すること
-                    if ((item.lengthOfServiceMonths != "" || item.lengthOfServiceYears != "") 
-                            && (item.grantDays == "")) {
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_270" });
-                            return;
-                    }
-                    // 付与日数が入力されている場合、勤続年数を入力すること
-                    if ((item.lengthOfServiceMonths == "" && item.lengthOfServiceYears == "") && (item.grantDays != "")) {
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_270" });
-                            return;
-                    }
-                }   
                     
-                var dataTranfer: service.DataTranfer = {
+                var dataTranfer: any = {
                     grantHolidayTblList: grantHolidayTblList,
                     useSimultaneousGrant: self.conditionData.useCondition ? 1 : 0, 
                     referDate: new Date(self.referenceDate()), 
@@ -210,7 +170,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
 
             var grantHolidayTblList = [];
             _.forEach(self.items(), function(item) {
-                if (item.lengthOfServiceYears() != null && item.lengthOfServiceMonths() != null) {
+                if (item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || item.limitedHalfHdCnt() != null) {
                     grantHolidayTblList.push({
                         grantYearHolidayNo: item.grantYearHolidayNo(),
                         conditionNo: item.conditionNo(),
@@ -226,7 +186,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
             });
             
-            var dataTranfer = {
+            // if no data then return
+            if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
+                nts.uk.ui.windows.close();    
+                return;
+            }
+            
+            // else have data then continue
+            var dataTranfer: any = {
                 conditionNo: self.conditionData.conditionNo,
                 yearHolidayCode: self.code(), 
                 grantHolidayList: grantHolidayTblList, 
@@ -247,8 +214,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         }
         
         //Convert MD number to Date
-        convertToMonthDay(monthDay: String){
-            if(monthDay != ""){
+        convertToMonthDay(monthDay: string) : string{
+            if(monthDay != "") {
                 var md = String(monthDay); 
                 md = nts.uk.text.padLeft(md, '0', 4); 
                 return moment.utc(md, "MMDD").format("MMMDo"); 

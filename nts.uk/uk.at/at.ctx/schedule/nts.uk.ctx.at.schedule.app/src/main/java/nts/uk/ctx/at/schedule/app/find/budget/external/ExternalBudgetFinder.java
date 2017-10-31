@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.csv.NtsCsvReader;
-import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetValDto;
@@ -26,128 +26,145 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUltil;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUtil;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class ExternalBudgetFinder.
+ */
 @Stateless
 public class ExternalBudgetFinder {
 
-	@Inject
-	private ExternalBudgetRepository externalBudgetRepo;
-	
-	/** The file stream service. */
-	@Inject
+    /** The external budget repo. */
+    @Inject
+    private ExternalBudgetRepository externalBudgetRepo;
+
+    /** The file stream service. */
+    @Inject
     private StoredFileStreamService fileStreamService;
-	
-	/** The file check service. */
+
+    /** The file check service. */
     @Inject
     private ExtBudgetFileCheckService fileCheckService;
-    
-    /** The Constant INDEX_CODE. */
+
+    /** The default value. */
+    private final int DEFAULT_VALUE = 0;
+
+    /** The index code. */
     private final int INDEX_CODE = 0;
-    
-    /** The Constant INDEX_DATE. */
+
+    /** The index date. */
     private final int INDEX_DATE = 1;
-    
-    /** The Constant INDEX_VALUE. */
+
+    /** The index value. */
     private final int INDEX_VALUE = 2;
-    
-    /** The Constant MAX_RECORD_DISP. */
+
+    /** The max record disp. */
     private final int MAX_RECORD_DISP = 10;
-    
-    /** The Constant MAX_COLUMN. */
-    private final int MAX_COLUMN = 51;
-	
-	/*
-	 * get All List iTem of external Budget
-	 */
-	public List<ExternalBudgetDto> findAll() {
+
+    /*
+     * get All List iTem of external Budget
+     */
+    public List<ExternalBudgetDto> findAll() {
+        String companyId = AppContexts.user().companyId();
+        List<ExternalBudgetDto> lstBudget = this.externalBudgetRepo.findAll(companyId).stream()
+                .map(item -> ExternalBudgetDto.fromDomain(item)).collect(Collectors.toList());
+        return lstBudget;
+    }
+
+    /**
+     * find External Budget by BudgetAtr and UnitAtr
+     * @param param
+     * @return
+     * author: Hoang Yen
+     */
+    public List<ExternalBudgetDto> findByAtr(ParamExternalBudget param){
 		String companyId = AppContexts.user().companyId();
-		List<ExternalBudgetDto> lstBudget = this.externalBudgetRepo.findAll(companyId).stream()
-				.map(item -> ExternalBudgetDto.fromDomain(item))
-				.collect(Collectors.toList());
-		return lstBudget;
-	}
-	
-	/**
-	 * Checks if is daily unit.
-	 *
-	 * @param externalBudgetCd the external budget cd
-	 * @return true, if is daily unit
-	 */
-	public boolean isDailyUnit(String externalBudgetCd) {
+		return this.externalBudgetRepo.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
+				.stream()
+				.map(x -> {
+					return new ExternalBudgetDto(x.getExternalBudgetCd().toString(), x.getExternalBudgetName().toString(), param.getBudgetAtr(), param.getUnitAtr());
+				}).collect(Collectors.toList());
+    }
+    
+    
+    /**
+     * Checks if is daily unit.
+     *
+     * @param externalBudgetCd
+     *            the external budget cd
+     * @return true, if is daily unit
+     */
+    public boolean isDailyUnit(String externalBudgetCd) {
         String companyId = AppContexts.user().companyId();
         return this.externalBudgetRepo.findAll(companyId).stream()
                 .anyMatch(p -> p.getExternalBudgetCd().v().equals(externalBudgetCd) && p.getUnitAtr() == UnitAtr.DAILY);
     }
-	
-	/**
-	 * Validate file.
-	 *
-	 * @param fileId the file id
-	 */
-	public void validateFile(ExtBudgetExtractCondition extractCondition) {
-	    // Check valid format file.
-	    this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
-                extractCondition.getStartLine().v());
-	}
-	
-	/**
-	 * Find data preview.
-	 *
-	 * @param file the file
-	 * @return the ext budget data preview dto
-	 */
-    public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
-        int lineStart = extractCondition.getStartLine().v();
+
+    /**
+     * Validate file.
+     *
+     * @param extractCondition
+     *            the extract condition
+     */
+    public void validateFile(ExtBudgetExtractCondition extractCondition) {
         // Check valid format file.
-        this.fileCheckService.validFileIgnoreCharset(extractCondition.getFileId(), extractCondition.getEncoding(),
-                lineStart);
-        
-        String companyId = AppContexts.user().companyId();
-        
+        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
+                FileUtil.getStandardColumn(this.findSetting(extractCondition.getExternalBudgetCode()).getUnitAtr()));
+    }
+
+    /**
+     * Find data preview.
+     *
+     * @param extractCondition
+     *            the extract condition
+     * @return the ext budget data preview dto
+     */
+    public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
         // find external budget setting
-        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
-                extractCondition.getExternalBudgetCode());
-        if (!extBudgetOptional.isPresent()) {
-            throw new RuntimeException("Not external budget setting.");
-        }
-        ExternalBudget externalBudget = extBudgetOptional.get();
-        
+        ExternalBudget externalBudget = this.findSetting(extractCondition.getExternalBudgetCode());
+
+        // get standard column
+        Integer standardColumn = FileUtil.getStandardColumn(externalBudget.getUnitAtr());
+
+        // Check valid format file.
+        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
+                standardColumn);
+
         int totalRecord = 0;
         int indexLine = 0;
         List<ExternalBudgetValDto> lstExtBudgetVal = new ArrayList<>();
         try {
             // get input stream by fileId
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
-            
+
             // get list record
-            List<NtsCsvRecord> csvRecords = this.findRecordFile(inputStream, extractCondition.getEncoding());
+            List<List<String>> lstRecord = FileUtil.findContentFile(inputStream, extractCondition.getEncoding(),
+                        standardColumn).entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
             
+            Integer lineStart = extractCondition.getStartLine().v();
+
             // check file empty data?
-            if (!CollectionUtil.isEmpty(csvRecords)) {
+            if (!CollectionUtil.isEmpty(lstRecord)) {
                 // calculate total record file
-                int calTotal = csvRecords.size() - lineStart + 1;
+                int calTotal = lstRecord.size() - lineStart + 1;
                 if (calTotal > totalRecord) {
                     totalRecord = calTotal;
                 }
-                Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
-                while(csvRecordIterator.hasNext()) {
-                    NtsCsvRecord record = csvRecordIterator.next();
+                Iterator<List<String>> recordIterator = lstRecord.iterator();
+                while (recordIterator.hasNext()) {
+                    List<String> record = recordIterator.next();
                     indexLine++;
                     if (indexLine < lineStart) {
                         continue;
                     }
                     // check max record show client.
                     if (lstExtBudgetVal.size() < MAX_RECORD_DISP) {
-                        // get record data
-                        List<String> result = this.findDataRecord(record);
-                        
-                        // fill or split column space if number column is incorrect. 
-                        this.findListExtBudgetValue(result, externalBudget.getUnitAtr());
-                        
-                        lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE),
-                                result.get(INDEX_DATE), result.subList(INDEX_VALUE, result.size())));
+                        // fill or split column space if number column is incorrect.
+                        this.findListExtBudgetValue(record, externalBudget.getUnitAtr());
+
+                        lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(record.get(INDEX_CODE),
+                                record.get(INDEX_DATE), record.subList(INDEX_VALUE, record.size())));
                     }
                 }
             }
@@ -161,62 +178,40 @@ public class ExternalBudgetFinder {
                 .data(lstExtBudgetVal)
                 .totalRecord(totalRecord)
                 .build();
-	}
-	
+    }
+
     /**
-     * Find data record.
+     * Find setting.
      *
-     * @param record the record
-     * @return the list
+     * @param externalBudgetCode the external budget code
+     * @return the external budget
      */
-    private List<String> findDataRecord(NtsCsvRecord record) {
-        List<String> result = new ArrayList<>();
-        for (int idxCol = 0; idxCol < MAX_COLUMN; idxCol++) {
-            Object value = record.getColumn(idxCol);
-            if (value == null) {
-                continue;
-            }
-            result.add(value.toString());
+    private ExternalBudget findSetting(String externalBudgetCode) {
+        String companyId = AppContexts.user().companyId();
+        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId, externalBudgetCode);
+        if (!extBudgetOptional.isPresent()) {
+            throw new RuntimeException("Not external budget setting.");
         }
-        return result;
+        return extBudgetOptional.get();
     }
-    
-    /**
-     * Find record file.
-     *
-     * @param inputStream the input stream
-     * @param encoding the encoding
-     * @return the list
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
-    private List<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding) throws IOException {
-        NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
-        return csvReader.parse(inputStream);
-    }
-    
-    
+
     /**
      * Find list ext budget value.
      *
-     * @param lstRawVal the lst raw val
-     * @param extBudgetCode the ext budget code
+     * @param lstRawVal
+     *            the lst raw val
+     * @param unitAtr
+     *            the unit atr
      * @return the list
      */
     private List<String> findListExtBudgetValue(List<String> lstRawVal, UnitAtr unitAtr) {
-        String valEmpty = "";
-        int numberCol;
-        switch (unitAtr) {
-            case DAILY:
-                numberCol = 3;
-                break;
-            case BYTIMEZONE:
-                numberCol = 50;
-                break;
-            default:
-                throw new RuntimeException("Not unit atr suitable.");
-        }
+        String valEmpty = Strings.EMPTY;
+        
+        // get standard column
+        int numberCol = FileUtil.getStandardColumn(unitAtr);
+
         if (lstRawVal.size() > numberCol) {
-            lstRawVal.subList(0, numberCol);
+            lstRawVal.subList(DEFAULT_VALUE, numberCol);
             return lstRawVal;
         }
         if (lstRawVal.size() == numberCol) {

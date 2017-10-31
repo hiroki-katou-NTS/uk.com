@@ -33,13 +33,20 @@ button.nts-switch-button {
 	margin-left: 20px;
 	vertical-align: middle;
 }
-#code-sphd{
+
+#code-sphd {
 	vertical-align: middle;
 }
-#input-code-sphd{
-	width: 40px; 
+
+#input-code-sphd {
+	width: 40px;
 	margin-left: 45px;
 }
-#radio-tab2-1, #radio-tab2-2{
+
+#radio-tab2-1, #radio-tab2-2 {
 	margin-top: 10px;
+}
+
+div#memo .nts-editor-wrapped {
+	position: absolute;
 }

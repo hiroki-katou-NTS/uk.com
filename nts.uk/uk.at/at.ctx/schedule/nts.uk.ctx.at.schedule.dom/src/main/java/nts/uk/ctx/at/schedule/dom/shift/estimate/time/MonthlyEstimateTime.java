@@ -6,34 +6,24 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
-import nts.gul.util.Time;
 
 /**
  * The Class MonthlyEstimateTime.
  */
-@TimeRange(max = "999:59", min = "00:00")
+// 月間時間
+@TimeRange(max = "744:00", min = "00:00")
 public class MonthlyEstimateTime extends TimeDurationPrimitiveValue<MonthlyEstimateTime> {
-
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Instantiates a new monthly estimate time.
 	 *
-	 * @param rawValue the raw value
+	 * @param timeAsMinutes the time as minutes
 	 */
-	public MonthlyEstimateTime(Long rawValue) {
-		super(rawValue);
+	public MonthlyEstimateTime(int timeAsMinutes) {
+		super(timeAsMinutes);
 	}
 
-	/**
-	 * Of minutes.
-	 *
-	 * @param minutes the minutes
-	 * @return the monthly estimate time
-	 */
-	public static MonthlyEstimateTime ofMinutes(int minutes) {
-		return new MonthlyEstimateTime(minutes * Time.STEP);
-	}
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
 }

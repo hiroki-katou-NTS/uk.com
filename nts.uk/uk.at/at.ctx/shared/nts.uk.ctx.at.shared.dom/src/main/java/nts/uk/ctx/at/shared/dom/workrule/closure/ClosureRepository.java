@@ -11,23 +11,21 @@ import java.util.Optional;
  * The Interface ClosureRepository.
  */
 public interface ClosureRepository {
-	
+
 	/**
 	 * Adds the.
 	 *
 	 * @param closure the closure
 	 */
 	void add(Closure closure);
-	
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param closure the closure
 	 */
 	void update(Closure closure);
-	
-	
+
 	/**
 	 * Gets the all closure.
 	 *
@@ -36,7 +34,14 @@ public interface ClosureRepository {
 	 */
 	List<Closure> findAll(String companyId);
 	
-	
+	/**
+	 * Find all use.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<Closure> findAllUse(String companyId);
+
 	/**
 	 * Find by id.
 	 *
@@ -45,5 +50,23 @@ public interface ClosureRepository {
 	 * @return the optional
 	 */
 	Optional<Closure> findById(String companyId, int closureId);
+	
+	/**
+	 * Find by list id.
+	 *
+	 * @param companyId the company id
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	List<Closure> findByListId(String companyId, List<Integer> closureIds);
+
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @param useAtr the use atr
+	 * @return the list
+	 */
+	List<Closure> findAllActive(String companyId, UseClassification useAtr);
 
 }

@@ -43,7 +43,8 @@
     margin-left: 80px;
     float: left;
     min-height: 600px;
-    width: 60%;
+    margin-top: 12px;
+    padding: 20px;
 }
 
 #lbl_002 {

@@ -24,15 +24,18 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSetPK;
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
-	
+
+	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
+
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
+	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
+			+ " AND a.closeAtr : closeAtr";
+
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
-
-	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.deprecateAtr = :deprecateClassification";
 
 	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " LEFT JOIN KshmtWorkTypeOrder o"
@@ -44,7 +47,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.deprecateAtr = 0"
 			+ " ORDER BY o.dispOrder ASC";
-	
+
 	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
 			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "
 			+ "AND c.kshmtWorkTypeSetPK.workTypeCode =:workTypeCode ";
@@ -54,28 +57,23 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
 				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
 				entity.deprecateAtr, entity.calculatorMethod);
+		if (entity.kshmtWorkTypeOrder != null) {
+			domain.setDisplayOrder(entity.kshmtWorkTypeOrder.dispOrder);
+		}
+
 		if (entity.worktypeSetList != null) {
-			domain.setWorkTypeSet(entity.worktypeSetList.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
+			domain.setWorkTypeSet(
+					entity.worktypeSetList.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
 		}
 		return domain;
 	}
-	
-	private static WorkTypeSet toDomainWorkTypeSet(KshmtWorkTypeSet entity){
-        val domain = WorkTypeSet.createSimpleFromJavaType(
-        		entity.kshmtWorkTypeSetPK.companyId, 
-        		entity.kshmtWorkTypeSetPK.workTypeCode, 
-        		entity.kshmtWorkTypeSetPK.workAtr, 
-        		entity.digestPublicHd, 
-        		entity.hodidayAtr, 
-        		entity.countHoliday, 
-        		entity.closeAtr, 
-        		entity.sumAbsenseNo, 
-        		entity.sumSpHolidayNo, 
-        		entity.timeLeaveWork, 
-        		entity.attendanceTime, 
-        		entity.genSubHoliday, 
-        		entity.dayNightTimeAsk);
-        return domain;
+
+	private static WorkTypeSet toDomainWorkTypeSet(KshmtWorkTypeSet entity) {
+		val domain = WorkTypeSet.createSimpleFromJavaType(entity.kshmtWorkTypeSetPK.companyId,
+				entity.kshmtWorkTypeSetPK.workTypeCode, entity.kshmtWorkTypeSetPK.workAtr, entity.digestPublicHd,
+				entity.hodidayAtr, entity.countHoliday, entity.closeAtr, entity.sumAbsenseNo, entity.sumSpHolidayNo,
+				entity.timeLeaveWork, entity.attendanceTime, entity.genSubHoliday, entity.dayNightTimeAsk);
+		return domain;
 	}
 
 	private static KshmtWorkType toEntity(WorkType domain) {
@@ -95,19 +93,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 		return entity;
 	}
-	
+
 	private static KshmtWorkTypeSet toEntityWorkTypeSet(WorkTypeSet domain) {
 		val entity = new KshmtWorkTypeSet(
 				new KshmtWorkTypeSetPK(domain.getCompanyId(), domain.getWorkTypeCd().v(), domain.getWorkAtr().value),
-				domain.getDigestPublicHd().value,
-				domain.getHolidayAtr().value,
-				domain.getCountHodiday().value,
-				domain.getCloseAtr().value,
-				domain.getSumAbsenseNo(),
-				domain.getSumSpHodidayNo(),
-				domain.getTimeLeaveWork().value,
-				domain.getAttendanceTime().value,
-				domain.getGenSubHodiday().value,
+				domain.getDigestPublicHd().value, domain.getHolidayAtr().value, domain.getCountHodiday().value,
+				domain.getCloseAtr().value, domain.getSumAbsenseNo(), domain.getSumSpHodidayNo(),
+				domain.getTimeLeaveWork().value, domain.getAttendanceTime().value, domain.getGenSubHodiday().value,
 				domain.getDayNightTimeAsk().value);
 		return entity;
 	}
@@ -120,29 +112,23 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	@Override
 	public List<WorkType> findByCompanyId(String companyId) {
-		String query = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId";
-		return this.queryProxy().query(query, KshmtWorkType.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode) {
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId).setParameter("workTypeCode", workTypeCode)
+				.getList(x -> toDomainWorkTypeSet(x));
 	}
 	
 	@Override
-	public List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode) {	
-		return this.queryProxy().query(SELECT_FROM_WORKTYPESET, KshmtWorkTypeSet.class)
-				.setParameter("companyId", companyId)
-				.setParameter("workTypeCode", workTypeCode)
-				.getList(x -> toDomainWorkTypeSet(x));			
+	public List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr) {
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr)
+				.getList(x -> toDomainWorkTypeSet(x));
 	}
-
-	/**
-	 * Find by companyId and deprecateClassification
-	 */
-	@Override
-	public List<WorkType> findByCIdAndDisplayAtr(String companyId, int deprecateClassification) {
-		return this.queryProxy().query(SELECT_BY_CID_DISPLAY_ATR, KshmtWorkType.class)
-				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
-				.getList(c -> toDomain(c));
-	}
-
 	@Override
 	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 		return this.queryProxy().find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class)
@@ -181,28 +167,41 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public void add(WorkType workType) {
 		this.commandProxy().insert(toEntity(workType));
 	}
-	
+
 	@Override
 	public void update(WorkType workType) {
-		this.commandProxy().update(toEntity(workType));	
+		KshmtWorkTypePK key = new KshmtWorkTypePK(workType.getCompanyId(), workType.getWorkTypeCode().v());
+		KshmtWorkType entity = this.queryProxy().find(key, KshmtWorkType.class).get();
+		entity.kshmtWorkTypePK = key;
+		entity.symbolicName = workType.getSymbolicName().v();
+		entity.name = workType.getName().v();
+		entity.abbreviationName = workType.getAbbreviationName().v();
+		entity.memo = workType.getMemo().v();
+		entity.deprecateAtr = workType.getDeprecate().value;
+		entity.worktypeAtr = workType.getDailyWork().getWorkTypeUnit().value;
+		entity.oneDayAtr = workType.getDailyWork().getOneDay().value;
+		entity.morningAtr = workType.getDailyWork().getMorning().value;
+		entity.afternoonAtr = workType.getDailyWork().getAfternoon().value;
+		entity.calculatorMethod = workType.getCalculateMethod().value;
+		this.commandProxy().update(entity);
 	}
 
 	@Override
 	public void remove(String companyId, String workTypeCd) {
-        KshmtWorkTypePK key = new KshmtWorkTypePK(companyId, workTypeCd);
-        this.commandProxy().remove(KshmtWorkType.class, key);		
+		KshmtWorkTypePK key = new KshmtWorkTypePK(companyId, workTypeCd);
+		this.commandProxy().remove(KshmtWorkType.class, key);
 	}
 
 	@Override
 	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
-		this.commandProxy().insert(toEntityWorkTypeSet(workTypeSet));		
+		this.commandProxy().insert(toEntityWorkTypeSet(workTypeSet));
 	}
 
 	@Override
 	public void removeWorkTypeSet(String companyId, String workTypeCd) {
-		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET)
-		.setParameter("companyId", companyId)
-		.setParameter("workTypeCode", workTypeCd)
-		.executeUpdate();
+		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET).setParameter("companyId", companyId)
+				.setParameter("workTypeCode", workTypeCd).executeUpdate();
 	}
+
+	
 }

@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSetting;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

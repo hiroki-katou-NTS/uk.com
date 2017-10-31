@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.person.pubimp.person;
@@ -10,7 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.pub.person.MailAddress;
+import nts.uk.ctx.bs.person.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 import nts.uk.ctx.bs.person.pub.person.PubPersonDto;
 
@@ -33,8 +36,24 @@ public class PersonPubImp implements PersonPub {
 	@Override
 	public List<PubPersonDto> findByPersonIds(List<String> personIds) {
 		return personRepository.getPersonByPersonIds(personIds).stream()
-				.map(item -> new PubPersonDto(item.getPersonId().v(), item.getPersonName().v()))
+				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().v()))
 				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.person.pub.person.PersonPub#findById(java.lang.String)
+	 */
+	@Override
+	public PersonInfoExport findById(String personId) {
+		Person person = this.personRepository.getByPersonId(personId).get();
+		PersonInfoExport personInfo = PersonInfoExport.builder()
+				.personId(person.getPersonId())
+				.personName(person.getPersonNameGroup().getPersonName().v())
+				.birthDay(person.getBirthDate())
+				.pMailAddr(new MailAddress(person.getMailAddress().v()))
+				.build();
+				
+		return personInfo;
 	}
 
 }

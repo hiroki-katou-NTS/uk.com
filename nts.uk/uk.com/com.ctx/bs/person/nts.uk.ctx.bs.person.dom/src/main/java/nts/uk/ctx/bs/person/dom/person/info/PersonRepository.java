@@ -29,4 +29,8 @@ public interface PersonRepository {
 	 */
 	Optional<Person> getByPersonId(String personId);
 	
+	String getLastCardNo(String companyId, String startCardNoLetters);
+	
+	void updatePerson(Person person);
+	
 }

@@ -98,6 +98,12 @@ module kcp.share.list {
          * Set max width for component.Min is 350px;
          */
         maxWidth?: number;
+        
+        /**
+         * Set tabindex attr for controls in component.
+         * If not set, tabindex will same as spec of KCPs.
+         */
+        tabindex?: number;
     }
     
     export class SelectType {
@@ -175,8 +181,9 @@ module kcp.share.list {
          */
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
             var dfd = $.Deferred<void>();
-            ko.cleanNode($input[0]);
             var self = this;
+            $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
+            ko.cleanNode($input[0]);
             
             // Init self data.
             self.isMultiple = data.isMultiSelect;
@@ -192,29 +199,21 @@ module kcp.share.list {
                 data.maxWidth = 350;
             }
             self.listType = data.listType;
-            self.tabIndex = this.getTabIndexByListType(data.listType);
+            self.tabIndex = this.getTabIndexByListType(data);
             if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            data.selectedCode.subscribe(function(selectedValue) {
-                // If select No select row and other row in one time.
-                // => un-select No select row.
-                if (self.isMultiple && (<Array<string>>selectedValue).indexOf('') > -1 
-                        && (<Array<string>>selectedValue).length > 1) {
-                    var dataSelected = selectedValue.slice();
-                    (<Array<string>>dataSelected).splice((<Array<string>>selectedValue).indexOf(''), 1);
-                    data.selectedCode(dataSelected);
-                }
-            });
             if (self.listType == ListType.JOB_TITLE) {
                 this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
             }
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
-                        template: "<td class='list-component-name-col'>${code}</td>",});
+                        formatter: function(code) {
+                            return code;
+                        },});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: self.gridStyle.nameColumnSize,
                         template: "<td class='list-component-name-col'>${name}</td>",});
             // With Employee list, add column company name.
@@ -284,7 +283,7 @@ module kcp.share.list {
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
             // Check is show no select row.
-            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
+            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             
@@ -309,14 +308,14 @@ module kcp.share.list {
             $input.load(webserviceLocator, function() {
                 $input.find('table').attr('id', self.componentGridId);
                 ko.applyBindings(self, $input[0]);
-                $('.base-date-editor').find('.nts-input').width(133);
+                $input.find('.base-date-editor').find('.nts-input').width(133);
                 
                 // Set default value when init component.
                 self.initSelectedValue(data, self.itemList());
                 dfd.resolve();
             });
             
-            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
+            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
                 self.addIconToAlreadyCol();
             });
             
@@ -329,20 +328,36 @@ module kcp.share.list {
             // defined function focus
             $.fn.focusComponent = function() {
                 if (self.hasBaseDate) {
-                    $('.base-date-editor').first().focus();
+                    $input.find('.base-date-editor').first().focus();
                 } else {
-                    $(".ntsSearchBox").focus();
+                    $input.find(".ntsSearchBox").focus();
                 }
             }
             $.fn.reloadJobtitleDataList = self.reload;
+            $.fn.isNoSelectRowSelected = function() {
+                if (self.isMultiple) {
+                    return false;
+                }
+                var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
+                if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
+                    return true;
+                }
+                return false;
+            }
             return dfd.promise();
         }
         
         /**
          * Get tab index by list type.
          */
-        private getTabIndexByListType(listType: ListType): TabIndex {
-            switch(listType) {
+        private getTabIndexByListType(data: ComponentOption): TabIndex {
+            if (data.tabindex) {
+                return {
+                    searchBox: data.tabindex,
+                    table: data.tabindex
+                }
+            }
+            switch(data.listType) {
                 case ListType.EMPLOYMENT, ListType.Classification:
                     return {
                         searchBox: 1,
@@ -398,9 +413,7 @@ module kcp.share.list {
             var self = this;
             switch(data.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
-                    if (self.isMultiple) {
-                        self.selectedCodes(data.selectedCode());
-                    }
+                    //self.selectedCodes(data.selectedCode());
                     return;
                 case SelectType.SELECT_ALL:
                     if (!self.isMultiple){
@@ -571,9 +584,9 @@ module kcp.share.list {
         
         // Service paths.
         var servicePath = {
-            findEmployments: "basic/company/organization/employment/findAll/",
-            findJobTitles: 'basic/company/organization/jobtitle/findall/',
-            findClassifications: 'basic/company/organization/classification/findAll/',
+            findEmployments: "bs/employee/employment/findAll/",
+            findJobTitles: 'bs/employee/jobtitle/findAll',
+            findClassifications: 'bs/employee/classification/findAll',
         }
         
         /**
@@ -625,6 +638,11 @@ interface JQuery {
      * Function reload job title data list. Support job title list only.
      */
     reloadJobtitleDataList(): void;
+    
+    /**
+     * Check isNoSelectRowSelected.
+     */
+    isNoSelectRowSelected(): boolean;
 }
 
 (function($: any) {

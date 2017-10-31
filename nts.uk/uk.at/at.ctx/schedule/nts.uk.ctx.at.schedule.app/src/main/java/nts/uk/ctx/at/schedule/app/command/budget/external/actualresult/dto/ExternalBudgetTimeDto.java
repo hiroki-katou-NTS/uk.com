@@ -13,16 +13,16 @@ import java.util.Map.Entry;
 import lombok.Builder;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneGetMemento;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneValGetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgTimeZoneGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgTimeZoneValGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExternalBudgetTimeZone;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExternalBudgetTimeZoneVal;
 
 /**
  * The Class ExternalBudgetTimeDto.
@@ -183,7 +183,7 @@ public class ExternalBudgetTimeDto {
         public ExternalBudgetVal<T> getActualValue() {
             switch (this.budgetAtr) {
             case TIME:
-                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.value));
+                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.value.intValue()));
             case PEOPLE:
                 return new ExternalBudgetVal<T> ((T) new ExtBudgetNumberPerson(this.value.intValue()));
             case MONEY:

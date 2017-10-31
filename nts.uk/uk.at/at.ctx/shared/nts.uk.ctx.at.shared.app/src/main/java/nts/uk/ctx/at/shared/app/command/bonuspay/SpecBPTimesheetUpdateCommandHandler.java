@@ -46,8 +46,8 @@ public class SpecBPTimesheetUpdateCommandHandler extends CommandHandler<List<Spe
 			SpecBPTimesheetUpdateCommand specBPTimesheetUpdateCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetUpdateCommand.timeSheetNO,
 				specBPTimesheetUpdateCommand.useAtr, specBPTimesheetUpdateCommand.timeItemId,
-				Long.valueOf(specBPTimesheetUpdateCommand.startTime),
-				Long.valueOf(specBPTimesheetUpdateCommand.endTime), specBPTimesheetUpdateCommand.roundingTimeAtr,
+				specBPTimesheetUpdateCommand.startTime,
+				specBPTimesheetUpdateCommand.endTime, specBPTimesheetUpdateCommand.roundingTimeAtr,
 				specBPTimesheetUpdateCommand.roundingAtr, specBPTimesheetUpdateCommand.specialDateItemNO);
 
 	}

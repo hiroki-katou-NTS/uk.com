@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1070,
+					width : 1100,
 					height : 550
 				};
 			</script>
@@ -68,13 +68,14 @@
 							columns: listColumn,
 							multiple: false,
 							value: rowSelected,
-							rows: 11}, rended: dataLog"></table></div><!-- END C3 -->
+							enable: false,
+							rows: 10}, rended: dataLog"></table></div><!-- END C3 -->
 					
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<div id="process">
-					<button class="large" data-bind="click: closeDialog" tabindex="8">#{i18n.getText('KSU006_320')}</button>
+					<button class="large" data-bind="click: closeDialog" tabindex="7">#{i18n.getText('KSU006_320')}</button>
 				</div>
 			</div>
 		</ui:define>

@@ -80,10 +80,20 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 			applicationType == null ? null: EnumAdaptor.valueOf(applicationType, ApplicationType.class));
 	}
-	public static WorkplaceApprovalRoot updateSdateEdate(WorkplaceApprovalRoot wpApprovalRoot, String sDate, String eDate){
+	public static WorkplaceApprovalRoot updateEdate(WorkplaceApprovalRoot wpApprovalRoot, String eDate){
 		WorkplaceApprovalRoot wp = wpApprovalRoot;
-		ApprovalPeriod period = ApprovalPeriod.createSimpleFromJavaType(sDate, eDate);
-		wp.setPeriod(period);
+		wp.period.updateEndate(eDate);
 		return wp;
+	}
+	public static WorkplaceApprovalRoot updateSdate(WorkplaceApprovalRoot wpApprovalRoot, String sDate){
+		WorkplaceApprovalRoot wp = wpApprovalRoot;
+		wp.period.updateStrartDate(sDate);
+		return wp;
+	}
+	public static boolean checkValidate(String startDate, String endDate){
+		if(startDate.compareTo(endDate) <= 0){
+			return true;
+		}
+		return false;
 	}
 }

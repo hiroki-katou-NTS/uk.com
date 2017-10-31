@@ -1,15 +1,26 @@
 module nts.uk.at.view.kmk007.a.service {
 
     var paths: any = {
-        findAll: "at/share/worktype/findAll",
+        findAll: "at/screen/worktype/findAll",
+        find: "at/share/worktype/findById/{0}",
         addWorkType: "at/share/worktype/add",
         removeWorkType: "at/share/worktype/remove",
         updateWorkType: "at/share/worktype/update",
-        findWorkTypeSet: "at/share/worktype/find/{0}"
+        findWorkTypeSet: "at/share/worktype/set/find/{0}",
+        findByLangId: "at/share/worktype/getByCIdAndLangId",
+        getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
+        getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
+        insertWorkTypeLang: "at/share/worktype/language/insert",
+        saveAsExcel: "file/at/worktypereport/saveAsExcel"
     }
 
     export function loadWorkType(): JQueryPromise<Array<any>> {
         var path = paths.findAll;
+        return nts.uk.request.ajax(path);
+    }
+    
+    export function findWorkType(workTypeCode: string): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.find, workTypeCode);
         return nts.uk.request.ajax(path);
     }
 
@@ -29,5 +40,33 @@ module nts.uk.at.view.kmk007.a.service {
     export function findWorkTypeSet(workTypeCd: string): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.findWorkTypeSet, workTypeCd);
         return nts.uk.request.ajax(path);
+    }
+
+    export function findByLangId(langId: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.findByLangId + '/' + langId);
+    }
+
+    /**
+ *  Get all Absence Frame
+ */
+    export function getAllAbsenceFrame(): JQueryPromise<Array<any>> {
+        var path = paths.getAllAbsenceFrame;
+        return nts.uk.request.ajax("at", path);
+    }
+
+    /**
+     *  Get all Special Holiday Frame
+     */
+    export function getAllSpecialHolidayFrame(): JQueryPromise<Array<any>> {
+        var path = paths.getAllSpecialHolidayFrame;
+        return nts.uk.request.ajax("at", path);
+    }
+
+    export function insert(workTypeLanguage: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.insertWorkTypeLang, workTypeLanguage);
+    }
+    
+     export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
     }
 }

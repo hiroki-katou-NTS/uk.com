@@ -53,17 +53,6 @@ public interface WorkTypeRepository {
 	List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes);
 
 	/**
-	 * Find by companyId and displayAtr.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param displayAtr
-	 *            the display atr
-	 * @return List WorkType
-	 */
-	List<WorkType> findByCIdAndDisplayAtr(String companyId, int displayAtr);
-
-	/**
 	 * Find by companyId and workTypeCd.
 	 *
 	 * @param companyId
@@ -81,6 +70,15 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
+	
+	/**
+	 * Find work type set.
+	 *
+	 * @param companyId the company id
+	 * @param closeAtr the close atr
+	 * @return the list
+	 */
+	List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr);
 
 	/**
 	 * Insert workType to DB

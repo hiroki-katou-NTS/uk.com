@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -25,6 +26,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
+	private final String SELECT_APPHASE = SELECT_FROM_APPHASE
+			+ " AND c.wwfmtApprovalPhasePK.approvalPhaseId = :approvalPhaseId";
 	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfmtApprovalPhase c "
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
@@ -42,7 +45,21 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 				.setParameter("branchId", branchId)
 				.getList(c->toDomainApPhase(c));
 	}
-	
+	/**
+	 * get Approval Phase by Code
+	 * @param companyId
+	 * @param branchId
+	 * @param approvalPhaseId
+	 * @return
+	 */
+	@Override
+	public Optional<ApprovalPhase> getApprovalPhase(String companyId, String branchId, String approvalPhaseId) {
+		return this.queryProxy().query(SELECT_APPHASE,WwfmtApprovalPhase.class)
+				.setParameter("companyId", companyId)
+				.setParameter("branchId", branchId)
+				.setParameter("approvalPhaseId", approvalPhaseId)
+				.getSingle(c->toDomainApPhase(c));
+	}
 	/**
 	 * get All Approval Phase by Code include approvers
 	 * @param companyId
@@ -58,7 +75,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		List<ApprovalPhase> result = new ArrayList<>();
 		enPhases.stream().forEach(x -> {
 			ApprovalPhase dPhase = toDomainApPhase(x);
-			dPhase.setApprovers(x.wwfmtAppovers.stream().map(a -> toDomainApprover(a)).collect(Collectors.toList()));
+			dPhase.addApproverList(x.wwfmtAppovers.stream().map(a -> toDomainApprover(a)).collect(Collectors.toList()));
 			result.add(dPhase);
 		});
 		
@@ -79,6 +96,22 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		this.commandProxy().insertAll(lstEntity);
 	}
 	/**
+	 * add Approval Phase
+	 * @param appPhase
+	 */
+	@Override
+	public void addApprovalPhase(ApprovalPhase appPhase) {
+		this.commandProxy().insert(toEntityAppPhase(appPhase));
+	}
+	/**
+	 * update Approval Phase
+	 * @param appPhase
+	 */
+	@Override
+	public void updateApprovalPhase(ApprovalPhase appPhase) {
+		this.commandProxy().update(toEntityAppPhase(appPhase));
+	}
+	/**
 	 * delete All Approval Phase By Branch Id
 	 * @param companyId
 	 * @param branchId
@@ -90,19 +123,35 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		.setParameter("branchId", branchId)
 		.executeUpdate();
 	}	
-	
+	/**
+	 * delete All Approval Phase By Branch Id
+	 * @param companyId
+	 * @param branchId
+	 * @param approvalPhaseId
+	 */
+	@Override
+	public void deleteAppPhaseByAppPhId(String companyId, String branchId, String approvalPhaseId) {
+		WwfmtApprovalPhasePK appPhasePk = new WwfmtApprovalPhasePK(companyId, branchId, approvalPhaseId);
+		this.commandProxy().remove(appPhasePk);
+	}
 	/**
 	 * convert entity WwfmtApprovalPhase to domain ApprovalPhase
 	 * @param entity
 	 * @return
 	 */
 	private ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
+		List<Approver> lstApprover = new ArrayList<>();
+		for(WwfmtAppover approver: entity.wwfmtAppovers) {
+			lstApprover.add(toDomainApprover(approver));
+		}
+		
 		val domain = ApprovalPhase.createSimpleFromJavaType(entity.wwfmtApprovalPhasePK.companyId,
-				entity.branchId,
+				entity.wwfmtApprovalPhasePK.branchId,
 				entity.wwfmtApprovalPhasePK.approvalPhaseId,
 				entity.approvalForm,
 				entity.browsingPhase,
-				entity.displayOrder);
+				entity.displayOrder,
+				lstApprover);
 		return domain;
 	}
 	

@@ -7,6 +7,6 @@ module nts.uk.at.view.ksm003.a {
             if (nts.uk.util.isNullOrEmpty(screenModel.itemLst())) {
                 $("#inpCode").focus();
             }
-        }});
+        });
     });
 }

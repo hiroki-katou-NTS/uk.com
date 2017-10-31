@@ -3,12 +3,10 @@ package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -22,12 +20,15 @@ public class DeleteLateOrLeaveEarlyCommandHandler extends CommandHandler<DeleteL
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
 	
+	@Inject
+	private AfterProcessDelete afterProcessDeleteService;
+	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteLateOrLeaveEarlyCommand> context) {
-		String companyID = AppContexts.user().companyId();
-		String appID = IdentifierUtil.randomUniqueId();
+	
+		afterProcessDeleteService.screenAfterDelete(context.getCommand().getCompanyID(), context.getCommand().getAppID());
+		lateOrLeaveEarlyService.deleteLateOrLeaveEarly(context.getCommand().getCompanyID(), context.getCommand().getAppID());
 		
-		lateOrLeaveEarlyService.deleteLateOrLeaveEarly(companyID, appID);
 		
 	}
 

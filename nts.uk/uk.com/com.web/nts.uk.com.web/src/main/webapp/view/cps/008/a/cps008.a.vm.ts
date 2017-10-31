@@ -5,6 +5,11 @@ module cps008.a.viewmodel {
     import showDialog = nts.uk.ui.dialog;
     import Text = nts.uk.resource.getText;
 
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
+
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -49,10 +54,11 @@ module cps008.a.viewmodel {
             });
         }
 
-        start(code?: string) {
+        start(code?: string): JQueryPromise<any> {
             let self = this,
                 layout: Layout = self.layout(),
-                layouts = self.layouts;
+                layouts = self.layouts,
+                dfd = $.Deferred();
             // get all layout
             layouts.removeAll();
             service.getAll().done((data: Array<any>) => {
@@ -81,7 +87,9 @@ module cps008.a.viewmodel {
                 } else {
                     self.createNewLayout();
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         createNewLayout() {
@@ -89,13 +97,9 @@ module cps008.a.viewmodel {
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
 
-            layouts.removeAll();
-
             layout.id(undefined);
             layout.code('');
             layout.name('');
-            layout.classifications([]);
-
             layout.action(LAYOUT_ACTION.INSERT);
             $("#A_INP_CODE").focus();
         }
@@ -134,10 +138,11 @@ module cps008.a.viewmodel {
             }
 
             // call service savedata
-
+            invisible();
             service.saveData(command).done((_data: any) => {
 
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
+                    unblock();
                     $("#A_INP_NAME").focus();
                 });
 
@@ -145,8 +150,9 @@ module cps008.a.viewmodel {
 
 
             }).fail((error: any) => {
+                unblock();
                 if (error.message == 'Msg_3') {
-                    showDialog.alert(Text('Msg_3')).then(function() {
+                    showDialog.alert({ messageId: "Msg_3" }).then(function() {
                         $("#A_INP_CODE").focus();
                     });
                 }
@@ -191,15 +197,18 @@ module cps008.a.viewmodel {
 
 
                     // call saveData service
+                    invisible();
                     service.saveData(command).done((data: any) => {
 
                         showDialog.info({ messageId: "Msg_20" }).then(function() {
+                            unblock();
                             self.start(_data.code);
                         });
 
                     }).fail((error: any) => {
                         if (error.message == 'Msg_3') {
-                            showDialog.alert(Text('Msg_3')).then(function() {
+                            showDialog.alert({ messageId: "Msg_3" }).then(function() {
+                                unblock();
                                 self.start(data.code);
                             });
                         }
@@ -215,19 +224,38 @@ module cps008.a.viewmodel {
 
         removeDataLayout() {
             let self = this,
-                data: ILayout = ko.toJS(self.layout);
+                data: ILayout = ko.toJS(self.layout),
+                layouts: Array<ILayout> = ko.toJS(self.layouts);
 
             data.action = LAYOUT_ACTION.REMOVE;
-
+            let indexItemDelete = _.findIndex(ko.toJS(self.layouts), function(item: any) { return item.id == data.id; });
+            debugger;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
 
                 // call service remove
+                invisible();
+                let itemListLength = self.layouts().length;
                 service.saveData(data).done((data: any) => {
-                    showDialog.info(Text('Msg_16')).then(function() {
-                        self.start();
+
+                    if (itemListLength === 1) {
+                        self.start().done(() => {
+                            unblock();
+                        });
+                    } else if (itemListLength - 1 === indexItemDelete) {
+                        self.start(layouts[indexItemDelete - 1].code).done(() => {
+                            unblock();
+                        });
+                    } else if (itemListLength - 1 > indexItemDelete) {
+                        self.start(layouts[indexItemDelete + 1].code).done(() => {
+                            unblock();
+                        });
+                    }
+
+                    showDialog.info({ messageId: "Msg_16" }).then(function() {
+                        unblock();
                     });
                 }).fail((error: any) => {
-
+                    unblock();
                 });
 
             }).ifCancel(() => {

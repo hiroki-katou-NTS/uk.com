@@ -19,17 +19,19 @@ module kcp009.a.viewmodel {
             let self = this;
 //            self.empList = ko.observableArray([]);
             self.empList = ko.observableArray([
-            {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'}, 
-            {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
+            {id: '000426a2-181b-4c7f-abc8-6fff9f4f983a', code: '1234567890BA', businessName: 'A', workplaceName: 'Webメニューの設定', depName: '部門2'},
+            {id: '90000000-0000-0000-0000-000000000001', code: '1234567890AE', businessName: 'B', workplaceName: 'テスト情報', depName: '部門3'},
+            {id: '90000000-0000-0000-0000-000000000002', code: '000000000005', businessName: 'C', workplaceName: 'カレンダーの登録', depName: '部門4'},
+            {id: '90000000-0000-0000-0000-000000000003', code: '000000000006', businessName: 'D', workplaceName: 'カレンダーの登録', depName: '部門5'},
+            {id: '90000000-0000-0000-0000-000000000004', code: '000000000007', businessName: 'E', workplaceName: 'ベトナムレビュー', depName: '部門6'},
+            {id: '90000000-0000-0000-0000-000000000005', code: '000000000008', businessName: 'F', workplaceName: '雇用名称', depName: '部門7'},
+            {id: '90000000-0000-0000-0000-000000000009', code: '000000000009', businessName: 'G', workplaceName: '外部予算実績受入職場ID', depName: '部門8'},
+            {id: '90000000-0000-0000-0000-000000000007', code: '000000000010', businessName: 'H', workplaceName: '算実績受入年月日', depName: '部門9'},
+            {id: '90000000-0000-0000-0000-000000000008', code: '000000000011', businessName: 'I', workplaceName: '個人情報レイアウトコード', depName: '部門10'},
+            {id: '90000000-0000-0000-0000-000000000010', code: '1234567890AD', businessName: 'K', workplaceName: '個人情報レイアウト名称', depName: '部門11'},
+            {id: '90000000-0000-0000-0000-000000000011', code: '1234567890AC', businessName: 'J', workplaceName: '個人情報', depName: '部門12' },
+            {id: '90000000-0000-0000-0000-000000000012', code: '000000000002', businessName: 'D', workplaceName: '名称', depName: '部門13'},
+            {id: '90000000-0000-0000-0000-000000000013', code: '000000000013', businessName: 'C', workplaceName: '個人情報', depName: '部門14'}]);
             self.systemType = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
             self.isDisplayOrganizationName.subscribe(function(value: boolean) {
@@ -44,6 +46,7 @@ module kcp009.a.viewmodel {
             self.selectedSystem = ko.observable(1);
             self.selectedSystem.subscribe(function(value: number) {
                 if (value == 1) {
+                    // System Type = Employment
                     self.systemType(SystemType.EMPLOYMENT);
                 } else {
                     // Other System Type
@@ -53,6 +56,7 @@ module kcp009.a.viewmodel {
                 self.reloadComponent();
             });
             self.tabindex = 1;
+            
             // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemType(),
@@ -65,7 +69,7 @@ module kcp009.a.viewmodel {
             
         }
         
-        // Reload component Method
+        // Reload component
         private reloadComponent() {
             let self = this;
             self.listComponentOption.systemReference = self.systemType();
@@ -75,7 +79,7 @@ module kcp009.a.viewmodel {
             // Load listComponent
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
+        
     }
-     
 
 }

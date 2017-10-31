@@ -1,8 +1,14 @@
-module cmm011.a {
+module nts.uk.com.view.cmm011.a {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.start().done(function() {
+        let screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            // focus 
+            if (screenModel.isNewMode()) {
+                $('#wkpCd').focus();
+            } else {
+                $('#wkpName').focus();
+            }
         });
     });
 }

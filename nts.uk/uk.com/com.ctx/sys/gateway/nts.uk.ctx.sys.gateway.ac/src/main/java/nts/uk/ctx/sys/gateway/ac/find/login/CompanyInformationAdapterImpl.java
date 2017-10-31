@@ -6,17 +6,24 @@ package nts.uk.ctx.sys.gateway.ac.find.login;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationDto;
+import nts.uk.ctx.bs.company.pub.company.CompanyExport;
+import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 
 /**
  * The Class CompanyInformationAdapterImpl.
  */
 @Stateless
 public class CompanyInformationAdapterImpl implements CompanyInformationAdapter {
+
+	@Inject
+	private ICompanyPub iCompanyPub;
 
 	/*
 	 * (non-Javadoc)
@@ -25,13 +32,14 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 	 * findByContractCode(java.lang.String)
 	 */
 	@Override
-	public List<CompanyInformationDto> findAll() {
-		List<CompanyInformationDto> lst = new ArrayList<>();
-		CompanyInformationDto ci1 = new CompanyInformationDto("10000000-1234", "1234", "会社1");
-		CompanyInformationDto ci2 = new CompanyInformationDto("10000000-1234", "0000", "会社2");
-		lst.add(ci1);
-		lst.add(ci2);
-		return lst;
+	public List<CompanyInformationImport> findAll() {
+		List<CompanyExport> lstReciveCompany = iCompanyPub.getAllCompany();
+
+		List<CompanyInformationImport> lstCompany = new ArrayList<>();
+		lstReciveCompany.stream().map(c -> {
+			return lstCompany.add(new CompanyInformationImport(c.getCompanyId(), c.getCompanyCode(), c.getCompanyName()));
+		}).collect(Collectors.toList());
+		return lstCompany;
 	}
 
 }

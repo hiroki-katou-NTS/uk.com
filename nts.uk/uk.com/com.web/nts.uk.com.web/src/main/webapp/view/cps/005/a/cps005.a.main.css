@@ -1,6 +1,7 @@
-#contents-area{
-	min-width: 1300px !important;
+#content {
+	width: 1300px;
 }
+
 #contents-area-right {
 	width: 360px;
 	height: 555px;
@@ -35,6 +36,7 @@
 
 #item-info-list_container {
 	border: 1px solid #999999 !important;
+	overflow: hidden !important;
 }
 
 #item-setting-button {
@@ -42,5 +44,5 @@
 }
 
 .ntsHelpButton {
-	margin-left: 15px !important;	
+	margin-left: 15px !important;
 }

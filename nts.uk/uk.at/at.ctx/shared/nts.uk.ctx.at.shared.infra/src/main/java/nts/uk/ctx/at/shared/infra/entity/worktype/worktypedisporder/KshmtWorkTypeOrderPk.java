@@ -18,6 +18,6 @@ public class KshmtWorkTypeOrderPk implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 	/*勤務種類コード*/
-	@Column(name = "WORKTYPECD")
+	@Column(name = "WORKTYPE_CD")
 	public String workTypeCode;
 }

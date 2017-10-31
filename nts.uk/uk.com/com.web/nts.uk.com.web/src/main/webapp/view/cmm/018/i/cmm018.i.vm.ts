@@ -9,13 +9,19 @@ module nts.uk.com.view.cmm018.i {
             newStartDate: KnockoutObservable<string>;
             item: KnockoutObservable<string>;
             dataSource: vmbase.IData_Param;
+            addNew: boolean = false;
             constructor() {
                 var self = this;
                 self.copyDataFlag = ko.observable(true);
-                self.dataSource = getShared('CMM018I_PARAM')||
-                        {name: 'Hatake Kakashi',startDate: '2021-11-02', startDateOld: '9999-12-31', check: 1, mode: 0};
+                self.dataSource = getShared('CMM018I_PARAM');
                 self.item = ko.observable(self.dataSource.name);
-                self.beginStartDate = ko.observable(self.dataSource.startDate);
+                //TH: add New
+                if (self.dataSource.startDate == '') {
+                    self.addNew = true;
+                    self.beginStartDate = ko.observable(moment('1900/01/01').add(1, 'days').format("YYYY/MM/DD"));
+                }else{
+                    self.beginStartDate = ko.observable(moment(self.dataSource.startDate).add(1, 'days').format("YYYY/MM/DD"));
+                }
                 self.newStartDate = ko.observable(null);
             }
             
@@ -24,16 +30,20 @@ module nts.uk.com.view.cmm018.i {
              */
             submitAndCloseDialog(): void {
                 var self = this;
-                if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
-                    $("#startDateInput").ntsError('set', {messageId:"Msg_153"});
-                    return;
+                $("#startDateInput").trigger("validate");
+                if(!self.addNew){
+                    if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
+                        $("#startDateInput").ntsError('set', {messageId:"Msg_153"});
+                        return;
+                    }
                 }
-                let data: vmbase.IData = new vmbase.IData(self.newStartDate(), self.beginStartDate(), self.dataSource.check, self.dataSource.mode, self.copyDataFlag());
-                setShared('CMM018I_DATA', data);
-                console.log(data);
-                nts.uk.ui.windows.close(); 
+                if (!nts.uk.ui.errors.hasError()){
+                    let data: vmbase.IData = new vmbase.IData(self.newStartDate(), self.dataSource.startDate, self.dataSource.check, self.dataSource.mode, self.copyDataFlag(),self.dataSource.lstAppType);
+                    setShared('CMM018I_DATA', data);
+                    nts.uk.ui.windows.close();
+                }
+                
             }
-            
             /**
              * close dialog and do nothing
              */
@@ -42,7 +52,6 @@ module nts.uk.com.view.cmm018.i {
                 setShared('CMM018I_DATA', null);
                 nts.uk.ui.windows.close();   
             }
-
         }
 
     }

@@ -22,5 +22,7 @@ public class PersonInfoCategoryDetail {
 	
 	private int allowOtherRef;
 	
+	private int personEmployeeType;
+	
 	private boolean isSetting;	
 }

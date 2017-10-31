@@ -24,8 +24,15 @@ public class KrqstAppReason  extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KrqstAppReasonPK krqstAppReasonPK; 
 	
+	@Column(name ="DISPORDER")
+	public int dispOrder;
+	
+	
+	@Column(name ="REASON_TEMP")
+	public String reasonTemp;
+	
 	@Column(name ="DEFAULT_FLG")
-	public int defaultOrder;
+	public int defaultFlg;
 	
 	@Override
 	protected Object getKey() {

@@ -44,4 +44,41 @@ public class MonthlyPatternSetting extends AggregateRoot{
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 		memento.setEmployeeId(this.employeeId);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
+		result = prime * result
+				+ ((monthlyPatternCode == null) ? 0 : monthlyPatternCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MonthlyPatternSetting other = (MonthlyPatternSetting) obj;
+		if (employeeId == null) {
+			if (other.employeeId != null)
+				return false;
+		} else if (!employeeId.equals(other.employeeId))
+			return false;
+		if (monthlyPatternCode == null) {
+			if (other.monthlyPatternCode != null)
+				return false;
+		} else if (!monthlyPatternCode.equals(other.monthlyPatternCode))
+			return false;
+		return true;
+	}
+	
+	
 }

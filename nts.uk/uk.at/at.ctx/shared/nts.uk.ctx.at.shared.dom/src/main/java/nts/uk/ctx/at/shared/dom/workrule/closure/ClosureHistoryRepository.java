@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Interface ClosureHistoryRepository.
  */
@@ -84,4 +86,22 @@ public interface ClosureHistoryRepository {
 	 * @return the optional
 	 */
 	Optional<ClosureHistory> findByHistoryBegin(String companyId, int closureId);
+	
+	/**
+	 * Find by closure id and current month.
+	 *
+	 * @param closureId the closure id
+	 * @param closureMonth the closure month
+	 * @return the optional
+	 */
+	Optional<ClosureHistory> findByClosureIdAndCurrentMonth(Integer closureId, Integer closureMonth);
+	
+	/**
+	 * Find by start date and end date.
+	 *
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 * @return the list
+	 */
+	List<ClosureHistory> findByCurrentMonth(YearMonth currentMonth);
 }

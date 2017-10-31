@@ -1,3 +1,6 @@
+.extable {
+	position: relative;
+}
 .extable .xheader td {
 	color: #000;
 	background-color: #CFF1A5;
@@ -15,9 +18,15 @@
 .extable div.edited, .extable td.edited {
 	background-color: #FAD7A0;
 }
-.extable div.selected, .extable td.selected {
+.extable td.ex-round-go {
+	cursor: pointer;
+}
+.extable div.x-cell-selected, .extable td.x-cell-selected {
 	background-color: #3498DB;
 	color: #FFF;
+}
+.extable tr.x-row-selected {
+	background-color: #AED6F1;
 }
 .extable td.x-error, .extable div.x-error {
 	border: solid 1px #FF6666 !important;
@@ -28,7 +37,15 @@
   top: 50%;
   margin-top: -8px;
 }
-
+.ex-editor input::-ms-clear {
+  display: none;
+}
+.extable-crud {
+  padding-bottom: 4px;
+}
+.extable-delete-rows {
+  margin-left: 4px;
+}
 div .ex-area-line.x-stay {
 	cursor: default !important;
 }
@@ -65,6 +82,7 @@ div .ex-area-line.x-stay {
   padding: 4px 0;
   border-radius: 2px;
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+  z-index: 120050;
 }
 .x-context-menu:after {
 	content: '';

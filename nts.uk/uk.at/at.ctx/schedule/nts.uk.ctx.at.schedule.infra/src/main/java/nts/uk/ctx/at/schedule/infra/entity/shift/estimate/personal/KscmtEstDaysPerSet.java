@@ -37,31 +37,31 @@ public class KscmtEstDaysPerSet extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_1ST_DAYS")
-    private int estCondition1stDays;
+    private double estCondition1stDays;
     
     /** The est condition 2 nd days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_2ND_DAYS")
-    private int estCondition2ndDays;
+    private double estCondition2ndDays;
     
     /** The est condition 3 rd days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_3RD_DAYS")
-    private int estCondition3rdDays;
+    private double estCondition3rdDays;
     
     /** The est condition 4 th days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_4TH_DAYS")
-    private int estCondition4thDays;
+    private double estCondition4thDays;
     
     /** The est condition 5 th days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_5TH_DAYS")
-    private int estCondition5thDays;
+    private double estCondition5thDays;
 
     /**
      * Instantiates a new kscmt est days per set.
@@ -86,6 +86,36 @@ public class KscmtEstDaysPerSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kscmtEstDaysPerSetPK;
 	}
-	
-    
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((kscmtEstDaysPerSetPK == null) ? 0 : kscmtEstDaysPerSetPK.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscmtEstDaysPerSet other = (KscmtEstDaysPerSet) obj;
+		if (kscmtEstDaysPerSetPK == null) {
+			if (other.kscmtEstDaysPerSetPK != null)
+				return false;
+		} else if (!kscmtEstDaysPerSetPK.equals(other.kscmtEstDaysPerSetPK))
+			return false;
+		return true;
+	}
+
 }

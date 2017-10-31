@@ -25,19 +25,21 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	
 	@Override
 	public List<WorkLocation> findAll(String companyID) {
-		return this.queryProxy()
+		List<WorkLocation> test =  this.queryProxy()
 				.query(SELECT_ALL_BY_COMPANY, KwlmtWorkLocation.class)
 				.setParameter("companyID", companyID)
 				.getList(c -> toDomain(c));
+		return test;
 	}
 
 	@Override
 	public Optional<WorkLocation> findByCode(String companyID, String workPlaceCD) {
-		return this.queryProxy()
+		Optional<WorkLocation> test = this.queryProxy()
 				.query(SELECT_SINGLE, KwlmtWorkLocation.class)
 				.setParameter("companyID", companyID)
-				.setParameter("workPlaceCD", workPlaceCD)
+				.setParameter("workLocationCD", workPlaceCD)
 				.getSingle(c -> toDomain(c));
+		return test;
 	}
 
 	private WorkLocation toDomain(KwlmtWorkLocation entity) {

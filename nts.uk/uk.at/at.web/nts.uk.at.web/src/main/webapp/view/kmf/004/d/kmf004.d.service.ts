@@ -4,19 +4,19 @@ module nts.uk.at.view.kmf004.d.service {
 
     let paths: any = {
         find: "at/shared/yearserviceset/findAll",
-        add: 'at/share/yearservicecom/add',
-        update: 'at/share/yearservicecom/update',
+        add: 'at/shared/yearservicecom/add',
+        update: 'at/shared/yearservicecom/update'
     }
 
     export function findAll() {
         return nts.uk.request.ajax(paths.find); 
     }
 
-    export function add(command: d.viewmodel.Item): JQueryPromise<void>{
-        return ajax(paths.add, command);
+    export function add(command: Array<d.viewmodel.Item>): JQueryPromise<void>{
+        return ajax("at", paths.add, command);
     }
 
-    export function update(command: d.viewmodel.Item): JQueryPromise<void>{
-        return ajax(paths.update, command);
+    export function update(command): JQueryPromise<Array<string>>{
+        return ajax("at", paths.update, command);
     }    
 }

@@ -7,72 +7,270 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 800 };</script>
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />	
+				 nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf004.b.style.css" />
+			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+			<com:stylefile path="../../000/a/kaf000.a.main.css" />
 			<com:scriptfile path="kaf004.b.start.js" />
 			<com:scriptfile path="kaf004.b.service.js" />
 			<com:scriptfile path="kaf004.b.vm.js" />
+			
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-			<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF004_4')}</a>
-			<button class="proceed">#{i18n.getText('KAF004_8')}</button>
-			<button>#{i18n.getText('KAF004_9')}</button>
-			<div data-bind="ntsCheckBox: { checked: sendMail }">#{i18n.getText('KAF004_10')}</div>
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kaf/004/a/index.xhtml' }">#{i18n.getText('KAF004_4')}</a>
+				<button class="proceed" data-bind="click : registryButtonClick">#{i18n.getText('KAF004_8')}</button>
+				<button >#{i18n.getText('KAF004_9')}</button>
+				<div data-bind="ntsCheckBox: { checked: sendMail }">#{i18n.getText('KAF004_10')}</div>
 			</div>
 			<div id="contents-area">
-				<div class = "header"><label class = "header">#{i18n.getText('KAF004_3')}</label></div>
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_11')}</div>
-					<label class= "applicant">11111</label>
-				</div>
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('KAF004_12')}</div>
-					<input  id = "inputdate" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
-				</div>
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('KAF004_13')}</div>
-					<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
-					<input data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time'}" />	
-					<div data-bind="text: ko.toJSON(lateTime1)"></div>
-					<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
-					<input data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time'}" /> <br/>
-					<div class="valign-center control-group row4">
-						<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>	
-						<input class ="col1" data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time'}" />	
-						<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
-						<input class ="col2" data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time'}" /> 
+			<div style="display: inline-flex;">
+				<div class="contents-left">
+					<div class="header">
+						<label class="header">#{i18n.getText('KAF004_3')}</label>
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_11')}</div>
+						<label style="margin-left: 45px;" data-bind = "text: applicantName"></label>
+					</div>					
+					<com:ko-if bind="showScreen == 'B'">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF004_12')}</div>
+							<!-- Datepicker -->
+							<div id="inputdate" tabindex="1"
+								data-bind="ntsDatePicker: {value: date, 
+															dateFormat: 'YYYY/MM/DD',
+															required: true,
+															name: '#[KAF004_41]' }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
+							<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
+							<input id ="inpLate1"
+								data-bind="ntsTimeEditor: {value: lateTime1, 
+															inputFormat: 'time',
+															mode: 'time' , 
+															required: late1,
+															name:'#[KAF004_42]'}" />
+							<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
+							<input id = "inpEarlyTime1"
+								data-bind="ntsTimeEditor: {value: earlyTime1, 
+															inputFormat: 'time',
+															mode: 'time' ,
+															required: early1 ,
+															name: '#[KAF004_43]'}" />
+							<br />
+							<com:ko-if bind="displayOrder() != 0">
+							<div class="valign-center control-group row4">
+								<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
+								<input class="col1" id = "inpLate2"
+									data-bind="ntsTimeEditor: {value: lateTime2, 
+															   inputFormat: 'time',
+															   mode: 'time' ,
+															   required: late2,
+															   name: '#[KAF004_45]'}" />
+								<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
+								<input class="col2" id = "inpEarlyTime2"
+									data-bind="ntsTimeEditor: {value: earlyTime2, 
+																inputFormat: 'time',
+																mode: 'time' ,
+																required: early2 ,
+																name: '#[KAF004_46]'}" />
+							</div>
+							</com:ko-if>
+						</div>
+					</com:ko-if>
+					<com:ko-if bind="showScreen == 'C'">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF004_12')}</div>
+							<!-- Datepicker -->
+							<div id="inputdate"
+								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
+							<label style="margin-left: 25px;">#{i18n.getText('KAF004_21')}</label>
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime1"></label>
+						</div>
+						<div class="valign-center control-group row">
+							<label style="margin-left: 115px;">#{i18n.getText('KAF004_22')}</label>
+							<!-- 	fix cứng time -->
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime2"></label>
+						</div>
+						<div class="valign-center control-group row">
+							<div style="margin-left: 110px;"
+								data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
+							<!-- 	fix tam time 
+						
+							 <input data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'" /> -->
+							<label>2:00</label> 
+							<div  style = "margin-left: 35px " data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
+							<label>1:00</label> 
+							<!-- fix tam time <input data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" /> -->
+						</div>
+						<br />
+						<div class="valign-center control-group row">
+							<div style="margin-left: 110px;"
+								data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
+							<!-- fix tam time <input class="col1"
+								data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" /> -->
+								<label>1:00</label>
+							<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
+							<!-- fix tam time<input class="col2"
+								data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" /> -->
+								<label>00:30</label>
+						</div>
+					</com:ko-if>
+					<com:ko-if bind="showScreen == 'D'">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF004_12')}</div>
+							<!-- Datepicker -->
+							<div id="inputdate"
+								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KAF004_13')}</div>
+							<label style="margin-left: 25px;">#{i18n.getText('KAF004_21')}</label>
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime1"></label>
+						</div>
+						<div class="valign-center control-group row">
+							<label style="margin-left: 115px;">#{i18n.getText('KAF004_22')}</label>
+							<!-- 	fix cứng time -->
+							<label style="margin-left: 15px; margin-right: 15px;" data-bind= "text: fixtime2"></label>
+						</div>
+						<div class="valign-center control-group row">
+							<div style="margin-left: 110px;"
+								data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
+						<!-- fix cung time	<input
+								data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" /> -->
+								<label>2:00</label>
+							<div style = "margin-left: 35px;" data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
+					<!-- 	fix cung time	<input
+								data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" /> -->
+								<label>1:00</label>
+						</div>
+						<br />
+						<div class="valign-center control-group row">
+							<div style="margin-left: 110px;"
+								data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
+							<!-- fix cung time <input class="col1"
+								data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" /> -->
+								<label>1:00</label>
+							<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
+						<!-- 	fix cung time<input class="col2"
+								data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" /> -->
+								<label>00:30</label>
+						</div>
+					</com:ko-if>
+					<com:ko-if bind="showScreen == 'E'">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_12')}</div>
+							<!--TimeEditor -->
+							<input style="margin-left: 60px;"
+								data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', readonly:true, dateFormat: 'YYYY/MM/DD'}" />
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_13')}</div>
+							<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
+							<input
+								data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time' , required: late1}" />
+							<!-- <div data-bind="text: ko.toJSON(lateTime1)	"></div> -->
+							<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
+							<input
+								data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time', required: early1}" />
+							<br />
+							<div class="valign-center control-group row4">
+								<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
+								<input class="col1"
+									data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time' , required: late2}" />
+								<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
+								<input class="col2"
+									data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time' , required: early2}" />
+							</div>
+						</div>
+					</com:ko-if>
+					<com:ko-if bind="showScreen == 'F'">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_12')}</div>
+							<!--TimeEditor -->
+							<input style="margin-left: 60px;"
+								data-bind="ntsTimeEditor: {value: date, inputFormat: 'date',readonly:true, dateFormat: 'YYYY/MM/DD'}" />
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_13')}</div>
+							<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
+							<input
+								data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />
+							<!-- <div data-bind="text: ko.toJSON(lateTime1)	"></div> -->
+							<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
+							<input
+								data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
+							<br />
+							<div class="valign-center control-group row4">
+								<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
+								<input class="col1"
+									data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" />
+								<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
+								<input class="col2"
+									data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" />
+							</div>
+						</div>
+
+					</com:ko-if>
+					<div class="valign-center control-group">
+						<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_17')}</div>
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
+							options: ListTypeReason,
+							optionsValue: 'reasonID',
+							visibleItemsCount: 5,
+							value: selectedCode,
+							optionsText: 'reasonTemp',
+							enable: true,
+							columns: [
+								{ prop: 'reasonTemp', length: 4 },
+							
+							]}"></div>
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF004_18')}</div>
+						<div id="multiline" style="margin-left: 5px;">
+							<textarea
+								data-bind="ntsMultilineEditor: {
+								value: appreason,
+								constraint: 'ResidenceCode',
+								option: {
+									resizeable: false,
+			                    	width: '500',
+			                    	required: true
+			                   	},
+							}" />
+						</div>
+					</div>
+					<div data-bind="if: kaf000_a2">
+						<div data-bind="with: kaf000_a2">
+							<ui:include src="../../000/a/index2.xhtml" />	
+						</div>
 					</div>
 				</div>
-				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_17')}</div>
-				<div id="combo-box" data-bind="ntsComboBox: {
-						options: ListTypicalReason,
-						optionsValue: 'code',
-						visibleItemsCount: 5,
-						value: selectedCode,
-						optionsText: 'name',
-						enable: true,
-						columns: [
-							{ prop: 'name', length: 10 },
-						]}"></div>
+				<!--RIGHT CONTENT -->
+				<div class="right-contents">
+					<div class="panel panel-gray-bg panel-frame">
+						<label>実際の内容 :</label> <BR /> <BR />
+						<label>日付 :</label> <BR /> <BR /> <label>勤務種類
+							:</label> <BR /> <label>就業時間帯 :</label> <BR /> <BR />
+						<label>勤務時間 :</label>
+					</div>
 				</div>
-				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_18')}</div>
-				<div id ="multiline" data-bind="with: multilineeditor">
-				<textarea data-bind="ntsMultilineEditor: {
-					value: value,
-					constraint: constraint,
-					option: option,
-					}" />
-		    	</div>
 				</div>
-
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -9,6 +9,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
     export class ScreenModel {
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+        categorySourceLst: KnockoutObservableArray<any> = ko.observableArray([]);
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
             categoryName: '', categoryType: 4, isAbolition: "", itemList: []
@@ -70,7 +71,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
                         categoryType: data.categoryType, isAbolition: data.abolition, itemList: data.itemLst
-                    }, data.systemRequired);
+                    }, data.systemRequired, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
                     } else {
@@ -95,11 +96,24 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryType: x.categoryType,
                             isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : "",
                         })));
+
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: ""
+                        })));
+
                         if (id === undefined) {
                             self.currentCategory().id(self.categoryList()[0].id);
                         } else {
                             self.currentCategory().id(id);
                         }
+
+                    } else {
+
+                        dialog.alert('Msg_291');
 
                     }
                     dfd.resolve();
@@ -114,11 +128,23 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryType: x.categoryType,
                             isAbolition: ""
                         })));
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: ""
+                        })));
+
                         if (id === undefined) {
                             self.currentCategory().id(self.categoryList()[0].id);
                         } else {
                             self.currentCategory().id(id);
                         }
+
+                    } else {
+
+                        dialog.alert('Msg_291');
 
                     }
                     dfd.resolve();
@@ -136,16 +162,15 @@ module nts.uk.com.view.cps006.a.viewmodel {
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.start(self.currentCategory().id()).done(() => {
-                    block.clear();
-                });
+                self.getDetailCategory(self.currentCategory().id());
+                block.clear();
             });
         }
 
         openCDL022Modal() {
             let self = this,
-                cats = _.map(ko.toJS(self.categoryList), (x: any) => { return { id: x.id, name: x.categoryName }; });
-
+                cats = _.map(ko.toJS(self.categorySourceLst), (x: any) => { return { id: x.id, name: x.categoryName }; });
+            block.invisible();
             setShared('CDL020_PARAMS', cats);
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
                 let CTGlist: Array<any> = getShared('CDL020_VALUES'),
@@ -157,7 +182,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         }
                     });
                 service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>) {
-                    self.start(undefined);
+                    self.start(self.currentCategory().id()).done(() => {
+                        block.clear();
+                    });
                 })
             });
         }
@@ -177,8 +204,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.start(command.categoryId);
                 });
             }).fail(function(res: any) {
-                dialog.alert(res.message);
-            })
+                dialog.alertError({ messageId: res.messageId});
+            });
 
         }
 
@@ -246,6 +273,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
+        isExistedItemLst: number;
         displayIsAbolished: number = 0;
         itemList: KnockoutObservableArray<any>;
         currentItemId: KnockoutObservable<string> = ko.observable('');
@@ -268,12 +296,13 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.itemList = ko.observableArray(params.itemList || []);
         }
 
-        setData(params: any, displayIsAbolished: number) {
+        setData(params: any, displayIsAbolished: number, isExistedItemLst: number) {
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName(params.categoryName);
             this.categoryType = params.categoryType;
             this.isAbolition(params.isAbolition);
             this.displayIsAbolished = displayIsAbolished;
+            this.isExistedItemLst = isExistedItemLst;
             this.itemList(params.itemList);
         }
     }

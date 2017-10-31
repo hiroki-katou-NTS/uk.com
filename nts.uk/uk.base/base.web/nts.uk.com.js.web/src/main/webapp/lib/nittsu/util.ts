@@ -190,10 +190,12 @@
                         constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
                         break;
                     case 'Decimal':
-                        constraintText += (constraintText.length > 0) ? "/" : "";
-                        constraintText += constraint.min + "～" + constraint.max; 
-                        break;
                     case 'Integer':
+                    case 'Date':
+                    case 'Duration':
+                    case 'Time':
+                    case 'Clock ':
+                    case 'TimePoint ':
                         constraintText += (constraintText.length > 0) ? "/" : "";
                         constraintText += constraint.min + "～" + constraint.max; 
                         break;
@@ -665,8 +667,12 @@
             }
         }
     }
+     
+    
     export module resource {
-
+        
+        var names = window['names'] || {};
+        var messages = window['messages'] || {};
 
         export function getText(code: string, params?: string[]): string {
             let text = names[code];
@@ -682,7 +688,7 @@
             let message = messages[messageId];
             if (!message) {
                 let responseText="";
-                nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function(res) {
+                nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function(res) {
                     responseText=res;
                 }).fail(function() {
                 });
@@ -690,6 +696,7 @@
                     return messageId;
                 }
                 message = responseText;
+                messages[messageId] = message;
             }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);
@@ -760,7 +767,7 @@
                 result.push([p,key[p]]);
             }
             result.sort(function(a,b){
-                return a>b;    
+                return (a > b) ? 1 : (a < b) ? -1 : 0;    
             });
             return result.toString();
         }    

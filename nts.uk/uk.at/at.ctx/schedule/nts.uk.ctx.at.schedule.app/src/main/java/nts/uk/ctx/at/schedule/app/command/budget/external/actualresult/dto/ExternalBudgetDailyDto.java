@@ -12,11 +12,11 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDaily;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyGetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDaily;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDailyGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
 
 /**
  * The Class ExternalBudgetDailyDto.
@@ -82,7 +82,7 @@ public class ExternalBudgetDailyDto {
         public ExternalBudgetVal<T> getActualValue() {
             switch (this.dto.budgetAtr) {
             case TIME:
-                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.dto.actualValue));
+                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.dto.actualValue.intValue()));
             case PEOPLE:
                 return new ExternalBudgetVal<T> ((T) new ExtBudgetNumberPerson(this.dto.actualValue.intValue()));
             case MONEY:

@@ -47,8 +47,8 @@
 								enable: true,
 								columns: [
 									{ prop: 'code', length: 3 },
-									{ prop: 'name', length: 5}
-								]}" style="margin-right: 10px;">
+									{ prop: 'name', length: 10}
+								]}" style="width: 230px;margin-right: 10px;">
 							</div>
 							<button id="showDialogExternalBudget" tabindex="4" data-bind="click: openDialogExternalBudget">#{i18n.getText('KSU006_5')}</button>
 						</td>
@@ -109,7 +109,7 @@
 					<tr>
 						<td></td>
 						<td>
-							<button tabindex="9" class="large caret-bottom" 
+							<button style="width: 94.5%;" tabindex="9" class="large caret-bottom" 
 								data-bind="click: showDataPreview, enable: (isModeExecute() &amp;&amp; $root.errors.isEmpty)">
 								#{i18n.getText('KSU006_11')}</button>
 						</td>
@@ -140,8 +140,11 @@
 							</thead><!-- END HEADER -->
 							
 							<!-- BEGIN CONTENT -->
-							<tr data-bind="with: firstRecord">
-								<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase">#{i18n.getText('KSU006_19')}</td>
+							<tr class="first-row" data-bind="with: firstRecord">
+								<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase" id="label-preview">
+									<span data-bind="text: $parent.getLabelPreview().first"></span><br/>
+									<span data-bind="text: $parent.getLabelPreview().second"></span>
+								</td>
 								<td class="dataPreview"><div data-bind="text: code"></div></td>
 								<td class="dataPreview"><div data-bind="text: date"></div></td>
 								<td class="dataPreview"><div data-bind="text: listValue[0]"></div></td>
@@ -175,8 +178,11 @@
 									</thead><!-- END HEADER -->
 									
 									<!-- BEGIN CONTENT -->
-									<tr data-bind="with: firstRecord">
-										<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase">#{i18n.getText('KSU006_121')}</td>
+									<tr class="first-row" data-bind="with: firstRecord">
+										<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase">
+											<span data-bind="text: $parent.getLabelPreview().first"></span><br/>
+											<span data-bind="text: $parent.getLabelPreview().second"></span>
+										</td>
 										<td class="dataPreview"><div data-bind="text: code"></div></td>
 										<td class="dataPreview"><div data-bind="text: date"></div></td>
 									</tr>
@@ -207,7 +213,7 @@
 									</thead><!-- END HEADER -->
 									
 									<!-- BEGIN CONTENT -->
-									<tr data-bind="with: firstRecord">
+									<tr class="first-row" data-bind="with: firstRecord">
 										<com:ko-foreach bind="listValue">
 											<td class="dataPreview"><div data-bind="text: $data"></div></td>
 										</com:ko-foreach>

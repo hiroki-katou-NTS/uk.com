@@ -19,9 +19,6 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.usagesetting.KscstEstU
 @Stateless
 public class JpaUsageSettingRepository extends JpaRepository implements UsageSettingRepository {
 
-	/** The Constant FIRST_DATA. */
-	public static final int FIRST_DATA = 0;
-
 	/*
 	 * (non-Javadoc)
 	 * 

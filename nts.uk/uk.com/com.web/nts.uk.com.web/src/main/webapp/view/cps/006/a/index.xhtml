@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.person.dom.person.info.category.CategoryName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps006.a.style.css" />
 			<com:scriptfile path="cps006.a.service.js" />
@@ -28,8 +31,9 @@
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
+			<div id="content">
 				<div id="content-left"
-					data-bind="ntsPanel:{width: '295px', height: '500px',
+					data-bind="ntsPanel:{width: '290px', height: '555px',
 					direction: 'right', showIcon: false, visible: true}">
 					<div id="isAbolition"
 						data-bind="ntsCheckBox: { checked: isAbolished }" tabindex="5">#{i18n.getText('CPS006_4')}</div>
@@ -49,7 +53,7 @@
 						columns: currentCategory().ctgColums ,
 						multiple: false,
 						value: currentCategory().id ,
-						rows:15 }">
+						rows:20 }">
 					</table>
 				</div>
 				<div id="content-right">
@@ -62,13 +66,14 @@
 						</div>
 
 						<div>
-							<div id='col1' data-bind="ntsFormLabel: {required: true}"
+							<div id='col1' data-bind="ntsFormLabel: {required: true, constraint: 'CategoryName'}"
 								class='distane'>
 								<label>#{i18n.getText('CPS006_9')}</label>
 							</div>
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
 								value: categoryName ,
+								constraint:'CategoryName',
 								enable: true,
 								immediate: false}"></input>
 							<com:ko-if bind="displayIsAbolished === 0">
@@ -95,7 +100,7 @@
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
 								<button
-									data-bind="ntsHelpButton: {image: 'cps006_2.png', 
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/single-multi-select.PNG', 
 									position: 'right+50 top',
 									enable: true }">?</button>
 							</com:ko-if>
@@ -127,14 +132,17 @@
 								</com:ko-if>
 
 								<button
-									data-bind="ntsHelpButton: {image: 'cps006_1.png', position: 'right+50 top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history-type.PNG', position: 'right+50 top', enable: true }">?</button>
 							</com:ko-if>
 						</div>
 					</div>
 					<div style="margin-top: 10px;">
-						<div id='col1'>
+						<com:ko-if
+								bind="currentCategory().isExistedItemLst === 1">
+						<div id='col1' >
 							<button data-bind="click: openBModal">#{i18n.getText('CPS006_14')}</button>
 						</div>
+						</com:ko-if>
 						<table id="item_grid"
 							data-bind="ntsGridList: {	
 						dataSource: currentCategory().itemList ,
@@ -148,6 +156,7 @@
 
 
 				</div>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

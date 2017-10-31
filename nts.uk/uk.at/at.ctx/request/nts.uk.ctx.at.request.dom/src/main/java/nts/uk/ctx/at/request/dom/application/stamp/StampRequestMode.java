@@ -45,4 +45,21 @@ public enum StampRequestMode {
 		this.value = value;
 		this.name = name;
 	}
+	
+	public static StampRequestMode valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (StampRequestMode val : StampRequestMode.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

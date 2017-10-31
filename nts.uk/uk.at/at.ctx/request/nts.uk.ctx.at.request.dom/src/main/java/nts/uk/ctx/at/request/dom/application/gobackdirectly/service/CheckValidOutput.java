@@ -1,39 +1,37 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
+/**
+ * 直行直帰遅刻早退有効チェック Check Output Late or Early
+ * 
+ * @author ducpm
+ *
+ */
+@Setter
 public class CheckValidOutput {
-	// /**
-	// * 勤務時間開始1
-	// */
-	// WorkTimeGoBack workTimeStart1;
-	// /**
-	// * 勤務時間終了1
-	// */
-	// WorkTimeGoBack workTimeEnd1;
-	// /**
-	// * 勤務時間開始2
-	// */
-	// WorkTimeGoBack workTimeStart2;
-	// /**
-	// * 勤務時間終了2
-	// */
-	// WorkTimeGoBack workTimeEnd2;
-	// /**
-	// * 勤務種類
-	// */
-	// WorkTypeCode workTypeCD;
-	// /**
-	// * 就業時間帯
-	// */
-	// SiftCode siftCd;
-	GoBackDirectly goBackDirectly;
+	/**
+	 * 勤務時間開始1
+	 */
+	WorkTimeGoBack workTimeStart;
+	/**
+	 * 勤務時間終了1
+	 */
+	WorkTimeGoBack workTimeEnd;
+	/**
+	 * 勤務種類
+	 */
+	WorkTypeCode workTypeCD;
+	/**
+	 * 就業時間帯
+	 */
+	SiftCode siftCd;
+	// GoBackDirectly goBackDirectly;
 	/**
 	 * チェック対象
 	 */
-	boolean isCheckValid1 ;
-	boolean isCheckValid2 ;
+	boolean isCheckValid;
 }

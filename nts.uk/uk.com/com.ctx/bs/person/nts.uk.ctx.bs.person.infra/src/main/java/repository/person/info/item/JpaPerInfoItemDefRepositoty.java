@@ -17,6 +17,7 @@ import entity.person.info.item.PpemtPerInfoItemCm;
 import entity.person.info.item.PpemtPerInfoItemCmPK;
 import entity.person.info.item.PpemtPerInfoItemOrder;
 import entity.person.info.item.PpemtPerInfoItemPK;
+import entity.person.info.setting.copysetting.PpestEmployeeCopySettingItem;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
@@ -32,6 +33,7 @@ import nts.uk.ctx.bs.person.dom.person.info.selectionitem.MasterReferenceConditi
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItem;
@@ -69,7 +71,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
 			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL  AND ic.itemType !=2"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL "
 			+ " ORDER BY io.disporder";
 
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_WITHOUT_ABOLITION_AND_SETITEM_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
@@ -83,7 +85,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
 			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL AND i.abolitionAtr = 0 AND ic.itemType !=2"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL AND i.abolitionAtr = 0 "
 			+ " ORDER BY io.disporder";
 
 	private final static String SELECT_ITEM_BY_ITEM_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
@@ -97,6 +99,18 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd "
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoCtgId";
+
+	private final static String SELECT_ITEM_BY_ITEM_ID_LIST_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
+			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
+			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
+			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
+			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,"
+			+ " ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd "
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemPK.perInfoItemDefId IN :perInfoCtgId";
 
 	private final static String SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
@@ -151,6 +165,33 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private final static String SELECT_ITEMS_BY_LIST_CTG_ID_QUERY = "SELECT i FROM PpemtPerInfoItem i"
 			+ " WHERE i.itemCd = :itemCd AND i.perInfoCtgId IN :perInfoCtgIds";
+
+	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
+			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName"
+			+ " AND i.ppemtPerInfoItemPK.perInfoItemDefId != :perInfoItemDefId";
+	// vinhpx: start
+	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName "
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
+
+	private final static String COUNT_ITEMS_IN_CATEGORY = "SELECT COUNT(i.perInfoCtgId)"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
+
+	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(i) FROM PpestEmployeeCopySettingItem i "
+			+ "JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
+			+ "WHERE i.PpestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
+
+	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM PpestEmployeeCopySettingItem i"
+			+ " JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
+			+ " WHERE i.categoryId = :categoryId AND c.cid = :companyId";
+
+	private final static String SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER = "SELECT i "
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemOrder io"
+			+ " ON i.ppemtPerInfoItemPK.perInfoItemDefId = io.ppemtPerInfoItemPK.perInfoItemDefId "
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder ASC";
+	// vinhpx: end
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -207,6 +248,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			return item;
 		}).collect(Collectors.toList()));
 		return perInfoItemDefIds;
+	}
+
+	@Override
+	public boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId) {
+		List<String> itemNames = this.queryProxy().query(SELECT_CHECK_ITEM_NAME_QUERY, String.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("itemName", newItemName)
+				.setParameter("perInfoItemDefId", perInfoItemDefId).getList();
+		if (itemNames == null || itemNames.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -347,7 +399,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String perInfoCategoryId = String.valueOf(i[27]);
 
 		PersonInfoItemDefinition item = PersonInfoItemDefinition.createFromEntity(perInfoItemDefId, perInfoCategoryId,
-				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable);
+				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable,
+				selectionItemRefType);
 		DataTypeState dataTypeState = null;
 
 		if (itemType == ItemType.SINGLE_ITEM.value) {
@@ -439,7 +492,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			switch (dataType.intValue()) {
 			case 1:
 				StringItem stringItem = (StringItem) dataTypeState;
-				stringItemType = new BigDecimal(stringItem.getDataTypeValue().value);
+				stringItemType = new BigDecimal(stringItem.getStringItemType().value);
 				stringItemLength = new BigDecimal(stringItem.getStringItemLength().v());
 				stringItemDataType = new BigDecimal(stringItem.getStringItemDataType().value);
 				break;
@@ -492,7 +545,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				numericItemMinusAtr, numericItemDecimalPart, numericItemIntegerPart, selectionItemRefType,
 				selectionItemRefCode);
 	}
-	// Sonnlb Code
+	// Sonnlb Code start
 
 	@Override
 	public void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef) {
@@ -543,6 +596,75 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.getSingle(o -> createPerInfoItemDefOrderFromEntity(o));
 	}
 
-	// Sonnlb Code
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemFromIdList(String contractCd, List<EmpCopySettingItem> itemList) {
+		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_LIST_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", itemList).getList(i -> {
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
+	}
 
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
+			List<String> itemCodeList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// Sonnlb Code end
+
+	// vinhpx start
+	@Override
+	public int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_CATEGORY, Long.class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
+		return a.isPresent() ? a.get().intValue() : 0;
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId,
+			String contractCd) {
+		return this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class).setParameter("companyId", companyId)
+				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+					return PersonInfoItemDefinition.createFromEntityMap(String.valueOf(i[0]), perInfoCategoryId,
+							String.valueOf(i[1]));
+				});
+	}
+
+	@Override
+	public int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_COPYITEM, Long.class)
+				.setParameter("companyId", companyId).setParameter("perInfoItemDefId", perInfoItemDefId).getSingle();
+		return a.isPresent() ? a.get().intValue() : 0;
+	}
+
+	@Override
+	public void removePerInfoItemInCopySetting(String perInforCtgId, String companyId) {
+		getEntityManager().createQuery(REMOVE_PERINFOITEM_IN_COPYITEM).setParameter("", perInforCtgId)
+				.setParameter("", companyId).executeUpdate();
+	}
+
+	@Override
+	public void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds) {
+		PpestEmployeeCopySettingItem obj;
+		for (String perInfoItemDefId : perInfoItemDefIds) {
+			obj = new PpestEmployeeCopySettingItem();
+			obj.PpestEmployeeCopySettingItemPk.perInfoItemDefId = perInfoItemDefId;
+			obj.categoryId = perInforCtgId;
+			getEntityManager().persist(obj);
+		}
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
+			String contractCd) {
+		return this.queryProxy().query(SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER, Object[].class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+					return PersonInfoItemDefinition.createFromEntityMap(String.valueOf(i[0]), perInfoCategoryId,
+							String.valueOf(i[1]));
+				});
+	}
+
+	// vinhpx end
 }

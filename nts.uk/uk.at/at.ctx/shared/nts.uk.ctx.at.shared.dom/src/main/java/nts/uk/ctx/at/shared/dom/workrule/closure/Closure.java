@@ -31,33 +31,32 @@ public class Closure extends AggregateRoot {
 
 	/** The month. */
 	// 当月
-	private ClosureMonth closureMonth;
+	private CurrentMonth closureMonth;
 
 	/** The closure histories. */
 	// 締め変更履歴
 	@Setter
 	private List<ClosureHistory> closureHistories;
-	
+
 	/**
 	 * Instantiates a new closure.
 	 *
 	 * @param memento the memento
 	 */
-	public Closure(ClosureGetMemento memento){
+	public Closure(ClosureGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.closureId = memento.getClosureId();
 		this.useClassification = memento.getUseClassification();
 		this.closureMonth = memento.getClosureMonth();
 		this.closureHistories = memento.getClosureHistories();
 	}
-	
-	
+
 	/**
 	 * Save to memento.
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(ClosureSetMemento memento){
+	public void saveToMemento(ClosureSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setClosureId(this.closureId);
 		memento.setUseClassification(this.useClassification);

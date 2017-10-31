@@ -24,5 +24,11 @@ public class ApprovalFrameService extends WebService {
 		return this.frameFinder.getAllApproverByPhaseID(phaseID);
 	}
 	
+	@POST
+	@Path("getallframebylistphaseid")
+	public List<ApprovalFrameDto> getAllFrameByListPhaseID(List<String> listPhaseID){
+		return this.frameFinder.getAllApproverByListPhaseID(listPhaseID);
+	}
+	
 
 }

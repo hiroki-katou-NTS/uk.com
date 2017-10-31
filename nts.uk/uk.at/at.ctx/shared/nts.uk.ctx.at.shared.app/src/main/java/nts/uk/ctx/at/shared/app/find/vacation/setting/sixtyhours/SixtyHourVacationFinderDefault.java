@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.Emp60HourVacationDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingCheckDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRep
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class 60HourVacationFinderDefault.
+ * The Class SixtyHourVacationFinderDefault.
  */
 @Stateless
 public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
@@ -81,11 +82,41 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 		return dto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.
+	 * SixtyHourVacationFinder#findAllEmployment()
+	 */
 	@Override
 	public List<String> findAllEmployment() {
 		String companyId = AppContexts.user().companyId();
-		return empSvRepository.findAll(companyId).stream().map(item -> item.getEmpContractTypeCode())
-				.collect(Collectors.toList());
+		return empSvRepository.findAll(companyId).stream()
+				.map(item -> item.getEmpContractTypeCode()).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.
+	 * SixtyHourVacationFinder#checkManangeSetting()
+	 */
+	@Override
+	public SixtyHourVacationSettingCheckDto checkManangeSetting() {
+		// get company id
+		String companyId = AppContexts.user().companyId();
+		
+		Optional<Com60HourVacation> optCom60HVacation = this.comSvRepository.findById(companyId);
+
+		if (!optCom60HVacation.isPresent()) {
+			return null;
+		}
+
+		SixtyHourVacationSettingCheckDto dto = new SixtyHourVacationSettingCheckDto();
+
+		optCom60HVacation.get().getSetting().saveToMemento(dto);
+
+		return dto;
 	}
 
 }

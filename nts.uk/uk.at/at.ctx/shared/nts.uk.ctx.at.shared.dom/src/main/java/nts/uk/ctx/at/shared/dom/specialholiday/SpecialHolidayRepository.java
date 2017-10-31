@@ -17,7 +17,7 @@ public interface SpecialHolidayRepository {
 	 * @param companyId
 	 * @param specialHolidayCode
 	 */
-	void delete(String companyId, int specialHolidayCode);
+	void delete(String companyId, String specialHolidayCode);
 
 	/**
 	 * Add Special Holiday
@@ -31,6 +31,13 @@ public interface SpecialHolidayRepository {
 	 */
 	void update(SpecialHoliday specialHoliday);
 	
+	/**
+	 * Check exist Special Holiday Code
+	 * @param companyCode
+	 * @param specialHolidayCode
+	 * @return
+	 */
+	boolean checkExists(String companyCode, String specialHolidayCode);
 	
-	boolean checkExists(String companyCode, int specialHolidayCode);
+	
 }

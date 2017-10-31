@@ -8,10 +8,14 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationMethod;
 import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
+import nts.uk.ctx.at.shared.dom.specialholiday.UseAge;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantDaySingleType;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularMethod;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodic;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodicPK;
@@ -28,6 +32,12 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkType;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 
+/**
+ * The class JpaSpecialHolidayRepository
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
 
@@ -41,8 +51,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
 		builderString.append(" ORDER BY e.kshstSpecialHolidayPK.specialHolidayCode ASC");
 		SELECT_BY_CID = builderString.toString();
-		
-		 builderString = new StringBuilder();
+
+		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstSpecialHoliday e");
 		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
@@ -106,24 +116,37 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSpecialHoliday;
 	}
 
-
+	/**
+	 * Convert to Database Type Grant Regular
+	 * 
+	 * @param grantRegular
+	 * @return
+	 */
 	private KshstGrantRegular convertToDbTypeRegular(GrantRegular grantRegular) {
-		if(grantRegular == null){
+		if (grantRegular == null) {
 			return null;
 		}
 		KshstGrantRegular kshstGrantRegular = new KshstGrantRegular();
 		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
 				grantRegular.getSpecialHolidayCode().v());
 		kshstGrantRegular.grantStartDate = grantRegular.getGrantStartDate();
-		kshstGrantRegular.months = grantRegular.getMonths().v();
-		kshstGrantRegular.years = grantRegular.getYears().v();
+		if (GrantRegularMethod.GrantStartDateSpecify.equals(grantRegular.getGrantRegularMethod())) {
+			kshstGrantRegular.months = grantRegular.getMonths().v();
+			kshstGrantRegular.years = grantRegular.getYears().v();
+		}
 		kshstGrantRegular.grantRegularMethod = grantRegular.getGrantRegularMethod().value;
 		kshstGrantRegular.kshstGrantRegularPK = kshstGrantRegularPK;
 		return kshstGrantRegular;
 	}
 
+	/**
+	 * Convert to Database Type Grant Periodic
+	 * 
+	 * @param grantPeriodic
+	 * @return
+	 */
 	private KshstGrantPeriodic convertToDbTypePeriodic(GrantPeriodic grantPeriodic) {
-		if(grantPeriodic == null){
+		if (grantPeriodic == null) {
 			return null;
 		}
 		KshstGrantPeriodic kshstGrantPeriodic = new KshstGrantPeriodic();
@@ -133,18 +156,27 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		kshstGrantPeriodic.splitAcquisition = grantPeriodic.getSplitAcquisition().value;
 		kshstGrantPeriodic.grantPerioricMethod = grantPeriodic.getGrantPeriodicMethod().value;
 		kshstGrantPeriodic.kshstGrantPeriodicPK = kshstGrantPeriodicPK;
-		
+
 		return kshstGrantPeriodic;
 	}
+
+	/**
+	 * Convert to Database Type Sphd Limit
+	 * 
+	 * @param sphdLimit
+	 * @return
+	 */
 	private KshstSphdLimit convertToDbTypeSphdLimit(SphdLimit sphdLimit) {
-		if(sphdLimit == null){
+		if (sphdLimit == null) {
 			return null;
 		}
 		KshstSphdLimit kshstSphdLimit = new KshstSphdLimit();
 		KshstSphdLimitPK kshstSphdLimitPK = new KshstSphdLimitPK(sphdLimit.getCompanyId(),
 				sphdLimit.getSpecialHolidayCode().v());
-		kshstSphdLimit.specialVacationMonths = sphdLimit.getSpecialVacationMonths().v();
-		kshstSphdLimit.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
+		if (SpecialVacationMethod.AvailableGrantDateDesignate.equals(sphdLimit.getSpecialVacationMethod())) {
+			kshstSphdLimit.specialVacationMonths = sphdLimit.getSpecialVacationMonths().v();
+			kshstSphdLimit.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
+		}
 		kshstSphdLimit.grantCarryForward = sphdLimit.getGrantCarryForward().value;
 		kshstSphdLimit.limitCarryoverDays = sphdLimit.getLimitCarryoverDays().v();
 		kshstSphdLimit.specialVacationMethod = sphdLimit.getSpecialVacationMethod().value;
@@ -152,8 +184,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSphdLimit;
 	}
 
+	/**
+	 * Convert to Database Type Sub Condition
+	 * 
+	 * @param subCondition
+	 * @return
+	 */
 	private KshstSphdSubCondition convertToDbTypeSubCondition(SubCondition subCondition) {
-		if(subCondition == null){
+		if (subCondition == null) {
 			return null;
 		}
 		KshstSphdSubCondition kshstSphdSubCondition = new KshstSphdSubCondition();
@@ -164,8 +202,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		kshstSphdSubCondition.useCls = subCondition.getUseCls().value;
 		kshstSphdSubCondition.useAge = subCondition.getUseAge().value;
 		kshstSphdSubCondition.genderAtr = subCondition.getGenderAtr().value;
-		kshstSphdSubCondition.limitAgeFrom = subCondition.getLimitAgeFrom().v();
-		kshstSphdSubCondition.limitAgeTo = subCondition.getLimitAgeTo().v();
+		if (UseAge.Allow.equals(subCondition.getUseAge())) {
+			kshstSphdSubCondition.limitAgeFrom = subCondition.getLimitAgeFrom().v();
+			kshstSphdSubCondition.limitAgeTo = subCondition.getLimitAgeTo().v();
+		}
 		kshstSphdSubCondition.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;
 		kshstSphdSubCondition.ageBaseYearAtr = subCondition.getAgeBaseYearAtr().value;
 		kshstSphdSubCondition.ageBaseDates = subCondition.getAgeBaseDates().v();
@@ -173,15 +213,23 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSphdSubCondition;
 	}
 
+	/**
+	 * Convert to Database Type Grant Single
+	 * 
+	 * @param grantSingle
+	 * @return
+	 */
 	private KshstGrantSingle convertToDbTypeGrantSingle(GrantSingle grantSingle) {
-		if(grantSingle == null){
+		if (grantSingle == null) {
 			return null;
 		}
 		KshstGrantSingle kshstGrantSingle = new KshstGrantSingle();
 		KshstGrantSinglePK kshstGrantSinglePK = new KshstGrantSinglePK(grantSingle.getCompanyId(),
 				grantSingle.getSpecialHolidayCode().v());
 		kshstGrantSingle.grantDaySingleType = grantSingle.getGrantDaySingleType().value;
-		kshstGrantSingle.fixNumberDays = grantSingle.getFixNumberDays().v();
+		if (GrantDaySingleType.FixDay.equals(grantSingle.getGrantDaySingleType())) {
+			kshstGrantSingle.fixNumberDays = grantSingle.getFixNumberDays().v();
+		}
 		kshstGrantSingle.makeInvitation = grantSingle.getMakeInvitation().value;
 		kshstGrantSingle.holidayExcusionAtr = grantSingle.getHolidayExclusionAtr().value;
 		kshstGrantSingle.kshstGrantSinglePK = kshstGrantSinglePK;
@@ -282,14 +330,15 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return this.queryProxy().query(SELECT_BY_CID, KshstSpecialHoliday.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
-	
+
+	/**
+	 * Check Exists Special Holiday Code
+	 */
 	@Override
-	public boolean checkExists(String companyId, int specialHolidayCode) {
+	public boolean checkExists(String companyId, String specialHolidayCode) {
 		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
-       		 .setParameter("companyId", companyId)
-       		 .setParameter("specialHolidayCode", specialHolidayCode)
-       		 .getList();
-		
+				.setParameter("companyId", companyId).setParameter("specialHolidayCode", specialHolidayCode).getList();
+
 		return !branchs.isEmpty();
 	}
 
@@ -328,12 +377,11 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().update(entity);
 	}
 
-	
 	/**
 	 * Delete Special Holiday
 	 */
 	@Override
-	public void delete(String companyId, int specialHolidayCode) {
+	public void delete(String companyId, String specialHolidayCode) {
 		KshstSpecialHolidayPK kshstSpecialHolidayPK = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshstSpecialHoliday.class, kshstSpecialHolidayPK);
 	}

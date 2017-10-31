@@ -9,6 +9,11 @@
 	width: 150px;
 }
 
+.lableContentPersonal {
+	width: 100px;
+	margin-left: 60px;
+}
+
 .helpButton {
 	margin-right: 15px;
 	margin-left: 15px;
@@ -47,22 +52,6 @@
 
 .border-all input {
 	width: 50px;
-	text-align: center !important;
-}
-.company_border td {
-	border: solid grey 1px;
-	text-align: center;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	padding-right: 5px;
-	padding-left: 5px;
-	min-width: 60px;
-	max-width: 130px;
-}
-
-.company_border input {
-	width: 60px;
-	text-align: center !important;
 }
 
 .employmentSettingContent {
@@ -87,6 +76,10 @@
 }
 
 .contentkcp005 {
-	margin-top: 20px;
+	margin-top: 35px;
 	margin-left: 80px;
+}
+
+.personalEstablishment{
+	margin-top: 10px;
 }

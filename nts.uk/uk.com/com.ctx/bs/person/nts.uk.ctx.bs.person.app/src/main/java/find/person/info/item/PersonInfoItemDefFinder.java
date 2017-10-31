@@ -27,4 +27,6 @@ public class PersonInfoItemDefFinder {
 				.map(item -> PersonInfoItemDefDto.fromDomain(item))
 				.collect(Collectors.toList());
 	};
+	
+	
 }

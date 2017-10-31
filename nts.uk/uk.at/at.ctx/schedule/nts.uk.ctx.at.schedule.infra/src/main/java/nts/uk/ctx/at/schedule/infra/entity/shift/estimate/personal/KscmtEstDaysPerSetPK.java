@@ -17,7 +17,19 @@ import lombok.Setter;
 /**
  * The Class KscmtEstDaysPerSetPK.
  */
+
+/**
+ * Gets the target cls.
+ *
+ * @return the target cls
+ */
 @Getter
+
+/**
+ * Sets the target cls.
+ *
+ * @param targetCls the new target cls
+ */
 @Setter
 @Embeddable
 public class KscmtEstDaysPerSetPK implements Serializable {
@@ -62,5 +74,38 @@ public class KscmtEstDaysPerSetPK implements Serializable {
 		this.targetCls = targetCls;
 	}
 
-    
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sid == null) ? 0 : sid.hashCode());
+		result = prime * result + targetCls;
+		result = prime * result + targetYear;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscmtEstDaysPerSetPK other = (KscmtEstDaysPerSetPK) obj;
+		if (sid == null) {
+			if (other.sid != null)
+				return false;
+		} else if (!sid.equals(other.sid))
+			return false;
+		if (targetCls != other.targetCls)
+			return false;
+		if (targetYear != other.targetYear)
+			return false;
+		return true;
+	}
+
 }

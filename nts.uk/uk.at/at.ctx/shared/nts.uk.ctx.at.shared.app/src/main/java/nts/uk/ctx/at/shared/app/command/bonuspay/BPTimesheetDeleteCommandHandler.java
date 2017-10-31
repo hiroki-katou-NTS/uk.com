@@ -29,8 +29,8 @@ public class BPTimesheetDeleteCommandHandler extends CommandHandler<List<BPTimes
 	
 	private BonusPayTimesheet toBonusPayTimesheetDomain(BPTimesheetDeleteCommand bpTimesheetDeleteCommand) {
 		return BonusPayTimesheet.createFromJavaType(bpTimesheetDeleteCommand.timeSheetNO, bpTimesheetDeleteCommand.useAtr,
-				bpTimesheetDeleteCommand.timeItemId, Long.valueOf(bpTimesheetDeleteCommand.startTime),
-				Long.valueOf(bpTimesheetDeleteCommand.endTime), bpTimesheetDeleteCommand.roundingTimeAtr,
+				bpTimesheetDeleteCommand.timeItemId, bpTimesheetDeleteCommand.startTime,
+				bpTimesheetDeleteCommand.endTime, bpTimesheetDeleteCommand.roundingTimeAtr,
 				bpTimesheetDeleteCommand.roundingAtr);
 	}
 }

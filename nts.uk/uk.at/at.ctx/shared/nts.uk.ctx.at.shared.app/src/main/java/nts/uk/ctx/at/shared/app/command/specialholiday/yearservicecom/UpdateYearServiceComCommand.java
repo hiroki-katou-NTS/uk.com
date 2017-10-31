@@ -2,21 +2,19 @@ package nts.uk.ctx.at.shared.app.command.specialholiday.yearservicecom;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.at.shared.app.command.specialholiday.yearserviceset.UpdateYearServiceSetCommand;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 /**
  * update length Service Year Atr
  * @author yennth
  *
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 public class UpdateYearServiceComCommand {
 	/**コード**/
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	/** 勤続年数 **/
 	private int lengthServiceYearAtr;
-	private List<YearServiceSet> yearServiceSets;
+	private List<YearServiceCommand> yearServiceSets;
 }

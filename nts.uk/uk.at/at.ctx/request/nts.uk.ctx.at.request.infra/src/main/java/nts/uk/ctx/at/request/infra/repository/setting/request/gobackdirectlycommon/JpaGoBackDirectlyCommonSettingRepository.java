@@ -7,38 +7,37 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentFontColor;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentFontColor;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.FontWeightFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.GoBackWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqmtGoBackDirectSet;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqmtGoBackDirectSetPK;
+import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstGoBackDirectSet;
+import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstGoBackDirectSetPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository
-		implements GoBackDirectlyCommonSettingRepository {
+public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository implements GoBackDirectlyCommonSettingRepository {
 
-	public final String SELECT_NO_WHERE = "SELECT c FROM KrqmtGoBackDirectSet c";
+	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstGoBackDirectSet c";
 
 	/**
 	 * 
 	 */
-	public final String SELECT_WITH_APP_ID = SELECT_NO_WHERE + " WHERE c.krqmtGoBackDirectSetPK.companyID := companyID"
-			+ " AND c.krqmtGoBackDirectSetPK.appID := appID ";
+	public final String SELECT_WITH_COMPANY_ID = SELECT_NO_WHERE 
+			+ " WHERE c.krqstGoBackDirectSetPK.companyID =:companyID";
 
 	/**
 	 * @param entity
 	 * @return
 	 */
-	private GoBackDirectlyCommonSetting toDomain(KrqmtGoBackDirectSet entity) {
-		return new GoBackDirectlyCommonSetting(entity.krqmtGoBackDirectSetPK.companyID,
+	private GoBackDirectlyCommonSetting toDomain(KrqstGoBackDirectSet entity) {
+		return new GoBackDirectlyCommonSetting(entity.krqstGoBackDirectSetPK.companyID,
 				EnumAdaptor.valueOf(entity.workChangeFlg, WorkChangeFlg.class),
 				EnumAdaptor.valueOf(entity.workChangeTimeAtr, UseAtr.class),
 				EnumAdaptor.valueOf(entity.perfomanceDisplayAtr, AppDisplayAtr.class),
@@ -47,7 +46,8 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository
 				EnumAdaptor.valueOf(entity.lateLeaveEarlySettingAtr, CheckAtr.class),
 				new CommentContent(entity.commentContent1),
 				EnumAdaptor.valueOf(entity.commentFontWeight1, FontWeightFlg.class),
-				new CommentFontColor(entity.commentFontColor1), new CommentContent(entity.commentContent2),
+				new CommentFontColor(entity.commentFontColor1), 
+				new CommentContent(entity.commentContent2),
 				EnumAdaptor.valueOf(entity.commentFontWeight2, FontWeightFlg.class),
 				new CommentFontColor(entity.commentFontColor2));
 	}
@@ -56,10 +56,10 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository
 	 * @param domain
 	 * @return
 	 */
-	private KrqmtGoBackDirectSet toEntity(GoBackDirectlyCommonSetting domain) {
-		val entity = new KrqmtGoBackDirectSet();
-		entity.krqmtGoBackDirectSetPK = new KrqmtGoBackDirectSetPK();
-		entity.krqmtGoBackDirectSetPK.companyID = domain.getCompanyID();
+	private KrqstGoBackDirectSet toEntity(GoBackDirectlyCommonSetting domain) {
+		val entity = new KrqstGoBackDirectSet();
+		entity.krqstGoBackDirectSetPK = new KrqstGoBackDirectSetPK();
+		entity.krqstGoBackDirectSetPK.companyID = domain.getCompanyID();
 		entity.workChangeFlg = domain.getWorkChangeFlg().value;
 		entity.perfomanceDisplayAtr = domain.getPerformanceDisplayAtr().value;
 		entity.contraditionCheckAtr = domain.getContraditionCheckAtr().value;
@@ -76,9 +76,11 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository
 
 	@Override
 	public Optional<GoBackDirectlyCommonSetting> findByCompanyID(String companyID) {
-		String ShainID = AppContexts.user().employeeId();
-		return this.queryProxy().query(SELECT_WITH_APP_ID, KrqmtGoBackDirectSet.class)
-				.setParameter("companyID", companyID).getSingle(c -> toDomain(c));
+		//String ShainID = AppContexts.user().employeeId();
+		//String companyID = AppContexts.user().companyId();
+		return this.queryProxy().query(SELECT_WITH_COMPANY_ID, KrqstGoBackDirectSet.class)
+				.setParameter("companyID", companyID)
+				.getSingle(c -> toDomain(c));
 	}
 
 	/**

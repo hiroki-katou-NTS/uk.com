@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.lateorleaveearly;
 
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -8,18 +7,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.CreateLateOrLeaveEarlyCommand;
-/**
- * 
- * @author hieult
- *
- */
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.CreateLateOrLeaveEarlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.DeleteLateOrLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.DeleteLateOrLeaveEarlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.UpdateLateOrLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.UpdateLateOrLeaveEarlyCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.LateOrLeaveEarlyDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.LateOrLeaveEarlyFinder;
+import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ScreenLateOrLeaveEarlyDto;
+
+/**
+ * 
+ * @author hieult
+ *
+ */	
 @Path("at/request/lateorleaveearly")
 @Produces("application/json")
 public class LateOrLeaveEarlyWebservice extends WebService{
@@ -38,8 +38,9 @@ public class LateOrLeaveEarlyWebservice extends WebService{
 	
 	@POST
 	@Path("findbycode")
-	public Optional<LateOrLeaveEarlyDto> getByCode( String appID) {
-		return this.finder.getLateOrLeaveEarly();
+	public ScreenLateOrLeaveEarlyDto getByCode(String appID) {
+		ScreenLateOrLeaveEarlyDto data = this.finder.getLateOrLeaveEarly(appID);
+		return data;
 	}
 	
 	@POST 

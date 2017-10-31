@@ -7,16 +7,16 @@ module nts.uk.at.view.kaf004.b.service {
     }
 
     /** Get TitleMenu */
-    export function getByCode(): JQueryPromise<Array> {
-        return nts.uk.request.ajax("com", paths.getByCode);
+    export function getByCode(appID: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getByCode, appID);
     }
-      export function createLateOrLeaveEarly(): JQueryPromise<Array> {
-        return nts.uk.request.ajax("com", paths.createLateOrLeaveEarly);
+      export function createLateOrLeaveEarly(lateOrLeaveEarly: any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.createLateOrLeaveEarly,lateOrLeaveEarly);
     }
-     export function deleteLateOrLeaveEarly(): JQueryPromise<Array> {
-        return nts.uk.request.ajax("com", paths.deleteLateOrLeaveEarly);
+     export function deleteLateOrLeaveEarly(appID : string): JQueryPromise<void> { 
+        return nts.uk.request.ajax("at", paths.deleteLateOrLeaveEarly,appID);
     }
-     export function updateLateOrLeaveEarly(): JQueryPromise<Array> {
-        return nts.uk.request.ajax("com", paths.updateLateOrLeaveEarly);
+     export function updateLateOrLeaveEarly(lateOrLeaveEarly:any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.updateLateOrLeaveEarly ,lateOrLeaveEarly);
     }
 }

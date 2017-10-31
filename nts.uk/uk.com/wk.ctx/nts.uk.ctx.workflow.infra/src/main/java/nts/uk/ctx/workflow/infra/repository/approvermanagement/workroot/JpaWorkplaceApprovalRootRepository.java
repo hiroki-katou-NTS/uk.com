@@ -1,6 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,20 +27,41 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
 	private final String SELECT_WPAPR_BY_EDATE = FIND_BY_WKPID
 			+ " AND c.endDate = :endDate"
+			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType";
 	private final String SELECT_WPAPR_BY_EDATE_APP_NULL = FIND_BY_WKPID
 			   + " AND c.endDate = :endDate"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
+	private final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
+			   + " AND c.endDate = :endDate"
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	private final String FIND_BY_BASEDATE = FIND_BY_WKPID
-			+ " AND c.stardDate <= :baseDate"
-			+ " AND c.endDate => :baseDate"
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr IN (1,2,3)" 
 			+ " AND c.applicationType = :appType";
 	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_WKPID
-			+ " AND c.stardDate <= :baseDate"
-			+ " AND c.endDate => :baseDate"
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = 0";
-	
+	private final String FIND_ALL_BY_BASEDATE = FIND_BY_ALL + " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " ORDER BY  c.wwfmtWpApprovalRootPK.workplaceId ";
+	private final String FIND_BY_APP_TYPE = FIND_BY_WKPID
+			+ " AND c.employmentRootAtr = :employmentRootAtr"
+			+ " AND c.applicationType = :applicationType"
+			+ " ORDER BY c.startDate DESC";
+	private final String SELECT_WPAPR_BY_APP_NULL = FIND_BY_WKPID
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " AND c.applicationType IS NULL"
+			   + " ORDER BY c.startDate DESC";
+	private final String FIND_BY_CFR_TYPE = FIND_BY_WKPID
+			   + " AND c.confirmationRootType = :confirmationRootType"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
 
 	/**
 	 * get All Workplace Approval Root
@@ -78,13 +99,24 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType) {
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType, int employmentRootAtr) {
 		//common
-		if(applicationType == null){
+		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_APP_NULL, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainWpApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CONFIRM, WwfmtWpApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("workplaceId", workplaceId)
+					.setParameter("endDate", endDate)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainWpApR(c));
 		}
 		//15 app type
@@ -93,6 +125,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
 				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainWpApR(c));
 	}
 	
@@ -105,7 +138,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, Date baseDate, int appType) {
+	public List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("workplaceId", workplaceId)
@@ -123,7 +156,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, Date baseDate) {
+	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("workplaceId", workplaceId)
@@ -139,7 +172,18 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	public void addWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot) {
 		this.commandProxy().insert(toEntityWpApR(wpAppRoot));
 	}
-	
+	/**
+	 * add All Workplace Approval Root
+	 * @param wpAppRoot
+	 */
+	@Override
+	public void addAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot) {
+		List<WwfmtWpApprovalRoot> lstEntity = new ArrayList<>();
+		for (WorkplaceApprovalRoot wp : wpAppRoot) {
+			lstEntity.add(toEntityWpApR(wp));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
 	/**
 	 * update Workplace Approval Root
 	 * @param wpAppRoot
@@ -157,7 +201,28 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
 	}
-	
+	/**
+	 * update All Workplace Approval Root
+	 * @param wpAppRoot
+	 */
+	@Override
+	public void updateAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot) {
+		List<WwfmtWpApprovalRoot> lstEntity = new ArrayList<>();
+		for (WorkplaceApprovalRoot wp : wpAppRoot) {
+			WwfmtWpApprovalRoot a = toEntityWpApR(wp);
+			WwfmtWpApprovalRoot x = this.queryProxy().find(a.wwfmtWpApprovalRootPK, WwfmtWpApprovalRoot.class).get();
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setBranchId(a.branchId);
+			x.setAnyItemAppId(a.anyItemAppId);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
+			lstEntity.add(x);
+		}
+		
+		this.commandProxy().updateAll(lstEntity);
+	}
 	/**
 	 * delete Person Approval Root
 	 * @param companyId
@@ -206,5 +271,49 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
+	}
+	
+	public List<WorkplaceApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate){
+		List<WorkplaceApprovalRoot> data = this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainWpApR(c));
+		return data;
+	}
+	/**
+	 * get Work place Approval Root By type
+	 * @param companyId
+	 * @param workplaceId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	@Override
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType,
+			int employmentRootAtr) {
+		//common
+		if(employmentRootAtr == 0){
+			return this.queryProxy().query(SELECT_WPAPR_BY_APP_NULL, WwfmtWpApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("workplaceId", workplaceId)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainWpApR(c));
+		}
+		//confirm
+		if(employmentRootAtr == 2){
+			return this.queryProxy().query(FIND_BY_CFR_TYPE, WwfmtWpApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("workplaceId", workplaceId)
+					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainWpApR(c));
+		}
+		//15 app type
+		return this.queryProxy().query(FIND_BY_APP_TYPE, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("applicationType", applicationType)
+				.setParameter("employmentRootAtr", employmentRootAtr)
+				.getList(c->toDomainWpApR(c));
 	}
 }

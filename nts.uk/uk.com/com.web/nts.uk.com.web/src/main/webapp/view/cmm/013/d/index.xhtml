@@ -7,103 +7,58 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<!--dudt -->
-<!-- 		<script>var dialogSize = { width: 650, height: 450 };</script> -->
-		<script>var dialogSize = { width: 650, height: 400 };</script>
-		<!--dudt -->
-		<com:ValidatorScript>
-			nts.uk.ctx.basic.dom.organization.position.JobCode			
-			</com:ValidatorScript>
+			
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 470
+				};
+			</script>
+			
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="cmm013.d.main.css" />
-			<com:scriptfile path="cmm013.d.start.js" />
-			<com:scriptfile path="cmm013.d.vm.js" />
+			
+			<com:stylefile path="style.css" />			
+			<com:scriptfile path="../_base/cmm013.base.js" />
 			<com:scriptfile path="cmm013.d.service.js" />
+			<com:scriptfile path="cmm013.d.vm.js" />
+			<com:scriptfile path="cmm013.d.start.js" />
 		</ui:define>
+		
+		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-			<div id="content-area" class="body">
-				<!--dudt -->
-<!-- 				<div> -->
-<!-- 				D_LBL_001  -->
-<!-- 					<p>履歴情報を確認し、削除または修正を行ってください。</p> -->
-<!-- 					<br></br> -->
-<!-- 				</div> -->
-<!-- 				<table> -->
-				<table id="tblContent">
-				<!--dudt -->
+			<div id="contents-area">
+				<div>#{i18n.getText('CMM013_27')}</div>
+				
+				<table class="table_content">
 					<colgroup>
-						<col width="180px" />
-						<col width="*" />
+						<col width="150px" />
+						<col width="250px" />
 					</colgroup>
-					<!--dudt add-->
+					
 					<tr>
-						<td colspan="2" style="padding-bottom: 15px">
-							<label id = "LBL_001">履歴情報を確認し、削除または修正を行ってください。</label>
-						</td>
-					</tr>
-					<!--dudt -->
-					<tr>
-						<td>
-						<!--dudt upd-->
-						<!-- D_LBL_002 -->
-<!-- 						<div class="lbl"  -->
-<!-- 								data-bind="ntsFormLabel: { -->
-<!-- 									constraint: 'JobCode',  -->
-<!-- 									required: true -->
-<!-- 									}">編集方法の選択</div> -->
-							<div id="LBL_002" data-bind="ntsFormLabel: {required: true}">
-								<label>編集方法の選択</label>
-							</div>
-						<!--dudt upd-->
+						<td>	
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM013_28')}</div>
 						</td>
 						<td>
-							<!-- D_SEL_001 -->
-							<div  style="width: 150px" data-bind="ntsRadioBoxGroup: {
-								options: itemList,
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: selectedId,
-								enable: enable}">
-							</div>
+							<div id="start-date" tabindex="1" data-bind="ntsDatePicker: {
+								name: '#[CMM013_29]', 
+								required: true, 
+								value: startDate,
+								dateFormat: 'YYYY/MM/DD'
+							}"></div>
+							<span style="margin: 20px;">#{i18n.getText('CMM013_30')}</span> 
+							<span data-bind="text: endDate"></span>
 						</td>
-					</tr>	
-					<tr>
-					<td>
-					</td>
-					<td id="row">
-						<!-- LBL_003 -->
-						<div class="line" data-bind="ntsFormLabel: {}">期間</div>
-						<div  class="line" >
-						<!-- C_INP_003 -->
-							<!--dudt can phai sua lai input nay-->
-							<input data-bind="ntsTextEditor: {
-								value: inp_003,
-                                constraint: 'constraint',
-                                required: true,
-                                enable: inp_003_enable}" />
-							
-						</div>
-
- 						<!-- D_LBL_004 -->
- 						<div class="line" id="lbl_004">
-							<div><label id="">　　～　　</label>
-								<label id = "D_LBL_004" data-bind="text: oldEndDate"></label>
-							</div>
-						</div> 
-					</td>
-					</tr>	
+					</tr>				
 				</table>
-				<br />
-				<!--dudt add-->
-				<hr />
-				<!--dudt add-->
-				<div class="bottom">
-					<button id="btn_001"  class="x-large proceed "
-							data-bind="click: positionHis">決定</button>
-					<button id="btn_002" class="large" data-bind="click: closeDialog" >キャンセル</button>
-				</div>
+			</div>
+			
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" tabindex="3" data-bind="click: execution">#{i18n.getText('CMM013_32')}</button>
+				<button class="large" tabindex="4" data-bind="click: close">#{i18n.getText('CMM013_33')}</button>
 			</div>
 		</ui:define>
+		
 	</ui:composition>
 </body>
 </html>

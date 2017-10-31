@@ -5,7 +5,7 @@ import lombok.Data;
 public class GrantPeriodicDto {
 
 	/* 特別休暇コード */
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	
 	/* 付与日数定期 */
 	private int grantDay;

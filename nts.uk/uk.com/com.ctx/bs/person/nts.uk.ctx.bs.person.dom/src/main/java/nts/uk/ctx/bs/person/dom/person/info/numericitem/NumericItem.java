@@ -14,8 +14,8 @@ public class NumericItem extends DataTypeState {
 	private NumericItemAmount numericItemAmount;
 	private IntegerPart integerPart;
 	private DecimalPart decimalPart;
-	private NumericItemMin NumericItemMin;
-	private NumericItemMax NumericItemMax;
+	private NumericItemMin numericItemMin;
+	private NumericItemMax numericItemMax;
 
 	private NumericItem(int numericItemMinus, int numericItemAmount, int integerPart, int decimalPart,
 			BigDecimal numericItemMin, BigDecimal numericItemMax) {
@@ -25,8 +25,8 @@ public class NumericItem extends DataTypeState {
 		this.numericItemAmount = EnumAdaptor.valueOf(numericItemAmount, NumericItemAmount.class);
 		this.integerPart = new IntegerPart(integerPart);
 		this.decimalPart = new DecimalPart(decimalPart);
-		this.NumericItemMin = numericItemMin != null ? new NumericItemMin(numericItemMin) : null;
-		this.NumericItemMax = NumericItemMax != null ? new NumericItemMax(numericItemMax) : null;
+		this.numericItemMin = numericItemMin != null ? new NumericItemMin(numericItemMin) : null;
+		this.numericItemMax = numericItemMax != null ? new NumericItemMax(numericItemMax) : null;
 	}
 
 	public static NumericItem createFromJavaType(int numericItemMinus, int numericItemAmount, int integerPart,

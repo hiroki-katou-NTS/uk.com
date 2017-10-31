@@ -10,8 +10,8 @@ import nts.arc.primitive.constraint.IntegerRange;
 /**
  * The Class ClosureDay.
  */
-@IntegerRange(max=30,min=0)
-public class ClosureDay extends IntegerPrimitiveValue<ClosureDay>{
+@IntegerRange(max = 30, min = 0)
+public class ClosureDay extends IntegerPrimitiveValue<ClosureDay> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4727391399987061483L;
@@ -19,7 +19,8 @@ public class ClosureDay extends IntegerPrimitiveValue<ClosureDay>{
 	/**
 	 * Instantiates a new closure day.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public ClosureDay(Integer rawValue) {
 		super(rawValue);

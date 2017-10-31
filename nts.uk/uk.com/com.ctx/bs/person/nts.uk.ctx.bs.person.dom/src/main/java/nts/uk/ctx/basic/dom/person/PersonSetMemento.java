@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.person;
 
-import nts.uk.ctx.bs.person.dom.person.info.PersonId;
-import nts.uk.ctx.bs.person.dom.person.info.PersonName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
+import nts.uk.shr.com.primitive.PersonId;
 
 /**
  * The Interface PersonSetMemento.
@@ -17,7 +17,7 @@ public interface PersonSetMemento {
 	 *
 	 * @param personId the new person id
 	 */
-	void setPersonId(PersonId personId);
+	void setPersonId(String personId);
 	
 	
 	/**

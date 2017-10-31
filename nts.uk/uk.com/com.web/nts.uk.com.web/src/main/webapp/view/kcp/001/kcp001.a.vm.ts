@@ -68,6 +68,7 @@ module kcp001.a.viewmodel {
                         self.listComponentOption.selectedCode = self.bySelectedCode;
                     } else if (self.selectedType() == SelectType.SELECT_ALL) {
                         self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
+                        return;
                     } else {
                         self.listComponentOption.selectedCode = self.selectedCode;
                     }
@@ -97,7 +98,7 @@ module kcp001.a.viewmodel {
 
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
-                { code: 2, name: 'Select All Items' },
+                { code: 2, name: 'Select All Items'},
                 { code: 3, name: 'Select First Item' },
                 { code: 4, name: 'Select None' }
             ]);
@@ -119,6 +120,7 @@ module kcp001.a.viewmodel {
                         else {
                             self.selectedType(1);
                             nts.uk.ui.dialog.alert("SelectAll is not available for Single selection ! ");
+                            return;
                         }
                         break;
                     case 3:
@@ -137,7 +139,10 @@ module kcp001.a.viewmodel {
                         }
                         break;
                 }
-                self.reloadComponent();
+                // case selectAll
+//                if (data != 2) {
+                    self.reloadComponent();
+//                }
             });
             self.selectionOption = ko.observableArray([
                 {code : 0, name: 'Single Selection'},
@@ -184,7 +189,6 @@ module kcp001.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Save ! ");
             }
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         // Setting Item(s) which deleted from main Screen
         private settingDeletedItem() {
@@ -210,7 +214,6 @@ module kcp001.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Delete ! ");
             }
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
 
         // Get Code of Selected Item(s)

@@ -11,10 +11,10 @@ import lombok.Data;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.dto.EstimatedAlarmColorDto;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.dto.ReferenceConditionDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSetting;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettingGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.EstimatedAlarmColor;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.ReferenceCondition;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.EstimatedAlarmColor;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.ReferenceCondition;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 

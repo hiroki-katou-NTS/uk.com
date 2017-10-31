@@ -62,4 +62,66 @@ module nts.uk.ui.jqueryExtentions {
             $grid.igTreeGridSelection('clearSelection');
         }
     }
+    
+    module ntsTreeDrag {
+
+        $.fn.ntsTreeDrag = function(action: string, param?: any): any {
+
+            var $tree = $(this);
+
+            switch (action) {
+                case 'getSelected':
+                    return getSelected($tree);
+                case 'setSelected':
+                    return setSelected($tree, param);
+                case 'deselectAll':
+                    return deselectAll($tree);
+                case 'isMulti':
+                    return isMultiple($tree);
+            }
+        };
+        
+        function isMultiple($tree: JQuery) {
+            let isMulti = $tree.igTree("option", "checkboxMode") !== "off";
+            return isMulti;
+        }
+
+        function getSelected($tree: JQuery): any {
+            let isMulti = isMultiple($tree);
+            if(isMulti){
+                let values = $tree.igTree("checkedNodes");
+                _.forEach(values, function(e){
+                    return e["id"] = e.data[e.binding.valueKey];    
+                });  
+                return values;
+            } else {
+                let value = $tree.igTree("selectedNode");
+                value["id"] = value.data[value.binding.valueKey]; 
+                return value;      
+            }
+        }
+
+        function setSelected($tree: JQuery, selectedId: any) {
+            deselectAll($tree);
+            let isMulti = isMultiple($tree);
+            if(isMulti){
+                if(!$.isArray(selectedId) ){
+                    selectedId = [selectedId];        
+                }  
+                selectedId.forEach(id => {
+                    let $node = $tree.igTree("nodesByValue", id);
+                    $tree.igTree("toggleCheckstate", $node);
+                });      
+            } else {
+                let $node = $tree.igTree("nodesByValue", selectedId);
+                $tree.igTree("select", $node);    
+            }
+        }
+
+        function deselectAll($tree: JQuery) {
+            _.forEach($tree.igTree("checkedNodes"), function(node){
+                $tree.igTree("toggleCheckstate", node.element);            
+            })
+        }
+    }
 }

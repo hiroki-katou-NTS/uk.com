@@ -85,6 +85,34 @@ public class KscmtEstTimePerSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kscmtEstTimePerSetPK;
 	}
-	
-    
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((kscmtEstTimePerSetPK == null) ? 0 : kscmtEstTimePerSetPK.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscmtEstTimePerSet other = (KscmtEstTimePerSet) obj;
+		if (kscmtEstTimePerSetPK == null) {
+			if (other.kscmtEstTimePerSetPK != null)
+				return false;
+		} else if (!kscmtEstTimePerSetPK.equals(other.kscmtEstTimePerSetPK))
+			return false;
+		return true;
+	}
+
 }

@@ -13,14 +13,20 @@ module nts.uk.at.view.ksu006.a {
             exportDetailError: "at/schedule/budget/external/log/export",
         };
         
-        export function findCharsetList(): JQueryPromise<model.EnumerationModel> {
+        /**
+         * findCharsetList
+         */
+        export function findCharsetList(): JQueryPromise<Array<model.EnumerationModel>> {
             return nts.uk.request.ajax(servicePath.findCharsetList);
         }
         
+        /**
+         * findExternalBudgetList
+         */
         export function findExternalBudgetList(): JQueryPromise<any> {
             let dfd = $.Deferred();
-            nts.uk.request.ajax("at", servicePath.findExternalBudgetList).done(function(res: model.ExternalBudgetModel) {
-                let list = _.map(res, function(item) {
+            nts.uk.request.ajax(servicePath.findExternalBudgetList).done(function(res: any) {
+                let list = _.map(res, function(item: any) {
                     return new model.ExternalBudgetModel(item.externalBudgetCode, item.externalBudgetName);
                 });
 
@@ -29,14 +35,23 @@ module nts.uk.at.view.ksu006.a {
             return dfd.promise();
         }
         
+        /**
+         * checkUnitAtr: check is daily or time zone?
+         */
         export function checkUnitAtr(externalBudgetCd: string): JQueryPromise<boolean> {
-            return nts.uk.request.ajax("at", servicePath.checkUnitAtr, externalBudgetCd);
+            return nts.uk.request.ajax(servicePath.checkUnitAtr + "/" + externalBudgetCd);
         }
         
+        /**
+         * findDataPreview
+         */
         export function findDataPreview(extractCondition: any): JQueryPromise<model.DataPreviewModel> {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
+        /**
+         * validateFile
+         */
         export function validateFile(extractCondition: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.validateFile, extractCondition);
         }
@@ -46,13 +61,18 @@ module nts.uk.at.view.ksu006.a {
         */
         export module model {
             
+            /**
+             * EnumerationModel
+             */
             export class EnumerationModel {
                 value: number;
                 fieldName: string;
                 localizedName: string;
             }
             
-            
+            /**
+             * ExternalBudgetModel
+             */
             export class ExternalBudgetModel {
                 code: string;
                 name: string;
@@ -64,12 +84,18 @@ module nts.uk.at.view.ksu006.a {
                 }
             }
             
+            /**
+             * DataPreviewModel
+             */
             export interface DataPreviewModel {
                 isDailyUnit: boolean;
                 data: Array<ExternalBudgetValueModel>;
                 totalRecord: number;
             }
             
+            /**
+             * ExternalBudgetValueModel
+             */
             export interface ExternalBudgetValueModel {
                 code: string;
                 date: string;

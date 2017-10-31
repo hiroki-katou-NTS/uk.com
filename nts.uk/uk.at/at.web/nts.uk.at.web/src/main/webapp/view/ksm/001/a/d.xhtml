@@ -12,6 +12,7 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed" data-bind="enable: personalEstablishmentModel.isEditable, click: savePersonalEstablishment">#{i18n.getText('KSM001_1')}</button>
 			<button tabindex="2" class="danger" data-bind="enable: personalEstablishmentModel.isEnableDelete, click: deletePersonalEstablishment">#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="3" data-bind="enable: personalEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
@@ -27,15 +28,15 @@
 				columns: [
 					{ prop: 'year', length: 6 }
 				]}"></div>
-			<div style="margin-left: 205px" data-bind="ntsFormLabel: {required: true}">
+			<div style="margin-left: 200px" data-bind="ntsFormLabel: {required: true}">
 				<label>#{i18n.getText('KSM001_6')}</label>
-				<span data-bind="text: employeeName"></span>
+				<span style="margin-left: 50px" data-bind="text: employeeName"></span>
 			</div>
 		</ui:define>
 		<ui:define name="extended-222">
 			<div id="ccgcomponent" tabindex="7"></div>
 			<div id="employeeSearch" class="contentkcp005" tabindex="-1"></div>
-			<div data-bind="with: personalEstablishmentModel">
+			<div data-bind="with: personalEstablishmentModel" class="personalEstablishment">
 				<div data-bind="ifnot: $parent.isLoading">
 					<ui:include src="data-table.xhtml"/>
 				</div>

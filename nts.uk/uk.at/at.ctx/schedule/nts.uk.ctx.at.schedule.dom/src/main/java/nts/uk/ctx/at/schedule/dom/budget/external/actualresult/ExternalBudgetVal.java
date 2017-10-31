@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
+
 /**
  * The Class ExternalBudgetVal.
  *
@@ -28,21 +30,21 @@ public class ExternalBudgetVal<T> {
      *
      * @return the raw value
      */
-    public Long getRawValue() {
+    public Integer getRawValue() {
         if (this.object instanceof ExtBudgetTime) {
             return ((ExtBudgetTime) this.object).v();
         }
         if (this.object instanceof ExtBudgetNumberPerson) {
-            return new Long(((ExtBudgetNumberPerson) this.object).v());
+            return ((ExtBudgetNumberPerson) this.object).v();
         }
         if (this.object instanceof ExtBudgetMoney) {
-            return new Long(((ExtBudgetMoney) this.object).v());
+            return ((ExtBudgetMoney) this.object).v();
         }
         if (this.object instanceof ExtBudgetNumericalVal) {
-            return new Long(((ExtBudgetNumericalVal) this.object).v());
+            return ((ExtBudgetNumericalVal) this.object).v();
         }
         if (this.object instanceof ExtBudgetUnitPrice) {
-            return new Long(((ExtBudgetUnitPrice) this.object).v());
+            return ((ExtBudgetUnitPrice) this.object).v();
         }
         throw new RuntimeException("Not external budget attribute");
     }

@@ -45,9 +45,12 @@ public enum EstimatedCondition {
 	/**
 	 * Instantiates a new estimated condition.
 	 *
-	 * @param value the value
-	 * @param nameId the name id
-	 * @param description the description
+	 * @param value
+	 *            the value
+	 * @param nameId
+	 *            the name id
+	 * @param description
+	 *            the description
 	 */
 	private EstimatedCondition(int value, String nameId, String description) {
 		this.value = value;
@@ -78,4 +81,63 @@ public enum EstimatedCondition {
 		// Not found.
 		return null;
 	}
+
+	/**
+	 * Next of.
+	 *
+	 * @param condition
+	 *            the condition
+	 * @return the estimated condition
+	 */
+	public EstimatedCondition nextOf(EstimatedCondition condition) {
+		// Invalid object.
+		if (condition == null) {
+			return null;
+		}
+
+		boolean isNextItem = false;
+		// Find value.
+		for (EstimatedCondition val : EstimatedCondition.values) {
+
+			if (isNextItem) {
+				return val;
+			}
+
+			if (val == condition) {
+				isNextItem = true;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
+
+	/**
+	 * Prev of.
+	 *
+	 * @param condition
+	 *            the condition
+	 * @return the estimated condition
+	 */
+	public EstimatedCondition prevOf(EstimatedCondition condition) {
+		// Invalid object.
+		if (condition == null) {
+			return null;
+		}
+
+		EstimatedCondition prevItem = null;
+
+		// Find value.
+		for (EstimatedCondition val : EstimatedCondition.values) {
+			if (val == condition) {
+				return prevItem;
+			}
+
+			prevItem = val;
+		}
+
+		// Not found.
+		return null;
+	}
+
 }

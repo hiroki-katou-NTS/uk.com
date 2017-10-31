@@ -35,14 +35,14 @@ module nts.uk.pr.view.ksu006.c {
                     { headerText: "", key: 'executeId', dataType: "string", hidden: true, formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_311"), key: 'startDate', width: 175, dataType: 'date', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_312"), key: 'endDate', width: 175, dataType: 'date', formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("KSU006_313"), key: 'extBudgetName', width: 150, dataType: 'string', formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_313"), key: 'extBudgetName', width: 180, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_314"), key: 'fileName', width: 200, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_315"), key: 'statusDes', width: 70, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_316"), key: 'numberSuccess', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_317"), key: 'numberFail', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_318"), key: 'download', width: 100, dataType: 'string', formatter: _.escape,
                         template: "{{if(${numberFail}) > 0}} <span id='download-log-${executeId}' style='text-decoration: underline;color: blue;'"
-                            + "data-execute='${executeId}' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
+                            + "data-execute='${executeId}'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
                 ]);
                 self.rowSelected = ko.observable('');
                 
@@ -59,10 +59,15 @@ module nts.uk.pr.view.ksu006.c {
                 }
             }
 
+            /**
+             * startPage
+             */
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
                 nts.uk.ui.block.invisible();
+                
                 self.loadCompletionList().done(() => {
                     self.loadDataLog().done(() => {
                         nts.uk.ui.block.clear();
@@ -72,20 +77,29 @@ module nts.uk.pr.view.ksu006.c {
                 return dfd.promise();
             }
             
+            /**
+             * initDateRange
+             */
             private initDateRange(): any {
-                let curr: Date = new Date();
+                let current: Date = new Date();
                 return {
-                    startDate: new Date(curr.setMonth(curr.getMonth() - 1)),
+                    startDate: new Date(current.setMonth(current.getMonth() - 1)), // a month ago.
                     endDate: new Date()
                 }
             }
             
+            /**
+             * eventClick
+             */
             public eventClick(dataLog: any) {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
                 _.forEach(self.dataLog(), item => {
                     $('#download-log-' + item.executeId).on('click', function() {
                         nts.uk.ui.block.grayout();
+                        
+                        // download detail error
                         service.downloadDetailError(item.executeId).done(function() {
                             dfd.resolve();
                         }).fail(function(res: any) {
@@ -97,6 +111,9 @@ module nts.uk.pr.view.ksu006.c {
                 });
             }
             
+            /**
+             * search
+             */
             public search() {
                 let self = this;
                 let listState: Array<number> = [];
@@ -117,25 +134,39 @@ module nts.uk.pr.view.ksu006.c {
                     nts.uk.ui.dialog.alertError({messageId: 'Msg_166'});
                     return;
                 }
+                
+                // find data log
                 self.loadDataLog(true, listState).done(() => {
                     self.isFilterData = true;
                 });
             }
             
+            /**
+             * closeDialog
+             */
             public closeDialog() {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * loadDataLog
+             */
             private loadDataLog(isSearchMode?: boolean, listState?: Array<number>): JQueryPromise<Array<ExternalBudgetLogModel>> {
                 let self = this;
                 let dfd = $.Deferred();
                 
                 let query: any = {};
+                
+                // initial screen
                 if (!isSearchMode) {
                     query.startDate = self.dateRange().startDate;
                     query.endDate = self.dateRange().endDate;
-                    query.listState = [0, 1, 2];
-                } else {
+                    
+                    // INCOMPLETE(0), DONE(1), INTERRUPTION(2)
+                    query.listState = self.completionList().map(item => item.value);//[0, 1, 2];
+                }
+                // mode search
+                else {
                     let objStartDate: any = self.getComponentDate(self.dateRange().startDate);
                     let objEndDate: any = self.getComponentDate(self.dateRange().endDate);
                     
@@ -143,6 +174,8 @@ module nts.uk.pr.view.ksu006.c {
                     query.endDate = new Date(Date.UTC(objEndDate.year, objEndDate.month, objEndDate.day));
                     query.listState = listState;
                 }
+                
+                // find all log
                 service.findAllExternalBudgetLog(query).done(function(res: Array<ExternalBudgetLogModel>) {
                     self.dataLog(res);
                     dfd.resolve();
@@ -152,6 +185,9 @@ module nts.uk.pr.view.ksu006.c {
                 return dfd.promise();
             }
             
+            /**
+             * loadCompletionList
+             */
             private loadCompletionList(): JQueryPromise<Array<EnumerationModel>> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -164,6 +200,9 @@ module nts.uk.pr.view.ksu006.c {
                 return dfd.promise();
             }
             
+            /**
+             * getComponentDate
+             */
             private getComponentDate(date: string): any {
                 let lstComponent: Array<string> = date.split('/');
                 return {
@@ -173,11 +212,12 @@ module nts.uk.pr.view.ksu006.c {
                 }
             }
             
+            /**
+             * showMessageError
+             */
             private showMessageError(res: any) {
                 if (res.businessException) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                } else {
-                    nts.uk.ui.dialog.alertError(res.message);
                 }
             }
         }

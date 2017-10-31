@@ -7,8 +7,9 @@ package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 import java.util.List;
 
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -94,9 +95,9 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 * setClosureMonth(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth)
 	 */
 	@Override
-	public void setClosureMonth(ClosureMonth month) {
+	public void setClosureMonth(CurrentMonth month) {
 		if (this.kclmtClosure.getUseClass() == 1) {
-			this.kclmtClosure.setClosureMonth(month.getProcessingDate().v());
+			this.kclmtClosure.setClosureMonth(month.getProcessingYm().v());
 		}
 	}
 

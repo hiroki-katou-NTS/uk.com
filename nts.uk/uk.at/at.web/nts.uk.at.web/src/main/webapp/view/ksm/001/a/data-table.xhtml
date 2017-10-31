@@ -30,7 +30,7 @@
 							<tr data-bind="with: yearlyEstimate">
 								<td class="bg-green">#{i18n.getText('KSM001_16')}</td>
 								<td>
-									<input tabindex="11"
+									<input tabindex="11" id="first-time-input"
 										data-bind=" ntsTimeEditor: {name: '#[KSM001_32]',
 											value: time1st,
 											inputFormat: 'time', 
@@ -152,7 +152,7 @@
 						</div>
 						<table tabindex="76" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_43')}" class="border-all tbl-monthly">
 							<tr class="bg-dark-green">
-								<td>#{i18n.getText('KSM001_43')}</td>
+								<td></td>
 								<td>#{i18n.getText('KSM001_11')}</td>
 								<td>#{i18n.getText('KSM001_12')}</td>
 								<td>#{i18n.getText('KSM001_13')}</td>
@@ -164,6 +164,7 @@
 								<td>
 									<input tabindex="77" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_32]',
+										option: $parents[2].defaultCurrencyOption,
 										value: price1st, required: true,
 										enable: $parents[1].isEditable,
 										constraint: 'EstimatePrice'}" />
@@ -171,6 +172,7 @@
 								<td>
 									<input tabindex="78" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_33]',
+										option: $parents[2].defaultCurrencyOption,
 										value: price2nd, required: true,
 										enable: $parents[1].isEditable,
 										constraint: 'EstimatePrice'}" />
@@ -178,6 +180,7 @@
 								<td>
 									<input tabindex="79" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_34]',
+										option: $parents[2].defaultCurrencyOption,
 										value: price3rd, required: true,
 										enable: $parents[1].isEditable,
 										constraint: 'EstimatePrice'}" />
@@ -185,6 +188,7 @@
 								<td>
 									<input tabindex="80" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_35]',
+										option: $parents[2].defaultCurrencyOption,
 										value: price4th, required: true,
 										enable: $parents[1].isEditable,
 										constraint: 'EstimatePrice'}" />
@@ -192,6 +196,7 @@
 								<td>
 									<input tabindex="81" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_36]',
+										option: $parents[2].defaultCurrencyOption,
 										value: price5th, required: true,
 										enable: $parents[1].isEditable,
 										constraint: 'EstimatePrice'}" />
@@ -205,6 +210,7 @@
 									<td>
 										<input data-bind="attr: {'tabindex': 82 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_38]',
+											option: $parents[2].defaultCurrencyOption,
 											value: price1st, required: true,
 											enable: $parents[1].isEditable,
 											constraint: 'EstimatePrice'}" />
@@ -212,6 +218,7 @@
 									<td>
 										<input data-bind="attr: {'tabindex': 83 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_39]',
+											option: $parents[2].defaultCurrencyOption,
 											value: price2nd, required: true,
 											enable: $parents[1].isEditable,
 											constraint: 'EstimatePrice'}" />
@@ -219,6 +226,7 @@
 									<td>
 										<input data-bind="attr: {'tabindex': 84 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_40]',
+											option: $parents[2].defaultCurrencyOption,
 											value: price3rd, required: true,
 											enable: $parents[1].isEditable,
 											constraint: 'EstimatePrice'}" />
@@ -226,6 +234,7 @@
 									<td>
 										<input data-bind="attr: {'tabindex': 85 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_41]',
+											option: $parents[2].defaultCurrencyOption,
 											value: price4th, required: true,
 											enable: $parents[1].isEditable,
 											constraint: 'EstimatePrice'}" />
@@ -233,6 +242,7 @@
 									<td>
 										<input data-bind="attr: {'tabindex': 86 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_42]',
+											option: $parents[2].defaultCurrencyOption,
 											value: price5th, required: true,
 											enable: $parents[1].isEditable,
 											constraint: 'EstimatePrice'}" />
@@ -254,7 +264,7 @@
 						</div>
 						<table tabindex="142" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_44')}"  class="border-all tbl-monthly">
 							<tr class="bg-dark-green">
-								<td>#{i18n.getText('KSM001_44')}</td>
+								<td></td>
 								<td>#{i18n.getText('KSM001_16')}</td>
 								<td>#{i18n.getText('KSM001_17')}</td>
 								<td>#{i18n.getText('KSM001_18')}</td>
@@ -266,37 +276,42 @@
 								<td>
 									<input tabindex="147" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_32]',
+										option: $parents[2].defaultDaysOption,
 										value: days1st, required: true,
 										enable: $parents[1].isEditable,
-										constraint: 'EstimatePrice'}" />
+										constraint: 'YearlyEstimateDays'}" />
 								</td>
 								<td>
 									<input tabindex="148" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_33]',
+										option: $parents[2].defaultDaysOption,
 										value: days2nd, required: true,
 										enable: $parents[1].isEditable,
-										constraint: 'EstimatePrice'}" />
+										constraint: 'YearlyEstimateDays'}" />
 								</td>
 								<td>
 									<input tabindex="149" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_34]',
+										option: $parents[2].defaultDaysOption,
 										value: days3rd, required: true,
 										enable: $parents[1].isEditable,
-										constraint: 'EstimatePrice'}" />
+										constraint: 'YearlyEstimateDays'}" />
 								</td>
 								<td>
 									<input tabindex="150" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_35]',
+										option: $parents[2].defaultDaysOption,
 										value: days4th, required: true,
 										enable: $parents[1].isEditable,
-										constraint: 'EstimatePrice'}" />
+										constraint: 'YearlyEstimateDays'}" />
 								</td>
 								<td>
 									<input tabindex="151" 
 										data-bind=" ntsNumberEditor: {name: '#[KSM001_36]',
+										option: $parents[2].defaultDaysOption,
 										value: days5th, required: true,
 										enable: $parents[1].isEditable,
-										constraint: 'EstimatePrice'}" />
+										constraint: 'YearlyEstimateDays'}" />
 								</td>
 							</tr>
 							<com:ko tag="foreach" bind="monthlyEstimates">
@@ -307,37 +322,42 @@
 									<td>
 										<input data-bind="attr: {'tabindex': 152 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_38]',
+												option: $parents[2].defaultDaysOption,
 												value: days1st, required: true,
 												enable: $parents[1].isEditable,
-												constraint: 'EstimatePrice'}" />
+												constraint: 'MonthlyEstimateDays'}" />
 									</td>
 									<td>
 										<input data-bind="attr: {'tabindex': 153 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_39]',
+												option: $parents[2].defaultDaysOption,
 												value: days2nd, required: true,
 												enable: $parents[1].isEditable,
-												constraint: 'EstimatePrice'}" />
+												constraint: 'MonthlyEstimateDays'}" />
 									</td>
 									<td>
 										<input data-bind="attr: {'tabindex': 154 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_40]',
+												option: $parents[2].defaultDaysOption,
 												value: days3rd, required: true,
 												enable: $parents[1].isEditable,
-												constraint: 'EstimatePrice'}" />
+												constraint: 'MonthlyEstimateDays'}" />
 									</td>
 									<td>
 										<input data-bind="attr: {'tabindex': 155 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_41]',
+												option: $parents[2].defaultDaysOption,
 												value: days4th, required: true,
 												enable: $parents[1].isEditable,
-												constraint: 'EstimatePrice'}" />
+												constraint: 'MonthlyEstimateDays'}" />
 									</td>
 									<td>
 										<input data-bind="attr: {'tabindex': 156 + $index()*5},
 											ntsNumberEditor: {name: '#[KSM001_42]',
+												option: $parents[2].defaultDaysOption,
 												value: days5th, required: true,
 												enable: $parents[1].isEditable,
-												constraint: 'EstimatePrice'}" />
+												constraint: 'MonthlyEstimateDays'}" />
 									</td>
 								</tr>
 							</com:ko>

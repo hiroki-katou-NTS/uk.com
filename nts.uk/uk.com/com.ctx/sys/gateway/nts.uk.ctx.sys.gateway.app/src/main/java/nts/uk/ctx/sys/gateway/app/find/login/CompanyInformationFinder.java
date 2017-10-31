@@ -9,8 +9,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationDto;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 
 /**
  * The Class CompanyFinder.
@@ -27,7 +27,7 @@ public class CompanyInformationFinder {
 	 *
 	 * @return the list
 	 */
-	public List<CompanyInformationDto> findAll() {
+	public List<CompanyInformationImport> findAll() {
 		return companyInformationAdapter.findAll();
 	}
 }

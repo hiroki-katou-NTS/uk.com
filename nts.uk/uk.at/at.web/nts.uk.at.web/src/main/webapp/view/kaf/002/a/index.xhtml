@@ -15,15 +15,15 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-					<button>実績参照</button>
+					<button data-bind="click: performanceReference">実績参照</button>
 				</div>
 				<div id="contents-area">
-					<div class="label">打刻申請ガイドメッセージ</div>
-					<div><button class="caret-right">外出／育児／介護の許可申請</button></div>
-					<div><button class="caret-right">出勤／退勤漏れの申請</button></div>
-					<div><button class="caret-right">打刻の取消申請</button></div>
-					<div><button class="caret-right">レコーダイメージの申請</button></div>
-					<div><button class="caret-right">その他打刻申請</button></div>
+					<div class="label">#{i18n.getText('KAF002_1')}</div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(0); }">#{i18n.getText('KAF002_2')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(1); }">#{i18n.getText('KAF002_3')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(2); }">#{i18n.getText('KAF002_4')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(3); }">#{i18n.getText('KAF002_5')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(4); }">#{i18n.getText('KAF002_6')}</button></div>
 				</div>
 			</ui:define>
 		</ui:composition>

@@ -1,18 +1,16 @@
 package nts.uk.ctx.at.request.dom.setting.request.application.common;
 
-import java.math.BigDecimal;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLength;
+//@StringCharType(CharType.NUMERIC)
+//@StringMaxLength(4)
+@IntegerRange(max=9999,min=1)
+public class RetrictPreTimeDay extends IntegerPrimitiveValue<RetrictPreTimeDay> {
 
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(4)
-public class RetrictPreTimeDay extends DecimalPrimitiveValue<RetrictPreTimeDay> {
 	private static final long serialVersionUID = 1L;
 
-	public RetrictPreTimeDay(BigDecimal rawValue) {
+	public RetrictPreTimeDay(Integer rawValue) {
 		super(rawValue);
 	}
 }

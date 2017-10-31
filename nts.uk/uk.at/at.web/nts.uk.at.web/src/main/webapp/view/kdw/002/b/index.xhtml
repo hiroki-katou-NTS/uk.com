@@ -8,21 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 860,
-					height : 630
-				};
-			</script>
-
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw002.b.main.css" />
 			<com:scriptfile path="kdw002.b.start.js" />
 			<com:scriptfile path="kdw002.b.vm.js" />
 			<com:scriptfile path="kdw002.b.service.js" />
-			<com:scriptfile path="infragistics.ui.grid.knockout-extensions.js" />
-			<com:scriptfile path="infragistics.datasource.knockoutjs.js" />
-
 		</ui:define>
 
 		<ui:define name="content">
@@ -35,6 +25,7 @@
 					</div>
 				</div>
 				<button tabindex="2" class="proceed" data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
+				<button tabindex="3" class="copy"  data-bind="click: copy">#{i18n.getText('KDW002_14')}</button>
 				<label class="mylabel">#{i18n.getText('KDW002_1')}</label>
 			</div>
 			<div id="contents-area">

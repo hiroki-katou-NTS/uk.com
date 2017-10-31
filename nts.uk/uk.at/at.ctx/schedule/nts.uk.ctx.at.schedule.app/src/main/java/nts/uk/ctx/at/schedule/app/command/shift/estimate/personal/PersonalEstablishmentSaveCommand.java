@@ -37,6 +37,7 @@ public class PersonalEstablishmentSaveCommand {
 	/** The estimate number of day. */
 	private EstablishmentNumberOfDayDto estimateNumberOfDay;
 	
+	/** The target year. */
 	private int targetYear;
 	
 	

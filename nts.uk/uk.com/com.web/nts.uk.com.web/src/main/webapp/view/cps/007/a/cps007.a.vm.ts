@@ -1,11 +1,13 @@
 module cps007.a.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
+    import error = nts.uk.ui.dialog.alertError;
     import text = nts.uk.resource.getText;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
-        unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
@@ -31,7 +33,7 @@ module cps007.a.vm {
                 let maps = _(x.itemsClassification)
                     .map((x, i) => (x.layoutItemType == 2) ? i : -1)
                     .filter(x => x != -1).value();
-                
+
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
                         _.remove(x.itemsClassification, (m: IItemClassification) => {
@@ -79,12 +81,12 @@ module cps007.a.vm {
 
             // エラーメッセージ（#Msg_202,２つ以上配置されている項目名）を表示する
             if (!!itemids.length) {
-                alert(text('Msg_202'));
+                error({ messageId: 'Msg_202' });
                 return;
             }
 
             // push data layout to webservice
-            block();
+            invisible();
             service.saveData(command).done(() => {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {
@@ -92,7 +94,8 @@ module cps007.a.vm {
                 });
             }).fail((mes) => {
                 unblock();
-                alert(mes.message);
+                console.log(mes);
+                error({ messageId: mes.messageId, messageParams: mes.parameterIds });
             });
         }
     }

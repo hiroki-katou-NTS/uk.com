@@ -1,37 +1,25 @@
-module nts.uk.at.view.kmf004.c.service {
-    import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
-
-    let paths: any = {
-        'gets': 'at/share/wpBonusPaySetting/getListWPBonusPaySetting',
-        'get': 'at/share/wpBonusPaySetting/getWPBPSetting/{0}',
-        'save': 'at/share/wpBonusPaySetting/saveWpBonsPaySetting',
-        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
+module nts.uk.at.view.kmf004.e.service {
+    
+    var paths: any = {
+        getAllPer: "at/shared/yearserviceper/findAllPer",
+        update: "at/shared/yearserviceper/update",
+        add: "at/shared/yearserviceper/add",
+        remove: "at/shared/yearserviceper/delete"  
     }
-
-    export function getData(data: Array<string>) {
-        return ajax(paths.gets, data);
+    
+    export function getAll(){
+        return nts.uk.request.ajax(paths.getAllPer);    
     }
-
-    export function getSetting(wid: string) {
-        if (!wid) {
-            return $.Deferred().resolve(undefined).promise();
-        }
-        return ajax(format(paths.get, wid));
+    
+    export function update(command: viewmodel.Per): JQueryPromise<Array<string>>{
+        return nts.uk.request.ajax(paths.update, command);    
     }
-
-    export function getName(bonusPaySettingCode) {
-        return ajax(format(paths.getName, bonusPaySettingCode));
+    
+    export function add(command: viewmodel.Per): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.add, command);    
     }
-
-    export function saveData(command) {
-
-        // if remove action
-        if (!command.bonusPaySettingCode || command.bonusPaySettingCode == '000') {
-            command.action = 1;
-        }
-
-        // push to webservice
-        return ajax(paths.save, command);
-    }
-}
+    
+    export function remove(command: viewmodel.Per): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.remove, command);    
+    }   
+}          
