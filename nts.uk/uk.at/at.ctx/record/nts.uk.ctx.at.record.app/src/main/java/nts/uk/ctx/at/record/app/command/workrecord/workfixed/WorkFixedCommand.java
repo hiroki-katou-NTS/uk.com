@@ -16,8 +16,11 @@ import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento;
  */
 @Getter
 @Setter
-public class WorkFixedSaveCommand {
+public class WorkFixedCommand {
 
+	/** The is save. */
+	private Boolean isSave;
+	
 	/** The closure id. */
 	private Integer closureId;
 	
@@ -71,7 +74,7 @@ public class WorkFixedSaveCommand {
 	     * @param fixedDate the fixed date
 	     * @param saveCommand the save command
 	     */
-	    public WorkFixedGetMementoImpl(String personId, GeneralDate fixedDate, WorkFixedSaveCommand saveCommand) {
+	    public WorkFixedGetMementoImpl(String personId, GeneralDate fixedDate, WorkFixedCommand saveCommand) {
             this.personId = personId;
             this.fixedDate = fixedDate;
             this.closureId = saveCommand.closureId;
