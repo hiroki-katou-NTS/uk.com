@@ -1,8 +1,12 @@
 package command.person.setting.selectionitem;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
@@ -16,9 +20,18 @@ public class UpdateSelectionItemCommandHandler extends CommandHandler<UpdateSele
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSelectionItemCommand> context) {
+		UpdateSelectionItemCommand command = context.getCommand();
+		
+		// ドメインモデル「個人情報の選択項目」のエラーチェック
+		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
+				.getSelectionByName(command.getSelectionItemName());
+
+		// 「選択項目名称」は重複してはならない
+		if (optCheckExistByName.isPresent()) {
+			throw new BusinessException(new RawErrorMessage("Msg_513"));
+		}
 
 		// ドメインモデル「個人情報の選択項目」を登録する
-		UpdateSelectionItemCommand command = context.getCommand();
 		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(command.getSelectionItemId(),
 				command.getSelectionItemName(), command.getMemo(),
 				command.isSelectionItemClassification() == true ? 1 : 0, AppContexts.user().contractCode(),
