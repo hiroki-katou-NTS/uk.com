@@ -13,7 +13,8 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             self.selectedItem = ko.observable();
 
             self.columns1 = ko.observableArray([
-                { headerText: 'コード', key: 'roleId', width: 100 },
+                { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                { headerText: 'コード', key: 'roleCode', width: 100 },
                 { headerText: '名称', key: 'roleName', width: 150 }
             ]);
 
@@ -86,9 +87,11 @@ module nts.uk.at.view.kdw006.e.viewmodel {
 
     class RoleItem {
         roleId: string;
+        roleCode: string;
         roleName: string;
-        constructor(roleId: string, roleName: string) {
+        constructor(roleId: string, roleCode: string, roleName: string) {
             this.roleId = roleId;
+            this.roleCode = roleCode;
             this.roleName = roleName;
         }
     }
