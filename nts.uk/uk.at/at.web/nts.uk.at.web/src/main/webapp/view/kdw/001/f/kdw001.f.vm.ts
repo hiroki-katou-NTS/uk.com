@@ -44,7 +44,7 @@ module nts.uk.at.view.kdw001.f {
                     { headerText: getText('KDW001_78'), key: 'executedMenuName', width: 160 },
                     {
                         headerText: getText('KDW001_79'), key: 'executionStatus', width: 100,
-                        template: '<button data-bind="click :openDialogI">参照</button>',
+                        template: '<button class="open-dialog-i" data-id="${empCalAndSumExecLogID}">参照</button>',
                         columnCssClass: "colStyleButton",
                     }
                 ];
@@ -130,6 +130,7 @@ module nts.uk.at.view.kdw001.f {
             existenceError: number;
             executeContenByCaseID: number;
             executionContent: number;
+            executionContentName : string;
             executionTime: IExecutionTime;
             processStatus: number;
             calExeSetInfor: CalExeSettingInfor;
@@ -194,6 +195,7 @@ module nts.uk.at.view.kdw001.f {
             existenceError: number;
             executeContenByCaseID: number;
             executionContent: number;
+            executionContentName :string;
             executionTime: ExecutionTime;
             processStatus: number;
             calExeSetInfor: CalExeSettingInfor;
@@ -206,6 +208,7 @@ module nts.uk.at.view.kdw001.f {
                 this.existenceError = data.existenceError;
                 this.executeContenByCaseID = data.executeContenByCaseID;
                 this.executionContent = data.executionContent;
+                this.executionContentName = data.executionContentName;
                 this.executionTime = new ExecutionTime(data.executionTime);
                 this.processStatus = data.processStatus;
                 this.calExeSetInfor = data.calExeSetInfor;
@@ -237,9 +240,11 @@ module nts.uk.at.view.kdw001.f {
         export class CalExeSettingInfor {
             executionContent: number;
             executionType: number;
-            constructor(executionContent: number, executionType: number) {
+            executionTypeName : String
+            constructor(executionContent: number, executionType: number,executionTypeName : String) {
                 this.executionContent = executionContent;
                 this.executionType = executionType;
+                this.executionTypeName = executionTypeName;
             }//end class ExecutionTime
         }//end class CalExeSettingInfor
 

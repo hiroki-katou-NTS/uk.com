@@ -81,6 +81,7 @@ public class ExecutionLog {
 	private CalExeSettingInfor calExeSetInfor;
 
 
+
 	/**
 	 * 対象期間
 	 * start date - end date

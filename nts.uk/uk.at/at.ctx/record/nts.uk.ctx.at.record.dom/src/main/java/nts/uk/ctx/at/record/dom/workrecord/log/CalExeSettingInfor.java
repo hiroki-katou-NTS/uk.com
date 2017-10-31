@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 public class CalExeSettingInfor {
 	
 	/**
+	 * 実行内容
+	 * 
 	 * 0 : 日別作成
 	 * 1 : 日別計算
 	 * 2 : 承認結果反映
@@ -27,8 +29,10 @@ public class CalExeSettingInfor {
 	private ExecutionContent executionContent;
 	
 	/**
-	 * 通常実行
-	 * 再実行
+	 * 実行種別
+	 * 
+	 * 0 : 通常実行
+	 * 1 : 再実行
 	 */
 	private ExecutionType executionType;
 	

@@ -64,7 +64,7 @@
 								<th style="width: 200px;">#{i18n.getText('KDW001_25')}</th>
 								<th style="width: 100px;text-align: center;">#{i18n.getText('KDW001_26')}</th>
 								<th style="width: 100px;">#{i18n.getText('KDW001_80')}</th>
-								<th style="width: 70px;">#{i18n.getText('KDW001_82')}</th>
+								<th style="width: 90px;">#{i18n.getText('KDW001_82')}</th>
 								<th style="width: 200px;">#{i18n.getText('KDW001_79')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_20')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_49')}</th>
@@ -80,15 +80,15 @@
 									<!-- I2_12 -->
 									<td style="text-align: center;"><span data-bind="text: $data.executionTime.timeSpan"></span></td>
 									<!-- I2_13 -->
-									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
+									<td><span data-bind="text: $data.executionContentName"></span></td>
 									<!-- I2_14 -->
-									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
+									<td><span data-bind="text: $data.calExeSetInfor.executionTypeName"></span></td>
 									<!-- I2_15 -->
 									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
 									<!-- I2_16 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind=" text: $data.empCalAndSumExecLogID, click: $parent.openDialogG "></span></td>
+									<td style="text-align: center;"><span class="hyperlink" data-bind=" text: $root.numberPerson, click: $parent.openDialogG "></span></td>
 									<!-- I2_17 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind="text: $data.empCalAndSumExecLogID, click : $parent.openDialogH "></span></td>
+									<td style="text-align: center;"><span class="hyperlink" data-bind="text: $root.numberPerson, click : $parent.openDialogH "></span></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>

@@ -71,12 +71,12 @@ module nts.uk.at.view.kdw001.i {
             getByEmpCalAndSumExeLogId(empCalAndSumExeLogId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: modelkdw001f.EmpCalAndSumExeLog): any {
-                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data));
+                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: Array<modelkdw001f.IEmpCalAndSumExeLog>): any {
+                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data[0]));
                     self.processingMonthName(self.empCalAndSumExecLog().processingMonthName);
                     self.executedMenuJapan(self.empCalAndSumExecLog().executedMenuJapan);
                     //date
-                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data[0].executionLogs, ['objectPeriod.startDate'], ['desc']);
+                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data[0].executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
                         return new modelkdw001f.ExecutionLog(value);
                     }));

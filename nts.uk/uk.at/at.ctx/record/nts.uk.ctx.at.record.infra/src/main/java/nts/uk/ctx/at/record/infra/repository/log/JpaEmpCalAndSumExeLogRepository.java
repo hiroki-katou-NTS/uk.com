@@ -14,17 +14,19 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
 @Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository {
 
-	private final String SELECT_FROM_LOG = "SELECT c FROM KrcmtEmpExecutionLog c ";
-	private final String SELECT_All_LOG = SELECT_FROM_LOG + " WHERE c.krcmtEmpExecutionLogPK.companyID = :companyID ";
-
+	private final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
+													      
+	private final String SELECT_All_LOG = SELECT_FROM_LOG 
+			+ " WHERE c.krcdtEmpExecutionLogPK.companyID = :companyID ";
+	                    
 	private final String SELECT_LOG_BY_CODE = SELECT_All_LOG
-			+ " AND c.krcmtEmpExecutionLogPK.operationCaseID = :operationCaseID "
-			+ " AND c.krcmtEmpExecutionLogPK.employeeID = :employeeID "
-			+ " AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+			+ " AND c.krcdtEmpExecutionLogPK.operationCaseID = :operationCaseID "
+			+ " AND c.krcdtEmpExecutionLogPK.employeeID = :employeeID "
+			+ " AND c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
-	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcmtEmpExecutionLog empl JOIN KrcmtExecutionLog el "
-			+ " ON empl.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcmtExecutionLogPK.empCalAndSumExecLogID "
-			+ " WHERE " + ".krcmtEmpExecutionLogPK.companyID = :companyID " + " AND el.executionContent = 0";
+	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtEmpExecutionLog empl JOIN KrcdtExecutionLog el "
+			+ " ON empl.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcdtExecutionLogPK.empCalAndSumExecLogID "
+			+ " WHERE " + ".krcdtEmpExecutionLogPK.companyID = :companyID " + " AND el.executionContent = 0";
 
 //	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c "
 //			+ "JOIN KrcmtExecutionLog d ON c.krcmtEmpExecutionLogPK.companyID = d.krcmtExecutionLogPK.companyID "
@@ -33,8 +35,8 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 //			+ "AND c.krcmtEmpExecutionLogPK.employeeID = d.krcmtExecutionLogPK.employeeID "
 //			+ "WHERE d.krcmtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
-	private final String UPDATE_LOG_INFO = "UPDATE KrcmtExecutionLog a" + " SET a.processStatus = 1"
-			+ " WHERE a.krcmtExecutionLogPK.empCalAndSumExecLogID = empCalAndSumExecLogID"
+	private final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" + " SET a.processStatus = 1"
+			+ " WHERE a.krcdtExecutionLogPK.empCalAndSumExecLogID = empCalAndSumExecLogID"
 			+ " AND a.executionContent = 0 ";
 
 //	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
@@ -43,8 +45,8 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 //			+ ".krcmtEmpExecutionLogPK.companyID = :companyID "
 //			+ " AND el.executionContent = 0";
 
-	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c " 		
-			+" WHERE c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID " ;
+	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtEmpExecutionLog c " 		
+			+" WHERE c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID " ;
 
 	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG
 			+ " AND c.executedDate >= :startDate"
