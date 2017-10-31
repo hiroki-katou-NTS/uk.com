@@ -84,7 +84,9 @@ module nts.uk.com.view.cmm018.a {
                         return;
                     }
                     self.historyStr('');
-                    self.enableDelete(true);
+                    if(codeChanged != null){
+                        self.enableDelete(true);
+                    }
                     let history = self.findHistory(codeChanged);
                     if(history != undefined){
                         self.historyStr(history.dateRange);
