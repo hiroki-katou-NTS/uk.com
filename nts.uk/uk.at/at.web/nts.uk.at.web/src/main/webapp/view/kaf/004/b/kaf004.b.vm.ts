@@ -54,7 +54,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     employmentRootAtr,
                     applicationType,
                     moment.utc().format("YYYY/MM/DD")).done(() => {
-                        
+                        nts.uk.ui.block.clear();    
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
@@ -62,17 +62,22 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             var self = this;
             var dfd = $.Deferred();
-
             service.getByCode("").done(function(data) {
                 self.ListTypeReason(data.listApplicationReasonDto);
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
+                self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
+                self.early1.subscribe(value => { $("#inpEarlyTime1").trigger("validate"); });
+                self.late2.subscribe(value => { $("#inpLate2").trigger("validate"); });
+                self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
                 dfd.resolve(data);
-
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                dfd.reject(res);
             });
-
             return dfd.promise();
         }
 
@@ -80,17 +85,11 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         /** Create Button Click */
         registryButtonClick() {
             var self = this;
-
-            $("#inpLate1").trigger("validate");
-            $("#inpEarlyTime1").trigger("validate");
-            $("#inpLate2").trigger("validate");
-            $("#inpEarlyTime2").trigger("validate");
-            
             if (!nts.uk.ui.errors.hasError()) {
                /**  0: 事前の受付制限
                     1: 事後の受付制限
                 */ 
-                var prePostAtr = 1;
+                let prePostAtr = 1;
                 if (self.showScreen == 'B'){
                     //[画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻>=早退時刻 (#Msg_381#)
                     if((self.late1() && self.early1() && self.lateTime1() >= self.earlyTime1())
@@ -110,7 +109,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         
                     prePostAtr = 0;
                 }
-                var lateOrLeaveEarly: LateOrLeaveEarly = {
+                let lateOrLeaveEarly: LateOrLeaveEarly = {
                     prePostAtr: prePostAtr, 
                     applicationDate: self.date(),
                     sendMail: self.sendMail(),
@@ -127,21 +126,11 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     appApprovalPhaseCmds: self.kaf000_a2.approvalList
                 };
                 service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        /** Clear screen after Registry*/
-                        self.date(moment().format('YYYY/MM/DD'));
-                        self.late1(null);
-                        self.late2(null);
-                        self.lateTime1(null);
-                        self.lateTime2(null);
-                        self.early1(null);
-                        self.early2(null);
-                        self.earlyTime1(null);
-                        self.earlyTime2(null);
-                        self.appreason(null);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        location.reload();
                     });
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res);
+                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
                 });
 
             }
@@ -169,5 +158,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         reasonTemp: string;
         appReason: string;
         prePostAtr: number;
+        appApprovalPhaseCmds: Array<any>;
     }
 }

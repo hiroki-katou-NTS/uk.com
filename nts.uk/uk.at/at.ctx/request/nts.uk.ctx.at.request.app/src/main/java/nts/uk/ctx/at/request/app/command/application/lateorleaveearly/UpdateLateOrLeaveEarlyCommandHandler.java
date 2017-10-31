@@ -66,7 +66,8 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 				command.getAppID(),
         		command.getApplicationDate(),
         		command.getPrePostAtr(),
-        		command.getReasonTemp() + ": " + command.getAppReason(),
+        		command.getReasonTemp(),
+        		command.getAppReason(),
         		null,
         		command.getEarly1(),
         		command.getEarlyTime1(),
@@ -76,6 +77,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
         		command.getEarlyTime2(),
         		command.getLate2(),
         		command.getLateTime2());
+		domainLateOrLeaveEarly.setVersion(command.getVersion());
 		domainLateOrLeaveEarly.setListPhase(appApprovalPhases);
 		
 		

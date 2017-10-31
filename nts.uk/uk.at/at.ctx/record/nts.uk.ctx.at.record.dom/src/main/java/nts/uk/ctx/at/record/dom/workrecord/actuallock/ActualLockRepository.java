@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.actuallock;
@@ -42,6 +42,17 @@ public interface ActualLockRepository {
 	 * @return the optional
 	 */
 	Optional<ActualLock> findById(String companyId, int closureId);
+	
+	
+	
+	/**
+	 * Find by list id.
+	 *
+	 * @param companyId the company id
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	List<ActualLock> findByListId(String companyId, List<Integer> closureIds);
 	
 	/**
 	 * Removes the.

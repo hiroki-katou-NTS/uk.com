@@ -185,7 +185,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM PpestEmployeeCopySettingItem i"
 			+ " JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
 			+ " WHERE i.categoryId = :categoryId AND c.cid = :companyId";
-	
+
 	private final static String SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER = "SELECT i "
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemOrder io"
@@ -399,7 +399,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String perInfoCategoryId = String.valueOf(i[27]);
 
 		PersonInfoItemDefinition item = PersonInfoItemDefinition.createFromEntity(perInfoItemDefId, perInfoCategoryId,
-				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable, selectionItemRefType);
+				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable,
+				selectionItemRefType);
 		DataTypeState dataTypeState = null;
 
 		if (itemType == ItemType.SINGLE_ITEM.value) {
@@ -604,6 +605,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				});
 	}
 
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
+			List<String> itemCodeList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	// Sonnlb Code end
 
 	// vinhpx start
@@ -649,9 +657,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId, String contractCd) {
-		return this.queryProxy().query(SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER, Object[].class).setParameter("companyId", companyId)
-				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+	public List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
+			String contractCd) {
+		return this.queryProxy().query(SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER, Object[].class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
 					return PersonInfoItemDefinition.createFromEntityMap(String.valueOf(i[0]), perInfoCategoryId,
 							String.valueOf(i[1]));
 				});

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
@@ -44,7 +44,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
 	@Inject
-	private  EmployeeAdapter  employeeAdapter;
+	private  EmployeeRequestAdapter  employeeAdapter;
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository  appTypeDiscreteSettingRepo;

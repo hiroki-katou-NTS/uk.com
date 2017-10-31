@@ -85,7 +85,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento {
     public void setWorkplaceHistory(List<WorkplaceHistory> lstWkpHistory) {
         // convert list workplace history to map by key historyId
         Map<String, DatePeriod> mapWkpHist = lstWkpHistory.stream().collect(Collectors.toMap(
-                item -> ((WorkplaceHistory) item).getHistoryId(), item -> ((WorkplaceHistory) item).getPeriod()));
+                item -> ((WorkplaceHistory) item).identifier(), item -> ((WorkplaceHistory) item).span()));
 
         // set period
         this.lstEntity.forEach(entity -> {

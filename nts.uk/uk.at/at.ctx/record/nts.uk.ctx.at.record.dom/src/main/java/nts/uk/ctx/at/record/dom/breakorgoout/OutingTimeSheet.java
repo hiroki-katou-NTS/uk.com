@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.breakorgoout;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
  *
  */
 @Getter
-public class OutingTimeSheet {
+public class OutingTimeSheet extends DomainObject {
 	
 	//外出枠NO
 	private OutingFrameNo outingFrameNo;

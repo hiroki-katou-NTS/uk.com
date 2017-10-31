@@ -8,7 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.scheduleitemmanagement.ScheduleItemDto;
+import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemDto;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
@@ -26,7 +30,13 @@ public class VerticalSettingFinder {
 	private VerticalSettingRepository repository;
 	
 	@Inject
+	private ScDailyAttendanceItemAdapter dailyAttItemRepository;
+	
+	@Inject
 	private ScheduleItemManagementRepository scheduleRepository;
+	
+	@Inject
+	private ExternalBudgetRepository externalBudgerRepository;
 	
 	/**
 	 * Find by company id.
@@ -64,38 +74,68 @@ public class VerticalSettingFinder {
 	 *
 	 * @return the list
 	 */
-	public List<DailyItemsDto> getDailyItems(int attribute) {
+	public List<BaseItemsDto> getDailyItems(DailyItemsParamDto param) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
-		
-		List<DailyItemsDto> dailyItemsDtos = new ArrayList<>();
 
-		// Get schedule data
-		List<ScheduleItemDto> scheduleItems = this.scheduleRepository.findAllScheduleItemByAtr(companyId, attribute).stream().map(c -> ScheduleItemDto.fromDomain(c))
-				.collect(Collectors.toList());
+		// Get daily data
+		List<BaseItemsDto> baseItems = new ArrayList<>();
 		
-		// Sort schedule items by display order
+		List<ScDailyAttendanceItemDto> dailyAttendanceItems = this.dailyAttItemRepository.findByAtr(companyId, param.getDailyAttendanceItemAtrs());
 		
-		
-		// Add schedule items to result list
-		for(int i = 0; i < scheduleItems.size(); i++) {
-			DailyItemsDto dailyItem = new DailyItemsDto();
-			dailyItem.setCompanyId(companyId);
-			dailyItem.setId(i);
-			dailyItem.setItemId(scheduleItems.get(i).getScheduleItemId());
-			dailyItem.setItemName(scheduleItems.get(i).getScheduleItemName());
-			dailyItem.setItemType(0);
-			dailyItem.setDispOrder(scheduleItems.get(i).getDispOrder());
+		for(int i = 0; i < dailyAttendanceItems.size(); i++) {	
+			BaseItemsDto dailyItem = new BaseItemsDto();
+			String itemId = Integer.toString(dailyAttendanceItems.get(i).getAttendanceItemId());
+			String id = itemId + "" + ItemTypes.DAILY.value;
 			
-			dailyItemsDtos.add(dailyItem);
+			dailyItem.setCompanyId(companyId);
+			dailyItem.setId(id);
+			dailyItem.setItemId(itemId);
+			dailyItem.setItemName(dailyAttendanceItems.get(i).getAttendanceName());
+			dailyItem.setItemType(ItemTypes.DAILY.value);
+			dailyItem.setDispOrder(dailyAttendanceItems.get(i).getDisplayNumber());
+			
+			baseItems.add(dailyItem);
 		}
 		
-		// Get budget data
-		
+		// Get schedule data
+		List<ScheduleItemDto> scheduleItems = this.scheduleRepository.findAllScheduleItemByAtr(companyId, param.getScheduleAtr())
+				.stream().map(c -> ScheduleItemDto.fromDomain(c))
+				.collect(Collectors.toList());
+
+		for(int i = 0; i < scheduleItems.size(); i++) {
+			BaseItemsDto scheduleItem = new BaseItemsDto();
+			String id = scheduleItems.get(i).getScheduleItemId() + "" + ItemTypes.SCHEDULE.value;
+			
+			scheduleItem.setCompanyId(companyId);
+			scheduleItem.setId(id);
+			scheduleItem.setItemId(scheduleItems.get(i).getScheduleItemId());
+			scheduleItem.setItemName(scheduleItems.get(i).getScheduleItemName());
+			scheduleItem.setItemType(ItemTypes.SCHEDULE.value);
+			scheduleItem.setDispOrder(scheduleItems.get(i).getDispOrder());
+			
+			baseItems.add(scheduleItem);
+		}
 		
 		// Get external data
-		
+		List<ExternalBudgetDto> externalItems = this.externalBudgerRepository.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
+				.stream().map(c -> ExternalBudgetDto.fromDomain(c))
+				.collect(Collectors.toList());
 				
-		return dailyItemsDtos;
+		for(int i = 0; i < externalItems.size(); i++) {
+			BaseItemsDto externalItem = new BaseItemsDto();
+			String id = externalItems.get(i).getExternalBudgetCode() + "" + ItemTypes.EXTERNAL.value;
+			
+			externalItem.setCompanyId(companyId);
+			externalItem.setId(id);
+			externalItem.setItemId(externalItems.get(i).getExternalBudgetCode());
+			externalItem.setItemName(externalItems.get(i).getExternalBudgetName());
+			externalItem.setItemType(ItemTypes.EXTERNAL.value);
+			externalItem.setDispOrder(Integer.parseInt(externalItems.get(i).getExternalBudgetCode()));
+			
+			baseItems.add(externalItem);
+		}
+		
+		return baseItems;
 	}
 }

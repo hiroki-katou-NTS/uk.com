@@ -67,6 +67,7 @@ public class ApplicationDto {
 	/**
 	 * 申請理由
 	 */
+	private String appReasonID;
 	private String applicationReason;
 	/**
 	 * 申請種類
@@ -133,6 +134,7 @@ public class ApplicationDto {
 				domain.getEnteredPersonSID(), 
 				domain.getReversionReason().v(), 
 				domain.getApplicationDate() == null ? null :domain.getApplicationDate().toString(), 
+				domain.getAppReasonID(),
 				domain.getApplicationReason().v(),
 				domain.getApplicationType().value, 
 				domain.getApplicantSID(), 
@@ -157,6 +159,7 @@ public class ApplicationDto {
 				entity.getEnteredPersonSID(), 
 				new AppReason(entity.getReversionReason()), 
 				entity.getApplicationDate() == null?null :GeneralDate.fromString(entity.getApplicationDate(), "yyyy/MM/dd"),   
+				entity.getAppReasonID(),
 				new AppReason(entity.getApplicationReason()), 
 				EnumAdaptor.valueOf(entity.getApplicationType(), ApplicationType.class), 
 				entity.getApplicantSID(), 
