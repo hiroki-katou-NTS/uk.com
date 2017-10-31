@@ -47,6 +47,9 @@ module nts.uk.com.view.cmm050.a {
             popServerBeforeChange: string;
             imapServerBeforeChange: string;
             
+            popPortBeforeChange: number;
+            imapPortBeforeChange: number;
+            
             constructor(){
                 let _self = this;
                 
@@ -172,6 +175,13 @@ module nts.uk.com.view.cmm050.a {
                         _self.smtpServer(smtpServer.trim());
                     }
                 });
+                
+                _self.imapPort.subscribe(function(oldValue) {
+                    _self.imapPortBeforeChange = oldValue;
+                }, null, "beforeChange");
+                _self.popPort.subscribe(function(oldValue) {
+                    _self.popPortBeforeChange = oldValue;
+                }, null, "beforeChange");
             }
             
             /**
@@ -213,8 +223,12 @@ module nts.uk.com.view.cmm050.a {
                         _self.emailAuth(),
                         _self.useAuth() == UseServer.USE ? _self.password() : _self.passwordBeforeChange,
                         new model.SmtpInfoDto( _self.smtpServer(), _self.smtpPort()),
-                        new model.PopInfoDto(_self.useAuth() == UseServer.USE ? _self.popServer() : _self.popServerBeforeChange, _self.popUseServer(), _self.popPort()),
-                        new model.ImapInfoDto(_self.useAuth() == UseServer.USE ? _self.imapServer() : _self.imapServerBeforeChange, _self.imapUseServer(), _self.imapPort())
+                        new model.PopInfoDto(_self.useAuth() == UseServer.USE && _self.popUseServer() == PopUseServer.USE ? _self.popServer() : _self.popServerBeforeChange, 
+                                                _self.popUseServer(), 
+                                                _self.useAuth() == UseServer.USE ? _self.popPort() : _self.popPortBeforeChange),
+                        new model.ImapInfoDto(_self.useAuth() == UseServer.USE && _self.imapUseServer() == ImapUseServer.USE ? _self.imapServer() : _self.imapServerBeforeChange, 
+                                                _self.imapUseServer(), 
+                                                _self.useAuth() == UseServer.USE ? _self.imapPort() : _self.imapPortBeforeChange)
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
@@ -237,6 +251,12 @@ module nts.uk.com.view.cmm050.a {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_533" });
                     return;
                 }
+                
+                // Validate
+                if (_self.hasError()) {
+                    return;
+                }
+                
                 setShared('CMM050Params', {
                     emailAuth: _self.emailAuth(),
                 }, true);
