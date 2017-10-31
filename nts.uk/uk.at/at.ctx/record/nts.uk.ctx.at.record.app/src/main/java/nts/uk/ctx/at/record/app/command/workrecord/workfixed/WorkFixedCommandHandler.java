@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WorkFixedSaveCommandHandler.
  */
 @Stateless
-public class WorkFixedSaveCommandHandler extends CommandHandler<WorkFixedSaveCommand> {
+public class WorkFixedCommandHandler extends CommandHandler<WorkFixedCommand> {
 	
 	/** The repository. */
 	@Inject
@@ -30,7 +30,7 @@ public class WorkFixedSaveCommandHandler extends CommandHandler<WorkFixedSaveCom
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<WorkFixedSaveCommand> context) {
+	protected void handle(CommandHandlerContext<WorkFixedCommand> context) {
 		
 		// get Person Id
 		String personId = AppContexts.user().personId();
@@ -39,21 +39,28 @@ public class WorkFixedSaveCommandHandler extends CommandHandler<WorkFixedSaveCom
 		GeneralDate fixedDate = GeneralDate.today();
 	
 		// get command
-		WorkFixedSaveCommand command = context.getCommand();	
+		WorkFixedCommand command = context.getCommand();	
 		
 		// set person id and fixed date to work fixed
 		WorkFixed workFixed = command.toDomain(personId, fixedDate);
 		
 		//find exist work fixed
-		Optional<WorkFixed> optionalWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(), command.getClosureId());
+		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(), command.getClosureId());
 		
-		// check exist work fixed 
-		if(optionalWorkFixed.isPresent()){
-			// update 
-			this.repository.update(workFixed);
-			return;
-		}
-		this.repository.add(workFixed);
-		
+		if (command.getIsSave()) {
+			// Save new WorkFixed
+			if(opWorkFixed.isPresent()){
+				//TODO: No need for updating old WorkFixed?
+				//this.repository.update(workFixed);
+				return;
+			}
+			this.repository.add(workFixed);
+		} else {			
+			// Remove WorkFixed			
+			if(!opWorkFixed.isPresent()){
+				return;
+			}
+			this.repository.remove(command.getWkpId(), command.getClosureId());
+		}	
 	}
 }

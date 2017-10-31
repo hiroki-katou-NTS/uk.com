@@ -27,11 +27,9 @@ public class WorkFixedFinder {
 	/**
 	 * Find work fixed by wkp id and closure id.
 	 *
-	 * @param workPlaceId
-	 *            the work place id
-	 * @param closureId
-	 *            the closure id
-	 * @return the work fixed dto
+	 * @param workPlaceId the work place id
+	 * @param closureId the closure id
+	 * @return the work fixed finder dto
 	 */
 	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(String workPlaceId, Integer closureId) {
 
@@ -45,7 +43,13 @@ public class WorkFixedFinder {
 		return workFixedDto;
 	}
 	
-	public List<WorkFixedFinderDto> findWorkFixed(List<WorkFixedFinderDto> listDto) {
+	/**
+	 * Find work fixed.
+	 *
+	 * @param listDto the list dto
+	 * @return the list
+	 */
+	public List<WorkFixedFinderDto> findWorkFixedInfo(List<WorkFixedFinderDto> listDto) {
 		
 		return listDto.stream()
 			.map(dto -> {
