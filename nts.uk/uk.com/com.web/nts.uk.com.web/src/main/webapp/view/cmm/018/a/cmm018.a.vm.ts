@@ -215,6 +215,7 @@ module nts.uk.com.view.cmm018.a {
                     if(codeChanged==1){//private
                         __viewContext.viewModel.viewmodelB.singleSelectedCode(null);
                         self.checkAAA(0);
+                        __viewContext.viewModel.viewmodelB.tabSelectedB(self.tabSelected());
                         //TH: company
                         if(self.tabSelected() == vmbase.RootType.COMPANY){
                              __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.COMPANY,'');
@@ -229,6 +230,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                     }else{//common
                         self.checkAAA(1);
+                        self.tabSelected(__viewContext.viewModel.viewmodelB.tabSelectedB());
                         //TH: company
                         if(self.tabSelected() == vmbase.RootType.COMPANY){
                             self.getDataCompany(1);
@@ -463,7 +465,7 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
-                        self.enableRegister(true); 
+                        self.enableRegister(false); 
                         self.enableDelete(false);
                         block.clear();
                         dfd.resolve();
@@ -529,6 +531,7 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.cpA([]);
                         self.enableRegister(false);
+                        self.listHistory([]);
                         self.enableDelete(false);
                         block.clear();
                         dfd.resolve();
