@@ -109,6 +109,6 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		updateGoBack.setVersion(command.goBackCommand.version);
 		// update
 		
-		this.goBackDirectlyUpdateService.update(updateGoBack, updateApp);
+		this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp);
 	}
 }
