@@ -43,11 +43,12 @@ public class GetDataApprovalRootOfSubjectRequest {
 						if(Strings.isNotBlank(z.getJobId())) {
 							List<ConcurrentEmployeeRequest> lstEmployeeByJob = employeeAdapter.getConcurrentEmployee(companyID, z.getJobId(), generalDate);
 							String employeeName = "";
-							for(ConcurrentEmployeeRequest concurr: lstEmployeeByJob) {
+							
+							for(ConcurrentEmployeeRequest concurr: lstEmployeeByJob) {								
 								employeeName += ", " + concurr.getPersonName();
 							}
 							if(!employeeName.isEmpty()) {
-								employeeName = employeeName.substring(0, 2);
+								employeeName = employeeName.substring(2);								
 							}
 							z.setName(employeeName);
 						}

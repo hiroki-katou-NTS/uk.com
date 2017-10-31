@@ -26,7 +26,7 @@ public class ApproverInfoImport {
 	private int orderNumber;
 
 	private String name;
-	/**確定者*/
+	/**承認者指定区分*/
 	private int approvalAtr;
 	
 	private String representerSID;
