@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.ws.workrecord.workfixed;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -87,5 +89,11 @@ public class WorkfixedWebService extends WebService{
 	@POST
 	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(WorkFixedFinderDto dto) {
 		return this.workFixedFinder.findWorkFixedByWkpIdAndClosureId(dto.getWkpId(), dto.getClosureId());
+	}
+	
+	@Path("find")
+	@POST
+	public List<WorkFixedFinderDto> findWorkFixed(List<WorkFixedFinderDto> listDto) {
+		return this.workFixedFinder.findWorkFixed(listDto);
 	}
 }
