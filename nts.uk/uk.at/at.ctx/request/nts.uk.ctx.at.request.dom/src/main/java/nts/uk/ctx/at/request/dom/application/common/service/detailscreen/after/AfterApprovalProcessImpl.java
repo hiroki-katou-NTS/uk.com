@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.mail.MailSender;
 
 @Stateless
 public class AfterApprovalProcessImpl implements AfterApprovalProcess {
@@ -50,6 +51,9 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepository;
+	
+	@Inject
+	private MailSender mailsender;
 	
 	@Override
 	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
@@ -79,7 +83,12 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					listMailReceived = this.MailDestination(application).getDestinationMail();
 					if(!listMailReceived.isEmpty()) {
 						//TODO:
-						//メール送信先リストにメール送信する
+						/*try {
+							mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "approval mail from NTS"));
+						} catch (SendMailFailedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}*/
 					}
 				}
 			}
