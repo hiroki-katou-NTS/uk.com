@@ -50,7 +50,7 @@
 		                			{ headerText: '', key: 'employeeName', width: 125, hidden: false }
 								],
 								multiple: false,
-								value: ko.observable(undefined)
+								value: employee().employeeId
 							}"></table>
 					</div>
 					<div id="lefttabs"
@@ -100,19 +100,14 @@
 								<button type="button">#{i18n.getText('CPS001_27')}</button>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-								options: ko.observableArray([
-										{id: 1, name: 'name 1'},
-										{id: 2, name: 'name 2'},
-										{id: 3, name: 'name 3'},
-										{id: 4, name: 'name 4'},
-										]),
-								optionsValue: 'id',
-								visibleItemsCount: 5,
-								value: ko.observable(undefined),
-								optionsText: 'name',
-								editable: false,
-								enable: true,
-								columns: [{ prop: 'name', length: 2 }]}"></div>
+										options: listCategory,
+										optionsValue: 'id',
+										visibleItemsCount: 5,
+										value: currentCategory().id,
+										optionsText: 'categoryName',
+										editable: false,
+										enable: true,
+										columns: [{ prop: 'categoryName', length: 10 }]}"></div>
 							</div>
 							<table id="categories"
 								data-bind="ntsGridList: {								
@@ -137,14 +132,13 @@
 				<div class="right-area">
 					<div class="top-right-area cf">
 						<div class="avatar-group" data-bind="with: person">
-							<div class="active-panel">
+							<div class="active-panel" data-bind="click: $parent.chooseAvatar.bind($parent)">
 								<img data-bind="attr: { src: avatar}" />
 							</div>
 						</div>
 						<div class="person-group" data-bind="with: person">
 							<div class="active-panel">
 								<table class="person-info">
-
 									<tbody>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
