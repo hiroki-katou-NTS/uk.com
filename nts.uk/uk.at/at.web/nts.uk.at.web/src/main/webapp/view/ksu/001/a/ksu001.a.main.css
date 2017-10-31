@@ -234,21 +234,21 @@ table th, table td {
 	background-color: #008000
 }
 
-#image102 {
+#paste {
 	background: url(../image/image102.png) no-repeat center;
 	background-size: 32px 32px;
 	height: 35px;
 	width: 35px;
 }
 
-#image104 {
+#copy {
 	background: url(../image/image104.png) no-repeat center;
 	background-size: 32px 32px;
 	height: 35px;
 	width: 35px;
 }
 
-#image030 {
+#undo {
 	margin: 5px 0 0 41px;
 	background: url(../image/image030.png) no-repeat center;
 	background-size: 32px 32px;
