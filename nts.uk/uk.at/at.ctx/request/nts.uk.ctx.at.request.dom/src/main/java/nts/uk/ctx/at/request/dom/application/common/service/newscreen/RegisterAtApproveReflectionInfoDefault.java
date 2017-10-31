@@ -63,7 +63,6 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 		// ドメインモデル「申請」．「承認フェーズ」1～5の順でループする
 		String companyID = AppContexts.user().companyId();
 		String loginEmp = AppContexts.user().employeeId();
-		List<AppApprovalPhase> listAppPhase = new ArrayList<AppApprovalPhase>();
 		List<AppApprovalPhase> listPhase = application.getListPhase();
 		// LOOP PHASE
 		for (AppApprovalPhase appPhase : listPhase) {
@@ -252,9 +251,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				// 承認完了フラグをチェックする
 				// ループ中のドメインモデル「承認フェーズ」．承認区分 = 承認済
 				appPhase.changeApprovalATR(ApprovalAtr.APPROVED);				
-			} else {
-				listAppPhase.add(appPhase);
-			}
+			} 
 		}
 		return application;
 	}
