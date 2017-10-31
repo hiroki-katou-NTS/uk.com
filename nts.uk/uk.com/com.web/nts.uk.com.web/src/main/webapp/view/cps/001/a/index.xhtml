@@ -42,7 +42,7 @@
 						<table id="employees"
 							data-bind="ntsGridList: {
 								rows: 10,
-								dataSource: listEmployees,
+								dataSource: listEmployee,
 								primaryKey: 'employeeId',
 								columns: [
 									{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
@@ -129,20 +129,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="right-area">
+				<div class="right-area" data-bind="let: { _pers: person(), _emp: employee() }">
 					<div class="top-right-area cf">
-						<div class="avatar-group" data-bind="with: person">
-							<div class="active-panel" data-bind="click: $parent.chooseAvatar.bind($parent)">
-								<img data-bind="attr: { src: avatar}" />
+						<div class="avatar-group">
+							<div class="active-panel" data-bind="click: chooseAvatar">
+								<img data-bind="attr: { src: _pers.avatar}" />
 							</div>
 						</div>
-						<div class="person-group" data-bind="with: person">
+						<div class="person-group">
 							<div class="active-panel">
 								<table class="person-info">
 									<tbody>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
-											<td colspan="3"></td>
+											<td colspan="3">
+												<span data-bind="text: _emp.employeeCode"></span>
+												<span data-bind="text: _pers.fullName"></span>
+											</td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_12')}</td>
