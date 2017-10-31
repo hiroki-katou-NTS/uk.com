@@ -2206,6 +2206,7 @@ module nts.uk.com.view.cmm018.a {
                     if(data == null){
                         return;
                     }
+                    self.singleSelectedCode('-1');
                     self.enableDeleteB(false);
                     __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataIB(data);
@@ -2260,7 +2261,7 @@ module nts.uk.com.view.cmm018.a {
                             }
                         }
                         
-                        self.singleSelectedCode('-1');
+//                        self.singleSelectedCode('-1');
                     }else if(self.tabSelectedB() == 1){//workplace
                         let a = null;
                         _.each(self.lstWorkplace(), function(item){
@@ -2301,7 +2302,7 @@ module nts.uk.com.view.cmm018.a {
                                     '',b,b,b,b,b));
                         }
                         }
-                        self.singleSelectedCode('-1');
+//                        self.singleSelectedCode('-1');
                     }else{//person
                         let a = null;
                         _.each(self.lstPerson(), function(item){
@@ -2342,7 +2343,7 @@ module nts.uk.com.view.cmm018.a {
                                     '',b,b,b,b,b));
                             }
                         }
-                        self.singleSelectedCode('-1');
+//                        self.singleSelectedCode('-1');
                     }
                     
                 });
