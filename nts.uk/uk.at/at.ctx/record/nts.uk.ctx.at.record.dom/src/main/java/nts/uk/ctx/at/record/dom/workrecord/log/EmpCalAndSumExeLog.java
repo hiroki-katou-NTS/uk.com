@@ -89,10 +89,8 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 			GeneralDate executionDate,
 			Integer processingMonth,
 			int closureID,
-			List<ExecutionLog> executionLogs
-			) {
-		
-		return new  EmpCalAndSumExeLog(
+			List<ExecutionLog> executionLogs) {
+		return new EmpCalAndSumExeLog(
 				companyID,
 				empCalAndSumExecLogID,
 				caseSpecExeContentID,
@@ -102,8 +100,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 				executionDate,
 				new YearMonth(processingMonth),
 				closureID,
-				executionLogs
-				);
+				executionLogs);
 	}
 	
 }

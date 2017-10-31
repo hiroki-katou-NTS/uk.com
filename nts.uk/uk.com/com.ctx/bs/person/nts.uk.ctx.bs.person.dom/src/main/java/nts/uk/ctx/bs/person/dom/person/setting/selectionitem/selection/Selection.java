@@ -18,7 +18,7 @@ public class Selection {
 			String selectionName, String externalCD, String memoSelection) {
 
 		// 選択肢パラメーター帰還
-		return new Selection(memoSelection, memoSelection, new SelectionCD(selectionCD),
+		return new Selection(selectionID, histId, new SelectionCD(selectionCD),
 				new SelectionName(selectionName), new ExternalCD(externalCD), new MemoSelection(memoSelection));
 
 	}

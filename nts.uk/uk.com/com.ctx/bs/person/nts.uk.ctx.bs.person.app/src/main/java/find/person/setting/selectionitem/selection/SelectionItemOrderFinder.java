@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
 
 /**
  * 
@@ -15,7 +16,10 @@ import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection
 public class SelectionItemOrderFinder {
 
 	@Inject
-	private SelectionItemOrderRepository selectionItemOrderRepo;
+	private SelectionRepository selectionRepo;
 
-	// code:
+	@Inject
+	private SelectionItemOrderRepository selectionOrderRpo;
+
+	
 }
