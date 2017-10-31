@@ -187,9 +187,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             service.insertGoBackDirect(self.getCommand()).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                //clean Screen 
-                self.cleanScreen();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    location.reload();
+                });
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
             }).then(function(){

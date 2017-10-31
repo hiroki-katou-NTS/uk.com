@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -47,7 +47,7 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	private AgentAdapter approvalAgencyInformationService;
 	
 	@Inject 
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepo;
 	@Override

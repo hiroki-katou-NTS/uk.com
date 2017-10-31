@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Embeddable
 @AllArgsConstructor
@@ -18,6 +19,9 @@ public class KrcdtWorkScheduleTimePK implements Serializable {
 
 	@Column(name = "SID")
 	public String employeeId;
+
+	@Column(name = "YMD")
+	public GeneralDate ymd;
 
 	@Column(name = "WORK_NO")
 	public BigDecimal workNo;	

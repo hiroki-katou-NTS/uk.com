@@ -131,11 +131,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                             location.reload();
                         });    
                     } else {
-                        if(res.messageId === "Msg_327"){
-                            nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
-                        }
+                        nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
                     }
                 });
 

@@ -113,12 +113,10 @@ public class WorkplaceConfigInfoFinder {
 				historyId);
 
 		if (!optionalWkpConfigInfo.isPresent()) {
-			return null;
-		}
-		WorkplaceConfigInfo wkpConfigInfo = optionalWkpConfigInfo.get();
-		if (wkpConfigInfo.getLstWkpHierarchy().isEmpty()) {
 			throw new BusinessException("Msg_373");
 		}
+		WorkplaceConfigInfo wkpConfigInfo = optionalWkpConfigInfo.get();
+		
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
 		List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();

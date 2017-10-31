@@ -9,13 +9,13 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 
 /**
  * The Class KshmtSingleDaySchePK.
@@ -38,20 +38,20 @@ public class KshmtSingleDaySchePK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "PERS_WORK_ATR")
-    private short persWorkAtr;
+    private int persWorkAtr;
     
     /** The start ymd. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "START_YMD")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
     private Date startYmd;
     
     /** The end ymd. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "END_YMD")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
     private Date endYmd;
 
     /**
@@ -68,82 +68,10 @@ public class KshmtSingleDaySchePK implements Serializable {
      * @param startYmd the start ymd
      * @param endYmd the end ymd
      */
-    public KshmtSingleDaySchePK(String sid, short persWorkAtr, Date startYmd, Date endYmd) {
+    public KshmtSingleDaySchePK(String sid, int persWorkAtr, Date startYmd, Date endYmd) {
         this.sid = sid;
         this.persWorkAtr = persWorkAtr;
         this.startYmd = startYmd;
-        this.endYmd = endYmd;
-    }
-
-    /**
-     * Gets the sid.
-     *
-     * @return the sid
-     */
-    public String getSid() {
-        return sid;
-    }
-
-    /**
-     * Sets the sid.
-     *
-     * @param sid the new sid
-     */
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
-    /**
-     * Gets the pers work atr.
-     *
-     * @return the pers work atr
-     */
-    public short getPersWorkAtr() {
-        return persWorkAtr;
-    }
-
-    /**
-     * Sets the pers work atr.
-     *
-     * @param persWorkAtr the new pers work atr
-     */
-    public void setPersWorkAtr(short persWorkAtr) {
-        this.persWorkAtr = persWorkAtr;
-    }
-
-    /**
-     * Gets the start ymd.
-     *
-     * @return the start ymd
-     */
-    public Date getStartYmd() {
-        return startYmd;
-    }
-
-    /**
-     * Sets the start ymd.
-     *
-     * @param startYmd the new start ymd
-     */
-    public void setStartYmd(Date startYmd) {
-        this.startYmd = startYmd;
-    }
-
-    /**
-     * Gets the end ymd.
-     *
-     * @return the end ymd
-     */
-    public Date getEndYmd() {
-        return endYmd;
-    }
-
-    /**
-     * Sets the end ymd.
-     *
-     * @param endYmd the new end ymd
-     */
-    public void setEndYmd(Date endYmd) {
         this.endYmd = endYmd;
     }
 

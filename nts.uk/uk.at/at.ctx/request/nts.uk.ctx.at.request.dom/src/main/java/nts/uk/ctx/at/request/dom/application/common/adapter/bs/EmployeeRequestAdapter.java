@@ -3,9 +3,10 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.bs;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 
-public interface EmployeeAdapter {
+public interface EmployeeRequestAdapter {
 	/**
 	 * get employment code by companyID, employeeID and base date
 	 * @param companyId 会社ID
@@ -49,4 +50,5 @@ public interface EmployeeAdapter {
 	
 	String empEmail(String sID);
 	
+	List<ConcurrentEmployeeRequest> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
 }

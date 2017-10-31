@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf009.b {
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
-                        self.workLocationName(detailData.workLocationName1);
+                        self.workLocationName(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
@@ -195,11 +195,7 @@ module nts.uk.at.view.kaf009.b {
                                     location.reload();
                                 });    
                             } else {
-                                if(res.messageId === "Msg_327"){
-                                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
-                                } else {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
-                                }
+                                nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
                             }
                         });
                     }

@@ -16,7 +16,6 @@ public enum ReferenceMethodType {
 	NOSETTING(1),
 	/** 固定値): 2 **/
 	FIXEDVALUE(2),
-
 	/** (ログイン者と同じ) */
 	SAMEASLOGIN(3),
 	/** (入社日と同じ): */
