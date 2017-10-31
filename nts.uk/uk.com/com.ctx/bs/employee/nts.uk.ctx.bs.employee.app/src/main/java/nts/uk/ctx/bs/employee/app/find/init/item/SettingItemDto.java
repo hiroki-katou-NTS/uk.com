@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 
 /**
@@ -86,6 +87,15 @@ public class SettingItemDto {
 	public void setData(GeneralDate value) {
 		DateDataDto saveData = (DateDataDto) this.saveData;
 		saveData.setValue(value);
+	}
+
+	public static SettingItemDto fromInfoDataItem(EmpInfoItemData domain) {
+
+		return SettingItemDto.createFromJavaType(domain.getItemCode().v(), domain.getItemName(),
+				domain.getIsRequired().value, domain.getDataState().getDataStateType().value,
+				domain.getDataState().getDateValue(), domain.getDataState().getNumberValue(),
+				domain.getDataState().getStringValue());
+
 	}
 
 }

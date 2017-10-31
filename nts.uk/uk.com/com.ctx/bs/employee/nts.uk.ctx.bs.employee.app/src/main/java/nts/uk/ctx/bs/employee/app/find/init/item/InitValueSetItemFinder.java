@@ -88,8 +88,8 @@ public class InitValueSetItemFinder {
 
 	// JobTitleHistory start
 
-	private List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList,
-			String employeeId, GeneralDate baseDate) {
+	private List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
+			GeneralDate baseDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -97,8 +97,8 @@ public class InitValueSetItemFinder {
 	// JobTitleHistory end
 	// TemporaryAbsence start
 
-	private List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList,
-			String employeeId, GeneralDate baseDate) {
+	private List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList, String employeeId,
+			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
 		Optional<TemporaryAbsence> opttemAbsence = this.tempAbsenceRepo.getBySid(employeeId, baseDate);
@@ -151,8 +151,8 @@ public class InitValueSetItemFinder {
 	}
 
 	private List<SettingItemDto> loadInfoItemDataList(String categoryCd, String companyId) {
-		return this.infoItemDataRepo.getAllInfoItem(categoryCd, companyId).stream().map(x -> fromInfoItemtoDto(x))
-				.collect(Collectors.toList());
+		return this.infoItemDataRepo.getAllInfoItem(categoryCd, companyId).stream()
+				.map(x -> SettingItemDto.fromInfoDataItem(x)).collect(Collectors.toList());
 	}
 	// Employee Start
 
@@ -214,8 +214,8 @@ public class InitValueSetItemFinder {
 
 	// AffiliationDepartment start
 
-	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList,
-			String companyId, String employeeId) {
+	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String companyId,
+			String employeeId) {
 		// List<InitValueSettingItemDto> returnList = new
 		// ArrayList<InitValueSettingItemDto>();
 		//
@@ -232,8 +232,8 @@ public class InitValueSetItemFinder {
 	// AffiliationDepartment end
 
 	// Aff WorkPlace start
-	private List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList,
-			String employeeId, GeneralDate baseDate) {
+	private List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList, String employeeId,
+			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
 		List<AffWorkplaceHistory> affWorkDomain = this.affWorkRepo.searchWorkplaceHistoryByEmployee(employeeId,
@@ -264,14 +264,6 @@ public class InitValueSetItemFinder {
 
 	}
 	// Aff WorkPlace end
-
-	private SettingItemDto fromInfoItemtoDto(EmpInfoItemData domain) {
-
-		return SettingItemDto.createFromJavaType(domain.getItemCode().v(), domain.getItemName(),
-				domain.getIsRequired().value, domain.getDataState().getDataStateType().value,
-				domain.getDataState().getDateValue(), domain.getDataState().getNumberValue(),
-				domain.getDataState().getStringValue());
-	}
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
 		return SettingItemDto.createFromJavaType(domain.getItemCode(), domain.getItemName(),
