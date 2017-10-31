@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface EmpInfoItemDataRepository {
 
-	List<EmpInfoItemData> getAllInfoItem(String categoryCd);
-	
+	List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId);
+
 	List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId);
 }

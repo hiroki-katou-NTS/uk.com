@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
  *
  */
 @Value
-public class InitValueSettingItemDto {
+public class SettingItemDto {
 
 	private String itemCode;
 
@@ -43,11 +43,33 @@ public class InitValueSettingItemDto {
 		return resultDto;
 	}
 
-	public static InitValueSettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
-			int saveDataValue, GeneralDate dateValue, BigDecimal intValue, String stringValue) {
+	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired, int saveDataValue,
+			GeneralDate dateValue, BigDecimal intValue, String stringValue) {
 
-		return new InitValueSettingItemDto(itemCode, itemName, isRequired,
+		return new SettingItemDto(itemCode, itemName, isRequired,
 				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue));
+
+	}
+
+	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
+			GeneralDate dateValue) {
+
+		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.CreateDateDataDto(dateValue));
+
+	}
+
+	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
+			BigDecimal intValue) {
+
+		return new SettingItemDto(itemCode, itemName, isRequired,
+				SaveDataDto.CreateNumberDataDto(intValue.intValueExact()));
+
+	}
+
+	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
+			String stringValue) {
+
+		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.CreateStringDataDto(stringValue));
 
 	}
 

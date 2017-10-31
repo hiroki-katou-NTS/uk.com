@@ -19,9 +19,9 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 
 	private final String SEL_ALL_HAS_CHILD = "SELECT DISTINCT iv"
 			+ " FROM PpemtPersonInitValueSetting iv"
-			+ " LEFT JOIN PpemtPersonInitValueSettingCtg ic" 
+			+ " INNER JOIN PpemtPersonInitValueSettingCtg ic" 
 			+ " ON iv.initValueSettingPk.settingId  = ic.settingCtgPk.settingId"
-			+ " LEFT JOIN PpemtPerInfoCtg pc" 
+			+ " INNER JOIN PpemtPerInfoCtg pc" 
 			+ " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND pc.abolitionAtr=0" 
 			+ " INNER JOIN PpemtPerInfoItem pi"

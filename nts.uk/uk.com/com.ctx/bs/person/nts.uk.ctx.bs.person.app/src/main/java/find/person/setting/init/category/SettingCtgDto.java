@@ -9,13 +9,13 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.category.InitValSettingCtg;
  *
  */
 @Value
-public class InitCtgDto {
+public class SettingCtgDto {
 
 	private String categoryCd;
 	private String categoryName;
 
-	public static InitCtgDto fromDomain(InitValSettingCtg domain) {
-		return new InitCtgDto(domain.getCategoryCd(), domain.getCategoryName());
+	public static SettingCtgDto fromDomain(InitValSettingCtg domain) {
+		return new SettingCtgDto(domain.getCategoryCd(), domain.getCategoryName());
 	}
 
 }

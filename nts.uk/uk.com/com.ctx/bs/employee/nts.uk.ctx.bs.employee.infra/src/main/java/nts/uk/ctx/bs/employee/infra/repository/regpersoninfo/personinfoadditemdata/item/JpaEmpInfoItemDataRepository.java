@@ -18,18 +18,18 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtEmpInfoCtgData ic"
 			+ " ON id.ppemtEmpInfoItemDataPk.recordId = ic.ppemtEmpInfoCtgDataPk.recordId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" 
-			+ " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
-			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd";
-	
+			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd and pc.cid = :companyId";
+
 	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.ppemtEmpInfoCtgDataPk.recordId = :recordId";
+
 	@Override
-	public List<EmpInfoItemData> getAllInfoItem(String categoryCd) {
+	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
-				.setParameter("categoryCd", categoryCd).getList(c -> toDomain(c));
+				.setParameter("categoryCd", categoryCd).setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
@@ -46,7 +46,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 				entity[3].toString(), entity[8].toString(), isRequired, dataStateType, entity[5].toString(), intValue,
 				dateValue);
 	}
-	
+
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)

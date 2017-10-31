@@ -7,8 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import find.person.info.category.PerInfoCtgMapDto;
 import find.person.setting.copysetting.EmpCopySettingFinder;
+import find.person.setting.init.category.SettingCtgDto;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/setting/copySetting")
@@ -20,7 +20,7 @@ public class EmpCopySettingWebService extends WebService {
 
 	@POST
 	@Path("getCopySetting")
-	public List<PerInfoCtgMapDto> getEmpCopySetting() {
+	public List<SettingCtgDto> getEmpCopySetting() {
 		return this.finder.getEmpCopySetting();
 	}
 
