@@ -40,10 +40,10 @@ module nts.uk.at.view.kml004.a.viewmodel {
             ]);
 
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 70, hidden: true },
-                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 150, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 1, hidden: true },
+                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 200, formatter: _.escape },
                 {
-                    headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 90, unbound: true, dataType: "string",
+                    headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 15, unbound: true, dataType: "string",
                     template: '{{if ${totalItemNo} == "3" || ${totalItemNo} == "21" || ${totalItemNo} == "22"}} <button class="setting" onclick="openDlg(this)" data-code="${totalItemNo}" data-name="${totalItemName}" style="margin-left: 7px;">設定</button> {{/if}}',
                 }
             ]);
