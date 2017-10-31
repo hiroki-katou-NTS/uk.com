@@ -7,6 +7,9 @@ package nts.uk.ctx.sys.auth.pubimp.role;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
@@ -15,11 +18,11 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 /**
  * The Class RoleExportRepoImpl.
  */
-//@Stateless
+@Stateless
 public class RoleExportRepoImpl implements RoleExportRepo{
 
 	/** The role repo. */
-//	@Inject
+	@Inject
 	private RoleRepository roleRepo;
 	
 	/* (non-Javadoc)

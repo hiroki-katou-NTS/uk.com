@@ -16,6 +16,7 @@ module nts.uk.at.view.kdl006.a {
             columnText: KnockoutObservable<string>;
             listClosure: CurrentClosure[];
             listWorkplace: WorkplaceDto[];
+            listWorkFixed: WorkFixedDto[];
             
             constructor() {
                 let _self = this;
@@ -34,8 +35,9 @@ module nts.uk.at.view.kdl006.a {
                 
                 _self.listClosure = [];
                 _self.listWorkplace = [];
+                _self.listWorkFixed = [];
             }
-
+                      
             loadGrid() {
                 let _self = this;
                 _self.items(_self.listWorkplace);
@@ -133,45 +135,39 @@ module nts.uk.at.view.kdl006.a {
                 let listClosure = _self.listClosure;
                 let listWorkplace = _self.listWorkplace;
 
-                //TODO refactor
                 for (let workplace of listWorkplace) {
-                    let columnIndex = 1;
                     for (let closure of listClosure) {
-                        ((columnIndex: any) => {
-                            service.findWorkFixedByWkpIdAndClosureId(workplace.workplaceId, closure.closureId)
-                                .done((data: WorkFixedDto) => {                                   
-                                    switch (columnIndex) {
-                                        case 1: {  
-                                            workplace.columnText1 = data.confirmPid;                                       
-                                        }
-                                        case 2: {
-                                            workplace.columnText2 = data.confirmPid;    
-                                        }
-                                        case 3: {
-                                            workplace.columnText3 = data.confirmPid;    
-                                        }
-                                        case 4: {
-                                            workplace.columnText4 = data.confirmPid;    
-                                        }
-                                        case 5: {
-                                            workplace.columnText5 = data.confirmPid;    
-                                        }
-                                        default: {
-                                            // Do nothing
-                                        }
-                                    }                                                                
-                                    
-                                    // Update grid data
-                                    _self.items(listWorkplace);
-                                    // console.log(listWorkplace);
-                                    dfd.resolve();
-                                })                        
-                        })(columnIndex);                        
-                        
-                        columnIndex++;
+                        _self.listWorkFixed.push(new WorkFixedDto(closure.closureId, workplace.workplaceId));
                     }
                 }
-
+                
+                service.findWorkFixed(_self.listWorkFixed)
+                    .done((data: WorkFixedDto[]) => {
+                        _self.listWorkFixed = data;   
+                        let workplaceIndex = 0;
+                        let totalClosure = _self.listClosure.length;
+                        for (let workplace of _self.listWorkplace) {
+                            let currentIndex = workplaceIndex * totalClosure;
+                            let currentWorkFixed: any[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure);  
+                            if (_self.listClosure[0] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[0].closureId && o.confirmClsStatus === 1; })) {
+                                workplace.columnCheck1 = true;
+                            }
+                            if (_self.listClosure[1] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[1].closureId && o.confirmClsStatus === 1; })) {
+                                workplace.columnCheck2 = true;
+                            }
+                            if (_self.listClosure[2] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[2].closureId && o.confirmClsStatus === 1; })) {
+                                workplace.columnCheck3 = true;
+                            }
+                            if (_self.listClosure[3] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[3].closureId && o.confirmClsStatus === 1; })) {
+                                workplace.columnCheck4 = true;
+                            }
+                            if (_self.listClosure[4] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[4].closureId && o.confirmClsStatus === 1; })) {
+                                workplace.columnCheck5 = true;
+                            }
+                            workplaceIndex++;
+                        }
+                        dfd.resolve();
+                    });
                 
                 return dfd.promise();
             }
@@ -183,7 +179,7 @@ module nts.uk.at.view.kdl006.a {
                 let _self = this;
                 let columns: any[] = [];
 
-                //...
+                // Set default columns
                 columns.push({ headerText: nts.uk.resource.getText('KDL006_4'), key: 'workplaceId', width: 50, hidden: true });
                 columns.push({ headerText: nts.uk.resource.getText('KDL006_4'), key: 'viewText', width: 250, height: 50 });
                 
@@ -207,7 +203,7 @@ module nts.uk.at.view.kdl006.a {
                     for (let i = 0; i < columnLength; i++) {
                         let column = {
                             headerText: "",
-                            key: "",
+                            key: "empty" + i,   //need declare key so grid header can be turned green
                             width: 150
                         }
                         columns.push(column);
