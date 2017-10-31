@@ -71,7 +71,7 @@ module nts.uk.at.view.kmk002.a {
          * The class OptionalItem
          */
         class OptionalItem {
-            static selectedFormulas: KnockoutObservableArray<number>;
+            static selectedFormulas: KnockoutObservableArray<number> = ko.observableArray([]);
 
             optionalItemNo: KnockoutObservable<string>;
             optionalItemName: KnockoutObservable<string>;
@@ -117,7 +117,6 @@ module nts.uk.at.view.kmk002.a {
                 this.hasChanged = false;
                 this.isUsed = ko.observable(false);
                 this.checkedAllFormula = ko.observable(false);
-                OptionalItem.selectedFormulas = ko.observableArray([]);
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
 
@@ -583,7 +582,7 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 // Optional item's maximum number of formula is 50
-                if (self.calcFormulas().length > 50) {
+                if (self.calcFormulas().length >= 50) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_762' });
                     return true;
                 }
@@ -606,7 +605,7 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Check if one or more calculation expressions are checked
              */
-            private hasSelectedFormula(): boolean {
+            public hasSelectedFormula(): boolean {
                 let self = this;
                 if (nts.uk.util.isNullOrEmpty(OptionalItem.selectedFormulas())) {
                     return false;
@@ -1174,6 +1173,9 @@ module nts.uk.at.view.kmk002.a {
 
                         // convert dto to view model.
                         self.optionalItem.fromDto(res);
+
+                        // focus optional item name input
+                        $('#inpName').focus();
 
                         dfd.resolve();
 

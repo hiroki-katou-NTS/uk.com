@@ -5,15 +5,12 @@ package nts.uk.ctx.at.record.ws.workrecord.authfuncrest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.workrecord.authfuncrest.AuthFuncRestrictionCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.authfuncrest.AuthFuncRestrictionCommandHandler;
@@ -24,10 +21,6 @@ import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthorit
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformFuncRepo;
-import nts.uk.ctx.at.record.dom.workrecord.emplrole.EmployeeRole;
-import nts.uk.ctx.at.record.dom.workrecord.emplrole.EmployeeRoleRepoInterface;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author danpv

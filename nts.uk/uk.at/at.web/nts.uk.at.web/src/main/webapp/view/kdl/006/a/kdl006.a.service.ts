@@ -9,7 +9,7 @@ module nts.uk.at.view.kdl006.a {
              findCurrentClosure: "ctx/at/shared/workrule/closure/findCurrentClosure",                    
              findWorkplaceInfo:"bs/employee/workplace/info/findWorkplaceInfo",
              findWorkFixedByWkpIdAndClosureId:"at/record/workfixed/findWorkFixed",
-             
+             findWorkFixed: "at/record/workfixed/find",
         }
     
         /**
@@ -35,6 +35,13 @@ module nts.uk.at.view.kdl006.a {
                 wkpId: workplaceId
             });
         }
+        
+        /**
+         * findWorkFixed
+         */
+        export function findWorkFixed(listWorkFixed: model.WorkFixedDto[]): JQueryPromise<any[]> {
+            return nts.uk.request.ajax(servicePath.findWorkFixed, listWorkFixed);
+        }    
         
         /**
          * Model namespace.
@@ -112,6 +119,11 @@ module nts.uk.at.view.kdl006.a {
                 
                 /** The process date. */
                 processDate: number;
+                
+                constructor (closureId: number, wkpId: string) {
+                    this.closureId = closureId;
+                    this.wkpId = wkpId;
+                }
             }
         }
     }

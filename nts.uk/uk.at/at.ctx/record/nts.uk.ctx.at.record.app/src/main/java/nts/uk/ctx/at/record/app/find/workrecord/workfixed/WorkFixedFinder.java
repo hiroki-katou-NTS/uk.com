@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.workrecord.workfixed;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,5 +43,18 @@ public class WorkFixedFinder {
 		}
 
 		return workFixedDto;
+	}
+	
+	public List<WorkFixedFinderDto> findWorkFixed(List<WorkFixedFinderDto> listDto) {
+		
+		return listDto.stream()
+			.map(dto -> {
+				Optional<WorkFixed> workFixed = this.workfixedRepository.findByWorkPlaceIdAndClosureId(dto.getWkpId(), dto.getClosureId());				
+				if (workFixed.isPresent()) {
+					workFixed.get().saveToMemento(dto);
+				}				
+				return dto;
+			})
+			.collect(Collectors.toList());
 	}
 }

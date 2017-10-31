@@ -6,6 +6,8 @@ module nts.uk.com.view.cmm050.b {
             emailFrom: KnockoutObservable<string>;
             emailTo: KnockoutObservable<string>;
             
+            testButtonEnable: KnockoutObservable<boolean>;
+            
             emailAuthOption: any;
             
             constructor(){
@@ -18,6 +20,8 @@ module nts.uk.com.view.cmm050.b {
                 _self. emailAuthOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "350px"
                 }));
+                
+                _self.testButtonEnable = ko.observable(true);
                 
                _self.emailFrom.subscribe(function(emailString){
                    if(emailString.trim().length <= 0){
@@ -45,6 +49,8 @@ module nts.uk.com.view.cmm050.b {
                 let _self = this;
                 var dfd = $.Deferred<void>();
                 
+                _self.testButtonEnable(false);
+                
                 if(_self.emailFrom().length <= 0){
                      $('#email1').ntsError('set', {messageId:"Msg_533"});
                     return;
@@ -66,9 +72,11 @@ module nts.uk.com.view.cmm050.b {
                 
                 service.testMailServerSetting(data).done(function(){
                     nts.uk.ui.dialog.alert({ messageId: "Msg_534" });
+                    _self.testButtonEnable(true);
                     dfd.resolve();
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    _self.testButtonEnable(true);
                 });
                 
                 return dfd.promise();

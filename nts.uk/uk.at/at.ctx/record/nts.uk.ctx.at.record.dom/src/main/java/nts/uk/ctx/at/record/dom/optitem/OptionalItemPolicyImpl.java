@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -32,7 +33,22 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 		if (formulas.size() > MAXIMUM) {
 			throw new BusinessException("Msg_762");
 		}
+		if (isSymbolOverlapped(formulas)) {
+			throw new BusinessException("Msg_508");
+		}
 		return true;
+	}
+
+	/**
+	 * Checks if is symbol overlapped.
+	 *
+	 * @param formulas the formulas
+	 * @return true, if is symbol overlapped
+	 */
+	private boolean isSymbolOverlapped(List<Formula> formulas) {
+		final long FREQUENCY = 1;
+		// return true if symbol frequency > 1
+		return formulas.stream().anyMatch(formula -> Collections.frequency(formulas, formula) > FREQUENCY);
 	}
 
 }

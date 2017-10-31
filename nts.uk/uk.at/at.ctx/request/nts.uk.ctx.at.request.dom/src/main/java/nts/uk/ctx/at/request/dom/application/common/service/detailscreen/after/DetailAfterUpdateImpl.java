@@ -131,9 +131,9 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		if (destinationList.size() >= 1) {
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」を取得する ???
-			System.out.println("Send mail to: "+destinationList);
-			/*try {
-				mailSender.send("NSVC", "", new MailContents("nts","approvalChange"));
+			/*String email = employeeAdapter.empEmail(destination);
+			try {
+				mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "update mail from NTS"));
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

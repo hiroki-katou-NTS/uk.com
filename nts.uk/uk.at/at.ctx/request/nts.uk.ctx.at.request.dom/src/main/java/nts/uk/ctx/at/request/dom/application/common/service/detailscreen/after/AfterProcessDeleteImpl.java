@@ -104,6 +104,12 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			List<String> lstMail = new ArrayList<>();
 			for(String employeeId: converList){
 				String mail = employeeAdapter.getEmployeeInfor(employeeId).getCompanyMail();
+				/*try {
+					mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "delete mail from NTS"));
+				} catch (SendMailFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
 				lstMail.add(mail);
 			}
 		}

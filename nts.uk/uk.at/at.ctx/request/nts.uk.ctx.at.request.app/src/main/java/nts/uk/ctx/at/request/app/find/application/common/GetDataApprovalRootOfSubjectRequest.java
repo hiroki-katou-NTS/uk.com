@@ -35,27 +35,6 @@ public class GetDataApprovalRootOfSubjectRequest {
 				.stream()
 				.map(c->ApprovalRootOfSubjectRequestDto.fromDomain(c))
 				.collect(Collectors.toList());
-		if(!CollectionUtil.isEmpty(data)) {
-			data.forEach(x -> {
-				x.getBeforeApprovers().stream().forEach(y -> {
-					Collections.sort(y.getApprovers(), Comparator.comparing(ApproverInfoImport :: getOrderNumber));
-					y.getApprovers().stream().forEach(z ->{
-						if(Strings.isNotBlank(z.getJobId())) {
-							List<ConcurrentEmployeeRequest> lstEmployeeByJob = employeeAdapter.getConcurrentEmployee(companyID, z.getJobId(), generalDate);
-							String employeeName = "";
-							for(ConcurrentEmployeeRequest concurr: lstEmployeeByJob) {
-								employeeName += ", " + concurr.getPersonName();
-							}
-							if(!employeeName.isEmpty()) {
-								employeeName = employeeName.substring(0, 2);
-							}
-							z.setName(employeeName);
-						}
-					});
-				});
-			});
-			
-		}
 		return data;
 	}
 

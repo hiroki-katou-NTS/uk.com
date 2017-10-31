@@ -611,16 +611,16 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: '0.2')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.2')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.2.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.2.2')
 		
 		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: '0.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: '0.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: '0.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: '0.2')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: '0.2.1')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: '0.2.2')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.1')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: '0.2.1')
 		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: '0.2')
 		
 		// implement eraAdapter
