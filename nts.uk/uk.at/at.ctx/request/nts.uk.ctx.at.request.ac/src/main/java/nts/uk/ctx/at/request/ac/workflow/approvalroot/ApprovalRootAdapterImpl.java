@@ -63,6 +63,8 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 						List<ConcurrentEmployeeRequest> lstEmployeeByJob = employeeAdapter.getConcurrentEmployee(cid,approverInfoImport.getJobId(), standardDate);
 						if(!lstEmployeeByJob.isEmpty()) {
 							for(ConcurrentEmployeeRequest emp : lstEmployeeByJob) {
+								approverInfoImport.getApproverSIDList().add(emp.getEmployeeId());
+								approverInfoImport.getApproverNameList().add(emp.getPersonName());
 								approverSIDList.add(emp.getEmployeeId());
 							}
 						}
@@ -76,14 +78,27 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		approvalRootResult.stream().forEach(approvalRootImport -> {
 			approvalRootImport.getBeforeApprovers().stream().forEach(approvalPhaseImport -> {
 				approvalPhaseImport.getApprovers().stream().forEach(approverInfoImport -> {
-					representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
-					.map(y -> {
-						if(!y.getRepresenter().equals("Empty")){
-							approverInfoImport.addRepresenterSID(y.getRepresenter());
-							approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
-						}
-						return null;
-					}).orElse(Collections.emptyList());
+					if(approverInfoImport.getSid() != null) {
+						representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
+						.map(y -> {
+							if(!y.getRepresenter().equals("Empty")){
+								approverInfoImport.addRepresenterSID(y.getRepresenter());
+								approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+							}
+							return null;
+						}).orElse(null);
+					}else if(approverInfoImport.getJobId() != null) {
+						approverInfoImport.getApproverSIDList().forEach(item -> {
+							representerList.stream().filter(x -> x.getApprover().equals(item)).findAny()
+							.map(y -> {
+								if(!y.getRepresenter().equals("Empty")){
+									approverInfoImport.getRepresenterSIDList().add(y.getRepresenter());
+									approverInfoImport.getRepresenterNameList().add(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+								}
+								return null;
+							}).orElse(null);
+						});
+					}
 				});
 			});
 		});
