@@ -611,7 +611,7 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: '0.2')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.2.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.2.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.2.2')
