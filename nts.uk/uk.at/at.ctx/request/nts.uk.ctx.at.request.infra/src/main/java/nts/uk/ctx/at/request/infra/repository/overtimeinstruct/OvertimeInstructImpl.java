@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.overtimeinstruct;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -31,13 +30,17 @@ public class OvertimeInstructImpl extends JpaRepository implements OvertimeInstr
 	}
 
 	@Override
-	public List<OverTimeInstruct> getOvertimeInstruct(GeneralDate inputDate, GeneralDate instructDate, String targetPerson) {
+	public OverTimeInstruct getOvertimeInstruct(GeneralDate instructDate, String targetPerson) {
 		
-		return this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtOvertimeInstruct.class)
-		.setParameter("inputDate", inputDate)
+		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtOvertimeInstruct.class)
 		.setParameter("instructDate", instructDate)
 		.setParameter("targetPerson", targetPerson).getList(c -> convertToDomain(c));
-		
+		if(overTimeInstructs != null){
+			if(overTimeInstructs.size() > 0){
+				return overTimeInstructs.get(0);
+			}
+		}
+		return null;
 	}
 	private OverTimeInstruct convertToDomain(KrqdtOvertimeInstruct krqdtOvertimeInstruct){
 		 return OverTimeInstruct.createSimpleFromJavaType(krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getCid(),
