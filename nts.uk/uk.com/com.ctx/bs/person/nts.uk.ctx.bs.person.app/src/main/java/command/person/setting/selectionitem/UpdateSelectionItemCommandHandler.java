@@ -25,9 +25,12 @@ public class UpdateSelectionItemCommandHandler extends CommandHandler<UpdateSele
 		// ドメインモデル「個人情報の選択項目」のエラーチェック
 		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
 				.getSelectionByName(command.getSelectionItemName());
-
+		
+		Optional<PerInfoSelectionItem> updateObject = this.perInfoSelectionItemRepo
+				.getPerInfoSelectionItem(command.getSelectionItemId());
+		
 		// 「選択項目名称」は重複してはならない
-		if (optCheckExistByName.isPresent()) {
+		if (optCheckExistByName.isPresent() && !command.getSelectionItemName().equals(updateObject.get().getSelectionItemName().v())) {
 			throw new BusinessException(new RawErrorMessage("Msg_513"));
 		}
 
