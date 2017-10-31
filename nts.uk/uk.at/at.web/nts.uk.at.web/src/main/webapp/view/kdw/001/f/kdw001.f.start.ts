@@ -6,7 +6,6 @@ module nts.uk.at.view.kdw001.f {
         });
         
         $("#contents-area").on("click", ".open-dialog-i", function() {
-            console.log($(this).data("id"));
             nts.uk.ui._viewModel.content.openDialogI.call(nts.uk.ui._viewModel.content);
         });
         
