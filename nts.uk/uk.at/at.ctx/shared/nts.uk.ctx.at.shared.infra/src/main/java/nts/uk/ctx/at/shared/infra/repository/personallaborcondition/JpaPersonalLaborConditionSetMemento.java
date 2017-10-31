@@ -4,17 +4,50 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.personallaborcondition;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionSetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaPersonalLaborConditionSetMemento.
  */
 public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditionSetMemento{
+	
+	/** The entity. */
+	private KshmtPerLaborCond entityCondiotion;
+	
+	/** The entity single days. */
+	private List<KshmtSingleDaySche> entitySingleDays ;
+	
+	
+
+	/**
+	 * Instantiates a new jpa personal labor condition set memento.
+	 *
+	 * @param entityCondiotion the entity condiotion
+	 * @param entitySingleDays the entity single days
+	 */
+	public JpaPersonalLaborConditionSetMemento(KshmtPerLaborCond entityCondiotion,
+			List<KshmtSingleDaySche> entitySingleDays) {
+		if (entityCondiotion.getKshmtPerLaborCondPK() == null) {
+			entityCondiotion.setKshmtPerLaborCondPK(new KshmtPerLaborCondPK());
+		}
+		this.entityCondiotion = entityCondiotion;
+		if (CollectionUtil.isEmpty(entitySingleDays)) {
+			this.entitySingleDays = new ArrayList<>();
+		} else
+			this.entitySingleDays = entitySingleDays;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -25,8 +58,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setScheduleManagementAtr(UseAtr scheduleManagementAtr) {
-		// TODO Auto-generated method stub
-
+		this.entityCondiotion.setSchedMgmtAtr(scheduleManagementAtr.value);
 	}
 
 	/*
@@ -38,8 +70,9 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setHolidayAddTimeSet(BreakdownTimeDay holidayAddTimeSet) {
-		// TODO Auto-generated method stub
-
+		this.entityCondiotion.setHdAddOneDay(holidayAddTimeSet.getOneDay().valueAsMinutes());
+		this.entityCondiotion.setHdAddMorning(holidayAddTimeSet.getMorning().valueAsMinutes());
+		this.entityCondiotion.setHdAddAfternoon(holidayAddTimeSet.getAfternoon().valueAsMinutes());
 	}
 
 	/*
@@ -51,8 +84,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
-		// TODO Auto-generated method stub
-
+		workCategory.saveToMemento(new JpaPersonalWorkCategorySetMemento(this.entitySingleDays));
 	}
 
 	/*
@@ -64,8 +96,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek) {
-		// TODO Auto-generated method stub
-
+		workDayOfWeek.saveToMemento(new JpaPersonalDayOfWeekSetMemento(this.entitySingleDays));
 	}
 
 	/*
@@ -77,8 +108,8 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setPeriod(DatePeriod period) {
-		// TODO Auto-generated method stub
-
+		this.entityCondiotion.getKshmtPerLaborCondPK().setStartYmd(period.start());
+		this.entityCondiotion.getKshmtPerLaborCondPK().setEndYmd(period.end());
 	}
 
 	/*
@@ -89,8 +120,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		// TODO Auto-generated method stub
-
+		this.entityCondiotion.getKshmtPerLaborCondPK().setSid(employeeId);
 	}
 
 	/*
@@ -102,8 +132,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setAutomaticEmbossSetAtr(UseAtr automaticEmbossSetAtr) {
-		// TODO Auto-generated method stub
-
+		this.entityCondiotion.setAutoEmbossSetAtr(automaticEmbossSetAtr.value);
 	}
 
 }

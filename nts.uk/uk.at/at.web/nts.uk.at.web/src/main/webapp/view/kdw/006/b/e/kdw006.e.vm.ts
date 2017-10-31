@@ -13,7 +13,8 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             self.selectedItem = ko.observable();
 
             self.columns1 = ko.observableArray([
-                { headerText: 'コード', key: 'roleId', width: 100 },
+                { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                { headerText: 'コード', key: 'roleCode', width: 100 },
                 { headerText: '名称', key: 'roleName', width: 150 }
             ]);
 
@@ -26,19 +27,20 @@ module nts.uk.at.view.kdw006.e.viewmodel {
         initGrid() {
             let self = this;
             $("#grid2").ntsGrid({
-                width: '750px',
-                height: '400px',
+                //width: 780,
+                height: 450,
+                rows: 15,
                 dataSource: self.functionalRestriction(),
                 primaryKey: 'functionNo',
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: 'コード', key: 'functionNo', dataType: 'number', width: '50px', hidden: true },
-                    { headerText: '設定', key: 'displayName', dataType: 'string', width: '290px' },
-                    { headerText: '利用区分', key: 'availability', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
-                    { headerText: '説明', key: 'description', dataType: 'string', width: '230px' }
+                columns: [ 
+                    { headerText: 'コード', key: 'functionNo', dataType: 'number', width: '10px', hidden: true },
+                    { headerText: '設定', key: 'displayName', dataType: 'string', width: '320px' },
+                    { headerText: '利用区分', key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
+                    { headerText: '説明', key: 'description', dataType: 'string', width: '370px' }
                 ],
-                features: [{ name: 'Resizing' }],
+                features: [],
                 ntsFeatures: [{ name: 'CopyPaste' }],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
             });
@@ -85,9 +87,11 @@ module nts.uk.at.view.kdw006.e.viewmodel {
 
     class RoleItem {
         roleId: string;
+        roleCode: string;
         roleName: string;
-        constructor(roleId: string, roleName: string) {
+        constructor(roleId: string, roleCode: string, roleName: string) {
             this.roleId = roleId;
+            this.roleCode = roleCode;
             this.roleName = roleName;
         }
     }

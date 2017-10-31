@@ -5,17 +5,22 @@
 package nts.uk.ctx.sys.auth.infra.entity.grant;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -39,6 +44,9 @@ public class SacmtRoleIndiviGrant extends UkJpaEntity implements Serializable {
     @Column(name = "END_D")
     @Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
+    
+    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY, mappedBy="sacmtRoleIndiviGrant")
+	public List<SacmtRole> sacmtRoles;
 
     public SacmtRoleIndiviGrant() {
     }

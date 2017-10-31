@@ -41,11 +41,27 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogById(inputEmpCalAndSum);
 		
 	}
-	
+	/**
+	 * get list EmpCalAndSumExeLog by date 
+	 * @param inputEmpCalAndSumByDate
+	 * @return
+	 */
 	@POST
 	@Path("getallbydate")
 	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
 		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogByDate(inputEmpCalAndSumByDate);	
+		
+	}
+	
+	/**
+	 * get list EmpCalAndSumExeLog by  getByEmpCalAndSumExecLogID
+	 * @param empCalAndSumExecLogID
+	 * @return
+	 */
+	@POST
+	@Path("getallbyempid/{empCalAndSumExecLogID}")
+	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID")String empCalAndSumExecLogID){
+		return this.empCalAndSumExeLogFinder.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);	
 		
 	}
 		

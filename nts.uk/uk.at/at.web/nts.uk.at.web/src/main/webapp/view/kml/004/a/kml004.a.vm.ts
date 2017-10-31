@@ -35,15 +35,15 @@ module nts.uk.at.view.kml004.a.viewmodel {
             ]);
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 70 },
+                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 70, hidden: true },
                 { headerText: nts.uk.resource.getText("KML004_15"), key: 'totalItemName', width: 150, formatter: _.escape }
             ]);
 
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 70 },
-                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 150, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 1, hidden: true },
+                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 200, formatter: _.escape },
                 {
-                    headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 90, unbound: true, dataType: "string",
+                    headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 70, unbound: true, dataType: "string",
                     template: '{{if ${totalItemNo} == "3" || ${totalItemNo} == "21" || ${totalItemNo} == "22"}} <button class="setting" onclick="openDlg(this)" data-code="${totalItemNo}" data-name="${totalItemName}" style="margin-left: 7px;">設定</button> {{/if}}',
                 }
             ]);
@@ -282,38 +282,41 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 }
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.remove(ko.toJS(self.selectedOption())).done(function() {
-                    self.lstCate([]);
-                    self.getData().done(function() {
-                        // if number of item from list after delete == 0 
-                        if (self.lstCate().length == 0) {
-                            self.newMode();
-                            return;
-                        }
-                        // delete the last item
-                        if (count == ((self.lstCate().length))) {
-                            self.selectedCode(self.lstCate()[count - 1].categoryCode);
-                            return;
-                        }
-                        // delete the first item
-                        if (count == 0) {
-                            self.selectedCode(self.lstCate()[0].categoryCode);
-                            return;
-                        }
-                        // delete item at mediate list 
-                        else if (count > 0 && count < self.lstCate().length) {
-                            self.selectedCode(self.lstCate()[count].categoryCode);
-                            return;
-                        }
-                    })
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                var dataTranfer = {
+                    categoryCode: self.selectedOption().categoryCode()
+                };
+                service.remove(dataTranfer).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.lstCate([]);
+                        self.getData().done(function() {
+                            // if number of item from list after delete == 0 
+                            if (self.lstCate().length == 0) {
+                                self.newMode();
+                                return;
+                            }
+                            // delete the last item
+                            if (count == ((self.lstCate().length))) {
+                                self.selectedCode(self.lstCate()[count - 1].categoryCode);
+                                return;
+                            }
+                            // delete the first item
+                            if (count == 0) {
+                                self.selectedCode(self.lstCate()[0].categoryCode);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if (count > 0 && count < self.lstCate().length) {
+                                self.selectedCode(self.lstCate()[count].categoryCode);
+                                return;
+                            }
+                        });
+                    });
                 }).always(()=>{
                     nts.uk.ui.block.clear();    
                 });
             }).ifCancel(() => {
                 nts.uk.ui.block.clear();
             });
-            $("#code-text").focus();
         }
 
         /** click close button **/

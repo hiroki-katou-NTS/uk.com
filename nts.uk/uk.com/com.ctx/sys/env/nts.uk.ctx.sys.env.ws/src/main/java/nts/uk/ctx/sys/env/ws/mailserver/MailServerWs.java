@@ -13,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.env.app.command.mailserver.MailServerSaveCommand;
 import nts.uk.ctx.sys.env.app.command.mailserver.MailServerSaveCommandHandler;
+import nts.uk.ctx.sys.env.app.command.testsendmail.MailServerTestCommand;
+import nts.uk.ctx.sys.env.app.command.testsendmail.MailServerTestCommandHanlder;
 import nts.uk.ctx.sys.env.app.find.mailserver.MailServerDto;
 import nts.uk.ctx.sys.env.app.find.mailserver.MailServerFinder;
 
@@ -30,7 +32,12 @@ public class MailServerWs extends WebService {
 	/** The find handler. */
 	@Inject
 	MailServerFinder findHandler;
-
+	
+	
+	/** The testhandler. */
+	@Inject
+	MailServerTestCommandHanlder testhandler;
+	
 	/**
 	 * Find.
 	 *
@@ -45,12 +52,22 @@ public class MailServerWs extends WebService {
 	/**
 	 * Save.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@Path("save")
 	@POST
 	public void save(MailServerSaveCommand command) {
 		this.saveHandler.handle(command);
+	}
+	
+	/**
+	 * Test mail setting.
+	 *
+	 * @param command the command
+	 */
+	@Path("testMailSetting")
+	@POST
+	public void testMailSetting(MailServerTestCommand command) {
+		this.testhandler.handle(command);
 	}
 }

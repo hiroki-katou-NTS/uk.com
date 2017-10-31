@@ -148,7 +148,7 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
         JobTitleInfo jobTitleInfo = command.getJobTitleInfo().toDomain(
         		companyId, 
         		newJobTitle.getJobTitleId(),
-        		newJobTitle.getLastestHistory().getHistoryId());
+        		newJobTitle.getLastestHistory().identifier());
         this.jobTitleInfoRepository.add(jobTitleInfo);
 	}
 }

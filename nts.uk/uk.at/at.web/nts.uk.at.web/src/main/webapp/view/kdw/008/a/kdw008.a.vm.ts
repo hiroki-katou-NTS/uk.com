@@ -244,10 +244,6 @@ module nts.uk.at.view.kdw008.a {
 
             addOrUpdateClick() {
                 let self = this;
-                //                if (!self.isUpdate) {
-                //                    self.updateData();
-                //                    return;
-                //                }
                 self.register();
             }
 
@@ -266,12 +262,6 @@ module nts.uk.at.view.kdw008.a {
                     return new DailyAttendanceAuthorityDetailDto(obj);
                 })
                 var addOrUpdateBusinessFormatMonthly = new AddAuthorityFormatMonthly(self.currentDailyFormatCode(), authorityFormatDetailDtos);
-                //                
-                if (self.isUpdate() == true) {
-                    new service.Service().updateMonthlyDetail(addOrUpdateBusinessFormatMonthly);
-                } else {
-                    new service.Service().addMonthlyDetail(addOrUpdateBusinessFormatMonthly);
-                }
 
                 //add or update Daily
                 var businessTypeFormatDetailDailyDto = _.map(self.authorityFormatDailyValue(), item => {
@@ -292,15 +282,15 @@ module nts.uk.at.view.kdw008.a {
                     var addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 0);
                 }
 
-                //                if (self.currentBusinessType().dailyAttendanceAuthorityDailyDto() != null && self.currentBusinessType().dailyAttendanceAuthorityDailyDto().dailyAttendanceAuthorityDetailDtos.length > 0) {
+                var addOrUpdateDailyFormat = new AddOrUpdateDailyFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
                 if (self.isUpdate() == true) {
-                    new service.Service().updateDailyDetail(addOrUpdateBusinessFormatDaily).done(function() {
+                    new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
                     });
                 } else {
-                    new service.Service().addDailyDetail(addOrUpdateBusinessFormatDaily).done(function() {
+                    new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
@@ -338,6 +328,16 @@ module nts.uk.at.view.kdw008.a {
             constructor(sheetNoId: string, sheetNoName: string) {
                 this.sheetNoId = sheetNoId;
                 this.sheetNoName = sheetNoName;
+            }
+        }
+        
+        export class AddOrUpdateDailyFormat{
+            authorityMonthlyCommand : KnockoutObservable<AddAuthorityFormatMonthly>;
+            authorityDailyCommand :  KnockoutObservable<AddAuthorityFormatDaily>;
+            constructor(addOrUpdateAuthorityFormatMonthly : KnockoutObservable<AddAuthorityFormatMonthly>, addOrUpdateAuthorityFormatDaily :KnockoutObservable<AddAuthorityFormatDaily>){
+                let self = this;  
+                self.authorityMonthlyCommand = addOrUpdateAuthorityFormatMonthly;
+                self.authorityDailyCommand = addOrUpdateAuthorityFormatDaily;
             }
         }
 

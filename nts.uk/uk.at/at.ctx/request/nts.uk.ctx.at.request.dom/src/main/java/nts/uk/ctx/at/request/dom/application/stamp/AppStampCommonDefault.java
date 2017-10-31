@@ -11,7 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
@@ -39,17 +39,12 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Override
 	public void appReasonCheck(String titleReason, String detailReason, AppStamp appStamp) {
-		String tReason = Strings.trimToNull(titleReason);
-		String dReason = Strings.trimToNull(detailReason);
-		if(Strings.isEmpty(tReason)&&Strings.isEmpty(dReason)){
-			appStamp.setApplicationReason(new AppReason(""));
-		} else {
-			appStamp.setApplicationReason(new AppReason(tReason+": "+dReason));
-		}
+		appStamp.setAppReasonID(titleReason);
+		appStamp.setApplicationReason(new AppReason(detailReason));
 	}
 
 	@Override
@@ -66,7 +61,7 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
-				Strings.isEmpty(appStamp.getApplicationReason().v())){
+				Strings.isEmpty(appStamp.getAppReasonID()+appStamp.getApplicationReason().v())){
 					throw new BusinessException("Msg_115");
 		}
 		appStamp.customValidate();

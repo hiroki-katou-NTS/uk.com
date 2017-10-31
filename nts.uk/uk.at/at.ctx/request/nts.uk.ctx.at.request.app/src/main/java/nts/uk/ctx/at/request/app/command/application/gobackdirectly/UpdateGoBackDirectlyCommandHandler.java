@@ -74,6 +74,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 				command.appCommand.getEnteredPersonSID(), 
 				new AppReason(command.appCommand.getReversionReason()), 
 				command.appCommand.getApplicationDate(), 
+				command.appCommand.getAppReasonID(), 
 				new AppReason(command.appCommand.getApplicationReason()), 
 				EnumAdaptor.valueOf(command.appCommand.getApplicationType(),ApplicationType.class), 
 				command.appCommand.getApplicantSID(), 
@@ -105,6 +106,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 				command.goBackCommand.getWorkTimeStart2(),
 				command.goBackCommand.getWorkTimeEnd2(), 
 				command.goBackCommand.workLocationCD2);
+		updateGoBack.setVersion(command.goBackCommand.version);
 		// update
 		
 		this.goBackDirectlyUpdateService.update(updateGoBack, updateApp);

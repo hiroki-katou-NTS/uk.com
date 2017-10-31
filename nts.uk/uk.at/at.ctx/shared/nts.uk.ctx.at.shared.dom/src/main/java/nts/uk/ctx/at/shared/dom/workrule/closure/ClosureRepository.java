@@ -60,4 +60,13 @@ public interface ClosureRepository {
 	 */
 	List<Closure> findByListId(String companyId, List<Integer> closureIds);
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @param useAtr the use atr
+	 * @return the list
+	 */
+	List<Closure> findAllActive(String companyId, UseClassification useAtr);
+
 }

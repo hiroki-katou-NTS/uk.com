@@ -37,10 +37,21 @@ public class PerInfoInitValueSettingItemDto {
 	// 日付
 	private GeneralDate dateValue;
 	
+	// itemCode
+	private String itemCode;
+	
+	// categoryCode
+	private String ctgCode;
+	
+	//constraint
+	private String constraint;
+	
+	
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
 		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), domain.getSettingId(), domain.getPerInfoCtgId(),
 				domain.getItemName(), domain.getItemType(), domain.getDataType(),
 				domain.getIsRequired().value, domain.getRefMethodType().value, domain.getSaveDataType().value,
-				domain.getStringValue().v(), Integer.valueOf(domain.getIntValue().toString()), domain.getDateValue());
+				domain.getStringValue().v(), Integer.valueOf(domain.getIntValue().toString()), domain.getDateValue(),
+				domain.getCtgCode(), domain.getItemCode(), domain.getConstraint());
 	}
 }

@@ -53,7 +53,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KrcmtMonAttendanceItem_.krcmtMonAttendanceItemPK).get(KrcmtMonAttendanceItemPK_.cid),
 				companyId));
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrcmtMonAttendanceItem_.mAtdItemAtr), itemAtr));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrcmtMonAttendanceItem_.mAtdItemAtr), itemAtr.value));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

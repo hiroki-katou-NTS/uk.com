@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection;
 
+import java.util.List;
+
 /**
  * 
  * @author tuannv
@@ -9,5 +11,7 @@ package nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection;
 public interface SelectionItemOrderRepository {
 	void add(SelectionItemOrder selectionItemOrder);
 
-	void remove(SelectionItemOrder selectionItemOrder);
+	void remove(String selectionItemOrder);
+	
+	List<SelectionItemOrder> getAllOrderItemSelection(String selectedId);
 }

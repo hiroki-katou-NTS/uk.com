@@ -71,12 +71,12 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 			throw new RuntimeException(String.format("Workplace %s doesn't exited.", workplaceId));
 		}
 		// find list entity need to remove
-		List<BsymtWorkplaceHistPK> lstPrimaryKey = optional.get().getWorkplaceHistory().stream()
+		List<BsymtWorkplaceHistPK> lstPrimaryKey = optional.get().items().stream()
 				.map(item -> {
 					BsymtWorkplaceHistPK pk = new BsymtWorkplaceHistPK();
 					pk.setCid(companyId);
 					pk.setWkpid(workplaceId);
-					pk.setHistoryId(item.getHistoryId());
+					pk.setHistoryId(item.identifier());
 					return pk;
 				}).collect(Collectors.toList());
 		this.commandProxy().removeAll(BsymtWorkplaceHist.class, lstPrimaryKey);
@@ -224,9 +224,9 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 		List<BsymtWorkplaceHist> lstEntity = new ArrayList<>();
 
-		for (WorkplaceHistory wkpHistory : workplace.getWorkplaceHistory()) {
+		for (WorkplaceHistory wkpHistory : workplace.items()) {
 			BsymtWorkplaceHistPK pk = new BsymtWorkplaceHistPK(companyId, workplaceId,
-					wkpHistory.getHistoryId());
+					wkpHistory.identifier());
 			BsymtWorkplaceHist entity = this.queryProxy().find(pk, BsymtWorkplaceHist.class)
 					.orElse(new BsymtWorkplaceHist());
 			entity.setBsymtWorkplaceHistPK(pk);

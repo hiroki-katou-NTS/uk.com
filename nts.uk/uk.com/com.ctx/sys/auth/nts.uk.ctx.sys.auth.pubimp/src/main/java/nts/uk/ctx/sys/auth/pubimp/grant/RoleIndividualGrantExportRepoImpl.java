@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.auth.pubimp.grant;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -30,6 +31,15 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
 		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository
 				.findByUserAndRole(userId, RoleType.valueOf(roleType)).get();
+		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUser(java.lang.String)
+	 */
+	@Override
+	public RoleIndividualGrantExport getByUser(String userId,GeneralDate date) {
+		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository.findByUser(userId,date).get();
 		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
 	}
 

@@ -16,6 +16,8 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
+import nts.uk.ctx.bs.person.dom.person.layout.LayoutCode;
+import nts.uk.ctx.bs.person.dom.person.layout.LayoutName;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
@@ -49,6 +51,9 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		NewLayout update = layoutRepo.getLayout().get();
 		NewLayoutCommand command = context.getCommand();
 
+		// update layout
+		layoutRepo.update(update);
+
 		// validate all usecase [Registration] at here
 		// throw exception if not valid
 		List<String> requiredIds = itemDefFinder.getRequiredIds();
@@ -68,7 +73,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 				// new BusinessException(new RawErrorMessage(alert + " " +
 				// text.getItemName("Msg_201")));
 			}
-			
+
 			throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_201").build()));
 		}
 
