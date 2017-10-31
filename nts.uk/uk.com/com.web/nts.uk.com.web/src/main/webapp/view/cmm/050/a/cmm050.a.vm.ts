@@ -220,7 +220,7 @@ module nts.uk.com.view.cmm050.a {
             public showDialogTest() {
                 let _self = this;
                 // Validate
-                if (_self.hasError()) {
+                if (nts.uk.text.isNullOrEmpty(_self.emailAuth())) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_533" });
                     return;
                 }
@@ -228,7 +228,7 @@ module nts.uk.com.view.cmm050.a {
                     emailAuth: _self.emailAuth(),
                 }, true);
                 nts.uk.ui.windows.sub.modal("/view/cmm/050/b/index.xhtml").onClosed(function() {
-                  
+                    
                 });
             }
             
