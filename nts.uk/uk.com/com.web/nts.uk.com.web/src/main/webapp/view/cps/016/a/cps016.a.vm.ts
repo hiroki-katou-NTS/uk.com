@@ -120,30 +120,26 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を登録する
-            if (_selectionItemName) {
-                alertError({ messageId: "Msg_513" });
-            } else {
-                service.saveDataSelectionItem(command).done(function(selectId) {
-                    self.listItems.removeAll();
-                    //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
-                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                        if (itemList && itemList.length) {
-                            itemList.forEach(x => self.listItems.push(x));
-                        }
-                    });
-                    self.listItems.valueHasMutated();
-                    self.perInfoSelectionItem().selectionItemId(selectId);
-
-                    //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
-                    confirm({ messageId: "Msg_456" }).ifYes(() => {
-                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
-                        });
-                    }).ifNo(() => {
-                        self.listItems.valueHasMutated();
-                        return;
-                    })
+            service.saveDataSelectionItem(command).done(function(selectId) {
+                self.listItems.removeAll();
+                //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
+                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listItems.push(x));
+                    }
                 });
-            }
+                self.listItems.valueHasMutated();
+                self.perInfoSelectionItem().selectionItemId(selectId);
+
+                //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                confirm({ messageId: "Msg_456" }).ifYes(() => {
+                    modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+                    });
+                }).ifNo(() => {
+                    alertError({ messageId: "Msg_513" });
+                    return;
+                })
+            });
         }
 
         //更新モード
@@ -157,25 +153,24 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を更新する
-            if (_selectionItemName) {
-                alertError({ messageId: "Msg_513" });
-            } else {
-                service.updateDataSelectionItem(command).done(function() {
-                    self.listItems.removeAll();
-                    //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
-                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                        if (itemList && itemList.length) {
-                            itemList.forEach(x => self.listItems.push(x));
-                        }
+            service.updateDataSelectionItem(command).done(function() {
+                self.listItems.removeAll();
+                //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
+                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listItems.push(x));
+                    }
 
-                        let newItem = itemList[oldIndex];
-                        currentItem.selectionItemId(newItem.selectionItemId);
-                    });
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    self.listItems.valueHasMutated();
-
+                    let newItem = itemList[oldIndex];
+                    currentItem.selectionItemId(newItem.selectionItemId);
                 });
-            }
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                self.listItems.valueHasMutated();
+
+            }).ifNo(() => {
+                alertError({ messageId: "Msg_513" });
+                return;
+            });
         }
 
         //削除ボタン
