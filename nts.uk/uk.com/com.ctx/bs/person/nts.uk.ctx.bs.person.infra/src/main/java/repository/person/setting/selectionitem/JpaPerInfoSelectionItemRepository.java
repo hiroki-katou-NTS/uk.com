@@ -16,7 +16,8 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItem si";
 	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = SELECT_ALL
-			+ " WHERE si.contractCd = :contractCd";
+			+ " WHERE si.contractCd = :contractCd "
+			+ " ORDER BY si.selectionItemName ";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.selectionItemName = :selectionItemName";
 

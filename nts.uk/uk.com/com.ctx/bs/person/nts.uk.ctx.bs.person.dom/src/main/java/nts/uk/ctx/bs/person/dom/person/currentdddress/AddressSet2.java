@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.currentdddress;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @AllArgsConstructor
+@Data
 public class AddressSet2 {
 
 	private PersonAddress2 address2;

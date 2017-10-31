@@ -7,7 +7,21 @@ module cps001.a.service {
             getAll: "ctx/bs/person/maintenance/findAll",
             getDetails: "ctx/bs/person/maintenance/findOne/{0}"
         },
+        category: {
+            'getData': 'bs/employee/category/getAll/{0}'
+        },
+        person: {
+            'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
+        },
         saveData: ''
+    };
+
+    export function getPerson(id: string) {
+        return ajax(format(paths.person.getPerson, id));
+    }
+
+    export function getCats(id: string) {
+        return ajax(format(paths.category.getData, id));
     };
 
     export function getAllLayout() {
