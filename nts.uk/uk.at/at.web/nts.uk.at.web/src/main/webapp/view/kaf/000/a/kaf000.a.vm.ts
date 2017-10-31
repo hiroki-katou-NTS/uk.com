@@ -88,15 +88,37 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                                 "",
                                 y,
                                 []);
-                            let appAccepted = new shrvm.model.ApproveAccepted(
+                            if(!nts.uk.util.isNullOrUndefined(frameLoop.sid)){
+                                let representerSID = "";
+                                if(!nts.uk.util.isNullOrUndefined(frameLoop.frameLoop)){
+                                    representerSID = frameLoop.frameLoop;            
+                                }
+                                let appAccepted = new shrvm.model.ApproveAccepted(
                                 "",
                                 frameLoop.sid,
                                 0,
                                 frameLoop.confirmPerson ? 1 : 0,
                                 "",
                                 "",
-                                frameLoop.sid);
-                            appFrame.listApproveAccepted.push(appAccepted);
+                                representerSID);
+                                appFrame.listApproveAccepted.push(appAccepted);     
+                            } else {
+                                for(let z = 1; z <= frameLoop.approverSIDList.length; z++){
+                                    let representerSID = "";
+                                    if(!nts.uk.util.isNullOrUndefined(frameLoop.representerNameList[z-1])){
+                                        representerSID = frameLoop.representerNameList[z-1];            
+                                    }
+                                    let appAccepted = new shrvm.model.ApproveAccepted(
+                                    "",
+                                    frameLoop.approverSIDList[z-1],
+                                    0,
+                                    frameLoop.confirmPerson ? 1 : 0,
+                                    "",
+                                    "",
+                                    representerSID);
+                                    appFrame.listApproveAccepted.push(appAccepted);        
+                                }       
+                            }
                             appPhase.listFrame.push(appFrame);   
                         };
                         approvalList.push(appPhase);    
