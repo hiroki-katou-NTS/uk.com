@@ -228,13 +228,22 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 					flgApprovalDone = true;
 				}else {
 					//アルゴリズム「未承認の承認者一覧を取得する」を実行する(thực hiện xử lý 「未承認の承認者一覧を取得する」)
-					List<String> lstNotApproved = afterProcess.actualReflectionStateDecision("", appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
+					List<String> lstNotApproved = new ArrayList<>();
+					listFrame.stream().forEach(x -> {
+						x.getListApproveAccepted().stream().forEach(y -> {
+							if(y.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+								lstNotApproved.add(y.getApproverSID());
+							}
+						});
+					});
 					//アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
 					
 					AgentPubImport agency = this.approvalAgencyInformationService
 							.getApprovalAgencyInformation(companyID, lstNotApproved);
 					if (agency.isFlag()) {
 						flgApprovalDone = true;
+					}else {
+						flgApprovalDone = false;
 					}
 				}				
 			}
