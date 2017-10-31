@@ -41,7 +41,7 @@ module nts.uk.at.view.kdw001.f {
                     { headerText: getText('KDW001_75'), key: 'caseSpecExeContentID', width: 100 },
                     { headerText: getText('KDW001_76'), key: 'processingMonthName', width: 150 },
                     { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200 },
-                    { headerText: getText('KDW001_78'), key: 'executedMenuName', width: 160 },
+                    { headerText: getText('KDW001_78'), key: 'executionStatusName', width: 160 },
                     {
                         headerText: getText('KDW001_79'), key: 'executionStatus', width: 100,
                         template: '<button class="open-dialog-i" data-id="${empCalAndSumExecLogID}">参照</button>',
@@ -115,6 +115,7 @@ module nts.uk.at.view.kdw001.f {
             executedMenuName: string;
             executedMenuJapan: string;
             executionStatus: number;
+            executionStatusName : string;
             executionDate: string;
             processingMonth: number;
             processingMonthName: string;
@@ -153,6 +154,7 @@ module nts.uk.at.view.kdw001.f {
             executedMenuName: string;
             executedMenuJapan: string;
             executionStatus: number;
+            executionStatusName : string;
             executionDate: string;
             processingMonth: number;
             processingMonthName: string;
@@ -175,6 +177,7 @@ module nts.uk.at.view.kdw001.f {
                     this.executedMenuJapan = "ケース別実行";
                 }
                 this.executionStatus = data.executionStatus;
+                this.executionStatusName = data.executionStatusName;
                 this.executionDate = data.executionDate;
                 this.processingMonth = data.processingMonth;
                 this.processingMonthName = data.processingMonth + "月度";

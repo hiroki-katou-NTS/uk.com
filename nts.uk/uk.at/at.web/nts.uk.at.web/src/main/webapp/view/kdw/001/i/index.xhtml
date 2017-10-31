@@ -86,9 +86,9 @@
 									<!-- I2_15 -->
 									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
 									<!-- I2_16 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind=" text: $root.numberPerson, click: $parent.openDialogG "></span></td>
+									<td style="text-align: center;"><span class="hyperlink" data-bind="click: $parent.openDialogG.bind($parent) "><span data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind="text: $root.numberPerson, click : $parent.openDialogH "></span></td>
+									<td style="text-align: center;"><span class="hyperlink" data-bind="click: $parent.openDialogH.bind($parent) "><span data-bind=" text: $parent.numberPerson"></span>人</span></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>
