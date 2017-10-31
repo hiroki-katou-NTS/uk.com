@@ -1,4 +1,24 @@
 module nts.uk.com.view.cps017.c.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    var paths = {
+        addHistorySelectionData: "ctx/bs/person/info/setting/selection/addHistoryData"
+    }
+
+    export function addHistorySelectionData(command) {
+        return ajax(paths.addHistorySelectionData, command);
+    }
+
+
+}
+
+
+
+
+
+
+/*
+module nts.uk.com.view.cps017.c.service {
 
     export function getItems() {
         return $.Deferred().resolve(new DemoData().items).promise();
@@ -19,3 +39,4 @@ module nts.uk.com.view.cps017.c.service {
     }
 
 }
+*/
