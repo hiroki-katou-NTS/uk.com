@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.mail.MailSender;
 
 /**
  * 
@@ -50,6 +51,9 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	private EmployeeRequestAdapter employeeAdapter;
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepo;
+	@Inject
+	private MailSender mailsender;
+	
 	@Override
 	public String detailedScreenAfterDenialProcess(Application application, String memo) {
 		// 否認できるフラグ
@@ -147,6 +151,12 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
 			// 申請者本人にメール送信する ===>>>>Thuc hien gui mail cho nguoi viet don
 			email = employeeAdapter.empEmail(loginEmp);
+			/*try {
+				mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "deny mail from NTS"));
+			} catch (SendMailFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		}
 		// Hien thi Message
 		// 送信先リストに項目がいる

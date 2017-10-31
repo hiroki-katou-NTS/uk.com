@@ -47,3 +47,7 @@
 .displayControlFalse {
 	display: none;
 }
+.approverContent {
+	text-align: left !important;
+	padding-left: 5px;
+}

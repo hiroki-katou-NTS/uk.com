@@ -50,7 +50,7 @@
 					<label data-bind="ntsFormLabel: {text: txtearlyTime1}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 30px">1:00</label>
 				</div>
 				<div class="valign-center control-group row4"
-					style="margin-left: 130px;">
+					style="margin-left: 130px;" data-bind="if: displayOrder() != 0">
 					<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 					<input class="col1"
 						data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}, visible: isVisibleTimeF" />
