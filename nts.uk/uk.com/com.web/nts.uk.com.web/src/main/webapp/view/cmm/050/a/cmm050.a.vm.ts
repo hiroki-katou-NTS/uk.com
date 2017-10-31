@@ -43,6 +43,10 @@ module nts.uk.com.view.cmm050.a {
             
             popServerEnable: KnockoutObservable<boolean>;
             
+            passwordBeforeChange: string;
+            popServerBeforeChange: string;
+            imapServerBeforeChange: string;
+            
             constructor(){
                 let _self = this;
                 
@@ -141,18 +145,27 @@ module nts.uk.com.view.cmm050.a {
                         _self.password(pass.trim());
                     }
                 });
+                _self.password.subscribe(function(oldValue) {
+                    _self.passwordBeforeChange = oldValue;
+                }, null, "beforeChange");
                 
                  _self.popServer.subscribe(function(popServer){
                    if(popServer.trim().length <= 0){
                         _self.popServer(popServer.trim());
                     }
                 });
+                _self.popServer.subscribe(function(oldValue) {
+                    _self.popServerBeforeChange = oldValue;
+                }, null, "beforeChange");
 
                 _self.imapServer.subscribe(function(imapServer){
                    if(imapServer.trim().length <= 0){
                         _self.imapServer(imapServer.trim());
                     }
                 });
+                _self.imapServer.subscribe(function(oldValue) {
+                    _self.imapServerBeforeChange = oldValue;
+                }, null, "beforeChange");
                 
                 _self.smtpServer.subscribe(function(smtpServer){
                    if(smtpServer.trim().length <= 0){
@@ -198,10 +211,10 @@ module nts.uk.com.view.cmm050.a {
                         _self.encryptionMethod(),
                         _self.authMethod(),
                         _self.emailAuth(),
-                        _self.password(),
-                        new model.SmtpInfoDto(_self.smtpServer(), _self.smtpPort()),
-                        new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
-                        new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
+                        _self.useAuth() == UseServer.USE ? _self.password() : _self.passwordBeforeChange,
+                        new model.SmtpInfoDto( _self.smtpServer(), _self.smtpPort()),
+                        new model.PopInfoDto(_self.useAuth() == UseServer.USE ? _self.popServer() : _self.popServerBeforeChange, _self.popUseServer(), _self.popPort()),
+                        new model.ImapInfoDto(_self.useAuth() == UseServer.USE ? _self.imapServer() : _self.imapServerBeforeChange, _self.imapUseServer(), _self.imapPort())
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
