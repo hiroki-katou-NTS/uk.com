@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.record.app.find.optitem.applicable;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -44,13 +43,11 @@ public class EmpConditionFinder {
 				.collect(Collectors.toMap(EmploymentImported::getEmpCd, EmploymentImported::getEmpName));
 
 		EmpConditionDto dto = new EmpConditionDto();
-		Optional<EmpCondition> dom = this.repo.find(comId, itemNo);
-		if (dom.isPresent()) {
-			dom.get().saveToMemento(dto);
+		EmpCondition dom = this.repo.find(comId, itemNo);
+		dom.saveToMemento(dto);
 
-			// Set employment name.
-			dto.getEmpConditions().forEach(item -> item.setEmpName(employments.get(item.getEmpCd())));
-		}
+		// Set employment name.
+		dto.getEmpConditions().forEach(item -> item.setEmpName(employments.get(item.getEmpCd())));
 		return dto;
 	}
 }
