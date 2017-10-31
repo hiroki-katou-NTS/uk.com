@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -42,10 +43,10 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	public int executionContent;
 
 	@Column(name = "EXECUTION_START_DATE")
-	public GeneralDate executionStartDate;
+	public GeneralDateTime executionStartDate;
 	
 	@Column(name = "EXECUTION_END_DATE")
-	public GeneralDate executionEndDate;
+	public GeneralDateTime executionEndDate;
 
 	@Column(name = "PROCESSING_SITUATION")
 	public int processStatus;

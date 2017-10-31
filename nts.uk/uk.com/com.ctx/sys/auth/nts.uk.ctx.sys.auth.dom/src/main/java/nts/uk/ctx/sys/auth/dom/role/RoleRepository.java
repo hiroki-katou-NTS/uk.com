@@ -14,5 +14,14 @@ public interface RoleRepository {
 	 * @param roleId the role id
 	 * @return the list
 	 */
-	List<Role> findById(String roleId); 
+	List<Role> findById(String roleId);
+	
+	/**
+	 * Find by list role id.
+	 *
+	 * @param companyId the company id
+	 * @param lstRoleId the lst role id
+	 * @return the list
+	 */
+	List<Role> findByListRoleId(String companyId,List<String> lstRoleId);
 }

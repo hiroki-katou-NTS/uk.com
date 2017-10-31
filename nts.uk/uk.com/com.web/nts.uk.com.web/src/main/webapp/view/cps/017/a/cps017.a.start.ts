@@ -3,7 +3,7 @@ module nts.uk.com.view.cps017.a {
         __viewContext["viewModel"] = new viewmodel.ScreenModel();
         
         __viewContext["viewModel"].start().done(function(){
-        __viewContext.bind(__viewContext["viewModel"]);
+            __viewContext.bind(__viewContext["viewModel"]);
         });
     });
 }

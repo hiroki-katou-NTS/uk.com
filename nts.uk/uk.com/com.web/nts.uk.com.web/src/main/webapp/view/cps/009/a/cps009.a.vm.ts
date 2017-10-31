@@ -73,7 +73,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             isRequired: obj.isRequired, refMethodType: obj.refMethodType,
                             saveDataType: obj.saveDataType, stringValue: obj.stringValue,
                             intValue: obj.intValue, dateValue: obj.dateValue,
-                            value: obj.value, itemType: obj.itemType,
+                            itemType: obj.itemType,
                             dataType: obj.dataType
                         });
 
@@ -442,7 +442,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         itemCode: string;
         ctgCode: string;
         constraint: string;
-        value? any;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -466,7 +465,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         dateValue: KnockoutObservable<String>;
         dateWithDay: KnockoutObservable<number>;
         timePoint: KnockoutObservable<string>;
-        value: KnockoutObservable<string> = ko.observable("");
 
         // trường hợp datatype là kiểu selection
         selection: KnockoutObservableArray<any>;
