@@ -91,13 +91,13 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
                     if (item.no == 2) { 
-                        comment = nts.uk.resource.getText("#KDW006_59",['法定内休日']);
+                        comment = nts.uk.resource.getText("KDW006_59",['法定内休日']);
                     }
                     if (item.no == 3) { 
-                        comment = nts.uk.resource.getText("#KDW006_59",['法定外休日']);
+                        comment = nts.uk.resource.getText("KDW006_59",['法定外休日']);
                     }
                     if (item.no == 4) { 
-                        comment = nts.uk.resource.getText("#KDW006_59",['法定外休日(祝)']);
+                        comment = nts.uk.resource.getText("KDW006_59",['法定外休日(祝)']);
                     }
                     let group = new WorkTypeGroup(item.no, item.name, item.workTypeList, names.join("、　"),
                         fullWorkTypeCodes, comment);
