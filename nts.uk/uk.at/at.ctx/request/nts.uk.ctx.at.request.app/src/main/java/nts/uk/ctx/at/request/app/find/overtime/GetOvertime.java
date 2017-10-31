@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -30,13 +31,19 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.request.dom.setting.requestofeach.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-
-public class OvertimeFinder {
+@Stateless
+public class GetOvertime {
 	
 	/** アルゴリズム「1-1.新規画面起動前申請共通設定を取得する」を実行する (Thực thi 「1-1.新規画面起動前申請共通設定を取得する」) */
 	@Inject
@@ -78,7 +85,13 @@ public class OvertimeFinder {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	public OverTimeDto getAllOvertime(String url,String appDate,int uiType){
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType){
 		
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto applicationDto = new ApplicationDto();
@@ -120,13 +133,23 @@ public class OvertimeFinder {
 			if (requestAppDetailSetting.isPresent()) {
 				// 時刻計算利用チェック
 				if (requestAppDetailSetting.get().getTimeCalUseAtr().value == UseAtr.USE.value) {
+					result.setDisplayCaculationTime(true);
+					/*
+					 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
+					 * personalLaborConditionRepository
+					 */
+					Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,GeneralDate.localDate(LocalDate.parse(appDate)));
 					// 07_勤務種類取得: lay loai di lam
-					getWorkType(companyID, employeeID,appDate,result);
-					// 就業時間帯を取得(lay mui gio lam viec)
-					getWorkingHours(companyID, employeeID, result);
+					getWorkType(companyID, employeeID,personalLablorCodition,result);
+					// 就業時間帯を取得(lay loai gio lam viec)
+					getWorkingHourType(companyID, employeeID,personalLablorCodition,result);
+					//01-14_勤務時間取得
+					getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting,result);
+				}else{
+					result.setDisplayCaculationTime(false);
 				}
 			}
-		return null;
+		return result;
 	}
 	// 事前事後区分を取得
 	private void getDisplayPrePost(String companyID,ApplicationDto applicationDto,OverTimeDto result,int uiType){
@@ -155,7 +178,7 @@ public class OvertimeFinder {
 			}
 		}
 	}
-	private void getWorkType(String companyID,String employeeID,String appDate,OverTimeDto result){
+	private void getWorkType(String companyID,String employeeID,Optional<PersonalLaborCondition> personalLablorCodition ,OverTimeDto result){
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
 		if (sEmpHistImport != null) {
@@ -168,18 +191,44 @@ public class OvertimeFinder {
 				/*
 				 * ドメインモデル「勤務種類」を取得 anh chinh lam
 				 */
+				
 				/*
 				 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
+				 * personalLablorCodition
 				 */
-				
+				if(personalLablorCodition.isPresent()){
+					//ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
+					Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
+					result.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
+					result.setWorkTypeName(workType.get().getName().toString());
+				}
+				//先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
 			}
 		}
 	}
-	private void getWorkingHours(String companyID,String employeeID,OverTimeDto result){
+	private void getWorkingHourType(String companyID,String employeeID,Optional<PersonalLaborCondition> personalLablorCodition,OverTimeDto result){
 		// 1.職場別就業時間帯を取得
-		otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
+		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
 		/*
 		 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
+		 * personalLaborConditionRepository
 		 */
+		if(personalLablorCodition.isPresent()){
+			Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
+			result.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
+			result.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
+		}else{
+			Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,listWorkTimeCodes.get(0));
+			result.setSiftCode(listWorkTimeCodes.get(0));
+			result.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
+		}
+	}
+	private void getWorkingHours(String companyID,String employeeID,String appDate,Optional<RequestAppDetailSetting> requestAppDetailSetting,OverTimeDto result){
+		if(appDate != null){
+			int atWorkAtr = requestAppDetailSetting.get().getAtworkTimeBeginDisFlg().value;
+			if(atWorkAtr == AtWorkAtr.DISPLAY.value){
+				// team anh lương
+			}
+		}
 	}
 }
