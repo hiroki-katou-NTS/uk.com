@@ -85,10 +85,6 @@ button.search-btn {
 	border-left: none;
 }
 
-.clear-btn {
-	visibility: hidden;
-}
-
 div#left-content.relative.bg-green.caret-right.caret-background {
 	width: 395px;
 }
