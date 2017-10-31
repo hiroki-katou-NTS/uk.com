@@ -44,7 +44,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 					<!-- B1_1 -->
-					<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF000_14')}</a>
+					<a class="goback" data-bind="ntsLinkButton: { jump: '../test/index.xhtml' }">#{i18n.getText('KAF000_14')}</a>
 					<!-- B1_2 -->
 					<button data-bind="click: btnBefore, enable: enableBefore" ><i class="icon icon-button-arrow-left"></i></button>
 					<!-- B1_3 -->
@@ -184,11 +184,11 @@
 									<td class="bg-green" >
 										承認者<label data-bind="text: $data.dispOrder"></label>
 									</td>
-										<td>
+									<td class="approverContent">
 										<label data-bind="text: $data.nameAll"></label>
 									</td>
-									<td><label data-bind="text: $data.approveAll"></label></td>
-									<td><label data-bind="text: $data.reasonAll"> </label></td>
+									<td class="approverContent"><label data-bind="text: $data.approveAll"></label></td>
+									<td class="approverContent"><label data-bind="text: $data.reasonAll"> </label></td>
 								</tr>
 							</com:ko>
 						</tbody>  

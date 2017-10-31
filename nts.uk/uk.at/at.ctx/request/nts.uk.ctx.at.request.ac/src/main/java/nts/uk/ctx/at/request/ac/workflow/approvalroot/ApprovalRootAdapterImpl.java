@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
@@ -56,7 +57,18 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		approvalRootResult.stream().forEach(approvalRootImport -> {
 			approvalRootImport.getBeforeApprovers().stream().forEach(approvalPhaseImport -> {
 				approvalPhaseImport.getApprovers().stream().forEach(approverInfoImport -> {
-					approverSIDList.add(approverInfoImport.getSid());
+					if(approverInfoImport.getSid() != null) {
+						approverSIDList.add(approverInfoImport.getSid());
+					}else if(approverInfoImport.getJobId() != null) {
+						List<ConcurrentEmployeeRequest> lstEmployeeByJob = employeeAdapter.getConcurrentEmployee(cid,approverInfoImport.getJobId(), standardDate);
+						if(!lstEmployeeByJob.isEmpty()) {
+							for(ConcurrentEmployeeRequest emp : lstEmployeeByJob) {
+								approverInfoImport.getApproverSIDList().add(emp.getEmployeeId());
+								approverInfoImport.getApproverNameList().add(emp.getPersonName());
+								approverSIDList.add(emp.getEmployeeId());
+							}
+						}
+					}
 				});
 			});
 		});
@@ -66,12 +78,27 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		approvalRootResult.stream().forEach(approvalRootImport -> {
 			approvalRootImport.getBeforeApprovers().stream().forEach(approvalPhaseImport -> {
 				approvalPhaseImport.getApprovers().stream().forEach(approverInfoImport -> {
-					representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
-					.map(y -> {
-						approverInfoImport.addRepresenterSID(y.getRepresenter());
-						approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
-						return null;
-					}).orElse(null);
+					if(approverInfoImport.getSid() != null) {
+						representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
+						.map(y -> {
+							if(!y.getRepresenter().equals("Empty")){
+								approverInfoImport.addRepresenterSID(y.getRepresenter());
+								approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+							}
+							return null;
+						}).orElse(null);
+					}else if(approverInfoImport.getJobId() != null) {
+						approverInfoImport.getApproverSIDList().forEach(item -> {
+							representerList.stream().filter(x -> x.getApprover().equals(item)).findAny()
+							.map(y -> {
+								if(!y.getRepresenter().equals("Empty")){
+									approverInfoImport.getRepresenterSIDList().add(y.getRepresenter());
+									approverInfoImport.getRepresenterNameList().add(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
+								}
+								return null;
+							}).orElse(null);
+						});
+					}
 				});
 			});
 		});
