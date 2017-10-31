@@ -136,9 +136,11 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
                     });
                 }).ifNo(() => {
-                    alertError({ messageId: "Msg_513" });
+                    self.listItems.valueHasMutated();
                     return;
                 })
+            }).fail(error => {
+                alertError({ messageId: "Msg_513" });
             });
         }
 
@@ -167,9 +169,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 self.listItems.valueHasMutated();
 
-            }).ifNo(() => {
+            }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-                return;
             });
         }
 
