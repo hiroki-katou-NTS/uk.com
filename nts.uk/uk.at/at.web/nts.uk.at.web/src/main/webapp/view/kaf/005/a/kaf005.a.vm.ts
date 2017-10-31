@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
-        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
+//        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("Vu Thang Loi");
         //Pre-POST

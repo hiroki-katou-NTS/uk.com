@@ -19,6 +19,11 @@ public class OverTimeDto {
 	 * 申請ID
 	 */
 	private String appID;
+	
+	/**
+	 * 申請者
+	 */
+	private String employeeName;
 	/**
 	 * 残業区分
 	 */
@@ -44,6 +49,11 @@ public class OverTimeDto {
 	 * 就業時間帯
 	 */
 	private String siftCode;
+	
+	/**
+	 * 就業時間帯名称
+	 */
+	private String siftName;
 	/**
 	 * 勤務時間From1
 	 */
@@ -81,5 +91,9 @@ public class OverTimeDto {
 	 * 就業時間外深夜時間
 	 */
 	private int overTimeShiftNight;
+	/**
+	 * 時刻計算利用
+	 */
+	private boolean displayCaculationTime;
 
 }
