@@ -1543,7 +1543,7 @@ module nts.uk.com.view.cmm018.a {
                 //----SCREEN B
                 //_____subcribe singleSelectedCode________
                 self.singleSelectedCode.subscribe(function(codeChanged) {//approvalId
-                    if(codeChanged == '-1'){
+                    if(codeChanged == '-1' || codeChanged == '' ){
                         return;
                     }
                     //TH: company
@@ -1629,10 +1629,12 @@ module nts.uk.com.view.cmm018.a {
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     if(data == null || data === undefined || data.lstCompanyRoot.length == 0){
+                        self.singleSelectedCode('');
                         self.historyStr('');
                         self.dataSourceB();
                         self.cpA([]);
                         self.enableDeleteB(false);
+                        self.singleSelectedCode(null);
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                         block.clear();
@@ -1680,9 +1682,11 @@ module nts.uk.com.view.cmm018.a {
                     });
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     if(data == null || data === undefined || data.lstWorkplaceRoot.length == 0){
+                        self.singleSelectedCode('');
                         self.historyStr('');
                         self.dataSourceB();
                         self.cpA([]);
+                        self.singleSelectedCode(null);
                         self.dataDisplay(self.convert(lstRoot));
                         self.enableDeleteB(false);
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
@@ -1728,9 +1732,11 @@ module nts.uk.com.view.cmm018.a {
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     if(data == null || data === undefined || data.lstPersonRoot.length == 0){
+                        self.singleSelectedCode('');
                         self.historyStr('');
                         self.dataSourceB();
                         self.cpA([]);
+                        self.singleSelectedCode(null);
                         self.dataDisplay(self.convert(lstRoot));
                         self.enableDeleteB(false);
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
@@ -2477,10 +2483,11 @@ module nts.uk.com.view.cmm018.a {
                 if(mode == 0){//まとめて登録モード
                     return;
                 }
-                self.singleSelectedCode();
+                self.singleSelectedCode('');
                 self.historyStr('');
                 self.singleSelectedCode(null);
                 self.dataDisplay([]);
+//                self.comRoot(null);
                 let lstRoot: Array<vmbase.DataCheckModeB> = [];
                 //TH: tab company
                 if(codeChanged == vmbase.RootType.COMPANY){
@@ -2517,6 +2524,10 @@ module nts.uk.com.view.cmm018.a {
                 self.historyStr('');
                 let employRootAtr;
                 let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
+                if(codeChanged == null){
+                    let a = new vmbase.CompanyAppRootADto(false, 0, 0, '', '', '','', b, b, b, b, b);
+                    self.comRoot(a);
+                }
                 if(codeChanged == '共通ルート'){//1
                     let a = new vmbase.CompanyAppRootADto(false, 0, 0, codeChanged, '', '','', b, b, b, b, b);
                     self.comRoot(a);
