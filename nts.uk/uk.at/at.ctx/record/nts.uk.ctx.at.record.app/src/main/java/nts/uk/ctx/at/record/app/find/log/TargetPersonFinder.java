@@ -46,4 +46,18 @@ public class TargetPersonFinder {
 		return null;
 	}
 	
+	/**
+	 * get list TargetPerson by empCalAndSumExecLogId
+	 * @param empCalAndSumExecLogId
+	 * @return
+	 */
+	public List<TargetPersonDto> getListTargetPersonByEmpId(String empCalAndSumExecLogId){
+		List<TargetPersonDto> data = targetPersonRepo.getByempCalAndSumExecLogID(empCalAndSumExecLogId).stream()
+				.map(c -> TargetPersonDto.fromDomain(c)).collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+	}
+	
+	
 }

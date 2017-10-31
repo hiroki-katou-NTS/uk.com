@@ -4,8 +4,8 @@ module nts.uk.at.view.kdw008.a {
             paths = {
                 addDailyDetail: "at/function/dailyperformanceformat/addAuthorityDailyFormat",
                 updateDailyDetail: "at/function/dailyperformanceformat/updateAuthorityDailyFormat",
-                addMonthlyDetail: "at/function/dailyperformanceformat/addAuthorityMonthlyFormat",
-                updateMonthlyDetail: "at/function/dailyperformanceformat/updateAuthorityMonthlyFormat",
+
+
                 getListAuthorityDailyFormatCode: "at/function/dailyperformanceformat/getAuthorityDailyFormatCode",
                 getDailyPerformance: "at/function/dailyperformanceformat/getAuthorityDailyFormat/{0}/{1}",
                 removeAuthorityDailyFormat: "at/function/dailyperformanceformat/removeAuthorityFormat"
@@ -14,21 +14,15 @@ module nts.uk.at.view.kdw008.a {
             constructor() {
 
             }
-            addDailyDetail(AddBusinessTypeDailyDetailCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addDailyDetail, AddBusinessTypeDailyDetailCommand);
+            addDailyDetail(AddAuthorityDailyFormatCommand: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addDailyDetail, AddAuthorityDailyFormatCommand);
             };
 
-            updateDailyDetail(UpdateBusinessTypeDailyCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateDailyDetail, UpdateBusinessTypeDailyCommand);
+            updateDailyDetail(UpdateAuthorityDailyFormatCommand: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateDailyDetail, UpdateAuthorityDailyFormatCommand);
             };
 
-            addMonthlyDetail(AddBusinessTypeMonthlyCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addMonthlyDetail, AddBusinessTypeMonthlyCommand);
-            };
 
-            updateMonthlyDetail(UpdateBusinessTypeMonthlyCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateMonthlyDetail, UpdateBusinessTypeMonthlyCommand);
-            };
 
             getBusinessType(): JQueryPromise<any> {
                 let _path = nts.uk.text.format(this.paths.getListAuthorityDailyFormatCode);

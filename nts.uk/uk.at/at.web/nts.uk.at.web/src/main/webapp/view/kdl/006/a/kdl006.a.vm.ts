@@ -15,34 +15,34 @@ module nts.uk.at.view.kdl006.a {
             currentCode: KnockoutObservable<any>;
             columnText: KnockoutObservable<string>;
             listClosure: CurrentClosure[];
-
+            listWorkplace: WorkplaceDto[];
+            
             constructor() {
                 let _self = this;
-               // _self.currentCode = ko.observable(null);
+                _self.currentCode = ko.observable(null);
                 _self.items = ko.observableArray([]);             
                 _self.columns = ko.observableArray([]);
-                let textArray = [
-                    '1',
-                    '2'
-                    ];
+
                 _self.control = ko.observableArray([
-                    {name: 'CheckBox1', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox2', options: { value: 1, text: 'dhhd' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox3', options: { value: 1, text: 'dhdjheuj' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox4', options: { value: 1, text: 'eue' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox5', options: { value: 1, text: 'eue' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }
+                    {name: 'CheckBox1', options: { value: 1, text: 'column1' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox2', options: { value: 1, text: 'column2' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox3', options: { value: 1, text: 'column3' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox4', options: { value: 1, text: 'column4' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox5', options: { value: 1, text: 'column5' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }
                 ]);
                 //options: { value: 1, text: '' }, 
                 
                 _self.listClosure = [];
+                _self.listWorkplace = [];
             }
 
             loadGrid() {
                 let _self = this;
+                _self.items(_self.listWorkplace);
                 console.log(_self.items());
                 $("#grid-list").ntsGrid({
                     width: '970px',
-                    height: '400px',
+                    height: '350px',
                     dataSource: _self.items(),
                     primaryKey: 'workplaceId',
                     virtualization: true,
@@ -61,29 +61,31 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
                 
                 // Load closure
-                _self.loadClosure()
-                    .then((listClosure: CurrentClosure[]) => {
-                        // Load workplace                       
-                        _self.loadGridList(listClosure);
-                        _self.listClosure = listClosure;
-                        return _self.loadWorkplace();
-                    })
-                    .then((listWorkplace: WorkplaceDto[]) => {
-                        // Load workfixed
-                        _.map(listWorkplace, (dto: WorkplaceDto) => {
+                $.when(_self.loadClosure(), _self.loadWorkplace())
+                    .done(() => {
+                        
+                        // Load closure    
+                        _self.loadGridList(_self.listClosure);
+                        
+                        // Load workplace
+                        _.map(_self.listWorkplace, (dto: WorkplaceDto) => {
                             return dto.viewText = dto.workplaceCode + " " + dto.workplaceName;
-                        });
-                        _self.items(listWorkplace);
-                        return _self.loadWorkFixed();
-                    })
-                    .then(() => {     
-                        _self.loadGrid();                        
-                        dfd.resolve();
+                        });                        
+                        
+                        // Load workfixed
+                        _self.loadWorkFixed()
+                            .done(() => {
+                                _self.loadGrid();    
+                                dfd.resolve(_self); 
+                            })
+                            .fail((res: any) => {
+                                dfd.fail(res);
+                            });
                     })
                     .fail((res: any) => {
                         dfd.fail(res);
                     });
-
+                
                 return dfd.promise();
             }
 
@@ -95,7 +97,10 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
 
                 service.findCurrentClosure()
-                    .done((data: any[]) => dfd.resolve(data))
+                    .done((data: any[]) => {
+                        _self.listClosure = data;
+                        dfd.resolve();
+                    })
                     .fail((res: any) => dfd.fail(res));
 
                 return dfd.promise();
@@ -109,7 +114,10 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
 
                 service.findWorkplaceInfo()
-                    .done((data: any[]) => dfd.resolve(data))
+                    .done((data: any[]) => {
+                        _self.listWorkplace = data;
+                        dfd.resolve();
+                    })
                     .fail((res: any) => dfd.fail(res));
 
                 return dfd.promise();
@@ -123,13 +131,13 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
 
                 let listClosure = _self.listClosure;
-                let listWorkplace = _self.items();
+                let listWorkplace = _self.listWorkplace;
 
                 //TODO refactor
                 for (let workplace of listWorkplace) {
                     let columnIndex = 1;
                     for (let closure of listClosure) {
-                        ((columnIndex) => {
+                        ((columnIndex: any) => {
                             service.findWorkFixedByWkpIdAndClosureId(workplace.workplaceId, closure.closureId)
                                 .done((data: WorkFixedDto) => {                                   
                                     switch (columnIndex) {
@@ -184,9 +192,10 @@ module nts.uk.at.view.kdl006.a {
                     item.viewText = _self.getHeader(item);
                     let column = {
                         headerText: item.viewText,
-                        key: "column" + columnIndex,
+                        key: "columnCheck" + columnIndex,
                         dataType: 'boolean',
                         width: 150,
+                        showHeaderCheckbox: true,
                         ntsControl: 'CheckBox' + columnIndex
                     }
                     columns.push(column);
@@ -217,7 +226,7 @@ module nts.uk.at.view.kdl006.a {
                 let endMonthRage: string = item.endDate.slice(5, 10);
                 return item.closureName + "<br>" + startMonthRage + ' ~ ' + endMonthRage;
             }
-
+            
         }
     }
 }

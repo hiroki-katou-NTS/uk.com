@@ -211,7 +211,7 @@
                                  <input style="width: 700px" id="inp-apply-formula"
                                     data-bind="ntsTextEditor: {
                                     value: applyFormula,
-                                    enable: false,
+                                    enable: isUsed,
                                     readonly: true,
                                     required: false}"/>
                               </td>
@@ -273,7 +273,8 @@
                                           ]}">
                                        </div>
                                     </td>
-                                    <td><input data-bind="attr: {'id': 'formulaName' + $index()},
+                                    <td><input class="inp-formula-required"
+                                    data-bind="attr: {'id': 'formulaName' + ($index() + 1)},
                                     ntsTextEditor: {
                                        name: '#[KMK002_40]',
                                        value: formulaName,
@@ -300,7 +301,8 @@
                                        </com:ko>
                                     </td>
                                     <td>
-                                       <input data-bind="attr: {'id': 'settingResult' + $index()},
+                                       <input class="inp-formula-required"
+                                       data-bind="attr: {'id': 'settingResult' + ($index() + 1)},
                                        ntsTextEditor: {
                                           name: '#[KMK002_35]',
                                           value: settingResult,

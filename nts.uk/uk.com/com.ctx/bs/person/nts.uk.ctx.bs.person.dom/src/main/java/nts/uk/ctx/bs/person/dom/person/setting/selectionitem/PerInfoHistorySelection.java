@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.person.dom.person.setting.selectionitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @AllArgsConstructor

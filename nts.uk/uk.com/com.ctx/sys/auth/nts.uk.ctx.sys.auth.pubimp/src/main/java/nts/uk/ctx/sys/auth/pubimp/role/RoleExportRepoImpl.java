@@ -36,4 +36,18 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findByListRoleId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<RoleExport> findByListRoleId(String companyId, List<String> lstRoleId) {
+		List<Role> lstRole = roleRepo.findByListRoleId(companyId, lstRoleId);
+		if (!lstRole.isEmpty()) {
+			return lstRole.stream().map(role -> {
+				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v());
+			}).collect(Collectors.toList());
+		}
+		return null;
+	}
+
 }
