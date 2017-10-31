@@ -17,7 +17,6 @@ public class CalExeSettingInforDto {
 	 * 2 : 承認結果反映
 	 * 3 : 月別集計
 	 */
-	private int executionContent;
 	
 	/**
 	 *  0 :通常実行

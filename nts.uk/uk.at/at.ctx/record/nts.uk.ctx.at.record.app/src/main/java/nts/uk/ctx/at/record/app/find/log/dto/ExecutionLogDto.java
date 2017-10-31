@@ -106,7 +106,6 @@ public class ExecutionLogDto {
 						domain.getExecutionTime().getEndTime()),
 				domain.getProcessStatus().value,
 				new CalExeSettingInforDto(
-						domain.getCalExeSetInfor().getExecutionContent().value,
 						domain.getCalExeSetInfor().getExecutionType().value, 
 						domain.getCalExeSetInfor().getExecutionType().nameId),
 				new ObjectPeriod(
