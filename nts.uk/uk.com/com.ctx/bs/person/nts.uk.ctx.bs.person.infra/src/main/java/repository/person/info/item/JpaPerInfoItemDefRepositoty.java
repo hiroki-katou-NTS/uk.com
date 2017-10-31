@@ -193,6 +193,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder ASC";
 	// vinhpx: end
 
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -204,7 +205,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd) {
-		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
+		return  this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoItemDefId).getSingle(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
@@ -665,6 +666,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 							String.valueOf(i[1]));
 				});
 	}
-
 	// vinhpx end
+
 }
