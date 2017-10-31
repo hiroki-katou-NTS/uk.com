@@ -11,6 +11,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
 
 @Stateless
 @Transactional
@@ -20,7 +22,13 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 
 	@Inject
 	private PerInfoHistorySelectionRepository historySelectionRepository;
+	
+	@Inject
+	private SelectionRepository selectionRepo;
 
+	@Inject
+	private SelectionItemOrderRepository selectionOrderRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveSelectionItemCommand> context) {
 		RemoveSelectionItemCommand command = context.getCommand();
@@ -30,8 +38,10 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 		//	  : ※削除対象の個人情報の選択項目が使用されていないかのチェック
 
 		// ToDo: ドメインモデル「選択肢」を削除する
+		//this.selectionRepo.remove(getSelectionItemId);
 
 		// ToDo: ドメインモデル「選択肢の並び順と既定値」を削除する
+		//this.selectionOrderRepo.remove(getSelectionItemId);
 
 		// ドメインモデル「個人情報の選択項目」を削除する
 		this.perInfoSelectionItemRepo.remove(getSelectionItemId);

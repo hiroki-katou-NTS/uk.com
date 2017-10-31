@@ -65,7 +65,12 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	private final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
 			+ " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId";
+	
+	
 
+	
+	
+	
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
 				entity.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, entity.allowPersonRef, entity.allowOtherRef,

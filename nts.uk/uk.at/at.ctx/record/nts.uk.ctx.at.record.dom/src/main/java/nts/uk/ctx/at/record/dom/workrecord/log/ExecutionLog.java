@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
@@ -91,7 +92,7 @@ public class ExecutionLog {
 			String caseSpecExeContentID,
 			String employeeID,
 			String executedLogID,int existenceError,
-			int executeContenByCaseID,int executionContent,GeneralDate startExecutionTime,GeneralDate endExecutionTime,
+			int executeContenByCaseID,int executionContent,GeneralDateTime startExecutionTime,GeneralDateTime endExecutionTime,
 			int processStatus,int exeType ,int exeContent,GeneralDate startObjectPeriod,GeneralDate endObjectPeriod) {
 		
 		return new ExecutionLog(
