@@ -151,6 +151,14 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 		if(listDestination.size()>0) {
 			//Imported(就業)「社員」を取得する
 			//情報メッセージに（Msg_392）を表示する
+			
+			/*String email = employeeAdapter.empEmail(destination);
+			try {
+				mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "return mail from NTS"));
+			} catch (SendMailFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		}
 			
 		
