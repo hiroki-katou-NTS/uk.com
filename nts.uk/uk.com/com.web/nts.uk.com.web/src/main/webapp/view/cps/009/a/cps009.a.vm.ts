@@ -189,10 +189,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 params = {
                     settingId: self.initSettingId(),
+                    settingName: ko.toJS(self.currentCategory().settingName),
                     categoryId: self.currentCategory().currentItemId()
                 };
 
-            setShared('B_PARAMS', params);
+            setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.start(params.settingId);

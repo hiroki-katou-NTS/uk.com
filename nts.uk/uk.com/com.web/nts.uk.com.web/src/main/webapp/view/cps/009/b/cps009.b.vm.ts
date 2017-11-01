@@ -9,7 +9,6 @@ module nts.uk.com.view.cps009.b.viewmodel {
 
     export class ViewModel {
         itemInitLst: Array<any> = [];
-        currentIdLst: KnockoutObservableArray<any> = ko.observableArray([]);
         itemColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS009_33'), key: 'itemName', width: 200 },
@@ -18,6 +17,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
+        dataSource: Array<any> =[];
         constructor() {
 
             let self = this;
@@ -30,18 +30,24 @@ module nts.uk.com.view.cps009.b.viewmodel {
         }
 
         start(): JQueryPromise<any> {
-
             let self = this,
-                dfd = $.Deferred();
+            dfd = $.Deferred();
             self.itemInitLst = [];
-            let param = getShared('CPS009B_PARAM') || { categoryName: '', itemInitLst: [] };
-            self.categoryName('会社');
-            self.itemInitLst.push(new ItemInitValue('AA', "000", "A", true, false));
-            for (let i = 0; i < 8; i++) {
-                self.itemInitLst.push(new ItemInitValue(i.toString(), "000" + i.toString(),
-                "A" + i.toString(),false,false));
-            }
-            dfd.resolve();
+            let param = getShared('CPS009B_PARAMS') || { settingName: '', settingId: '', categoryId: ''};
+             self.categoryName(param.settingName);
+            service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data){
+                if(data == null || data == undefined || data.length == 0){
+                    self.itemInitLst = [];
+                    dfd.resolve();
+                    return dfd.promise();
+                }
+                self.dataSource = data;
+                _.each(self.dataSource, function(item){
+                     self.itemInitLst.push(new ItemInitValue(item.perInfoItemDefId,item.itemCode, item.itemName, item.isRequired, false));
+                });
+                dfd.resolve();
+            });
+            
             return dfd.promise();
         }
 
@@ -49,7 +55,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
             let self = this;
             setShared('CPS009B_DATA', {
                 refMethodType: self.selectedRuleCode(),
-                lstItemSelected: self.currentIdLst()
+                lstItem: self.itemInitLst
             });
             close();
         }
@@ -64,10 +70,10 @@ module nts.uk.com.view.cps009.b.viewmodel {
         id: string;
         itemCode: string;
         itemName: string;
-        isRequired: boolean;
+        isRequired: number;
         isCheckBox: boolean;
         constructor(id: string, itemCode: string,
-            itemName: string, isRequired: boolean,
+            itemName: string, isRequired: number,
             isCheckBox: boolean) {
             let self = this;
             self.id = id;
@@ -81,10 +87,5 @@ module nts.uk.com.view.cps009.b.viewmodel {
         NOSETTING = '設定なし',
         FIXEDVALUE = '固定値',
         SAMEASLOGIN = 'ログイン者と同じ'
-    }
-    export class BParam {
-        code: string;
-        name: string;
-        isRequired: boolean;
     }
 }
