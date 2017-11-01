@@ -5,6 +5,8 @@ package entity.person.personinfoctgdata.item;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 
@@ -12,6 +14,7 @@ import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData
  * @author danpv
  *
  */
+@Stateless
 public class PerInfoItemDataRepoImpl implements PerInfoItemDataRepository{
 
 	/* (non-Javadoc)
