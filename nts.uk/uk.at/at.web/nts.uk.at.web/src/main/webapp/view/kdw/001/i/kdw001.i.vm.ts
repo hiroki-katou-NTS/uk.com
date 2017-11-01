@@ -14,8 +14,14 @@ module nts.uk.at.view.kdw001.i {
             periodStartDate: KnockoutObservable<string>;
             periodEndDate: KnockoutObservable<string>;
             timeSpan: KnockoutObservable<string>;
+            executionTime : KnockoutObservable<modelkdw001f.ExecutionTime>;
+            exeStartTime :  string;
+            exeEndTime :  string;
+            
+            processingMonth:number;
             //TargetPerson 
             listTargetPerson: KnockoutObservableArray<model.TargetPerson>;
+            listPerson: Array<string>;
             numberPerson: KnockoutObservable<number>;
 
             constructor() {
@@ -32,10 +38,15 @@ module nts.uk.at.view.kdw001.i {
                 self.periodStartDate = ko.observable('');
                 self.periodEndDate = ko.observable('');
                 self.timeSpan = ko.observable('');
+                self.executionTime = ko.observable(null);
+                self.exeStartTime = '';
+                self.exeEndTime = '';
+                self.processingMonth = 0;
 
 
                 //TargetPerson
                 self.listTargetPerson = ko.observableArray([]);
+                self.listPerson = [];
                 self.numberPerson = ko.observable(0);
 
                 for (let i = 1; i <= 5; i++) {
@@ -71,12 +82,13 @@ module nts.uk.at.view.kdw001.i {
             getByEmpCalAndSumExeLogId(empCalAndSumExeLogId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: modelkdw001f.EmpCalAndSumExeLog): any {
-                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data));
+                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: Array<modelkdw001f.IEmpCalAndSumExeLog>): any {
+                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data[0]));
                     self.processingMonthName(self.empCalAndSumExecLog().processingMonthName);
+                    self.processingMonth = self.empCalAndSumExecLog().processingMonth;
                     self.executedMenuJapan(self.empCalAndSumExecLog().executedMenuJapan);
                     //date
-                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data[0].executionLogs, ['objectPeriod.startDate'], ['desc']);
+                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data[0].executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
                         return new modelkdw001f.ExecutionLog(value);
                     }));
@@ -105,6 +117,10 @@ module nts.uk.at.view.kdw001.i {
                 service.getListTargetPersonByEmpId(empCalAndSumExeLogId).done(function(data) {
                     self.listTargetPerson(data);
                     self.numberPerson(self.listTargetPerson().length);
+                    self.listPerson = [];
+                    for(let i =0;i<self.listTargetPerson().length;i++){
+                        self.listPerson.push(self.listTargetPerson()[i].employeeId);
+                    }
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -118,7 +134,21 @@ module nts.uk.at.view.kdw001.i {
              *open dialog G 
              */
             openDialogG() {
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
+                let self = this;
+                let temp = self.listPerson;
+                let param = {
+                    //・就業計算と集計実行ログID
+                    empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    //・社員ID（list）
+                    listPerson : self.listPerson,
+                    //・実行開始日時
+                    //・対象期間
+                    //・従業員の実行状況
+                    //・選択した締め
+                    //・処理月
+                    processingMonth : self.processingMonth
+                };
+                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml",param);
             }
 
             /**
