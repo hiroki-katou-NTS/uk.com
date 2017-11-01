@@ -6,6 +6,8 @@ package entity.person.personinfoctgdata.category;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 
@@ -13,6 +15,7 @@ import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataR
  * @author danpv
  *
  */
+@Stateless
 public class PerInfoCtgDataReoImpl implements PerInfoCtgDataRepository{
 
 	/* (non-Javadoc)
