@@ -106,7 +106,7 @@ public class JpaJobTitleInfoGetMemento implements JobTitleInfoGetMemento {
 	 * getIsManager()
 	 */
 	@Override
-	public boolean getIsManager() {
+	public boolean isManager() {
 		return IsManagerStatus.valueOf(this.bsymtJobInfo.getIsManager()).booleanValue;
 	}
 }

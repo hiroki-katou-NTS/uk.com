@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
@@ -31,6 +34,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class AfterApprovalProcessImpl implements AfterApprovalProcess {
@@ -82,13 +86,18 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					// 申請者本人にメール送信する 
 					listMailReceived = this.MailDestination(application).getDestinationMail();
 					if(!listMailReceived.isEmpty()) {
+						listMailReceived.forEach( x -> {
+							try {
+								if(!Strings.isBlank(x)) {
+									mailsender.send("nts", x, new MailContents("nts mail", "approval mail from NTS"));
+								}
+							} catch (SendMailFailedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						});
 						//TODO:
-						/*try {
-							mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "approval mail from NTS"));
-						} catch (SendMailFailedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}*/
+						
 					}
 				}
 			}

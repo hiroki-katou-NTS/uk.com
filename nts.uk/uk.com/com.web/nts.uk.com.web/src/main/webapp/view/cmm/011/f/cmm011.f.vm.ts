@@ -30,7 +30,19 @@ module nts.uk.com.view.cmm011.f {
                     new BoxModel(CreationType.CREATE_BELOW, nts.uk.resource.getText("CMM011_34", ['Com_Workplace']), self.isLess999Hierarchies),
                     new BoxModel(CreationType.CREATE_TO_CHILD, nts.uk.resource.getText("CMM011_35", ['Com_Workplace']), self.isLessTenthHierarchy)
                 ]);
-                self.selectedValBox = ko.observable(1);
+                self.selectedValBox = ko.observable(CreationType.CREATE_ON_TOP);
+                
+                // subscribe
+                self.isLess999Hierarchies.subscribe((newValue) => {
+                    if (!newValue) {
+                        self.selectedValBox(CreationType.CREATE_TO_CHILD);
+                    }
+                });
+                self.isLessTenthHierarchy.subscribe((newValue) => {
+                    if (!newValue && self.isLess999Hierarchies()) {
+                        self.selectedValBox(CreationType.CREATE_ON_TOP);
+                    }
+                });
             }
             
             /**

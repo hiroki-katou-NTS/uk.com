@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 
@@ -22,7 +24,7 @@ public class SettingInforForDailyCreation extends CalExeSettingInfor {
 	/**
 	 * check-boxes
 	 */
-	private PartResetClassification partResetClassification;
+	private Optional<PartResetClassification> partResetClassification;
 
 	public SettingInforForDailyCreation() {
 		super();

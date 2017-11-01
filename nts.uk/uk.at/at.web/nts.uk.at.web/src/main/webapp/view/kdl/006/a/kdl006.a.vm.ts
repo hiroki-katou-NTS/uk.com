@@ -5,7 +5,7 @@ module nts.uk.at.view.kdl006.a {
         import CurrentClosure = service.model.CurrentClosure;
         import WorkplaceDto = service.model.WorkplaceDto;
         import WorkFixedDto = service.model.WorkFixedDto;
-
+        import WorkFixedCommand = service.model.WorkFixedCommand;
 
         export class ScreenModel {
 
@@ -41,7 +41,6 @@ module nts.uk.at.view.kdl006.a {
             loadGrid() {
                 let _self = this;
                 _self.items(_self.listWorkplace);
-                console.log(_self.items());
                 $("#grid-list").ntsGrid({
                     width: '970px',
                     height: '350px',
@@ -90,7 +89,32 @@ module nts.uk.at.view.kdl006.a {
                 
                 return dfd.promise();
             }
+            
+            /**
+             * Save WorkFixed info
+             */
+            public save(): void {
+                let _self = this;
+                
+                nts.uk.ui.block.grayout();      
+                let listWorkFixedCommand: WorkFixedCommand[] = _self.buildSaveCommand();
+                service.saveWorkFixedInfo(listWorkFixedCommand)
+                    .done((data: any) => {
+                        nts.uk.ui.block.clear();                        
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    })
+                    .fail((res: any) => {
+                        nts.uk.ui.block.clear();
+                    });
+            }
 
+            /**
+             * Close this dialog
+             */
+            public close(): void {
+                nts.uk.ui.windows.close();
+            }
+            
             /**
              * Prevent Promise Hell - loadClosure 
              */
@@ -141,27 +165,27 @@ module nts.uk.at.view.kdl006.a {
                     }
                 }
                 
-                service.findWorkFixed(_self.listWorkFixed)
+                service.findWorkFixedInfo(_self.listWorkFixed)
                     .done((data: WorkFixedDto[]) => {
                         _self.listWorkFixed = data;   
                         let workplaceIndex = 0;
                         let totalClosure = _self.listClosure.length;
                         for (let workplace of _self.listWorkplace) {
                             let currentIndex = workplaceIndex * totalClosure;
-                            let currentWorkFixed: any[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure);  
-                            if (_self.listClosure[0] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[0].closureId && o.confirmClsStatus === 1; })) {
+                            let currentWorkFixed: WorkFixedDto[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure); 
+                            if (_self.listClosure[0] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[0].closureId && !_.isNil(o.processDate); })) {
                                 workplace.columnCheck1 = true;
                             }
-                            if (_self.listClosure[1] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[1].closureId && o.confirmClsStatus === 1; })) {
+                            if (_self.listClosure[1] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[1].closureId && !_.isNil(o.processDate); })) {
                                 workplace.columnCheck2 = true;
                             }
-                            if (_self.listClosure[2] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[2].closureId && o.confirmClsStatus === 1; })) {
+                            if (_self.listClosure[2] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[2].closureId && !_.isNil(o.processDate); })) {
                                 workplace.columnCheck3 = true;
                             }
-                            if (_self.listClosure[3] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[3].closureId && o.confirmClsStatus === 1; })) {
+                            if (_self.listClosure[3] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[3].closureId && !_.isNil(o.processDate); })) {
                                 workplace.columnCheck4 = true;
                             }
-                            if (_self.listClosure[4] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[4].closureId && o.confirmClsStatus === 1; })) {
+                            if (_self.listClosure[4] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[4].closureId && !_.isNil(o.processDate); })) {
                                 workplace.columnCheck5 = true;
                             }
                             workplaceIndex++;
@@ -217,12 +241,72 @@ module nts.uk.at.view.kdl006.a {
              *  Get Header
              */
             private getHeader(item: CurrentClosure): string {
-                let self = this;
-                let startMonthRage: string = item.startDate.slice(5, 10);
-                let endMonthRage: string = item.endDate.slice(5, 10);
-                return item.closureName + "<br>" + startMonthRage + ' ~ ' + endMonthRage;
+                return item.closureName + "<br>" + item.startDate.slice(5, 10) + ' ~ ' + item.endDate.slice(5, 10);
             }
             
+            /**
+             * Build WorkFixed save command
+             */
+            private buildSaveCommand(): WorkFixedCommand[] {
+                let _self = this;
+                let result: WorkFixedCommand[] = [];
+                
+                //TODO check init value 
+                for (let workplace of _self.listWorkplace) {
+                    if (_.isBoolean(workplace.columnCheck1) && _self.listClosure[0]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck1,
+                            _self.listClosure[0].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck1 === false) { delete workplace.columnCheck1; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck2) && _self.listClosure[1]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck2,
+                            _self.listClosure[1].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck2 === false) { delete workplace.columnCheck2; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck3) && _self.listClosure[2]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck3,
+                            _self.listClosure[2].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck3 === false) { delete workplace.columnCheck3; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck4) && _self.listClosure[3]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck4,
+                            _self.listClosure[3].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck4 === false) { delete workplace.columnCheck4; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck5) && _self.listClosure[4]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck5,
+                            _self.listClosure[4].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck5 === false) { delete workplace.columnCheck5; }
+                    }
+                }               
+    
+                return result;
+            }
         }
     }
 }

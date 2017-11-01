@@ -34,6 +34,12 @@ public class AttendanceItemLinkingFinder {
 	@Inject
 	private OptionalItemRepository optItemRepo;
 
+	/** The Constant MONTHLY_FRAME_TYPE. */
+	private static final int MONTHLY_FRAME_TYPE = 1;
+
+	/** The Constant DAILY_FRAME_TYPE. */
+	private static final int DAILY_FRAME_TYPE = 3;
+
 	/**
 	 * Find by any item.
 	 *
@@ -63,9 +69,7 @@ public class AttendanceItemLinkingFinder {
 	 * @param performanceAtr the performance atr
 	 * @return the int
 	 */
-	private static final int convertToFrameType(int performanceAtr) {
-		final int MONTHLY_FRAME_TYPE = 1;
-		final int DAILY_FRAME_TYPE = 3;
+	private int convertToFrameType(int performanceAtr) {
 		return performanceAtr == PerformanceAtr.DAILY_PERFORMANCE.value ? DAILY_FRAME_TYPE : MONTHLY_FRAME_TYPE;
 	}
 

@@ -17,19 +17,19 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTarget;
 @Stateless
 public class JpaTargetPersonRepository extends JpaRepository implements TargetPersonRepository {
 
-	private final String SELECT_FROM_TARGET = "SELECT c FROM KrcmtEmpExeTarget c ";
+	private final String SELECT_FROM_TARGET = "SELECT c FROM KrcdtEmpExeTarget c ";
 	private final String SELECT_ALL_TARGET = SELECT_FROM_TARGET
-			+ " WHERE c.krcmtEmpExeTargetPK.employeeId = :employeeId ";
+			+ " WHERE c.krcdtEmpExeTargetPK.employeeId = :employeeId ";
 	private final String SELECT_TARGET_BY_ID = SELECT_ALL_TARGET
-			+ " AND c.krcmtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+			+ " AND c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private final String SELECT_TARGET_PERSON = SELECT_FROM_TARGET
-			+ " WHERE c.krcmtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+			+ " WHERE c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 
 	
 	private final String SELECT_BY_LOG_ID = SELECT_FROM_TARGET 
-			+ "WHERE c.krcmtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
+			+ "WHERE c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
 	
 	private TargetPerson toDomain(KrcdtEmpExeTarget entity) {
 		return new TargetPerson(entity.krcdtEmpExeTargetPK.employeeId, entity.krcdtEmpExeTargetPK.empCalAndSumExecLogID,
