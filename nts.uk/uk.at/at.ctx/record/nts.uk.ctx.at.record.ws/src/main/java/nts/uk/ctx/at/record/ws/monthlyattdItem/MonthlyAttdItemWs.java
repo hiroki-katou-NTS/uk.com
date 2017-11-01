@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.ws.monthlyAttdItem;
+package nts.uk.ctx.at.record.ws.monthlyattdItem;
 
 import java.util.List;
 
