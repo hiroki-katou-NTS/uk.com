@@ -9,8 +9,12 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -28,6 +32,8 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -50,6 +56,9 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	private EmployeeRequestAdapter employeeAdapter;
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepo;
+	@Inject
+	private MailSender mailSender;
+	
 	@Override
 	public String detailedScreenAfterDenialProcess(Application application, String memo) {
 		// 否認できるフラグ
@@ -147,6 +156,14 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
 			// 申請者本人にメール送信する ===>>>>Thuc hien gui mail cho nguoi viet don
 			email = employeeAdapter.empEmail(loginEmp);
+			try {
+				if(!Strings.isBlank(email)) {
+					mailSender.send("nts", email, new MailContents("nts mail", "deny mail from NTS"));
+				}
+			} catch (SendMailFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		// Hien thi Message
 		// 送信先リストに項目がいる

@@ -10,16 +10,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityDailyCommand;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityDailyCommandHandler;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityMonthlyCommand;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityMonthlyCommandHandler;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAutDaiFormatCommandHandler;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.AddAuthorityDailyFormatCommand;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.RemoveAuthorityCommand;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.RemoveAuthorityCommandHandler;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityDailyCommand;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityDailyCommandHandler;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityMonthlyCommand;
-import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityMonthlyCommandHandler;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAutDaiFormatCommandHandler;
+import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityDailyFormatCommand;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthorityFinder;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceCodeFinder;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceItemAuthorityDto;
@@ -33,16 +29,10 @@ public class AuthorityFormatWebService extends WebService {
 	private RemoveAuthorityCommandHandler removeAuthorityCommandHandler;
 	
 	@Inject
-	private AddAuthorityDailyCommandHandler addAuthorityDailyCommandHandler;
+	private AddAutDaiFormatCommandHandler addAuthorityDailyCommandHandler;
 	
 	@Inject
-	private AddAuthorityMonthlyCommandHandler addAuthorityMonthlyCommandHandler;
-	
-	@Inject
-	private UpdateAuthorityMonthlyCommandHandler updateAuthorityMonthlyCommandHandler;
-	
-	@Inject
-	private UpdateAuthorityDailyCommandHandler updateAuthorityDailyCommandHandler;
+	private UpdateAutDaiFormatCommandHandler updateAuthorityDailyCommandHandler;
 	
 	@Inject
 	private DailyPerformanceAuthorityFinder dailyPerformanceAuthorityFinder;
@@ -58,25 +48,25 @@ public class AuthorityFormatWebService extends WebService {
 	
 	@POST
 	@Path("addAuthorityDailyFormat")
-	public void addAuthorityDailyFormat(AddAuthorityDailyCommand command) {
+	public void addAuthorityDailyFormat(AddAuthorityDailyFormatCommand command) {
 		this.addAuthorityDailyCommandHandler.handle(command);
 	}
 	
-	@POST
-	@Path("addAuthorityMonthlyFormat")
-	public void addAuthorityMonthlyFormat(AddAuthorityMonthlyCommand command) {
-		this.addAuthorityMonthlyCommandHandler.handle(command);
-	}
+//	@POST
+//	@Path("addAuthorityMonthlyFormat")
+//	public void addAuthorityMonthlyFormat(AddAuthorityMonthlyCommand command) {
+//		this.addAuthorityMonthlyCommandHandler.handle(command);
+//	}
 	
-	@POST
-	@Path("updateAuthorityMonthlyFormat")
-	public void updateAuthorityMonthlyFormat(UpdateAuthorityMonthlyCommand command) {
-		this.updateAuthorityMonthlyCommandHandler.handle(command);
-	}
+//	@POST
+//	@Path("updateAuthorityMonthlyFormat")
+//	public void updateAuthorityMonthlyFormat(UpdateAuthorityMonthlyCommand command) {
+//		this.updateAuthorityMonthlyCommandHandler.handle(command);
+//	}
 	
 	@POST
 	@Path("updateAuthorityDailyFormat")
-	public void updateAuthorityDailyFormat(UpdateAuthorityDailyCommand command) {
+	public void updateAuthorityDailyFormat(UpdateAuthorityDailyFormatCommand command) {
 		this.updateAuthorityDailyCommandHandler.handle(command);
 	}
 

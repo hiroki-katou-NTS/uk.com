@@ -43,6 +43,13 @@ module nts.uk.com.view.cmm050.a {
             
             popServerEnable: KnockoutObservable<boolean>;
             
+            passwordBeforeChange: string;
+            popServerBeforeChange: string;
+            imapServerBeforeChange: string;
+            
+            popPortBeforeChange: number;
+            imapPortBeforeChange: number;
+            
             constructor(){
                 let _self = this;
                 
@@ -141,24 +148,40 @@ module nts.uk.com.view.cmm050.a {
                         _self.password(pass.trim());
                     }
                 });
+                _self.password.subscribe(function(oldValue) {
+                    _self.passwordBeforeChange = oldValue;
+                }, null, "beforeChange");
                 
                  _self.popServer.subscribe(function(popServer){
                    if(popServer.trim().length <= 0){
                         _self.popServer(popServer.trim());
                     }
                 });
+                _self.popServer.subscribe(function(oldValue) {
+                    _self.popServerBeforeChange = oldValue;
+                }, null, "beforeChange");
 
                 _self.imapServer.subscribe(function(imapServer){
                    if(imapServer.trim().length <= 0){
                         _self.imapServer(imapServer.trim());
                     }
                 });
+                _self.imapServer.subscribe(function(oldValue) {
+                    _self.imapServerBeforeChange = oldValue;
+                }, null, "beforeChange");
                 
                 _self.smtpServer.subscribe(function(smtpServer){
                    if(smtpServer.trim().length <= 0){
                         _self.smtpServer(smtpServer.trim());
                     }
                 });
+                
+                _self.imapPort.subscribe(function(oldValue) {
+                    _self.imapPortBeforeChange = oldValue;
+                }, null, "beforeChange");
+                _self.popPort.subscribe(function(oldValue) {
+                    _self.popPortBeforeChange = oldValue;
+                }, null, "beforeChange");
             }
             
             /**
@@ -198,10 +221,14 @@ module nts.uk.com.view.cmm050.a {
                         _self.encryptionMethod(),
                         _self.authMethod(),
                         _self.emailAuth(),
-                        _self.password(),
-                        new model.SmtpInfoDto(_self.smtpServer(), _self.smtpPort()),
-                        new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
-                        new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
+                        _self.useAuth() == UseServer.USE ? _self.password() : _self.passwordBeforeChange,
+                        new model.SmtpInfoDto( _self.smtpServer(), _self.smtpPort()),
+                        new model.PopInfoDto(_self.useAuth() == UseServer.USE && _self.popUseServer() == PopUseServer.USE ? _self.popServer() : _self.popServerBeforeChange, 
+                                                _self.popUseServer(), 
+                                                _self.useAuth() == UseServer.USE ? _self.popPort() : _self.popPortBeforeChange),
+                        new model.ImapInfoDto(_self.useAuth() == UseServer.USE && _self.imapUseServer() == ImapUseServer.USE ? _self.imapServer() : _self.imapServerBeforeChange, 
+                                                _self.imapUseServer(), 
+                                                _self.useAuth() == UseServer.USE ? _self.imapPort() : _self.imapPortBeforeChange)
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
@@ -220,15 +247,21 @@ module nts.uk.com.view.cmm050.a {
             public showDialogTest() {
                 let _self = this;
                 // Validate
-                if (_self.hasError()) {
+                if (nts.uk.text.isNullOrEmpty(_self.emailAuth())) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_533" });
                     return;
                 }
+                
+                // Validate
+                if (_self.hasError()) {
+                    return;
+                }
+                
                 setShared('CMM050Params', {
                     emailAuth: _self.emailAuth(),
                 }, true);
                 nts.uk.ui.windows.sub.modal("/view/cmm/050/b/index.xhtml").onClosed(function() {
-                  
+                    
                 });
             }
             

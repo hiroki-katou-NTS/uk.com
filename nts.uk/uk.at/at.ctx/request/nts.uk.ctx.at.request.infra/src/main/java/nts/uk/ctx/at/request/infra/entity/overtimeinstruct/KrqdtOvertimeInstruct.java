@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.infra.entity.overtimeinstruct;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

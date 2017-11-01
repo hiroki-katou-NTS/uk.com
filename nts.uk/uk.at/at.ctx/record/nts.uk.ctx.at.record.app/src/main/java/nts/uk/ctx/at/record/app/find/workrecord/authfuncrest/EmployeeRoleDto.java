@@ -18,6 +18,8 @@ public class EmployeeRoleDto {
 
 	private String roleId;
 	
+	private String roleCode;
+	
 	private String roleName;
 	
 }
