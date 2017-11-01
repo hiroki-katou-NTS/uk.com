@@ -356,7 +356,7 @@ module nts.uk.at.view.kmk002.a {
                     $('#settingResult' + order).ntsError('clear');
 
                     // remove item.
-                    _.remove(updatedList, item => item.orderNo == order);
+                    _.remove(updatedList, item => item.orderNo() == order);
                 });
 
                 // update formula list.
@@ -410,7 +410,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private getSelectableFormulas(orderNo: number): Array<FormulaDto> {
                 let self = this;
-                let filtered = _.filter(self.calcFormulas(), item => item.orderNo < orderNo);
+                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() < orderNo);
                 return _.map(filtered, item => item.toDto());
             }
 
@@ -438,7 +438,7 @@ module nts.uk.at.view.kmk002.a {
                 f.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
 
                 // Set order
-                f.orderNo = order;
+                f.orderNo(order);
 
                 // Set symbol
                 f.symbolValue = 'A';
@@ -538,8 +538,8 @@ module nts.uk.at.view.kmk002.a {
             private updateAllFormulaOrder(orderNo: number): void {
                 let self = this;
                 self.calcFormulas()
-                    .filter(item => item.orderNo > orderNo)
-                    .forEach(item => item.orderNo += 1);
+                    .filter(item => item.orderNo() > orderNo)
+                    .forEach(item => item.orderNo(item.orderNo() + 1));
             }
 
             /**
@@ -640,7 +640,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private getFormulaIdOf(orderNo: number): string {
                 let self = this;
-                let found = _.find(self.calcFormulas(), formula => formula.orderNo === orderNo);
+                let found = _.find(self.calcFormulas(), formula => formula.orderNo() === orderNo);
                 return found.formulaId;
             }
 
@@ -650,7 +650,7 @@ module nts.uk.at.view.kmk002.a {
             private sortListFormula(): void {
                 let self = this;
                 // sort by orderNo
-                let sortedList = _.sortBy(self.calcFormulas(), item => item.orderNo);
+                let sortedList = _.sortBy(self.calcFormulas(), item => item.orderNo());
                 self.calcFormulas(sortedList);
             }
 
@@ -683,9 +683,9 @@ module nts.uk.at.view.kmk002.a {
              */
             private resetFormulaOrder(): void {
                 let self = this;
-                let index = 0;
+                let index = 1;
                 _.each(self.calcFormulas(), item => {
-                    item.orderNo = index + 1;
+                    item.orderNo(index);
                     index++;
                 });
             }
@@ -1102,6 +1102,8 @@ module nts.uk.at.view.kmk002.a {
 
                 // validate required formulaName & required setting formula
                 self.optionalItem.calcFormulas().forEach((item, index) => {
+                    // order start from 1, index start from 0
+                    index++;;
                     $('#formulaName' + index).ntsEditor('validate');
                     $('#settingResult' + index).ntsEditor('validate');
                 });
@@ -1118,7 +1120,7 @@ module nts.uk.at.view.kmk002.a {
                     // set messages bundle
                     let messages = { Msg_111: [] };
                     _.each(invalidFormulas, formula => {
-                        messages.Msg_111.push(nts.uk.resource.getMessage('Msg_111', [formula.orderNo]));
+                        messages.Msg_111.push(nts.uk.resource.getMessage('Msg_111', [formula.orderNo()]));
                     });
 
                     // show messages bundle
@@ -1205,7 +1207,7 @@ module nts.uk.at.view.kmk002.a {
             formulaName: KnockoutObservable<string>;
             formulaAtr: KnockoutObservable<number>;
             symbolValue: string;
-            orderNo: number;
+            orderNo: KnockoutObservable<number>;
             settingResult: KnockoutObservable<string>;
 
             // param for c screen
@@ -1266,7 +1268,7 @@ module nts.uk.at.view.kmk002.a {
                 this.formulaName = ko.observable('');
                 this.formulaAtr = ko.observable(null);
                 this.symbolValue = '';
-                this.orderNo = 1;
+                this.orderNo = ko.observable(null);
                 this.selected = ko.observable(false);
                 this.settingResult = ko.observable('');
 
@@ -1337,12 +1339,12 @@ module nts.uk.at.view.kmk002.a {
 
                     // add to selected formulas if checked
                     if (vl === true) {
-                        OptionalItem.selectedFormulas.push(self.orderNo);
+                        OptionalItem.selectedFormulas.push(self.orderNo());
                     }
 
                     // remove from selected formulas if unchecked
                     if (vl === false) {
-                        OptionalItem.selectedFormulas.remove(self.orderNo);
+                        OptionalItem.selectedFormulas.remove(self.orderNo());
                     }
 
                     // reset flag
@@ -1649,7 +1651,7 @@ module nts.uk.at.view.kmk002.a {
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = self.formulaSetting;
-                param.selectableFormulas = self.getSelectableFormulas(self.orderNo);
+                param.selectableFormulas = self.getSelectableFormulas(self.orderNo());
                 param.operatorDatasource = Enums.ENUM_OPT_ITEM.operatorAtr;
 
                 nts.uk.ui.windows.setShared('paramToD', param);
@@ -1698,7 +1700,7 @@ module nts.uk.at.view.kmk002.a {
                 self.settingResult(result);
 
                 // clear error
-                $('#settingResult' + (self.orderNo - 1)).ntsEditor('validate');
+                $('#settingResult' + self.orderNo()).ntsEditor('validate');
             }
 
             /**
@@ -1722,7 +1724,7 @@ module nts.uk.at.view.kmk002.a {
                 self.settingResult(result);
 
                 // clear error
-                $('#settingResult' + (self.orderNo - 1)).ntsEditor('validate');
+                $('#settingResult' + self.orderNo()).ntsEditor('validate');
             }
 
             /**
@@ -1734,7 +1736,7 @@ module nts.uk.at.view.kmk002.a {
 
                 dto.formulaId = self.formulaId;
                 dto.optionalItemNo = self.optionalItemNo;
-                dto.orderNo = self.orderNo;
+                dto.orderNo = self.orderNo();
                 dto.formulaName = self.formulaName();
                 dto.formulaAtr = self.formulaAtr();
                 dto.symbolValue = self.symbolValue;
@@ -1775,7 +1777,7 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaName(dto.formulaName);
                 self.formulaAtr(dto.formulaAtr);
                 self.symbolValue = dto.symbolValue;
-                self.orderNo = dto.orderNo;
+                self.orderNo(dto.orderNo);
 
                 // Calc setting
                 self.calcAtr(dto.calcAtr);
