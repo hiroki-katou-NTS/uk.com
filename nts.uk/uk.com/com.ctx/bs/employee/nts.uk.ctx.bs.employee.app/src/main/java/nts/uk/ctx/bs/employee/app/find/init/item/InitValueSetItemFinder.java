@@ -55,39 +55,46 @@ public class InitValueSetItemFinder {
 		resultItemList = initListItem.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList());
 		if (isHaveItemSameAsLogin(initListItem)) {
 
-			switch (categoryCd) {
-			// 社員基本情報 - Employee
-			case "CS00002":
-				resultItemList = loadEmployeeInfo(resultItemList, companyId, employeeId);
-				break;
-			// 休職・休業 - TemporaryAbsence
-			case "CS00008":
-				resultItemList = loadTemporaryAbsenceInfo(resultItemList, employeeId, baseDate);
-				break;
-			// 職務職位履歴 - JobTitleHistory
-			case "CS00009":
-				resultItemList = loadJobTitleHistoryInfo(resultItemList, employeeId, baseDate);
-				break;
-			// 所属職場 - AffiliationWorkplaceHistory
-			case "CS00010":
-				resultItemList = loadAffiliationWorkPlaceInfo(resultItemList, employeeId, baseDate);
-				break;
-			// 所属部門 - AffiliationDepartment
-			case "CS00011":
-				resultItemList = loadAffiliationDepartmentInfo(resultItemList, companyId, employeeId);
-				break;
-
-			}
-
-			resultItemList.addAll(this.infoItemDataFinder.loadInfoItemDataList(categoryCd, companyId, employeeId));
+			resultItemList = loadItemByCtgCode(resultItemList, categoryCd, companyId, employeeId, baseDate);
 
 		}
 		return resultItemList;
 	}
 
+	public List<SettingItemDto> loadItemByCtgCode(List<SettingItemDto> resultItemList, String categoryCd,
+			String companyId, String employeeId, GeneralDate baseDate) {
+		switch (categoryCd) {
+		// 社員基本情報 - Employee
+		case "CS00002":
+			resultItemList = loadEmployeeInfo(resultItemList, companyId, employeeId);
+			break;
+		// 休職・休業 - TemporaryAbsence
+		case "CS00008":
+			resultItemList = loadTemporaryAbsenceInfo(resultItemList, employeeId, baseDate);
+			break;
+		// 職務職位履歴 - JobTitleHistory
+		case "CS00009":
+			resultItemList = loadJobTitleHistoryInfo(resultItemList, employeeId, baseDate);
+			break;
+		// 所属職場 - AffiliationWorkplaceHistory
+		case "CS00010":
+			resultItemList = loadAffiliationWorkPlaceInfo(resultItemList, employeeId, baseDate);
+			break;
+		// 所属部門 - AffiliationDepartment
+		case "CS00011":
+			resultItemList = loadAffiliationDepartmentInfo(resultItemList, companyId, employeeId);
+			break;
+
+		}
+
+		resultItemList.addAll(this.infoItemDataFinder.loadInfoItemDataList(categoryCd, companyId, employeeId));
+
+		return resultItemList;
+	}
+
 	// JobTitleHistory start
 
-	private List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
+	public List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
 			GeneralDate baseDate) {
 		// TODO Auto-generated method stub
 		return null;
@@ -96,7 +103,7 @@ public class InitValueSetItemFinder {
 	// JobTitleHistory end
 	// TemporaryAbsence start
 
-	private List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList, String employeeId,
+	public List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList, String employeeId,
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
@@ -150,7 +157,7 @@ public class InitValueSetItemFinder {
 	}
 	// Employee Start
 
-	private List<SettingItemDto> loadEmployeeInfo(List<SettingItemDto> initItemList, String companyId,
+	public List<SettingItemDto> loadEmployeeInfo(List<SettingItemDto> initItemList, String companyId,
 			String employeeId) {
 
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
@@ -208,7 +215,7 @@ public class InitValueSetItemFinder {
 
 	// AffiliationDepartment start
 
-	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String companyId,
+	public List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String companyId,
 			String employeeId) {
 		// List<InitValueSettingItemDto> returnList = new
 		// ArrayList<InitValueSettingItemDto>();
@@ -226,7 +233,7 @@ public class InitValueSetItemFinder {
 	// AffiliationDepartment end
 
 	// Aff WorkPlace start
-	private List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList, String employeeId,
+	public List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList, String employeeId,
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
