@@ -13,9 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.person.dom.person.info.category.CategoryCode;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
-import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
@@ -32,11 +30,11 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
 			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
 
-
 	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			+ " ITEM.requiredAtr, "
 			+ " SE.settingItemPk.settingId, SE.refMethodAtr, SE.saveDataType, SE.stringValue, SE.intValue, SE.dateValue,"
-			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart"
+			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart,"
+			+ " CM.timeItemMin, CM.timeItemMax "
 			// 10 11 12 13 14
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
@@ -168,20 +166,32 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		if (entity[14] != null) {
-			//domain.setCtgCode(entity[14].toString());
+			// domain.setCtgCode(entity[14].toString());
 			domain.setCtgCode("CO00001");
 		}
 		if (entity[13] != null && entity[14] != null) {
 			domain.setConstraint(PerInfoInitValueSetItem.processs("CO00001", entity[13].toString()));
 		}
-		
-		if (entity[15] != null) {
-			domain.setNumberDecimalPart(Integer.valueOf(entity[15].toString()));
+
+		if (entity[10] != null) {
+			if (entity[10].toString().equals("2")) {
+				if (entity[15] != null) {
+					domain.setNumberDecimalPart(Integer.valueOf(entity[15].toString()));
+				}
+
+				if (entity[16] != null) {
+					domain.setNumberIntegerPart(Integer.valueOf(entity[16].toString()));
+				}
+			}
+
 		}
 
-		if (entity[16] != null) {
-			//domain.setCtgCode(entity[14].toString());
-			domain.setNumberIntegerPart(Integer.valueOf(entity[16].toString()));
+		if (entity[17] != null) {
+			domain.setTimeItemMin(Integer.valueOf(entity[17].toString()));
+		}
+		
+		if (entity[18] != null) {
+			domain.setTimeItemMax(Integer.valueOf(entity[18].toString()));
 		}
 		return domain;
 
