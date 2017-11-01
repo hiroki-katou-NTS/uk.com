@@ -92,8 +92,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             testContraint: primitiveConst(obj)
                         });
                     });
-                    
-                    
+
+
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.currentCategory().itemList.valueHasMutated();
@@ -187,13 +187,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
         openBDialog() {
 
             let self = this,
-                PARAMS = { categoryId: self.currentCategory().currentItemId() };
-            console.log(PARAMS);
+                params = {
+                    settingId: self.initSettingId(),
+                    categoryId: self.currentCategory().currentItemId()
+                };
 
-            setShared('categoryInfo', self.currentCategory());
+            setShared('B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
-
+                self.start(params.settingId);
                 block.clear();
             });
 
@@ -202,14 +204,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // copy initVal
         openCDialog() {
 
-            let self = this;
+            let self = this,
+                params = {
+                    settingId : self.initSettingId(),
+                    settingCode : self.currentCategory().settingCode,
+                    settingName : self.currentCategory().settingName};
 
-            setShared('categoryInfo', self.currentCategory());
+            setShared('C_PARAMS', params);
 
             block.invisible();
 
             modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
-
+                self.start(params.settingId);
                 block.clear();
             });
 
@@ -462,8 +468,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         timeItemMin?: number;
 
         timeItemMax?: number;
-        
-        testContraint : any;
+
+        testContraint: any;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -505,7 +511,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         timeItemMin: number;
 
         timeItemMax: number;
-        
+
         testContraint: any;
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
@@ -533,7 +539,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.itemType = ko.observable(params.itemType || 0);
             self.dataType = ko.observable(params.dataType || 0);
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
-            
+
             self.testContraint = params.testContraint;
 
             if (params.dataType === 0 || params.dataType === 1) {
