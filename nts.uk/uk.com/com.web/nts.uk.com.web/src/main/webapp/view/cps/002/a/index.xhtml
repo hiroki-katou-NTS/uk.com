@@ -29,7 +29,7 @@
 
 			<div id="contents-area" class="cf">
 				<div
-					data-bind="visible: currentStep()===1 &amp;&amp; selectedId()===1">
+					data-bind="visible: currentStep()===1 &amp;&amp; createTypeId()===1">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"
@@ -144,7 +144,7 @@
 														options: createTypeList ,
 														optionsValue: 'id' ,
 														optionsText: 'name' ,
-														value: selectedId ,
+														value: createTypeId ,
 														enable: enable
 														       		}">
 										</div>
@@ -174,10 +174,10 @@
 						<div class="step-2">
 							<div id="step2_content">
 								<div class="div_line">
-									<com:ko-if bind="selectedId()===1">
+									<com:ko-if bind="createTypeId()===1">
 										<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
 									</com:ko-if>
-									<com:ko-if bind="selectedId()===2">
+									<com:ko-if bind="createTypeId()===2">
 										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
 									</com:ko-if>
 								</div>
@@ -223,25 +223,31 @@
 								<div class="float_left" id="value_item">
 									<div class="div_line">
 										<div class="step2_col1">
-											<com:ko-if bind="selectedId()===1">
+											<com:ko-if bind="createTypeId()===1">
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_33')}</div>
 											</com:ko-if>
-											<com:ko-if bind="selectedId()===2">
+											<com:ko-if bind="createTypeId()===2">
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_46')}</div>
 											</com:ko-if>
 										</div>
-										<div class="step2_col2" data-bind="with:currentItem">
-											<label class="textLabel"
-												data-bind="text:itemCode + ' ' + itemName"></label>
+										<div class="step2_col2">
+											<com:ko-if bind="createTypeId()===1 ">
+												<label class="textLabel"
+													data-bind="text:copyEmployee().employeeCode + ' ' + copyEmployee().employeeName"></label>
+											</com:ko-if>
+											<com:ko-if bind="createTypeId()===2">
+												<label class="textLabel"
+													data-bind="text:currentInitSetting().itemCode + ' ' + currentInitSetting().itemName"></label>
+											</com:ko-if>
 										</div>
 									</div>
 
 									<div class="div_line">
 										<div class="step2_col1">
-											<com:ko-if bind="selectedId()===1">
+											<com:ko-if bind="createTypeId()===1">
 												<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_34')}</div>
 											</com:ko-if>
-											<com:ko-if bind="selectedId()===2">
+											<com:ko-if bind="createTypeId()===2">
 												<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_47')}</div>
 											</com:ko-if>
 
@@ -265,12 +271,13 @@
 									</div>
 									<div class="div_line">
 										<div id="cover_table">
-											<table id="table_item" data-bind="if:itemList().length>0">
+											<table id="table_item"
+												data-bind="if:itemSettingList().length>0">
 												<tr>
 													<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
 													<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
 												</tr>
-												<tbody data-bind="foreach:itemList">
+												<tbody data-bind="foreach:itemSettingList">
 													<tr>
 														<td
 															data-bind="text: itemName , css:{requiredCell: isRequired  }"></td>
@@ -303,11 +310,11 @@
 							</div>
 
 							<div class='div_line'>
-								<com:ko-if bind="selectedId()!==3">
+								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 								</com:ko-if>
-								<com:ko-if bind="selectedId()===3">
+								<com:ko-if bind="createTypeId()===3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
 								</com:ko-if>

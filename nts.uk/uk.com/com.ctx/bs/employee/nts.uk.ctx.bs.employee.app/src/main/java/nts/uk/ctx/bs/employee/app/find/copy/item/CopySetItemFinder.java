@@ -38,7 +38,7 @@ public class CopySetItemFinder {
 			throw new BusinessException(new RawErrorMessage("Msg_347"));
 		}
 
-		return this.initItemFinder.loadItemByCtgCode(resultItemList, categoryCd, companyId, employeeId, baseDate);
+		return this.initItemFinder.loadSettingItems(resultItemList, categoryCd, companyId, employeeId, baseDate);
 
 	}
 

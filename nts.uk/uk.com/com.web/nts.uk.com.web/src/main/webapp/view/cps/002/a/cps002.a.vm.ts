@@ -20,11 +20,11 @@ module cps002.a.vm {
 
         categoryList: KnockoutObservableArray<CategoryItem> = ko.observableArray([]);
 
-        initValueList: KnockoutObservableArray<SelectedItem> = ko.observableArray([]);
+        initValueList: KnockoutObservableArray<InitSetting> = ko.observableArray([]);
 
-        itemList: KnockoutObservableArray<Item> = ko.observableArray([]);
+        itemSettingList: KnockoutObservableArray<SettingItem> = ko.observableArray([]);
 
-        selectedId: KnockoutObservable<number> = ko.observable(1);
+        createTypeId: KnockoutObservable<number> = ko.observable(1);
 
         enable: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -38,7 +38,9 @@ module cps002.a.vm {
 
         initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
 
-        currentItem: KnockoutObservable<SelectedItem> = ko.observable(new SelectedItem(null));;
+        currentInitSetting: KnockoutObservable<InitSetting> = ko.observable(new InitSetting(null));
+
+        copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
@@ -52,7 +54,7 @@ module cps002.a.vm {
             isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
                 let self = this;
-                self.currentItem(new SelectedItem(dataEmployee[0]));
+                self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
             }
         };
 
@@ -60,58 +62,72 @@ module cps002.a.vm {
             let self = this;
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
-            self.selectedId.subscribe((newValue) => {
+            self.createTypeId.subscribe((newValue) => {
+                self.initValueList([]);
+                self.categoryList([]);
+                self.itemSettingList([]);
+                self.categorySelectedCode('');
+                self.initValueSelectedCode('');
+                self.currentInitSetting(new InitSetting(null));
 
             });
 
-            self.initValueSelectedCode.subscribe((newValue) => {
+            self.initValueSelectedCode.subscribe((initCode) => {
+                if (initCode === '') {
+                    return;
+                }
 
-                let selectedItem = _.find(self.initValueList(), item => {
-                    return item.itemCode == newValue;
+                let InitSetting = _.find(self.initValueList(), item => {
+                    return item.itemCode == initCode;
                 });
 
-                service.getAllInitValueCtgSetting(selectedItem.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
                     if (result.length) {
                         self.categoryList(_.map(result, item => {
                             return new CategoryItem(item);
                         }));
 
-                        self.categorySelectedCode('');
                         self.categorySelectedCode(result[0].categoryCd);
                     } else {
                         self.categoryList.removeAll();
                     }
                 });
 
-                self.currentItem(selectedItem);
+                self.currentInitSetting(InitSetting);
+
+            });
+
+            self.copyEmployee.subscribe((CopyEmployee) => {
+
+                self.loadCopySettingItemData();
 
             });
 
 
 
-            self.categorySelectedCode.subscribe((newValue) => {
+            self.categorySelectedCode.subscribe((categoryCode) => {
 
-                if (newValue == '') {
+                if (categoryCode == '') {
                     return;
                 }
-
+                self.itemSettingList.removeAll();
                 if (self.isUseInitValue()) {
-                    service.getAllInitValueItemSetting(self.currentItem().itemId, newValue, self.currentEmployee().hireDate()).done((result: Array<Item>) => {
+                    service.getAllInitValueItemSetting(self.currentInitSetting().itemId, categoryCode, self.currentEmployee().hireDate()).done((result: Array<SettingItem>) => {
                         if (result.length) {
-                            self.itemList(_.map(result, item => {
-                                return new Item(item);
+                            self.itemSettingList(_.map(result, item => {
+                                return new SettingItem(item);
                             }));
-                        } else {
-                            self.itemList.removeAll();
                         }
                     });
                 } else {
 
+                    self.loadCopySettingItemData();
+
 
                 }
             });
 
-            self.currentEmployee().avatarId.subscribe((newValue) => {
+            self.currentEmployee().avatarId.subscribe((avartarId) => {
 
                 //set avatar
                 //  $("#employeeAvatar").ntsImageEditor("selectByFileId", newValue);
@@ -119,6 +135,22 @@ module cps002.a.vm {
             });
 
             self.start();
+        }
+
+        loadCopySettingItemData() {
+
+            let self = this,
+                currentCopyEmployeeId = self.copyEmployee().employeeId;
+
+            if (currentCopyEmployeeId != "") {
+                service.getAllCopySettingItem(currentCopyEmployeeId, self.categorySelectedCode(), self.currentEmployee().hireDate()).done((result: Array<SettingItem>) => {
+                    if (result.length) {
+                        self.itemSettingList(_.map(result, item => {
+                            return new SettingItem(item);
+                        }));
+                    }
+                });
+            }
         }
 
         start() {
@@ -136,7 +168,6 @@ module cps002.a.vm {
 
                             });
                         }
-
                         self.getLastRegHistory(result);
 
                     });
@@ -214,14 +245,6 @@ module cps002.a.vm {
             return dfd.promise();
         }
 
-        next() {
-            let self = this;
-            $('#emp_reg_info_wizard').ntsWizard("next");
-
-
-
-        }
-
         validateForm() {
             $(".nts-editor").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -239,7 +262,7 @@ module cps002.a.vm {
 
                     } else {
 
-                        if (self.selectedId() === 3) {
+                        if (self.createTypeId() === 3) {
 
                             self.gotoStep3();
                             return;
@@ -281,7 +304,7 @@ module cps002.a.vm {
 
         completeStep2() {
             let self = this;
-            if (!self.currentEmployee().employeeId && !self.isUseInitValue()) {
+            if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
 
                 dialog({ messageId: "Msg_349" });
 
@@ -295,7 +318,7 @@ module cps002.a.vm {
         isUseInitValue() {
             let self = this;
 
-            return self.selectedId() === 2;
+            return self.createTypeId() === 2;
         }
 
         gotoStep2() {
@@ -310,7 +333,7 @@ module cps002.a.vm {
 
                 $('#search_panel').show();
 
-                self.loadInitValueData();
+                self.loadInitSettingData();
 
             } else {
 
@@ -318,19 +341,19 @@ module cps002.a.vm {
 
                 $('#search_panel').hide();
 
-                self.loadCopySettingData();
+                self.loadCopySettingCtgData();
 
             }
 
 
         }
 
-        loadCopySettingData() {
+        loadCopySettingCtgData() {
 
             let self = this;
+            self.categoryList.removeAll();
 
             service.getCopySetting().done((result: Array<ICopySetting>) => {
-                self.categoryList.removeAll();
                 if (result.length) {
                     self.categoryList(_.map(result, item => {
                         return new CategoryItem(item);
@@ -349,15 +372,17 @@ module cps002.a.vm {
 
             });
 
+
         }
 
-        loadInitValueData() {
+        loadInitSettingData() {
 
             let self = this;
+            self.initValueList.removeAll();
             service.getAllInitValueSetting().done((result: Array<IInitValueSetting>) => {
                 if (result.length) {
                     self.initValueList(_.map(result, item => {
-                        return new SelectedItem(item);
+                        return new InitSetting(item);
                     }));
 
                     let lastValueItem = _.find(result, (item) => {
@@ -381,7 +406,7 @@ module cps002.a.vm {
 
         prev() {
             let self = this;
-            if (self.selectedId() === 3) {
+            if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
@@ -481,16 +506,34 @@ module cps002.a.vm {
     }
 
     class Employee {
-
+        employeeId: string;
         employeeName: KnockoutObservable<string> = ko.observable("");
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(new Date());
         cardNo: KnockoutObservable<string> = ko.observable("");
-        employeeId: string;
         initvalueCode: string;
         avatarId: KnockoutObservable<string> = ko.observable("");
 
         constructor(param?) {
+        }
+    }
+
+
+    class EmployeeCopy {
+        employeeId: string;
+        employeeName: string;
+        employeeCode: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
+
+        constructor(param?: any) {
+            this.employeeId = param ? param.employeeId : '';
+            this.employeeName = param ? param.employeeName : '';
+            this.employeeCode = param ? param.employeeCode : '';
+            this.workplaceCode = param ? param.workplaceCode : '';
+            this.workplaceId = param ? param.workplaceId : '';
+            this.workplaceName = param ? param.workplaceName : '';
         }
     }
 
@@ -519,7 +562,7 @@ module cps002.a.vm {
 
     }
 
-    class SelectedItem {
+    class InitSetting {
 
         itemId: string = '';
         itemCode: string = '';
@@ -561,14 +604,16 @@ module cps002.a.vm {
         }
     }
 
-    class Item {
+    class SettingItem {
+        itemCode: string
         itemName: string;
         isRequired: number;
         saveData: any;
         constructor(param?: any) {
-            this.itemName = param ? param.itemName ? param.itemName : param.id : '';
-            this.isRequired = param ? param.isRequired ? param.isRequired : param.name : 0;
-            this.saveData = param ? param.saveData ? param.saveData : param.id : 0;
+            this.itemCode = param ? param.itemCode : '';
+            this.itemName = param ? param.itemName : '';
+            this.isRequired = param ? param.isRequired : 0;
+            this.saveData = param ? param.saveData : null;
         }
     }
 

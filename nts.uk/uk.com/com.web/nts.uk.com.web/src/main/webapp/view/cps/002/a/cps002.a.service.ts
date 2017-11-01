@@ -11,6 +11,7 @@ module cps002.a.service {
         'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
         'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
         'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
+        'getAllCopySettingItem': 'ctx/bs/person/info/setting/copySettingItem/{0}/{1}/{2}',
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
         'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
         'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}/{2}',
@@ -48,6 +49,10 @@ module cps002.a.service {
 
     export function getCopySetting() {
         return ajax(paths.getCopySetting);
+    }
+
+    export function getAllCopySettingItem(employeeId, categoryCd, baseDate) {
+        return ajax(format(paths.getAllCopySettingItem, employeeId, categoryCd, nts.uk.time.formatDate(baseDate, 'yyyyMMdd')));
     }
 
     export function getAllInitValueSetting() {
