@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.deleteEmpmanagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpManagement;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 /**

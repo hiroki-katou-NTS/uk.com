@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.deleteEmpmanagement;
+package nts.uk.ctx.bs.employee.dom.deleteempmanagement;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

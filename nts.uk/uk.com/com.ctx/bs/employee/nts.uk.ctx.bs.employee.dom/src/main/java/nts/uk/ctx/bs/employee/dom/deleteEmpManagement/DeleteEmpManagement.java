@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.deleteEmpmanagement;
+package nts.uk.ctx.bs.employee.dom.deleteempmanagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

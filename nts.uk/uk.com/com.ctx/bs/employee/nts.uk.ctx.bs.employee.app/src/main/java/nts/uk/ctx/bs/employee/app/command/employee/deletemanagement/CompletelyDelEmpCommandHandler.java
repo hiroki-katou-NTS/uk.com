@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.deleteEmpmanagement.DeleteEmpManagement;
-import nts.uk.ctx.bs.employee.dom.deleteEmpmanagement.DeleteEmpRepository;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpRepository;
 
 @Stateless
 @Transactional
