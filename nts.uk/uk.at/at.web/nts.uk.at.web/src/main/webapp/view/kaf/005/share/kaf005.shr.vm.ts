@@ -173,12 +173,12 @@ module nts.uk.at.view.kaf005.share {
                 this.representerSID = representerSID;    
             }
         }
-        export class BreakTime{
-                breakTimeID: KnockoutObservable<string>;
+        export class RestTime{
+                restTimeID: KnockoutObservable<string>;
                 startTime: KnockoutObservable<number>;
                 endTime: KnockoutObservable<number>;
-            constructor(breakTimeID: string, startTime: number, endTime: number){
-                this.breakTimeID = ko.observable(breakTimeID);
+            constructor(restTimeID: string, startTime: number, endTime: number){
+                this.restTimeID = ko.observable(restTimeID);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 }
@@ -190,13 +190,43 @@ module nts.uk.at.view.kaf005.share {
             preAppTime: KnockoutObservable<string>;
             instructTime: KnockoutObservable<string>;
             caculationTime: KnockoutObservable<string>;
-            constructor(overtimeID: string,overtimeName: string, appTime: string, preAppTime: string, instructTime: string, caculationTime: string){
+            constructor(overtimeID: string, overtimeName: string, appTime: string, preAppTime: string, instructTime: string, caculationTime: string){
                 this.overtimeID = ko.observable(overtimeID);
                 this.overtimeName = ko.observable(overtimeName);
                 this.appTime = ko.observable(appTime);
                 this.preAppTime = ko.observable(preAppTime);
                 this.instructTime = ko.observable(instructTime);
                 this.caculationTime = ko.observable(caculationTime);
+            }
+        }
+        export class BreakTime{
+            breakTimeID: KnockoutObservable<string>;
+            breakTimeName: KnockoutObservable<string>;
+            appTime: KnockoutObservable<string>;
+            preAppTime: KnockoutObservable<string>;
+            instructTime: KnockoutObservable<string>;
+            caculationTime: KnockoutObservable<string>;
+            constructor(breakTimeID: string, breakTimeName: string, appTime: string, preAppTime: string, instructTime: string, caculationTime: string){
+                this.breakTimeID = ko.observable(breakTimeID);
+                this.breakTimeName = ko.observable(breakTimeName);
+                this.appTime = ko.observable(appTime);
+                this.preAppTime = ko.observable(preAppTime);
+                this.instructTime = ko.observable(instructTime);
+                this.caculationTime = ko.observable(caculationTime);
+            }
+        }
+        export class BonusTime{
+            bonusTimeID: KnockoutObservable<string>;
+            bonusTimeName: KnockoutObservable<string>;
+            appTime: KnockoutObservable<string>;
+            preAppTime: KnockoutObservable<string>;
+            instructTime: KnockoutObservable<string>;
+            constructor(bonusTimeID: string, bonusTimeName: string, appTime: string, preAppTime: string, instructTime: string){
+                this.bonusTimeID = ko.observable(bonusTimeID);
+                this.bonusTimeName = ko.observable(bonusTimeName);
+                this.appTime = ko.observable(appTime);
+                this.preAppTime = ko.observable(preAppTime);
+                this.instructTime = ko.observable(instructTime);
             }
         }
     }
