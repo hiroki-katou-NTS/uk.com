@@ -47,7 +47,7 @@ public class JpaMonthlyAttendanceItemGetMemento implements MonthlyAttendanceItem
 	 */
 	@Override
 	public int getAttendanceItemId() {
-		return this.getAttendanceItemId();
+		return this.entity.getKrcmtMonAttendanceItemPK().getMAtdItemId();
 	}
 
 	/*
