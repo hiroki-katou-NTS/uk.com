@@ -3,8 +3,11 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -19,50 +22,23 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
  *
  */
 @Getter
-@AllArgsConstructor
 public class ExecutionLog {
-	/**
-	 * 会社ID
-	 */
-
-	private String companyID;
-	
-	/**
-	 * ID (table 就業計算と集計実行ログ)
-	 */
-	private String empCalAndSumExecLogID;
-
-	/**
-	 * 運用ケース
-	 */
-	private String caseSpecExeContentID;
-	
-	/**
-	 * 実行社員ID
-	 */
-
-	private String employeeID;
 	
 	/**
 	 * 就業計算と集計実行ログID
 	 */
-	private String executedLogID;
+	private String empCalAndSumExecLogID;
+	
+	/**
+	 * 実行内容
+	 */
+	private ExecutionContent executionContent;
 	
 	/**
 	 * エラーの有無
 	 */
 	private ErrorPresent existenceError;
 	
-	/**
-	 * ケース別実行実施内容ID
-	 */
-	private int executeContenByCaseID;
-	
-	/**
-	 * 実行内容
-	 */
-	private ExecutionContent executionContent;
-
 	/**
 	 * 実行日時
 	 * start time - end time
@@ -73,14 +49,6 @@ public class ExecutionLog {
 	 * 処理状況
 	 */
 	private ExecutionStatus processStatus;
-	
-	/**
-	 * 設定情報
-	 * ExecutionContent - ExecutionType
-	 */
-	private CalExeSettingInfor calExeSetInfor;
-
-
 
 	/**
 	 * 対象期間
@@ -88,30 +56,72 @@ public class ExecutionLog {
 	 */
 	private ObjectPeriod objectPeriod;
 	
-	public static ExecutionLog createFromJavaType(String companyID,
+	/**
+	 * 計算実行設定情報ID
+	 */
+	private String calExecutionSetInfoID;
+	
+	/**
+	 * 承認結果反映の設定情報
+	 */
+	@Setter
+	private Optional<SetInforReflAprResult> reflectApprovalSetInfo;
+	
+	/**
+	 * 日別作成の設定情報
+	 */
+	@Setter
+	private Optional<SettingInforForDailyCreation> dailyCreationSetInfo;
+	/**
+	 * 日別計算の設定情報
+	 */
+	@Setter
+	private Optional<CalExeSettingInfor> dailyCalSetInfo;
+	/**
+	 * 月別集計の設定情報
+	 */
+	@Setter
+	private Optional<CalExeSettingInfor>  monlyAggregationSetInfo;
+	
+	
+	
+	public ExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ErrorPresent existenceError,
+			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod,
+			String calExecutionSetInfoID) {
+		super();
+		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+		this.executionContent = executionContent;
+		this.existenceError = existenceError;
+		this.executionTime = executionTime;
+		this.processStatus = processStatus;
+		this.objectPeriod = objectPeriod;
+		this.calExecutionSetInfoID = calExecutionSetInfoID;
+	}
+	
+	public static ExecutionLog createFromJavaType(
 			String empCalAndSumExecLogID,
-			String caseSpecExeContentID,
-			String employeeID,
-			String executedLogID,int existenceError,
-			int executeContenByCaseID,int executionContent,GeneralDateTime startExecutionTime,GeneralDateTime endExecutionTime,
-			int processStatus,int exeType ,int exeContent,GeneralDate startObjectPeriod,GeneralDate endObjectPeriod) {
+			int executionContent,
+			int existenceError,
+			GeneralDateTime startExecutionTime,
+			GeneralDateTime endExecutionTime,
+			int processStatus,
+			GeneralDate startObjectPeriod,
+			GeneralDate endObjectPeriod,
+			String calExecutionSetInfoID
+			) {
 		
 		return new ExecutionLog(
-				companyID,
 				empCalAndSumExecLogID,
-				caseSpecExeContentID,
-				employeeID,
-				executedLogID,
-				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
-				executeContenByCaseID,
 				EnumAdaptor.valueOf(executionContent,ExecutionContent.class),
+				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
 				new ExecutionTime(startExecutionTime,endExecutionTime),
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
-				new CalExeSettingInfor(
-						EnumAdaptor.valueOf(exeType,ExecutionType.class), executedLogID),
-				new ObjectPeriod(startObjectPeriod,endObjectPeriod)
+
+				new ObjectPeriod(startObjectPeriod,endObjectPeriod),
+				calExecutionSetInfoID
 				);
 		
 	}
+
 
 }

@@ -12,5 +12,6 @@ import nts.arc.enums.EnumConstant;
  */
 public interface ExecutionLogService {
 	
-	List<EnumConstant> getEnumContent(String companyID);
+	
+	
 }
