@@ -66,10 +66,14 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	private String constraint;
 
 	// thêm trường numberDecimalPart của bảng common
-	private int numberDecimalPart;
+	private Integer numberDecimalPart;
 
 	// thêm trường numberIntegerPart của bảng common
-	private int numberIntegerPart;
+	private Integer numberIntegerPart;
+
+	private Integer timeItemMin;
+
+	private Integer timeItemMax;
 
 	/**
 	 * constructor PerInfoInitValueSetItem
@@ -95,7 +99,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
 			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
 			StringValue stringValue, IntValue intValue, GeneralDate dateValue, Integer dataType, Integer itemType,
-			String itemCode, String ctgCode, String constraint, int numberDecimalPart, int numberIntegerPart) {
+			String itemCode, String ctgCode, String constraint, Integer numberDecimalPart, Integer numberIntegerPart,
+			Integer timeItemMin, Integer timeItemMax) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.settingId = settingId;
@@ -114,6 +119,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.constraint = constraint;
 		this.numberDecimalPart = numberDecimalPart;
 		this.numberIntegerPart = numberIntegerPart;
+		this.timeItemMax = timeItemMax;
+		this.timeItemMin = timeItemMin;
 	}
 
 	/**
@@ -180,7 +187,6 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.itemType = itemType;
 		this.itemCode = itemCode;
 		this.ctgCode = ctgCode;
-		this.processs(ctgCode, itemCode);
 	}
 
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,

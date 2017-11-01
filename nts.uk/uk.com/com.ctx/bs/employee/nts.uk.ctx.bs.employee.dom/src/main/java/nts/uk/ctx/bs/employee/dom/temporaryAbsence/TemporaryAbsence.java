@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.temporaryabsence;
+package nts.uk.ctx.bs.employee.dom.temporaryAbsence;
 
 
 import lombok.AllArgsConstructor;
