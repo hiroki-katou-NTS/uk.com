@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
@@ -58,6 +59,11 @@ public class ExecutionLogDto {
 	 * 実行内容
 	 */
 	private int executionContent;
+	
+	/**
+	 * executionContent : Japan name
+	 */
+	private String executionContentName;
 
 	/**
 	 * 実行日時
@@ -93,14 +99,15 @@ public class ExecutionLogDto {
 				domain.getExecutedLogID(), 
 				domain.getExistenceError().value, 
 				domain.getExecuteContenByCaseID(),
-				domain.getExecutionContent().value, 
+				domain.getExecutionContent().value,
+				domain.getExecutionContent().nameId, //NAME japan
 				new ExecutionTime(
 						domain.getExecutionTime().getStartTime(), 
 						domain.getExecutionTime().getEndTime()),
 				domain.getProcessStatus().value,
 				new CalExeSettingInforDto(
 						domain.getCalExeSetInfor().getExecutionType().value, 
-						domain.getCalExeSetInfor().getExecutionContent().value),
+						domain.getCalExeSetInfor().getExecutionType().nameId),
 				new ObjectPeriod(
 						domain.getObjectPeriod().getStartDate(), 
 						domain.getObjectPeriod().getEndDate())); 

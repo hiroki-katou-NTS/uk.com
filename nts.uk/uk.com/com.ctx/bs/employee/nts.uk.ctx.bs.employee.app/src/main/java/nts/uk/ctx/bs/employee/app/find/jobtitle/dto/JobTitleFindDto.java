@@ -17,34 +17,46 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
  */
 @Data
 public class JobTitleFindDto implements JobTitleSetMemento {
-	
+
 	/** The company id. */
-	public String companyId;
+	private String companyId;
 
 	/** The job title id. */
-	public String jobTitleId;
+	private String jobTitleId;
 
 	/** The job title history. */
-	public List<JobTitleHistoryFindDto> jobTitleHistory;
+	private List<JobTitleHistoryFindDto> jobTitleHistory;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setCompanyId(nts.
+	 * uk.ctx.bs.employee.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.companyId = companyId.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleId(nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleId(nts.
+	 * uk.ctx.bs.employee.dom.jobtitle.JobTitleId)
 	 */
 	@Override
 	public void setJobTitleId(String jobTitleId) {
 		this.jobTitleId = jobTitleId;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleHistory(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setJobTitleHistory
+	 * (java.util.List)
 	 */
 	@Override
 	public void setJobTitleHistory(List<JobTitleHistory> jobTitleHistory) {
