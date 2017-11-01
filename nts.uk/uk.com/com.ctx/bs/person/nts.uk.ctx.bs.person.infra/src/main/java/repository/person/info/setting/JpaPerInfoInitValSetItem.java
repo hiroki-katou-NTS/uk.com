@@ -36,6 +36,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart,"
 			+ " CM.timeItemMin, CM.timeItemMax "
 			// 10 11 12 13 14
+			+ " CM.selectionItemRefCode "
+			// for Hoa
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -193,6 +195,11 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[18] != null) {
 			domain.setTimeItemMax(Integer.valueOf(entity[18].toString()));
 		}
+		
+		if(entity[19] != null) {
+			domain.setSelectionItemId(entity[19].toString());
+		}
+		
 		return domain;
 
 	}
