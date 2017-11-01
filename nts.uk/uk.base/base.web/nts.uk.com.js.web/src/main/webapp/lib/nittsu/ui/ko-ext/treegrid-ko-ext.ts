@@ -106,7 +106,7 @@ module nts.uk.ui.koExtentions {
                 $treegrid.addClass("row-limited");
             }
 
-            $treegrid.data("expand", new ExpandNodeHolder(optionsValue, optionsChild, $treegrid));
+            $treegrid.data("expand", new ExpandNodeHolder());
             $treegrid.data("autoExpanding", false);
             
             // Init ig grid.
@@ -129,41 +129,42 @@ module nts.uk.ui.koExtentions {
                 }, rowCollapsed: function (evt, ui) {
                     if (!$treegrid.data("autoExpanding")) {
                         let holder: ExpandNodeHolder = $treegrid.data("expand");
-                        holder.removeNode(ui["dataRecord"][optionsValue]);
+                        holder.removeNodeAndChilds(ui["dataRecord"], optionsValue, optionsChild);
                         $treegrid.data("expand", holder);
                     }
                 }, rowsRendered: function(evt, ui) {
                     $treegrid.data("autoExpanding", true);
                     let holder: ExpandNodeHolder = $treegrid.data("expand");
-                    if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
-                        let expandedIds: Array<string> = [];
-                        _.forEach(holder.nodes, function(node: ExpandNode){
-                            $treegrid.igTreeGrid("expandRow", node.getNode());
-                            expandedIds.push(node.getNode());        
-                        });
-                        
-                        let selecteds = $treegrid.ntsTreeView("getSelected");
-                        if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                            let firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id
-                            if (firstId !== undefined) {
-                                let parentIds = Helper.getAllParentId($treegrid, firstId, optionsValue, optionsChild);
-                                _.forEach(parentIds, function(node: string){
-                                    if(expandedIds.indexOf(node) < 0){
-                                        $treegrid.igTreeGrid("expandRow", node);        
-                                    }        
-                                });
-                                
-                                setTimeout(function(){
-                                    let row2 = $treegrid.igTreeGrid("rowById", firstId);      
-                                    var container = $treegrid.igTreeGrid("scrollContainer");
-                                    let totalH = _.sumBy(row2.prevAll(), function(e){ return $(e).height();});
-                                    if(totalH > height - HEADER_HEIGHT) {
-                                        container.scrollTop(totalH);        
-                                    }
-                                }, 200);         
-                            }
-                        } 
-                    }
+//                    if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
+                    _.forEach(holder.nodes, function(node: any){
+                        $treegrid.igTreeGrid("expandRow", node); 
+                    });
+                    
+                    let selecteds = $treegrid.ntsTreeView("getSelected");
+                    if (!nts.uk.util.isNullOrUndefined(selecteds)) {
+                        let firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id
+                        if (firstId !== undefined) {
+                            let parentIds = Helper.getAllParentId($treegrid, firstId, optionsValue, optionsChild);
+                            _.forEach(parentIds, function(node: string){
+                                if(holder.nodes.indexOf(node) < 0 && node !== firstId) {
+                                    $treegrid.igTreeGrid("expandRow", node);        
+                                    holder.addNode(node);
+                                }        
+                            });
+                            
+                            $treegrid.data("expand", holder);
+                            
+                            setTimeout(function(){
+                                let row2 = $treegrid.igTreeGrid("rowById", firstId);      
+                                var container = $treegrid.igTreeGrid("scrollContainer");
+                                let totalH = _.sumBy(row2.prevAll(), function(e){ return $(e).height();});
+                                if(totalH > height - HEADER_HEIGHT) {
+                                    container.scrollTop(totalH);        
+                                }
+                            }, 200);         
+                        }
+                    } 
+//                    }
                     
                     $treegrid.data("autoExpanding", false);   
                 }
@@ -254,7 +255,7 @@ module nts.uk.ui.koExtentions {
     import isEmpty = nts.uk.util.isNullOrEmpty;
     
     class ExpandNodeHolder{
-        nodes: Array<ExpandNode>;
+        nodes: Array<any>;
         
         constructor(){
             this.nodes = [];  
@@ -265,18 +266,31 @@ module nts.uk.ui.koExtentions {
         }
         
         addNode (nodeId: any): void {
-            this.nodes.push(new ExpandNode(nodeId));
+            this.nodes.push(nodeId);
         }
         
-        removeNode(nodeId: any): void{
-            _.remove(this.nodes, function(node: ExpandNode){
-                return nodeId === node.getNode();
+        removeNodeAndChilds(nodeSource: any, nodeKey, nodeChildKey): void {
+            let ids: Array<any> = Helper.getAllIdFromNodeSource(_.cloneDeep(nodeSource), nodeKey, nodeChildKey);
+            _.remove(this.nodes, function(node: any){
+                return ids.indexOf(node) >= 0;
             });
         }
         
     }
      
     module Helper {
+        export function getAllIdFromNodeSource(nodeSource: any, nodeKey: string, childKey: string): Array<any>{
+            let ids = [nodeSource[nodeKey]];
+            let children = [].concat(nodeSource[childKey]);
+            while (!isEmpty(children)){
+                let currentNode = children.shift();
+                ids.push(currentNode[nodeKey]);
+                if(!isEmpty(currentNode)){
+                    children = children.concat(currentNode[childKey]);        
+                }
+            }
+            return ids;
+        } 
         
         export function flatTree(tree: Array<any>, childKey: string): Array<any> {
             let ids = [];
