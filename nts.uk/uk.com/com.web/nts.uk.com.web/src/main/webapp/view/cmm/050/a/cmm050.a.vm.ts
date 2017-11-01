@@ -232,6 +232,7 @@ module nts.uk.com.view.cmm050.a {
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
+                    _self.startPage().done(function(){});
                     dfd.resolve();
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 }).fail(function(){
