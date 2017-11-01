@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EMP_EXE_TARGET")
+@Table(name = "KRCMT_EMP_EXE_TARGET")
 public class KrcdtEmpExeTarget extends UkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
