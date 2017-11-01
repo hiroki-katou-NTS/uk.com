@@ -45,8 +45,7 @@ module cps002.i.vm {
                         self.close();
                     });
                 }
-            }else self.close();
-            
+            }else self.close();            
         }
         getImage(){
             let self = this;
