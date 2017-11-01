@@ -54,12 +54,11 @@ public class Family extends AggregateRoot {
 
 	private int workStudent;
 
-	public static Family createFromJavaType(Date birthday, Date deadDay, Date entryDate, Date expelledDate,
+	public static Family createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,
 			String familyId, String name, String nameKana, String nameMulti, String nameMultiKana, String nameRomaji,
 			String nameRomajiKana, String nationality, String occupationName, String personId, String relationship,
 			int supportCareType, String notificationName, int togSepDivision, int workStudent) {
-		return new Family(GeneralDate.legacyDate(birthday), GeneralDate.legacyDate(deadDay),
-				GeneralDate.legacyDate(entryDate), GeneralDate.legacyDate(expelledDate), new FamilyId(familyId),
+		return new Family(birthday, deadDay, entryDate, expelledDate, new FamilyId(familyId),
 				new FullNameSet(name, nameKana), new FullNameSet(nameMulti, nameMultiKana),
 				new FullNameSet(nameRomaji, nameRomajiKana), new CountryId(nationality), occupationName, personId,
 				relationship, supportCareType, notificationName, togSepDivision, workStudent);
