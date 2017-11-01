@@ -30,7 +30,7 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 	@Column(name = "CID")
 	private String cid;
 
-	@Column(name = "ROLE_CODE")
+	@Column(name = "ROLE_CD")
 	private String code;
 
 	@Column(name = "ROLE_TYPE")
