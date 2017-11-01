@@ -12,10 +12,14 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Attrib
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.CalculateAtr;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.CumulativeAtr;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.DisplayAtr;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeople;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeopleFunc;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Rounding;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeople;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeopleFunc;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItem;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSet;
@@ -33,6 +37,9 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetti
 public class JpaVerticalSetting extends JpaRepository implements VerticalSettingRepository {
 	
 	private static final String SELECT_ALL_GEN_VERT_SET;
+	// Form People 
+	private final String SELECT_PEOPLE_NO_WHERE = "SELECT c FROM KscmtFormPeople c ";
+	private final String SELECT_PEOPLE_ITEM = SELECT_PEOPLE_NO_WHERE + "WHERE c.kscmtFormPeoplePK.companyId = :companyId";
 	
 	static {
 
@@ -42,7 +49,30 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		builderString.append(" WHERE e.kscmtGenVertSetPK.companyId = :companyId");
 		SELECT_ALL_GEN_VERT_SET = builderString.toString();
 	}
-
+	
+	/**
+	 * convert form Form People entity to Form People domain
+	 * @param entity
+	 * @return
+	 * author: Hoang Yen
+	 */
+	private static FormPeople toDomainFormPeople(KscmtFormPeople entity){
+		FormPeople domain = FormPeople.createFromJavaType(entity.kscmtFormPeoplePK.companyId, 
+															entity.kscmtFormPeoplePK.verticalCalCd, 
+															entity.kscmtFormPeoplePK.verticalCalItemId, 
+															entity.actualDisplayAtr);
+		return domain;
+	}
+	
+	private static FormPeopleFunc toDomainFormPeopleFunc(KscmtFormPeopleFunc entity){
+		FormPeopleFunc domain = FormPeopleFunc.createFromJavaType(entity.kscmtFormPeopleFuncPK.companyId, 
+									entity.kscmtFormPeopleFuncPK.verticalCalCd, 
+									entity.kscmtFormPeopleFuncPK.verticalCalItemId, 
+									entity.externalBudgetCd, entity.categoryAtr, 
+									entity.categoryAtr, entity.dispOrder);
+		return domain;
+	}
+	
 	/**
 	 * Find all Vertical Cal Set
 	 */
@@ -171,5 +201,53 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	public void deleteVerticalCalSet(String companyId, String verticalCalCd) {
 		KscmtGenVertSetPK kscstVerticalCalSetPK = new KscmtGenVertSetPK(companyId, verticalCalCd);
 		this.commandProxy().remove(KscmtGenVertSet.class, kscstVerticalCalSetPK);
+	}
+
+	@Override
+	public List<FormPeople> findAllFormPeople(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<FormPeopleFunc> findAllFormPeopleFunc(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertFormPeople(FormPeople formPeople) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void insertFormPeopleFunc(List<FormPeopleFunc> formPeopleFunc) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateFormPeople(FormPeople formPeople) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteFormPeople(FormPeople formPeople) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc) {
+		// TODO Auto-generated method stub
+		
 	}
 }
