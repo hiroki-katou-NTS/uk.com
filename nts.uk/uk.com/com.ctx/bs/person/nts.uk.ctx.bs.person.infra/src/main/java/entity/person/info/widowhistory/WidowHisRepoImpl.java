@@ -3,6 +3,8 @@
  */
 package entity.person.info.widowhistory;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 
@@ -10,6 +12,7 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
  * @author danpv
  *
  */
+@Stateless
 public class WidowHisRepoImpl implements WidowHistoryRepository{
 
 	/* (non-Javadoc)

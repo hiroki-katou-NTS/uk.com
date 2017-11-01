@@ -3,6 +3,8 @@
  */
 package entity.person.currentaddress;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddressRepository;
@@ -11,6 +13,7 @@ import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddressRepository;
  * @author danpv
  *
  */
+@Stateless
 public class CurrentAddRepoImpl implements CurrentAddressRepository{
 
 	/* (non-Javadoc)
