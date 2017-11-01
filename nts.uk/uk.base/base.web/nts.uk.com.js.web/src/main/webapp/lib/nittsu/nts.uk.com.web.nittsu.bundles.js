@@ -8787,7 +8787,7 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
-                        $treegrid.data("expand", new ExpandNodeHolder(optionsValue, optionsChild, $treegrid));
+                        $treegrid.data("expand", new ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
                         $treegrid.igTreeGrid({
                             width: width,
@@ -8808,30 +8808,36 @@ var nts;
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
-                                    holder.removeNode(ui["dataRecord"][optionsValue]);
+                                    holder.removeNodeAndChilds(ui["dataRecord"], optionsValue, optionsChild);
                                     $treegrid.data("expand", holder);
                                 }
                             }, rowsRendered: function (evt, ui) {
                                 $treegrid.data("autoExpanding", true);
                                 var holder = $treegrid.data("expand");
-                                if (!nts.uk.util.isNullOrEmpty(holder.nodes)) {
-                                    _.forEach(holder.nodes, function (node) {
-                                        $treegrid.igTreeGrid("expandRow", node.getNode());
-                                    });
-                                    setTimeout(function () {
-                                        var selecteds = $treegrid.ntsTreeView("getSelected");
-                                        if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                                            var firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
-                                            if (firstId !== undefined) {
-                                                var row2 = $treegrid.igTreeGrid("rowById", firstId);
-                                                var container = $treegrid.igTreeGrid("scrollContainer");
-                                                var totalH = _.sumBy(row2.prevAll(), function (e) { return $(e).height(); });
-                                                if (totalH > height - HEADER_HEIGHT) {
-                                                    container.scrollTop(totalH);
-                                                }
+                                _.forEach(holder.nodes, function (node) {
+                                    $treegrid.igTreeGrid("expandRow", node);
+                                });
+                                var selecteds = $treegrid.ntsTreeView("getSelected");
+                                if (!nts.uk.util.isNullOrUndefined(selecteds)) {
+                                    var firstId_1 = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
+                                    if (firstId_1 !== undefined) {
+                                        var parentIds = Helper.getAllParentId($treegrid, firstId_1, optionsValue, optionsChild);
+                                        _.forEach(parentIds, function (node) {
+                                            if (holder.nodes.indexOf(node) < 0 && node !== firstId_1) {
+                                                $treegrid.igTreeGrid("expandRow", node);
+                                                holder.addNode(node);
                                             }
-                                        }
-                                    }, 200);
+                                        });
+                                        $treegrid.data("expand", holder);
+                                        setTimeout(function () {
+                                            var row2 = $treegrid.igTreeGrid("rowById", firstId_1);
+                                            var container = $treegrid.igTreeGrid("scrollContainer");
+                                            var totalH = _.sumBy(row2.prevAll(), function (e) { return $(e).height(); });
+                                            if (totalH > height - HEADER_HEIGHT) {
+                                                container.scrollTop(totalH);
+                                            }
+                                        }, 200);
+                                    }
                                 }
                                 $treegrid.data("autoExpanding", false);
                             }
@@ -8915,17 +8921,31 @@ var nts;
                         return isEmpty(this.nodes);
                     };
                     ExpandNodeHolder.prototype.addNode = function (nodeId) {
-                        this.nodes.push(new ExpandNode(nodeId));
+                        this.nodes.push(nodeId);
                     };
-                    ExpandNodeHolder.prototype.removeNode = function (nodeId) {
+                    ExpandNodeHolder.prototype.removeNodeAndChilds = function (nodeSource, nodeKey, nodeChildKey) {
+                        var ids = Helper.getAllIdFromNodeSource(_.cloneDeep(nodeSource), nodeKey, nodeChildKey);
                         _.remove(this.nodes, function (node) {
-                            return nodeId === node.getNode();
+                            return ids.indexOf(node) >= 0;
                         });
                     };
                     return ExpandNodeHolder;
                 }());
                 var Helper;
                 (function (Helper) {
+                    function getAllIdFromNodeSource(nodeSource, nodeKey, childKey) {
+                        var ids = [nodeSource[nodeKey]];
+                        var children = [].concat(nodeSource[childKey]);
+                        while (!isEmpty(children)) {
+                            var currentNode = children.shift();
+                            ids.push(currentNode[nodeKey]);
+                            if (!isEmpty(currentNode)) {
+                                children = children.concat(currentNode[childKey]);
+                            }
+                        }
+                        return ids;
+                    }
+                    Helper.getAllIdFromNodeSource = getAllIdFromNodeSource;
                     function flatTree(tree, childKey) {
                         var ids = [];
                         _.forEach(tree, function (nodeSource) {
@@ -8942,6 +8962,41 @@ var nts;
                         return ids;
                     }
                     Helper.flatTree = flatTree;
+                    function getAllParentId(tree, id, nodeKey, childKey) {
+                        var source = _.cloneDeep(tree.igTreeGrid("option", "dataSource"));
+                        var parentIds = [];
+                        _.forEach(source, function (node) {
+                            var result = checkIfInBranch(node, id, nodeKey, childKey);
+                            if (result.inThis) {
+                                parentIds = [node[nodeKey]].concat(result.ids);
+                                return false;
+                            }
+                        });
+                        return parentIds;
+                    }
+                    Helper.getAllParentId = getAllParentId;
+                    function checkIfInBranch(source, id, nodeKey, childKey) {
+                        if (source[nodeKey] === id) {
+                            return {
+                                inThis: true,
+                                ids: []
+                            };
+                        }
+                        else {
+                            var result_3 = {
+                                inThis: false,
+                                ids: []
+                            };
+                            _.forEach(source[childKey], function (node) {
+                                result_3 = checkIfInBranch(node, id, nodeKey, childKey);
+                                if (result_3.inThis) {
+                                    result_3.ids = [node[nodeKey]].concat(result_3.ids);
+                                    return false;
+                                }
+                            });
+                            return result_3;
+                        }
+                    }
                 })(Helper || (Helper = {}));
                 var ExpandNode = (function () {
                     function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {
