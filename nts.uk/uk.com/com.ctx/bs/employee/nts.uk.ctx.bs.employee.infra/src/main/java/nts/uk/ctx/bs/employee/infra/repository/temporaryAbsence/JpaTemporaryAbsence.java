@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTemporaryAbsence;
 
 @Stateless
