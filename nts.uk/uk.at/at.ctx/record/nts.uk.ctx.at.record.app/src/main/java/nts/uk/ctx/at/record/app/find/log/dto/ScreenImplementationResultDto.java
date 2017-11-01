@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.log.dto;
 
 import java.util.List;
 import lombok.Value;
+import nts.arc.enums.EnumConstant;
 
 /**
  * 
@@ -16,5 +17,9 @@ public class ScreenImplementationResultDto {
 	
 	/** 対象者 */
 	private List<TargetPersonDto> targetPersonDto;	
+	
+	private List<EnumConstant> enumDto;
+	
+
 
 }

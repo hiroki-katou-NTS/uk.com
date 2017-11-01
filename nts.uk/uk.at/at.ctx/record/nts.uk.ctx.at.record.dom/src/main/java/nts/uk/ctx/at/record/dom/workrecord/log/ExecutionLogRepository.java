@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
+import java.util.List;
+
+import nts.arc.enums.EnumConstant;
+
+
 /**
  * 
  * @author hieult
@@ -7,6 +12,5 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
  */
 public interface ExecutionLogRepository {
 	
-	
-
+	List<EnumConstant> getEnumContent(String companyID);
 }

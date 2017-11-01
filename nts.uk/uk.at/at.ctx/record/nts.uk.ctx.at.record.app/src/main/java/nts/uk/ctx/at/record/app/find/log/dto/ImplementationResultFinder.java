@@ -5,9 +5,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 
@@ -22,7 +23,8 @@ public class ImplementationResultFinder {
 	@Inject
 	 private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
-	
+	@Inject
+	private ExecutionLogRepository executionLogRepository;
 	
 	@Inject
 	 private TargetPersonRepository targetPersonRepository;
@@ -33,14 +35,15 @@ public class ImplementationResultFinder {
 		List<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Conver to Dto
 		List<EmpCalAndSumExeLogDto> listEmpCalAndSumExeLogDto = listEmpCalAndSumExeLog.stream().map(c -> EmpCalAndSumExeLogDto.fromDomain(c)).collect(Collectors.toList());
+		//Get List Enum
+		List<EnumConstant> listEnumExecuLog = executionLogRepository.getEnumContent();
 		//Get List TargetPerson
 		List<TargetPerson> listTargetPerSon  = targetPersonRepository.getByempCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Convert Dto
 		List<TargetPersonDto> listTargetPersonDto = listTargetPerSon.stream().map(c -> TargetPersonDto.fromDomain(c)).collect(Collectors.toList());
 		//Get List ExecutionLog
-		//List<ExecutionLogDto> listExecutionLog = exe
-		
-		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto);
+				
+		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto ,listEnumExecuLog);
 		
 		
 	}

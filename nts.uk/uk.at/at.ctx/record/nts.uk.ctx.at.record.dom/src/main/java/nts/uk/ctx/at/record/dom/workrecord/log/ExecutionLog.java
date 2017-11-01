@@ -108,7 +108,7 @@ public class ExecutionLog {
 				new ExecutionTime(startExecutionTime,endExecutionTime),
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
 				new CalExeSettingInfor(
-						EnumAdaptor.valueOf(exeType,ExecutionType.class)),
+						EnumAdaptor.valueOf(exeType,ExecutionType.class), executedLogID),
 				new ObjectPeriod(startObjectPeriod,endObjectPeriod)
 				);
 		

@@ -112,4 +112,5 @@ public class ExecutionLogDto {
 						domain.getObjectPeriod().getStartDate(), 
 						domain.getObjectPeriod().getEndDate())); 
 	}
+	
 }
