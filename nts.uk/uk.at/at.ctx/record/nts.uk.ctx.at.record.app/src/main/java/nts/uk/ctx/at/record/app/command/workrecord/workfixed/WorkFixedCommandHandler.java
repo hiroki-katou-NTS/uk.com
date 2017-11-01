@@ -21,46 +21,49 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class WorkFixedCommandHandler extends CommandHandler<WorkFixedCommand> {
-	
+
 	/** The repository. */
 	@Inject
 	private WorkfixedRepository repository;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<WorkFixedCommand> context) {
-		
-		// get Person Id
+
+		// Get PersonId
 		String personId = AppContexts.user().personId();
-		
-		// get current date
-		GeneralDate fixedDate = GeneralDate.today();
-	
-		// get command
-		WorkFixedCommand command = context.getCommand();	
-		
-		// set person id and fixed date to work fixed
-		WorkFixed workFixed = command.toDomain(personId, fixedDate);
-		
-		//find exist work fixed
-		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(), command.getClosureId());
-		
+
+		// Get command
+		WorkFixedCommand command = context.getCommand();
+
+		// Set PersonId and FixedDate to WorkFixed command
+		WorkFixed workFixed = command.toDomain(personId, GeneralDate.today());
+
+		// Find exist WorkFixed
+		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(),
+				command.getClosureId());
+
+		// Save new WorkFixed
 		if (command.getIsSave()) {
-			// Save new WorkFixed
-			if(opWorkFixed.isPresent()){
-				//TODO: No need for updating old WorkFixed?
-				//this.repository.update(workFixed);
+			if (opWorkFixed.isPresent()) {
+				// No need for updating old WorkFixed?
+				// this.repository.update(workFixed);
 				return;
 			}
 			this.repository.add(workFixed);
-		} else {			
-			// Remove WorkFixed			
-			if(!opWorkFixed.isPresent()){
+		}
+		// Remove WorkFixed
+		else {
+			if (!opWorkFixed.isPresent()) {
 				return;
 			}
 			this.repository.remove(command.getWkpId(), command.getClosureId());
-		}	
+		}
 	}
 }
