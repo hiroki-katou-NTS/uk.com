@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
@@ -23,6 +26,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJud
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -44,7 +49,8 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 	private AgentAdapter  approvalAgencyInformationServiceRepo;
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessServiceRepo;
-	
+	@Inject
+	private MailSender mailSender;
 	@Override
 	public void detailScreenProcessAfterReturn(Application application, boolean checkApplicant, int orderPhase) {
 		//String companyID = AppContexts.user().companyId();
@@ -152,13 +158,18 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 			//Imported(就業)「社員」を取得する
 			//情報メッセージに（Msg_392）を表示する
 			
-			/*String email = employeeAdapter.empEmail(destination);
-			try {
-				mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "return mail from NTS"));
-			} catch (SendMailFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+			listDestination.stream().forEach(x -> {
+				try {
+					if(!Strings.isBlank(x)){
+						mailSender.send("nts", x, new MailContents("nts mail", "return mail from NTS"));
+					}
+					
+				} catch (SendMailFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			});
+			
 		}
 			
 		

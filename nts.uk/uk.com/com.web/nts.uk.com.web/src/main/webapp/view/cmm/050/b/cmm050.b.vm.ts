@@ -53,15 +53,18 @@ module nts.uk.com.view.cmm050.b {
                 
                 if(_self.emailFrom().length <= 0){
                      $('#email1').ntsError('set', {messageId:"Msg_533"});
+                    _self.testButtonEnable(true);
                     return;
                 }
                  if(_self.emailTo().length <= 0){
                      $('#email2').ntsError('set', {messageId:"Msg_539"});
+                     _self.testButtonEnable(true);
                     return;
                 }
                 
                  // Validate
                 if (_self.hasError()) {
+                    _self.testButtonEnable(true);
                     return;
                 }
                 
@@ -112,7 +115,7 @@ module nts.uk.com.view.cmm050.b {
                
                 $('#email1').ntsEditor("validate");
                 $('#email2').ntsEditor("validate");
-                
+                _self.testButtonEnable(true);
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
                 }

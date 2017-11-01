@@ -1051,7 +1051,7 @@ module nts.custombinding {
                                                 } else {
                                                     constraint.valueType = "Integer";
                                                 }
-                                                constraint.max = dts.numericItemMax || 99999999;
+                                                constraint.max = dts.numericItemMax || undefined;
                                                 constraint.min = dts.numericItemMin || 0;
                                                 break;
                                             case ITEM_STRING_TYPE.KANA:
@@ -1067,7 +1067,7 @@ module nts.custombinding {
                                             constraint.mantissaMaxLength = dts.decimalPart;
                                         }
                                         constraint.charType = 'Numeric';
-                                        constraint.max = dts.numericItemMax || 99999999;
+                                        constraint.max = dts.numericItemMax || undefined;
                                         constraint.min = dts.numericItemMin || 0;
                                         break;
                                     case ITEM_SINGLE_TYPE.DATE:
