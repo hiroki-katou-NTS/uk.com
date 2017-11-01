@@ -85,10 +85,6 @@ module nts.uk.ui.jqueryExtentions {
         
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
-            $(gridId).on("test", function (evt, ui) {
-                console.log(ui);
-            });
-
             $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
                 let oldSelected = getSelectRow($grid);
                 if(!nts.uk.util.isNullOrEmpty(oldSelected)){
