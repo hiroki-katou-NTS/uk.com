@@ -88,6 +88,63 @@
 				</div>
 			</div>
 		</div>
+		<div class="cf valign-center control-group">
+			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
+			<table id="fixed-table">
+			<colgroup>
+				<col width="109px"/>
+				<col width="109px"/>
+				<col width="109px"/>
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="ui-widget-header" rowspan="2"></th>
+					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_41')}</th>
+					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_42')}</th>
+				</tr>
+			</thead>
+			<tbody data-bind = "foreach: breakTime">
+				<tr>
+					<td class ="header" data-bind ="text: breakTimeID"></td>
+					<td><input data-bind ="ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}"/></td>
+					<td><input data-bind ="ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}"/></td>
+				</tr>
+			</tbody>
+			</table>
+		</div>
+		<div>
+			<button style ="margin: 15px 0px 10px 261px" class="caret-bottom">#{i18n.getText('KAF005_43')}</button>
+		</div>
+		<div class="cf valign-center control-group">
+			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_50')}</div>
+			<table id="fixed-overtime-hour-table" class="pull-left">
+			<colgroup>
+				<col width="110px"/>
+				<col width="110px"/>
+				<col width="110px"/>
+				<col width="110px"/>
+				<col width="110px"/>
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="ui-widget-header" rowspan="2"></th>
+					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_51')}</th>
+					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_52')}</th>
+					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_53')}</th>
+					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_54')}</th>
+				</tr>
+			</thead>
+			<tbody data-bind ="foreach: overtimeHours">
+				<tr>
+					<td class ="header" data-bind ="text: overtimeName"></td>
+					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+					<td><input data-bind ="ntsTimeEditor: {value: instructTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+					<td><input data-bind ="ntsTimeEditor: {value: caculationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+				</tr>
+			</tbody>
+			</table>
+		</div>
 		<!--定型理由 -->
 		<div class="valign-center control-group">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>

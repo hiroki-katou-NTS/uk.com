@@ -34,19 +34,29 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
+        breakTime: KnockoutObservableArray<common.BreakTime> = ko.observableArray([]);
+        overtimeHours: KnockoutObservableArray<common.OvertimeHour> = ko.observableArray([]);
         //menu-bar 
         enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti : KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor() {
+            
             let self = this;
+          
+            self.breakTime.push( new common.BreakTime("",null,null));
+            self.breakTime.push( new common.BreakTime("2",-1050,1256));
+            self.breakTime.push( new common.BreakTime("3",-1060,1256));
+            $("#fixed-overtime-hour-table").ntsFixedTable({ height: 120 });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
+                    $("#fixed-table").ntsFixedTable({ height: 120 });
                 })    
             })
             

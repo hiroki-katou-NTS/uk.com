@@ -173,5 +173,31 @@ module nts.uk.at.view.kaf005.share {
                 this.representerSID = representerSID;    
             }
         }
+        export class BreakTime{
+                breakTimeID: KnockoutObservable<string>;
+                startTime: KnockoutObservable<number>;
+                endTime: KnockoutObservable<number>;
+            constructor(breakTimeID: string, startTime: number, endTime: number){
+                this.breakTimeID = ko.observable(breakTimeID);
+                this.startTime = ko.observable(startTime);
+                this.endTime = ko.observable(endTime);
+                }
+            }
+        export class OvertimeHour{
+            overtimeID: KnockoutObservable<string>;
+            overtimeName: KnockoutObservable<string>;
+            appTime: KnockoutObservable<string>;
+            preAppTime: KnockoutObservable<string>;
+            instructTime: KnockoutObservable<string>;
+            caculationTime: KnockoutObservable<string>;
+            constructor(overtimeID: string,overtimeName: string, appTime: string, preAppTime: string, instructTime: string, caculationTime: string){
+                this.overtimeID = ko.observable(overtimeID);
+                this.overtimeName = ko.observable(overtimeName);
+                this.appTime = ko.observable(appTime);
+                this.preAppTime = ko.observable(preAppTime);
+                this.instructTime = ko.observable(instructTime);
+                this.caculationTime = ko.observable(caculationTime);
+            }
+        }
     }
 }
