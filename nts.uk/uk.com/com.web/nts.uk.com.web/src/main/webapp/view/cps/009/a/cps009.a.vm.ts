@@ -10,6 +10,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
 
+    import primitiveConst = CPS009Constraint.primitiveConst;
+
     export class ViewModel {
         initValSettingLst: KnockoutObservableArray<any> = ko.observableArray([]);
         initValueList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -68,16 +70,30 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
                         return new PerInfoInitValueSettingItemDto({
-                            perInfoItemDefId: obj.perInfoItemDefId, settingId: obj.settingId,
-                            perInfoCtgId: obj.perInfoCtgId, itemName: obj.itemName,
-                            isRequired: obj.isRequired, refMethodType: obj.refMethodType,
-                            saveDataType: obj.saveDataType, stringValue: obj.stringValue,
-                            intValue: obj.intValue, dateValue: obj.dateValue,
+                            perInfoItemDefId: obj.perInfoItemDefId,
+                            settingId: obj.settingId,
+                            perInfoCtgId: obj.perInfoCtgId,
+                            itemName: obj.itemName,
+                            isRequired: obj.isRequired,
+                            refMethodType: obj.refMethodType,
+                            saveDataType: obj.saveDataType,
+                            stringValue: obj.stringValue,
+                            intValue: obj.intValue,
+                            dateValue: obj.dateValue,
                             itemType: obj.itemType,
-                            dataType: obj.dataType
+                            dataType: obj.dataType,
+                            itemCode: obj.itemCode,
+                            ctgCode: obj.ctgCode,
+                            constraint: obj.constraint,
+                            numberIntegerPart: obj.numberIntegerPart,
+                            numberDecimalPart: obj.numberDecimalPart,
+                            timeItemMin: obj.timeItemMin,
+                            timeItemMax: obj.timeItemMax,
+                            testContraint: primitiveConst(obj)
                         });
-
                     });
+                    
+                    
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.currentCategory().itemList.valueHasMutated();
@@ -399,12 +415,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         itemList?: Array<any>;
     }
 
-    function makeIcon(value, row) {
-        if (value == "false")
-            return '';
-        return '<i class=\"icon icon-dot\"></i>';
-    }
-
     export class ItemModel {
         code: string;
         name: string;
@@ -426,9 +436,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
         refMethodType: number;
         //dành cho cột 2 - combo
         itemType: number; //日付　型-1; 統合ログインコード-2; 口座名１～口座名５-3; .....
-        listComboItem: Array<any> = [];
+        listComboItem?: Array<any>;
 
-        //trường này dùng để dataType
+        //trường này dùng để phân biệt item đó thuộc kiểu dữ liệu nào number or string
         dataType: number;
 
         // đoạn này dùng để lưu dữ liệu        
@@ -439,9 +449,21 @@ module nts.uk.com.view.cps009.a.viewmodel {
         dateWithDay?: number;
         timePoint?: string;
 
+        // xác định contraint của item đó
         itemCode: string;
         ctgCode: string;
         constraint: string;
+
+        // xác định nếu item thuộc kiểu number thì thuộc loại integer hay decimal
+        numberDecimalPart: number;
+        numberIntegerPart: number;
+
+        // timepoint
+        timeItemMin?: number;
+
+        timeItemMax?: number;
+        
+        testContraint : any;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -474,6 +496,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
         itemCode: KnockoutObservable<string>;
         ctgCode: KnockoutObservable<string>;
         constraint: KnockoutObservable<string>;
+
+        // kiểu number có 2 loại là số nguyên với số thực
+        numbericItem: NumbericItem;
+        numbereditor: any;
+
+        // timepoint
+        timeItemMin: number;
+
+        timeItemMax: number;
+        
+        testContraint: any;
+
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
@@ -492,55 +526,88 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.dateWithDay = ko.observable(params.dateWithDay || 0);
             self.timePoint = ko.observable(params.timePoint || "");
 
+            self.timeItemMin = params.timeItemMin || null;
+            self.timeItemMax = params.timeItemMax || null;
+
 
             self.itemType = ko.observable(params.itemType || 0);
             self.dataType = ko.observable(params.dataType || 0);
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
-            if (params.itemType === 0) {
+            
+            self.testContraint = params.testContraint;
+
+            if (params.dataType === 0 || params.dataType === 1) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "ログイン者と同じ" },
                     { code: 4, name: "入力日と同じ" },
                     { code: 5, name: "システム日付と同じ" }]);
-            } else if (params.itemType === 1) {
+            } else if (params.dataType === 2) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "社員コードと同じ" }]);
-            } else if (params.itemType === 2) {
+            } else if (params.dataType === 3) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "氏名と同じ" }]);
-            } else if (params.itemType === 3) {
+            } else if (params.dataType === 4) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "氏名（カナ）と同じ" }]);
-            } else if (params.itemType === 4) {
+            } else if (params.dataType === 5) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "ログイン者と同じ" }]);
-            } else if (params.itemType === 5 || params.itemType === 6) {
+            } else if (params.dataType === 6) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
                     { code: 2, name: "固定値" },
                     { code: 3, name: "ログイン者と同じ" }]);
-            }
-
-
-            if (params.refMethodType === 1) {
-                ko.observable(params.stringValue);
-            } else if (params.refMethodType === 2) {
-                ko.observable(params.intValue);
-            } else if (params.refMethodType === 3) {
-                ko.observable(params.dateValue);
             }
 
             self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
                 { code: 2, name: "固定値" },
                 { code: 3, name: "ログイン者と同じ" }]);
             self.selectedCode = ko.observable("");
-            
+
             self.itemCode = ko.observable(params.itemCode || "");
             self.ctgCode = ko.observable(params.ctgCode || "");
             self.constraint = ko.observable(params.constraint || "");
+
+
+            self.numbericItem = new NumbericItem(params.dataType,
+                {
+                    numberDecimalPart: params.numberDecimalPart,
+                    numberIntegerPart: params.numberIntegerPart
+                }) || null;
+            if (params.numberDecimalPart === 0 && params.numberIntegerPart === 0) {
+                self.numbereditor = {
+                    value: ko.observable(params.intValue || 0),
+                    constraint: self.constraint(),
+                    option: new nts.uk.ui.option.NumberEditorOption({
+                        grouplength: 3,
+                        decimallength: 0,
+                        width: "",
+                        textalign: "left"
+                    }),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+            } else {
+
+                self.numbereditor = {
+                    value: ko.observable(params.intValue || 0),
+                    constraint: self.constraint(),
+                    option: new nts.uk.ui.option.NumberEditorOption({
+                        grouplength: 3,
+                        decimallength: params.numberDecimalPart,
+                        width: "",
+                        textalign: "left",
+                        currencyformat: "JPY"
+                    }),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+            }
 
         }
     }
@@ -551,6 +618,32 @@ module nts.uk.com.view.cps009.a.viewmodel {
         settingCode: string;
         settingName: string;
 
+    }
+
+    export interface INumbericItem {
+        numberDecimalPart: number;
+        numberIntegerPart: number;
+
+    }
+
+    export class NumbericItem {
+        numberDecimalPart: number;
+        numberIntegerPart: number;
+        constructor(params: number, params2: INumbericItem) {
+            let self = this;
+            if (params === 2) {
+                this.numberIntegerPart = params2.numberIntegerPart;
+                this.numberDecimalPart = params2.numberDecimalPart;
+            }
+        }
+
+    }
+
+
+    function makeIcon(value, row) {
+        if (value == "false")
+            return '';
+        return '<i class=\"icon icon-dot\"></i>';
     }
 
 }

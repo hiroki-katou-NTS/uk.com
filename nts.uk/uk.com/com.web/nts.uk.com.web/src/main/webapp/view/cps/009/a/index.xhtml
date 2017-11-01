@@ -41,6 +41,7 @@
    			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
 			<com:scriptfile path="cps009.a.service.js" />
+			<com:scriptfile path="layout-control-ko-ext.js" />
 			<com:scriptfile path="cps009.a.start.js" />
 			<com:scriptfile path="cps009.a.vm.js" />
 		</ui:define>
@@ -164,36 +165,60 @@
  						 	 		<com:ko-if bind="(selectedRuleCode() === 2 )">   
 										<td colspan="2" class="input-units">
 											<!-- String  -->
-											<com:ko-if bind="(dataType() === 0)">
+											<com:ko-if bind="(dataType() === 0) || (dataType() === 1)">
 												<input class="sub-input-units" data-bind="ntsTextEditor: {value: stringValue , constraint: constraint , required: true}" />
 											</com:ko-if> 
 											
 											<!-- number  --> 
-											<com:ko-if bind="(dataType() === 1)">
- 												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { value: intValue,  required: true}" /> 
-<!-- 													<input class="sub-input-units" data-bind="ntsTextEditor: {value: intValue , constraint: constraint , required: true}" /> -->
+											<com:ko-if bind="(dataType() === 2)">
+											
+											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
+												<div data-bind="with: numbereditor">
+ 												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { 
+ 												 		value: value,
+														constraint: constraint,
+														option: option,
+														required: true,
+														enable: enable,
+														readonly: readonly,
+														immediate: false}" /> 
+												</div>
+											</com:ko-if>
+											
+											<com:ko-if bind=" ((numbericItem.numberDecimalPart !== 0)) ">
+												<div data-bind="with: numbereditor">
+ 												<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { 
+ 														value: value,
+														constraint: constraint,
+														option: option,
+														required: true,
+														enable: enable,
+														readonly: readonly,
+														immediate: false}" /> 
+												</div>
+											</com:ko-if>											
 											</com:ko-if>
 											
 											 <!-- date  --> 
-											 <com:ko-if bind="(dataType() === 2)">
+											 <com:ko-if bind="(dataType() === 3)">
 												<div class="sub-input-units"
 													data-bind="ntsDatePicker: {value: dateValue, dateFormat: 'YYYY/MM/DD'}"></div>
 											</com:ko-if> 
 											
 											<!-- timepoint  --> 
-											<com:ko-if bind="(dataType() === 3)">
+											<com:ko-if bind="(dataType() === 4)">
 												<input class="sub-input-units"
-													data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
+													data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint: testContraint.itemCode, 
 													 value: dateWithDay, enable: true, readonly: false, required: true }" />
 											</com:ko-if>
 											
 											 <!-- timepoint  --> 
-											 <com:ko-if bind="(dataType() === 4)">
+											 <com:ko-if bind="(dataType() === 5)">
 												<input class="sub-input-units" data-bind="ntsTimeEditor: {value: timePoint, inputFormat: 'date'}" />
 											</com:ko-if>
 											
 											 <!-- list box  -->
-											 <com:ko-if bind="(dataType() === 5)">
+											 <com:ko-if bind="(dataType() === 6)">
 												<div class="sub-input-units"
 													data-bind="ntsComboBox: {
 													options: selection,
