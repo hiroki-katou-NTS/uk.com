@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -18,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -52,7 +57,8 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private ApplicationRepository applicationRepo;
 	
-	
+	@Inject
+	private MailSender mailSender;
 	
 	@Override
 	public List<String> screenAfterDelete(String companyID,String appID) {
@@ -104,12 +110,15 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			List<String> lstMail = new ArrayList<>();
 			for(String employeeId: converList){
 				String mail = employeeAdapter.getEmployeeInfor(employeeId).getCompanyMail();
-				/*try {
-					mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "delete mail from NTS"));
+				if(Strings.isBlank(mail)) {
+					continue;
+				}
+				try {
+					mailSender.send("nts", mail, new MailContents("nts mail", "delete mail from NTS"));
 				} catch (SendMailFailedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}*/
+				}
 				lstMail.add(mail);
 			}
 		}

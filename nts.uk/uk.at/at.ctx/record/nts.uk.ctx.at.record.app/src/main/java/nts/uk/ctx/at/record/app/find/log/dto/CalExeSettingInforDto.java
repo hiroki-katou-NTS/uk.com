@@ -17,11 +17,15 @@ public class CalExeSettingInforDto {
 	 * 2 : 承認結果反映
 	 * 3 : 月別集計
 	 */
-	private int executionContent;
 	
 	/**
-	 * 通常実行
-	 * 再実行
+	 *  0 :通常実行
+	 *  1 :再実行
 	 */
 	private int executionType;
+	
+	/**
+	 * executionType : name Japan
+	 */
+	private String executionTypeName;
 }

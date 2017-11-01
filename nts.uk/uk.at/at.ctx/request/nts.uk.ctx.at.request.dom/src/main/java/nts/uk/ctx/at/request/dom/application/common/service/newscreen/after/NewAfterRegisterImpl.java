@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -76,12 +78,15 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 			// sendMail(obj);
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
 			String email = employeeAdapter.empEmail(destination);
-			/*try {
-				mailSender.send("nts", "hungdd.hust@gmail.com", new MailContents("nts mail", "new mail from NTS"));
+			try {
+				if(!Strings.isBlank(email)) {
+					mailSender.send("nts", email, new MailContents("nts mail", "new mail from NTS"));
+				}
+				
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 			destinationMails.add(email);
 		}
 		return destinationMails;

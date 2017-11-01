@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
@@ -16,19 +17,14 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CalExeSettingInfor {
+public class CalExeSettingInfor extends DomainObject {
 	
+
 	/**
-	 * 0 : 日別作成
-	 * 1 : 日別計算
-	 * 2 : 承認結果反映
-	 * 3 : 月別集計
-	 */
-	private ExecutionContent executionContent;
-	
-	/**
-	 * 通常実行
-	 * 再実行
+	 * 実行種別
+	 * 
+	 * 0 : 通常実行
+	 * 1 : 再実行
 	 */
 	private ExecutionType executionType;
 	

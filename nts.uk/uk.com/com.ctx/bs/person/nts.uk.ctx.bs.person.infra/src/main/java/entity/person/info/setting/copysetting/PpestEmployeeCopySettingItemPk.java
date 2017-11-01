@@ -18,7 +18,7 @@ public class PpestEmployeeCopySettingItemPk implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
-	@Column(name = "PER_INFO_ITEM_DEFINITION_ID")
+	@Column(name = "PER_INFO_DEF_ID")
 	public String perInfoItemDefId;
 
 }
