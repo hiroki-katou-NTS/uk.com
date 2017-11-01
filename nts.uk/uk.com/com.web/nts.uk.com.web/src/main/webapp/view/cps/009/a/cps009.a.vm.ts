@@ -206,11 +206,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this,
                 params = {
-                    settingId : self.initSettingId(),
-                    settingCode : self.currentCategory().settingCode,
-                    settingName : self.currentCategory().settingName};
+                    settingId : ko.toJS(self.initSettingId()),
+                    settingCode : ko.toJS(self.currentCategory().settingCode),
+                    settingName : ko.toJS(self.currentCategory().settingName)};
 
-            setShared('C_PARAMS', params);
+            setShared('CPS009C_PARAMS', params);
 
             block.invisible();
 
