@@ -12,4 +12,6 @@ import nts.arc.enums.EnumConstant;
  */
 public interface ExecutionLogRepository {
 	
+	
+	
 }

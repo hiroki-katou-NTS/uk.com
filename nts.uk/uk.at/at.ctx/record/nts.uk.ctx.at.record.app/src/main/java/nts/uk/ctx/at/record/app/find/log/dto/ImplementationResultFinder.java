@@ -6,10 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 
@@ -23,10 +21,7 @@ public class ImplementationResultFinder {
 
 	@Inject
 	 private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
-	
-	@Inject
-	private ExecutionLogRepository executionLogRepository;
-	
+
 	@Inject
 	 private TargetPersonRepository targetPersonRepository;
 	
