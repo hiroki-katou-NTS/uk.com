@@ -1712,6 +1712,13 @@ module nts.uk.at.view.kmk002.a {
                 dto.attendanceItems.forEach(item => {
                     result += item.operatorText + ' ' + item.attendanceItemName + ' ';
                 });
+
+                // remove first '+'
+                if (_.startsWith(result, '+')) {
+                    result = result.substring(2);
+                }
+
+                // set result
                 self.settingResult(result);
 
                 // clear error
