@@ -1,18 +1,12 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -23,12 +17,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_CAL_EXE_SETTING_INFOR")
-public class KrcdtCalExeSettingInfor extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_CAL_EXE_SET_INFOR")
+public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KrcdtCalExeSettingInforPK krcdtCalExeSettingInforPK;
+	public KrcdtCalExeSetInforPK krcdtCalExeSetInforPK;
 
 	/** 確定済みの場合にも強制的に反映する */
 	@Column(name = "REF_EVEN_CONFIRM")
@@ -59,7 +53,7 @@ public class KrcdtCalExeSettingInfor extends UkJpaEntity implements Serializable
 	public boolean specificDateClassificationResetting;
 
 	/** 申し送り時間再設定 */
-	@Column(name = "RESET_TIME_Assigment")
+	@Column(name = "RESET_TIME_ASSIGNMENT")
 	public boolean resetTimeAssignment;
 
 	/** 育児・介護短時間再設定 */
@@ -72,7 +66,7 @@ public class KrcdtCalExeSettingInfor extends UkJpaEntity implements Serializable
 
 	@Override
 	protected Object getKey() {
-		return this.krcdtCalExeSettingInforPK;
+		return this.krcdtCalExeSetInforPK;
 	}
 
 	

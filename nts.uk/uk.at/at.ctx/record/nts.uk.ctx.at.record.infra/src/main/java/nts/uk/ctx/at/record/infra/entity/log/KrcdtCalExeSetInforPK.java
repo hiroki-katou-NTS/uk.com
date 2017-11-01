@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcdtCalExeSettingInforPK implements Serializable {
+public class KrcdtCalExeSetInforPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

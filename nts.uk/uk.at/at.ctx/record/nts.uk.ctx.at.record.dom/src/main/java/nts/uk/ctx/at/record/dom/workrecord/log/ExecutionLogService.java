@@ -10,7 +10,7 @@ import nts.arc.enums.EnumConstant;
  * @author hieult
  *
  */
-public interface ExecutionLogRepository {
+public interface ExecutionLogService {
 	
 	List<EnumConstant> getEnumContent(String companyID);
 }
