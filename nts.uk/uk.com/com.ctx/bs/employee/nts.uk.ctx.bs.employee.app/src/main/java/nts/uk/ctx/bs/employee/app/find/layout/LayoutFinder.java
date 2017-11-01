@@ -172,7 +172,8 @@ public class LayoutFinder {
 					PersonInfoCategory perInfoCategory = perInfoCateRepo
 							.getPerInfoCategory(classItem.getPersonInfoCategoryID(), contractCode).get();
 					if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
-						getDataforSingleItem(perInfoCategory, dataInfoItems, standandDate);
+						getDataforSingleItem(perInfoCategory, dataInfoItems, standandDate, employee.getPId(),
+								employee.getSId());
 					} else if (classItem.getLayoutItemType() == LayoutItemType.LIST) {
 
 					}
@@ -219,10 +220,9 @@ public class LayoutFinder {
 	}
 
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, List<EmpPersonInfoItemDto> dataInfoItems,
-			GeneralDate standandDate) {
+			GeneralDate standandDate, String personId, String employeeId) {
 		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			// PERSON
-			String personId = AppContexts.user().personId();
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED CASE
 				switch (perInfoCategory.getCategoryCode().v()) {
@@ -230,19 +230,21 @@ public class LayoutFinder {
 					// Person
 					Person person = personRepo.getByPersonId(personId).get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, person);
-					getOptPerInfoItemData(personId, dataInfoItems);
+					matchPersDataForDefItems(dataInfoItems, perInItemDataRepo.getAllInfoItemByRecordId(personId));
 					break;
 				case "CS00003":
 					// CurrentAddress
 					CurrentAddress currentAddress = currentAddressRepo.get(personId, standandDate);
 					ItemDefinitionFactory.matchInformation(dataInfoItems, currentAddress);
-					getOptPerInfoItemData(currentAddress.getCurrentAddressId(), dataInfoItems);
+					matchPersDataForDefItems(dataInfoItems,
+							perInItemDataRepo.getAllInfoItemByRecordId(currentAddress.getCurrentAddressId()));
 					break;
 				case "CS00014":
 					// WidowHistory
 					WidowHistory widowHistory = widowHistoryRepo.get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, widowHistory);
-					getOptPerInfoItemData(widowHistory.getWindowHistoryId(), dataInfoItems);
+					matchPersDataForDefItems(dataInfoItems,
+							perInItemDataRepo.getAllInfoItemByRecordId(widowHistory.getWindowHistoryId()));
 					break;
 				}
 			} else {
@@ -263,42 +265,47 @@ public class LayoutFinder {
 			}
 		} else if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			// EMPLOYEE
-			String employeeId = null;
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED CASE
 				switch (perInfoCategory.getCategoryCode().v()) {
 				case "CS00002":
 					Employee employee = employeeRepo.getBySid(employeeId).get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, employee);
-					getOptEmpInfoItemData(employeeId, dataInfoItems);
+					matchEmpDataForDefItems(dataInfoItems, empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
 					break;
 				case "CS00008":
 					LeaveHoliday leaveHoliday = leaveHolidayRepo.getByEmpIdAndStandDate(employeeId, standandDate).get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, leaveHoliday);
-					getOptEmpInfoItemData(leaveHoliday.getLeaveHolidayId(), dataInfoItems);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(leaveHoliday.getLeaveHolidayId()));
 					break;
 				case "CS00009":
+					// can implement
 					JobTitleMain jobTitleMain = jobTitMainRepo.getByEmpIdAndStandDate(employeeId, standandDate).get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, jobTitleMain);
-					getOptEmpInfoItemData(jobTitleMain.getJobTitleId(), dataInfoItems);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(jobTitleMain.getJobTitleId()));
 					break;
 				case "CS00010":
 					AssignedWorkplace assignedWorkplace = assWorkPlaceRepo
 							.getByEmpIdAndStandDate(employeeId, standandDate).get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, assignedWorkplace);
-					getOptEmpInfoItemData(assignedWorkplace.getAssignedWorkplaceId(), dataInfoItems);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(assignedWorkplace.getAssignedWorkplaceId()));
 					break;
 				case "CS00011":
 					AffiliationDepartment affDepartment = affDepartmentRepo
 							.getByEmpIdAndStandDate(employeeId, standandDate).get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, affDepartment);
-					getOptEmpInfoItemData(affDepartment.getDepartmentId(), dataInfoItems);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(affDepartment.getDepartmentId()));
 					break;
 				case "CS00012":
 					SubJobPosition subJobPosition = subJobPosRepo.getByEmpIdAndStandDate(employeeId, standandDate)
 							.get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, subJobPosition);
-					getOptEmpInfoItemData(subJobPosition.getAffiDeptId(), dataInfoItems);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(subJobPosition.getAffiDeptId()));
 					break;
 				}
 			} else {
@@ -381,16 +388,6 @@ public class LayoutFinder {
 			}
 
 		}
-	}
-
-	private void getOptPerInfoItemData(String recordId, List<EmpPersonInfoItemDto> dataInfoItems) {
-		List<PersonInfoItemData> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId);
-		matchPersDataForDefItems(dataInfoItems, dataItems);
-	}
-
-	private void getOptEmpInfoItemData(String recordId, List<EmpPersonInfoItemDto> dataInfoItems) {
-		List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
-		matchEmpDataForDefItems(dataInfoItems, dataItems);
 	}
 
 	private void matchPersDataForDefItems(List<EmpPersonInfoItemDto> dataInfoItems,
