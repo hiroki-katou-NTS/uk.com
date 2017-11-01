@@ -43,5 +43,4 @@ public class PpemtPerInfoItemOrder extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return ppemtPerInfoItemPK;
 	}
-
 }

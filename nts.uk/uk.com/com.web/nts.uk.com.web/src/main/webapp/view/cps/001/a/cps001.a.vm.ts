@@ -29,69 +29,102 @@ module cps001.a.vm {
             onSearchAllClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             },
             onSearchOnlyClicked: (data: IEmployeeInfo) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees([data]);
+                self.listEmployee.removeAll();
+                self.listEmployee([data]);
             },
             onSearchOfWorkplaceClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             },
             onSearchWorkplaceChildClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             },
             onApplyEmployee: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             }
         };
 
         tabActive: KnockoutObservable<string> = ko.observable('layout');
 
-        listEmployees: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
-
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
+
+        listEmployee: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
+        employee: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ employeeId: '', workplaceId: '' }));
 
         listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         currentLayout: KnockoutObservable<Layout> = ko.observable(new Layout());
 
-
+        listCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
+        currentCategory: KnockoutObservable<Category> = ko.observable(new Category({ id: '' }));
 
         constructor() {
             let self = this,
                 person = self.person(),
-                layout = self.currentLayout();
+                employee = self.employee(),
+                layout = self.currentLayout(),
+                category = self.currentCategory();
 
             self.tabActive.subscribe(x => {
-                if (x) {
-                    // clear all error message
-                    clearError();
-                    if (x == 'layout') { // layout mode
-                        self.listLayout.removeAll();
-                        service.getAllLayout().done((data: Array<ILayout>) => {
-                            if (data && data.length) {
-                                self.listLayout(data);
-                                layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
-                            }
-                        });
-                    } else { // category mode
+                let employeeId = employee.employeeId()
+                if (!!employeeId) {
+                    if (x) {
+                        // clear all error message
+                        clearError();
+                        if (x == 'layout') { // layout mode
+                            self.listLayout.removeAll();
+                            service.getAllLayout().done((data: Array<ILayout>) => {
+                                if (data && data.length) {
+                                    self.listLayout(data);
+                                    layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
+                                }
+                            });
+                        } else { // category mode
+                            self.listCategory.removeAll();
+                            service.getCats(employeeId).done((data: Array<ICategory>) => {
+                                self.listCategory(data);
+                            });
+                        }
                     }
                 }
             });
 
-            self.tabActive.valueHasMutated();
+            employee.employeeId.subscribe(x => {
+                if (x) {
+                    service.getPerson(x).done((data: IPersonInfo) => {
+                        if (data) {
+                            person.personId(data.personId);
+                            person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
+                        }
+                    });
+                    self.tabActive.valueHasMutated();
+
+                    let emp = _.find(self.listEmployee(), e => e.employeeId == x);
+                    if (emp) {
+                        employee.employeeCode(emp.employeeCode);
+                        employee.employeeName(emp.employeeName);
+                    }
+                }
+            });
+
+            employee.employeeId.subscribe(x => {
+                //self.tabActive.valueHasMutated();
+            }, self, "beforeChange");
+
+            employee.employeeId.valueHasMutated();
 
             layout.maintenanceLayoutID.subscribe(x => {
                 if (x) {
@@ -102,29 +135,39 @@ module cps001.a.vm {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
 
+                        // lấy list item definition trong db
+                        // duyệt
                         _.each(data.listItemClsDto, x => {
+                            // khởi tạo giá trị items
                             x.items = ko.observableArray([]);
-                            if (x.listItemDf && x.listItemDf[0]) {
-                                if (x.listItemDf[0].itemTypeState.itemType == 2) {
+
+                            // kiểm tra kiểu item
+                            if (x.layoutItemType == 0) {
+                                if (x.listItemDf && x.listItemDf[0]) {
                                     _.each(x.listItemDf, m => {
-                                        x.items.push({ code: m.itemCode, value: ko.observable('xxxx') });
-                                    });
-                                } else {
-                                    /*_.each(Array(3), (_x, i) => {
-                                        let rows = [];
-                                        _.each(x.listItemDf, (m, j) => {
-                                            rows.push({ row: i, col: j, code: m.itemCode, value: ko.observable('xxxx') });
+                                        x.items.push({
+                                            itemCode: m.itemCode,
+                                            value: ko.observable('xxxx')
                                         });
-                                        x.items.push(rows);
-                                    });*/
+                                    });
                                 }
+                            } else {
+                                _.each(Array(1), (_x, i) => {
+                                    let rows = [];
+                                    _.each(x.listItemDf, (m, j) => {
+                                        rows.push({
+                                            itemCode: m.itemCode,
+                                            value: ko.observable('xxxx')
+                                        });
+                                    });
+                                    x.items.push(rows);
+                                });
                             }
                         });
 
-                        layout.listItemClsDto(data.listItemClsDto || []);
-
-
+                        //layout.listItemClsDto(data.listItemClsDto || []);
                     });
+
                 }
             });
 
@@ -132,15 +175,40 @@ module cps001.a.vm {
         }
 
         start() {
-            let self = this;
+            let self = this,
+                employee = self.employee();
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+                $('.btn-quick-search[tabindex=4]').click();
+                setInterval(() => {
+                    if (!employee.employeeId()) {
+                        let employees = self.listEmployee()
+                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                    }
+                }, 0);
+            });
         }
 
         deleteEmployee() {
             let self = this;
 
             modal('../b/index.xhtml').onClosed(() => { });
+        }
+
+        chooseAvatar() {
+            let self = this,
+                employee: IEmployeeInfo = ko.toJS(self.employee);
+
+            // cancel click if hasn't emp
+            if (!employee || !employee.employeeId) {
+                return;
+            }
+
+            setShared("employeeId", employee.employeeId);
+            modal('../d/index.xhtml').onClosed(() => {
+                let data = getShared("imageId");
+                debugger;
+            });
         }
 
         unManagerEmployee() {
@@ -154,11 +222,11 @@ module cps001.a.vm {
 
             modal('../e/index.xhtml').onClosed(() => { });
         }
-        
-        uploadebook(){
+
+        uploadebook() {
             let self = this;
 
-            modal('../f/index.xhtml').onClosed(() => { });    
+            modal('../f/index.xhtml').onClosed(() => { });
         }
 
         saveData() {
@@ -203,6 +271,34 @@ module cps001.a.vm {
         }
     }
 
+    interface ICategory {
+        id: string;
+        categoryCode?: string;
+        categoryName?: string;
+        categoryType?: number;
+        isFixed?: number;
+    }
+
+    class Category {
+        id: KnockoutObservable<string> = ko.observable('');
+        categoryCode: KnockoutObservable<string> = ko.observable('');
+        categoryName: KnockoutObservable<string> = ko.observable('');
+        categoryType: KnockoutObservable<number> = ko.observable(0);
+        isFixed: KnockoutObservable<number> = ko.observable(0);
+
+        constructor(param: ICategory) {
+            let self = this;
+
+            if (param) {
+                self.id(param.id);
+                self.categoryCode(param.categoryCode);
+                self.categoryName(param.categoryName);
+                self.categoryType(param.categoryType);
+                self.isFixed(param.isFixed);
+            }
+        }
+    }
+
     interface IEmployeeInfo {
         employeeId: string;
         text?: string;
@@ -211,6 +307,18 @@ module cps001.a.vm {
         workplaceId: string;
         workplaceCode?: string;
         workplaceName?: string;
+    }
+
+    class EmployeeInfo {
+        employeeId: KnockoutObservable<string> = ko.observable('');
+        employeeCode: KnockoutObservable<string> = ko.observable('');
+        employeeName: KnockoutObservable<string> = ko.observable('');
+        workplaceId: KnockoutObservable<string> = ko.observable('');
+        workplaceCode: KnockoutObservable<string> = ko.observable('');
+        workplaceName: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IEmployeeInfo) {
+        }
     }
 
     interface IPersonInfo {
@@ -222,7 +330,21 @@ module cps001.a.vm {
         personMobile?: string;
         code?: string;
         avatar?: string;
-        fullName?: string;
+        bloodType?: number;
+        personNameGroup?: PersonNameGroup;
+    }
+
+    interface PersonNameGroup {
+        businessEnglishName?: string;
+        businessName?: string;
+        businessOtherName?: string;
+        oldName?: string;
+        personName?: string;
+        personNameKana?: string;
+        personRomanji?: string;
+        todokedeFullName?: string;
+        todokedeOldFullName?: string;
+
     }
 
     class PersonInfo {
@@ -237,7 +359,12 @@ module cps001.a.vm {
             self.personId(param.personId || '');
             self.code(param.code || '');
             self.avatar(param.avatar || DEF_AVATAR);
-            self.fullName(param.fullName || '');
+            self.fullName(param.personNameGroup && param.personNameGroup.personName || '');
         }
+    }
+
+    enum TABS {
+        LAYOUT = 1,
+        CATEGORY = 2
     }
 }

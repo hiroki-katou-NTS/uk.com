@@ -189,7 +189,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[17] != null) {
 			domain.setTimeItemMin(Integer.valueOf(entity[17].toString()));
 		}
-		
+
 		if (entity[18] != null) {
 			domain.setTimeItemMax(Integer.valueOf(entity[18].toString()));
 		}

@@ -96,7 +96,7 @@ module cps002.a.vm {
                 }
 
                 if (self.isUseInitValue()) {
-                    service.getAllInitValueItemSetting(self.currentItem().itemId, newValue).done((result: Array<Item>) => {
+                    service.getAllInitValueItemSetting(self.currentItem().itemId, newValue, self.currentEmployee().hireDate()).done((result: Array<Item>) => {
                         if (result.length) {
                             self.itemList(_.map(result, item => {
                                 return new Item(item);

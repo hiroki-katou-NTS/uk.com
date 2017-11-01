@@ -178,12 +178,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(i) FROM PpestEmployeeCopySettingItem i "
-			+ "JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
-			+ "WHERE i.PpestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
+	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(s) FROM PpestEmployeeCopySettingItem s "
+			+ " JOIN PpemtPerInfoItem i ON i.ppemtPerInfoItemPK.perInfoItemDefId = s.PpestEmployeeCopySettingItemPk.perInfoItemDefId "
+			+ " JOIN PpemtPerInfoCtg c ON c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId "
+			+ " WHERE s.PpestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
 
 	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM PpestEmployeeCopySettingItem i"
-			+ " JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
+			+ " JOIN PpemtPerInfoCtg c ON c.ppemtPerInfoCtgPK.perInfoCtgId = i.categoryId "
 			+ " WHERE i.categoryId = :categoryId AND c.cid = :companyId";
 
 	private final static String SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER = "SELECT i "
@@ -192,6 +193,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " ON i.ppemtPerInfoItemPK.perInfoItemDefId = io.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder ASC";
 	// vinhpx: end
+
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -204,7 +206,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd) {
-		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
+		return  this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoItemDefId).getSingle(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
@@ -665,6 +667,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 							String.valueOf(i[1]));
 				});
 	}
-
 	// vinhpx end
+
 }

@@ -8,5 +8,7 @@ import java.util.List;
 public interface PerInfoItemDataRepository {
 
 	List<PersonInfoItemData> getAllInfoItem(String categoryCd);
+	
+	List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId);
 
 }
