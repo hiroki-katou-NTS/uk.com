@@ -53,6 +53,16 @@ module nts.uk.com.view.cps009.b.viewmodel {
 
         registerItems() {
             let self = this;
+            //対象項目選択があろうかどうかをチェック (Kiểm tra có Item được chọn không)
+            let check = 0;
+            _.each(self.itemInitLst, function(item){
+                if(item.isCheckBox) check++;
+            });
+            if(check == 0){
+                //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_362'});
+                return;    
+            }
             setShared('CPS009B_DATA', {
                 refMethodType: self.selectedRuleCode(),
                 lstItem: self.itemInitLst
