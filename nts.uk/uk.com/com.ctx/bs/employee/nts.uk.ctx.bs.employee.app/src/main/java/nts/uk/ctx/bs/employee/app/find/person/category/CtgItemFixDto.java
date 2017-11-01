@@ -55,8 +55,8 @@ public class CtgItemFixDto {
 		return ItemTemporaryAbsence.createFromJavaType(employeeId, tempAbsenceId, tempAbsenceType, strD, endD, tempAbsenceReason, familyMemberId, birthDate, mulPregnancySegment);
 	}
 	
-	public static CtgItemFixDto createJobPosMain(String sId, String jobPositionId, String jobTitleId, GeneralDate strD, GeneralDate endD){
-		return ItemJobPosMain.createFromJavaType(sId, jobPositionId, jobTitleId, strD, endD);
+	public static CtgItemFixDto createJobTitleMain(String sId, String hisId, String jobTitleId, GeneralDate strD, GeneralDate endD){
+		return ItemJobPosMain.createFromJavaType(sId, hisId, jobTitleId, strD, endD);
 	}
 	
 	public static CtgItemFixDto createAssignedWorkplace(String employeeId, String assignedWorkplaceId, String historyId, GeneralDate strD, GeneralDate endD){

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 所属部門（兼務）
@@ -18,9 +19,8 @@ public class CurrentAffiDept extends AggregateRoot{
 	private String affiDeptId;
 	/**部門ID Department id*/
 	private String departmentId; 
-	/**start date*/
-	private GeneralDate startDate;
-	/**end Date*/
-	private GeneralDate endDate;
+	
+	/** The period. */
+	private DatePeriod period;
 	
 }

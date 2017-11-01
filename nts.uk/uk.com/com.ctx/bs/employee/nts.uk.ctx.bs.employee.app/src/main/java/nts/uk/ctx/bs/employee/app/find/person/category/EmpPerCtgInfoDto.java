@@ -26,7 +26,7 @@ public class EmpPerCtgInfoDto {
 	private int systemRequired;
 	private int isExistedItemLst;
 	private List<ItemEmpPersonInfoItemDefDto> itemLst;
-	private CtgItemFixDto ctgItemDto;
+	private CtgItemFixDto ctgItemFixedDto;
 	private CtgItemOptionalDto ctgItemOptionalDto;	
 	
 	private EmpPerCtgInfoDto(PersonInfoCategory personInfoCategory,
@@ -40,18 +40,18 @@ public class EmpPerCtgInfoDto {
 				.map(x -> new ItemEmpPersonInfoItemDefDto(x.getPerInfoItemDefId(),
 						x.getPerInfoCategoryId(), x.getItemName().v(), x.getIsAbolition().value,
 						x.getSystemRequired().value)).collect(Collectors.toList());
-		this.ctgItemDto = ctgItemDto;
+		this.ctgItemFixedDto = ctgItemDto;
 		this.ctgItemOptionalDto = ctgItemOptionalDto;
 	}
 	
 	public static EmpPerCtgInfoDto createObjectFromDomain(PersonInfoCategory personInfoCategory,
-			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition, CtgItemFixDto ctgItemDto, CtgItemOptionalDto ctgItemOptionalDto){
-		return new EmpPerCtgInfoDto(personInfoCategory, lstPersonInfoItemDefinition, ctgItemDto, ctgItemOptionalDto);
+			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition, CtgItemFixDto ctgItemFixedDto, CtgItemOptionalDto ctgItemOptionalDto){
+		return new EmpPerCtgInfoDto(personInfoCategory, lstPersonInfoItemDefinition, ctgItemFixedDto, ctgItemOptionalDto);
 	}
 	
 	public static EmpPerCtgInfoDto createObjectFromDomain(PersonInfoCategory personInfoCategory,
-			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition, CtgItemFixDto ctgItemDto){
-		return new EmpPerCtgInfoDto(personInfoCategory, lstPersonInfoItemDefinition, ctgItemDto, null);
+			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition, CtgItemFixDto ctgItemFixedDto){
+		return new EmpPerCtgInfoDto(personInfoCategory, lstPersonInfoItemDefinition, ctgItemFixedDto, null);
 	}
 	
 	public static EmpPerCtgInfoDto createObjectFromDomain(PersonInfoCategory personInfoCategory,
