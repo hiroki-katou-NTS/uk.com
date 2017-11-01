@@ -9,6 +9,6 @@ package nts.uk.ctx.bs.person.dom.person.info.widowhistory;
  */
 public interface WidowHistoryRepository {
 	
-	
+	public WidowHistory get();
 
 }

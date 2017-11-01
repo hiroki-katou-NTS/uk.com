@@ -30,6 +30,8 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
@@ -88,6 +90,9 @@ public class LayoutFinder {
 
 	@Inject
 	private CurrentAddressRepository currentAddressRepo;
+
+	@Inject
+	private WidowHistoryRepository widowHistoryRepo;
 
 	@Inject
 	private PerInfoCtgDataRepository perInCtgDataRepo;
@@ -189,22 +194,32 @@ public class LayoutFinder {
 			String personId = AppContexts.user().personId();
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED CASE
+				PerInfoCtgData perInfoCtgData = null;
 				switch (perInfoCategory.getCategoryCode().v()) {
 				case "CS00001":
 					// Person
 					Person person = personRepo.getByPersonId(personId).get();
 					matchInformation(dataInfoItems, person);
+					perInfoCtgData = perInCtgDataRepo.getByRecordId(personId).get();
 					break;
 				case "CS00003":
 					// CurrentAddress
-					CurrentAddress currentAddress = currentAddressRepo.get(personId);
+					CurrentAddress currentAddress = currentAddressRepo.get(personId, standandDate);
 					matchInformation(dataInfoItems, currentAddress);
+					perInfoCtgData = perInCtgDataRepo.getByRecordId(currentAddress.getCurrentAddressId()).get();
 					break;
 				case "CS00014":
 					// WidowHistory
-					
+					WidowHistory widowHistory = widowHistoryRepo.get();
+					matchInformation(dataInfoItems, widowHistory);
+					perInfoCtgData = perInCtgDataRepo.getByRecordId(widowHistory.getWindowHistoryId()).get();
 					break;
 				}
+				// 
+				if ( perInfoCtgData != null ) {
+					
+				}
+				
 			} else {
 				// UNFIXED CASE
 				if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
@@ -368,7 +383,7 @@ public class LayoutFinder {
 				/*
 				 * 現住所．期間 現住所．期間．開始日 現住所．期間．終了日
 				 */
-				//dataInfoItem.setData(currentAddress.getPeriod());
+				// dataInfoItem.setData(currentAddress.getPeriod());
 				break;
 			case "IS00030":
 				// 現住所．郵便番号
@@ -413,6 +428,11 @@ public class LayoutFinder {
 				break;
 
 			}
+		}
+	}
+
+	private void matchInformation(List<EmpPersonInfoItemDto> dataInfoItems, WidowHistory widowHistory) {
+		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
 		}
 	}
 
