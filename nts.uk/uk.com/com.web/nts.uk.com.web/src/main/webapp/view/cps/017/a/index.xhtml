@@ -147,7 +147,7 @@
 
 				<!-- phần bên phải của màn hình  -->
 				<div id="content-right" data-bind="with: selection">
-					<div class="row">
+					<div class="formlabel">
 						<div style="float: left;"
 							data-bind="ntsFormLabel: {constraint: ['SelectionCD','SelectionName'], required: true}"
 							class='distane col1'>
@@ -155,7 +155,7 @@
 						</div>
 					</div>
 
-					<div class="row">
+					<div class="distance">
 						<input id="code" style="width: 100px"
 							data-bind="ntsTextEditor: { 
 								value: selectionCD,
@@ -173,7 +173,7 @@
 								immediate: false}" />
 					</div>
 
-					<div class="row">
+					<div class="formlabel">
 						<div class="coll"
 							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">#{i18n.getText('CPS017_23')}</div>
 						<input style="width: 100px;"
@@ -186,21 +186,14 @@
 									readonly: false}" />
 					</div>
 
-					<div class="row">
+					<div class="distance">
 						<div class="coll"
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
 							<label>#{i18n.getText('CPS016_21')}</label>
 						</div>
-						<textarea style="width: 350px; height: 110px;"
+						<textarea style="width: 350px; height: 110px; vertical-align: top;"
 							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'MemoSelection',required: false}" />
 					</div>
-
-
-
-
-
-
-
 
 					<!--
 					

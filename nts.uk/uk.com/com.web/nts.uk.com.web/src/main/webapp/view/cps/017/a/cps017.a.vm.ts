@@ -276,16 +276,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 block.clear();
             });
         }
-        
+
         //ダイアログC画面
         openDialogC() {
-            let self = this,
-                obj = {
-                    sel_id: "0001",
-                    sel_name: " Du DT"
-                };
+            let self = this;
 
-            setShared('historyInfo', obj);
+            //set histID
+            setShared('selectedHisId', self.historySelection().histId());
+
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
