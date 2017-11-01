@@ -52,7 +52,6 @@ public class CaseSpecExeContent extends AggregateRoot {
 				orderNumber,
 				new UseCaseName(useCaseName),
 				new CalExeSettingInfor(
-						EnumAdaptor.valueOf(executionContent, ExecutionContent.class),
 						EnumAdaptor.valueOf(executionType, ExecutionType.class)
 						)
 				);
