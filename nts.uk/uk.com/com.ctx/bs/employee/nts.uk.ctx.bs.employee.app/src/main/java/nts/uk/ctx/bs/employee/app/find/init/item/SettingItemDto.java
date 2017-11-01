@@ -2,7 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.init.item;
 
 import java.math.BigDecimal;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
  * @author sonnlb
  *
  */
-@Value
+@Data
 public class SettingItemDto {
 
 	private String itemCode;
@@ -22,6 +22,14 @@ public class SettingItemDto {
 	private int isRequired;
 
 	private SaveDataDto saveData;
+
+	public SettingItemDto(String itemCode, String itemName, int isRequired, SaveDataDto saveData) {
+		super();
+		this.itemCode = itemCode;
+		this.itemName = itemName;
+		this.isRequired = isRequired;
+		this.saveData = saveData;
+	}
 
 	private static SaveDataDto createSaveDataDto(int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
 			String stringValue) {
@@ -59,11 +67,9 @@ public class SettingItemDto {
 
 	}
 
-	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
-			BigDecimal intValue) {
+	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired, int intValue) {
 
-		return new SettingItemDto(itemCode, itemName, isRequired,
-				SaveDataDto.CreateNumberDataDto(intValue.intValueExact()));
+		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.CreateNumberDataDto(intValue));
 
 	}
 
@@ -75,18 +81,15 @@ public class SettingItemDto {
 	}
 
 	public void setData(String value) {
-		StringDataDto saveData = (StringDataDto) this.saveData;
-		saveData.setValue(value);
+		this.saveData = StringDataDto.CreateStringDataDto(value);
 	}
 
 	public void setData(int value) {
-		NumberDataDto saveData = (NumberDataDto) this.saveData;
-		saveData.setValue(value);
+		this.saveData = NumberDataDto.CreateNumberDataDto(value);
 	}
 
 	public void setData(GeneralDate value) {
-		DateDataDto saveData = (DateDataDto) this.saveData;
-		saveData.setValue(value);
+		this.saveData = DateDataDto.CreateDateDataDto(value);
 	}
 
 	public static SettingItemDto fromInfoDataItem(EmpInfoItemData domain) {

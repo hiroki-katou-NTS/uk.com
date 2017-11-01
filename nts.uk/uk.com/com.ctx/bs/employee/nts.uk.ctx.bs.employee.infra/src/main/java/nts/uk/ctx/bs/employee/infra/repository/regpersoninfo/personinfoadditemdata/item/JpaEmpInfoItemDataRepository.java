@@ -21,13 +21,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
-			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd and pc.cid = :companyId";
+			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd AND pc.cid = :companyId AND ic.employeeId= :employeeId";
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.ppemtEmpInfoCtgDataPk.recordId = :recordId";
 
 	@Override
-	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId) {
+	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
 				.setParameter("categoryCd", categoryCd).setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}

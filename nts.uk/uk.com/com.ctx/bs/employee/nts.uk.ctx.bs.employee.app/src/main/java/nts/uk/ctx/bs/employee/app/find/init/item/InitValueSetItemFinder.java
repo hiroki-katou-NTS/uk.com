@@ -9,10 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.employee.info.itemdata.EmpInfoItemDataFinder;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -33,7 +32,7 @@ public class InitValueSetItemFinder {
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
 	@Inject
-	private EmpInfoItemDataRepository infoItemDataRepo;
+	private EmpInfoItemDataFinder infoItemDataFinder;
 
 	@Inject
 	private EmployeeRepository empBasicInfoRepo;
@@ -80,7 +79,7 @@ public class InitValueSetItemFinder {
 
 			}
 
-			resultItemList.addAll(loadInfoItemDataList(categoryCd, companyId));
+			resultItemList.addAll(this.infoItemDataFinder.loadInfoItemDataList(categoryCd, companyId, employeeId));
 
 		}
 		return resultItemList;
@@ -148,11 +147,6 @@ public class InitValueSetItemFinder {
 			return false;
 
 		}
-	}
-
-	private List<SettingItemDto> loadInfoItemDataList(String categoryCd, String companyId) {
-		return this.infoItemDataRepo.getAllInfoItem(categoryCd, companyId).stream()
-				.map(x -> SettingItemDto.fromInfoDataItem(x)).collect(Collectors.toList());
 	}
 	// Employee Start
 
