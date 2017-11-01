@@ -27,31 +27,40 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EMP_EXECUTION_LOG")
+@Table(name = "KRCDT_EMP_EXECUTION_LOG")
 public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public KrcdtEmpExecutionLogPK krcdtEmpExecutionLogPK;
-
+	
+	@Column(name = "CID")
+	public String companyID;
+	
+	@Column(name = "PROCESSING_MONTH")
+	public Integer processingMonth;
+	
 	@Column(name = "EXECUTED_MENU")
 	public int executedMenu;
+	
+	@Column(name = "EXECUTED_DATE")
+	public GeneralDate executedDate;
 
 	@Column(name = "EXECUTED_STATUS")
 	public int executedStatus;
 
-	@Column(name = "EXECUTED_DATE")
-	public GeneralDate executedDate;
-
-	@Column(name = "PROCESSING_MONTH")
-	public Integer processingMonth;
+	@Column(name = "SID")
+	public String employeeID;
 
 	@Column(name = "CLOSURE_ID")
 	public int closureID;
+	
+	@Column(name = "OPERATION_CASE_ID")
+	public String caseSpecExeContentID;
 
 	@OneToMany(mappedBy="executionlog", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCMT_EXECUTION_LOG")
+	@JoinTable(name = "KRCDT_EXECUTION_LOG")
 	public List<KrcdtExecutionLog> executionLogs;
 	
 	@Override
@@ -61,31 +70,31 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	
 	public static KrcdtEmpExecutionLog toEntity(EmpCalAndSumExeLog domain) {
 		return new  KrcdtEmpExecutionLog(
-				new KrcdtEmpExecutionLogPK(
-						domain.getCompanyID(),
-						String.valueOf(domain.getEmpCalAndSumExecLogID()),
-						String.valueOf(domain.getCaseSpecExeContentID()),
-						domain.getEmployeeID()),
-				domain.getExecutedMenu().value,
-				domain.getExecutionStatus().value,
-				domain.getExecutionDate(),
+				new KrcdtEmpExecutionLogPK(domain.getEmpCalAndSumExecLogID()),
+				domain.getCompanyID(),
 				domain.getProcessingMonth().v(),
+				domain.getExecutedMenu().value,
+				domain.getExecutionDate(),
+				domain.getExecutionStatus().value,
+				domain.getEmployeeID(),
 				domain.getClosureID(),
+				domain.getCaseSpecExeContentID(),
 				domain.getExecutionLogs().stream().map(c->KrcdtExecutionLog.toEntity(c)).collect(Collectors.toList())
 				);
 	}
 	
 	public EmpCalAndSumExeLog toDomain() {
 		return EmpCalAndSumExeLog.createFromJavaType(
-				this.krcdtEmpExecutionLogPK.companyID, 
-				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID, 
-				this.krcdtEmpExecutionLogPK.caseSpecExeContentID, 
-				this.krcdtEmpExecutionLogPK.employeeID, 
-				this.executedMenu, 
-				this.executedStatus,
+				
+				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
+				this.companyID,
+				this.processingMonth,
+				this.executedMenu,
 				this.executedDate, 
-				this.processingMonth, 
+				this.executedStatus,
+				this.employeeID,
 				this.closureID, 
+				this.caseSpecExeContentID, 
 				this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.log.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,18 +33,17 @@ public class ImplementationResultFinder {
 	
 	public  ScreenImplementationResultDto getScreenImplementationResult (String empCalAndSumExecLogID ){
 		//Get List EmpCalAndSumExeLog
-		List<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+		Optional<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Conver to Dto
-		List<EmpCalAndSumExeLogDto> listEmpCalAndSumExeLogDto = listEmpCalAndSumExeLog.stream().map(c -> EmpCalAndSumExeLogDto.fromDomain(c)).collect(Collectors.toList());
-		//Get List Enum
-		List<EnumConstant> listEnumExecuLog = executionLogRepository.getEnumContent();
+
+		Optional<EmpCalAndSumExeLogDto> listEmpCalAndSumExeLogDto = listEmpCalAndSumExeLog.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
 		//Get List TargetPerson
 		List<TargetPerson> listTargetPerSon  = targetPersonRepository.getByempCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Convert Dto
 		List<TargetPersonDto> listTargetPersonDto = listTargetPerSon.stream().map(c -> TargetPersonDto.fromDomain(c)).collect(Collectors.toList());
 		//Get List ExecutionLog
 				
-		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto ,listEnumExecuLog);
+		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto ,null);
 		
 		
 	}
