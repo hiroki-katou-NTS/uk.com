@@ -1677,8 +1677,9 @@ module nts.uk.at.view.kmk002.a {
                 dto.formulaAtr = self.formulaAtr();
                 dto.symbolValue = self.symbolValue;
                 dto.calcAtr = self.calcAtr();
-                dto.formulaSetting = self.formulaSetting;
-                dto.itemSelection = self.itemSelection;
+                // clone object
+                dto.formulaSetting = jQuery.extend(true, {}, self.formulaSetting);
+                dto.itemSelection = jQuery.extend(true, {}, self.itemSelection);
 
                 // Rounding
                 let monthly = <RoundingDto>{};
