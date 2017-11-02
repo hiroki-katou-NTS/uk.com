@@ -75,6 +75,13 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	private Integer timeItemMax;
 
+	// trường này dùng để kết nối với bảng selectionItem
+	private String selectionItemId;
+
+	// trường này để xác định xem là trường date thuộc
+	// kiểu ngày tháng năm, năm tháng or năm
+	private Integer dateType;
+
 	/**
 	 * constructor PerInfoInitValueSetItem
 	 * 

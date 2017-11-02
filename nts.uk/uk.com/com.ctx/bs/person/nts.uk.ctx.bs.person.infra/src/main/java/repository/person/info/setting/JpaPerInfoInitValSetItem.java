@@ -34,10 +34,14 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ITEM.requiredAtr, "
 			+ " SE.settingItemPk.settingId, SE.refMethodAtr, SE.saveDataType, SE.stringValue, SE.intValue, SE.dateValue,"
 			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart,"
-			+ " CM.timeItemMin, CM.timeItemMax "
 			// 10 11 12 13 14
-			+ " CM.selectionItemRefCode "
-			// for Hoa
+			+ " CM.timeItemMin, CM.timeItemMax, "
+
+			+ " CM.selectionItemRefCode, "
+			// for Hoa 19
+			+ " CM.dateItemType"
+			// cái này dùng để xem date là thuộc ngày tháng năm hat năm tháng hay chỉ năm
+			// thôi
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -123,33 +127,19 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
 
-		String saveDataType;
-
-		if (entity[6] == null) {
-			// return defaul value
-			saveDataType = "1";
-
-		} else {
-
-			saveDataType = entity[6].toString();
-
+		if (entity[6] != null) {
+			domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf( entity[6].toString()), SaveDataType.class));
 		}
-		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
+	
 
-		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
+		domain.setStringValue(new StringValue(entity[7] == null ? null : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
-		String dateValue;
+		if (entity[9] != null) {
 
-		if (entity[9] == null) {
-			dateValue = "9999-12-21";
-
-		} else {
-			dateValue = entity[9].toString();
+			domain.setDateValue(GeneralDate.fromString(entity[9].toString(), "yyyy-MM-dd"));
 
 		}
-
-		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
 
 		if (entity[10] == null) {
 			domain.setDataType(0);
@@ -195,11 +185,15 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[18] != null) {
 			domain.setTimeItemMax(Integer.valueOf(entity[18].toString()));
 		}
-		
-		if(entity[19] != null) {
+
+		if (entity[19] != null) {
 			domain.setSelectionItemId(entity[19].toString());
 		}
-		
+
+		if (entity[20] != null) {
+			domain.setDateType(Integer.valueOf(entity[20].toString()));
+		}
+
 		return domain;
 
 	}
