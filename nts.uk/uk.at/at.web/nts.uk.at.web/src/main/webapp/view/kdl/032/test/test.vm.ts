@@ -4,7 +4,7 @@ module test.viewmodel {
         deviationTimeID: KnockoutObservable<string>;
         constructor() {
             var self = this;
-            self.reasonCD = ko.observable("123");
+            self.reasonCD = ko.observable("");
             self.divergenceTimeID = ko.observable("");
         }
 
@@ -33,7 +33,6 @@ module test.viewmodel {
                     nts.uk.ui.block.clear(); 
                 }
                 else{
-                    self.reasonCD = ko.observable("");
                     nts.uk.ui.block.clear();}
             }); 
         }
