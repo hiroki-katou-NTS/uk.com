@@ -483,6 +483,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
         dateType?: number;
+
+        timepointItemMin?: number;
+
+        timepointItemMax?: number;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -532,11 +536,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //selectionItemId? : string;
         selectionItemId: string;
 
+        timepointItemMin: number;
 
-
-
-
-
+        timepointItemMax: number;
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
@@ -552,24 +554,28 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.stringValue = ko.observable(params.stringValue || "");
             self.intValue = ko.observable(params.intValue || 0);
 
-           
+
             self.dateWithDay = ko.observable(params.dateWithDay || 0);
             self.timePoint = ko.observable(params.timePoint || "");
 
-            self.timeItemMin = params.timeItemMin || null;
-            self.timeItemMax = params.timeItemMax || null;
+            self.timeItemMin = params.timeItemMin || undefined;
+            self.timeItemMax = params.timeItemMax || undefined;
+
+            self.timepointItemMin = params.timepointItemMin || undefined;
+
+            self.timepointItemMax = params.timepointItemMax || undefined;
 
 
-            self.itemType = ko.observable(params.itemType || 0);
-            self.dataType = ko.observable(params.dataType || 0);
+            self.itemType = ko.observable(params.itemType || undefined);
+            self.dataType = ko.observable(params.dataType || undefined);
 
             if (params.dataType === 3) {
-                if(params.dateType === 1){
-                     self.dateValue = ko.observable(params.dateValue || undefined);
-                }else if(params.dateType == 2){
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue),"yyyy-MM")|| undefined);
-                }else if(params.dateType == 3){
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue),"yyyy")|| undefined);
+                if (params.dateType === 1) {
+                    self.dateValue = ko.observable(params.dateValue || undefined);
+                } else if (params.dateType == 2) {
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy-MM") || undefined);
+                } else if (params.dateType == 3) {
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
                 }
 
             }
