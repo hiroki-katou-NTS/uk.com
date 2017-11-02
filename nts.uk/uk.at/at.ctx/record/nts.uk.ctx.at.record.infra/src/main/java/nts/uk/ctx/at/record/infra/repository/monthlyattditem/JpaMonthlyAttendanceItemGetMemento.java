@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.infra.repository.monthlyattendanceitem;
+package nts.uk.ctx.at.record.infra.repository.monthlyattditem;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.UseSetting;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceName;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemGetMemento;
-import nts.uk.ctx.at.record.infra.entity.monthlyattendanceitem.KrcmtMonAttendanceItem;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemGetMemento;
+import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 
 /**
  * The Class JpaMonthlyAttendanceItemGetMemento.
@@ -47,7 +47,7 @@ public class JpaMonthlyAttendanceItemGetMemento implements MonthlyAttendanceItem
 	 */
 	@Override
 	public int getAttendanceItemId() {
-		return this.getAttendanceItemId();
+		return this.entity.getKrcmtMonAttendanceItemPK().getMAtdItemId();
 	}
 
 	/*

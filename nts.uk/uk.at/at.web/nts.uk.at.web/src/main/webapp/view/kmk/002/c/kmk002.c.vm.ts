@@ -235,10 +235,10 @@ module nts.uk.at.view.kmk002.c {
             private toSelectDto(data: DailyAttendanceItemDto, method: number): AttendanceItemDto {
                 var operatorText: string = '';
                 if (method == AddSubOperator.ADD) {
-                    operatorText = nts.uk.resource.getText('KMK002_56');
+                    operatorText = nts.uk.resource.getText('Enum_OperatorAtr_ADD');
                 }
                 else {
-                    operatorText = nts.uk.resource.getText('KMK002_57');
+                    operatorText = nts.uk.resource.getText('Enum_OperatorAtr_SUBTRACT');
                 }
                 var dto: AttendanceItemDto = {
                     operator: method,
