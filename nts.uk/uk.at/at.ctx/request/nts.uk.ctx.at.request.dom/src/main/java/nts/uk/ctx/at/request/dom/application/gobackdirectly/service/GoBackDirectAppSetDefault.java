@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -83,22 +84,20 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		data.prelaunchAppSetting = prelaunchAppSetting;
 		
 		if (application.isPresent()) {
-			data.prePostAtr = application.get().getPrePostAtr().value;
-			if (application.get().getApplicationReason().v().contains(":")) {
-				data.appReasonId = application.get().getApplicationReason().v().split(":")[0];
-				data.appReason = application.get().getApplicationReason().v().split(":")[1];
-			}
+			data.prePostAtr = application.get().getPrePostAtr().value;			
+			data.appReasonId = application.get().getAppReasonID();
+			data.appReason = application.get().getApplicationReason().v();
 			data.appDate = application.get().getApplicationDate().toString("yyyy/MM/dd");
 		}
 		//アルゴリズム「直行直帰基本データ」を実行する
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
-		if(goBackDirect.getWorkLocationCD1() != null) {
+		if(Strings.isNotBlank(goBackDirect.getWorkLocationCD1())) {
 			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())
 					.getWorkLocationName();
 			
 		}
-		if(goBackDirect.getWorkLocationCD2() != null) {
+		if(Strings.isNotBlank(goBackDirect.getWorkLocationCD2())) {
 			data.workLocationName2 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD2())
 					.getWorkLocationName();
 		}

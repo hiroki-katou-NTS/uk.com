@@ -18,18 +18,17 @@ public class DestinationJudgmentProcessImpl implements DestinationJudgmentProces
 
 
 	@Override
-	public List<String> getDestinationJudgmentProcessService(
-			List<ApproverRepresenterImport> listApproverAndRepresenterSID) {
+	public List<String> getDestinationJudgmentProcessService(List<ApproverRepresenterImport> listApproverAndRepresenterSID) {
 		List<String> listDestination = new ArrayList<>();
 		if(listApproverAndRepresenterSID.size()==0) {
 			return listDestination;
 		}
 		for(ApproverRepresenterImport approverRepresenterImport : listApproverAndRepresenterSID ) {
-			if(approverRepresenterImport.getRepresenter().equals(RepresenterInformationImport.None_Information)) {
+			if(approverRepresenterImport.getRepresenter().getValue().equals(RepresenterInformationImport.None_Information)) {
 				listDestination.add(approverRepresenterImport.getApprover());
 			}
 			
-			else if(approverRepresenterImport.getRepresenter().equals(RepresenterInformationImport.Path_Information)) {
+			else if(approverRepresenterImport.getRepresenter().getValue().equals(RepresenterInformationImport.Path_Information)) {
 				// do nothing
 			} else {
 				listDestination.add(approverRepresenterImport.getApprover());

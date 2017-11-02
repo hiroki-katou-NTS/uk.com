@@ -112,7 +112,13 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
 	@Override
 	public String empEmail(String sID) {
-		return this.personPub.getPersonInfo(sID).getCompanyMail();
+		PersonInfoExport data = this.personPub.getPersonInfo(sID);
+		if(!data.getCompanyMail().isEmpty()) {
+			return data.getCompanyMail();
+		}else {
+			return null;
+		}
+		
 	}
 
 	@Override
