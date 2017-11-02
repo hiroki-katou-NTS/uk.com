@@ -25,7 +25,9 @@ module nts.uk.at.view.kdw002.b {
 
                     $.when(service.getListDailyServiceTypeControl(businessTypeCode), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
-
+                            $('#useCheckAll').prop('checked', false);
+                            $('#youCanCheckAll').prop('checked', false);
+                            $('#otherCheckAll').prop('checked', false);
                             if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
                                 var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
                                 var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
@@ -382,9 +384,9 @@ function loadIgrid() {
     var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${attendanceItemId})' />";
     var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${attendanceItemId})' />";
     var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${attendanceItemId})' />";
-    var useHeader = "<input type='checkbox' onclick='useHeaderChanged(this)'/> ";
-    var youCanChangeItHeader = "<input type='checkbox' onclick='youCanChangeItHeaderChanged(this)'/> ";
-    var canBeChangedByOthersHeader = "<input type='checkbox' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+    var useHeader = "<input type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
+    var youCanChangeItHeader = "<input type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
+    var canBeChangedByOthersHeader = "<input type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
     $("#grid").igGrid({
         primaryKey: "attendanceItemId",
         height: 400,
