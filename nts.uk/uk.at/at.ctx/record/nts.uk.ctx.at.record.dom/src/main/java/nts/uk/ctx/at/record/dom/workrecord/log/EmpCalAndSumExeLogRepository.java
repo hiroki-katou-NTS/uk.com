@@ -19,23 +19,14 @@ public interface EmpCalAndSumExeLogRepository {
 	 */
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID);
 
-	/**
-	 * get EmpCalAndSumExeLog by empCalAndSumExecLogId
-	 * 
-	 * @param companyID
-	 * @param empCalAndSumExecLogId
-	 * @param operationCaseId
-	 * @param employeeId
-	 * @return
-	 */
-	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID,String operationCaseID, String employeeID);
+	
 	
 	/**
 	 * get list EmpCalAndSumExeLog by empCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
-	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
+	Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 
 	/**
 	 * KIF 001 3 日別実績の作成処理

@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EXECUTION_LOG")
+@Table(name = "KRCDT_EXECUTION_LOG")
 public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,9 +39,6 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "EXISTENCE_ERROR")
 	public int existenceError;
 
-	@Column(name = "EXECUTION_CONTENT")
-	public int executionContent;
-
 	@Column(name = "EXECUTION_START_DATE")
 	public GeneralDateTime executionStartDate;
 	
@@ -51,24 +48,18 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "PROCESSING_SITUATION")
 	public int processStatus;
 
-	@Column(name = "SETTING_INFORMATION_TYPE")
-	public int settingInfoType;
-
-	@Column(name = "SETTING_INFORMATION_CONTENT")
-	public int settingInfoContent;
-
 	@Column(name = "PERIOD_COVERED_START_DATE")
 	public GeneralDate periodCoverdStartDate;
 
 	@Column(name = "PERIOD_COVERED_END_DATE")
 	public GeneralDate periodCoverdEndDate;
 	
+	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
+	public String calExecutionSetInfoID;
+	
 	@ManyToOne
 	@JoinColumns({
-		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false),
-		@JoinColumn(name="OPERATION_CASE_ID", referencedColumnName="OPERATION_CASE_ID", insertable = false, updatable = false),
-        @JoinColumn(name="SID", referencedColumnName="SID", insertable = false, updatable = false)
+		@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false)
     })
 	public KrcdtEmpExecutionLog executionlog;
 
@@ -80,43 +71,34 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	public static KrcdtExecutionLog toEntity(ExecutionLog domain) {
 		return new KrcdtExecutionLog(
 				 new KrcdtExecutionLogPK(
-					 domain.getCompanyID(),
-					 String.valueOf(domain.getEmpCalAndSumExecLogID()),
-					 String.valueOf(domain.getCaseSpecExeContentID()),
-					 domain.getEmployeeID(),
-				     domain.getExecutedLogID(),
-					 domain.getExecuteContenByCaseID()
+					 domain.getEmpCalAndSumExecLogID(),
+					 domain.getExecutionContent().value
 					),
+				 
 				 domain.getExistenceError().value,
-				 domain.getExecutionContent().value,
 				 domain.getExecutionTime().getStartTime(),
 				 domain.getExecutionTime().getEndTime(),
 				 domain.getProcessStatus().value,
-				 domain.getCalExeSetInfor().getExecutionType().value,
-				 domain.getExecutionContent().value,
 				 domain.getObjectPeriod().getStartDate(),
 				 domain.getObjectPeriod().getEndDate(),
+				 domain.getCalExecutionSetInfoID(),
 				 null);
 	}
 	
 	public ExecutionLog toDomain() {
 		return ExecutionLog.createFromJavaType(
-				this.krcdtExecutionLogPK.companyID, 
-				this.krcdtExecutionLogPK.empCalAndSumExecLogID, 
-				this.krcdtExecutionLogPK.caseSpecExeContentID, 
 				
-				this.krcdtExecutionLogPK.employeeID, 
-				this.krcdtExecutionLogPK.executedLogID, 
-				this.krcdtExecutionLogPK.executeContenByCaseID, 
+				this.krcdtExecutionLogPK.empCalAndSumExecLogID,
+				this.krcdtExecutionLogPK.executionContent, 
 				this.existenceError, 
-				this.executionContent, 
+				
 				this.executionStartDate,
 				this.executionEndDate, 
 				this.processStatus, 
-				this.settingInfoType, 
-				this.settingInfoContent, 
 				this.periodCoverdStartDate, 
-				this.periodCoverdEndDate);
+				this.periodCoverdEndDate,
+				this.calExecutionSetInfoID
+				);
 	}
 
 }
