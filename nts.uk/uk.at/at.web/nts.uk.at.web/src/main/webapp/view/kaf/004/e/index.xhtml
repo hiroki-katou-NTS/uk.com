@@ -17,13 +17,13 @@
 				<label style="margin-left: 30px;"  data-bind="text: postAtr() == 0 ? '#{i18n.getText('KAF004_30')}' : '#{i18n.getText('KAF004_31')}'">事前</label>
 			</div>
 			<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: {}" style="margin-right: 80px;">#{i18n.getText('KAF004_12')}</div>
+				<div data-bind="ntsFormLabel: { required: true}" style="margin-right: 80px;">#{i18n.getText('KAF004_12')}</div>
 				<div id="inputdate"
 					data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 			</div>
 			
 			<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: {}" style="margin-right: 40px">#{i18n.getText('KAF004_13')}</div>
+				<div data-bind="ntsFormLabel: { required: true}" style="margin-right: 40px">#{i18n.getText('KAF004_13')}</div>
 				<com:ko-if bind="showScreen() == 'F'">
 					<div class="valign-center control-group row" style="margin-left: 130px;">
 						<!-- 	fix cứng time -->
@@ -50,7 +50,7 @@
 					<label data-bind="ntsFormLabel: {text: txtearlyTime1}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 30px">1:00</label>
 				</div>
 				<div class="valign-center control-group row4"
-					style="margin-left: 130px;">
+					style="margin-left: 130px;" data-bind="if: displayOrder() != 0">
 					<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 					<input class="col1"
 						data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}, visible: isVisibleTimeF" />

@@ -177,15 +177,12 @@ public class AttendanceItemsFinder {
 	 * @author anhnm
 	 */
 	private int convertToAttdItemType(int formulaAtr) {
-		final int AMOUNT = OptionalItemAtr.AMOUNT.value;
-		final int NUMBER = OptionalItemAtr.NUMBER.value;
-		final int TIMTE = OptionalItemAtr.TIME.value;
 
-		if (formulaAtr == AMOUNT) {
+		if (formulaAtr == OptionalItemAtr.AMOUNT.value) {
 			return DailyAttendanceAtr.AmountOfMoney.value;
-		} else if (formulaAtr == NUMBER) {
+		} else if (formulaAtr == OptionalItemAtr.NUMBER.value) {
 			return DailyAttendanceAtr.NumberOfTime.value;
-		} else if (formulaAtr == TIMTE) {
+		} else if (formulaAtr == OptionalItemAtr.TIME.value) {
 			return DailyAttendanceAtr.Time.value;
 		} else {
 			throw new RuntimeException("value not found");

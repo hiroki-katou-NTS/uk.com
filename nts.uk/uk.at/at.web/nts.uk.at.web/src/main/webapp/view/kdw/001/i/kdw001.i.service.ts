@@ -1,7 +1,8 @@
 module nts.uk.at.view.kdw001.i {
     export module service {
         var paths = {
-            getByEmpCalAndSumExeLogId : "at/record/log/getallbyempid"
+            getByEmpCalAndSumExeLogId : "at/record/log/getallbyempid",
+            getListTargetPersonByEmpId : "at/record/target/getbyempid"
         }
         
         /**
@@ -9,6 +10,10 @@ module nts.uk.at.view.kdw001.i {
          */
         export function getByEmpCalAndSumExeLogId(empCalAndSumExeLogId: any ) : JQueryPromise<Array<any>>{
             return nts.uk.request.ajax("at",paths.getByEmpCalAndSumExeLogId+"/"+empCalAndSumExeLogId);
+        }
+        
+         export function getListTargetPersonByEmpId(empCalAndSumExeLogId: any ) : JQueryPromise<Array<any>>{
+            return nts.uk.request.ajax("at",paths.getListTargetPersonByEmpId+"/"+empCalAndSumExeLogId);
         }
     
     }

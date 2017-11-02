@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -60,6 +62,9 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="genVertItem", orphanRemoval = true)
 	public KscmtGenVertOrder genVertOrder;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemPeople", orphanRemoval = true)
+	public KscmtFormPeople formPeople;
+	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
@@ -67,7 +72,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	}
 	
 	public KscmtGenVertItem(KscmtGenVertItemPK kscmtGenVertItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
-			int attributes, int rounding, KscmtGenVertOrder genVertOrder) {
+			int attributes, int rounding, KscmtGenVertOrder genVertOrder, KscmtFormPeople formPeople) {
 		this.kscmtGenVertItemPK = kscmtGenVertItemPK;
 		this.itemName = itemName;
 		this.calculateAtr = calculateAtr;
@@ -76,5 +81,6 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 		this.attributes = attributes;
 		this.rounding = rounding;
 		this.genVertOrder = genVertOrder;
+		this.formPeople = formPeople;
 	}
 }

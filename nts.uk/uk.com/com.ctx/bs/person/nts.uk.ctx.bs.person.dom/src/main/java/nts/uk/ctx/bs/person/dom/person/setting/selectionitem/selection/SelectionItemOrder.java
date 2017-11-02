@@ -23,7 +23,7 @@ public class SelectionItemOrder {
 			int initSelection) {
 
 		// 選択肢の並び順 パラメーター帰還
-		return new SelectionItemOrder(histId, histId, new Disporder(disporder),
+		return new SelectionItemOrder(selectionID, histId, new Disporder(disporder),
 				EnumAdaptor.valueOf(initSelection, InitSelection.class));
 	}
 }

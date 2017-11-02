@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento;
  * @return the process date
  */
 @Getter
-public class WorkFixedFinderDto implements WorkFixedSetMemento{
+public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	
 	/** The closure id. */
 	// 締めID
@@ -38,7 +38,7 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento{
 	
 	/** The confirm cls status. */
 	//確定区分
-	private ConfirmClsStatus confirmClsStatus;
+	private Integer confirmClsStatus;
 	
 	/** The fixed date. */
 	//確定日
@@ -65,7 +65,7 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento{
 	 * @param fixedDate the fixed date
 	 * @param processDate the process date
 	 */
-	public WorkFixedFinderDto(Integer closureId, String confirmPid, String wkpId, ConfirmClsStatus confirmClsStatus,
+	public WorkFixedFinderDto(Integer closureId, String confirmPid, String wkpId, Integer confirmClsStatus,
 			GeneralDate fixedDate, Integer processDate) {
 		super();
 		this.closureId = closureId;
@@ -107,7 +107,7 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento{
 	 */
 	@Override
 	public void setConfirmClsStatus(ConfirmClsStatus confirmClsStatus) {
-		this.confirmClsStatus = confirmClsStatus;
+		this.confirmClsStatus = confirmClsStatus.value;
 	}
 
 	/* (non-Javadoc)

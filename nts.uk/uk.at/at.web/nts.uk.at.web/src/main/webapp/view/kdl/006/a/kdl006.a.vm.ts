@@ -5,7 +5,7 @@ module nts.uk.at.view.kdl006.a {
         import CurrentClosure = service.model.CurrentClosure;
         import WorkplaceDto = service.model.WorkplaceDto;
         import WorkFixedDto = service.model.WorkFixedDto;
-
+        import WorkFixedCommand = service.model.WorkFixedCommand;
 
         export class ScreenModel {
 
@@ -15,34 +15,35 @@ module nts.uk.at.view.kdl006.a {
             currentCode: KnockoutObservable<any>;
             columnText: KnockoutObservable<string>;
             listClosure: CurrentClosure[];
-
+            listWorkplace: WorkplaceDto[];
+            listWorkFixed: WorkFixedDto[];
+            
             constructor() {
                 let _self = this;
-               // _self.currentCode = ko.observable(null);
+                _self.currentCode = ko.observable(null);
                 _self.items = ko.observableArray([]);             
                 _self.columns = ko.observableArray([]);
-                let textArray = [
-                    '1',
-                    '2'
-                    ];
+
                 _self.control = ko.observableArray([
-                    {name: 'CheckBox1', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox2', options: { value: 1, text: 'dhhd' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox3', options: { value: 1, text: 'dhdjheuj' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox4', options: { value: 1, text: 'eue' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    {name: 'CheckBox5', options: { value: 1, text: 'eue' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }
+                    {name: 'CheckBox1', options: { value: 1, text: 'column1' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox2', options: { value: 1, text: 'column2' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox3', options: { value: 1, text: 'column3' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox4', options: { value: 1, text: 'column4' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    {name: 'CheckBox5', options: { value: 1, text: 'column5' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }
                 ]);
                 //options: { value: 1, text: '' }, 
                 
                 _self.listClosure = [];
+                _self.listWorkplace = [];
+                _self.listWorkFixed = [];
             }
-
+                      
             loadGrid() {
                 let _self = this;
-                console.log(_self.items());
+                _self.items(_self.listWorkplace);
                 $("#grid-list").ntsGrid({
                     width: '970px',
-                    height: '400px',
+                    height: '350px',
                     dataSource: _self.items(),
                     primaryKey: 'workplaceId',
                     virtualization: true,
@@ -61,32 +62,59 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
                 
                 // Load closure
-                _self.loadClosure()
-                    .then((listClosure: CurrentClosure[]) => {
-                        // Load workplace                       
-                        _self.loadGridList(listClosure);
-                        _self.listClosure = listClosure;
-                        return _self.loadWorkplace();
-                    })
-                    .then((listWorkplace: WorkplaceDto[]) => {
-                        // Load workfixed
-                        _.map(listWorkplace, (dto: WorkplaceDto) => {
+                $.when(_self.loadClosure(), _self.loadWorkplace())
+                    .done(() => {
+                        
+                        // Load closure    
+                        _self.loadGridList(_self.listClosure);
+                        
+                        // Load workplace
+                        _.map(_self.listWorkplace, (dto: WorkplaceDto) => {
                             return dto.viewText = dto.workplaceCode + " " + dto.workplaceName;
-                        });
-                        _self.items(listWorkplace);
-                        return _self.loadWorkFixed();
-                    })
-                    .then(() => {     
-                        _self.loadGrid();                        
-                        dfd.resolve();
+                        });                        
+                        
+                        // Load workfixed
+                        _self.loadWorkFixed()
+                            .done(() => {
+                                _self.loadGrid();    
+                                dfd.resolve(_self); 
+                            })
+                            .fail((res: any) => {
+                                dfd.fail(res);
+                            });
                     })
                     .fail((res: any) => {
                         dfd.fail(res);
                     });
-
+                
                 return dfd.promise();
             }
+            
+            /**
+             * Save WorkFixed info
+             */
+            public save(): void {
+                let _self = this;
+                
+                nts.uk.ui.block.grayout();      
+                let listWorkFixedCommand: WorkFixedCommand[] = _self.buildSaveCommand();
+                service.saveWorkFixedInfo(listWorkFixedCommand)
+                    .done((data: any) => {
+                        nts.uk.ui.block.clear();                        
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    })
+                    .fail((res: any) => {
+                        nts.uk.ui.block.clear();
+                    });
+            }
 
+            /**
+             * Close this dialog
+             */
+            public close(): void {
+                nts.uk.ui.windows.close();
+            }
+            
             /**
              * Prevent Promise Hell - loadClosure 
              */
@@ -95,7 +123,10 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
 
                 service.findCurrentClosure()
-                    .done((data: any[]) => dfd.resolve(data))
+                    .done((data: any[]) => {
+                        _self.listClosure = data;
+                        dfd.resolve();
+                    })
                     .fail((res: any) => dfd.fail(res));
 
                 return dfd.promise();
@@ -109,7 +140,10 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
 
                 service.findWorkplaceInfo()
-                    .done((data: any[]) => dfd.resolve(data))
+                    .done((data: any[]) => {
+                        _self.listWorkplace = data;
+                        dfd.resolve();
+                    })
                     .fail((res: any) => dfd.fail(res));
 
                 return dfd.promise();
@@ -123,47 +157,41 @@ module nts.uk.at.view.kdl006.a {
                 let dfd = $.Deferred<any>();
 
                 let listClosure = _self.listClosure;
-                let listWorkplace = _self.items();
+                let listWorkplace = _self.listWorkplace;
 
-                //TODO refactor
                 for (let workplace of listWorkplace) {
-                    let columnIndex = 1;
                     for (let closure of listClosure) {
-                        ((columnIndex) => {
-                            service.findWorkFixedByWkpIdAndClosureId(workplace.workplaceId, closure.closureId)
-                                .done((data: WorkFixedDto) => {                                   
-                                    switch (columnIndex) {
-                                        case 1: {  
-                                            workplace.columnText1 = data.confirmPid;                                       
-                                        }
-                                        case 2: {
-                                            workplace.columnText2 = data.confirmPid;    
-                                        }
-                                        case 3: {
-                                            workplace.columnText3 = data.confirmPid;    
-                                        }
-                                        case 4: {
-                                            workplace.columnText4 = data.confirmPid;    
-                                        }
-                                        case 5: {
-                                            workplace.columnText5 = data.confirmPid;    
-                                        }
-                                        default: {
-                                            // Do nothing
-                                        }
-                                    }                                                                
-                                    
-                                    // Update grid data
-                                    _self.items(listWorkplace);
-                                    // console.log(listWorkplace);
-                                    dfd.resolve();
-                                })                        
-                        })(columnIndex);                        
-                        
-                        columnIndex++;
+                        _self.listWorkFixed.push(new WorkFixedDto(closure.closureId, workplace.workplaceId));
                     }
                 }
-
+                
+                service.findWorkFixedInfo(_self.listWorkFixed)
+                    .done((data: WorkFixedDto[]) => {
+                        _self.listWorkFixed = data;   
+                        let workplaceIndex = 0;
+                        let totalClosure = _self.listClosure.length;
+                        for (let workplace of _self.listWorkplace) {
+                            let currentIndex = workplaceIndex * totalClosure;
+                            let currentWorkFixed: WorkFixedDto[] = _.slice(_self.listWorkFixed, currentIndex, currentIndex + totalClosure); 
+                            if (_self.listClosure[0] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[0].closureId && !_.isNil(o.processDate); })) {
+                                workplace.columnCheck1 = true;
+                            }
+                            if (_self.listClosure[1] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[1].closureId && !_.isNil(o.processDate); })) {
+                                workplace.columnCheck2 = true;
+                            }
+                            if (_self.listClosure[2] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[2].closureId && !_.isNil(o.processDate); })) {
+                                workplace.columnCheck3 = true;
+                            }
+                            if (_self.listClosure[3] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[3].closureId && !_.isNil(o.processDate); })) {
+                                workplace.columnCheck4 = true;
+                            }
+                            if (_self.listClosure[4] && _.find(currentWorkFixed, function(o) { return o.closureId === _self.listClosure[4].closureId && !_.isNil(o.processDate); })) {
+                                workplace.columnCheck5 = true;
+                            }
+                            workplaceIndex++;
+                        }
+                        dfd.resolve();
+                    });
                 
                 return dfd.promise();
             }
@@ -175,7 +203,7 @@ module nts.uk.at.view.kdl006.a {
                 let _self = this;
                 let columns: any[] = [];
 
-                //...
+                // Set default columns
                 columns.push({ headerText: nts.uk.resource.getText('KDL006_4'), key: 'workplaceId', width: 50, hidden: true });
                 columns.push({ headerText: nts.uk.resource.getText('KDL006_4'), key: 'viewText', width: 250, height: 50 });
                 
@@ -184,9 +212,10 @@ module nts.uk.at.view.kdl006.a {
                     item.viewText = _self.getHeader(item);
                     let column = {
                         headerText: item.viewText,
-                        key: "column" + columnIndex,
+                        key: "columnCheck" + columnIndex,
                         dataType: 'boolean',
                         width: 150,
+                        showHeaderCheckbox: true,
                         ntsControl: 'CheckBox' + columnIndex
                     }
                     columns.push(column);
@@ -198,7 +227,7 @@ module nts.uk.at.view.kdl006.a {
                     for (let i = 0; i < columnLength; i++) {
                         let column = {
                             headerText: "",
-                            key: "",
+                            key: "empty" + i,   //need declare key so grid header can be turned green
                             width: 150
                         }
                         columns.push(column);
@@ -212,12 +241,72 @@ module nts.uk.at.view.kdl006.a {
              *  Get Header
              */
             private getHeader(item: CurrentClosure): string {
-                let self = this;
-                let startMonthRage: string = item.startDate.slice(5, 10);
-                let endMonthRage: string = item.endDate.slice(5, 10);
-                return item.closureName + "<br>" + startMonthRage + ' ~ ' + endMonthRage;
+                return item.closureName + "<br>" + item.startDate.slice(5, 10) + ' ~ ' + item.endDate.slice(5, 10);
             }
-
+            
+            /**
+             * Build WorkFixed save command
+             */
+            private buildSaveCommand(): WorkFixedCommand[] {
+                let _self = this;
+                let result: WorkFixedCommand[] = [];
+                
+                //TODO check init value 
+                for (let workplace of _self.listWorkplace) {
+                    if (_.isBoolean(workplace.columnCheck1) && _self.listClosure[0]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck1,
+                            _self.listClosure[0].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck1 === false) { delete workplace.columnCheck1; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck2) && _self.listClosure[1]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck2,
+                            _self.listClosure[1].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck2 === false) { delete workplace.columnCheck2; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck3) && _self.listClosure[2]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck3,
+                            _self.listClosure[2].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck3 === false) { delete workplace.columnCheck3; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck4) && _self.listClosure[3]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck4,
+                            _self.listClosure[3].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck4 === false) { delete workplace.columnCheck4; }
+                    }
+                    if (_.isBoolean(workplace.columnCheck5) && _self.listClosure[4]) {
+                        result.push(new WorkFixedCommand(
+                            workplace.columnCheck5,
+                            _self.listClosure[4].closureId,
+                            workplace.workplaceId,
+                            0,
+                            0));
+                        // Delete 
+                        if (workplace.columnCheck5 === false) { delete workplace.columnCheck5; }
+                    }
+                }               
+    
+                return result;
+            }
         }
     }
 }

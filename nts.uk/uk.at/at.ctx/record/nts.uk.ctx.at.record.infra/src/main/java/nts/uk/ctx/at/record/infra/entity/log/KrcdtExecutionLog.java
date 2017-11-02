@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -25,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXECUTION_LOG")
+@Table(name = "KRCMT_EXECUTION_LOG")
 public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,10 +43,10 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	public int executionContent;
 
 	@Column(name = "EXECUTION_START_DATE")
-	public GeneralDate executionStartDate;
+	public GeneralDateTime executionStartDate;
 	
 	@Column(name = "EXECUTION_END_DATE")
-	public GeneralDate executionEndDate;
+	public GeneralDateTime executionEndDate;
 
 	@Column(name = "PROCESSING_SITUATION")
 	public int processStatus;
@@ -92,7 +93,7 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				 domain.getExecutionTime().getEndTime(),
 				 domain.getProcessStatus().value,
 				 domain.getCalExeSetInfor().getExecutionType().value,
-				 domain.getCalExeSetInfor().getExecutionContent().value,
+				 domain.getExecutionContent().value,
 				 domain.getObjectPeriod().getStartDate(),
 				 domain.getObjectPeriod().getEndDate(),
 				 null);
@@ -103,6 +104,7 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				this.krcdtExecutionLogPK.companyID, 
 				this.krcdtExecutionLogPK.empCalAndSumExecLogID, 
 				this.krcdtExecutionLogPK.caseSpecExeContentID, 
+				
 				this.krcdtExecutionLogPK.employeeID, 
 				this.krcdtExecutionLogPK.executedLogID, 
 				this.krcdtExecutionLogPK.executeContenByCaseID, 

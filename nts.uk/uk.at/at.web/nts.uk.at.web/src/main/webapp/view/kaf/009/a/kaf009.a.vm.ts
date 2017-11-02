@@ -191,7 +191,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     location.reload();
                 });
             }).fail(function(res: any) {
-                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function() { nts.uk.ui.block.clear(); });
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
             }).then(function(){
                 nts.uk.ui.block.clear();    
             })    
@@ -258,7 +258,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                             $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
                         }
                     }else{
-                       nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); }); 
+                       nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
                     }
                 })
             return dfd.promise();
@@ -413,11 +413,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         setReasonControl(data: Array<common.ReasonDto>) {
             var self = this;
             let comboSource: Array<common.ComboReason> = [];
-            comboSource.push(new common.ComboReason(0,'選択してください',""));
+            // comboSource.push(new common.ComboReason(0,'選択してください',""));
             _.forEach(data, function(value: common.ReasonDto) {
                 comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
             });
             self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
+            self.selectedReason(_.first(self.reasonCombo()).reasonId);
         }
 
         /**

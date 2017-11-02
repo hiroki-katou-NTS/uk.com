@@ -32,3 +32,7 @@
 #button1{
 	margin-left: 37px;
 }
+
+#swap-list2_container, #swap-list_container{
+	display: inline-block;;
+}

@@ -92,7 +92,8 @@ public class JpaJobTitleInfoSetMemento implements JobTitleInfoSetMemento {
 	public void setIsManager(boolean isManager) {
 		if (isManager) {
 			this.entity.setIsManager(IsManagerStatus.TRUE.value);
-		} else {
+		} 
+		else {
 			this.entity.setIsManager(IsManagerStatus.FALSE.value);
 		}		
 	}

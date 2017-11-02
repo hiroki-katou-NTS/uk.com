@@ -17,7 +17,7 @@ public interface JobTitleInfoGetMemento {
 	 *
 	 * @return the company id
 	 */
-	public CompanyId getCompanyId();
+	CompanyId getCompanyId();
 	
 
 	/**
@@ -25,41 +25,41 @@ public interface JobTitleInfoGetMemento {
 	 *
 	 * @return the job title history id
 	 */
-	public String getJobTitleHistoryId();
+	String getJobTitleHistoryId();
 	
 	/**
 	 * Gets the checks if is manager.
 	 *
 	 * @return the checks if is manager
 	 */
-	public boolean getIsManager();
+	boolean isManager();
 	
 	/**
 	 * Gets the job title id.
 	 *
 	 * @return the job title id
 	 */
-	public String getJobTitleId();
+	String getJobTitleId();
 	
 	/**
 	 * Gets the job title code.
 	 *
 	 * @return the job title code
 	 */
-	public JobTitleCode getJobTitleCode();
+	JobTitleCode getJobTitleCode();
 	
 	/**
 	 * Gets the job title name.
 	 *
 	 * @return the job title name
 	 */
-	public JobTitleName getJobTitleName();
+	JobTitleName getJobTitleName();
 	
 	/**
 	 * Gets the sequence code.
 	 *
 	 * @return the sequence code
 	 */
-	public SequenceCode getSequenceCode();	
+	SequenceCode getSequenceCode();	
 	
 }

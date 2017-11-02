@@ -289,6 +289,7 @@ module nts.uk.at.view.ksc001.b {
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data){
                         self.updatePersonalScheduleData(data);
                         self.next();
+                        $('#inputSelectImplementAtr').focus();
                     }).fail(function(error){
                         console.log(error);   
                     });
@@ -370,16 +371,11 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageC(): void {
                 var self = this;
-                //
+                 self.next();
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
                     //build string for Screen E
                     self.buildString();
                     //goto screen E
-                    var index = $('#wizard').ntsWizard("getCurrentStep");
-                    $('#wizard').ntsWizard("goto", index + 2);
-                }
-                else {
-                    // goto screen D
                     self.next();
                 }
             }
@@ -404,14 +400,10 @@ module nts.uk.at.view.ksc001.b {
              */
             private previousPageE(): void {
                 var self = this;
+                 self.previous();
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
                     //back screen C
-                    var index = $('#wizard').ntsWizard("getCurrentStep");
-                    $('#wizard').ntsWizard("goto", index - 2);
-                }
-                else {
-                    //back screen D
-                    self.previous();
+                   self.previous();
                 }
             }
             /**

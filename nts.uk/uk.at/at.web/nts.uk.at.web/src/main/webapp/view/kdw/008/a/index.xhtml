@@ -69,7 +69,7 @@
 							</div>
 							<div id="tab-panel"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-								<div class="tab-content-1" style="height: 500px;">
+								<div class="tab-content-1" style="height: 500px; width: 930px;">
 									<div>
 										<span class="label">#{i18n.getText('KDW008_23')}</span>
 										<div id="A_SEL_002"
@@ -89,37 +89,56 @@
 									<div class="label">#{i18n.getText('KDW008_29')}</div>
 									<div style="margin-top: 10px" id="swap-list2"
 										data-bind="ntsSwapList: {
-							showSearchBox: { showLeft : true, showRight: true},
-							height: 400,
-							dataSource: currentBusinessType().attendanceItemDtos,
-							primaryKey: 'attendanceItemId',
-							columns: columns2,
-							value: authorityFormatDailyValue,
-							searchMode: 'filter',
-							searchCriterion: ['attendanceItemName','attendanceItemId'],
-							draggable: true,
-							multipleDrag: { left: true, right: false },
-							innerDrag: { left: false, right: true },
-							outerDrag: { left: true, right: true } 
-						}"></div>
+											showSearchBox: { showLeft : true, showRight: true},
+											height: 400,
+											disableMoveButton: true,
+											dataSource: currentBusinessType().attendanceItemDtos,
+											primaryKey: 'attendanceItemId',
+											columns: columns2,
+											value: authorityFormatDailyValue,
+											searchMode: 'filter',
+											searchCriterion: ['attendanceItemName','attendanceItemId'],
+											draggable: true,
+											multipleDrag: { left: true, right: false },
+											innerDrag: { left: false, right: true },
+											outerDrag: { left: true, right: true } 
+										}"></div>
+										<div id="up-down"
+											data-bind="ntsUpDown: {
+													targetSource: authorityFormatDailyValue,
+													primaryKey: 'attendanceItemId',
+													comId: '#swap-list2',
+													type: 'swap',
+													swapTarget: 'right'}">
+										</div>
 								</div>
-								<div class="tab-content-2" style="height: 500px;">
+								<div class="tab-content-2" style="height: 500px; width: 930px;">
 									<div class="label">#{i18n.getText('KDW008_28')}</div>
 									<div style="margin-top: 10px" id="swap-list"
 										data-bind="ntsSwapList: {
-							showSearchBox: { showLeft : true, showRight: true},
-							height: 456,
-							dataSource: currentBusinessType().attendanceItemDtos,
-							primaryKey: 'attendanceItemId',
-							columns: columns3,
-							value: authorityFormatMonthlyValue,
-							searchMode: 'filter',
-							searchCriterion: ['attendanceItemName','attendanceItemId'],
-							draggable: true,
-							multipleDrag: { left: true, right: false },
-							innerDrag: { left: false, right: true },
-							outerDrag: { left: true, right: true } 
-						}"></div>
+											showSearchBox: { showLeft : true, showRight: true},
+											height: 456,
+											disableMoveButton: true,
+											dataSource: currentBusinessType().attendanceItemDtos,
+											primaryKey: 'attendanceItemId',
+											columns: columns3,
+											value: authorityFormatMonthlyValue,
+											searchMode: 'filter',
+											searchCriterion: ['attendanceItemName','attendanceItemId'],
+											draggable: true,
+											multipleDrag: { left: true, right: false },
+											innerDrag: { left: false, right: true },
+											outerDrag: { left: true, right: true } 
+										}">
+									</div>
+									<div id="up-down"
+										data-bind="ntsUpDown: {
+												targetSource: authorityFormatMonthlyValue,
+												primaryKey: 'attendanceItemId',
+												comId: '#swap-list',
+												type: 'swap',
+												swapTarget: 'right'}">
+									</div>
 								</div>
 							</div>
 						</td>
