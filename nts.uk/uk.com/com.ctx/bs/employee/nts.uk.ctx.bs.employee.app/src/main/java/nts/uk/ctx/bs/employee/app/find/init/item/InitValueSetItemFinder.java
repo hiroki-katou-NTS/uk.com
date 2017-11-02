@@ -55,13 +55,13 @@ public class InitValueSetItemFinder {
 		resultItemList = initListItem.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList());
 		if (isHaveItemSameAsLogin(initListItem)) {
 
-			resultItemList = loadItemByCtgCode(resultItemList, categoryCd, companyId, employeeId, baseDate);
+			resultItemList = loadSettingItems(resultItemList, categoryCd, companyId, employeeId, baseDate);
 
 		}
 		return resultItemList;
 	}
 
-	public List<SettingItemDto> loadItemByCtgCode(List<SettingItemDto> resultItemList, String categoryCd,
+	public List<SettingItemDto> loadSettingItems(List<SettingItemDto> resultItemList, String categoryCd,
 			String companyId, String employeeId, GeneralDate baseDate) {
 		switch (categoryCd) {
 		// 社員基本情報 - Employee
@@ -92,9 +92,9 @@ public class InitValueSetItemFinder {
 		return resultItemList;
 	}
 
-	// JobTitleHistory start
+	// load JobTitleHistory start
 
-	public List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
+	private List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
 			GeneralDate baseDate) {
 		// TODO Auto-generated method stub
 		return null;
@@ -103,7 +103,7 @@ public class InitValueSetItemFinder {
 	// JobTitleHistory end
 	// TemporaryAbsence start
 
-	public List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList, String employeeId,
+	private List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList, String employeeId,
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
@@ -155,9 +155,9 @@ public class InitValueSetItemFinder {
 
 		}
 	}
-	// Employee Start
+	// load Employee Start
 
-	public List<SettingItemDto> loadEmployeeInfo(List<SettingItemDto> initItemList, String companyId,
+	private List<SettingItemDto> loadEmployeeInfo(List<SettingItemDto> initItemList, String companyId,
 			String employeeId) {
 
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
@@ -213,9 +213,9 @@ public class InitValueSetItemFinder {
 
 	// Employee End
 
-	// AffiliationDepartment start
+	// load AffiliationDepartment start
 
-	public List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String companyId,
+	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String companyId,
 			String employeeId) {
 		// List<InitValueSettingItemDto> returnList = new
 		// ArrayList<InitValueSettingItemDto>();
@@ -232,8 +232,8 @@ public class InitValueSetItemFinder {
 
 	// AffiliationDepartment end
 
-	// Aff WorkPlace start
-	public List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList, String employeeId,
+	// load Aff WorkPlace start
+	private List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList, String employeeId,
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 

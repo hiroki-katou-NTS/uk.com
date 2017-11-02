@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.leaveholiday.LeaveHoliday;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
