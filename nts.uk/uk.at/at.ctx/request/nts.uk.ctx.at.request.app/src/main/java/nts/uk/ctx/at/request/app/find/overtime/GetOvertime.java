@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.overtime;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -25,6 +27,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
@@ -95,6 +99,12 @@ public class GetOvertime {
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
+	@Inject
+	private ApplicationReasonRepository applicationReasonRepository;
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -163,6 +173,18 @@ public class GetOvertime {
 		getOvertimeHours(companyID,overtimeAtr,result);
 		// 01-04_加給時間を取得
 		getBonusTime(companyID,employeeID,appDate,result);
+		// 01-05_申請定型理由を取得, 01-06_申請理由を取得(Display App Reason)
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
+		if(appTypeDiscreteSetting.isPresent()){
+			if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
+				result.setDisplayAppReason(true);
+				// 01-05_申請定型理由を取得
+				getApplicationReasonType(companyID,result);
+			}else{
+				result.setDisplayAppReason(false);
+			}
+		}
+		
 		return result;
 	}
 	/**
@@ -327,5 +349,21 @@ public class GetOvertime {
 				result.setDisplayBonusTime(false);
 			}
 		}
+	}
+	/**
+	 * 01-05_申請定型理由を取得
+	 * @param companyID
+	 * @param result
+	 */
+	private void getApplicationReasonType(String companyID, OverTimeDto result) {
+		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID,
+				ApplicationType.OVER_TIME_APPLICATION.value);
+		List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
+		for (ApplicationReason applicationReason : applicationReasons) {
+			ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
+					applicationReason.getReasonTemp());
+			applicationReasonDtos.add(applicationReasonDto);
+		}
+		result.setApplicationReasonDtos(applicationReasonDtos);
 	}
 }
