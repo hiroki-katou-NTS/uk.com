@@ -54,7 +54,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 			+ " LEFT JOIN PpemtPersonInitValueSettingItem SE"
 			+ " ON CTG.ppemtPerInfoCtgPK.perInfoCtgId = SE.settingItemPk.perInfoCtgId"
-			+ " AND SE.settingItemPk.settingId =:settingId AND SE.settingItemPk.perInfoCtgId =:perInfoCtgId"
+			+ " AND SE.settingItemPk.settingId =:settingId "
 			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " AND (SE.settingItemPk.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId OR SE.settingItemPk.perInfoItemDefId IS NULL)"
 			+ " ORDER BY E.disporder";
@@ -127,14 +127,23 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		domain.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(refMethod), ReferenceMethodType.class));
 
-		if (entity[6] != null) {
-			domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf( entity[6].toString()), SaveDataType.class));
+		String saveDataType;
+
+		if (entity[6] == null) {
+			// return defaul value
+			saveDataType = "1";
+
+		} else {
+
+			saveDataType = entity[6].toString();
+
 		}
-	
+		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 
 		domain.setStringValue(new StringValue(entity[7] == null ? null : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
+		// định dạng lại cách hiển thị của date
 		if (entity[9] != null) {
 
 			domain.setDateValue(GeneralDate.fromString(entity[9].toString(), "yyyy-MM-dd"));
