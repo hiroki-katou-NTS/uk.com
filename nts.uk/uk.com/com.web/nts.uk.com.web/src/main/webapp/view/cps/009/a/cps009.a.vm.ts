@@ -329,21 +329,35 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
         historyFilter(){
             let self = this;
+            //get lai list item
+            self.getItemList(ko.toJS(self.initSettingId()), ko.toJS(self.currentCategory().settingCode));
             //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
             let lstItem = [];
-            _.each(self.currentCategory().itemList(), function(item){
+            let listInit = self.currentCategory().itemList();
+            _.each(listInit, function(item){
                 if(self.checkFilter(item)){
                     lstItem.push(item.selectionItemId);
                 }
             });
             lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
+            lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
             let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
-            if(lstItem.length == 0){
-                
-            }else{
+            let lstFilter = [];
+            self.currentCategory().itemList.removeAll();
+            self.currentCategory().itemList([]);
+            if(lstItem.length > 0){
                 let param = {lstSelItemId: lstItem,baseDate: baseDate}
                service.refHistSel(param).done(function(data){
                     console.log(data);
+                   //loc nhung item thoa man dk
+                   _.each(data.lstSelItemId, function(itemId){
+                        let item = self.findItem(listInit,itemId);
+                        if(item != undefined){
+                            lstFilter.push(item);
+                        }
+                   });
+                   //gan lai du lieu moi
+                   self.currentCategory().itemList(lstFilter);
                 }); 
             }
             
@@ -358,11 +372,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if(objItem.dataType() != 6){
                 return false
             }
-            //参照区分 != Enum参照条件 || 参照区分＝コード名称参照条件の場合
-            if(objItem.selectedCode() != 'コード名称参照条件の場合'){
+            //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
+            if(objItem.selectedCode() != '1'){
                 return false;
             }
             return true;
+        }
+        findItem(lstITem: Array<any>, selectItemId: string): PerInfoInitValueSettingItemDto{
+            return _.find(lstITem, function(obj) {
+                    return obj.selectionItemId == selectItemId;
+            });
         }
     }
 
