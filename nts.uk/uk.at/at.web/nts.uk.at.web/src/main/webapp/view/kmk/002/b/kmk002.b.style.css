@@ -12,4 +12,6 @@ td {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+.nts-switch-button {
+	min-width: 62px;
 }

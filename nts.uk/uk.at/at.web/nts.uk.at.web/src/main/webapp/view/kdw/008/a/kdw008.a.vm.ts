@@ -182,7 +182,7 @@ module nts.uk.at.view.kdw008.a {
                                     attendanceItemId: item.attendanceItemId,
                                     attendanceItemName: item.attendanceItemName,
                                     attendanceItemDisplayNumber: item.dislayNumber,
-                                    columnWidth : item.columnWidth
+                                    columnWidth: item.columnWidth
                                 };
                                 return new AttendanceItemModel(obj);
                             });
@@ -202,7 +202,7 @@ module nts.uk.at.view.kdw008.a {
                                     attendanceItemId: item.attendanceItemId,
                                     attendanceItemName: item.attendanceItemName,
                                     attendanceItemDisplayNumber: item.dislayNumber,
-                                    columnWidth : item.columnWidth
+                                    columnWidth: item.columnWidth
                                 }
                                 return new AttendanceItemModel(daily);
                             });
@@ -286,18 +286,20 @@ module nts.uk.at.view.kdw008.a {
                 if (self.isUpdate() == true) {
                     new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        self.reloadData();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
                     });
                 } else {
                     new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        self.reloadData();
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error.message);
+//                        nts.uk.ui.dialog.alertError(error.message);
+                        $('#currentCode').ntsError('set', error);
                     });
                 }
                 //self.getDetail(self.currentDailyFormatCode());
-                self.reloadData();
             }
 
             reloadData() {
@@ -330,12 +332,12 @@ module nts.uk.at.view.kdw008.a {
                 this.sheetNoName = sheetNoName;
             }
         }
-        
-        export class AddOrUpdateDailyFormat{
-            authorityMonthlyCommand : KnockoutObservable<AddAuthorityFormatMonthly>;
-            authorityDailyCommand :  KnockoutObservable<AddAuthorityFormatDaily>;
-            constructor(addOrUpdateAuthorityFormatMonthly : KnockoutObservable<AddAuthorityFormatMonthly>, addOrUpdateAuthorityFormatDaily :KnockoutObservable<AddAuthorityFormatDaily>){
-                let self = this;  
+
+        export class AddOrUpdateDailyFormat {
+            authorityMonthlyCommand: KnockoutObservable<AddAuthorityFormatMonthly>;
+            authorityDailyCommand: KnockoutObservable<AddAuthorityFormatDaily>;
+            constructor(addOrUpdateAuthorityFormatMonthly: KnockoutObservable<AddAuthorityFormatMonthly>, addOrUpdateAuthorityFormatDaily: KnockoutObservable<AddAuthorityFormatDaily>) {
+                let self = this;
                 self.authorityMonthlyCommand = addOrUpdateAuthorityFormatMonthly;
                 self.authorityDailyCommand = addOrUpdateAuthorityFormatDaily;
             }
@@ -383,7 +385,7 @@ module nts.uk.at.view.kdw008.a {
             attendanceItemId: number = 0;
             attendanceItemName: string = "";
             attendanceItemDisplayNumber: number = 0;
-            columnWidth : number;
+            columnWidth: number;
             constructor(data: IAttendanceItem) {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId || 0;
@@ -449,7 +451,7 @@ module nts.uk.at.view.kdw008.a {
             attendanceItemId: number;
             attendanceItemName: string;
             attendanceItemDisplayNumber: number;
-            columnWidth : number;
+            columnWidth: number;
         }
         export interface IAuthorityFormatDetail {
             attendanceItemId: number;

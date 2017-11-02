@@ -1271,7 +1271,7 @@ module nts.uk.at.view.kmk002.a {
                 this.settingResult = ko.observable('');
 
                 // Calculation setting.
-                this.calcAtr = ko.observable(1);
+                this.calcAtr = ko.observable(0);
                 this.formulaSetting = this.getDefaultFormulaSetting();
                 this.itemSelection = this.getDefaultItemSelection();
 

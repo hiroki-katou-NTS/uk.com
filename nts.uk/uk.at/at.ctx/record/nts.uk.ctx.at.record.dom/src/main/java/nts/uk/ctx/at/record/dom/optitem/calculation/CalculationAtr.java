@@ -11,12 +11,12 @@ package nts.uk.ctx.at.record.dom.optitem.calculation;
 public enum CalculationAtr {
 
 	/** The item selection. */
-	// 計算式組込
-	ITEM_SELECTION(0, "Enum_CalculationAtr_ITEM_SELECTION", "計算式組込"),
+	// 計算項目選択
+	ITEM_SELECTION(0, "KMK002_43", "計算項目選択"),
 
 	/** The formula setting. */
 	// 計算式設定
-	FORMULA_SETTING(1, "Enum_CalculationAtr_FORMULA_SETTING", "計算式設定");
+	FORMULA_SETTING(1, "KMK002_42", "計算式設定");
 
 	/** The value. */
 	public int value;
