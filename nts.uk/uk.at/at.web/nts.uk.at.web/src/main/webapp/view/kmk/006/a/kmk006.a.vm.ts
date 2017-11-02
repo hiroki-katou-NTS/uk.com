@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk006.a {
             treeOptionsWkp: TreeComponentOption;
             treeOptionsWkpTotal: TreeComponentOption;
             autoCalAtrOvertimeEnum: Array<Enum>;
+            autoCalAtrOvertimeEnumWithoutTimeRecorder: Array<Enum>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
             itemComAutoCalModel: ComAutoCalSettingModel;
@@ -131,26 +132,27 @@ module nts.uk.at.view.kmk006.a {
                 self.isLoading = ko.observable(false);
 
                 self.autoCalAtrOvertimeEnum = [];
+                self.autoCalAtrOvertimeEnumWithoutTimeRecorder = [];
 
                 self.timeLimitUpperLimitEnum = [];
                 self.valueEnumNorEarLi = ko.observable(2);
                 self.valueEnumNorEarAtr = ko.observable(2);
                 self.valueEnumNorEarMidLi = ko.observable(2);
-                self.valueEnumNorEarMidAtr = ko.observable(2);
+                self.valueEnumNorEarMidAtr = ko.observable(1);
                 self.valueEnumNorNorLi = ko.observable(2);
                 self.valueEnumNorNorAtr = ko.observable(2);
                 self.valueEnumNorNorMidLi = ko.observable(2);
-                self.valueEnumNorNorMidAtr = ko.observable(2);
+                self.valueEnumNorNorMidAtr = ko.observable(1);
                 self.valueEnumNorLegLi = ko.observable(2);
-                self.valueEnumNorLegAtr = ko.observable(2);
+                self.valueEnumNorLegAtr = ko.observable(1);
                 self.valueEnumNorLegMidLi = ko.observable(2);
-                self.valueEnumNorLegMidAtr = ko.observable(2);
+                self.valueEnumNorLegMidAtr = ko.observable(1);
                 self.valueEnumFleTimeLi = ko.observable(2);
                 self.valueEnumFleTimeAtr = ko.observable(2);
                 self.valueEnumResResLi = ko.observable(2);
                 self.valueEnumResResAtr = ko.observable(2);
                 self.valueEnumResLatLi = ko.observable(2);
-                self.valueEnumResLatAtr = ko.observable(2);
+                self.valueEnumResLatAtr = ko.observable(1);
 
                 self.selectedCode = ko.observable('');
                 self.totalSelectedCode = ko.observable('');
@@ -243,22 +245,22 @@ module nts.uk.at.view.kmk006.a {
 
 
                 self.enableEnumNorLegLi = ko.computed(function() {
-                    return self.valueEnumNorLegAtr() != 2;
+                    return self.valueEnumNorLegAtr() != 1;
                 });
                 self.enableEnumNorLegMidLi = ko.computed(function() {
-                    return self.valueEnumNorLegMidAtr() != 2;
+                    return self.valueEnumNorLegMidAtr() != 1;
                 });
                 self.enableEnumNorNorLi = ko.computed(function() {
                     return self.valueEnumNorNorAtr() != 2;
                 });
                 self.enableEnumNorNorMidLi = ko.computed(function() {
-                    return self.valueEnumNorNorMidAtr() != 2;
+                    return self.valueEnumNorNorMidAtr() != 1;
                 });
                 self.enableEnumNorEarLi = ko.computed(function() {
                     return self.valueEnumNorEarAtr() != 2;
                 });
                 self.enableEnumNorEarMidLi = ko.computed(function() {
-                    return self.valueEnumNorEarMidAtr() != 2;
+                    return self.valueEnumNorEarMidAtr() != 1;
                 });
                 self.enableEnumFleTimeLi = ko.computed(function() {
                     return self.valueEnumFleTimeAtr() != 2;
@@ -267,7 +269,7 @@ module nts.uk.at.view.kmk006.a {
                     return self.valueEnumResResAtr() != 2;
                 });
                 self.enableEnumResLatLi = ko.computed(function() {
-                    return self.valueEnumResLatAtr() != 2;
+                    return self.valueEnumResLatAtr() != 1;
                 });
 
             }
@@ -282,8 +284,11 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();
 
                 // Initial settings.
-                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), _self.loadAutoCalAtrOvertimeEnum(),
-                    _self.loadUseUnitAutoCalSettingModel()).done(function() {
+                $.when(_self.loadTimeLimitUpperLimitSettingEnum(), 
+                    _self.loadAutoCalAtrOvertimeEnum(),
+                    _self.loadAutoCalAtrOvertimeEnumWithoutTimeRecorder(),
+                    _self.loadUseUnitAutoCalSettingModel())
+                    .done(() => {
                         _self.onSelectCompany();
                         dfd.resolve(_self);
                     });
@@ -381,6 +386,26 @@ module nts.uk.at.view.kmk006.a {
                 return dfd.promise();
             }
             // All function
+            // load AutoCalAtrOvertimeEnumWithoutTimeRecorder
+            private loadAutoCalAtrOvertimeEnumWithoutTimeRecorder(): JQueryPromise<void> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                nts.uk.ui.block.invisible();
+
+                // get setting
+                service.findEnumAutoCalAtrOvertimeWithoutTimeRecorder().done(function(dataRes: Array<Enum>) {
+
+                    self.autoCalAtrOvertimeEnumWithoutTimeRecorder = dataRes;
+
+                    nts.uk.ui.block.clear();
+
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
+            }
+            // All function
             // load AutoCalAtrOvertimeEnum
             private loadTimeLimitUpperLimitSettingEnum(): JQueryPromise<void> {
                 var self = this;
@@ -415,7 +440,7 @@ module nts.uk.at.view.kmk006.a {
                         self.itemComAutoCalModel.updateData(data);
                     }
                     if (self.itemComAutoCalModel) {
-                        // load get all value enum
+                        // load get all value enum                      
                         self.reLoadListEnum(self.itemComAutoCalModel);
                     }
                     dfd.resolve();
@@ -515,21 +540,21 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumNorEarLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyOtTime.upLimitOtSet()].value);
                 self.valueEnumNorEarAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyOtTime.calAtr()].value);
                 self.valueEnumNorEarMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyMidOtTime.upLimitOtSet()].value);
-                self.valueEnumNorEarMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyMidOtTime.calAtr()].value);
+                self.valueEnumNorEarMidAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.earlyMidOtTime.calAtr()].value);
                 self.valueEnumNorNorLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalOtTime.upLimitOtSet()].value);
                 self.valueEnumNorNorAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalOtTime.calAtr()].value);
                 self.valueEnumNorNorMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalMidOtTime.upLimitOtSet()].value);
-                self.valueEnumNorNorMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalMidOtTime.calAtr()].value);
+                self.valueEnumNorNorMidAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.normalMidOtTime.calAtr()].value);
                 self.valueEnumNorLegLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalOtTime.upLimitOtSet()].value);
-                self.valueEnumNorLegAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalOtTime.calAtr()].value);
+                self.valueEnumNorLegAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.legalOtTime.calAtr()].value);
                 self.valueEnumNorLegMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalMidOtTime.upLimitOtSet()].value);
-                self.valueEnumNorLegMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalMidOtTime.calAtr()].value);
+                self.valueEnumNorLegMidAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.legalMidOtTime.calAtr()].value);
                 self.valueEnumFleTimeLi(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.upLimitOtSet()].value);
                 self.valueEnumFleTimeAtr(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.calAtr()].value);
                 self.valueEnumResResLi(self.autoCalAtrOvertimeEnum[list.restTime.restTime.upLimitOtSet()].value);
                 self.valueEnumResResAtr(self.autoCalAtrOvertimeEnum[list.restTime.restTime.calAtr()].value);
                 self.valueEnumResLatLi(self.autoCalAtrOvertimeEnum[list.restTime.lateNightTime.upLimitOtSet()].value);
-                self.valueEnumResLatAtr(self.autoCalAtrOvertimeEnum[list.restTime.lateNightTime.calAtr()].value);
+                self.valueEnumResLatAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.restTime.lateNightTime.calAtr()].value);
             }
 
             private saveListEnum(list: any): void {
@@ -537,21 +562,21 @@ module nts.uk.at.view.kmk006.a {
                 list.normalOTTime.earlyOtTime.upLimitOtSet(self.valueEnumNorEarLi());
                 list.normalOTTime.earlyOtTime.calAtr(self.valueEnumNorEarAtr());
                 list.normalOTTime.earlyMidOtTime.upLimitOtSet(self.valueEnumNorEarMidLi());
-                list.normalOTTime.earlyMidOtTime.calAtr(self.valueEnumNorEarMidAtr());
+                list.normalOTTime.earlyMidOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorEarMidAtr(); }));
                 list.normalOTTime.normalOtTime.upLimitOtSet(self.valueEnumNorNorLi());
                 list.normalOTTime.normalOtTime.calAtr(self.valueEnumNorNorAtr());
                 list.normalOTTime.normalMidOtTime.upLimitOtSet(self.valueEnumNorNorMidLi());
-                list.normalOTTime.normalMidOtTime.calAtr(self.valueEnumNorNorMidAtr());
+                list.normalOTTime.normalMidOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorNorMidAtr(); }));
                 list.normalOTTime.legalOtTime.upLimitOtSet(self.valueEnumNorLegLi());
-                list.normalOTTime.legalOtTime.calAtr(self.valueEnumNorLegAtr());
+                list.normalOTTime.legalOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorLegAtr(); }));
                 list.normalOTTime.legalMidOtTime.upLimitOtSet(self.valueEnumNorLegMidLi());
-                list.normalOTTime.legalMidOtTime.calAtr(self.valueEnumNorLegMidAtr());
+                list.normalOTTime.legalMidOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorLegMidAtr(); }));
                 list.flexOTTime.flexOtTime.upLimitOtSet(self.valueEnumFleTimeLi());
                 list.flexOTTime.flexOtTime.calAtr(self.valueEnumFleTimeAtr());
                 list.restTime.restTime.upLimitOtSet(self.valueEnumResResLi());
                 list.restTime.restTime.calAtr(self.valueEnumResResAtr());
                 list.restTime.lateNightTime.upLimitOtSet(self.valueEnumResLatLi());
-                list.restTime.lateNightTime.calAtr(self.valueEnumResLatAtr());
+                list.restTime.lateNightTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumResLatAtr(); }));
             }
 
             /**
@@ -566,15 +591,13 @@ module nts.uk.at.view.kmk006.a {
 
                 // save enum
                 self.saveListEnum(self.itemComAutoCalModel);
-
+                
                 var dto: ComAutoCalSettingDto = {
                     normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
                     flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
                     restTime: self.itemComAutoCalModel.restTime.toDto()
                 };
-
                 self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
-
                 service.saveComAutoCal(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {

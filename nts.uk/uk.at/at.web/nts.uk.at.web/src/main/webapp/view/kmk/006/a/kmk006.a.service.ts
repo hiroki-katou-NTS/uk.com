@@ -1,8 +1,9 @@
 module nts.uk.at.view.kmk006.a {
     export module service {
         var paths = {
-           
-            findEnumAutoCalAtrOvertime: "ctx/at/shared/ot/autocal/find/autocalatrovertime",
+            
+            findEnumAutoCalAtrOvertime: "ctx/at/shared/ot/autocal/find/autocalatrovertime",          
+            findEnumAutoCalAtrOvertimeWithoutTimeRecorder: "ctx/at/shared/ot/autocal/find/autocalatrovertimewithouttimerecorder",
             findEnumUseClassification: "ctx/at/shared/ot/autocal/find/autocaluseclassification",
             findEnumTimeLimitUpperLimitSetting: "ctx/at/shared/ot/autocal/find/autocaltimelimitsetting",
             getComAutoCal: "ctx/at/shared/ot/autocal/com/getautocalcom",
@@ -46,9 +47,13 @@ module nts.uk.at.view.kmk006.a {
         export function deleteWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal, { 'wkpId': wkpId, 'jobId': jobId });
         }
-
+        
         export function findEnumAutoCalAtrOvertime(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.findEnumAutoCalAtrOvertime);
+        }
+        
+        export function findEnumAutoCalAtrOvertimeWithoutTimeRecorder(): JQueryPromise<Array<model.Enum>> {
+            return nts.uk.request.ajax(paths.findEnumAutoCalAtrOvertimeWithoutTimeRecorder);
         }
 
         export function findEnumUseClassification(): JQueryPromise<Array<model.Enum>> {
