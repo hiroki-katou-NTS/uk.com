@@ -7,6 +7,7 @@ module cps002.a.vm {
     import dialog = nts.uk.ui.dialog.info;
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
+    import liveView = nts.uk.request.liveView;
 
     export class ViewModel {
 
@@ -112,7 +113,7 @@ module cps002.a.vm {
                 }
                 self.itemSettingList.removeAll();
                 if (self.isUseInitValue()) {
-                    service.getAllInitValueItemSetting(self.currentInitSetting().itemId, categoryCode, self.currentEmployee().hireDate()).done((result: Array<SettingItem>) => {
+                    service.getAllInitValueItemSetting(self.currentInitSetting().itemId, categoryCode, nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd')).done((result: Array<SettingItem>) => {
                         if (result.length) {
                             self.itemSettingList(_.map(result, item => {
                                 return new SettingItem(item);
@@ -129,8 +130,12 @@ module cps002.a.vm {
 
             self.currentEmployee().avatarId.subscribe((avartarId) => {
 
-                //set avatar
-                //  $("#employeeAvatar").ntsImageEditor("selectByFileId", newValue);
+                var self = this;
+                var avartarContent = $("#employeeAvatar");
+                avartarContent.html("");
+                avartarContent.append($("<img/>").attr("src", liveView(avartarId)));
+                avartarContent.append($("<iframe/>").attr("src", liveView(avartarId)));
+
 
             });
 
@@ -143,7 +148,7 @@ module cps002.a.vm {
                 currentCopyEmployeeId = self.copyEmployee().employeeId;
 
             if (currentCopyEmployeeId != "") {
-                service.getAllCopySettingItem(currentCopyEmployeeId, self.categorySelectedCode(), self.currentEmployee().hireDate()).done((result: Array<SettingItem>) => {
+                service.getAllCopySettingItem(currentCopyEmployeeId, self.categorySelectedCode(), nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd')).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
                             return new SettingItem(item);
@@ -430,7 +435,7 @@ module cps002.a.vm {
             });
         }
 
-        OpenEModal(param, data) {
+        openEModal(param, data) {
 
             let self = __viewContext['viewModel'];
             setShared("cardNoMode", param === 'true' ? true : false);
@@ -443,7 +448,7 @@ module cps002.a.vm {
             });
         }
 
-        OpenFModal() {
+        openFModal() {
 
             let self = this;
 
@@ -452,7 +457,7 @@ module cps002.a.vm {
             });
         }
 
-        OpenGModal() {
+        openGModal() {
 
             let self = this;
 
@@ -470,7 +475,7 @@ module cps002.a.vm {
             });
         }
 
-        OpenIModal() {
+        openIModal() {
             let self = this;
             setShared("imageId", self.currentEmployee().avatarId());
 

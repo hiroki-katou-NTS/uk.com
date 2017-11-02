@@ -52,7 +52,7 @@ module cps002.a.service {
     }
 
     export function getAllCopySettingItem(employeeId, categoryCd, baseDate) {
-        return ajax(format(paths.getAllCopySettingItem, employeeId, categoryCd, nts.uk.time.formatDate(baseDate, 'yyyyMMdd')));
+        return ajax(format(paths.getAllCopySettingItem, employeeId, categoryCd, baseDate));
     }
 
     export function getAllInitValueSetting() {
@@ -65,7 +65,7 @@ module cps002.a.service {
     }
 
     export function getAllInitValueItemSetting(settingId, categoryCd, baseDate) {
-        return ajax(format(paths.getAllInitValueItemSetting, settingId, categoryCd, nts.uk.time.formatDate(baseDate, 'yyyyMMdd')));
+        return ajax(format(paths.getAllInitValueItemSetting, settingId, categoryCd, baseDate));
     }
 
     export function getSelfRoleAuth() {

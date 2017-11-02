@@ -24,7 +24,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click:OpenGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
+				<button data-bind="click:openGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
 			</div>
 
 			<div id="contents-area" class="cf">
@@ -77,7 +77,7 @@
 											<input
 												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
 											<button
-												data-bind="click:$parent.OpenEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
+												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
@@ -103,7 +103,7 @@
 										<div class="step1_top_left_col2">
 											<input data-bind="ntsTextEditor: {value: cardNo}" />
 											<button
-												data-bind="click:$parent.OpenEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
@@ -152,7 +152,7 @@
 
 									<div class="step1_bot_col2">
 										<div class="div_line">
-											<button data-bind="click:OpenFModal">#{i18n.getText('CPS002_30')}</button>
+											<button data-bind="click:openFModal">#{i18n.getText('CPS002_30')}</button>
 										</div>
 										<div class="div_line">
 											<button data-bind="click:JumpToInitValueSettingPage">#{i18n.getText('CPS002_31')}</button>
@@ -271,7 +271,7 @@
 									</div>
 									<div class="div_line">
 										<div id="cover_table">
-											<table id="table_item"
+											<table class="table_item"
 												data-bind="if:itemSettingList().length>0">
 												<tr>
 													<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
@@ -304,9 +304,34 @@
 								<label id="step3_des">#{i18n.getText('CPS002_51')}</label>
 							</div>
 							<div class="div_line">
-								<div class="active-panel">
-									<img src='images/avatar.png' />
+								<div class="step3_col1">
+									<div id="employeeAvatar" data-bind="click:openIModal"></div>
 								</div>
+								<div class="step3_col2">
+									<table class="table_item">
+										<tbody>
+											<tr>
+												<td width="120px" class="bg-green">#{i18n.getText('CPS002_103')}</td>
+												<td width="300px"
+													data-bind="text:nts.uk.time.formatDate(currentEmployee().hireDate(),'yyyy/MM/dd')"></td>
+											</tr>
+											<tr>
+												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
+												<td
+													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+											</tr>
+											<tr>
+												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>
+												<td data-bind="text:currentEmployee().cardNo()"></td>
+											</tr>
+											<tr>
+												<td class="bg-green">#{i18n.getText('CPS002_108')}</td>
+												<td data-bind="text:currentEmployee().employeeCode()"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
 							</div>
 
 							<div class='div_line'>
