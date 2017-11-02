@@ -13,4 +13,5 @@ public interface CurrentAddressRepository {
 
 	public CurrentAddress get(String personId, GeneralDate standandDate);
 	
+	public CurrentAddress getCurAddById(String curAddId);
 }

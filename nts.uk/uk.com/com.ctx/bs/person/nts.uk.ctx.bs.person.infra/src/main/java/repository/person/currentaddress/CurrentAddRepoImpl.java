@@ -16,11 +16,20 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 @Stateless
 public class CurrentAddRepoImpl implements CurrentAddressRepository{
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddressRepository#get(java.lang.String, nts.arc.time.GeneralDate)
-	 */
+//	private CurrentAddress toDomain(){
+//		return CurrentAddress.createFromJavaType(currentAddressId, pid, countryId, postalCode, phoneNumber, prefectures, 
+//				houseRent, StartDate, endDate, address1, addresskana1, address2, addresskana2, 
+//				homeSituationType, personMailAddress, houseType, nearestStation)
+//	}
+	
 	@Override
 	public CurrentAddress get(String personId, GeneralDate standandDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CurrentAddress getCurAddById(String curAddId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
