@@ -31,35 +31,53 @@ public class Family extends AggregateRoot {
 	// 家族ID
 	private String familyId;
 	// 氏名
-	private NameSetType nameType;
-	// 氏名他言語
-	private NameSetType nameMultiLangType;
-	// 氏名ローマ字
-	private NameSetType nameRomajiType;
+	private FullName fullName;
+	//
+	private FullNameKana fullNameKana;
+	//
+	private NameMultiLangFull nameMultiLangFull;
+	//
+	private NameMultiLangFullKana nameMultiLangFullKana;
+	//
+	private NameRomajiFull nameRomajiFull;
+	//
+	private NameRomajiFullKana nameRomajiFullKana;
 	// 国籍
 	private CountryId nationalityId;
 	// 職業
-	private String occupationName;
+	private OccupationName occupationName;
 	// 個人ID
 	private String personId;
 	// 続柄
-	private String relationshipId;
+	private RelationShip relationship;
 	// 支援介護区分
 	private SupportCareType supportCareType;
+	
+	private TokodekeName tokodekeName;
+	
 	// 同居別居区分
 	private TogSepDivisionType togSepDivisionType;
 	// 勤労学生
 	private WorkStudentType workStudentType;
 
 	public static Family createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate,
-			GeneralDate expelledDate, String familyId, int nameType, int nameMultiLangType, int nameRomajiType,
-			String nationalityId, String occupationName, String personId, String relationship, int supportCareType,
-			int togSepDivisionType, int workStudentType) {
+			GeneralDate expelledDate, String familyId, String fullName, String fullNameKana, String nameMultiLangFull,
+			String nameMultiLangFullKana, String nameRomajiFull, String nameRomajiFullKana, String nationalityId,
+			String occupationName, String personId, String relationship, int supportCareType,String tokodekeName, int togSepDivisionType,
+			int workStudentType) {
 		return new Family(birthday, deadDay, entryDate, expelledDate, familyId,
-				EnumAdaptor.valueOf(nameType, NameSetType.class),
-				EnumAdaptor.valueOf(nameMultiLangType, NameSetType.class),
-				EnumAdaptor.valueOf(nameRomajiType, NameSetType.class), new CountryId(nationalityId), occupationName,
-				personId, relationship, EnumAdaptor.valueOf(supportCareType, SupportCareType.class),
+				new FullName(fullName),
+				new FullNameKana(fullNameKana), 
+				new NameMultiLangFull(nameMultiLangFull),
+				new NameMultiLangFullKana(nameMultiLangFullKana), 
+				new NameRomajiFull(nameRomajiFull),
+				new NameRomajiFullKana(nameRomajiFullKana), 
+				new CountryId(nationalityId), 
+				new OccupationName(occupationName), 
+				personId,
+				new RelationShip(relationship), 
+				EnumAdaptor.valueOf(supportCareType, SupportCareType.class),
+				new TokodekeName(tokodekeName),
 				EnumAdaptor.valueOf(togSepDivisionType, TogSepDivisionType.class),
 				EnumAdaptor.valueOf(workStudentType, WorkStudentType.class));
 

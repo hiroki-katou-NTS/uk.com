@@ -8,18 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
-import nts.uk.ctx.bs.employee.app.find.person.category.EmpPerCtgInfoDto;
-import nts.uk.ctx.bs.employee.app.find.person.item.ItemCurrentJobPosDto;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmpCtgDomainServices;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.ParamForGetItemDef;
-import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
-import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax.IncomeTax;
-import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsurance;
-import nts.uk.ctx.bs.employee.dom.person.ParamForGetPerItem;
-import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
@@ -29,7 +20,8 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -50,6 +42,9 @@ public class EmployeeCategoryFinder {
 
 	@Inject
 	private CurrentAddressRepository currentAddressRepo;
+	
+	@Inject
+	private WidowHistoryRepository widowHistoryRepo;
 
 	public List<PersonInfoCtgFullDto> getAllPerInfoCtg(String companyId, String employeeIdSelected) {
 		String empIdCurrentLogin = AppContexts.user().employeeId();
@@ -79,7 +74,7 @@ public class EmployeeCategoryFinder {
 	};
 
 	public PersonInfoCtgFullDto getCtgAndItemByCtgId(String empSelected, String ctgId) {
-		String ctgIDTest = "301f1985-1bae-4834-8f21-7568840913ed";
+		String ctgIDTest = "2e164ec3-0002-4a4d-9266-498a46dd86d4";
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		// String loginEmpId = AppContexts.user().employeeId();
@@ -95,16 +90,16 @@ public class EmployeeCategoryFinder {
 			List<PersonInfoItemDefinition> lstPerInfoItemDef = empCtgDomainServices
 					.getPerItemDef(new ParamForGetItemDef(perCtgInfo, roleIdOfLogin == null ? "" : roleIdOfLogin,
 							companyId, contractCode, loginEmpId.equals(empSelected)));
+
 			if (perCtgInfo.getPersonEmployeeType() == PersonEmployeeType.PERSON) {// person
 
 				// Get persinId
 				String personId = employeeRepository.findBySid(companyId, empSelected).get().getPId();
 
 				if (perCtgInfo.getIsFixed() == IsFixed.FIXED) {// fixed
-					List<CategoryItemFixDto> listCtgItemFixDto = getListPersonCtgItemFix(personId, perCtgInfo, lstPerInfoItemDef);
-					
-					
-					
+					List<CategoryItemFixDto> listCtgItemFixDto = getListPersonCtgItemFix(personId, perCtgInfo,
+							lstPerInfoItemDef);
+
 				} else {// optional
 
 				}
@@ -158,6 +153,9 @@ public class EmployeeCategoryFinder {
 
 				break;
 			case "CS00014":
+				// get list widowHistory 
+				//List<WidowHistory> listWidowHistory = widowHistoryRepo.getListByPid(personId);
+				// Domain WidowHistory chuwa xong
 
 				break;
 			case "CS00015":
