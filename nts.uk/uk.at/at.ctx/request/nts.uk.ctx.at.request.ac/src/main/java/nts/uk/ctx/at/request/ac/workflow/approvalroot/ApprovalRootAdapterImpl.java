@@ -21,8 +21,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
+import nts.uk.ctx.workflow.pub.agent.RepresenterInformationExport;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
@@ -81,8 +83,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 					if(approverInfoImport.getSid() != null) {
 						representerList.stream().filter(x -> x.getApprover().equals(approverInfoImport.getSid())).findAny()
 						.map(y -> {
-							if(!y.getRepresenter().equals("Empty")){
-								approverInfoImport.addRepresenterSID(y.getRepresenter());
+							if(!(y.getRepresenter().getValue().equals(RepresenterInformationImport.None_Information) ||
+									y.getRepresenter().getValue().equals(RepresenterInformationImport.Path_Information))){
+								approverInfoImport.addRepresenterSID(y.getRepresenter().getValue());
 								approverInfoImport.addRepresenterName(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
 							}
 							return null;
@@ -91,8 +94,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 						approverInfoImport.getApproverSIDList().forEach(item -> {
 							representerList.stream().filter(x -> x.getApprover().equals(item)).findAny()
 							.map(y -> {
-								if(!y.getRepresenter().equals("Empty")){
-									approverInfoImport.getRepresenterSIDList().add(y.getRepresenter());
+								if(!(y.getRepresenter().getValue().equals(RepresenterInformationImport.None_Information) ||
+										y.getRepresenter().getValue().equals(RepresenterInformationImport.Path_Information))){
+									approverInfoImport.getRepresenterSIDList().add(y.getRepresenter().getValue());
 									approverInfoImport.getRepresenterNameList().add(employeeAdapter.getEmployeeName(approverInfoImport.getRepresenterSID()));
 								}
 								return null;

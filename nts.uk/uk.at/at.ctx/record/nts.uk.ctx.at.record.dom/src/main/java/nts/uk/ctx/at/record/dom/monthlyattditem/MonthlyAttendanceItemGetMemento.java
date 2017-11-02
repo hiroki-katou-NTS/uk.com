@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.monthlyattendanceitem;
+package nts.uk.ctx.at.record.dom.monthlyattditem;
 
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.UseSetting;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceName;

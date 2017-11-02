@@ -10,7 +10,6 @@
 .myLinkButton {
 	margin-top: 20px;
 	display: inline-block;
-	margin-left: 100px;
 }
 
 .myLinkButtonIcon {
@@ -43,7 +42,7 @@
 .mylabel {
 	margin-top: 56px;
 	float: right;
-	margin-right: 400px;
+	margin-right: 70px;
 }
 
 td:nth-child(3), td:nth-child(4), td:nth-child(5) {
@@ -96,5 +95,5 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 }
 
 .copy {
-	margin-left: 350px !important;
+	margin-left: 540px !important;
 }

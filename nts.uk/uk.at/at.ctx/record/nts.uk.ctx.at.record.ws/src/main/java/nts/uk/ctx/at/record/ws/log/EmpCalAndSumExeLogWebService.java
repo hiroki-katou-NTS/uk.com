@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.ws.log;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -30,17 +31,7 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(){
 		return this.empCalAndSumExeLogFinder.getAllEmpCalAndSumExeLog();
 	}
-	/**
-	 * get EmpCalAndSumExeLog by code
-	 * @param inputEmpCalAndSum
-	 * @return
-	 */
-	@POST
-	@Path("getbycode")
-	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogByID(InputEmpCalAndSum inputEmpCalAndSum){
-		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogById(inputEmpCalAndSum);
-		
-	}
+
 	/**
 	 * get list EmpCalAndSumExeLog by date 
 	 * @param inputEmpCalAndSumByDate
@@ -60,7 +51,7 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	 */
 	@POST
 	@Path("getallbyempid/{empCalAndSumExecLogID}")
-	public List<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID")String empCalAndSumExecLogID){
+	public Optional<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID")String empCalAndSumExecLogID){
 		return this.empCalAndSumExeLogFinder.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);	
 		
 	}
