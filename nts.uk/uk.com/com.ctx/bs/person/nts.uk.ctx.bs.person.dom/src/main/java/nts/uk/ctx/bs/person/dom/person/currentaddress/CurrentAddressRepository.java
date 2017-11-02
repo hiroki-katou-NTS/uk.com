@@ -4,8 +4,6 @@
 package nts.uk.ctx.bs.person.dom.person.currentaddress;
 
 import java.util.List;
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 
 /**
