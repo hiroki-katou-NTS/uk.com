@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstControlOfAtten
 import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
@@ -44,6 +45,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmpl
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -70,6 +72,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_PERSON = "SELECT p FROM BpsmtPerson p WHERE p.bpsmtPersonPk.pId IN :lstPersonId";
 
+	private final static String SEL_DAILY_WORK_INFO = "SELECT d FROM KrcdtDaiPerWorkInfo d "
+			+ "WHERE d.krcdtDaiPerWorkInfoPK.ymd IN :lstDate "
+			+ "AND d.krcdtDaiPerWorkInfoPK.employeeId IN :lstEmployee";
+	
 	private final static String SEL_DP_TYPE_CONTROL;
 
 	private final static String SEL_ATTENDANCE_ITEM;
@@ -262,6 +268,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
 		return lstWkp;
+	}
+	
+	@Override
+	public List<WorkInfoOfDailyPerformanceDto> getListWorkInfoOfDailyPerformance(List<String> lstEmployee, DateRange dateRange) {
+		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
+				.setParameter("lstDate", dateRange.toListDate())
+				.setParameter("lstEmployee", lstEmployee)
+				.getList(e -> {
+					return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState, e.krcdtDaiPerWorkInfoPK.ymd);
+				});
 	}
 
 	@Override
