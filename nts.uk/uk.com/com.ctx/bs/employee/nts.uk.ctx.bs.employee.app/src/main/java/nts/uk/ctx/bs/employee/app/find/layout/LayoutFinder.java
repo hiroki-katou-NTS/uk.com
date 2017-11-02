@@ -5,11 +5,17 @@ package nts.uk.ctx.bs.employee.app.find.layout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.layout.NewLayoutDto;
+import find.layout.classification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoClsFinder;
+import find.layout.classification.LayoutPersonInfoValueDto;
+import find.person.info.item.PerInfoItemDefDto;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
@@ -46,7 +52,9 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
+import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
@@ -133,6 +141,14 @@ public class LayoutFinder {
 
 	@Inject
 	private EmpInfoItemDataRepository empInItemDataRepo;
+
+	// sonnlb start code
+	@Inject
+	private INewLayoutReposotory repo;
+
+	@Inject
+	private LayoutPersonInfoClsFinder clsFinder;
+	// sonnlb end
 
 	public EmpMaintLayoutDto getLayout(GeneralDate standandDate, String mainteLayoutId, String browsingEmpId) {
 		String contractCode = AppContexts.user().contractCode();
@@ -432,5 +448,41 @@ public class LayoutFinder {
 		}
 
 	}
+
+	// sonnlb code
+
+	public NewLayoutDto getWithDataByCreateType(int createType) {
+		Optional<NewLayout> layout = repo.getLayout();
+		if (layout.isPresent()) {
+			NewLayout _layout = layout.get();
+			// get classifications
+
+			// Get list Classification Item by layoutID
+			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+			for (LayoutPersonInfoClsDto itemCls : listItemCls) {
+				switch (itemCls.getLayoutItemType()) {
+				case 0: // item
+					List<Object> itemValues = new ArrayList<Object>();
+					for (PerInfoItemDefDto itemDf : itemCls.getListItemDf()) {
+						LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getItemCode(), "xxx");
+						itemValues.add(value);
+					}
+					itemCls.setItems(itemValues);
+					break;
+				case 1: // list
+
+					break;
+				default:
+				case 2: // spa
+					break;
+				}
+				itemCls.setItems(null);
+			}
+			return NewLayoutDto.fromDomain(_layout, listItemCls);
+		} else {
+			return null;
+		}
+	}
+	// sonnlb code
 
 }
