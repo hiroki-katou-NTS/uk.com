@@ -63,10 +63,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	public KscmtGenVertOrder genVertOrder;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemPeople", orphanRemoval = true)
-	public List<KscmtFormPeople> listFormPeople;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemFunc", orphanRemoval = true)
-	public List<KscmtFormPeople> listPeopleFunc;
+	public KscmtFormPeople formPeople;
 	
 	@Override
 	protected Object getKey() {
@@ -75,7 +72,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	}
 	
 	public KscmtGenVertItem(KscmtGenVertItemPK kscmtGenVertItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
-			int attributes, int rounding, KscmtGenVertOrder genVertOrder) {
+			int attributes, int rounding, KscmtGenVertOrder genVertOrder, KscmtFormPeople formPeople) {
 		this.kscmtGenVertItemPK = kscmtGenVertItemPK;
 		this.itemName = itemName;
 		this.calculateAtr = calculateAtr;
@@ -84,5 +81,6 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 		this.attributes = attributes;
 		this.rounding = rounding;
 		this.genVertOrder = genVertOrder;
+		this.formPeople = formPeople;
 	}
 }

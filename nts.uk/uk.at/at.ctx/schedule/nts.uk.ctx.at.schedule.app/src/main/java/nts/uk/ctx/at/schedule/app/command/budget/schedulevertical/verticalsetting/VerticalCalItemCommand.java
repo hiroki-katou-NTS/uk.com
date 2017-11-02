@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -34,4 +36,5 @@ public class VerticalCalItemCommand {
  	private int rounding;
  	
  	private int dispOrder;
+ 	private List<FormPeopleCommand> formPeople;
 }

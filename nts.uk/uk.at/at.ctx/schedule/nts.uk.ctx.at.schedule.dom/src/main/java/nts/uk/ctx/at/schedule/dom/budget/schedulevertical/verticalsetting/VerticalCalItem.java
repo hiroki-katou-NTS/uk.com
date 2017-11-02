@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
-import lombok.Getter;
+import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
+@AllArgsConstructor
 @Getter
-public class VerticalCalItem {
+public class VerticalCalItem extends AggregateRoot{
 	/** 会社ID **/
     private String companyId;
     
@@ -32,20 +37,40 @@ public class VerticalCalItem {
  	private Rounding rounding;
  	
  	private int dispOrder;
-
-	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
-			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
-			Rounding rounding, int dispOrder) {
-		
-		this.companyId = companyId;
-		this.verticalCalCd = verticalCalCd;
-		this.itemId = itemId;
-		this.itemName = itemName;
-		this.calculateAtr = calculateAtr;
-		this.displayAtr = displayAtr;
-		this.cumulativeAtr = cumulativeAtr;
-		this.attributes = attributes;
-		this.rounding = rounding;
-		this.dispOrder = dispOrder;
-	}
+ 	private FormPeople formPeople;
+ 	
+//	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
+//			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
+//			Rounding rounding, int dispOrder, FormPeople formPeople, List<FormPeopleFunc> lstPeopleFunc) {
+//		
+//		this.companyId = companyId;
+//		this.verticalCalCd = verticalCalCd;
+//		this.itemId = itemId;
+//		this.itemName = itemName;
+//		this.calculateAtr = calculateAtr;
+//		this.displayAtr = displayAtr;
+//		this.cumulativeAtr = cumulativeAtr;
+//		this.attributes = attributes;
+//		this.rounding = rounding;
+//		this.dispOrder = dispOrder;
+//	}
+ 	
+ 	/**
+ 	 * author: Hoang Yen
+ 	 */
+ 	public static VerticalCalItem createFromJavatype(String companyId, String verticalCalCd, 
+ 													String itemId, String itemName, 
+ 													int calculateAtr, int displayAtr, 
+ 													int cumulativeAtr, int attributes, 
+ 													int rounding, int dispOrder, 
+ 													FormPeople formPeople){
+ 		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
+ 				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
+ 				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
+ 				EnumAdaptor.valueOf(cumulativeAtr, CumulativeAtr.class), 
+ 				EnumAdaptor.valueOf(attributes, Attributes.class),
+ 				EnumAdaptor.valueOf(rounding, Rounding.class),
+ 				dispOrder,
+ 				formPeople);
+ 	}
 }

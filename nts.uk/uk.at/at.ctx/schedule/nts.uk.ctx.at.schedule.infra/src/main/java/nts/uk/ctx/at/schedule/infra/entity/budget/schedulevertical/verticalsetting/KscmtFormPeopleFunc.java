@@ -38,11 +38,11 @@ public class KscmtFormPeopleFunc extends UkJpaEntity implements Serializable {
 	public int dispOrder;
 	
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_GEN_VERT_ITEM.CID", insertable = false, updatable = false),
-		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "KSCMT_GEN_VERT_ITEM.VERTICAL_CAL_CD", insertable = false, updatable = false),
-		@JoinColumn(name = "ITEM_ID", referencedColumnName = "KSCMT_GEN_VERT_ITEM.ITEM_ID", insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_FORM_PEOPLE.CID", insertable = false, updatable = false),
+		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "KSCMT_FORM_PEOPLE.VERTICAL_CAL_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "ITEM_ID", referencedColumnName = "KSCMT_FORM_PEOPLE.VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscmtGenVertItem kscmtGenVertItemFunc;
+	public KscmtFormPeople kscmtFormPeople;
 	
 	
 	@Override

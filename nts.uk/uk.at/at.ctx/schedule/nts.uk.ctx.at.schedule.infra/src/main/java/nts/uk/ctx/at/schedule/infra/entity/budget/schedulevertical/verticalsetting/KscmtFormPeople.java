@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -37,6 +40,8 @@ public class KscmtFormPeople extends UkJpaEntity implements Serializable {
 	})
 	public KscmtGenVertItem kscmtGenVertItemPeople;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtFormPeople", orphanRemoval = true)
+	public List<KscmtFormPeopleFunc> listPeopleFunc;
 	
 	@Override
 	protected Object getKey() {
