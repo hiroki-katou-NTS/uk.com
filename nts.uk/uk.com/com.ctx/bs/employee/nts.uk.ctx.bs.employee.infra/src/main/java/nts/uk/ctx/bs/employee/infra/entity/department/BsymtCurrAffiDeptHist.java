@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.infra.entity.department;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -20,6 +21,8 @@ import nts.arc.time.GeneralDate;
 @Table(name = "BSYMT_CURR_AFFI_DEPT_HIST")
 public class BsymtCurrAffiDeptHist {
 
+	
+	@Id
 	/** The end D. */
 	@Column(name = "HIST_ID")
 	private String historyId;

@@ -49,7 +49,7 @@ public class InitValueSetItemFinder {
 	private TemporaryAbsenceRepository tempAbsenceRepo;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItem(String settingId, String categoryCd, GeneralDate baseDate) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(String settingId, String categoryCd, GeneralDate baseDate) {
 
 		List<SettingItemDto> resultItemList = new ArrayList<SettingItemDto>();
 

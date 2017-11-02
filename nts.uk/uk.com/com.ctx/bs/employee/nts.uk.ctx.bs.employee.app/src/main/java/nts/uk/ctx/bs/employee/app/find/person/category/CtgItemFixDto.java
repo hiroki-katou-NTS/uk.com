@@ -101,10 +101,10 @@ public class CtgItemFixDto {
 	public static CtgItemFixDto createFamily(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,
 			String familyId, String name, String nameKana, String nameMulti, String nameMultiKana, String nameRomaji,
 			String nameRomajiKana, String nationality, String occupationName, String personId, String relationship,
-			int supportCareType, String notificationName, int togSepDivision, int workStudent){
+			int supportCareType, int togSepDivision, int workStudent){
 		return ItemFamilyDto.createFromJavaType(birthday, deadDay, entryDate, expelledDate, familyId,
 				name, nameKana, nameMulti, nameMultiKana, nameRomaji, nameRomajiKana, nationality, occupationName, 
-				personId, relationship, supportCareType, notificationName, togSepDivision, workStudent);
+				personId, relationship, supportCareType, togSepDivision, workStudent);
 	}
 	
 	public static CtgItemFixDto createEmergencyContact(String emgencyContactId, String pid, String personName,
