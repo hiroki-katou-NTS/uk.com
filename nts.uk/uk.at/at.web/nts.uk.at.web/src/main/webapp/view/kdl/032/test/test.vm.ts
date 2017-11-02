@@ -1,10 +1,10 @@
 module test.viewmodel {
     export class ScreenModel {
-        companyID: KnockoutObservable<string>;
+        reasonCD: KnockoutObservable<string>;
         deviationTimeID: KnockoutObservable<string>;
         constructor() {
             var self = this;
-            self.reasonCD = ko.observable("");
+            self.reasonCD = ko.observable("123");
             self.divergenceTimeID = ko.observable("");
         }
 
@@ -17,8 +17,9 @@ module test.viewmodel {
         }
         openDialog() {
             var self = this;
+            let temp = self.reasonCD();
              var dataSetShare = {
-                reasonCD: self.reasonCD(),
+                reasonCD: temp,
                 divergenceTimeID: self.divergenceTimeID()
                
             };
@@ -28,7 +29,7 @@ module test.viewmodel {
                 var self = this;
                 var returnData = nts.uk.ui.windows.getShared("ReturnData");
                 if (returnData !== undefined) {
-                    self.reasonCD();
+                    self.reasonCD(returnData);
                     nts.uk.ui.block.clear(); 
                 }
                 else{
@@ -37,4 +38,10 @@ module test.viewmodel {
             }); 
         }
     }
+    interface dataSetShare {
+        reasonCD: string;
+        divergenceTimeID: string;
+        
+    }
+    
 }
