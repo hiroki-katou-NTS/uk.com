@@ -121,8 +121,10 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     nts.uk.ui.block.clear();
                 });
-            }).always( () => {
+            }).fail(() => {
                 nts.uk.ui.block.clear();
+            }).always(() => {
+                nts.uk.ui.block.clear();                
             });
         }
 
@@ -155,7 +157,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             } else {
                 listWorkType = [WorkTypeClass.Holiday, WorkTypeClass.HolidayWork, WorkTypeClass.Shooting];
             }
-            let viewG = __viewContext.viewModel.viewmodelG; 
+            let viewG = __viewContext.viewModel.viewmodelG;
             service.defaultValue(listWorkType).done(function(res) {
                 let workTypeCodess = _.map(res, 'workTypeCode');
                 self.workTypeCodes = workTypeCodess;
