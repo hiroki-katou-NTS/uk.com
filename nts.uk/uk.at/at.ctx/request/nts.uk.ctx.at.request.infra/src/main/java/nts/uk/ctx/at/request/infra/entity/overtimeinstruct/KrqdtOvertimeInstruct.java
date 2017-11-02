@@ -39,13 +39,6 @@ public class KrqdtOvertimeInstruct extends UkJpaEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date inputDate;
     
-    @Column(name = "TARGET_PERSON")
-    private String targetPerson;
-    
-    @Column(name = "INSTRUCT_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date instructDate;
-    
     @Column(name = "INSTRUCTOR")
     private String instructor;
     

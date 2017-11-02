@@ -69,15 +69,6 @@ public class AppOverTime extends AggregateRoot{
 	 */
 	private String divergenceReasonID;
 	/**
-	 * 乖離理由
-	 */
-	private DivergenceReasonContent divergenceReasonContent;
-	
-	/**
-	 * 計算残業時間
-	 */
-	private WorkClock calculationOverTime;
-	/**
 	 * フレックス超過時間
 	 */
 	private int flexExessTime;

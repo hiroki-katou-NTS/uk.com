@@ -3,6 +3,10 @@ package nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
+/**
+ * @author loivt
+ * 残業枠
+ */
 @Data
 public class OvertimeFrame {
 	

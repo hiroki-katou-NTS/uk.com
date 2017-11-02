@@ -145,8 +145,6 @@ module kcp009.viewmodel {
                     },
                     dismissible: false,
                 });
-                $('#items-list').attr('style', 'z-index: 100;');
-                $('#items-list').hide();
                 // Toggle
                 $('#btn_show_list').click(function() {
                     $('#items-list').ntsPopup('toggle');

@@ -10,6 +10,7 @@ __viewContext.ready(function () {
             var self = this;
             this.items = ko.observableArray([]);
             service.getAll().done((data: Array<model.IItemModel>) => {
+                data = _.sortBy(data, ["code"]);
                 this.items(data);
             });
             this.selectedItems = ko.observableArray([]);

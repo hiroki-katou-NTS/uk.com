@@ -34,19 +34,53 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
+        //休憩時間
+        restTime: KnockoutObservableArray<common.RestTime> = ko.observableArray([]);
+        //残業時間
+        overtimeHours: KnockoutObservableArray<common.OvertimeHour> = ko.observableArray([]);
+        //休出時間
+        breakTimes: KnockoutObservableArray<common.BreakTime> = ko.observableArray([]);
+        //加給時間
+        bonusTimes: KnockoutObservableArray<common.BonusTime> = ko.observableArray([]);
         //menu-bar 
         enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti : KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor() {
+            
             let self = this;
+          
+            self.restTime.push( new common.RestTime("",null,null));
+            self.restTime.push( new common.RestTime("2",-1050,1256));
+            self.restTime.push( new common.RestTime("3",-1060,1256));
+            
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            
+            self.breakTimes.push(new common.BreakTime("1","12:00","11:00","100","120","100"));
+            self.breakTimes.push(new common.BreakTime("1","12:00","11:00","100","120","100"));
+            self.breakTimes.push(new common.BreakTime("1","12:00","11:00","100","120","100"));
+            
+            self.bonusTimes.push(new common.BonusTime("1","加給時間1","11:00","100","120"));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間2","11:00","100","120"));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間3","11:00","100","120"));
+            
+            $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
+            $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
+            $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
+                    $("#fixed-table").ntsFixedTable({ height: 120 });
                 })    
             })
             

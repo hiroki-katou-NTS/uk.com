@@ -251,16 +251,9 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		for (WorkplaceHierarchy wkpHierarchy : wkpConfigInfo.getLstWkpHierarchy()) {
 			BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK(companyId, historyId,
 					wkpHierarchy.getWorkplaceId());
-			Optional<BsymtWkpConfigInfo> optional = this.queryProxy().find(pk,
-					BsymtWkpConfigInfo.class);
+			BsymtWkpConfigInfo entity = this.queryProxy().find(pk, BsymtWkpConfigInfo.class)
+					.orElse(new BsymtWkpConfigInfo(pk));
 
-			BsymtWkpConfigInfo entity = null;
-			if (optional.isPresent()) {
-				entity = optional.get();
-			} else {
-				entity = new BsymtWkpConfigInfo();
-				entity.setBsymtWkpConfigInfoPK(pk);
-			}
 			lstEntity.add(entity);
 		}
 		JpaWorkplaceConfigInfoSetMemento memento = new JpaWorkplaceConfigInfoSetMemento(lstEntity);

@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.app.query.employee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -76,6 +77,9 @@ public class EmployeeSearchQueryProcessor {
 	/** The workplace history repository. */
 	@Inject
 	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
+	
+//	@Inject
+//	private EmpInDesignatedPub empInDesignatedPub;
 
 	/**
 	 * To employee.
@@ -471,6 +475,36 @@ public class EmployeeSearchQueryProcessor {
 			dataRes.add(data);
 		}
 		return dataRes;
+	}
+	
+	public List<EmployeeSearchData> getByDesignatedStatus(List<String> workplaceIdList, GeneralDate referenceDate,
+			List<Integer> empStatusList) {
+//		List<EmployeeInDesignatedExport> exportList = this.empInDesignatedPub.
+		// Search By List EmpIds and baseDate
+		// Sample empIdlist
+		List<String> empIdList = new ArrayList<>();
+		
+		// ForEach empId acquired
+//		empIdList.stream().forEach(empId -> {
+//			List<AffWorkplaceHistory> affWorkplaceHist = this.workplaceHistoryRepository.searchWorkplaceHistoryByEmployee(empId, referenceDate);
+//		});
+//		
+//		List<AffWorkplaceHistory> affWorkplaceList = this.workplaceHistoryRepository.searchWorkplaceOfCompanyId(empIdList, referenceDate);
+//		// WorkplaceId List
+//		List<String> workplaceIds = affWorkplaceList.stream().map(item -> {
+//			return item.getWorkplaceId().v();
+//		}).collect(Collectors.toList());
+//		
+//		List<EmployeeSearchData> empDataList = new ArrayList<>();
+//		// Get WorkplaceInfo
+//		workplaceIds.stream().forEach(wpId -> {
+//			Optional<WorkplaceInfo> workplaceInfo = this.workplaceInfoRepo.findByWkpId(wpId, referenceDate);
+//			EmployeeSearchData empData = new EmployeeSearchData();
+////			empData.setEmployeeId(employeeId);
+//		});
+		
+		
+		return null;
 	}
 
 }
