@@ -1,10 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.info.widowhistory;
 
-import java.util.Date;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 寡夫寡婦履歴
@@ -13,26 +13,18 @@ import nts.arc.time.GeneralDate;
  */
 
 @Getter
+@AllArgsConstructor
 public class WidowHistory {
 	// 寡夫寡婦ID
-	private String windowHistoryId;
-	// start date
-	private GeneralDate startDate;
-	// end date
-	private GeneralDate endDate;
+	private String widowHistoryId;
 	// 寡夫寡婦区分
-	private WidowType windowType;
+	private WidowType widowType;
+	
+	private DatePeriod period;
 
-	private WidowHistory(String windowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType) {
-		this.windowHistoryId = windowHistoryId;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.windowType = EnumAdaptor.valueOf(windowType, WidowType.class);
-	}
-
-	public static WidowHistory createObjectFromJavaType(String windowHistoryId, Date startDate, Date endDate,
-			int windowType) {
-		return new WidowHistory(windowHistoryId, GeneralDate.legacyDate(startDate), GeneralDate.legacyDate(endDate),
-				windowType);
+	public static WidowHistory createObjectFromJavaType(String widowHistoryId,
+			int widowType, GeneralDate startDate, GeneralDate endDate) {
+		return new WidowHistory(widowHistoryId, EnumAdaptor.valueOf(widowType, WidowType.class),
+				 new DatePeriod(startDate, endDate));
 	}
 }

@@ -16,11 +16,18 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 @Stateless
 public class WidowHisRepoImpl implements WidowHistoryRepository {
 
+	
+	
 	@Override
 	public WidowHistory get() {
 		// se sua lai sau
-		BpsmtWidowHis ent = new BpsmtWidowHis();
-		return WidowHistory.createObjectFromJavaType(ent.olderWidowId, ent.startDate, ent.endDate, ent.widowTypeAtr);
+		return null;
+	}
+
+	@Override
+	public WidowHistory getWidowHistoryById(String widowHisId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
