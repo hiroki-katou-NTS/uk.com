@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscdtScheChildCare.
@@ -23,7 +24,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSCDT_SCHE_CHILD_CARE")
-public class KscdtScheChildCare implements Serializable {
+public class KscdtScheChildCare extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -92,6 +93,15 @@ public class KscdtScheChildCare implements Serializable {
     public String toString() {
         return "entity.KscmtChildCareSch[ kscdtScheChildCarePK=" + kscdtScheChildCarePK + " ]";
     }
+
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.getKscdtScheChildCarePK();
+	}
     
     
 }
