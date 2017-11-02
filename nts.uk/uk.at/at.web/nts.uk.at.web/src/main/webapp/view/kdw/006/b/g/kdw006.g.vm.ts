@@ -155,10 +155,11 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             } else {
                 listWorkType = [WorkTypeClass.Holiday, WorkTypeClass.HolidayWork, WorkTypeClass.Shooting];
             }
+            let viewG = __viewContext.viewModel.viewmodelG; 
             service.defaultValue(listWorkType).done(function(res) {
                 let workTypeCodess = _.map(res, 'workTypeCode');
                 self.workTypeCodes = workTypeCodess;
-                let names = _(workTypeCodess).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                let names = _(workTypeCodess).map(x => (_.find(ko.toJS(viewG.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                 self.workTypeName(names.join("、　"));
             });
         }
