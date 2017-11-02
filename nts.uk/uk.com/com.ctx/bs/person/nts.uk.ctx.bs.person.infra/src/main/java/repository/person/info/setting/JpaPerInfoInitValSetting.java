@@ -43,6 +43,9 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 	private final String DELETE_BY_SETTINGCD_SETTINGID = " DELETE FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId =:settingId AND c.settingCode =:settingCode"
 			+ " AND c.companyId =:companyId";
+	
+	private final String UPDATE_NAME_BY_SETTING_ID = " UPDATE PpemtPersonInitValueSetting c SET c.settingName =:settingName"
+			+ " WHERE c.initValueSettingPk.settingId =:settingId";
 
 	private static PerInfoInitValueSetting toDomain(PpemtPersonInitValueSetting entity) {
 		PerInfoInitValueSetting domain = PerInfoInitValueSetting.createFromJavaType(entity.initValueSettingPk.settingId,
@@ -129,6 +132,15 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 		return this.queryProxy().query(SEL_A_INIT_VAL_SET_1, PpemtPersonInitValueSetting.class)
 				.setParameter("companyId", companyId).setParameter("settingCode", settingCode)
 				.setParameter("settingId", settingId).getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public void updateName(String settingId, String settingName) {
+		this.getEntityManager().createQuery(UPDATE_NAME_BY_SETTING_ID)
+		.setParameter("settingId", settingId)
+		.setParameter("settingName", settingName)
+		.executeUpdate();
+		
 	}
 
 }
