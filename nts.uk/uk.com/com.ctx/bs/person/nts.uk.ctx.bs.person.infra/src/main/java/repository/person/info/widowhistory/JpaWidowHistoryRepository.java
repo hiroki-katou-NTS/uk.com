@@ -23,7 +23,7 @@ public class JpaWidowHistoryRepository extends JpaRepository implements WidowHis
 	public WidowHistory get() {
 		// se sua lai sau
 		BpsmtWidowHis ent = new BpsmtWidowHis();
-		return WidowHistory.createObjectFromJavaType(ent.olderWidowId, ent.startDate, ent.endDate, ent.widowTypeAtr);
+		return WidowHistory.createObjectFromJavaType(ent.olderWidowId, ent.widowTypeAtr,ent.startDate, ent.endDate);
 	}
 	/**
 	 * to entity
@@ -70,6 +70,11 @@ public class JpaWidowHistoryRepository extends JpaRepository implements WidowHis
 		// Update widow
 		this.commandProxy().update(existItem.get());
 		
+	}
+	@Override
+	public WidowHistory getWidowHistoryById(String widowHisId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
