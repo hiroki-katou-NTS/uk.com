@@ -12,8 +12,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -31,6 +35,8 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -105,6 +111,12 @@ public class GetOvertime {
 	@Inject
 	private ApplicationReasonRepository applicationReasonRepository;
 	
+	@Inject
+	private DivergenceReasonRepository diReasonRepository;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -147,8 +159,8 @@ public class GetOvertime {
 		 */
 		// 01-13_事前事後区分を取得
 		getDisplayPrePost(companyID, applicationDto, result, uiType);
-		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		
+		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		Optional<RequestAppDetailSetting> requestAppDetailSetting = requestOfEachWorkplaceRepository.getRequestDetail(companyID, workplaceID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if (requestAppDetailSetting.isPresent()) {
 			// 時刻計算利用チェック
@@ -171,22 +183,51 @@ public class GetOvertime {
 		}
 		// 01-03_残業枠を取得
 		getOvertimeHours(companyID,overtimeAtr,result);
+		
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		// 01-04_加給時間を取得
-		getBonusTime(companyID,employeeID,appDate,result);
-		// 01-05_申請定型理由を取得, 01-06_申請理由を取得(Display App Reason)
+		getBonusTime(companyID,employeeID,appDate,overtimeRestAppCommonSet,result);
+		
+		// 01-05_申請定型理由を取得, 01-06_申請理由を取得
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
 		if(appTypeDiscreteSetting.isPresent()){
+			// 01-05_申請定型理由を取得
 			if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
-				result.setDisplayAppReason(true);
-				// 01-05_申請定型理由を取得
+				result.setTypicalReasonDisplayFlg(true);
 				getApplicationReasonType(companyID,result);
 			}else{
-				result.setDisplayAppReason(false);
+				result.setTypicalReasonDisplayFlg(false);
+			}
+			//01-06_申請理由を取得
+			if(appTypeDiscreteSetting.get().getDisplayReasonFlg().value == AppDisplayAtr.DISPLAY.value){
+				result.setDisplayAppReasonContentFlg(true);
+			}else{
+				result.setDisplayAppReasonContentFlg(false);
 			}
 		}
-		
+		if(overtimeRestAppCommonSet.isPresent()){
+			//01-08_乖離定型理由を取得
+			if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+				result.setDisplayDivergenceReasonForm(true);
+				getDivergenceReasonForm(companyID,result);
+			}else{
+				result.setDisplayDivergenceReasonForm(false);
+			}
+			//01-07_乖離理由を取得
+			if(overtimeRestAppCommonSet.get().getDivergenceReasonInputAtr().value == UseAtr.USE.value){
+				result.setDisplayDivergenceReasonInput(true);
+			}else{
+				result.setDisplayDivergenceReasonInput(false);
+			}
+		}
+		//01-09_事前申請を取得
+		if(result.getDisplayPrePostFlg() == InitValueAtr.POST.value ){
+			getPreApplication(employeeID,overtimeRestAppCommonSet, appDate, result);
+		}
+		result.setApplication(applicationDto);
 		return result;
 	}
+	
 	/**
 	 * 01-13_事前事後区分を取得
 	 * @param companyID
@@ -336,8 +377,8 @@ public class GetOvertime {
 	 * @param appDate
 	 * @param result
 	 */
-	private void getBonusTime(String companyID,String employeeID, String appDate, OverTimeDto result){
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID);
+	private void getBonusTime(String companyID,String employeeID, String appDate,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, OverTimeDto result){
+		
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
@@ -365,5 +406,31 @@ public class GetOvertime {
 			applicationReasonDtos.add(applicationReasonDto);
 		}
 		result.setApplicationReasonDtos(applicationReasonDtos);
+	}
+	/**
+	 * 01-08_乖離定型理由を取得
+	 * @param companyID
+	 * @param overtimeRestAppCommonSet
+	 * @param result
+	 */
+	private void getDivergenceReasonForm(String companyID, OverTimeDto result){
+				
+				List<DivergenceReasonDto> divergenceReasonDtos = new ArrayList<>();
+				List<DivergenceReason> divergenceReasons = diReasonRepository.getDivergenceReason(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+				for(DivergenceReason divergenceReason : divergenceReasons){
+					DivergenceReasonDto divergenceReasonDto = new DivergenceReasonDto();
+					divergenceReasonDto.setDivergenceReasonID(divergenceReason.getReasonTypeItem().getReasonID());
+					divergenceReasonDto.setReasonTemp(divergenceReason.getReasonTypeItem().getReasonTemp().toString());
+					divergenceReasonDtos.add(divergenceReasonDto);
+				}
+				result.setDivergenceReasonDtos(divergenceReasonDtos);
+	}
+	private void getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, OverTimeDto result){
+		if(overtimeRestAppCommonSet.isPresent()){
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
+				Optional<Application> application = this.applicationRepository.getApp(employeeId, GeneralDate.localDate(LocalDate.parse(appDate)), PrePostAtr.POSTERIOR.value, ApplicationType.OVER_TIME_APPLICATION.value);
+			}
+		}
+		
 	}
 }

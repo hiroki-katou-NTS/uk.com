@@ -114,9 +114,14 @@ public class OverTimeDto {
 	 */
 	private List<ApplicationReasonDto> applicationReasonDtos;
 	/**
-	 * displayAppReason
+	 * typicalReasonDisplayFlg
 	 */
-	private boolean displayAppReason;
+	private boolean typicalReasonDisplayFlg;
+	
+	/**
+	 * displayAppReasonContentFlg
+	 */
+	private boolean displayAppReasonContentFlg;
 	
 	/**
 	 * divergenceReasonDtos
@@ -125,6 +130,11 @@ public class OverTimeDto {
 	/**
 	 * displayDivergenceReason
 	 */
-	private boolean displayDivergenceReason;
+	private boolean displayDivergenceReasonForm;
+	
+	/**
+	 * displayDivergenceReasonInput
+	 */
+	private boolean displayDivergenceReasonInput;
 	
 }

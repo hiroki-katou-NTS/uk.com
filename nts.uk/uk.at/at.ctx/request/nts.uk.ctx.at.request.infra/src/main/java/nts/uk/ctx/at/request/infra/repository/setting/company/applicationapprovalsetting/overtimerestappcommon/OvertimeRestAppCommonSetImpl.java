@@ -13,18 +13,19 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalset
 public class OvertimeRestAppCommonSetImpl extends JpaRepository implements OvertimeRestAppCommonSetRepository {
 private static final String FINDER_ALL ="SELECT o FROM KrqstOtRestAppComSet o";
 	
-	private static final String FIND_FOR_COMPANYID;
+	private static final String FIND_FOR_COMPANYID_APPTYPE;
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FINDER_ALL);
 		query.append(" WHERE o.krqstOtRestAppComSetPK.cid = :companyID");
-		FIND_FOR_COMPANYID = query.toString();
+		query.append(" AND o.krqstOtRestAppComSetPK.appType = :appType");
+		FIND_FOR_COMPANYID_APPTYPE = query.toString();
 	}
 	@Override
-	public Optional<OvertimeRestAppCommonSetting> getOvertimeRestAppCommonSetting(String companyID) {
+	public Optional<OvertimeRestAppCommonSetting> getOvertimeRestAppCommonSetting(String companyID,int appType) {
 		
-		return this.queryProxy().query(FIND_FOR_COMPANYID,KrqstOtRestAppComSet.class)
-				.setParameter("companyID", companyID).getSingle(entity -> convertToDomain(entity));
+		return this.queryProxy().query(FIND_FOR_COMPANYID_APPTYPE,KrqstOtRestAppComSet.class)
+				.setParameter("companyID", companyID).setParameter("appType", appType).getSingle(entity -> convertToDomain(entity));
 	}
 	private OvertimeRestAppCommonSetting convertToDomain(KrqstOtRestAppComSet entity){
 		return OvertimeRestAppCommonSetting.createSimpleFromJavaType(entity.getKrqstOtRestAppComSetPK().getCid(),
@@ -45,5 +46,4 @@ private static final String FINDER_ALL ="SELECT o FROM KrqstOtRestAppComSet o";
 				entity.getCalculationOvertimeDisplayAtr());
 				
 	}
-
 }
