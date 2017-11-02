@@ -90,14 +90,14 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 _.forEach(res, function(item) {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
-                    if (item.no == 2) { 
-                        comment = nts.uk.resource.getText("KDW006_59",['法定内休日']);
+                    if (item.no == 2) {
+                        comment = nts.uk.resource.getText("KDW006_59", ['法定内休日']);
                     }
-                    if (item.no == 3) { 
-                        comment = nts.uk.resource.getText("KDW006_59",['法定外休日']);
+                    if (item.no == 3) {
+                        comment = nts.uk.resource.getText("KDW006_59", ['法定外休日']);
                     }
-                    if (item.no == 4) { 
-                        comment = nts.uk.resource.getText("KDW006_59",['法定外休日(祝)']);
+                    if (item.no == 4) {
+                        comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
                     }
                     let group = new WorkTypeGroup(item.no, item.name, item.workTypeList, names.join("、　"),
                         fullWorkTypeCodes, comment);
@@ -116,8 +116,13 @@ module nts.uk.at.view.kdw006.g.viewmodel {
 
         saveData() {
             let self = this;
+            nts.uk.ui.block.invisible();
             service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }).always( () => {
+                nts.uk.ui.block.clear();
             });
         }
 
