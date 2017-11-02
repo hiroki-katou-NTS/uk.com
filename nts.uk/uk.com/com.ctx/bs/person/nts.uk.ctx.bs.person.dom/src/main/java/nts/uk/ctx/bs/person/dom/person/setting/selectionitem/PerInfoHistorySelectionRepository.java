@@ -17,4 +17,11 @@ public interface PerInfoHistorySelectionRepository {
 	List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate);
 
 	List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String selectionItemId, String companyId);
+	/**
+	 * get History Selection Item By Date
+	 * @param baseDate
+	 * @param lstSelItemId
+	 * @return
+	 */
+	List<PerInfoHistorySelection> getHistorySelItemByDate(GeneralDate baseDate, List<String> lstSelItemId);
 }

@@ -93,8 +93,8 @@ public class CtgItemFixDto {
 				homeSituationType, personMailAddress, houseType, nearestStation);
 	}
 	
-	public static CtgItemFixDto createWidowHistory(String windowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType){
-		return ItemWidowHistory.createFromJavaType(windowHistoryId, startDate, endDate, windowType);
+	public static CtgItemFixDto createWidowHistory(String widdowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType){
+		return ItemWidowHistory.createFromJavaType(widdowHistoryId, startDate, endDate, windowType);
 	}
 	
 	public static CtgItemFixDto createFamily(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,

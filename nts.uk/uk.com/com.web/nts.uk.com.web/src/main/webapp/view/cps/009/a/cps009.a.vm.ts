@@ -24,6 +24,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         comboItems: any;
         comboColumns: any;
         isUpdate: boolean = false;
+        //History reference date
+        baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         constructor() {
 
             let self = this;
@@ -323,6 +325,44 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 dialog.alertError({ messageId: res.messageId });
                 //                block.clear();
             });
+        }
+                //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
+        historyFilter(){
+            let self = this;
+            //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
+            let lstItem = [];
+            _.each(self.currentCategory().itemList(), function(item){
+                if(self.checkFilter(item)){
+                    lstItem.push(item.selectionItemId);
+                }
+            });
+            lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
+            let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
+            if(lstItem.length == 0){
+                
+            }else{
+                let param = {lstSelItemId: lstItem,baseDate: baseDate}
+               service.refHistSel(param).done(function(data){
+                    console.log(data);
+                }); 
+            }
+            
+        }
+        checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean{
+            //画面項目「個人情報初期値設定区分（A3_22）」で、「固定値」を選択している項目をチェックする(Kiểm tra Item mà có 「個人情報初期値設定区分（A3_22）」 là 「固定値」)
+            if(objItem.selectedRuleCode() != 2){
+                return false;
+            }
+            //「固定値」になっているかつ、項目のデータ型＝選択項目かつ、参照区分！＝Enum参照条件の項目があるかチェックする(Kiểm tra những Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件)
+            //Type là Selection
+            if(objItem.dataType() != 6){
+                return false
+            }
+            //参照区分 != Enum参照条件 || 参照区分＝コード名称参照条件の場合
+            if(objItem.selectedCode() != 'コード名称参照条件の場合'){
+                return false;
+            }
+            return true;
         }
     }
 

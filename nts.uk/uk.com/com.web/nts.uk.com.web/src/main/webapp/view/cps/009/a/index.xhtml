@@ -116,11 +116,9 @@
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<button
 										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
-									<input id="date"
-										data-bind="ntsTextEditor: {
-										value: currentCategory().settingCode ,
-										enable: true,
-										immediate: false}"></input>
+									<!-- A3_014: 履歴参照基準日(History reference date) -->
+									<div id="date" data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+									<button data-bind="click: historyFilter">適用</button>
 								</div>
 								<table class="contents-header">
 								<thead>
