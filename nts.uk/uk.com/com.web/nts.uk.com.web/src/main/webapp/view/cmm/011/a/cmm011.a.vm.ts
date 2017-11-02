@@ -134,24 +134,27 @@ module nts.uk.com.view.cmm011.a {
             public removeWorkplace() {
                 let self = this;
 
-                let command: any = {};
-                command.historyIdWkpConfigInfo = self.wkpConfigHistId;
-                command.startDWkpConfigInfo = new Date(self.strDWorkplace());
-                command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                
+                    let command: any = {};
+                    command.historyIdWkpConfigInfo = self.wkpConfigHistId;
+                    command.startDWkpConfigInfo = new Date(self.strDWorkplace());
+                    command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
 
-                nts.uk.ui.block.grayout();
-                service.removeWkp(command).done(function() {
-                    nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                        self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
-                            if (self.treeWorkplace().lstWorkplace().length > 0) {
-                                self.treeWorkplace().selectFirst();
-                            }
+                    nts.uk.ui.block.grayout();
+                    service.removeWkp(command).done(function() {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
+                                if (self.treeWorkplace().lstWorkplace().length > 0) {
+                                    self.treeWorkplace().selectFirst();
+                                }
+                            });
                         });
+                    }).fail((res: any) => {
+                        nts.uk.ui.block.clear();
+                        self.showMessageError(res);
                     });
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                    self.showMessageError(res);
                 });
             }
 
@@ -262,7 +265,7 @@ module nts.uk.com.view.cmm011.a {
                     let objTransfer: any = {};
                     objTransfer.code = self.workplaceCode();
                     objTransfer.name = self.workplaceName();
-                    objTransfer.isLess999Heirarchies = res.isLessMaxSiblings;
+                    objTransfer.isLess999Hierarchies = res.isLessMaxSiblings;
                     objTransfer.isLessTenthHierarchy = res.isLessMaxHierarchy;
                     nts.uk.ui.windows.setShared("ObjectTransfer", objTransfer);
 
@@ -445,14 +448,6 @@ module nts.uk.com.view.cmm011.a {
             public selectFirst() {
                 let self = this;
                 self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
-            }
-
-            /**
-             * calHeightTree
-             */
-            public calHeightTree(): number {
-                let heightCell: number = 26;
-                return heightCell * 20;
             }
 
             /**
