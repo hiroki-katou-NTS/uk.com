@@ -29,7 +29,7 @@ public class Family extends AggregateRoot {
 	// 除籍年月日
 	private GeneralDate expelledDate;
 	// 家族ID
-	private FamilyId familyId;
+	private String familyId;
 	// 氏名
 	private NameSetType nameType;
 	// 氏名他言語
@@ -55,7 +55,7 @@ public class Family extends AggregateRoot {
 			GeneralDate expelledDate, String familyId, int nameType, int nameMultiLangType, int nameRomajiType,
 			String nationalityId, String occupationName, String personId, String relationship, int supportCareType,
 			int togSepDivisionType, int workStudentType) {
-		return new Family(birthday, deadDay, entryDate, expelledDate, new FamilyId(familyId),
+		return new Family(birthday, deadDay, entryDate, expelledDate, familyId,
 				EnumAdaptor.valueOf(nameType, NameSetType.class),
 				EnumAdaptor.valueOf(nameMultiLangType, NameSetType.class),
 				EnumAdaptor.valueOf(nameRomajiType, NameSetType.class), new CountryId(nationalityId), occupationName,
