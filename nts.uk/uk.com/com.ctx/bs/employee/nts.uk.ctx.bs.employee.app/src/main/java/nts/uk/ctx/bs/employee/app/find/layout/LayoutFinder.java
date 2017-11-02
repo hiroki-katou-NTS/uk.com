@@ -31,8 +31,8 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpIn
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddress;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;

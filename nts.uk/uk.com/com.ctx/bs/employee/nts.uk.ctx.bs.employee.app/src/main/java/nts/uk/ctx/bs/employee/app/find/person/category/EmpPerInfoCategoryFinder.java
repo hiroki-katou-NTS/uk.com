@@ -29,6 +29,7 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -292,6 +293,12 @@ public class EmpPerInfoCategoryFinder {
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00001":
 			PersonDto person = personFinder.getPersonByEmpId(employeeId);
+			ctgItemFixDto = CtgItemFixDto.createPerson(person.getPersonNameGroup().getBusinessName(), person.getPersonNameGroup().getPersonName(), person.getPersonNameGroup().getBusinessOtherName(),
+					person.getPersonNameGroup().getBusinessEnglishName(), person.getPersonNameGroup().getPersonNameKana(), person.getPersonNameGroup().getPersonRomanji(), 
+					person.getPersonNameGroup().getTodokedeFullName(), person.getPersonNameGroup().getOldName(), person.getPersonNameGroup().getTodokedeFullName());
+			break;
+		case "CS00003":
+			CurrentAddress currentAddress = 
 			break;
 		}
 	}

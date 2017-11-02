@@ -6,8 +6,8 @@ package entity.person.currentaddress;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddress;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 
 /**
  * @author danpv

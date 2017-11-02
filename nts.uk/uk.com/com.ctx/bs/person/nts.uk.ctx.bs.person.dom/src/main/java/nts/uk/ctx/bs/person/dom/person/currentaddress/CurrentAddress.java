@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.currentdddress;
+package nts.uk.ctx.bs.person.dom.person.currentaddress;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMobile;
-import nts.uk.ctx.bs.person.dom.person.info.currentaddress.Perfectures;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
@@ -50,7 +49,7 @@ public class CurrentAddress extends AggregateRoot {
 			GeneralDate endDate, String address1, String addresskana1, String address2, String addresskana2,
 			String homeSituationType, String personMailAddress, String houseType, String nearestStation) {
 		return new CurrentAddress(currentAddressId, pid, countryId, new PostalCode(postalCode),
-				new PersonMobile(phoneNumber), new Perfectures(prefectures), new HouseRent(houseRent),
+				new PersonMobile(phoneNumber), new Prefectures(prefectures), new HouseRent(houseRent),
 				new DatePeriod(StartDate, endDate),
 				new AddressSet1(new PersonAddress1(address1), new PersonAddressKana1(addresskana1)),
 				new AddressSet2(new PersonAddress2(address2), new PersonAddressKana2(addresskana2)),
@@ -58,10 +57,6 @@ public class CurrentAddress extends AggregateRoot {
 				new HouseType(houseType), new NearestStation(nearestStation));
 	}
 
-	public CurrentAddress(String currentAddressId2, String pid2, String countryId2, PostalCode postalCode2,
-			PersonMobile phoneNumber2, Perfectures perfectures, HouseRent houseRent2, DatePeriod period2,
-			AddressSet1 address12, AddressSet2 address22, HomeSituationType homeSituationType2,
-			PersonMailAddress personMailAddress2, HouseType houseType2, NearestStation nearestStation2) {
-	}
+
 
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.currentdddress;
+package nts.uk.ctx.bs.person.dom.person.currentaddress;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
