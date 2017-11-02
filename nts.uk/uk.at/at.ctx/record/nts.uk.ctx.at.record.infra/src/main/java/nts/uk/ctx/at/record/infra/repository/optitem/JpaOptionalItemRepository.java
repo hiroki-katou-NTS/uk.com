@@ -41,11 +41,10 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 */
 	@Override
 	public void update(OptionalItem dom) {
-		Optional<KrcstOptionalItem> optEntity = this.queryProxy().find(
-				new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
-				KrcstOptionalItem.class);
 
-		KrcstOptionalItem entity = optEntity.get();
+		KrcstOptionalItem entity = this.queryProxy().find(
+				new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
+				KrcstOptionalItem.class).get();
 
 		dom.saveToMemento(new JpaOptionalItemSetMemento(entity));
 
