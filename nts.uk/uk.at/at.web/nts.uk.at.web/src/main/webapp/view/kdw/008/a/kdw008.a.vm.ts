@@ -4,6 +4,7 @@ module nts.uk.at.view.kdw008.a {
 
             newMode: KnockoutObservable<boolean>;
             isUpdate: KnockoutObservable<boolean>;
+            isRemove: KnockoutObservable<boolean>;
             showCode: KnockoutObservable<boolean>;
 
             checked: KnockoutObservable<boolean>;
@@ -23,17 +24,19 @@ module nts.uk.at.view.kdw008.a {
             currentCodeCbb2: KnockoutObservable<number>;
             selectedSheetNo: KnockoutObservable<number>;
 
-            //swap list tab 1
+            //swap list tab 2
             monthlyDetailList: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto>;
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwapMonthly: KnockoutObservableArray<any>;
             authorityFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
+            monthlyDataSource: KnockoutObservableArray<AttendanceItemModel>;
 
-            //swap list tab 2
+            //swap list tab 1
             currentCodeListSwap2: KnockoutObservableArray<any>;
             authorityFormatDailyValue: KnockoutObservableArray<AttendanceItemModel>;
             columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectedSheetName: KnockoutObservable<string>;
+            dailyDataSource: KnockoutObservableArray<AttendanceItemModel>;
 
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
@@ -42,6 +45,7 @@ module nts.uk.at.view.kdw008.a {
                 var self = this;
                 self.newMode = ko.observable(false);
                 self.isUpdate = ko.observable(true);
+                self.isRemove = ko.observable(true);
                 self.showCode = ko.observable(false);
 
                 self.checked = ko.observable(false);
@@ -71,9 +75,10 @@ module nts.uk.at.view.kdw008.a {
                     { headerText: '名称', key: 'attendanceItemName', width: 150 }
                 ]);
 
-                //swap list 1
+                //swap list 2
                 self.monthlyDetailList = ko.observableArray([]);
                 self.authorityFormatMonthlyValue = ko.observableArray([]);
+                self.monthlyDataSource = ko.observableArray([]);
                 var monthlySwapList = [];
                 self.currentCodeListSwapMonthly = ko.observableArray(monthlySwapList);
                 this.currentCodeListSwapMonthly.subscribe(function(value) {
@@ -103,13 +108,14 @@ module nts.uk.at.view.kdw008.a {
                     self.getDetail(self.selectedCode());
                 });
 
-                //swaplist 2
+                //swaplist 1
                 var x = [];
                 this.currentCodeListSwap2 = ko.observableArray(x);
                 this.currentCodeListSwap2.subscribe(function(value) {
                     console.log(value);
                 });
                 self.authorityFormatDailyValue = ko.observableArray([]);
+                self.dailyDataSource = ko.observableArray([]);
 
                 self.selectedCode.subscribe(newValue => {
                     self.isUpdate(true);
@@ -122,7 +128,9 @@ module nts.uk.at.view.kdw008.a {
                         self.currentDailyFormatCode(empSelect.dailyPerformanceFormatCode);
                         self.currentDailyFormatName(empSelect.dailyPerformanceFormatName);
                     }
-                    self.getDetail(self.currentDailyFormatCode());
+                    self.isRemove(true);
+                    nts.uk.ui.errors.clearAll();
+                    self.getDetail(self.currentDailyFormatCode(), 1);
                 });
 
             }
@@ -158,12 +166,17 @@ module nts.uk.at.view.kdw008.a {
                 self.showCode(true);
                 $("#currentCode").focus();
                 self.isUpdate(false);
+                self.isRemove(false);
             }
 
-            getDetail(dailyPerformanceFormatCode: string) {
+            getDetail(dailyPerformanceFormatCode: string,selectedSheetNo ?: number) {
                 let self = this,
                     dfd = $.Deferred();
+                if(selectedSheetNo){
+                    self.selectedSheetNo(selectedSheetNo);
+                    }
                 new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
+                    self.selectedTab('tab-1');
                     if (data) {
                         if (data.isDefaultInitial == 1) {
                             self.checked(true);
@@ -175,6 +188,17 @@ module nts.uk.at.view.kdw008.a {
                         self.currentBusinessType(new AuthorityDetailModel(data));
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
                         // show data tab 2
+                        var dailyDataSource = _.map(self.currentBusinessType().attendanceItemDtos(), item => {
+                            var obj = {
+                                attendanceItemId: item.attendanceItemId,
+                                attendanceItemName: item.attendanceItemName,
+                                attendanceItemDisplayNumber: item.attendanceItemDisplayNumber,
+                                columnWidth: item.columnWidth
+                            }
+                            return new AttendanceItemModel(obj);
+                        })
+                        self.dailyDataSource(_.clone(dailyDataSource));
+                        self.dailyDataSource.valueHasMutated();
                         data.dailyAttendanceAuthorityMonthlyDto = _.sortBy(data.dailyAttendanceAuthorityMonthlyDto, ["order"]);
                         if (data.dailyAttendanceAuthorityMonthlyDto) {
                             var attendanceItemModelMonthly = _.map(data.dailyAttendanceAuthorityMonthlyDto, item => {
@@ -195,6 +219,8 @@ module nts.uk.at.view.kdw008.a {
                             self.selectedSheetName("");
                         } else self.selectedSheetName(data.dailyAttendanceAuthorityDailyDto.sheetName);
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
+                        self.monthlyDataSource(_.clone(dailyDataSource));
+                        self.monthlyDataSource.valueHasMutated();
                         if (data.dailyAttendanceAuthorityDailyDto != null && data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos) {
                             data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos = _.sortBy(data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos, ["order"]);
                             var attendanceItemModelDaily = _.map(data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos, item => {
@@ -218,6 +244,7 @@ module nts.uk.at.view.kdw008.a {
                 }).fail(error => {
 
                 });
+                
                 return dfd.promise();
 
             }
@@ -238,7 +265,7 @@ module nts.uk.at.view.kdw008.a {
                             nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                         }).fail(function(error) {
                         });;
-                        self.reloadData();
+                        self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);
                     });
             }
 
@@ -249,6 +276,7 @@ module nts.uk.at.view.kdw008.a {
 
             register() {
                 let self = this;
+                $("#currentName").trigger("validate");
                 //add or update Monthly
                 var authorityFormatDetailDtos = _.map(self.authorityFormatMonthlyValue(), item => {
                     var indexOfItem = _.findIndex(self.authorityFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
@@ -283,36 +311,48 @@ module nts.uk.at.view.kdw008.a {
                 }
 
                 var addOrUpdateDailyFormat = new AddOrUpdateDailyFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
+                nts.uk.ui.block.invisible();
                 if (self.isUpdate() == true) {
                     new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                        self.reloadData();
-                    }).fail(function(error) {
+                        self.reloadData(self.currentDailyFormatCode());
+                    }).always(function() {
+                    nts.uk.ui.block.clear();
+                }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
                     });
                 } else {
                     new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                        self.reloadData();
-                    }).fail(function(error) {
-//                        nts.uk.ui.dialog.alertError(error.message);
+                        self.reloadData(self.currentDailyFormatCode());
+                    }).always(function() {
+                    nts.uk.ui.block.clear();
+                }).fail(function(error) {
+                        //                        nts.uk.ui.dialog.alertError(error.message);
                         $('#currentCode').ntsError('set', error);
                     });
                 }
                 //self.getDetail(self.currentDailyFormatCode());
             }
 
-            reloadData() {
+            reloadData(dailyPerformanceFormatCode: string, isRemove?: boolean) {
                 let self = this,
                     dfd = $.Deferred();
+                let oldSelectIndex = _.findIndex(self.businessTypeList(), item => { return item.dailyPerformanceFormatCode == dailyPerformanceFormatCode; });
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
                     if (data && data.length > 0) {
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
-                        self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                        self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
+//                        self.selectedCode(dailyPerformanceFormatCode);
+                        self.selectedSheetNo(1);
+                        self.getDetail(dailyPerformanceFormatCode);
+                        if (isRemove && isRemove == true) {
+                                self.selectedCode(self.getNewSelectRemove(oldSelectIndex));
+                            } else {
+                                self.selectedCode(dailyPerformanceFormatCode);
+                            }
                     } else {
                         self.setNewMode();
                     }
@@ -320,6 +360,21 @@ module nts.uk.at.view.kdw008.a {
                 });
 
                 return dfd.promise();
+            }
+            
+            getNewSelectRemove(oldSelectIndex: number): String {
+                let self = this;
+                let dataLength = self.businessTypeList().length;
+                if (dataLength == 1 || oldSelectIndex > dataLength) {
+                    return self.businessTypeList()[0].dailyPerformanceFormatCode;
+                }
+                if (oldSelectIndex <= dataLength - 1) {
+                    return self.businessTypeList()[oldSelectIndex].dailyPerformanceFormatCode;
+                }
+                if (oldSelectIndex == dataLength) {
+                    return self.businessTypeList()[oldSelectIndex - 1].dailyPerformanceFormatCode;
+                }
+                return null;
             }
 
         }
