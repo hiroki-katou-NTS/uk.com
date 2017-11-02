@@ -3,7 +3,7 @@ module cps002.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'ctx/bs/person/newlayout/get',
+        'getLayout': 'ctx/bs/person/newlayout/get',
         'getUserSetting': 'ctx/bs/person/info/setting/user/getUserSetting',
         'getLastRegHistory': 'ctx/bs/person/info/setting/regisHistory/getLastRegHistory',
         'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
@@ -20,7 +20,7 @@ module cps002.a.service {
     };
 
     export function getLayout() {
-        return ajax(paths.getData);
+        return ajax(paths.getLayout);
     }
 
     export function getUserSetting() {
