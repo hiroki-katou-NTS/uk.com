@@ -601,7 +601,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                                       strMail = value + '<br/>';
                                 });
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: strMail });
-                                return;
                             }
                         }
                         //lấy vị trí appID vừa xóa trong listAppID
