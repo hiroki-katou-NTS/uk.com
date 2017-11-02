@@ -17,7 +17,7 @@ public class JobTitleMain {
 	
 	private String sid;
 	
-	private DateHistoryItem genericHistoryItem;
+	private DateHistoryItem dateHistoryItem;
 	
 	public static JobTitleMain creatFromJavaType(String jobTitleId, String sid , String hisid, GeneralDate startDate, GeneralDate endDate) {
 		return new JobTitleMain(jobTitleId, hisid, new DateHistoryItem(hisid, new DatePeriod(startDate, endDate)));

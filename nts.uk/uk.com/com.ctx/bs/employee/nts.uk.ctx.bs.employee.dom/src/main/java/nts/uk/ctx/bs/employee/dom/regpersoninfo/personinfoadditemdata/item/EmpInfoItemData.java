@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 @NoArgsConstructor
 @Getter
 @Setter
+// 個人情報項目データ
 public class EmpInfoItemData extends AggregateRoot {
 
 	private ItemCode itemCode;

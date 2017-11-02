@@ -15,11 +15,24 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
+import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
+import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
+import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
+import nts.uk.ctx.bs.employee.dom.leaveholiday.LeaveHoliday;
+import nts.uk.ctx.bs.employee.dom.leaveholiday.LeaveHolidayRepository;
+import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
+import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddress;
-import nts.uk.ctx.bs.person.dom.person.currentdddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
@@ -95,13 +108,31 @@ public class LayoutFinder {
 	private WidowHistoryRepository widowHistoryRepo;
 
 	@Inject
+	private LeaveHolidayRepository leaveHolidayRepo;
+
+	@Inject
+	private JobTitleMainRepository jobTitMainRepo;
+
+	@Inject
+	private AssignedWrkplcRepository assWorkPlaceRepo;
+
+	@Inject
+	private AffDepartmentRepository affDepartmentRepo;
+
+	@Inject
+	private SubJobPosRepository subJobPosRepo;
+
+	@Inject
 	private PerInfoCtgDataRepository perInCtgDataRepo;
 
 	@Inject
 	private PerInfoItemDataRepository perInItemDataRepo;
 
 	@Inject
-	private EmInfoCtgDataRepository emInCtgDataRepo;
+	private EmInfoCtgDataRepository empInCtgDataRepo;
+
+	@Inject
+	private EmpInfoItemDataRepository empInItemDataRepo;
 
 	public EmpMaintLayoutDto getLayout(GeneralDate standandDate, String mainteLayoutId, String browsingEmpId) {
 		String contractCode = AppContexts.user().contractCode();
@@ -141,7 +172,8 @@ public class LayoutFinder {
 					PersonInfoCategory perInfoCategory = perInfoCateRepo
 							.getPerInfoCategory(classItem.getPersonInfoCategoryID(), contractCode).get();
 					if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
-						getDataforSingleItem(perInfoCategory, dataInfoItems, standandDate);
+						getDataforSingleItem(perInfoCategory, dataInfoItems, standandDate, employee.getPId(),
+								employee.getSId());
 					} else if (classItem.getLayoutItemType() == LayoutItemType.LIST) {
 
 					}
@@ -188,38 +220,33 @@ public class LayoutFinder {
 	}
 
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, List<EmpPersonInfoItemDto> dataInfoItems,
-			GeneralDate standandDate) {
+			GeneralDate standandDate, String personId, String employeeId) {
 		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			// PERSON
-			String personId = AppContexts.user().personId();
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED CASE
-				PerInfoCtgData perInfoCtgData = null;
 				switch (perInfoCategory.getCategoryCode().v()) {
 				case "CS00001":
 					// Person
 					Person person = personRepo.getByPersonId(personId).get();
-					matchInformation(dataInfoItems, person);
-					perInfoCtgData = perInCtgDataRepo.getByRecordId(personId).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, person);
+					matchPersDataForDefItems(dataInfoItems, perInItemDataRepo.getAllInfoItemByRecordId(personId));
 					break;
 				case "CS00003":
 					// CurrentAddress
 					CurrentAddress currentAddress = currentAddressRepo.get(personId, standandDate);
-					matchInformation(dataInfoItems, currentAddress);
-					perInfoCtgData = perInCtgDataRepo.getByRecordId(currentAddress.getCurrentAddressId()).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, currentAddress);
+					matchPersDataForDefItems(dataInfoItems,
+							perInItemDataRepo.getAllInfoItemByRecordId(currentAddress.getCurrentAddressId()));
 					break;
 				case "CS00014":
 					// WidowHistory
 					WidowHistory widowHistory = widowHistoryRepo.get();
-					matchInformation(dataInfoItems, widowHistory);
-					perInfoCtgData = perInCtgDataRepo.getByRecordId(widowHistory.getWindowHistoryId()).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, widowHistory);
+					matchPersDataForDefItems(dataInfoItems,
+							perInItemDataRepo.getAllInfoItemByRecordId(widowHistory.getWindowHistoryId()));
 					break;
 				}
-				// 
-				if ( perInfoCtgData != null ) {
-					
-				}
-				
 			} else {
 				// UNFIXED CASE
 				if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
@@ -228,21 +255,82 @@ public class LayoutFinder {
 							.getByPerIdAndCtgId(personId, perInfoCategory.getPersonInfoCategoryId()).get(0);
 					List<PersonInfoItemData> dataItems = perInItemDataRepo
 							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-					matchDataForDefItems(dataInfoItems, dataItems);
+					matchPersDataForDefItems(dataInfoItems, dataItems);
 				} else if (perInfoCategory.getCategoryType() == CategoryType.CONTINUOUSHISTORY
 						|| perInfoCategory.getCategoryType() == CategoryType.NODUPLICATEHISTORY) {
 					// history
-					getDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), dataInfoItems, personId,
+					getPersDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), dataInfoItems, personId,
 							standandDate);
 				}
 			}
-		} else {
+		} else if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			// EMPLOYEE
+			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
+				// FIXED CASE
+				switch (perInfoCategory.getCategoryCode().v()) {
+				case "CS00002":
+					Employee employee = employeeRepo.getBySid(employeeId).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, employee);
+					matchEmpDataForDefItems(dataInfoItems, empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
+					break;
+				case "CS00008":
+					LeaveHoliday leaveHoliday = leaveHolidayRepo.getByEmpIdAndStandDate(employeeId, standandDate).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, leaveHoliday);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(leaveHoliday.getLeaveHolidayId()));
+					break;
+				case "CS00009":
+					// can implement
+					JobTitleMain jobTitleMain = jobTitMainRepo.getByEmpIdAndStandDate(employeeId, standandDate).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, jobTitleMain);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(jobTitleMain.getJobTitleId()));
+					break;
+				case "CS00010":
+					AssignedWorkplace assignedWorkplace = assWorkPlaceRepo
+							.getByEmpIdAndStandDate(employeeId, standandDate).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, assignedWorkplace);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(assignedWorkplace.getAssignedWorkplaceId()));
+					break;
+				case "CS00011":
+					AffiliationDepartment affDepartment = affDepartmentRepo
+							.getByEmpIdAndStandDate(employeeId, standandDate).get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, affDepartment);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(affDepartment.getDepartmentId()));
+					break;
+				case "CS00012":
+					SubJobPosition subJobPosition = subJobPosRepo.getByEmpIdAndStandDate(employeeId, standandDate)
+							.get();
+					ItemDefinitionFactory.matchInformation(dataInfoItems, subJobPosition);
+					matchEmpDataForDefItems(dataInfoItems,
+							empInItemDataRepo.getAllInfoItemByRecordId(subJobPosition.getAffiDeptId()));
+					break;
+				}
+			} else {
+				// UNFIXED CASE
+				if (perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
+					// single information
+					EmpInfoCtgData perInfoCtgData = empInCtgDataRepo
+							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId())
+							.get();
+					List<EmpInfoItemData> dataItems = empInItemDataRepo
+							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+					matchEmpDataForDefItems(dataInfoItems, dataItems);
+				} else if (perInfoCategory.getCategoryType() == CategoryType.CONTINUOUSHISTORY
+						|| perInfoCategory.getCategoryType() == CategoryType.NODUPLICATEHISTORY) {
+					// history
+					getEmpDataHistoryType(perInfoCategory.getPersonInfoCategoryId(), dataInfoItems, employeeId,
+							standandDate);
+				}
+			}
+
 		}
 	}
 
-	private void getDataHistoryType(String perInfoCategoryId, List<EmpPersonInfoItemDto> dataInfoItems, String personId,
-			GeneralDate standandDate) {
+	private void getPersDataHistoryType(String perInfoCategoryId, List<EmpPersonInfoItemDto> dataInfoItems,
+			String personId, GeneralDate standandDate) {
 		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
 		List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId, perInfoCategoryId);
 		String startDateId = dateRangeItem.getStartDateItemId();
@@ -265,17 +353,48 @@ public class LayoutFinder {
 			}
 
 			if (startDate.before(standandDate) && endDate.after(standandDate)) {
-				matchDataForDefItems(dataInfoItems, dataItems);
+				matchPersDataForDefItems(dataInfoItems, dataItems);
 				break;
 			}
 
 		}
 	}
 
-	private void matchDataForDefItems(List<EmpPersonInfoItemDto> dataInfoItems, List<PersonInfoItemData> dataItems) {
+	private void getEmpDataHistoryType(String perInfoCategoryId, List<EmpPersonInfoItemDto> dataInfoItems,
+			String personId, GeneralDate standandDate) {
+		DateRangeItem dateRangeItem = perInfoCateRepo.getDateRangeItemByCtgId(perInfoCategoryId);
+		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(personId, perInfoCategoryId);
+		String startDateId = dateRangeItem.getStartDateItemId();
+		String endDateId = dateRangeItem.getEndDateItemId();
+		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
+			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+			GeneralDate startDate = null;
+			GeneralDate endDate = null;
+			for (EmpInfoItemData dataItem : dataItems) {
+				if (dataItem.getPerInfoDefId() == startDateId) {
+					startDate = dataItem.getDataState().getDateValue();
+				} else if (dataItem.getPerInfoDefId() == endDateId) {
+					endDate = dataItem.getDataState().getDateValue();
+				}
+			}
+
+			if (startDate == null || endDate == null) {
+				continue;
+			}
+
+			if (startDate.before(standandDate) && endDate.after(standandDate)) {
+				matchEmpDataForDefItems(dataInfoItems, dataItems);
+				break;
+			}
+
+		}
+	}
+
+	private void matchPersDataForDefItems(List<EmpPersonInfoItemDto> dataInfoItems,
+			List<PersonInfoItemData> dataItems) {
 		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
 			for (PersonInfoItemData dataItem : dataItems) {
-				if (dataInfoItem.getId() == dataItem.getPerInfoCtgId()) {
+				if (dataInfoItem.getId() == dataItem.getPerInfoItemDefId()) {
 					switch (dataItem.getDataState().getDataStateType()) {
 					case String:
 						dataInfoItem.setData(dataItem.getDataState().getStringValue());
@@ -293,151 +412,25 @@ public class LayoutFinder {
 
 	}
 
-	private void matchInformation(List<EmpPersonInfoItemDto> dataInfoItems, Person person) {
+	private void matchEmpDataForDefItems(List<EmpPersonInfoItemDto> dataInfoItems, List<EmpInfoItemData> dataItems) {
 		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
-			switch (dataInfoItem.getItemCode()) {
-			case "IS00001":
-				// 個人名グループ．個人名
-				dataInfoItem.setData(person.getPersonNameGroup().getPersonName().v());
-				break;
-			case "IS00002":
-				// 個人名グループ．個人名カナ
-				dataInfoItem.setData(person.getPersonNameGroup().getPersonNameKana().v());
-				break;
-			case "IS00003":
-				// 個人名グループ．個人名ローマ字．氏名
-				dataInfoItem.setData(person.getPersonNameGroup().getPersonRomanji().getFullName().v());
-				break;
-			case "IS00004":
-				// 個人名グループ．個人名ローマ字．氏名カナ
-				dataInfoItem.setData(person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v());
-				break;
-			case "IS00005":
-				// 個人名グループ．ビジネスネーム
-				dataInfoItem.setData(person.getPersonNameGroup().getBusinessName().v());
-				break;
-			case "IS00006":
-				// 個人名グループ．ビジネスネーム．英語
-				dataInfoItem.setData(person.getPersonNameGroup().getBusinessEnglishName().v());
-				break;
-			case "IS00007":
-				// 個人名グループ．ビジネスネーム．その他
-				dataInfoItem.setData(person.getPersonNameGroup().getBusinessOtherName().v());
-				break;
-			case "IS00008":
-				// 個人名グループ．個人旧氏名．氏名
-				dataInfoItem.setData(person.getPersonNameGroup().getOldName().getFullName().v());
-				break;
-			case "IS00009":
-				// 個人名グループ．個人旧氏名．氏名カナ
-				dataInfoItem.setData(person.getPersonNameGroup().getOldName().getFullNameKana().v());
-				break;
-			case "IS00010":
-				// 個人名グループ．個人届出名称．氏名
-				dataInfoItem.setData(person.getPersonNameGroup().getTodokedeFullName().getFullName().v());
-				break;
-			case "IS00011":
-				// 個人名グループ．個人届出名称．氏名カナ
-				dataInfoItem.setData(person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v());
-				break;
-			case "IS00012":
-				// 個人名グループ．個人届出名称．氏名
-				dataInfoItem.setData(person.getPersonNameGroup().getTodokedeFullName().getFullName().v());
-				break;
-			case "IS00013":
-				// 個人名グループ．個人届出名称．氏名カナ
-				dataInfoItem.setData(person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v());
-				break;
-			case "IS00014":
-				// 性別
-				dataInfoItem.setData(person.getGender().value);
-				break;
-			case "IS00015":
-				// 個人携帯
-				dataInfoItem.setData(person.getPersonMobile().toString());
-				break;
-			case "IS00016":
-				// 個人メールアドレス
-				dataInfoItem.setData(person.getMailAddress().toString());
-				break;
-			case "IS00017":
-				// 趣味
-				dataInfoItem.setData(person.getHobBy().toString());
-				break;
-			case "IS00018":
-				// 嗜好
-				dataInfoItem.setData(person.getTaste().toString());
-				break;
-			case "IS00019":
-				// 国籍
-				dataInfoItem.setData(person.getCountryId().toString());
-				break;
+			for (EmpInfoItemData dataItem : dataItems) {
+				if (dataInfoItem.getId() == dataItem.getPerInfoDefId()) {
+					switch (dataItem.getDataState().getDataStateType()) {
+					case String:
+						dataInfoItem.setData(dataItem.getDataState().getStringValue());
+						break;
+					case Numeric:
+						dataInfoItem.setData(dataItem.getDataState().getNumberValue().intValue());
+						break;
+					case Date:
+						dataInfoItem.setData(dataItem.getDataState().getDateValue());
+						break;
+					}
+				}
 			}
 		}
-	}
 
-	private void matchInformation(List<EmpPersonInfoItemDto> dataInfoItems, CurrentAddress currentAddress) {
-		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
-			switch (dataInfoItem.getItemCode()) {
-			case "IS00029":
-				/*
-				 * 現住所．期間 現住所．期間．開始日 現住所．期間．終了日
-				 */
-				// dataInfoItem.setData(currentAddress.getPeriod());
-				break;
-			case "IS00030":
-				// 現住所．郵便番号
-				dataInfoItem.setData(currentAddress.getPostalCode().v());
-				break;
-
-			case "IS00031":
-				// 現住所．都道府県
-				dataInfoItem.setData(currentAddress.getPrefectures().v());
-				break;
-			case "IS00032":
-				// 現住所．国
-				dataInfoItem.setData(currentAddress.getCountryId());
-				break;
-			case "IS00033":
-				// 現住所．住所１
-				dataInfoItem.setData(currentAddress.getAddress1().getAddress1().v());
-				break;
-			case "IS00034":
-				// 現住所．住所カナ１
-				dataInfoItem.setData(currentAddress.getAddress1().getAddressKana1().v());
-				break;
-			case "IS00035":
-				// 現住所．住所2
-				dataInfoItem.setData(currentAddress.getAddress2().getAddress2().v());
-				break;
-			case "IS00036":
-				// 現住所．住所カナ2
-				dataInfoItem.setData(currentAddress.getAddress2().getAddressKana2().v());
-				break;
-			case "IS00037":
-				// 現住所．電話番号
-				dataInfoItem.setData(currentAddress.getPhoneNumber().v());
-				break;
-			case "IS00038":
-				// 現住所．住宅状況種別
-				dataInfoItem.setData(currentAddress.getHomeSituationType().v());
-				break;
-			case "IS00039":
-				// 現住所．社宅家賃
-				dataInfoItem.setData(currentAddress.getHouseRent().v());
-				break;
-
-			}
-		}
-	}
-
-	private void matchInformation(List<EmpPersonInfoItemDto> dataInfoItems, WidowHistory widowHistory) {
-		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
-		}
-	}
-
-	private void get(String recordId) {
-		PerInfoCtgData perInfoCtgData = perInCtgDataRepo.getByRecordId(recordId).get();
 	}
 
 }
