@@ -33,8 +33,8 @@
 
 				<span id="button2">
 					<button class="normal" data-bind="click : setNewMode">#{i18n.getText('KDW008_2')}</button>
-					<button class="proceed" data-bind="click : addOrUpdateClick">#{i18n.getText('KDW008_3')}</button>
-					<button class="danger" data-bind="click : remove">#{i18n.getText('KDW008_4')}</button>
+					<button class="proceed" data-bind="click : addOrUpdateClick,enable: $root.errors.isEmpty">#{i18n.getText('KDW008_3')}</button>
+					<button class="danger" data-bind="click : remove, enable : isRemove">#{i18n.getText('KDW008_4')}</button>
 				</span>
 			</div>
 
@@ -63,12 +63,13 @@
 										data-bind="ntsTextEditor: {value: currentDailyFormatCode,
 																   enable : showCode,
 																   constraint: 'DailyPerformanceFormatCode',
+																   option: {autofill:true, filldirection:'left'},
 																   name: '#[KDW008_7]',
 																   required: true	}" /><br />
 								</div>
 								<div>
 									<span id="label4" class="label">#{i18n.getText('KDW008_8')}
-										（全角5文字)</span> <input style="margin-left: 23px"
+										（全角5文字)</span> <input style="margin-left: 23px" id="currentName"
 										data-bind="ntsTextEditor: {value: currentDailyFormatName,
 																   constraint: 'DailyPerformanceFormatName',
 																   name: '#[KDW008_8]',
@@ -80,7 +81,7 @@
 							</div>
 							<div id="tab-panel"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-								<div class="tab-content-1" style="height: 500px; width: 930px;">
+								<div class="tab-content-1" style="height: 500px; width: 900px;">
 									<div>
 										<span class="label">#{i18n.getText('KDW008_23')}</span>
 										<div id="A_SEL_002"
@@ -112,6 +113,7 @@
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemId'],
 											draggable: true,
+											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
 											innerDrag: { left: false, right: true },
 											outerDrag: { left: true, right: true } 
@@ -125,7 +127,7 @@
 													swapTarget: 'right'}">
 									</div>
 								</div>
-								<div class="tab-content-2" style="height: 500px; width: 930px;">
+								<div class="tab-content-2" style="height: 500px; width: 900px;">
 									<div class="label">#{i18n.getText('KDW008_28')}</div>
 									<div style="margin-top: 10px" id="swap-list"
 										data-bind="ntsSwapList: {
@@ -138,6 +140,7 @@
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemId'],
 											draggable: true,
+											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
 											innerDrag: { left: false, right: true },
 											outerDrag: { left: true, right: true } 
