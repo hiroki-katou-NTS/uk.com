@@ -271,8 +271,8 @@ public class EmpPerInfoCategoryFinder {
 				break;
 			case "CS00009":
 				JobTitleMain jobTitleMain = jobTitleMainRepository.getJobTitleMainById(parentInfoId).get();
-				ctgItemFixDto = CtgItemFixDto.createJobTitleMain(jobTitleMain.getSid(), jobTitleMain.getGenericHistoryItem().getHistoryId(), 
-						jobTitleMain.getJobTitleId(), jobTitleMain.getGenericHistoryItem().getPeriod().start(), jobTitleMain.getGenericHistoryItem().getPeriod().end());
+				ctgItemFixDto = CtgItemFixDto.createJobTitleMain(jobTitleMain.getSid(), jobTitleMain.getDateHistoryItem().identifier(), 
+						jobTitleMain.getJobTitleId(), jobTitleMain.getDateHistoryItem().start(), jobTitleMain.getDateHistoryItem().end());
 				setCtgItemOptionDto(empPerCtgInfoDto, jobTitleMain.getJobTitleId(), true);
 				break;
 			case "CS00010":

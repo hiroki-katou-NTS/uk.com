@@ -22,6 +22,8 @@ public class LayoutPersonInfoClsDto {
 	private List<PerInfoItemDefDto> listItemDf;
 	
 	
+	
+	
 	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType) {
 		super();
 		this.layoutID = layoutID;

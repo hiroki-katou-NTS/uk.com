@@ -394,7 +394,7 @@ public class LayoutFinder {
 			List<PersonInfoItemData> dataItems) {
 		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
 			for (PersonInfoItemData dataItem : dataItems) {
-				if (dataInfoItem.getId() == dataItem.getPerInfoCtgId()) {
+				if (dataInfoItem.getId() == dataItem.getPerInfoItemDefId()) {
 					switch (dataItem.getDataState().getDataStateType()) {
 					case String:
 						dataInfoItem.setData(dataItem.getDataState().getStringValue());
@@ -415,7 +415,7 @@ public class LayoutFinder {
 	private void matchEmpDataForDefItems(List<EmpPersonInfoItemDto> dataInfoItems, List<EmpInfoItemData> dataItems) {
 		for (EmpPersonInfoItemDto dataInfoItem : dataInfoItems) {
 			for (EmpInfoItemData dataItem : dataItems) {
-				if (dataInfoItem.getId() == dataItem.getPerInfoCtgId()) {
+				if (dataInfoItem.getId() == dataItem.getPerInfoDefId()) {
 					switch (dataItem.getDataState().getDataStateType()) {
 					case String:
 						dataInfoItem.setData(dataItem.getDataState().getStringValue());
