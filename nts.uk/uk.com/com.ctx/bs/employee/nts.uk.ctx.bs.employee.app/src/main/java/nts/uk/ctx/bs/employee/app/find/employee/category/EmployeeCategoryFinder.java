@@ -13,6 +13,8 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmpCtgDomainServices;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.ParamForGetItemDef;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -44,7 +46,7 @@ public class EmployeeCategoryFinder {
 	private CurrentAddressRepository currentAddressRepo;
 	
 	@Inject
-	private WidowHistoryRepository widowHistoryRepo;
+	private FamilyRepository familyRepo;
 
 	public List<PersonInfoCtgFullDto> getAllPerInfoCtg(String companyId, String employeeIdSelected) {
 		String empIdCurrentLogin = AppContexts.user().employeeId();
@@ -150,6 +152,8 @@ public class EmployeeCategoryFinder {
 
 				break;
 			case "CS00004":
+				List<Family> lstFamily = familyRepo.getListByPid(personId);
+				
 
 				break;
 			case "CS00014":
