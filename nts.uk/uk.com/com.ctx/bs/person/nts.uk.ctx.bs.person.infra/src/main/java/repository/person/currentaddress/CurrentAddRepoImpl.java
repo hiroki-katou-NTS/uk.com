@@ -69,7 +69,6 @@ public class CurrentAddRepoImpl extends JpaRepository implements CurrentAddressR
 		// TODO Auto-generated method stub
 		List<BpsmtCurrentaddress> listEntity = this.queryProxy().query(GET_ALL_BY_PID, BpsmtCurrentaddress.class)
 				.setParameter("pid", pid).getList();
-		;
 		return toListCurrentAddress(listEntity);
 	}
 

@@ -81,6 +81,9 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	// trường này để xác định xem là trường date thuộc
 	// kiểu ngày tháng năm, năm tháng or năm
 	private Integer dateType;
+	
+	private Integer timepointItemMin;
+	private Integer timepointItemMax;
 
 	/**
 	 * constructor PerInfoInitValueSetItem
@@ -351,11 +354,11 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	 * @return
 	 */
 	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
-			String perInfoCtgId, int refMethodType, int saveDataType, Integer intValue) {
+			String perInfoCtgId, int refMethodType, int saveDataType, BigDecimal intValue) {
 
 		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
 				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
-				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(new BigDecimal(intValue)));
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(intValue));
 	}
 
 	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,

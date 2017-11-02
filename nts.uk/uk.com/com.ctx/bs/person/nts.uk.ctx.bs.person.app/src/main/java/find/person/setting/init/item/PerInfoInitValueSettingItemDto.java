@@ -1,5 +1,7 @@
 package find.person.setting.init.item;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,13 +35,13 @@ public class PerInfoInitValueSettingItemDto {
 	private int refMethodType;
 
 	// 保存データ型
-	private int saveDataType;
+	private Integer saveDataType;
 
 	// 文字列
 	private String stringValue;
 
 	// 数値
-	private int intValue;
+	private BigDecimal intValue;
 
 	// 日付
 	private GeneralDate dateValue;
@@ -66,15 +68,20 @@ public class PerInfoInitValueSettingItemDto {
 	private String selectionItemId;
 	
 	private Integer dateType;
+	
+	private Integer timepointItemMin;
+	
+	private Integer timepointItemMax;
 
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
 		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), domain.getSettingId(),
 				domain.getPerInfoCtgId(), domain.getItemName(), domain.getItemType(), domain.getDataType(),
-				domain.getIsRequired().value, domain.getRefMethodType().value, domain.getSaveDataType().value,
-				domain.getStringValue().v(), Integer.valueOf(domain.getIntValue().toString()), domain.getDateValue(),
+				domain.getIsRequired().value, domain.getRefMethodType().value, domain.getSaveDataType() == null ? null : domain.getSaveDataType().value,
+				domain.getStringValue().v(), domain.getIntValue() == null ? null : domain.getIntValue().v(), domain.getDateValue(),
 				domain.getItemCode(), domain.getCtgCode(), domain.getConstraint(), domain.getNumberDecimalPart(),
 				domain.getNumberIntegerPart(), domain.getTimeItemMin(), domain.getTimeItemMax(),
-				domain.getSelectionItemId(), domain.getDateType());
+				domain.getSelectionItemId(), domain.getDateType(), 
+				domain.getTimepointItemMin(), domain.getTimepointItemMax());
 
 	}
 

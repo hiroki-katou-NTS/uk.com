@@ -1,10 +1,13 @@
 package nts.uk.ctx.bs.employee.dom.department;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -13,21 +16,19 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * */
 @Getter
 @AllArgsConstructor
-public class CurrentAffiDept extends AggregateRoot{
+public class CurrentAffiDept extends AggregateRoot implements ContinuousResidentHistory{
 	/**社員ID EmployeeId*/
 	private String employeeId;
 	/**所属部門ID AffiliationDepartmentID*/
 	private String affiDeptId;
 	/**部門ID Department id*/
-	private String departmentId; 
+	private String departmentId;
+	/** The DateHistoryItem. */
+	private List<DateHistoryItem> dateHistoryItem;
 	
-	/** The period. */
-	private DateHistoryItem dateHistoryItem;
-	
-	public static CurrentAffiDept createFromJavaFile(String employeeId, String affiDeptId, String departmentId, 
-			String historyId, GeneralDate strD, GeneralDate endD){
-		return new CurrentAffiDept(employeeId, affiDeptId, departmentId, 
-				new DateHistoryItem(historyId, new DatePeriod(strD, endD)));
+	@Override
+	public List items() {
+		return this.dateHistoryItem;
 	}
 	
 }

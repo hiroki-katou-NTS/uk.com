@@ -260,7 +260,7 @@ public class LayoutFinder {
 					WidowHistory widowHistory = widowHistoryRepo.get();
 					ItemDefinitionFactory.matchInformation(dataInfoItems, widowHistory);
 					matchPersDataForDefItems(dataInfoItems,
-							perInItemDataRepo.getAllInfoItemByRecordId(widowHistory.getWindowHistoryId()));
+							perInItemDataRepo.getAllInfoItemByRecordId(widowHistory.getWidowHistoryId()));
 					break;
 				}
 			} else {
