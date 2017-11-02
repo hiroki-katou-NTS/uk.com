@@ -28,8 +28,7 @@
 					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeMail
 					nts.uk.ctx.bs.employee.dom.employeeinfo.CompanyMobile
 					nts.uk.ctx.bs.employee.dom.employeeinfo.HiringType
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.PostalCode
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.Perfectures
+<!-- 					nts.uk.ctx.bs.person.dom.person.info.currentaddress.Perfectures
 					nts.uk.ctx.bs.person.dom.person.info.currentaddress.CountryId
 				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddress1
 				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddressKana1
@@ -37,7 +36,7 @@
 					nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddressKana2
 					nts.uk.ctx.bs.person.dom.person.info.currentaddress.PhoneNumber
 					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HomeSituationType
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HouseRent
+					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HouseRent -->
    			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
 			<com:scriptfile path="cps009.a.service.js" />
@@ -116,11 +115,9 @@
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<button
 										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
-									<input id="date"
-										data-bind="ntsTextEditor: {
-										value: currentCategory().settingCode ,
-										enable: true,
-										immediate: false}"></input>
+									<!-- A3_014: 履歴参照基準日(History reference date) -->
+									<div id="date" data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+									<button data-bind="click: historyFilter">適用</button>
 								</div>
 								<table class="contents-header">
 								<thead>
@@ -236,7 +233,7 @@
 													 value: dateWithDay, enable: true, readonly: false, required: true }" />
 											</com:ko-if>
 											
-											 <!-- list box  -->
+											 <!--  list box  -->
 											 <com:ko-if bind="(dataType() === 6)">
 												<div class="sub-input-units"
 													data-bind="ntsComboBox: {

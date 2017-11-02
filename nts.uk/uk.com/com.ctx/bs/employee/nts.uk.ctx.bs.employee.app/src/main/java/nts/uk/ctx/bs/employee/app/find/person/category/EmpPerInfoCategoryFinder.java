@@ -12,6 +12,8 @@ import nts.uk.ctx.bs.employee.app.find.person.info.PersonDto;
 import nts.uk.ctx.bs.employee.app.find.person.info.PersonFinder;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemCurrentJobPosDto;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemEmpInfoItemDataDto;
+import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
+import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDeptRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
@@ -29,7 +31,10 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -83,6 +88,15 @@ public class EmpPerInfoCategoryFinder {
 	
 	@Inject
 	private JobTitleMainRepository jobTitleMainRepository;
+	
+	@Inject 
+	private CurrentAddressRepository currentAddressRepository;
+	
+	@Inject
+	private AssignedWrkplcRepository assignedWrkplcRepository;
+	
+	@Inject 
+	private CurrentAffiDeptRepository currentAffiDeptRepository;
 
 	/**
 	 * get person ctg infor and list of item children
@@ -276,14 +290,22 @@ public class EmpPerInfoCategoryFinder {
 				setCtgItemOptionDto(empPerCtgInfoDto, jobTitleMain.getJobTitleId(), true);
 				break;
 			case "CS00010":
-				//AssignedWorkplace 
+				AssignedWorkplace assignedWorkplace = assignedWrkplcRepository.getAssignedWorkplaceById(parentInfoId);
+				ctgItemFixDto = CtgItemFixDto.createAssignedWorkplace(assignedWorkplace.getEmployeeId(), assignedWorkplace.getAssignedWorkplaceId(), assignedWorkplace.getDateHistoryItem());
+				setCtgItemOptionDto(empPerCtgInfoDto, assignedWorkplace.getAssignedWorkplaceId(), true);
 				break;
 			case "CS00011":
-				//
+				//Affiliation Department
+				break;
+			case "CS00012":
+				CurrentAffiDept currentAffiDept = currentAffiDeptRepository.getCurrentAffiDeptById(parentInfoId);
+				ctgItemFixDto = CtgItemFixDto.createCurAffDept(currentAffiDept.getEmployeeId(), currentAffiDept.getAffiDeptId(), currentAffiDept.getDepartmentId(), currentAffiDept.getDateHistoryItem());
+				setCtgItemOptionDto(empPerCtgInfoDto, currentAffiDept.getAffiDeptId(), true);
 				break;
 		}
 		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);	
 	}
+	
 	
 	private void setEmployeeCtgItem(EmpPerCtgInfoDto empPerCtgInfoDto, String employeeId, PersonInfoCategory perInfoCtg,
 			String parentInfoId){
@@ -297,9 +319,14 @@ public class EmpPerInfoCategoryFinder {
 			setCtgItemOptionDto(empPerCtgInfoDto, person.getPersonId(), true);
 			break;
 		case "CS00003":
-			//CurrentAddress currentAddress = 
-			break;
-			
+			CurrentAddress currentAddress = currentAddressRepository.getCurAddById(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createCurrentAddress(currentAddress.getCurrentAddressId(), currentAddress.getPid(), currentAddress.getCountryId(), currentAddress.getPostalCode().v(), currentAddress.getPhoneNumber().v(), 
+					currentAddress.getPrefectures().v(), currentAddress.getHouseRent().v(), currentAddress.getPeriod().start(), currentAddress.getPeriod().end(), 
+					currentAddress.getAddress1().getAddress1().v(), currentAddress.getAddress1().getAddressKana1().v(), 
+					currentAddress.getAddress2().getAddress2().v(), currentAddress.getAddress2().getAddressKana2().v(), currentAddress.getHomeSituationType().v(), currentAddress.getPersonMailAddress().v(), 
+					currentAddress.getHouseType().v(), currentAddress.getNearestStation().v());
+			setCtgItemOptionDto(empPerCtgInfoDto, currentAddress.getCurrentAddressId(), true);
+			break;		
 		case "CS00004":
 			//Family
 			break;

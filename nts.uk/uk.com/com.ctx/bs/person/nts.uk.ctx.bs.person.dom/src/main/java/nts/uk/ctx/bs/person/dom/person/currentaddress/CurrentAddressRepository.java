@@ -4,6 +4,7 @@
 package nts.uk.ctx.bs.person.dom.person.currentaddress;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -13,9 +14,23 @@ import nts.arc.time.GeneralDate;
  */
 public interface CurrentAddressRepository {
 
-	public CurrentAddress get(String personId, GeneralDate standandDate);
+	CurrentAddress get(String personId, GeneralDate standandDate);
 	
-	public List<CurrentAddress> getListByPid(String pid);
+	List<CurrentAddress> getListByPid(String pid);
 	
-	public CurrentAddress getCurAddById(String curAddId);
+	CurrentAddress getCurAddById(String curAddId);
+	
+	/**
+	 * add current address ドメインモデル「現住所」を新規登録する
+	 * @param currentAddress
+	 */
+	void addCurrentAddress(CurrentAddress currentAddress);
+	
+	/**
+	 * update current address 取得した「現住所」を更新する
+	 * @param currentAddress
+	 */
+	void updateCurrentAddress(CurrentAddress currentAddress);
+	
+
 }

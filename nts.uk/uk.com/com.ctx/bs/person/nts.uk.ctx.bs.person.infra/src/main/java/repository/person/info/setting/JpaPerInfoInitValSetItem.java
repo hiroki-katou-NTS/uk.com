@@ -39,9 +39,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 			+ " CM.selectionItemRefCode, "
 			// for Hoa 19
-			+ " CM.dateItemType"
+			+ " CM.dateItemType, "
 			// cái này dùng để xem date là thuộc ngày tháng năm hat năm tháng hay chỉ năm
-			// thôi
+			+ " CM.timepointItemMin , CM.timepointItemMax "
+			// cái này dùng để  validate thằng timpoint trên màn hình
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -129,17 +130,11 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		String saveDataType;
 
-		if (entity[6] == null) {
-			// return defaul value
-			saveDataType = "1";
-
-		} else {
-
+		if (entity[6] != null) {
 			saveDataType = entity[6].toString();
-
+			domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 		}
-		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
-
+		
 		domain.setStringValue(new StringValue(entity[7] == null ? null : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
@@ -202,6 +197,14 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[20] != null) {
 			domain.setDateType(Integer.valueOf(entity[20].toString()));
 		}
+		
+		if (entity[21] != null) {
+			domain.setTimepointItemMin(Integer.valueOf(entity[21].toString()));
+		}
+
+		if (entity[22] != null) {
+			domain.setTimepointItemMax(Integer.valueOf(entity[22].toString()));
+		}
 
 		return domain;
 
@@ -229,10 +232,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> x = this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
-				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("settingId", settingId)
+		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
+				.setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("settingId", settingId)
 				.getList(c -> toDomain(c));
-		return x;
 
 	}
 

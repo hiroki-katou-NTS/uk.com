@@ -5,15 +5,13 @@ package repository.person.currentaddress;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import entity.person.currentaddress.BpsmtCurrentaddress;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
-import javax.ejb.Stateless;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
@@ -33,6 +31,9 @@ public class CurrentAddRepoImpl extends JpaRepository implements CurrentAddressR
 	 * java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtCurrentaddress c WHERE c.pid = :pid";
+	
+	private static final String SELECT_CURRENT_ADD_BY_ID = "SELECT c FROM BpsmtCurrentaddress c "
+			+ " WHERE c.bpsmtCurrentaddressPK.currentAddId = :currentAddId";
 
 	private List<CurrentAddress> toListCurrentAddress(List<BpsmtCurrentaddress> listEntity) {
 		List<CurrentAddress> lstCurrentAddress = new ArrayList<>();
@@ -68,12 +69,12 @@ public class CurrentAddRepoImpl extends JpaRepository implements CurrentAddressR
 		// TODO Auto-generated method stub
 		List<BpsmtCurrentaddress> listEntity = this.queryProxy().query(GET_ALL_BY_PID, BpsmtCurrentaddress.class)
 				.setParameter("pid", pid).getList();
-		;
 		return toListCurrentAddress(listEntity);
 	}
 
 	public CurrentAddress getCurAddById(String curAddId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<CurrentAddress> currentAddress = this.queryProxy().query(SELECT_CURRENT_ADD_BY_ID, BpsmtCurrentaddress.class)
+				.setParameter("currentAddId", curAddId).getSingle(x -> toDomainCurrentAddress(x));
+		return currentAddress.isPresent()?currentAddress.get():null;
 	}
 }

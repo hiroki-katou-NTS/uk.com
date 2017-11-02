@@ -6,10 +6,10 @@ package nts.uk.ctx.bs.person.dom.person.family;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.CountryId;
-import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 
 /**
  * @author danpv
@@ -18,48 +18,68 @@ import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+// 家族
 public class Family extends AggregateRoot {
-
+	// 生年月日
 	private GeneralDate birthday;
-
+	// 死亡年月日
 	private GeneralDate deadDay;
-
+	// 入籍年月日
 	private GeneralDate entryDate;
-
+	// 除籍年月日
 	private GeneralDate expelledDate;
-
-	private FamilyId familyId;
-
-	private FullNameSet name;
-
-	private FullNameSet nameMultiLang;
-
-	private FullNameSet nameRomaji;
-
-	private CountryId nationality;
-
-	private String occupationName;
-
+	// 家族ID
+	private String familyId;
+	// 氏名
+	private FullName fullName;
+	//
+	private FullNameKana fullNameKana;
+	//
+	private NameMultiLangFull nameMultiLangFull;
+	//
+	private NameMultiLangFullKana nameMultiLangFullKana;
+	//
+	private NameRomajiFull nameRomajiFull;
+	//
+	private NameRomajiFullKana nameRomajiFullKana;
+	// 国籍
+	private CountryId nationalityId;
+	// 職業
+	private OccupationName occupationName;
+	// 個人ID
 	private String personId;
+	// 続柄
+	private RelationShip relationship;
+	// 支援介護区分
+	private SupportCareType supportCareType;
+	
+	private TokodekeName tokodekeName;
+	
+	// 同居別居区分
+	private TogSepDivisionType togSepDivisionType;
+	// 勤労学生
+	private WorkStudentType workStudentType;
 
-	private String relationship;
-
-	private int supportCareType;
-
-	private String notificationName;
-
-	private int togSepDivision;
-
-	private int workStudent;
-
-	public static Family createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,
-			String familyId, String name, String nameKana, String nameMulti, String nameMultiKana, String nameRomaji,
-			String nameRomajiKana, String nationality, String occupationName, String personId, String relationship,
-			int supportCareType, String notificationName, int togSepDivision, int workStudent) {
-		return new Family(birthday, deadDay, entryDate, expelledDate, new FamilyId(familyId),
-				new FullNameSet(name, nameKana), new FullNameSet(nameMulti, nameMultiKana),
-				new FullNameSet(nameRomaji, nameRomajiKana), new CountryId(nationality), occupationName, personId,
-				relationship, supportCareType, notificationName, togSepDivision, workStudent);
+	public static Family createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate,
+			GeneralDate expelledDate, String familyId, String fullName, String fullNameKana, String nameMultiLangFull,
+			String nameMultiLangFullKana, String nameRomajiFull, String nameRomajiFullKana, String nationalityId,
+			String occupationName, String personId, String relationship, int supportCareType,String tokodekeName, int togSepDivisionType,
+			int workStudentType) {
+		return new Family(birthday, deadDay, entryDate, expelledDate, familyId,
+				new FullName(fullName),
+				new FullNameKana(fullNameKana), 
+				new NameMultiLangFull(nameMultiLangFull),
+				new NameMultiLangFullKana(nameMultiLangFullKana), 
+				new NameRomajiFull(nameRomajiFull),
+				new NameRomajiFullKana(nameRomajiFullKana), 
+				new CountryId(nationalityId), 
+				new OccupationName(occupationName), 
+				personId,
+				new RelationShip(relationship), 
+				EnumAdaptor.valueOf(supportCareType, SupportCareType.class),
+				new TokodekeName(tokodekeName),
+				EnumAdaptor.valueOf(togSepDivisionType, TogSepDivisionType.class),
+				EnumAdaptor.valueOf(workStudentType, WorkStudentType.class));
 
 	}
 }

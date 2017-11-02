@@ -19,6 +19,6 @@ public class BpsmtFamilyPk implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "FAMILY_ID")
-	public GeneralDate familyId;
+	public String familyId;
 
 }

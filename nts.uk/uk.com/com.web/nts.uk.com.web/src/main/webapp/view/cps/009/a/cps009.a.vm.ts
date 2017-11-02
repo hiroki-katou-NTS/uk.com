@@ -24,6 +24,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         comboItems: any;
         comboColumns: any;
         isUpdate: boolean = false;
+        //History reference date
+        baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         constructor() {
 
             let self = this;
@@ -324,6 +326,44 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 //                block.clear();
             });
         }
+                //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
+        historyFilter(){
+            let self = this;
+            //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
+            let lstItem = [];
+            _.each(self.currentCategory().itemList(), function(item){
+                if(self.checkFilter(item)){
+                    lstItem.push(item.selectionItemId);
+                }
+            });
+            lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
+            let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
+            if(lstItem.length == 0){
+                
+            }else{
+                let param = {lstSelItemId: lstItem,baseDate: baseDate}
+               service.refHistSel(param).done(function(data){
+                    console.log(data);
+                }); 
+            }
+            
+        }
+        checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean{
+            //画面項目「個人情報初期値設定区分（A3_22）」で、「固定値」を選択している項目をチェックする(Kiểm tra Item mà có 「個人情報初期値設定区分（A3_22）」 là 「固定値」)
+            if(objItem.selectedRuleCode() != 2){
+                return false;
+            }
+            //「固定値」になっているかつ、項目のデータ型＝選択項目かつ、参照区分！＝Enum参照条件の項目があるかチェックする(Kiểm tra những Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件)
+            //Type là Selection
+            if(objItem.dataType() != 6){
+                return false
+            }
+            //参照区分 != Enum参照条件 || 参照区分＝コード名称参照条件の場合
+            if(objItem.selectedCode() != 'コード名称参照条件の場合'){
+                return false;
+            }
+            return true;
+        }
     }
 
 
@@ -483,6 +523,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
         dateType?: number;
+
+        timepointItemMin?: number;
+
+        timepointItemMax?: number;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -532,11 +576,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //selectionItemId? : string;
         selectionItemId: string;
 
+        timepointItemMin: number;
 
-
-
-
-
+        timepointItemMax: number;
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
@@ -552,24 +594,28 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.stringValue = ko.observable(params.stringValue || "");
             self.intValue = ko.observable(params.intValue || 0);
 
-           
+
             self.dateWithDay = ko.observable(params.dateWithDay || 0);
             self.timePoint = ko.observable(params.timePoint || "");
 
-            self.timeItemMin = params.timeItemMin || null;
-            self.timeItemMax = params.timeItemMax || null;
+            self.timeItemMin = params.timeItemMin || undefined;
+            self.timeItemMax = params.timeItemMax || undefined;
+
+            self.timepointItemMin = params.timepointItemMin || undefined;
+
+            self.timepointItemMax = params.timepointItemMax || undefined;
 
 
-            self.itemType = ko.observable(params.itemType || 0);
-            self.dataType = ko.observable(params.dataType || 0);
+            self.itemType = ko.observable(params.itemType || undefined);
+            self.dataType = ko.observable(params.dataType || undefined);
 
             if (params.dataType === 3) {
-                if(params.dateType === 1){
-                     self.dateValue = ko.observable(params.dateValue || undefined);
-                }else if(params.dateType == 2){
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue),"yyyy-MM")|| undefined);
-                }else if(params.dateType == 3){
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue),"yyyy")|| undefined);
+                if (params.dateType === 1) {
+                    self.dateValue = ko.observable(params.dateValue || undefined);
+                } else if (params.dateType == 2) {
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy-MM") || undefined);
+                } else if (params.dateType == 3) {
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
                 }
 
             }

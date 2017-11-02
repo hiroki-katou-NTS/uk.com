@@ -25,6 +25,16 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	private static final String SELECT_ALL_HISTORY_COMPANYID_SELECTION = SELECT_ALL
 			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId" ;
+	
+	private static final String SELECT_HISTORY_BY_DATE = "SELECT a"
+			+ " FROM PpemtHistorySelection a"
+			+ " INNER JOIN PpemtSelItemOrder b"
+			+ " ON a.selectionItemId = b.selectionIdPK.selectionIdPK"
+			+ " AND a.histidPK.histidPK = b.histidPK"
+			+ " AND a.selectionItemId IN :lstSelItemId"
+			+ " AND a.startDate <= :baseDate"
+			+ " AND a.endDate >= :baseDate"
+			+ " ORDER BY b.disPorder";
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
@@ -81,6 +91,15 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 		return this.queryProxy().query(SELECT_ALL_HISTORY_COMPANYID_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+	}
+
+	//hoatt
+	@Override
+	public List<PerInfoHistorySelection> getHistorySelItemByDate(GeneralDate baseDate, List<String> lstSelItemId) {
+		return this.queryProxy().query(SELECT_HISTORY_BY_DATE, PpemtHistorySelection.class)
+		.setParameter("baseDate", baseDate)
+		.setParameter("lstSelItemId", lstSelItemId)
+		.getList(c->toDomain(c));
 	}
 
 	

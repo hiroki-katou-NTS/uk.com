@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -13,9 +12,8 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPosition;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplaceHist;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -44,19 +42,16 @@ public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable{
 	/** The dep id. */
 	@Column(name = "DEP_ID")
 	private String depId;
-
-	/** The str D. */
-	@Column(name = "STR_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate strD;
-
-	/** The end D. */
-	@Column(name = "END_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate endD;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="BsymtCurrAffiDept", orphanRemoval = true)
+	/** The dep id. */
+	@Column(name = "HIST_ID")
+	private String histId;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="depId", orphanRemoval = true)
 	private List<BsymtSubJobPosition> lstBsymtSubJobPosition;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="histId", orphanRemoval = true)
+	private List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
 
 	@Override
 	protected Object getKey() {
