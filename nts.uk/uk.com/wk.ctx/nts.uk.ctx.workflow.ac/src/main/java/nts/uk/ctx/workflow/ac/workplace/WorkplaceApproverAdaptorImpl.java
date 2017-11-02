@@ -45,7 +45,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 
 		// Return
 		WkpCdNameExport x = optWkpCdNameExport.get();
-		return Optional.of(new WorkplaceImport("", x.getWkpCode(), x.getWkpName()));
+		return Optional.of(new WorkplaceImport(workplaceId, x.getWkpCode(), x.getWkpName()));
 	}
 
 	/**

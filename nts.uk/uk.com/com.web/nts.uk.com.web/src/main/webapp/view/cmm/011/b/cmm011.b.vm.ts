@@ -26,6 +26,12 @@ module nts.uk.com.view.cmm011.b {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 self.workplaceHistory().findAllHistory().done(function() {
+                    // set selected date pass from parent.
+                    let dateRange: any = nts.uk.ui.windows.getShared("DateRange");
+                    let histId: string = self.workplaceHistory().findHistIdByDate(dateRange.start, dateRange.end);
+                    if (histId) {
+                        self.workplaceHistory().selectedHistoryId(histId);
+                    }
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -212,6 +218,11 @@ module nts.uk.com.view.cmm011.b {
                     let detail: IHistory = self.getSelectedHistoryByHistId();
                     self.parentModel.startDate(detail.startDate);
                     self.parentModel.endDate(detail.endDate);
+                    
+                    // set selection mode
+                    if (!self.isSelectedLatestHistory()) {
+                        self.screenMode(ScreenMode.SelectionMode);
+                    }
                 });
             }
             

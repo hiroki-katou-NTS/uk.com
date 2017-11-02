@@ -40,14 +40,15 @@ public class ApprovalAgencyInfoServiceImpl implements ApprovalAgencyInfoService 
 
 		// duyệt list người xác nhận
 		for (String approveItem : approver) {
+			if(CollectionUtil.isEmpty(agents)) {
+				outputFlag = false;
+				// add nguoi xac nhan vao
+				ApproverRepresenterOutput obj = new ApproverRepresenterOutput(approveItem, "Empty");
+				outputListApproverAndRepresenterSID.add(obj);
+			}
 			// duyệt list lấy được trong domain Agent
 			for (Agent agentAdapterDto : agents) {
-				if(CollectionUtil.isEmpty(agents)) {
-					outputFlag = false;
-					// add nguoi xac nhan vao
-					ApproverRepresenterOutput obj = new ApproverRepresenterOutput(approveItem, "Empty");
-					outputListApproverAndRepresenterSID.add(obj);
-				}
+				
 				// nếu người xác nhận có trong list Agent
 				if (approveItem.equals(agentAdapterDto.getEmployeeId())) {
 					// ktra xem AgentAppType = No_Settings hay k

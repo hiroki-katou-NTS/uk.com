@@ -1,5 +1,4 @@
 module ksu001.o.viewmodel {
-    import alert = nts.uk.ui.dialog.alert;
     import setShare = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
@@ -13,7 +12,7 @@ module ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        nameWorkTimeType: KnockoutObservable<ExCell>;
+        nameWorkTimeType: KnockoutComputed<ExCell>;
 
         constructor() {
             let self = this;
@@ -79,23 +78,19 @@ module ksu001.o.viewmodel {
                 //Paste data into cell (set-sticker-single)
                 $("#extable").exTable("stickData", value);
             });
-
-            $("#stick-undo").click(function() {
-                $("#extable").exTable("stickUndo");
-            });
         }
 
         openDialogO1(): void {
             let self = this;
 
-            $('#oViewModel').hide();
+            $('#contain-view').hide();
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
-//            nts.uk.sessionStorage.setItemAsJson('listWorkType', self.listWorkType());
-//            nts.uk.sessionStorage.setItemAsJson('listWorkTime', self.listWorkTime());
-            
+
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml").onClosed(() => {
-                $('#oViewModel').show();
+                $('#contain-view').show();
+                //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
+                $("#extable").exTable("stickData", self.nameWorkTimeType());
             });
         }
 

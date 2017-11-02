@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
@@ -10,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class AppEmployWorkType {
 	/**
 	 * 会社ID
@@ -33,4 +36,12 @@ public class AppEmployWorkType {
 	 * 表示する勤務種類を設定する
 	 */
 	private String workTypeCode;
+	
+	public static AppEmployWorkType createSimpleFromJavaType(String companyID, String employmentCode, int appType, int holidayOrPauseType, String workTypeCode){
+		return new AppEmployWorkType(companyID,
+				employmentCode,
+				EnumAdaptor.valueOf(appType,ApplicationType.class),
+				holidayOrPauseType,
+				workTypeCode);
+	}
 }

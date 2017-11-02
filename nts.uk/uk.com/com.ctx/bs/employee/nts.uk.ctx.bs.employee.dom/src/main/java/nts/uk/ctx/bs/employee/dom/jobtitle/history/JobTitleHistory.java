@@ -5,8 +5,8 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.history;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.GeneralHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -14,15 +14,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 //職位履歴
 @Getter
-public class JobTitleHistory extends DomainObject {
-
-	/** The history id. */
-	// 履歴ID
-	private String historyId;
-
-	/** The period. */
-	// 期間
-	private DatePeriod period;
+public class JobTitleHistory extends GeneralHistoryItem<JobTitleHistory, DatePeriod, GeneralDate> {
 
 	/**
 	 * Instantiates a new job title history.
@@ -30,8 +22,7 @@ public class JobTitleHistory extends DomainObject {
 	 * @param memento the memento
 	 */
 	public JobTitleHistory(JobTitleHistoryGetMemento memento) {
-		this.historyId = memento.getHistoryId();
-		this.period = memento.getPeriod();
+		super(memento.getHistoryId(), memento.getPeriod());
 	}
 
 	/**
@@ -40,8 +31,8 @@ public class JobTitleHistory extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(JobTitleHistorySetMemento memento) {
-		memento.setHistoryId(this.historyId);
-		memento.setPeriod(this.period);
+		memento.setHistoryId(this.identifier());
+		memento.setPeriod(this.span());
 	}
 	
 	/**
@@ -50,7 +41,7 @@ public class JobTitleHistory extends DomainObject {
 	 * @param newStartDate the new start date
 	 */
 	public void updateStartDate(GeneralDate newStartDate) {
-		this.period = new DatePeriod(newStartDate, this.period.end());
+		this.changeSpan(this.newSpan(newStartDate, this.span().end()));
 	}
 	
 	/**
@@ -59,6 +50,6 @@ public class JobTitleHistory extends DomainObject {
 	 * @param newEndDate the new end date
 	 */
 	public void updateEndDate(GeneralDate newEndDate) {
-		this.period = new DatePeriod(this.period.start(), newEndDate);
+		this.changeSpan(this.newSpan(this.span().start(), newEndDate));
 	}
 }

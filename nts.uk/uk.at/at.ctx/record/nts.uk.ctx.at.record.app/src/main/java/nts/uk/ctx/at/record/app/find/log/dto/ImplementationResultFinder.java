@@ -22,6 +22,8 @@ public class ImplementationResultFinder {
 	@Inject
 	 private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
+	
+	
 	@Inject
 	 private TargetPersonRepository targetPersonRepository;
 	
@@ -38,7 +40,8 @@ public class ImplementationResultFinder {
 		//Get List ExecutionLog
 		//List<ExecutionLogDto> listExecutionLog = exe
 		
-		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto, null);
+		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto);
+		
 		
 	}
 	

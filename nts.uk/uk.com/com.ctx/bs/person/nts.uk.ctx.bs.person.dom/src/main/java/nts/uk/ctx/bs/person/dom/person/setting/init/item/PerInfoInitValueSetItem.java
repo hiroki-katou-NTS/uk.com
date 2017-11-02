@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.init.item;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,10 +9,11 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonCategoryItemData;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 
 /**
- * PerInfoInitValueSetItem
+ * The AggregateRoot 個人情報初期値設定項目 PerInfoInitValueSetItem
  * 
  * @author lanlt
  *
@@ -48,11 +50,74 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	// 日付
 	private GeneralDate dateValue;
 
+	// thêm dataType của item defined
 	private Integer dataType;
 
+	// thêm itemType của item defined
 	private Integer itemType;
 
+	// thêm itemCode của item defined
+	private String itemCode;
+
+	// thêm categoryCode của CategoryInfo
+	private String ctgCode;
+
+	// thêm constraint để validate cho chính mình
+	private String constraint;
+
+	// thêm trường numberDecimalPart của bảng common
+	private int numberDecimalPart;
+
+	// thêm trường numberIntegerPart của bảng common
+	private int numberIntegerPart;
+
 	/**
+	 * constructor PerInfoInitValueSetItem
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param itemName
+	 * @param isRequired
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param stringValue
+	 * @param intValue
+	 * @param dateValue
+	 * @param dataType
+	 * @param itemType
+	 * @param itemCode
+	 * @param ctgCode
+	 * @param constraint
+	 * @param numberDecimalPart
+	 * @param numberIntegerPart
+	 */
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
+			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
+			StringValue stringValue, IntValue intValue, GeneralDate dateValue, Integer dataType, Integer itemType,
+			String itemCode, String ctgCode, String constraint, int numberDecimalPart, int numberIntegerPart) {
+		super();
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.perInfoCtgId = perInfoCtgId;
+		this.itemName = itemName;
+		this.isRequired = isRequired;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.stringValue = stringValue;
+		this.intValue = intValue;
+		this.dateValue = dateValue;
+		this.dataType = dataType;
+		this.itemType = itemType;
+		this.itemCode = itemCode;
+		this.ctgCode = ctgCode;
+		this.constraint = constraint;
+		this.numberDecimalPart = numberDecimalPart;
+		this.numberIntegerPart = numberIntegerPart;
+	}
+
+	/**
+	 * constructor agrerate root of 個人情報初期値設定項目PerInfoInitValSettingItem
 	 * 
 	 * @param perInfoItemDefId
 	 * @param settingId
@@ -76,6 +141,46 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.stringValue = stringValue;
 		this.intValue = intValue;
 		this.dateValue = dateValue;
+	}
+
+	/**
+	 * constructor for loading item of cps009
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param itemName
+	 * @param isRequired
+	 * @param refMethodType
+	 * @param saveDataType
+	 * @param stringValue
+	 * @param intValue
+	 * @param dateValue
+	 * @param dataType
+	 * @param itemType
+	 * @param itemCode
+	 * @param ctgCode
+	 */
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
+			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
+			StringValue stringValue, IntValue intValue, GeneralDate dateValue, Integer dataType, Integer itemType,
+			String itemCode, String ctgCode) {
+		super();
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.perInfoCtgId = perInfoCtgId;
+		this.itemName = itemName;
+		this.isRequired = isRequired;
+		this.refMethodType = refMethodType;
+		this.saveDataType = saveDataType;
+		this.stringValue = stringValue;
+		this.intValue = intValue;
+		this.dateValue = dateValue;
+		this.dataType = dataType;
+		this.itemType = itemType;
+		this.itemCode = itemCode;
+		this.ctgCode = ctgCode;
+		this.processs(ctgCode, itemCode);
 	}
 
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
@@ -114,6 +219,15 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
 				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new StringValue(stringValue),
 				new IntValue(new BigDecimal(intValue)), GeneralDate.fromString(dateValue, "yyyy-mm-dd"));
+	}
+
+	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
+			ReferenceMethodType refMethodType) {
+		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.settingId = settingId;
+		this.refMethodType = refMethodType;
 	}
 
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,
@@ -176,6 +290,23 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	}
 
 	/**
+	 * Hàm này dùng để lưu các kiểu referenceType không thuộc kiểu fixedValue
+	 * PerInfoInitValueSetItem
+	 * 
+	 * @param perInfoItemDefId
+	 * @param settingId
+	 * @param perInfoCtgId
+	 * @param refMethodType
+	 * @return
+	 */
+	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
+			String perInfoCtgId, int refMethodType) {
+
+		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
+				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class));
+	}
+
+	/**
 	 * convert to String type
 	 * 
 	 * @param perInfoItemDefId
@@ -231,4 +362,23 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	public void updateInitSetId(String settingId) {
 		this.settingId = settingId;
 	}
+
+	public static String processs(String categoryCode, String itemCode) {
+		PersonCategoryItemData item = new PersonCategoryItemData();
+		for (Map.Entry ctg : item.CategoryMap.entrySet()) {
+			if (ctg.getKey() == categoryCode) {
+				Map<String, String> itemChild = (Map<String, String>) ctg.getValue();
+				for (Map.Entry itemSub : itemChild.entrySet()) {
+					if (itemSub.getKey().equals(itemCode)) {
+						return itemSub.getValue().toString();
+
+					}
+				}
+
+			}
+
+		}
+		return "";
+	}
+
 }

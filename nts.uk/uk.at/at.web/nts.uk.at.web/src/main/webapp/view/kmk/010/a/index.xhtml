@@ -72,9 +72,8 @@
 												<input tabindex="8" class="overtime" 
 													data-bind="ntsTimeEditor: {name: '#[KMK010_13]',
 													value: overtime,
-													inputFormat: 'time', 
 													mode: 'time',
-													defaultValue : 0,
+													option: { inputFormat: 'time', defaultValue: '00:00'},
 													required: true,
 													enable: $parents[1].isEditable,
 													constraint: 'OvertimeValue'}" />
@@ -202,9 +201,9 @@
 									<label>#{i18n.getText('KMK010_30')}</label>
 									<input class="overtimeSelect" tabindex="14" data-bind="ntsTimeEditor: {name: '#[KMK010_31]',
 										value: $parent.superHD60HConMedModel.superHolidayOccurrenceUnit,
-										inputFormat: 'time', 
 										constraint: 'SuperHDOccUnit',
 										mode: 'time',
+										option: { inputFormat: 'time', defaultValue: '01:00'},
 										required: true
 										}" />
 								</div>

@@ -63,7 +63,6 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 		// ドメインモデル「申請」．「承認フェーズ」1～5の順でループする
 		String companyID = AppContexts.user().companyId();
 		String loginEmp = AppContexts.user().employeeId();
-		List<AppApprovalPhase> listAppPhase = new ArrayList<AppApprovalPhase>();
 		List<AppApprovalPhase> listPhase = application.getListPhase();
 		// LOOP PHASE
 		for (AppApprovalPhase appPhase : listPhase) {
@@ -228,13 +227,22 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 					flgApprovalDone = true;
 				}else {
 					//アルゴリズム「未承認の承認者一覧を取得する」を実行する(thực hiện xử lý 「未承認の承認者一覧を取得する」)
-					List<String> lstNotApproved = afterProcess.actualReflectionStateDecision("", appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
+					List<String> lstNotApproved = new ArrayList<>();
+					listFrame.stream().forEach(x -> {
+						x.getListApproveAccepted().stream().forEach(y -> {
+							if(y.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+								lstNotApproved.add(y.getApproverSID());
+							}
+						});
+					});
 					//アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
 					
 					AgentPubImport agency = this.approvalAgencyInformationService
 							.getApprovalAgencyInformation(companyID, lstNotApproved);
 					if (agency.isFlag()) {
 						flgApprovalDone = true;
+					}else {
+						flgApprovalDone = false;
 					}
 				}				
 			}
@@ -243,9 +251,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				// 承認完了フラグをチェックする
 				// ループ中のドメインモデル「承認フェーズ」．承認区分 = 承認済
 				appPhase.changeApprovalATR(ApprovalAtr.APPROVED);				
-			} else {
-				listAppPhase.add(appPhase);
-			}
+			} 
 		}
 		return application;
 	}

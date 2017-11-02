@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.applicable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -12,7 +13,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmploymentCondition;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -20,15 +20,19 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 
-	/** The company id. */
-	private String companyId;
-
-	/** The opt no. */
-	private String optNo;
-
 	/** The type values. */
+
 	@Getter
 	private List<KrcstApplEmpCon> typeValues;
+
+	/**
+	 * Instantiates a new jpa emp condition set memento.
+	 *
+	 * @param entities the entities
+	 */
+	public JpaEmpConditionSetMemento(List<KrcstApplEmpCon> entities) {
+		this.typeValues = entities;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +42,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId comId) {
-		this.companyId = comId.v();
+		// do nothing
 	}
 
 	/*
@@ -49,7 +53,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optNo) {
-		this.optNo = optNo.v();
+		// do nothing
 	}
 
 	/*
@@ -60,11 +64,12 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	 */
 	@Override
 	public void setEmpConditions(List<EmploymentCondition> empConditions) {
-		this.typeValues = empConditions.stream().map(item -> {
-			KrcstApplEmpConPK pk = new KrcstApplEmpConPK(this.companyId, this.optNo, item.getEmpCd());
-			KrcstApplEmpCon entity = new KrcstApplEmpCon(pk);
-			entity.setEmpApplAtr(item.getEmpApplicableAtr().value);
-			return entity;
+		Map<String, Integer> mapped = empConditions.stream()
+				.collect(Collectors.toMap(EmploymentCondition::getEmpCd, value -> value.getEmpApplicableAtr().value));
+
+		this.typeValues = this.typeValues.stream().map(item -> {
+			item.setEmpApplAtr(mapped.get(item.getKrcstApplEmpConPK().getEmpCd()));
+			return item;
 		}).collect(Collectors.toList());
 
 	}

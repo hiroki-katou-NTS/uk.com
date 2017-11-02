@@ -23,6 +23,9 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	private final String SELECTED_ITEM = SELECT_NO_WHERE 
 			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId "
 			+ " AND c.kscstExternalBudgetPk.externalBudgetCd = :externalBudgetCd ";
+	
+	private final String SELECTED_ITEM_Atr = SELECT_ALL_DETAILS + " AND c.budgetAtr = :budgetAtr AND c.unitAtr = :unitAtr";
+	
 
 	private static ExternalBudget toDomain(KscstExternalBudget entity) {
 		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
@@ -81,6 +84,19 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	public Optional<ExternalBudget> find(String companyId, String externalBudgetCd) {
 		return this.queryProxy().query(SELECTED_ITEM, KscstExternalBudget.class).setParameter("companyId", companyId)
 				.setParameter("externalBudgetCd", externalBudgetCd).getSingle(c -> toDomain(c));
+	}
+
+	/**
+	 * find list ExternalBudget by budgetAtr and unitAtr
+	 * author: Hoang Yen
+	 */
+	@Override
+	public List<ExternalBudget> findByAtr(String companyId, int budgetAtr, int unitAtr) {
+		return this.queryProxy().query(SELECTED_ITEM_Atr, KscstExternalBudget.class)
+				.setParameter("companyId", companyId)
+				.setParameter("budgetAtr", budgetAtr)
+				.setParameter("unitAtr", unitAtr)
+				.getList(c -> toDomain(c));
 	}
 
 }

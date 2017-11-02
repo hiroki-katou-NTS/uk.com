@@ -4375,7 +4375,7 @@ var nts;
             var smallExtensions;
             (function (smallExtensions) {
                 $(function () {
-                    $('.limited-label').on('mouseenter', function (e) {
+                    $(window).on('.limited-label', 'mouseenter', function (e) {
                         var $label = $(e.target);
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
@@ -7656,8 +7656,9 @@ var nts;
                         var gridHeight = (height - 20);
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
+                        var defaultSearchText = "コード・名称で検索・・・";
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
-                            var initSearchArea = function ($SearchArea, targetId, searchMode) {
+                            var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                                     .append("<div class='ntsSearchButtonContainer'/>");
                                 if (searchMode === "filter") {
@@ -7670,7 +7671,7 @@ var nts;
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
-                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").wrap("<span class='nts-editor-wrapped ntsControl'/>");
+                                $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
                                 $SearchArea.find(".search-btn").text("検索");
                             };
                             var searchAreaId = elementId + "-search-area";
@@ -7683,13 +7684,13 @@ var nts;
                             if (showSearchBox.showLeft) {
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
-                                initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
+                                initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
                                 $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                                 $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
-                                initSearchArea($searchRightContainer, grid2Id, data.searchMode);
+                                initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
                                 $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             }
                             $searchArea.height(SEARCH_AREA_HEIGHT);
@@ -8786,6 +8787,8 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
+                        $treegrid.data("expand", new ExpandNodeHolder());
+                        $treegrid.data("autoExpanding", false);
                         $treegrid.igTreeGrid({
                             width: width,
                             height: height,
@@ -8795,7 +8798,49 @@ var nts;
                             childDataKey: optionsChild,
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
-                            features: features
+                            features: features,
+                            rowExpanded: function (evt, ui) {
+                                if (!$treegrid.data("autoExpanding")) {
+                                    var holder = $treegrid.data("expand");
+                                    holder.addNode(ui["dataRecord"][optionsValue]);
+                                    $treegrid.data("expand", holder);
+                                }
+                            }, rowCollapsed: function (evt, ui) {
+                                if (!$treegrid.data("autoExpanding")) {
+                                    var holder = $treegrid.data("expand");
+                                    holder.removeNodeAndChilds(ui["dataRecord"], optionsValue, optionsChild);
+                                    $treegrid.data("expand", holder);
+                                }
+                            }, rowsRendered: function (evt, ui) {
+                                $treegrid.data("autoExpanding", true);
+                                var holder = $treegrid.data("expand");
+                                _.forEach(holder.nodes, function (node) {
+                                    $treegrid.igTreeGrid("expandRow", node);
+                                });
+                                var selecteds = $treegrid.ntsTreeView("getSelected");
+                                if (!nts.uk.util.isNullOrUndefined(selecteds)) {
+                                    var firstId_1 = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
+                                    if (firstId_1 !== undefined) {
+                                        var parentIds = Helper.getAllParentId($treegrid, firstId_1, optionsValue, optionsChild);
+                                        _.forEach(parentIds, function (node) {
+                                            if (holder.nodes.indexOf(node) < 0 && node !== firstId_1) {
+                                                $treegrid.igTreeGrid("expandRow", node);
+                                                holder.addNode(node);
+                                            }
+                                        });
+                                        $treegrid.data("expand", holder);
+                                        setTimeout(function () {
+                                            var row2 = $treegrid.igTreeGrid("rowById", firstId_1);
+                                            var container = $treegrid.igTreeGrid("scrollContainer");
+                                            var totalH = _.sumBy(row2.prevAll(), function (e) { return $(e).height(); });
+                                            if (totalH > height - HEADER_HEIGHT) {
+                                                container.scrollTop(totalH);
+                                            }
+                                        }, 200);
+                                    }
+                                }
+                                $treegrid.data("autoExpanding", false);
+                            }
                         });
                         var treeGridId = $treegrid.attr('id');
                         $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
@@ -8826,45 +8871,145 @@ var nts;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
+                        var $treegrid = $(element);
                         var originalSource = $(element).igTreeGrid('option', 'dataSource');
                         if (!_.isEqual(originalSource, options)) {
-                            $(element).igTreeGrid("option", "dataSource", _.cloneDeep(options));
-                            $(element).igTreeGrid("dataBind");
+                            $treegrid.igTreeGrid("option", "dataSource", _.cloneDeep(options));
+                            $treegrid.igTreeGrid("dataBind");
                         }
                         var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
-                        if ($(element).igTreeGridSelection("option", "multipleSelection") !== multiple) {
-                            $(element).igTreeGridSelection("option", "multipleSelection", multiple);
+                        if ($treegrid.igTreeGridSelection("option", "multipleSelection") !== multiple) {
+                            $treegrid.igTreeGridSelection("option", "multipleSelection", multiple);
                         }
                         var showCheckBox = ko.unwrap(data.showCheckBox != undefined ? data.showCheckBox : true);
-                        if ($(element).igTreeGridRowSelectors("option", "enableCheckBoxes") !== showCheckBox) {
-                            $(element).igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
+                        if ($treegrid.igTreeGridRowSelectors("option", "enableCheckBoxes") !== showCheckBox) {
+                            $treegrid.igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
                         }
                         if ((selectedValues === null || selectedValues === undefined) && (singleValue === null || singleValue === undefined)) {
-                            $(element).igTreeGridSelection("clearSelection");
+                            $treegrid.igTreeGridSelection("clearSelection");
                         }
                         else {
-                            var olds = _.map($(element).igTreeGridSelection("selectedRow"), function (row) {
+                            var olds = _.map($treegrid.igTreeGridSelection("selectedRow"), function (row) {
                                 return row.id;
                             });
                             if (multiple) {
                                 if (_.isEqual(selectedValues.sort(), olds.sort())) {
                                     return;
                                 }
-                                $(element).igTreeGridSelection("clearSelection");
+                                $treegrid.igTreeGridSelection("clearSelection");
                                 selectedValues.forEach(function (val) {
-                                    $(element).igTreeGridSelection("selectRowById", val);
+                                    $treegrid.igTreeGridSelection("selectRowById", val);
                                 });
                             }
                             else {
                                 if (olds.length > 1 && olds[0] === singleValue) {
                                     return;
                                 }
-                                $(element).igTreeGridSelection("clearSelection");
-                                $(element).igTreeGridSelection("selectRowById", singleValue);
+                                $treegrid.igTreeGridSelection("clearSelection");
+                                $treegrid.igTreeGridSelection("selectRowById", singleValue);
                             }
                         }
                     };
                     return NtsTreeGridViewBindingHandler;
+                }());
+                var isEmpty = nts.uk.util.isNullOrEmpty;
+                var ExpandNodeHolder = (function () {
+                    function ExpandNodeHolder() {
+                        this.nodes = [];
+                    }
+                    ExpandNodeHolder.prototype.isEmpty = function () {
+                        return isEmpty(this.nodes);
+                    };
+                    ExpandNodeHolder.prototype.addNode = function (nodeId) {
+                        this.nodes.push(nodeId);
+                    };
+                    ExpandNodeHolder.prototype.removeNodeAndChilds = function (nodeSource, nodeKey, nodeChildKey) {
+                        var ids = Helper.getAllIdFromNodeSource(_.cloneDeep(nodeSource), nodeKey, nodeChildKey);
+                        _.remove(this.nodes, function (node) {
+                            return ids.indexOf(node) >= 0;
+                        });
+                    };
+                    return ExpandNodeHolder;
+                }());
+                var Helper;
+                (function (Helper) {
+                    function getAllIdFromNodeSource(nodeSource, nodeKey, childKey) {
+                        var ids = [nodeSource[nodeKey]];
+                        var children = [].concat(nodeSource[childKey]);
+                        while (!isEmpty(children)) {
+                            var currentNode = children.shift();
+                            ids.push(currentNode[nodeKey]);
+                            if (!isEmpty(currentNode)) {
+                                children = children.concat(currentNode[childKey]);
+                            }
+                        }
+                        return ids;
+                    }
+                    Helper.getAllIdFromNodeSource = getAllIdFromNodeSource;
+                    function flatTree(tree, childKey) {
+                        var ids = [];
+                        _.forEach(tree, function (nodeSource) {
+                            ids.push(nodeSource);
+                            var children = [].concat(nodeSource[childKey]);
+                            while (!isEmpty(children)) {
+                                var currentNode = children.shift();
+                                ids.push(currentNode);
+                                if (!isEmpty(currentNode)) {
+                                    children = children.concat(currentNode[childKey]);
+                                }
+                            }
+                        });
+                        return ids;
+                    }
+                    Helper.flatTree = flatTree;
+                    function getAllParentId(tree, id, nodeKey, childKey) {
+                        var source = _.cloneDeep(tree.igTreeGrid("option", "dataSource"));
+                        var parentIds = [];
+                        _.forEach(source, function (node) {
+                            var result = checkIfInBranch(node, id, nodeKey, childKey);
+                            if (result.inThis) {
+                                parentIds = [node[nodeKey]].concat(result.ids);
+                                return false;
+                            }
+                        });
+                        return parentIds;
+                    }
+                    Helper.getAllParentId = getAllParentId;
+                    function checkIfInBranch(source, id, nodeKey, childKey) {
+                        if (source[nodeKey] === id) {
+                            return {
+                                inThis: true,
+                                ids: []
+                            };
+                        }
+                        else {
+                            var result_3 = {
+                                inThis: false,
+                                ids: []
+                            };
+                            _.forEach(source[childKey], function (node) {
+                                result_3 = checkIfInBranch(node, id, nodeKey, childKey);
+                                if (result_3.inThis) {
+                                    result_3.ids = [node[nodeKey]].concat(result_3.ids);
+                                    return false;
+                                }
+                            });
+                            return result_3;
+                        }
+                    }
+                })(Helper || (Helper = {}));
+                var ExpandNode = (function () {
+                    function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {
+                        this.nodeSource = source;
+                        this.nodeLevel = nodeLevel;
+                        this.element = element;
+                        this.nodeKey = nodeKey;
+                        this.childKey = childKey;
+                    }
+                    ExpandNode.prototype.getNode = function () {
+                        return this.nodeSource;
+                    };
+                    return ExpandNode;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
             })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
@@ -9869,7 +10014,7 @@ var nts;
                                     $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]));
                                 }
                                 else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
-                                    var maxDate = startDate.add(1, "months");
+                                    var maxDate = startDate.add(31, "days");
                                     if (endDate.isAfter(maxDate)) {
                                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]));
                                     }
@@ -10725,6 +10870,29 @@ var nts;
                     return NtsFileUploadBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFileUpload'] = new NtsFileUploadBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLetBindingHandler = (function () {
+                    function NtsLetBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+                            return { controlsDescendantBindings: true };
+                        };
+                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
+                    }
+                    return NtsLetBindingHandler;
+                }());
+                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21829,29 +21997,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsLetBindingHandler = (function () {
-                    function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
-                            return { controlsDescendantBindings: true };
-                        };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
-                    }
-                    return NtsLetBindingHandler;
-                }());
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

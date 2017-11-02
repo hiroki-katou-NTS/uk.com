@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         txtEarlyTime2: KnockoutObservable<string> = ko.observable('0:30');
         txtlateTime2: KnockoutObservable<string> = ko.observable('1:00');
         version: number = 0;
+        displayOrder: KnockoutObservable<number> = ko.observable(0);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             var self = this;
@@ -50,6 +51,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode(self.appID()).done(function(data) { 
+                self.displayOrder(data.workManagementMultiple.useATR);
                 self.ListTypeReason(data.listApplicationReasonDto);
                 self.applicantName(data.applicantName);
                 self.selectedCode(data.lateOrLeaveEarlyDto.appReasonID);
@@ -131,11 +133,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                             location.reload();
                         });    
                     } else {
-                        if(res.messageId === "Msg_327"){
-                            nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});    
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});     
-                        }
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     }
                 });
 

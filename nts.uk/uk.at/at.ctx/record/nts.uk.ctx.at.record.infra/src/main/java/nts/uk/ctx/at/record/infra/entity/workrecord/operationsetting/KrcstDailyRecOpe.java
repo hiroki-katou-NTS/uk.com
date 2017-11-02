@@ -17,7 +17,7 @@ public class KrcstDailyRecOpe extends UkJpaEntity{
 	@Column(name = "CID")
 	public String cid;
 	
-	@Column(name = "COMMENT")
+	@Column(name = "OPERATION_COMMENT")
 	public String comment;
 	
 	@Column(name = "SETTING_UNIT")

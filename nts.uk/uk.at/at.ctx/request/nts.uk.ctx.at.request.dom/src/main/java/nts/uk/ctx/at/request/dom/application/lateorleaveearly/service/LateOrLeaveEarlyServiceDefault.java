@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
@@ -42,7 +42,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	ApplicationSettingRepository applicationSetting;
 	
 	@Inject 
-	EmployeeAdapter employeeAdapter;
+	EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
 	ApplicationDeadlineRepository deadlineRepository;	
@@ -75,7 +75,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		String applicationReason = lateOrLeaveEarly.getApplicationReason().v();
 		
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(applicationReason)) {
+				&& Strings.isBlank(lateOrLeaveEarly.getAppReasonID() + applicationReason)) {
 			throw new BusinessException("Msg_115");
 		}
 
@@ -124,7 +124,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(lateOrLeaveEarly.getApplicationReason().v())) {
+				&& Strings.isEmpty(lateOrLeaveEarly.getAppReasonID()+lateOrLeaveEarly.getApplicationReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
 		

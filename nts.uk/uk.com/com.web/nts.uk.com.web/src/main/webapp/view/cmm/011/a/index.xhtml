@@ -46,7 +46,7 @@
 					<div id="left-content-top"
 						class="bg-green caret-bottom caret-inline caret-background">
 						<div class="cf">
-							<div data-bind="ntsFormLabel: {}" style="margin-right: 18px;">#{i18n.getText('CMM011_2')}</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM011_2')}</div>
 							<span data-bind="text: strDWorkplace"></span>
 							<label style="margin-left: 8px;margin-right: 8px;">#{i18n.getText('CMM011_26')}</label>
 							<span data-bind="text: endDWorkplace"></span>
@@ -70,7 +70,6 @@
 							
 						<table id="single-tree-grid" class="cf" tabindex="8" data-bind="ntsTreeGridView:{
 								width: 385,
-								height: calHeightTree(),
 								name: '#[CMM011_8]',
 								dataSource: lstWorkplace,
 								value: selectedWpkId,
@@ -79,6 +78,7 @@
 								primaryText: 'nodeText',
 								multiple: false,
 								enable: true,
+								rows: 20,
 								extColumns: treeColumns,
 								showCheckBox: false}">
 						</table>
@@ -135,7 +135,7 @@
 											},
 											required: true,
 											enable: isNewMode()}" /></div></td>
-							<td><div data-bind="ntsFormLabel: {required: true, constraint: 'OutsideWorkplaceCode'}">
+							<td><div data-bind="ntsFormLabel: {constraint: 'OutsideWorkplaceCode'}">
 								#{i18n.getText('CMM011_14')}</div></td>
 							<td><div><input tabindex="14" data-bind="ntsTextEditor: {
 											value: externalCode,

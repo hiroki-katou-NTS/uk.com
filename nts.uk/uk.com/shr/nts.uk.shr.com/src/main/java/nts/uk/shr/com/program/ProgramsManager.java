@@ -1001,6 +1001,9 @@ public class ProgramsManager {
 	
 	public static final Program CMM018N = new Program(WebAppId.COM, ProgramIdConsts.CMM018N, "CMM018_14",
 			"/view/cmm/018/n/index.xhtml");
+	
+	public static final Program KDL032 = new Program(WebAppId.AT, ProgramIdConsts.KDL032A, "KDL032_1",
+			"/view/kdl/032/a/index.xhtml");
 
 	// TODO: Define new programs here.
 

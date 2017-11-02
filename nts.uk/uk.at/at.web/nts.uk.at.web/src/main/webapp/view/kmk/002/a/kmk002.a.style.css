@@ -21,3 +21,17 @@
 	height: 20px;
 	background-size: 20px 20px;
 }
+.nts-fixed-table {
+	border-left: solid #CCC 1px;
+	border-right: solid #CCC 1px;
+	border-bottom: solid #CCC 1px;
+	margin-left: 10px;
+	width: 813px;
+	overflow-x: scroll;
+}
+.nts-switch-button {
+	min-width: 85px;
+}
+.inp-formula-required {
+	width: 130px;
+}

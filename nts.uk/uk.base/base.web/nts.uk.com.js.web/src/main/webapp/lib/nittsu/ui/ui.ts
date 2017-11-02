@@ -829,7 +829,7 @@ module nts.uk.ui {
     module smallExtensions {
 
         $(() => {
-            $('.limited-label').on('mouseenter', e => {
+            $(document).on('mouseenter', '.limited-label', e => {
                 let $label = $(e.target);
 
                 // Check if contents is overflow
