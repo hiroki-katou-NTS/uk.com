@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 930, height: 680 };</script>
+		<script>var dialogSize = { width: 1030, height: 680 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.i.main.css" />
 			<com:scriptfile path="kdw001.i.start.js" />
@@ -51,7 +51,7 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
 						</td>
 						<!-- I1_9 -->
-						<td colspan="2">33人</td>
+						<td colspan="2"><span data-bind="text: numberPerson "></span>人</td>
 					</tr>
 				</table>
 				
@@ -60,35 +60,35 @@
 						<thead>
 							<tr class="bg-green">
 								<!-- I2_2 3 4 5 6 7 8 9 -->
-								<th style="width: 180px;">#{i18n.getText('KDW001_24')}</th>
-								<th style="width: 180px;">#{i18n.getText('KDW001_25')}</th>
+								<th style="width: 200px;">#{i18n.getText('KDW001_24')}</th>
+								<th style="width: 200px;">#{i18n.getText('KDW001_25')}</th>
 								<th style="width: 100px;text-align: center;">#{i18n.getText('KDW001_26')}</th>
 								<th style="width: 100px;">#{i18n.getText('KDW001_80')}</th>
-								<th style="width: 70px;">#{i18n.getText('KDW001_82')}</th>
+								<th style="width: 90px;">#{i18n.getText('KDW001_82')}</th>
 								<th style="width: 200px;">#{i18n.getText('KDW001_79')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_20')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_49')}</th>
 							</tr>
 						</thead>
 						<tbody>
-							<com:ko-foreach bind="itemList">
+							<com:ko-foreach bind="listExecutionLog">
 								<tr>
 									<!-- I2_10 -->
-									<td><span data-bind="text: $data.column1"></span></td>
+									<td><span data-bind="text: $data.executionTime.startTime"></span></td>
 									<!-- I2_11 -->
-									<td><span data-bind="text: $data.column2"></span></td>
+									<td><span data-bind="text: $data.executionTime.endTime"></span></td>
 									<!-- I2_12 -->
-									<td style="text-align: center;"><span data-bind="text: $data.column3"></span></td>
+									<td style="text-align: center;"><span data-bind="text: $data.executionTime.timeSpan"></span></td>
 									<!-- I2_13 -->
-									<td><span data-bind="text: $data.column4"></span></td>
+									<td><span data-bind="text: $data.executionContentName"></span></td>
 									<!-- I2_14 -->
-									<td><span data-bind="text: $data.column5"></span></td>
+									<td><span data-bind="text: $data.calExeSetInfor.executionTypeName"></span></td>
 									<!-- I2_15 -->
-									<td><span data-bind="text: $data.column6"></span></td>
+									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
 									<!-- I2_16 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind=" text: $data.column7, click: $parent.openDialogG "></span></td>
+									<td style="text-align: center;"><span class="hyperlink" data-bind="click: $parent.openDialogG.bind($parent) "><span data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind="text: $data.column8, click : $parent.openDialogH "></span></td>
+									<td style="text-align: center;"><span class="hyperlink" data-bind="click: $parent.openDialogH.bind($parent) "><span data-bind=" text: $parent.numberPerson"></span>人</span></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>

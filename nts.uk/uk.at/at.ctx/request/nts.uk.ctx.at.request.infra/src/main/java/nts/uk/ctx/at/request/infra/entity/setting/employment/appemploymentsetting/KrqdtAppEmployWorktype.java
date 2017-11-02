@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetti
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,9 +27,6 @@ public class KrqdtAppEmployWorktype extends UkJpaEntity implements Serializable 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KrqdtAppEmployWorktypePK krqdtAppEmployWorktypePK;
-   
-    @Column(name = "WORK_TYPE_CODE")
-    private String workTypeCode;
 
 	@Override
 	protected Object getKey() {

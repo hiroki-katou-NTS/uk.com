@@ -58,6 +58,16 @@ public class BsymtWkpConfig extends UkJpaEntity implements Serializable {
 	public BsymtWkpConfig() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new bsymt wkp config.
+	 *
+	 * @param bsymtWkpConfigPK the bsymt wkp config PK
+	 */
+	public BsymtWkpConfig(BsymtWkpConfigPK bsymtWkpConfigPK) {
+		super();
+		this.bsymtWkpConfigPK = bsymtWkpConfigPK;
+	}
 
 	/*
 	 * (non-Javadoc)

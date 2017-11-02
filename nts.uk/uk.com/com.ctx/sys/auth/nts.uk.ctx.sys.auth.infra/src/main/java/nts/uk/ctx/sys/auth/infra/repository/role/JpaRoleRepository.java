@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,6 +24,7 @@ import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
 /**
  * The Class JpaRoleRepository.
  */
+@Stateless
 public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	/* (non-Javadoc)

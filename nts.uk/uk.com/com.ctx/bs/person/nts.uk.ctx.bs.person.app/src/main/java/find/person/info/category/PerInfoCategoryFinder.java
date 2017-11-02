@@ -64,10 +64,10 @@ public class PerInfoCategoryFinder {
 		List<PerInfoCtgMapDto> lstReturn = null;
 		if (lstFilter.size() != 0) {
 			lstReturn = PersonInfoCategory.getAllPerInfoCategoryWithCondition(lstFilter).stream().map(p -> {
-				// boolean alreadyCopy =
-				// perInfoCtgRepositoty.checkPerInfoCtgAlreadyCopy(p.getPersonInfoCategoryId(),
-				// companyId);
-				boolean alreadyCopy = true;
+				 boolean alreadyCopy =
+				 perInfoCtgRepositoty.checkPerInfoCtgAlreadyCopy(p.getPersonInfoCategoryId(),
+				 companyId);
+				//boolean alreadyCopy = true;
 				return new PerInfoCtgMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 						p.getCategoryName().v(), alreadyCopy);
 			}).collect(Collectors.toList());

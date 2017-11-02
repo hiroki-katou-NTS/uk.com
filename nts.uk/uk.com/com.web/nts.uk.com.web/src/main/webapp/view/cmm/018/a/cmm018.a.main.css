@@ -31,7 +31,6 @@ table.contents-header td.button_phase {
 }
 
 table.contents-header td.approver {
-	width: 70px !important;
 }
 
 table.contents-header td.base-date {
@@ -61,4 +60,8 @@ table#fixed-tableWpB tbody td{
 }
 table#fixed-tablePsB tbody td{
 	border: 1px solid #CCC;
+}
+.fixName{
+    white-space: nowrap;
+    overflow: hidden;
 }

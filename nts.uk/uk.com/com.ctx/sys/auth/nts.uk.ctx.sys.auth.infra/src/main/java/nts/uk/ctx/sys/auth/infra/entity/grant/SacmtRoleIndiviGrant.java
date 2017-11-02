@@ -45,8 +45,8 @@ public class SacmtRoleIndiviGrant extends UkJpaEntity implements Serializable {
     @Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
     
-    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY, mappedBy="sacmtRoleIndiviGrant")
-	public List<SacmtRole> sacmtRoles;
+//    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY, mappedBy="sacmtRoleIndiviGrant")
+//	public List<SacmtRole> sacmtRoles;
 
     public SacmtRoleIndiviGrant() {
     }

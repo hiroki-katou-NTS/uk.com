@@ -9,7 +9,8 @@ module nts.uk.at.view.kdl006.a {
              findCurrentClosure: "ctx/at/shared/workrule/closure/findCurrentClosure",                    
              findWorkplaceInfo:"bs/employee/workplace/info/findWorkplaceInfo",
              findWorkFixedByWkpIdAndClosureId:"at/record/workfixed/findWorkFixed",
-             
+             findWorkFixedInfo: "at/record/workfixed/find",
+             saveWorkFixedInfo: "at/record/workfixed/save",
         }
     
         /**
@@ -34,6 +35,20 @@ module nts.uk.at.view.kdl006.a {
                 closureId: closureId,
                 wkpId: workplaceId
             });
+        }
+        
+        /**
+         * findWorkFixed
+         */
+        export function findWorkFixedInfo(listWorkFixed: model.WorkFixedDto[]): JQueryPromise<any[]> {
+            return nts.uk.request.ajax(servicePath.findWorkFixedInfo, listWorkFixed);
+        }    
+        
+        /**
+         * saveWorkFixedInfo
+         */
+        export function saveWorkFixedInfo(listWorkFixed: model.WorkFixedCommand[]): JQueryPromise<any[]> {
+            return nts.uk.request.ajax(servicePath.saveWorkFixedInfo, listWorkFixed);
         }
         
         /**
@@ -112,6 +127,36 @@ module nts.uk.at.view.kdl006.a {
                 
                 /** The process date. */
                 processDate: number;
+                
+                constructor (closureId: number, wkpId: string) {
+                    this.closureId = closureId;
+                    this.wkpId = wkpId;
+                }
+            }
+            
+            export class WorkFixedCommand {
+                
+                isSave: boolean;
+                
+                /** The closure id. */
+                closureId: number;
+                
+                /** The work place id. */
+                wkpId: string;
+                
+                /** The confirm closure status. */
+                confirmClsStatus: number;
+                
+                /** The process date. */
+                processDate: number;
+                
+                constructor (isSave: boolean, closureId: number, wkpId: string, confirmClsStatus: number, processDate: number) {
+                    this.isSave = isSave;
+                    this.closureId = closureId;
+                    this.wkpId = wkpId;
+                    this.confirmClsStatus = confirmClsStatus;
+                    this.processDate = processDate;
+                }
             }
         }
     }

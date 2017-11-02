@@ -28,7 +28,9 @@ module nts.uk.at.view.cdl024.viewmodel {
             service.getAll().done((data: Array<IItemModel>) => {
                 items(data);
                 var parameter = nts.uk.ui.windows.getShared("CDL024");
-                self.currentCodeList(parameter.reasonCD);
+                if (parameter != null && parameter.reasonCD != null) {
+                    self.currentCodeList(parameter.reasonCD);
+                }
                 dfd.resolve();
             });
 
