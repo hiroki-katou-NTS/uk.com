@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjAppr
 @Stateless
 public class DestinationJudgmentProcessImpl implements DestinationJudgmentProcess {
 
-
 	@Override
 	public List<String> getDestinationJudgmentProcessService(List<ApproverRepresenterImport> listApproverAndRepresenterSID) {
 		List<String> listDestination = new ArrayList<>();
