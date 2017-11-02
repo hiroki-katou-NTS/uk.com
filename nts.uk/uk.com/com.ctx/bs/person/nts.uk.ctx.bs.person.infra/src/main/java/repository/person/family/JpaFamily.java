@@ -2,14 +2,13 @@ package repository.person.family;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.currentaddress.BpsmtCurrentaddress;
 import entity.person.family.BpsmtFamily;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 
@@ -17,6 +16,8 @@ import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 public class JpaFamily extends JpaRepository implements FamilyRepository {
 
 	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtFamily c WHERE c.pid = :pid";
+	
+	private static final String SELECT_FAMILY_BY_ID = "SELECT c FROM BpsmtFamily c WHERE c.ppsmtFamilyPk.familyId = :familyId";
 
 	private List<Family> toListFamily(List<BpsmtFamily> listEntity) {
 		List<Family> lstFamily = new ArrayList<>();
@@ -56,8 +57,9 @@ public class JpaFamily extends JpaRepository implements FamilyRepository {
 
 	@Override
 	public Family getFamilyById(String familyId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Family> family = this.queryProxy().query(SELECT_FAMILY_BY_ID, BpsmtFamily.class)
+				.setParameter("familyId", familyId).getSingle(x -> toDomainFamily(x));
+		return family.isPresent()?family.get():null;
 	}
 
 	@Override

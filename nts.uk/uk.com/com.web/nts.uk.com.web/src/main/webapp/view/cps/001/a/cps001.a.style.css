@@ -61,6 +61,15 @@
 
 .action-group {
 	width: 194px;
+	height: 147px;
+}
+
+.action-group .active-panel:first-child {
+	height: 85px;
+}
+
+.action-group .active-panel:last-child {
+	height: 60px;
 }
 
 .action-group .column {
@@ -133,8 +142,10 @@
 	height: 7px;
 }
 
-.avatar-group img {
+.avatar-group img.avatar {
 	padding: 5px 2px 2px 5px;
+	width: 100px;
+	height: 130px;
 }
 
 .person-info {
@@ -148,6 +159,10 @@
 	border: 1px solid #999;
 }
 
+.person-info td:not(:first-child ) {
+	position: relative;
+}
+
 .person-info td:first-child {
 	width: 120px;
 	padding-left: 15px;
@@ -159,6 +174,28 @@
 	box-sizing: border-box;
 }
 
+.person-info td>div {
+	display: inline-block;
+}
+
+.person-info td>div.info {
+	padding-left: 5px;
+	padding-right: 5px;	
+}
+
+.person-info td>div.info.first {
+	width: 125px;
+	max-width: 125px;
+}
+
+.person-info td>div.bg-calendar-ym-set {
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-left: 1px solid #999;
+	border-right: 1px solid #999;
+}
+
 #hor-scroll-button-hide {
 	margin-top: 5%;
 }
@@ -167,10 +204,23 @@
 	padding-top: 5px;
 }
 
-.form-group:not (.item-classification ) {
-	margin-bottom: 5px;
-}
+.form-group
+:not
+ 
+(
+.item-classification
+ 
+)
+{
+margin-bottom
+:
+ 
+5
+px
+;
 
+
+}
 .form-group:not (.item-classification )>* {
 	display: inline-block;
 	vertical-align: middle;
@@ -206,10 +256,11 @@
 .search-box {
 	margin-bottom: 15px;
 }
+
 .search-box>* {
 	display: inline-block;
 	vertical-align: middle;
-} 
+}
 
 .ui-igcombo-wrapper {
 	width: 195px;
@@ -219,8 +270,6 @@
 	top: 40px;
 	border-width: 35px 10px
 }
-
-
 
 .category-input>.title {
 	display: block;

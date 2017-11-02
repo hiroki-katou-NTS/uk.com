@@ -43,7 +43,7 @@ public class BsymtAssiWorkplace extends UkJpaEntity implements Serializable{
 	@Column(name = "HIST_ID")
 	private String histId;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="histId", orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="bsymtAssiWorkplace", orphanRemoval = true)
 	private List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
 	
 	@Override
