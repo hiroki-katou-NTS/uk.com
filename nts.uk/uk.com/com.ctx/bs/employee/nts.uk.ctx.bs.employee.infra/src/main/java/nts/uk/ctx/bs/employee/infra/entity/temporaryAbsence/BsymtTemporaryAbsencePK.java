@@ -7,12 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Embeddable
 public class BsymtTemporaryAbsencePK implements Serializable{/**
 	 * 
@@ -22,6 +20,6 @@ public class BsymtTemporaryAbsencePK implements Serializable{/**
 	
 	@Basic(optional = false)
 	@Column(name="SID")
-	private String sid;
+	public String sid;
 	
 }

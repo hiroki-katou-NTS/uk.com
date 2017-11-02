@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.person.PersonGetMemento;
-import nts.uk.ctx.basic.dom.person.PersonSetMemento;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 

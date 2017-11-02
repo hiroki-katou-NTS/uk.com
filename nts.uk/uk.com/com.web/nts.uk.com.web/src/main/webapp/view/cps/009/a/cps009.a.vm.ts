@@ -91,7 +91,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMin: obj.timeItemMin,
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
-                            dateType : obj.dateType
+                            dateType: obj.dateType
                         });
                     });
 
@@ -191,11 +191,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 params = {
                     settingId: self.initSettingId(),
-                    categoryId: self.currentCategory().currentItemId(),
-
+                    settingName: ko.toJS(self.currentCategory().settingName),
+                    categoryId: self.currentCategory().currentItemId()
                 };
 
-            setShared('B_PARAMS', params);
+            setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.start(params.settingId);
@@ -209,12 +209,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this,
                 params = {
-                    settingId: self.initSettingId(),
-                    settingCode: self.currentCategory().settingCode,
-                    settingName: self.currentCategory().settingName
+                    settingId: ko.toJS(self.initSettingId()),
+                    settingCode: ko.toJS(self.currentCategory().settingCode),
+                    settingName: ko.toJS(self.currentCategory().settingName)
                 };
 
-            setShared('C_PARAMS', params);
+            setShared('CPS009C_PARAMS', params);
 
             block.invisible();
 
@@ -479,7 +479,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // selectionItemId để kết nối với bảng SelectionItem
         selectionItemId?: string;
-        
+
         // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
         dateType?: number;
     }
@@ -526,8 +526,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         //selectionItemId? : string;
         selectionItemId: string;
-        
-        dateType : number;
+
+        dateType: number;
 
 
 
@@ -598,7 +598,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.itemCode = ko.observable(params.itemCode || "");
             self.ctgCode = ko.observable(params.ctgCode || "");
             self.constraint = ko.observable(params.constraint || "");
-            
+
 
 
             self.numbericItem = new NumbericItem(params.dataType,

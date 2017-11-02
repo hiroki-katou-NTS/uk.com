@@ -2,6 +2,10 @@ package nts.uk.ctx.bs.employee.app.find.person.item;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * The Class Person.
+ */
+// 個人
 @AllArgsConstructor
 public enum CtgItemType {
 	//家族所属税 IncomeTax
@@ -23,7 +27,18 @@ public enum CtgItemType {
 	//所属部門
 	AFFI_DEPARMENT(9),
 	//所属部門（兼務）
-	CURRENT_AFF_DEPARTMENT(10);
+	CURRENT_AFF_DEPARTMENT(10),
+	// 個人 Person
+	PERSON(11),
+	//現住所 CurrentAddress
+	CURRENT_ADDRESS(12),
+	//家族 Family
+	FAMILY(13),
+	//寡夫寡婦履歴 WidowHistory
+	WIDOW_HISTORY(14),
+	//緊急連絡先 emergency contact
+	EMERGENCY_CONTACT(15)
+	;
 	
 	public final int value;
 }
