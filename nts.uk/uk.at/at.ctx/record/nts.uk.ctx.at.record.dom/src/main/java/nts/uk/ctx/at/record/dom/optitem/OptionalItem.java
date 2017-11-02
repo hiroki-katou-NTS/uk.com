@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.optitem;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -48,6 +49,35 @@ public class OptionalItem extends AggregateRoot {
 	/** The calculation result range. */
 	// 計算結果の範囲
 	private CalcResultRange calcResultRange;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.calcResultRange.hasBothLimit()) {
+			switch (this.optionalItemAtr) {
+			case NUMBER:
+				if (this.calcResultRange.getNumberRange().get().isInvalidRange()) {
+					throw new BusinessException("Msg_574");
+				}
+				break;
+			case AMOUNT:
+				if (this.calcResultRange.getAmountRange().get().isInvalidRange()) {
+					throw new BusinessException("Msg_574");
+				}
+				break;
+			case TIME:
+				if (this.calcResultRange.getTimeRange().get().isInvalidRange()) {
+					throw new BusinessException("Msg_574");
+				}
+				break;
+			default:
+				throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			}
+		}
+	}
 
 	/**
 	 * Instantiates a new optional item.
