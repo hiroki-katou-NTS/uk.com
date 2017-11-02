@@ -148,11 +148,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID, dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData, dfdGetDetailCheckData) => {
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
                 // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
                 let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
+                self.getDetailCheck(self.inputDetail());
                 self.getMessageDeadline(data);
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -595,7 +595,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.alert({ messageId: 'Msg_16' }).then(function() {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrUndefined(data)) {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.result });
+                            if(!nts.uk.util.isNullOrEmpty(data.result)){
+                                let strMail = "";
+                                _.forEach(data.result, function(value) {
+                                      strMail = value + '<br/>';
+                                });
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: strMail });
+                            }
                         }
                         //lấy vị trí appID vừa xóa trong listAppID
                         let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
