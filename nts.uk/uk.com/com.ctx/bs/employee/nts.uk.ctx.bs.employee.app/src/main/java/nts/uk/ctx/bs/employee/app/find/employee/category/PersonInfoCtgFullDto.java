@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.app.find.employee.item.PerInfoItemDefDto;
+import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
+import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemOptionalDto;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 
@@ -24,9 +26,12 @@ public class PersonInfoCtgFullDto {
 	private int categoryType;
 	private int isFixed;
 	private List<PerInfoItemDefDto> itemLst;
+	private List<CategoryItemFixDto> listCtgItemFixedDto;
+	private List<CategoryItemOptionalDto> listCtgItemOptionalDto;
 
 	private PersonInfoCtgFullDto(PersonInfoCategory personInfoCategory,
-			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition) {
+			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition, List<CategoryItemFixDto> listCtgItemFixedDto,
+			List<CategoryItemOptionalDto> listCtgItemOptionalDto) {
 		this.id = personInfoCategory.getPersonInfoCategoryId();
 		this.categoryCode = personInfoCategory.getCategoryCode().v();
 		this.categoryName = personInfoCategory.getCategoryName().v();
@@ -34,6 +39,8 @@ public class PersonInfoCtgFullDto {
 		this.isAbolition = personInfoCategory.getIsAbolition().value;
 		this.categoryType = personInfoCategory.getCategoryType().value;
 		this.isFixed = personInfoCategory.getIsFixed().value;
+		this.listCtgItemFixedDto = listCtgItemFixedDto;
+		this.listCtgItemOptionalDto = listCtgItemOptionalDto;
 		if (lstPersonInfoItemDefinition != null)
 			this.itemLst = lstPersonInfoItemDefinition.stream()
 					.map(x -> new PerInfoItemDefDto(x.getPerInfoItemDefId(), x.getPerInfoCategoryId(),
@@ -43,10 +50,10 @@ public class PersonInfoCtgFullDto {
 
 	public static PersonInfoCtgFullDto createObjectFromDomain(PersonInfoCategory personInfoCategory,
 			List<PersonInfoItemDefinition> lstPersonInfoItemDefinition) {
-		return new PersonInfoCtgFullDto(personInfoCategory, lstPersonInfoItemDefinition);
+		return new PersonInfoCtgFullDto(personInfoCategory, lstPersonInfoItemDefinition, null, null);
 	}
 
 	public static PersonInfoCtgFullDto createObjectFromDomain(PersonInfoCategory personInfoCategory) {
-		return new PersonInfoCtgFullDto(personInfoCategory, null);
+		return new PersonInfoCtgFullDto(personInfoCategory, null, null, null);
 	}
 }

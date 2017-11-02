@@ -19,7 +19,6 @@ import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.Famil
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsuranceRepository;
 import nts.uk.ctx.bs.employee.dom.person.ParamForGetPerItem;
 import nts.uk.ctx.bs.employee.dom.person.PerInfoCtgDomainService;
-import nts.uk.ctx.bs.employee.dom.position.jobposition.JobPositionMain;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
