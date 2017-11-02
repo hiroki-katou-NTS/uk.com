@@ -1,10 +1,13 @@
 package nts.uk.ctx.bs.employee.dom.workplace.assigned;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
+@AllArgsConstructor
 public class AssignedWorkplace extends AggregateRoot{
 	
 	/**Employee id*/
@@ -25,22 +28,7 @@ public class AssignedWorkplace extends AggregateRoot{
 	//期間
 	private DatePeriod period;
 	
-	public AssignedWorkplace(AssignedWorkplaceMemento memento){
-		this.employeeId = memento.getEmployeeId();
-		this.assignedWorkplaceId = memento.getAssignedWorkplaceId();
-		this.historyId = memento.getHistoryId();
-		this.period = memento.getPeriod();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(AssignedWorkplaceMemento memento){
-		memento.setEmployeeId(this.employeeId);
-		memento.setAssignedWorkplaceId(this.assignedWorkplaceId);
-		memento.setHistoryId(this.historyId);
-		memento.setPeriod(this.period);
+	public AssignedWorkplace createFromJavaType(String employeeId, String assignedWorkplaceId, String historyId, GeneralDate strD, GeneralDate endD){
+		return new AssignedWorkplace(employeeId, assignedWorkplaceId, historyId, new DatePeriod(strD, endD));
 	}
 }

@@ -21,7 +21,7 @@ public class EmpCopySettingItemWebService extends WebService {
 	private CopySetItemFinder finder;
 
 	@POST
-	@Path("getAll/{categoryCd}/{employeeId}/{baseDate}")
+	@Path("getAll/{employeeId}/{categoryCd}/{baseDate}")
 	public List<SettingItemDto> getItemListFromCtgCd(@PathParam("categoryCd") String categoryCd,
 			@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate) {
 		return this.finder.getEmpCopySettingItemList(categoryCd, employeeId,

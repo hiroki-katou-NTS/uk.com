@@ -3,14 +3,12 @@
  */
 package nts.uk.ctx.bs.person.dom.person.family;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.info.currentaddress.CountryId;
+import nts.uk.ctx.bs.person.dom.person.info.CountryId;
 import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 
 /**
