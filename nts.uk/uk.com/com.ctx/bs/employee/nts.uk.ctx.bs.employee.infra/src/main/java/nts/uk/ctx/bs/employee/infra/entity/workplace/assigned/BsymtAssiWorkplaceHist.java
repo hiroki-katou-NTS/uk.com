@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.infra.entity.workplace.assigned;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,7 @@ import nts.arc.time.GeneralDate;
 @Table(name = "BSYMT_AFFI_WORKPLACE_HIST")
 public class BsymtAssiWorkplaceHist {
 	
+	@Id
 	/** The end D. */
 	@Column(name = "HIST_ID")
 	private String historyId;

@@ -35,6 +35,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -97,6 +99,9 @@ public class EmpPerInfoCategoryFinder {
 	
 	@Inject 
 	private CurrentAffiDeptRepository currentAffiDeptRepository;
+	
+	@Inject
+	private FamilyRepository familyRepository;
 
 	/**
 	 * get person ctg infor and list of item children
@@ -328,7 +333,12 @@ public class EmpPerInfoCategoryFinder {
 			setCtgItemOptionDto(empPerCtgInfoDto, currentAddress.getCurrentAddressId(), true);
 			break;		
 		case "CS00004":
-			//Family
+			Family family = familyRepository.getFamilyById(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createFamily(family.getBirthday(), family.getDeadDay(), family.getEntryDate(), family.getExpelledDate(), 
+					family.getFamilyId(), family.getFullName().v(), family.getFullNameKana().v(), family.getNameMultiLangFull().v(), family.getNameMultiLangFullKana().v(), 
+					family.getNameRomajiFull().v(), family.getNameRomajiFullKana().v(), family.getNationalityId().v(), family.getOccupationName().v(), 
+					family.getPersonId(), family.getRelationship().v(), family.getSupportCareType().value, 
+					family.getTogSepDivisionType().value, family.getWorkStudentType().value);
 			break;
 		case "CS00014":
 			//WidowHistory

@@ -3,12 +3,15 @@ package repository.person.emergencycontact;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import entity.person.emergencycontact.BpsmtEmergencyContact;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
 
+@Stateless
 public class JpaPerEmergencyCtRepository extends JpaRepository implements PersonEmergencyCtRepository {
 
 	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtEmergencyContact c WHERE c.pid = :pid";

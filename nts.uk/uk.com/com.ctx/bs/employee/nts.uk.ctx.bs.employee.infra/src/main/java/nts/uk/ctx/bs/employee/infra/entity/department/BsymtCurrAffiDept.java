@@ -47,10 +47,10 @@ public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable{
 	@Column(name = "HIST_ID")
 	private String histId;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="depId", orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="bsymtCurrAffiDept", orphanRemoval = true)
 	private List<BsymtSubJobPosition> lstBsymtSubJobPosition;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="histId", orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="bsymtAssiWorkplace", orphanRemoval = true)
 	private List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
 
 	@Override
