@@ -13,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
@@ -73,7 +74,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 				PerInfoInitValueSetItem item = new PerInfoInitValueSetItem();
 
 				Optional<PerInfoInitValueSetItem> itemExist = this.itemRepo.getDetailItem(command.getSettingId(),
-   						command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+						command.getPerInfoCtgId(), c.getPerInfoItemDefId());
 				if (itemExist.isPresent()) {
 
 					if (c.getSelectedRuleCode() == 2) {
@@ -81,6 +82,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							itemExist.get().setStringValue(new StringValue(c.getStringValue()));
 							itemExist.get().setRefMethodType(EnumAdaptor
 									.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
+							itemExist.get().setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
 							this.itemRepo.update(itemExist.get());
 
 						} else if (c.getDataType() == 2) {
@@ -91,11 +93,21 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							this.itemRepo.update(itemExist.get());
 
 						} else if (c.getDataType() == 3) {
-							GeneralDate x =GeneralDate.fromString(c.getDateVal(), "yyyy-MM-dd");
+							if (c.getDateType() == 1) {
+								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+										command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
+										GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
+							} else if (c.getDateType() == 2) {
+								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+										command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
+										GeneralDate.fromString(c.getDateVal()+ "/01", "yyyy/MM/dd"));
 
-							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,x
-									);
+							} else if (c.getDateType() == 3) {
+								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+										command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
+										GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
+
+							}
 							this.itemRepo.update(item);
 
 						} else if (c.getDataType() == 4) {
@@ -144,13 +156,25 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 						} else if (c.getDataType() == 2) {
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
-									c.getSaveDataType(), Integer.valueOf(c.getIntValue()));
+									2, Integer.valueOf(c.getIntValue()));
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 3) {
-							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
-									c.getDateVal());
+							if (c.getDateType() == 1) {
+								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+										command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
+										GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
+							} else if (c.getDateType() == 2) {
+								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+										command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
+										GeneralDate.fromString(c.getDateVal() +"/01", "yyyy/MM/dd"));
+
+							} else if (c.getDateType() == 3) {
+								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+										command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(), 3,
+										GeneralDate.fromString(c.getDateVal()+ "/01/01", "yyyy/MM/dd"));
+
+							}
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 4) {

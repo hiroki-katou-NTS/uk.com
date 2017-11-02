@@ -9,6 +9,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
+    import formatDate = nts.uk.time.formatDate;
 
     import primitiveConst = CPS009Constraint.primitiveConst;
 
@@ -225,7 +226,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         }
 
-
         // new initVal
         openDDialog() {
 
@@ -306,7 +306,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             value: obj.value,
                             selectedRuleCode: obj.selectedRuleCode,
                             selectedCode: obj.selectedCode,
-                            numberValue: obj.numbereditor.value
+                            numberValue: obj.numbereditor.value,
+                            dateType: obj.dateType
                         };
                     })
                 };
@@ -502,7 +503,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
         saveDataType: KnockoutObservable<number>;
         stringValue: KnockoutObservable<string>;
         intValue: KnockoutObservable<number>;
+
+        //dateType
+        dateType: number;
         dateValue: KnockoutObservable<String>;
+
         dateWithDay: KnockoutObservable<number>;
         timePoint: KnockoutObservable<string>;
 
@@ -527,7 +532,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //selectionItemId? : string;
         selectionItemId: string;
 
-        dateType: number;
+
 
 
 
@@ -547,7 +552,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.stringValue = ko.observable(params.stringValue || "");
             self.intValue = ko.observable(params.intValue || 0);
 
-            self.dateValue = ko.observable(params.dateValue || undefined);
+           
             self.dateWithDay = ko.observable(params.dateWithDay || 0);
             self.timePoint = ko.observable(params.timePoint || "");
 
@@ -557,6 +562,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || 0);
             self.dataType = ko.observable(params.dataType || 0);
+
+            if (params.dataType === 3) {
+                if(params.dateType === 1){
+                     self.dateValue = ko.observable(params.dateValue || undefined);
+                }else if(params.dateType == 2){
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue),"yyyy-MM")|| undefined);
+                }else if(params.dateType == 3){
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue),"yyyy")|| undefined);
+                }
+
+            }
+
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
             self.selectionItemId = params.selectionItemId || undefined;

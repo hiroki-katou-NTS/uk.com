@@ -32,6 +32,11 @@ public class UpdateItemInitValueSettingCommand {
 	
 	private BigDecimal timeItem;
 	
+	// trường này dùng để xác đinh dateType  thuộc
+	// kiểu YYY-MM-DD, YY -MM, YY
+	private Integer dateType;
+	
+	// giá trị của date
 	private String dateVal;
 	
 	private String stringValue;
