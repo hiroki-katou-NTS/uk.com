@@ -52,12 +52,6 @@ module nts.uk.at.view.kml002.c.viewmodel {
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
             
-            if(self.catCode() === 0) {
-                self.enable(true);
-            } else {
-                self.enable(false);
-            }
-            
             var devChange = false;
             
             self.checked.subscribe(function(value) {
@@ -90,9 +84,11 @@ module nts.uk.at.view.kml002.c.viewmodel {
                         devChange = false;
                         
                         if(value == 0) {
+                            self.enable(true);
                             self.displayItemsRule(self.allItem(), value, self.checked());
                             self.rightItems.removeAll();
                         } else {
+                            self.enable(false);
                             self.items(_.filter(self.allItem(), ['itemType', GrantPeriodicMethod.EXTERNAL]));
                             self.rightItems.removeAll();
                         }
@@ -103,6 +99,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                         
                         if(value == 0) {
                             self.catCode(1);
+                            self.enable(false);
                             return;
                         } else {
                             self.catCode(0);
@@ -120,6 +117,12 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.enableReturn(true);
             } else {
                 self.enableReturn(false);
+            }
+            
+            if(self.catCode() === 0) {
+                self.enable(true);
+            } else {
+                self.enable(false);
             }
         }
 

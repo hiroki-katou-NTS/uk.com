@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum Rounding {
-	/** 0- 未満切捨、以上切上 **/
-	ROUNDED_LESS_THAN_OR_EQUAL_TO(0),
-	/** 1- 切り捨て **/
-	TRUNCATION(1),
-	/** 2- 切り上げ **/
-	ROUND_UP(2);
+	/** 0- 切り捨て **/
+	ROUND_DOWN(0),
+	/** 1- 切り上げ **/
+	ROUND_UP(1),
+	/** 2- 未満切捨、以上切上 **/
+	ROUND_DOWN_OVER(2),;
 	
 	public final int value;
 }

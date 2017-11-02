@@ -21,6 +21,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         cbxRounding: KnockoutObservableArray<any>;
         cbxFraction: KnockoutObservableArray<any>;
         allSelectedItems: KnockoutObservable<boolean>;
+        dataB: any;
         
         constructor() {
             var self = this;
@@ -208,7 +209,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                           
                     });
                 }
-            });    
+            });
         }
 
         /**
@@ -332,6 +333,15 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 return;    
             }
             
+            if(self.editMode()) {
+                var filter = _.filter(self.settingItems(), function(o) { return o.code == self.code(); });
+                
+                if(filter.length > 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_3" });
+                    return;
+                }
+            }
+            
             var code = self.code();
             var name = self.name();
             var unit = self.unitSelected();
@@ -355,17 +365,21 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 verticalCalItems.push(item);
             }
             
-            var data = new VerticalSettingDto(code, name, unit, useAtr, assistanceTabulationAtr, verticalCalItems);
+            if(verticalCalItems.length > 0) {
+                var data = new VerticalSettingDto(code, name, unit, useAtr, assistanceTabulationAtr, verticalCalItems);
             
-            service.addVerticalCalSet(data).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getData();
-                self.singleSelectedCode(data.verticalCalCd);
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
-            }).always(function() {
-                nts.uk.ui.block.clear();      
-            });
+                service.addVerticalCalSet(data).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.getData();
+                    self.singleSelectedCode(data.verticalCalCd);
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();      
+                });
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_110" });
+            }
         }
         
         /**
@@ -591,7 +605,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             if(settingMethod == 1) {
                 self.passDataToDialogs(itemCd, attribute, itemName);            
                 nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
-                    var data = nts.uk.ui.windows.getShared("KML002_B_DATA");
+                    self.dataB = nts.uk.ui.windows.getShared("KML002_B_DATA");
                 }); 
             } else {
                 if(attribute == 0) {
