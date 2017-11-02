@@ -30,11 +30,6 @@ public class OverTimeInstruct extends AggregateRoot{
 	private String companyID;
 	
 	/**
-	 * 申請ID
-	 */
-	private String appID;
-	
-	/**
 	 * 作業内容
 	 */
 	private WorkContent workContent;
@@ -72,11 +67,10 @@ public class OverTimeInstruct extends AggregateRoot{
 	private AttendanceClock endClock;
 	
 	public static OverTimeInstruct createSimpleFromJavaType(String companyID,
-			String appID, String workContent,Date inputDate, String targetPerson, Date instructDate,
+			String workContent,Date inputDate, String targetPerson, Date instructDate,
 			String instructor,String overtimeInstructReason,int overtimeHour,
 			int startClock,int endClock) {
 				return new OverTimeInstruct(companyID,
-						appID,
 						new WorkContent(workContent),
 						GeneralDate.legacyDate(inputDate),
 						targetPerson,
