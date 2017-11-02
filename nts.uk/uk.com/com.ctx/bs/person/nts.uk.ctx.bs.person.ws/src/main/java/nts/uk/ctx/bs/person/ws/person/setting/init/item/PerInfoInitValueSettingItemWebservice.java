@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import find.person.setting.init.item.PerInfoInitValueSetItemFinder;
 import find.person.setting.init.item.PerInfoInitValueSettingItemDto;
+import find.person.setting.init.item.ReferenceHistoryDto;
+import find.person.setting.init.item.ReferenceHistoryFinder;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/setting/init/item")
@@ -17,6 +19,8 @@ import nts.arc.layer.ws.WebService;
 public class PerInfoInitValueSettingItemWebservice extends WebService {
 	@Inject
 	private PerInfoInitValueSetItemFinder finder;
+	@Inject
+	private ReferenceHistoryFinder refHistFinder;
 
 	@POST
 	@Path("find/{settingId}/{perInfoCtgId}")
@@ -25,5 +29,9 @@ public class PerInfoInitValueSettingItemWebservice extends WebService {
 		return x;
 	}
 
-
+	@POST
+	@Path("referenceHistory")
+	public ReferenceHistoryDto referHistSel(ReferenceHistoryDto param){
+		return this.refHistFinder.referHistSel(param);
+	}
 }
