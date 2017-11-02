@@ -88,7 +88,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 						} else if (c.getDataType() == 2) {
 							itemExist.get().setRefMethodType(EnumAdaptor
 									.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-							itemExist.get().setIntValue(new IntValue(new BigDecimal(c.getIntValue())));
+							itemExist.get().setIntValue(new IntValue(c.getNumberValue()));
 							itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
 							this.itemRepo.update(itemExist.get());
 
@@ -156,7 +156,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 						} else if (c.getDataType() == 2) {
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode(),
-									2, Integer.valueOf(c.getIntValue()));
+									2, c.getNumberValue());
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 3) {
