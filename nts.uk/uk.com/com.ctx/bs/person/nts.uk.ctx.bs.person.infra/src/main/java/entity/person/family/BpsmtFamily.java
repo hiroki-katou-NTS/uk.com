@@ -41,12 +41,12 @@ public class BpsmtFamily extends JpaEntity implements Serializable {
 	public int SupportCareType;
 
 	@Basic(optional = false)
-	@Column(name = "RELATION")
+	@Column(name = "RELATIONSHIP")
 	public String relationShip;
 
 	@Basic(optional = false)
 	@Column(name = "PERSON_ID")
-	public String PId;
+	public String pid;
 
 	@Basic(optional = false)
 	@Column(name = "OCCUPATION_NAME")
@@ -58,27 +58,27 @@ public class BpsmtFamily extends JpaEntity implements Serializable {
 
 	@Basic(optional = true)
 	@Column(name = "NAME_ROMAJI")
-	public int nameRomaji;
+	public String nameRomaji;
 
 	@Basic(optional = false)
 	@Column(name = "KN_NAME_ROMAJI")
-	public int nameRomajiKana;
+	public String nameRomajiKana;
 
 	@Basic(optional = true)
 	@Column(name = "NAME_MULTI_LANG")
-	public int nameMultiLang;
+	public String nameMultiLang;
 
 	@Basic(optional = false)
 	@Column(name = "KN_NAME_MULTI_LANG")
-	public int nameMultiLangKana;
+	public String nameMultiLangKana;
 
 	@Basic(optional = true)
 	@Column(name = "NAME")
-	public int name;
+	public String name;
 
 	@Basic(optional = false)
 	@Column(name = "KN_NAME")
-	public int NameKana;
+	public String NameKana;
 
 	@Basic(optional = false)
 	@Column(name = "EXP_DATE")

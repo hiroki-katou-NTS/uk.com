@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -21,6 +22,12 @@ public class CurrentAffiDept extends AggregateRoot{
 	private String departmentId; 
 	
 	/** The period. */
-	private DatePeriod period;
+	private DateHistoryItem dateHistoryItem;
+	
+	public static CurrentAffiDept createFromJavaFile(String employeeId, String affiDeptId, String departmentId, 
+			String historyId, GeneralDate strD, GeneralDate endD){
+		return new CurrentAffiDept(employeeId, affiDeptId, departmentId, 
+				new DateHistoryItem(historyId, new DatePeriod(strD, endD)));
+	}
 	
 }
