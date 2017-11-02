@@ -598,9 +598,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             if(!nts.uk.util.isNullOrEmpty(data.result)){
                                 let strMail = "";
                                 _.forEach(data.result, function(value) {
-                                      strMail = value + '<br/>';
+                                      strMail += value + '<br/>';
                                 });
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: strMail });
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.result });
                             }
                         }
                         //lấy vị trí appID vừa xóa trong listAppID
