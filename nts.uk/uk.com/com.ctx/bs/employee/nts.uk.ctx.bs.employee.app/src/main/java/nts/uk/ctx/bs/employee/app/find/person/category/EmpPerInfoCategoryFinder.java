@@ -100,7 +100,7 @@ public class EmpPerInfoCategoryFinder {
 
 	/**
 	 * person ctg infor and list of item children by parent
-	 * (Hiển thị category và danh sách category con của nó)
+	 * hiển thị category và danh sách item data
 	 * 
 	 * @param employeeId
 	 * @param ctgId
@@ -129,6 +129,7 @@ public class EmpPerInfoCategoryFinder {
 	
 	/**
 	 * get person information category and it's children
+	 * (Hiển thị category và danh sách category con của nó)
 	 * @param ctgId
 	 * @return
 	 */
@@ -143,7 +144,7 @@ public class EmpPerInfoCategoryFinder {
 
 	
 	/**
-	 * hien thi mot thong tin trong danh sach
+	 * Hiển thị item và danh sách data
 	 * 
 	 * @param employeeId
 	 * @param ctgId
