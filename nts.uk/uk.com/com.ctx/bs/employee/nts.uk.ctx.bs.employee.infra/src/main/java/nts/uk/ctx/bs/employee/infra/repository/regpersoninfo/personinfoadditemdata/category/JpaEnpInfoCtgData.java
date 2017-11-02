@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.regpersoninfo.personinfoadditemdata.category;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -24,6 +25,12 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 		return this.queryProxy().query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
 				.setParameter("employeeId", sId).setParameter("personInfoCtgId", ctgId)
 				.getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -62,6 +62,10 @@ public class PerInfoInitValueSettingItemDto {
 	private Integer timeItemMin;
 	
 	private Integer timeItemMax;
+	
+	private String selectionItemId;
+	
+	private Integer dateType;
 
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
 		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), domain.getSettingId(),
@@ -69,7 +73,8 @@ public class PerInfoInitValueSettingItemDto {
 				domain.getIsRequired().value, domain.getRefMethodType().value, domain.getSaveDataType().value,
 				domain.getStringValue().v(), Integer.valueOf(domain.getIntValue().toString()), domain.getDateValue(),
 				domain.getItemCode(), domain.getCtgCode(), domain.getConstraint(), domain.getNumberDecimalPart(),
-				domain.getNumberIntegerPart(), domain.getTimeItemMin(), domain.getTimeItemMax());
+				domain.getNumberIntegerPart(), domain.getTimeItemMin(), domain.getTimeItemMax(),
+				domain.getSelectionItemId(), domain.getDateType());
 
 	}
 

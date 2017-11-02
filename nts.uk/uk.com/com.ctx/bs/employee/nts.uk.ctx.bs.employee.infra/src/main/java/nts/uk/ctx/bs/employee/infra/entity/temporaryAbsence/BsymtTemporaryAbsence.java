@@ -8,13 +8,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "BSYMT_TEMPORARY_ABSENCE")
 public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
@@ -23,39 +19,39 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 
 	/** The BsymtTemporaryAbsencePK. */
 	@EmbeddedId
-	protected BsymtTemporaryAbsencePK bsymtTemporaryAbsencePK;
+	public BsymtTemporaryAbsencePK bsymtTemporaryAbsencePK;
 
 	@Basic(optional = false)
 	@Column(name = "LEAVE_HOLIDAY_ID")
-	private String leaveHolidayId;
+	public String leaveHolidayId;
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE")
-	private GeneralDate startDate;
+	public GeneralDate startDate;
 
 	@Basic(optional = false)
 	@Column(name = "END_DATE")
-	private GeneralDate endDate;
+	public GeneralDate endDate;
 
 	@Basic(optional = false)
 	@Column(name = "LEAVE_HOLIDAY_ATR")
-	private int leaveHolidayAtr;
+	public int leaveHolidayAtr;
 
 	@Basic(optional = false)
 	@Column(name = "REASON")
-	private String reason;
+	public String reason;
 
 	@Basic(optional = false)
 	@Column(name = "FAMILY_MEMBER_ID")
-	private String familyMemberId;
+	public String familyMemberId;
 
 	@Basic(optional = false)
 	@Column(name = "BIRTHDAY")
-	private GeneralDate birthday;
+	public GeneralDate birthday;
 
 	@Basic(optional = false)
 	@Column(name = "MULTIPLE")
-	private int multiple;
+	public int multiple;
 
 	@Override
 	protected Object getKey() {

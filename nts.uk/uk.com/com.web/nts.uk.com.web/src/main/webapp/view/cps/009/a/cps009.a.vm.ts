@@ -69,6 +69,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
+                        primitiveConst(obj);
                         return new PerInfoInitValueSettingItemDto({
                             perInfoItemDefId: obj.perInfoItemDefId,
                             settingId: obj.settingId,
@@ -89,7 +90,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             numberDecimalPart: obj.numberDecimalPart,
                             timeItemMin: obj.timeItemMin,
                             timeItemMax: obj.timeItemMax,
-                            testContraint: primitiveConst(obj)
+                            selectionItemId: obj.selectionItemId,
+                            dateType: obj.dateType
                         });
                     });
 
@@ -189,10 +191,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 params = {
                     settingId: self.initSettingId(),
+                    settingName: ko.toJS(self.currentCategory().settingName),
                     categoryId: self.currentCategory().currentItemId()
                 };
 
-            setShared('B_PARAMS', params);
+            setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.start(params.settingId);
@@ -206,11 +209,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this,
                 params = {
-                    settingId : self.initSettingId(),
-                    settingCode : self.currentCategory().settingCode,
-                    settingName : self.currentCategory().settingName};
+                    settingId: ko.toJS(self.initSettingId()),
+                    settingCode: ko.toJS(self.currentCategory().settingCode),
+                    settingName: ko.toJS(self.currentCategory().settingName)
+                };
 
-            setShared('C_PARAMS', params);
+            setShared('CPS009C_PARAMS', params);
 
             block.invisible();
 
@@ -296,12 +300,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             saveDataType: obj.saveDataType,
                             stringValue: obj.stringValue,
                             intValue: obj.intValue,
-                            dateValue: obj.dateValue,
+                            dateVal: obj.dateValue,
                             dateWithDay: obj.dateWithDay,
                             timePoint: obj.timePoint,
                             value: obj.value,
                             selectedRuleCode: obj.selectedRuleCode,
-                            selectedCode: obj.selectedCode
+                            selectedCode: obj.selectedCode,
+                            numberValue: obj.numbereditor.value
                         };
                     })
                 };
@@ -469,7 +474,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         timeItemMax?: number;
 
-        testContraint: any;
+        // lưu giá trị của integer value or decimal value of numberic type
+        numbereditor: any;
+
+        // selectionItemId để kết nối với bảng SelectionItem
+        selectionItemId?: string;
+
+        // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
+        dateType?: number;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -512,7 +524,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         timeItemMax: number;
 
-        testContraint: any;
+        //selectionItemId? : string;
+        selectionItemId: string;
+
+        dateType: number;
+
+
+
+
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
@@ -528,7 +547,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.stringValue = ko.observable(params.stringValue || "");
             self.intValue = ko.observable(params.intValue || 0);
 
-            self.dateValue = ko.observable(params.dateValue || "99991221");
+            self.dateValue = ko.observable(params.dateValue || undefined);
             self.dateWithDay = ko.observable(params.dateWithDay || 0);
             self.timePoint = ko.observable(params.timePoint || "");
 
@@ -540,7 +559,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.dataType = ko.observable(params.dataType || 0);
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-            self.testContraint = params.testContraint;
+            self.selectionItemId = params.selectionItemId || undefined;
+            self.dateType = params.dateType || undefined;
 
             if (params.dataType === 0 || params.dataType === 1) {
                 self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
@@ -580,6 +600,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.constraint = ko.observable(params.constraint || "");
 
 
+
             self.numbericItem = new NumbericItem(params.dataType,
                 {
                     numberDecimalPart: params.numberDecimalPart,
@@ -593,7 +614,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         grouplength: 3,
                         decimallength: 0,
                         width: "",
-                        textalign: "left"
+                        textalign: "left",
+                        currencyformat: "JPY"
                     }),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
