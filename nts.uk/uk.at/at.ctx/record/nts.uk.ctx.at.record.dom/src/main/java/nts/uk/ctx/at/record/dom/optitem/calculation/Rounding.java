@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
-import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
@@ -19,7 +19,7 @@ public class Rounding extends DomainObject {
 
 	/** The number rounding. */
 	// 数値丸め
-	private NumberRounding numberRounding;
+	private NumberRoundingSetting numberRounding;
 
 	/** The time rounding. */
 	// 時間丸め
@@ -27,7 +27,7 @@ public class Rounding extends DomainObject {
 
 	/** The amount rounding. */
 	// 金額丸め
-	private AmountRounding amountRounding;
+	private AmountRoundingSetting amountRounding;
 
 	/**
 	 * Instantiates a new rounding.

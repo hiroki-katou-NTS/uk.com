@@ -8,7 +8,7 @@ package nts.uk.ctx.at.shared.dom.common.numberrounding;
  * The Enum Unit.
  */
 // 単位
-public enum Unit {
+public enum NumberUnit {
 
 	/** The none. */
 	// 無し
@@ -77,7 +77,7 @@ public enum Unit {
 	public final String nameId;
 
 	/** The Constant values. */
-	private final static Unit[] values = Unit.values();
+	private final static NumberUnit[] values = NumberUnit.values();
 
 	/**
 	 * Instantiates a new rounding.
@@ -87,7 +87,7 @@ public enum Unit {
 	 * @param nameId
 	 *            the name id
 	 */
-	private Unit(int value, String nameId) {
+	private NumberUnit(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
@@ -99,14 +99,14 @@ public enum Unit {
 	 *            the value
 	 * @return the rounding
 	 */
-	public static Unit valueOf(Integer value) {
+	public static NumberUnit valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (Unit val : Unit.values) {
+		for (NumberUnit val : NumberUnit.values) {
 			if (val.value == value) {
 				return val;
 			}
