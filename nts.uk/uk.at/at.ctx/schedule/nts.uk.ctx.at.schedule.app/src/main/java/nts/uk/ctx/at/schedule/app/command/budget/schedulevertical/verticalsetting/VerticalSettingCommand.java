@@ -55,7 +55,7 @@ public class VerticalSettingCommand {
 					EnumAdaptor.valueOf(x.getAttributes(), Attributes.class),
 					EnumAdaptor.valueOf(x.getRounding(), Rounding.class),
 					x.getDispOrder(),
-					x.getFormPeople());
+					x.getFormPeople().toDomainFormPeople(companyId, companyId, x.getItemId()));
 			}).collect(Collectors.toList());
 		
 		return VerticalCalSet.createFromJavaType(AppContexts.user().companyId(), this.verticalCalCd,
