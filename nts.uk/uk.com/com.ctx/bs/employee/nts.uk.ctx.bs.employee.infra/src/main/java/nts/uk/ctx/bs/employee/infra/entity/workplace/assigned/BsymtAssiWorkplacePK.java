@@ -21,8 +21,9 @@ public class BsymtAssiWorkplacePK implements Serializable{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The emp id. */
-	@Column(name = "SID")
-	private String empId;
+	
+	/** the assign workplace id*/
+	@Column(name = "ASSI_WORKPLACE_ID")
+	private String assiWorkplaceId;
+	
 }
