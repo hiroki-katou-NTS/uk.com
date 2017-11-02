@@ -26,6 +26,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         isUpdate: boolean = false;
         //History reference date
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+        lstItemFilter: Array<any> = [];
         constructor() {
 
             let self = this;
@@ -65,9 +66,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         // get item list
-        getItemList(settingId: string, ctgId: string) {
-            let self = this;
-
+        getItemList(settingId: string, ctgId: string){
+            let self = this ;
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
                 if (item.length > 0) {
@@ -98,10 +98,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
                     });
 
-
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.currentCategory().itemList.valueHasMutated();
+                    self.lstItemFilter = itemConvert;
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);
@@ -109,9 +109,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                 }
             });
-
             self.currentCategory().itemList.valueHasMutated();
-
         }
 
         start(id: string): JQueryPromise<any> {
@@ -326,14 +324,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 //                block.clear();
             });
         }
-                //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
+        //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
         historyFilter(){
             let self = this;
-            //get lai list item
-            self.getItemList(ko.toJS(self.initSettingId()), ko.toJS(self.currentCategory().settingCode));
             //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
             let lstItem = [];
-            let listInit = self.currentCategory().itemList();
+            let listInit = self.lstItemFilter;
             _.each(listInit, function(item){
                 if(self.checkFilter(item)){
                     lstItem.push(item.selectionItemId);
@@ -343,7 +339,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
             let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
             let lstFilter = [];
-            self.currentCategory().itemList.removeAll();
             self.currentCategory().itemList([]);
             if(lstItem.length > 0){
                 let param = {lstSelItemId: lstItem,baseDate: baseDate}
@@ -358,10 +353,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                    });
                    //gan lai du lieu moi
                    self.currentCategory().itemList(lstFilter);
+                   self.currentCategory().itemList.valueHasMutated();
                 }); 
             }
-            
         }
+        /**
+         * check item co thoa man dieu kien de loc khong?
+         */
         checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean{
             //画面項目「個人情報初期値設定区分（A3_22）」で、「固定値」を選択している項目をチェックする(Kiểm tra Item mà có 「個人情報初期値設定区分（A3_22）」 là 「固定値」)
             if(objItem.selectedRuleCode() != 2){
@@ -378,6 +376,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
             return true;
         }
+        /**
+         * find item by selectItemId
+         */
         findItem(lstITem: Array<any>, selectItemId: string): PerInfoInitValueSettingItemDto{
             return _.find(lstITem, function(obj) {
                     return obj.selectionItemId == selectItemId;
