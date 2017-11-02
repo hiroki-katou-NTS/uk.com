@@ -37,9 +37,9 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
                 });
             }
-            else{
+            else {
                 self.selectCode(self.deviationTimeList[0]);
-                }
+            }
             dfd.resolve();
 
             return dfd.promise();
@@ -51,7 +51,7 @@ module nts.uk.at.view.kdl032.a.viewmodel {
         }
 
         submit() {
-          
+
             var self = this;
             var selectDeviationTime = _.find(self.deviationTimeList(), ['divReasonCode', self.selectCode()]);
             if (selectDeviationTime !== undefined) {
@@ -61,7 +61,8 @@ module nts.uk.at.view.kdl032.a.viewmodel {
                 nts.uk.ui.windows.setShared("ReturnData", null, true);
             }
             self.cancel_Dialog();
-         
+            
+
         }
 
     }
