@@ -22,7 +22,7 @@ public interface EmpCalAndSumExeLogRepository {
 	
 	
 	/**
-	 * get list EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * get EmpCalAndSumExeLog by empCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */

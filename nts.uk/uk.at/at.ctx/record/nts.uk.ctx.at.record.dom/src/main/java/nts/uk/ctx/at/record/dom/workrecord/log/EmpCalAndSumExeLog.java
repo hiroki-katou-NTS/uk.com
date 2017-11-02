@@ -21,15 +21,10 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
 @AllArgsConstructor
 public class EmpCalAndSumExeLog extends AggregateRoot {
 
-	/**
-	 * 就業計算と集計実行ログID
-	 */
+	/**就業計算と集計実行ログID */
 	private String empCalAndSumExecLogID;
 	
-	/**
-	 * 会社ID
-	 */
-
+	/** 会社ID */
 	private String companyID;
 	
 	/**

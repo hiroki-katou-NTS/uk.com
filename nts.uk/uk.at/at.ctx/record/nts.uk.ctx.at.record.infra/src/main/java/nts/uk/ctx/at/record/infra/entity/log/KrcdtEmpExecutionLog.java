@@ -59,7 +59,7 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "OPERATION_CASE_ID")
 	public String caseSpecExeContentID;
 
-	@OneToMany(mappedBy="executionlog", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="empexecutionlog", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRCDT_EXECUTION_LOG")
 	public List<KrcdtExecutionLog> executionLogs;
 	
@@ -85,7 +85,6 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	
 	public EmpCalAndSumExeLog toDomain() {
 		return EmpCalAndSumExeLog.createFromJavaType(
-				
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
 				this.processingMonth,

@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -14,7 +13,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * 実行ログ
@@ -96,6 +94,10 @@ public class ExecutionLog {
 		this.processStatus = processStatus;
 		this.objectPeriod = objectPeriod;
 		this.calExecutionSetInfoID = calExecutionSetInfoID;
+		this.reflectApprovalSetInfo = Optional.empty();
+		this.dailyCreationSetInfo =  Optional.empty();
+		this.dailyCalSetInfo =  Optional.empty();
+		this.monlyAggregationSetInfo =  Optional.empty();
 	}
 	
 	public static ExecutionLog createFromJavaType(
@@ -116,12 +118,8 @@ public class ExecutionLog {
 				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
 				new ExecutionTime(startExecutionTime,endExecutionTime),
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
-
 				new ObjectPeriod(startObjectPeriod,endObjectPeriod),
-				calExecutionSetInfoID
-				);
-		
+				calExecutionSetInfoID);
 	}
-
-
+	
 }

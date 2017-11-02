@@ -18,12 +18,8 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	private final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
 													      
 	private final String SELECT_All_LOG = SELECT_FROM_LOG 
-			+ " WHERE c.krcdtEmpExecutionLogPK.companyID = :companyID ";
+			+ " WHERE c.companyID = :companyID ";
 	                    
-	private final String SELECT_LOG_BY_CODE = SELECT_All_LOG
-			+ " AND c.krcdtEmpExecutionLogPK.operationCaseID = :operationCaseID "
-			+ " AND c.krcdtEmpExecutionLogPK.employeeID = :employeeID "
-			+ " AND c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtEmpExecutionLog empl JOIN KrcdtExecutionLog el "
 			+ " ON empl.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcdtExecutionLogPK.empCalAndSumExecLogID "
@@ -39,13 +35,12 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG
 			+ " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
-
-	/**
+	
+	/**.
 	 * get all EmpCalAndSumExeLog
 	 */
 	@Override
 	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID ) {
-		
 		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG, KrcdtEmpExecutionLog.class)
 				.setParameter("companyID", companyID).getList(c -> c.toDomain());
 		return data;

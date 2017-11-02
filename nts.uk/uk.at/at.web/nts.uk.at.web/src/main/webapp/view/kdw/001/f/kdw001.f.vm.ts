@@ -109,33 +109,29 @@ module nts.uk.at.view.kdw001.f {
     export module model {
         export interface IEmpCalAndSumExeLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
+            processingMonth: number;
+            processingMonthName: string;
             executedMenu: number;
             executedMenuName: string;
             executedMenuJapan: string;
+            executionDate: string;
             executionStatus: number;
             executionStatusName : string;
-            executionDate: string;
-            processingMonth: number;
-            processingMonthName: string;
+            employeeID: string;
             closureID: number;
+            caseSpecExeContentID: string;
             executionLogs: Array<IExecutionLog>;
         }
 
         export interface IExecutionLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
-            executedLogID: string;
-            existenceError: number;
-            executeContenByCaseID: number;
             executionContent: number;
-            executionContentName : string;
+            executionContentName :string;
+            existenceError: number;
             executionTime: IExecutionTime;
             processStatus: number;
-            calExeSetInfor: CalExeSettingInfor;
             objectPeriod: ObjectPeriod;
+            calExecutionSetInfoID :string;
         }
 
         export interface IExecutionTime {
@@ -148,22 +144,22 @@ module nts.uk.at.view.kdw001.f {
          */
         export class EmpCalAndSumExeLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
+            processingMonth: number;
+            processingMonthName: string;
             executedMenu: number;
             executedMenuName: string;
             executedMenuJapan: string;
+            executionDate: string;
             executionStatus: number;
             executionStatusName : string;
-            executionDate: string;
-            processingMonth: number;
-            processingMonthName: string;
+            employeeID: string;
             closureID: number;
+            caseSpecExeContentID: string;
             executionLogs: Array<ExecutionLog>;
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
-                this.caseSpecExeContentID = data.caseSpecExeContentID;
-                this.employeeID = data.employeeID;
+                this.processingMonth = data.processingMonth;
+                this.processingMonthName = data.processingMonth + "月度";
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
@@ -176,12 +172,12 @@ module nts.uk.at.view.kdw001.f {
                 } else {
                     this.executedMenuJapan = "ケース別実行";
                 }
+                this.executionDate = data.executionDate;
                 this.executionStatus = data.executionStatus;
                 this.executionStatusName = data.executionStatusName;
-                this.executionDate = data.executionDate;
-                this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth + "月度";
+                this.employeeID = data.employeeID;
                 this.closureID = data.closureID;
+                this.caseSpecExeContentID = data.caseSpecExeContentID;
                 this.executionLogs = data.executionLogs;
             }
 
@@ -192,30 +188,23 @@ module nts.uk.at.view.kdw001.f {
          */
         export class ExecutionLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
-            executedLogID: string;
-            existenceError: number;
-            executeContenByCaseID: number;
             executionContent: number;
             executionContentName :string;
+            existenceError: number;
             executionTime: ExecutionTime;
             processStatus: number;
-            calExeSetInfor: CalExeSettingInfor;
             objectPeriod: ObjectPeriod;
+            calExecutionSetInfoID :string;
+            
             constructor(data: IExecutionLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
-                this.caseSpecExeContentID = data.caseSpecExeContentID;
-                this.employeeID = data.employeeID;
-                this.executedLogID = data.executedLogID;
-                this.existenceError = data.existenceError;
-                this.executeContenByCaseID = data.executeContenByCaseID;
                 this.executionContent = data.executionContent;
-                this.executionContentName = data.executionContentName;
+                this.executionContentName = data.executionContentName;   
+                this.existenceError = data.existenceError;
                 this.executionTime = new ExecutionTime(data.executionTime);
                 this.processStatus = data.processStatus;
-                this.calExeSetInfor = data.calExeSetInfor;
                 this.objectPeriod = data.objectPeriod;
+                this.calExecutionSetInfoID = data.calExecutionSetInfoID;
             }
         }//end class ExecutionLog
         /**

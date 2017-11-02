@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * @author danpv
@@ -17,17 +19,24 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification
 public class SettingInforForDailyCreation extends CalExeSettingInfor {
 
 	/**
+	 * 作成区分
 	 * 0 : もう一度作り直す 1 : 一部修正
 	 */
-	private DailyRecreateClassification dailyRecreateClassification;
+	private DailyRecreateClassification creationType;
 
 	/**
 	 * check-boxes
 	 */
 	private Optional<PartResetClassification> partResetClassification;
 
-	public SettingInforForDailyCreation() {
-		super();
+	public SettingInforForDailyCreation(ExecutionContent executionContent, ExecutionType executionType,
+			String calExecutionSetInfoID, DailyRecreateClassification creationType,
+			Optional<PartResetClassification> partResetClassification) {
+		super(executionContent, executionType, calExecutionSetInfoID);
+		this.creationType = creationType;
+		this.partResetClassification = partResetClassification;
 	}
+	
+	
 
 }

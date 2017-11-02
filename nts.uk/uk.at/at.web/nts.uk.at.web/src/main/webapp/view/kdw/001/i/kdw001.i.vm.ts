@@ -2,8 +2,6 @@ module nts.uk.at.view.kdw001.i {
     import modelkdw001f = nts.uk.at.view.kdw001.f.model;
     export module viewmodel {
         export class ScreenModel {
-            //table
-            itemList: KnockoutObservableArray<any>;
             //obj ExecutionLog
             empCalAndSumExecLogID: string;
             empCalAndSumExecLog: KnockoutObservable<modelkdw001f.EmpCalAndSumExeLog>;
@@ -27,7 +25,6 @@ module nts.uk.at.view.kdw001.i {
             constructor() {
                 let self = this;
                 //table 
-                self.itemList = ko.observableArray([]);
                 self.empCalAndSumExecLogID = nts.uk.ui.windows.getShared("openI");
                 self.empCalAndSumExecLog = ko.observable(null);
                 self.processingMonthName = ko.observable('');
@@ -48,19 +45,6 @@ module nts.uk.at.view.kdw001.i {
                 self.listTargetPerson = ko.observableArray([]);
                 self.listPerson = [];
                 self.numberPerson = ko.observable(0);
-
-                for (let i = 1; i <= 5; i++) {
-                    self.itemList.push({
-                        column1: "2016/11/06 10:49:16 (" + i + ")",
-                        column2: "2016/11/06 10:50:16 (" + i + ")",
-                        column3: "00:0" + i + ":00",
-                        column4: "実行内容 " + i,
-                        column5: "実行種別" + i,
-                        column6: "実行詳細内容" + i,
-                        column7: i + i + "人",
-                        column8: i + "人"
-                    });
-                }
             }
 
             startPage(): JQueryPromise<any> {
@@ -82,13 +66,13 @@ module nts.uk.at.view.kdw001.i {
             getByEmpCalAndSumExeLogId(empCalAndSumExeLogId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: Array<modelkdw001f.IEmpCalAndSumExeLog>): any {
-                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data[0]));
+                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: modelkdw001f.IEmpCalAndSumExeLog): any {
+                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data));
                     self.processingMonthName(self.empCalAndSumExecLog().processingMonthName);
                     self.processingMonth = self.empCalAndSumExecLog().processingMonth;
                     self.executedMenuJapan(self.empCalAndSumExecLog().executedMenuJapan);
                     //date
-                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data[0].executionLogs, ['executionContent'], ['desc']);
+                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data.executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
                         return new modelkdw001f.ExecutionLog(value);
                     }));

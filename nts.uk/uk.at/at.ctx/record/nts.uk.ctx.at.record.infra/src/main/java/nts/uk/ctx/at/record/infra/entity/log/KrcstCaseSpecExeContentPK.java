@@ -8,23 +8,13 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * @author hieult
- *
- */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcdtCalExeSetInforPK implements Serializable {
-
+public class KrcstCaseSpecExeContentPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	/** 計算実行設定情報 */
-	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
-	public String calExecutionSetInfoID;
-	/**実行内容*/
-	@Column(name = "EXECUTION_CONTENT")
-	public int executionContent;
+	@Column(name = "OPERATION_CASE_ID")
+	public String caseSpecExeContentID;
 
 }
