@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.person.currentaddress;
+package repository.person.currentaddress;
 
 import javax.ejb.Stateless;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.person.personinfoctgdata.item;
+package repository.person.persinfoctgdata;
 
 import java.util.List;
 
@@ -26,9 +26,6 @@ public class PerInfoItemDataRepoImpl implements PerInfoItemDataRepository{
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository#getAllInfoItemByRecordId(java.lang.String)
-	 */
 	@Override
 	public List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId) {
 		// TODO Auto-generated method stub

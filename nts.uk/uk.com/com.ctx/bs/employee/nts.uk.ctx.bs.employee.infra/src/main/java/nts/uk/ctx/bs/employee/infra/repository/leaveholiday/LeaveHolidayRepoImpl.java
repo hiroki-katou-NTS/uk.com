@@ -22,8 +22,8 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTemporaryAbsenc
 public class LeaveHolidayRepoImpl extends JpaRepository implements LeaveHolidayRepository {
 
 	private static final String GET_BY_EMPID_AND_STDDATE = "select lh from BsymtTemporaryAbsence lh"
-			+ " where lh.bsymtTemporaryAbsencePK.sid = sid" + " and lh.startDate <= stdDate"
-			+ " and lh.endDate >= stdDate";
+			+ " where lh.bsymtTemporaryAbsencePK.sid = :sid" + " and lh.startDate <= :stdDate"
+			+ " and lh.endDate >= :stdDate";
 
 	@Override
 	public Optional<LeaveHoliday> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate) {
