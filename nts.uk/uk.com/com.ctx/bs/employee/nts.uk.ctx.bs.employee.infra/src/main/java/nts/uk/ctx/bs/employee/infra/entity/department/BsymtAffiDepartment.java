@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
@@ -19,6 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class BcmmtAffiDepartment.
  */
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity

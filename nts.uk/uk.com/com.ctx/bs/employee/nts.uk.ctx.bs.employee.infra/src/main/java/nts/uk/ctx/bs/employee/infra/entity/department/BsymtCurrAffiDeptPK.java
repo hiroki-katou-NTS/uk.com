@@ -11,10 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Embeddable
 public class BsymtCurrAffiDeptPK implements Serializable {
 
@@ -23,7 +19,5 @@ public class BsymtCurrAffiDeptPK implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Basic(optional = false)
-	@Column(name = "AFFI_DEPT_ID")
-	private String affiDeptId;
+	
 }

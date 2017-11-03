@@ -17,7 +17,7 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 			+ " WHERE j.bsymtJobTitleMainPK.jobTitleId = :jobTitleId";
 
 	private static final String SELECT_BY_EID_STDD = "SELECT j FROM BsymtJobTitleMain j"
-			+ " WHERE j.sId = :employeeId And j.bsymtJobPosMainHist.startDate <= std And j.bsymtJobPosMainHist.endDate >= std";
+			+ " WHERE j.sId = :employeeId And j.bsymtJobPosMainHist.startDate <= :std And j.bsymtJobPosMainHist.endDate >= :std";
 
 	private JobTitleMain toDomain(BsymtJobTitleMain entity) {
 		return JobTitleMain.creatFromJavaType(entity.jobTitleId, entity.sId, entity.histId,

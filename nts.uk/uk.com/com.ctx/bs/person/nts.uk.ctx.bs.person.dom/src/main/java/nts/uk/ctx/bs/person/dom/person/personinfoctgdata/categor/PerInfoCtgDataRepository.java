@@ -15,5 +15,17 @@ public interface PerInfoCtgDataRepository {
 	public Optional<PerInfoCtgData> getByRecordId(String recordId);
 	
 	public List<PerInfoCtgData> getByPerIdAndCtgId(String perId, String ctgId);
+	
+	/**
+	 * Add person info category data ドメインモデル「個人情報カテゴリデータ」を新規登録する
+	 * @param data
+	 */
+	void addCategoryData(PerInfoCtgData data);
+	
+	/**
+	 * Update person info category data ドメインモデル「個人情報カテゴリデータ」を更新する
+	 * @param data
+	 */
+	void updateCategoryData(PerInfoCtgData data);
 
 }

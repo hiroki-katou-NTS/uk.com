@@ -12,5 +12,15 @@ public interface TemporaryAbsenceRepository {
 	Optional<TemporaryAbsence> getByTempAbsenceId(String tempAbsenceId);
 	
 	List<TemporaryAbsence> getListBySid(String sid);
+	/**
+	 * ドメインモデル「休職休業」を新規登録する
+	 * @param domain
+	 */
+	void addTemporaryAbsence(TemporaryAbsence domain);
+	/**
+	 * 取得した「休職休業」を更新する
+	 * @param domain
+	 */
+	void updateTemporaryAbsence(TemporaryAbsence domain);
 	
 }

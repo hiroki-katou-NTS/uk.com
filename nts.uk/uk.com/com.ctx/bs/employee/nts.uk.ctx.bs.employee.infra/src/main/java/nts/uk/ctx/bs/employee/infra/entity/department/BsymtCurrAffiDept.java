@@ -3,10 +3,11 @@ package nts.uk.ctx.bs.employee.infra.entity.department;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,46 +19,43 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class bsymt current affiliation department
- * */
+ */
 
 @Getter
 @Setter
 @Entity
-@Table(name="BSYMT_CURR_AFFI_DEPT")
-public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable{
-	
-	/**
-	 * 
-	 */
+@Table(name = "BSYMT_CURR_AFFI_DEPT")
+public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	/**the current affi dept id*/
-	@EmbeddedId
-	private BsymtCurrAffiDeptPK bsymtCurrAffiDeptPK;
-	
+	/** the current affi dept id */
+	@Id
+	@Basic(optional = false)
+	@Column(name = "AFFI_DEPT_ID")
+	public String affiDeptId;
+
 	/** The sid. */
 	@Column(name = "SID")
-	private String sid;
-	
+	public String sid;
+
 	/** The dep id. */
 	@Column(name = "DEP_ID")
-	private String depId;
-	
+	public String depId;
+
 	/** The dep id. */
 	@Column(name = "HIST_ID")
-	private String histId;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="bsymtCurrAffiDept", orphanRemoval = true)
-	private List<BsymtSubJobPosition> lstBsymtSubJobPosition;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="bsymtAssiWorkplace", orphanRemoval = true)
-	private List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
+	public String histId;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtCurrAffiDept", orphanRemoval = true)
+	public List<BsymtSubJobPosition> lstBsymtSubJobPosition;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtAssiWorkplace", orphanRemoval = true)
+	public List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return this.bsymtCurrAffiDeptPK;
+		return this.affiDeptId;
 	}
-	
-	
+
 }

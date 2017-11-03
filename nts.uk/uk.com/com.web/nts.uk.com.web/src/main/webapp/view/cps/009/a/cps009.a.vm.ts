@@ -329,33 +329,65 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this;
             //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
             let lstItem = [];
-            let listInit = self.lstItemFilter;
-            _.each(listInit, function(item){
-                if(self.checkFilter(item)){
-                    lstItem.push(item.selectionItemId);
-                }
-            });
-            lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
-            lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
-            let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
-            let lstFilter = [];
-            self.currentCategory().itemList([]);
-            if(lstItem.length > 0){
-                let param = {lstSelItemId: lstItem,baseDate: baseDate}
-               service.refHistSel(param).done(function(data){
-                    console.log(data);
-                   //loc nhung item thoa man dk
-                   _.each(data.lstSelItemId, function(itemId){
-                        let item = self.findItem(listInit,itemId);
-                        if(item != undefined){
-                            lstFilter.push(item);
+             service.getAllItemByCtgId(ko.toJS(self.initSettingId()), ko.toJS(self.currentCategory().currentItemId)).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
+                 if (item.length > 0) {
+                    let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
+                        primitiveConst(obj);
+                        let param:IPerInfoInitValueSettingItemDto = {
+                            perInfoItemDefId: obj.perInfoItemDefId,
+                            settingId: obj.settingId,
+                            perInfoCtgId: obj.perInfoCtgId,
+                            itemName: obj.itemName,
+                            isRequired: obj.isRequired,
+                            refMethodType: obj.refMethodType,
+                            saveDataType: obj.saveDataType,
+                            stringValue: obj.stringValue,
+                            intValue: obj.intValue,
+                            dateValue: obj.dateValue,
+                            itemType: obj.itemType,
+                            dataType: obj.dataType,
+                            itemCode: obj.itemCode,
+                            ctgCode: obj.ctgCode,
+                            constraint: obj.constraint,
+                            numberIntegerPart: obj.numberIntegerPart,
+                            numberDecimalPart: obj.numberDecimalPart,
+                            timeItemMin: obj.timeItemMin,
+                            timeItemMax: obj.timeItemMax,
+                            selectionItemId: obj.selectionItemId,
+                            dateType: obj.dateType
                         }
-                   });
-                   //gan lai du lieu moi
-                   self.currentCategory().itemList(lstFilter);
-                   self.currentCategory().itemList.valueHasMutated();
-                }); 
-            }
+                        return new PerInfoInitValueSettingItemDto(param);
+                    });
+                    self.lstItemFilter = itemConvert;
+                }
+                 let listInit = self.lstItemFilter;
+                _.each(listInit, function(item){
+                    if(self.checkFilter(item)){
+                        lstItem.push(item.selectionItemId);
+                    }
+                });
+//                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
+//                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
+                let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
+                let lstFilter = [];
+                self.currentCategory().itemList([]);
+                if(lstItem.length > 0){
+                    let param = {lstSelItemId: lstItem,baseDate: baseDate}
+                   service.refHistSel(param).done(function(data){
+                        console.log(data);
+                       //loc nhung item thoa man dk
+                       _.each(data.lstSelItemId, function(itemId){
+                            let item = self.findItem(listInit,itemId);
+                            if(item != undefined){
+                                lstFilter.push(item);
+                            }
+                       });
+                       //gan lai du lieu moi
+                       self.currentCategory().itemList(lstFilter);
+                       self.currentCategory().itemList.valueHasMutated();
+                    }); 
+                }
+             });
         }
         /**
          * check item co thoa man dieu kien de loc khong?

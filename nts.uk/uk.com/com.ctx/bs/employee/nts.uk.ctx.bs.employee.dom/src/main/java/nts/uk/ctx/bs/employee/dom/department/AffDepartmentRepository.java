@@ -14,5 +14,14 @@ import nts.arc.time.GeneralDate;
 public interface AffDepartmentRepository {
 
 	public Optional<AffiliationDepartment> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate);
-
+	/**
+	 * ドメインモデル「所属部門」を新規登録する
+	 * @param domain
+	 */
+	void addAffDepartment(AffiliationDepartment domain);
+	/**
+	 * 取得した「所属部門」を更新する
+	 * @param domain
+	 */
+	void updateAffDepartment(AffiliationDepartment domain);
 }

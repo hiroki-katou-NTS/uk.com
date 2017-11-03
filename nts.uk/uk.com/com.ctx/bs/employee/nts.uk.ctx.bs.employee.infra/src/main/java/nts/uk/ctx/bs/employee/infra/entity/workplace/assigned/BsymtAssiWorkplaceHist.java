@@ -23,17 +23,17 @@ public class BsymtAssiWorkplaceHist {
 	@Id
 	/** The end D. */
 	@Column(name = "HIST_ID")
-	private String historyId;
+	public String historyId;
 	
 	/** The end D. */
 	@Column(name = "START_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate strD;
+	public GeneralDate strD;
 	
 	/** The end D. */
 	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate endD;
+	public GeneralDate endD;
 	
 	@ManyToOne
 	@JoinColumns({

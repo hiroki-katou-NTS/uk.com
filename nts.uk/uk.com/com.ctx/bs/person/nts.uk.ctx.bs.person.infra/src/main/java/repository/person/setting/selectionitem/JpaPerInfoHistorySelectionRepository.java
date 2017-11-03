@@ -21,24 +21,30 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 			+ " WHERE si.selectionItemId = :selectionItemId";
 
 	private static final String SELECT_ALL_HISTORY_STARTDATE_SELECTION = SELECT_ALL
-			+ " WHERE si.startDate < :startDate";
+			+ " WHERE si.startDate > :startDate AND si.endDate = :endDate";
 
 	private static final String SELECT_ALL_HISTORY_COMPANYID_SELECTION = SELECT_ALL
-			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId" ;
+			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId";
 	
 	private static final String SELECT_HISTORY_BY_DATE = "SELECT a"
 			+ " FROM PpemtHistorySelection a"
 			+ " INNER JOIN PpemtSelItemOrder b"
-			+ " ON a.selectionItemId = b.selectionIdPK.selectionIdPK"
-			+ " AND a.histidPK.histidPK = b.histidPK"
+			+ " ON a.selectionItemId = b.selectionIdPK.selectionId"
+			+ " AND a.histidPK.histId = b.histId"
 			+ " AND a.selectionItemId IN :lstSelItemId"
 			+ " AND a.startDate <= :baseDate"
 			+ " AND a.endDate >= :baseDate"
-			+ " ORDER BY b.disPorder";
+			+ " ORDER BY b.dispOrder";
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
 		this.commandProxy().insert(toHistEntity(domain));
+
+	}
+
+	@Override
+	public void update(PerInfoHistorySelection domain) {
+		this.commandProxy().update(toHistEntity(domain));
 
 	}
 
@@ -52,7 +58,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	private PerInfoHistorySelection toDomain(PpemtHistorySelection entity) {
 		DatePeriod datePeriod = new DatePeriod(entity.startDate, entity.endDate);
 
-		return PerInfoHistorySelection.createHistorySelection(entity.histidPK.histidPK, entity.selectionItemId,
+		return PerInfoHistorySelection.createHistorySelection(entity.histidPK.histId, entity.selectionItemId,
 				entity.companyId, datePeriod);
 	}
 
@@ -79,9 +85,9 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	// historyStartDateSelection
 	@Override
 	public List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate) {
-
+		GeneralDate endDate = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
 		return this.queryProxy().query(SELECT_ALL_HISTORY_STARTDATE_SELECTION, PpemtHistorySelection.class)
-				.setParameter("startDate", startDate).getList(c -> toDomain(c));
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}
 
 	// test:
@@ -89,9 +95,10 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	public List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String selectionItemId, String companyId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_COMPANYID_SELECTION, PpemtHistorySelection.class)
-				.setParameter("selectionItemId", selectionItemId)
-				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+				.setParameter("selectionItemId", selectionItemId).setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 	}
+
 
 	//hoatt
 	@Override

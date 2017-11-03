@@ -38,5 +38,37 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 				.collect(Collectors.toList());
 
 	}
+	private PpemtPerInfoCtgData toEntity(PerInfoCtgData domain){
+		return new PpemtPerInfoCtgData(domain.getRecordId(), domain.getPersonInfoCtgId(), domain.getPersonId());
+	}
+	
+	private void updateEntity(PerInfoCtgData domain, PpemtPerInfoCtgData entity){
+		entity.recordId = domain.getRecordId();
+		entity.pInfoCtgId = domain.getPersonInfoCtgId();
+		entity.pId = domain.getPersonId();
+	}
+	/**
+	 * Add person info category data ドメインモデル「個人情報カテゴリデータ」を新規登録する
+	 * @param data
+	 */
+	@Override
+	public void addCategoryData(PerInfoCtgData data) {
+		this.commandProxy().insert(toEntity(data));
+	}
+	/**
+	 * Update person info category data ドメインモデル「個人情報カテゴリデータ」を更新する
+	 * @param data
+	 */
+	@Override
+	public void updateCategoryData(PerInfoCtgData data) {
+		Optional<PpemtPerInfoCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtPerInfoCtgData.class);
+		if (!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(data, existItem.get());
+		// Update 
+		this.commandProxy().update(existItem.get());
+	}
 
 }
