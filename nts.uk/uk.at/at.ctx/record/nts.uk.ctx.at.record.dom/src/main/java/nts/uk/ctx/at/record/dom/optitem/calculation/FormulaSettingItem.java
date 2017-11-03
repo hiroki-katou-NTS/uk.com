@@ -51,10 +51,8 @@ public class FormulaSettingItem extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		if(this.settingMethod == SettingMethod.NUMERICAL_INPUT) {
-			if (this.inputValue == null) {
-				throw new BusinessException("Msg_419");
-			}
+		if (this.settingMethod == SettingMethod.NUMERICAL_INPUT && this.inputValue == null) {
+			throw new BusinessException("Msg_419");
 		}
 	}
 

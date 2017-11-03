@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.record.dom.optitem;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -57,20 +57,22 @@ public class OptionalItem extends AggregateRoot {
 	public void validate() {
 		super.validate();
 		if (this.calcResultRange.hasBothLimit()) {
+			BundledBusinessException be = BundledBusinessException.newInstance();
+			be.addMessage("Msg_574");
 			switch (this.optionalItemAtr) {
 			case NUMBER:
 				if (this.calcResultRange.getNumberRange().get().isInvalidRange()) {
-					throw new BusinessException("Msg_574");
+					be.throwExceptions();
 				}
 				break;
 			case AMOUNT:
 				if (this.calcResultRange.getAmountRange().get().isInvalidRange()) {
-					throw new BusinessException("Msg_574");
+					be.throwExceptions();
 				}
 				break;
 			case TIME:
 				if (this.calcResultRange.getTimeRange().get().isInvalidRange()) {
-					throw new BusinessException("Msg_574");
+					be.throwExceptions();
 				}
 				break;
 			default:
