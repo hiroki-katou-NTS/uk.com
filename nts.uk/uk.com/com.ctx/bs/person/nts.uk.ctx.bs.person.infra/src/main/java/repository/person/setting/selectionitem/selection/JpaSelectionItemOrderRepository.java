@@ -50,11 +50,17 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 				domain.getInitSelection().value);
 	}
 
+//	@Override
+//	public List<SelectionItemOrder> getAllOrderItemSelection(String histidPK) {
+//		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class)
+//				.setParameter("histidPK", histidPK).getList(c -> toDomain(c));
+//
+//	}
+
 	@Override
-	public List<SelectionItemOrder> getAllOrderItemSelection(String histidPK) {
+	public List<SelectionItemOrder> getAllOrderSelectionByHistId(String histidPK) {
 		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class)
 				.setParameter("histidPK", histidPK).getList(c -> toDomain(c));
-
 	}
 
 }

@@ -57,7 +57,7 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 		// Lay selectionID:
 		String histId = context.getCommand().getHistId();
 		//String selectionCd = context.getCommand().getSelectionCD();
-		List<Selection> selectionList = this.selectionRepo.getAllHistorySelection( histId);
+		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId( histId);
 		if (!selectionList.isEmpty()) {
 			//String selectionId = selectionList.get(0).getSelectionID();
 			//List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(selectionId);

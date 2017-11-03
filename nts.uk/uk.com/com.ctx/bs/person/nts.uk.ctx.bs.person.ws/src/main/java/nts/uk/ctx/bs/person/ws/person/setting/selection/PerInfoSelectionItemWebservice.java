@@ -70,6 +70,7 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	private RemoveSelectionCommandHandler removeSelection;
 
 	// add history data: screen C:
+	@Inject
 	AddSelectionHistoryCommandHandler addHistory;
 
 	@POST
