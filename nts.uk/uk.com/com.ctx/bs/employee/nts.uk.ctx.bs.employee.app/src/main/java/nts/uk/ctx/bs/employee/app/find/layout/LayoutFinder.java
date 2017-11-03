@@ -21,13 +21,10 @@ import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import find.person.setting.init.category.SettingCtgDto;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-<<<<<<< HEAD
 import nts.uk.ctx.bs.employee.app.find.copy.item.CopySetItemFinder;
 import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSetItemFinder;
 import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
-=======
 import nts.uk.ctx.bs.employee.app.find.init.item.SaveDataDto;
->>>>>>> acf7cc23be19881021a7b7015a693328936f7baf
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
@@ -506,7 +503,7 @@ public class LayoutFinder {
 						List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
 
 						itemCls.setItems(itemValues);
-						
+
 						break;
 					case 1: // list
 
