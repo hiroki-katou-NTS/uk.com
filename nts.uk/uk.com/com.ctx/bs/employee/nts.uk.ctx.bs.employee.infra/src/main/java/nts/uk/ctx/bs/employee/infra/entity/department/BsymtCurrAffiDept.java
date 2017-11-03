@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPosition;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplaceHist;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

@@ -19,10 +19,11 @@ public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRep
 			+ " WHERE c.bsymtCurrAffiDeptPK.affiDeptId = :affiDeptId";
 
 	private CurrentAffiDept toDomain(BsymtCurrAffiDept entity) {
-		return new CurrentAffiDept(entity.getSid(), entity.affiDeptId, entity.depId,
-				entity.lstBsymtAssiWorkplaceHist.stream()
-						.map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD())))
-						.collect(Collectors.toList()));
+		return null;
+//		return new CurrentAffiDept(entity.getSid(), entity.affiDeptId, entity.depId,
+//				entity.lstBsymtAssiWorkplaceHist.stream()
+//						.map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD())))
+//						.collect(Collectors.toList()));
 	}
 
 	@Override
