@@ -146,10 +146,11 @@ module nts.uk.at.view.kdw008.a {
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                        dfd.resolve();
                     } else {
+                        dfd.resolve();
                         self.setNewMode();
                     }
-                    dfd.resolve();
                 });
 
                 return dfd.promise();
@@ -161,20 +162,20 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
-                self.getDetail(self.selectedCode());
+                //                self.getDetail(self.selectedCode());
                 self.checked(false);
                 self.showCode(true);
-                $("#currentCode").focus();
+                _.defer(() => {$("#currentCode").focus();});
                 self.isUpdate(false);
                 self.isRemove(false);
             }
 
-            getDetail(dailyPerformanceFormatCode: string,selectedSheetNo ?: number) {
+            getDetail(dailyPerformanceFormatCode: string, selectedSheetNo?: number) {
                 let self = this,
                     dfd = $.Deferred();
-                if(selectedSheetNo){
+                if (selectedSheetNo) {
                     self.selectedSheetNo(selectedSheetNo);
-                    }
+                }
                 new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
                     self.selectedTab('tab-1');
                     if (data) {
@@ -244,7 +245,7 @@ module nts.uk.at.view.kdw008.a {
                 }).fail(error => {
 
                 });
-                
+
                 return dfd.promise();
 
             }
@@ -271,12 +272,14 @@ module nts.uk.at.view.kdw008.a {
 
             addOrUpdateClick() {
                 let self = this;
-                self.register();
+                $("#currentName").trigger("validate");
+                if (!nts.uk.ui.errors.hasError()) {
+                    self.register();
+                }
             }
 
             register() {
                 let self = this;
-                $("#currentName").trigger("validate");
                 //add or update Monthly
                 var authorityFormatDetailDtos = _.map(self.authorityFormatMonthlyValue(), item => {
                     var indexOfItem = _.findIndex(self.authorityFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
@@ -317,8 +320,8 @@ module nts.uk.at.view.kdw008.a {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(self.currentDailyFormatCode());
                     }).always(function() {
-                    nts.uk.ui.block.clear();
-                }).fail(function(error) {
+                        nts.uk.ui.block.clear();
+                    }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
                     });
                 } else {
@@ -326,8 +329,8 @@ module nts.uk.at.view.kdw008.a {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(self.currentDailyFormatCode());
                     }).always(function() {
-                    nts.uk.ui.block.clear();
-                }).fail(function(error) {
+                        nts.uk.ui.block.clear();
+                    }).fail(function(error) {
                         //                        nts.uk.ui.dialog.alertError(error.message);
                         $('#currentCode').ntsError('set', error);
                     });
@@ -345,14 +348,14 @@ module nts.uk.at.view.kdw008.a {
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
-//                        self.selectedCode(dailyPerformanceFormatCode);
+                        //                        self.selectedCode(dailyPerformanceFormatCode);
                         self.selectedSheetNo(1);
                         self.getDetail(dailyPerformanceFormatCode);
                         if (isRemove && isRemove == true) {
-                                self.selectedCode(self.getNewSelectRemove(oldSelectIndex));
-                            } else {
-                                self.selectedCode(dailyPerformanceFormatCode);
-                            }
+                            self.selectedCode(self.getNewSelectRemove(oldSelectIndex));
+                        } else {
+                            self.selectedCode(dailyPerformanceFormatCode);
+                        }
                     } else {
                         self.setNewMode();
                     }
@@ -361,7 +364,7 @@ module nts.uk.at.view.kdw008.a {
 
                 return dfd.promise();
             }
-            
+
             getNewSelectRemove(oldSelectIndex: number): String {
                 let self = this;
                 let dataLength = self.businessTypeList().length;
