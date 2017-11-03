@@ -295,6 +295,34 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(2);
+
+
+
+            service.getLayoutByCreateType(command).done((x) => {
+
+
+                layout.id(x.id);
+                layout.code(x.code);
+                layout.name(x.name);
+
+                // remove all sibling sperators
+                let maps = _(x.itemsClassification)
+                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .filter(x => x != -1).value();
+
+                _.each(maps, (t, i) => {
+                    if (maps[i + 1] == t + 1) {
+                        _.remove(x.itemsClassification, (m: any) => {
+                            let item = ko.unwrap(x.itemsClassification)[maps[i + 1]];
+                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                        });
+                    }
+                });
+
+                layout.itemsClassification(x.itemsClassification);
+
+            });
+
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result.allowAvatarUpload) {
