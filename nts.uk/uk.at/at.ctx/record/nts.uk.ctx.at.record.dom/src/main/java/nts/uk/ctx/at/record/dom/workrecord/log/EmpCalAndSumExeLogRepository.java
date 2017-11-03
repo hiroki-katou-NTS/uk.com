@@ -35,7 +35,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param executionContent
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent);
+	Optional<EmpCalAndSumExeLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent);
 
 	/**
 	 * KIF 001 4 ログ情報（実行ログ）
