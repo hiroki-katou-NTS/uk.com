@@ -11,16 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-=======
->>>>>>> 6dffe644598113d7f684312f8f7a470fbc9b91d9
-=======
->>>>>>> 6dffe644598113d7f684312f8f7a470fbc9b91d9
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDept;
