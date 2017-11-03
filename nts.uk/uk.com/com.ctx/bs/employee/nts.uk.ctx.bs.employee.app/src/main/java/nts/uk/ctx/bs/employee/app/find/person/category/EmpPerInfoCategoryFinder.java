@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.app.find.person.info.PersonFinder;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemCurrentJobPosDto;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemEmpInfoItemDataDto;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
+import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDeptRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
