@@ -27,7 +27,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheck
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
@@ -59,6 +63,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetOvertime {
+	final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
@@ -117,6 +122,12 @@ public class GetOvertime {
 	@Inject
 	private ApplicationRepository applicationRepository;
 	
+	@Inject
+	private OvertimeRepository overtimeRepository;
+	
+	@Inject
+	private OvertimeInputRepository overtimeInputRepository;
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -132,10 +143,11 @@ public class GetOvertime {
 		String employeeID = AppContexts.user().employeeId();
 		int rootAtr = 1;
 		
+		
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID,
-				rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.localDate(LocalDate.parse(appDate)));
+				rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
 		//アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.OVER_TIME_APPLICATION.value, null);
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
@@ -149,7 +161,7 @@ public class GetOvertime {
 			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getUserAtr().value;
 			if(useAtr == UseAtr.USE.value){
 				if(appDate != null){
-					overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.localDate(LocalDate.parse(appDate)), employeeID);
+					overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
 				}
 			}
 		}
@@ -167,7 +179,7 @@ public class GetOvertime {
 			if (requestAppDetailSetting.get().getTimeCalUseAtr().value == UseAtr.USE.value) {
 				result.setDisplayCaculationTime(true);
 				//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-				Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,GeneralDate.localDate(LocalDate.parse(appDate)));
+				Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,GeneralDate.fromString(appDate, DATE_FORMAT));
 				// 07_勤務種類取得: lay loai di lam
 				getWorkType(companyID, employeeID,personalLablorCodition,result);
 				// 08_就業時間帯取得(lay loai gio lam viec) 
@@ -383,7 +395,7 @@ public class GetOvertime {
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
 				// アルゴリズム「社員所属職場履歴を取得」を実行する
-				SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.localDate(LocalDate.parse(appDate)));
+				SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 				//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
 				
 			}else{
@@ -425,10 +437,28 @@ public class GetOvertime {
 				}
 				result.setDivergenceReasonDtos(divergenceReasonDtos);
 	}
+	/**
+	 * 01-09_事前申請を取得
+	 * @param employeeId
+	 * @param overtimeRestAppCommonSet
+	 * @param appDate
+	 * @param result
+	 */
 	private void getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, OverTimeDto result){
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
-				Optional<Application> application = this.applicationRepository.getApp(employeeId, GeneralDate.localDate(LocalDate.parse(appDate)), PrePostAtr.POSTERIOR.value, ApplicationType.OVER_TIME_APPLICATION.value);
+				Optional<Application> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.POSTERIOR.value, ApplicationType.OVER_TIME_APPLICATION.value);
+				if(application.isPresent()){
+					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get().getCompanyID(), application.get().getApplicationID());
+					if(appOvertime.isPresent()){
+						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode().toString());
+						Optional<WorkType> workType = workTypeRepository.findByPK(appOvertime.get().getCompanyID(), appOvertime.get().getWorkTypeCode().toString());
+						if(workType.isPresent()){
+							result.setWorkTypeName(workType.get().getName().toString());
+						}
+						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInput(appOvertime.get().getCompanyID(), appOvertime.get().getAppID());
+					}
+				}
 			}
 		}
 		
