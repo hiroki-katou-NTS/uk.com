@@ -91,6 +91,9 @@
                                        name: '#[KMK002_26]',
                                        value: calcResultRange.numberUpper,
                                        constraint: 'NumberRangeValue',
+                                       option: {
+                                       decimallength: 1
+                                       },
                                        required: true,
                                        enable: calcResultRange.upperCheck() &amp;&amp; isUsed()}"/>
                                  </com:ko>
@@ -149,6 +152,9 @@
                                        name: '#[KMK002_27]',
                                        value: calcResultRange.numberLower,
                                        constraint: 'NumberRangeValue',
+                                       option: {
+                                       decimallength: 1
+                                       },
                                        required: true,
                                        enable: calcResultRange.lowerCheck() &amp;&amp; isUsed()}"/>
                                  </com:ko>
