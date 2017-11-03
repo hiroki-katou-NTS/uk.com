@@ -60,8 +60,8 @@ module ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/10/31'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/20'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/19'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -135,20 +135,35 @@ module ksu001.a.viewmodel {
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
                 if (newValue == 2) {
-                    //actual data display mode (in phase 2 not done, so the actual data is set to null)
+                    // actual data display mode (in phase 2 not done, so the actual data is set to null)
                     // if actual data is null, display intended data
                     self.dataSource([]);
                     self.updateExTable();
-
-                    if (self.dtPrev() >= self.currentDate) {
-                        //TO-DO    
-                    } else { }
                 } else {
                     // intended data display mode 
                     // get data basicSchedule
                     self.getDataBasicSchedule().done(function() {
                         self.updateExTable();
                     });
+                }
+            });
+
+            self.selectedBackgroundColor.subscribe((newValue) => {
+                //details the background color of the cell
+                if (newValue === '001') {
+                    //TO_DO
+                    // Return value：就業時間帯
+                } else {
+                    //get data from WorkScheduleState
+                    self.getDataWorkScheduleState();
+                    if (self.selectedModeDisplay() === '3') {
+                        //「記号」を選択 (TH chọn 「記号」)
+                        //TO-DO
+
+                    } else {
+                        //Return value of ScheduleEditState of WorkScheduleState
+                        //TO-DO
+                    }
                 }
             });
 
@@ -190,6 +205,7 @@ module ksu001.a.viewmodel {
 
 
         }
+
         /**
          * Get data Basic_Schedule
          */
@@ -205,6 +221,21 @@ module ksu001.a.viewmodel {
                 if (data) {
                     self.dataSource(data);
                 }
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Get data Basic_Schedule
+         */
+        getDataWorkScheduleState(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getDataWorkScheduleState().done(function(data) {
+                if (data) { }
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -867,14 +898,6 @@ module ksu001.a.viewmodel {
             };
 
             nts.uk.ui.dialog.bundledErrors(errorVm);
-        }
-
-        setColorForExTable(): void {
-            let self = this;
-            // Background Color
-            if (self.selectedBackgroundColor() === '001') {
-
-            }
         }
 
         //paste data on cell

@@ -5,6 +5,12 @@ module nts.uk.at.view.ksc001.b {
     import UserInfoDto = service.model.UserInfoDto;
     import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
     import ScheduleExecutionLogSaveRespone = service.model.ScheduleExecutionLogSaveRespone;
+    import baseService = nts.uk.at.view.kdl023.base.service;
+    import DailyPatternSetting = baseService.model.DailyPatternSetting;
+    import ReflectionSetting = baseService.model.ReflectionSetting;
+    // 休日反映方法
+    import ReflectionMethod = baseService.model.ReflectionMethod;
+    import DayOffSetting = baseService.model.DayOffSetting;
 
     export module viewmodel {
         export class ScreenModel {
@@ -54,6 +60,9 @@ module nts.uk.at.view.ksc001.b {
             employeeList: KnockoutObservableArray<UnitModel>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
+            personalScheduleInfo: KnockoutObservable<PersonalSchedule>;
+            responeReflectionSetting: KnockoutObservable<ReflectionSetting>;
+            responeDailyPatternSetting: KnockoutObservable<DailyPatternSetting>;
             
             //for control field
             isReCreate: KnockoutObservable<boolean>;
@@ -76,6 +85,9 @@ module nts.uk.at.view.ksc001.b {
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
+                self.personalScheduleInfo = ko.observable(new PersonalSchedule());
+                self.responeReflectionSetting = ko.observable(null);
+                self.responeDailyPatternSetting = ko.observable(null);
                 
                 self.periodDate = ko.observable({});
                 self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
@@ -196,17 +208,34 @@ module nts.uk.at.view.ksc001.b {
 
             }
             /**
+             * save to client service PersonalSchedule by employeeId
+            */
+            private savePersonalScheduleByEmployeeId(employeeId: string, data: PersonalSchedule): void {
+                nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
+            }
+            /**
              * save to client service PersonalSchedule
             */
-            private savePersonalSchedule(employeeId: string, data: PersonalSchedule): void {
-                nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
+            private savePersonalSchedule(data: PersonalSchedule): void {
+                var self = this;
+                var user: UserInfoDto = self.getUserLogin();
+                self.savePersonalScheduleByEmployeeId(user.employeeId, data);
             }
 
             /**
-             * find by client service PersonalSchedule
+             * find by client service PersonalSchedule by employee
             */
             private findPersonalScheduleByEmployeeId(employeeId: string): JQueryPromise<PersonalSchedule> {
                 return nts.uk.characteristics.restore("PersonalSchedule_" + employeeId);
+            }
+            
+            /**
+             * find by client service PersonalSchedule
+            */
+            private findPersonalSchedule(): JQueryPromise<PersonalSchedule> {
+                var self = this;
+                var user: UserInfoDto = self.getUserLogin();
+                return nts.uk.characteristics.restore("PersonalSchedule_" + user.employeeId);
             }
             /**
              * function next wizard by on click button 
@@ -304,15 +333,16 @@ module nts.uk.at.view.ksc001.b {
              */
             private updatePersonalScheduleData(data: PersonalSchedule): void {
                 var self = this;
-                if(data){
-                        
+                if (data) {
+                    self.personalScheduleInfo(data);
                 }
             }
             /**
              * convert ui to PersonalSchedule
              */
-            private toPersonalScheduleData(employeeId: string): PersonalSchedule{
+            private toPersonalScheduleData(): PersonalSchedule {
                 var self = this;
+                var user: UserInfoDto = self.getUserLogin();
                 var data : PersonalSchedule = new PersonalSchedule();
                 data.resetMasterInfo = self.resetMasterInfo();
                 data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
@@ -354,7 +384,7 @@ module nts.uk.at.view.ksc001.b {
                 
                 data.resetDirectLineBounce = self.resetDirectLineBounce();
                 
-                data.employeeId = employeeId;
+                data.employeeId = user.employeeId;
                 
                 data.resetTimeChildCare = self.resetTimeChildCare();
                 return data;
@@ -371,12 +401,16 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageC(): void {
                 var self = this;
-                 self.next();
+                self.next();
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
                     //build string for Screen E
                     self.buildString();
                     //goto screen E
                     self.next();
+                    $('#buttonFinishPageE').focus();
+                }
+                else {
+                    $('#inputCheckReCreateBox').focus();
                 }
             }
             /**
@@ -391,9 +425,59 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
+
+                // check D1_4 is checked
+                if (self.checkCreateMethodAtrPatternSchedule()) {
+                    
+                    if (self.responeReflectionSetting()) {
+                       self.findByPatternCodeAndOpenPageE(self.responeReflectionSetting().selectedPatternCd);
+                    }
+                    else {
+                        self.findPersonalSchedule().done(function(res){
+                            if (res && res != null) {
+                                self.findByPatternCodeAndOpenPageE(res.patternCode);
+                            }else {
+                                baseService.findAllPattern().done(function(allData) {
+                                    if(allData && allData.length > 0){
+                                        self.responeDailyPatternSetting(allData[0]);
+                                        self.openDialogPageE();
+                                    }else {
+                                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });   
+                                    }
+                                });
+                            } 
+                        });
+                    }
+                } else {
+                    self.openDialogPageE();
+                }
                 
+            }
+            
+            /**
+             * find by pattern code and open dialog E
+             */
+            private findByPatternCodeAndOpenPageE(patternCode : string): void {
+                var self = this;
+                baseService.findPatternByCode(patternCode).done(function(res) {
+                    if (res && res != null) {
+                        self.responeDailyPatternSetting(res);
+                        self.openDialogPageE();
+                    }
+                    else {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
+                    }
+                });
+            }
+            
+            /**
+             * open dialog E
+             */
+            private openDialogPageE(): void {
+                var self = this;
                 self.buildString();
                 self.next();
+                $('#buttonFinishPageE').focus();
             }
             /**
              * function previous page by selection employee goto page (E)
@@ -401,10 +485,11 @@ module nts.uk.at.view.ksc001.b {
             private previousPageE(): void {
                 var self = this;
                  self.previous();
-                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
-                    //back screen C
-                   self.previous();
-                }
+                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                     && self.checkProcessExecutionAtrReconfig()) {
+                     //back screen C
+                     self.previous();
+                 }
             }
             /**
              * finish next page by selection employee goto page (F)
@@ -553,8 +638,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private savePersonalScheduleData(): void {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
-                self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
+                self.savePersonalSchedule(self.toPersonalScheduleData());
                 service.addScheduleExecutionLog(self.collectionData()).done(function(data){
                     nts.uk.ui.windows.setShared('inputData', data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
@@ -570,10 +654,18 @@ module nts.uk.at.view.ksc001.b {
             private showDialogKDL023(): void{
                 var self = this;
                 var data: PersonalSchedule = new PersonalSchedule();
-                nts.uk.ui.windows.setShared('reflectionSetting', self.convertPersonalScheduleToReflectionSetting(data));
-                nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared('returnedData');
+                self.findPersonalSchedule().done(function(dataInfo) {
+                    if (dataInfo && dataInfo != null) {
+                        data = dataInfo;
+                    }
+                    console.log(self.convertPersonalScheduleToReflectionSetting(data));
+                    nts.uk.ui.windows.setShared('reflectionSetting', self.convertPersonalScheduleToReflectionSetting(data));
+                    nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
+                        let dto = nts.uk.ui.windows.getShared('returnedData');
+                        self.responeReflectionSetting(dto);
+                    });
                 });
+                
             }
             /**
              * convert data personal schedule to refelctionSetting
@@ -625,7 +717,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private collectionData(): ScheduleExecutionLogSaveDto{
                 var self = this;
-                var data: PersonalSchedule = self.toPersonalScheduleData('');
+                var data: PersonalSchedule = self.toPersonalScheduleData();
                 var dto: ScheduleExecutionLogSaveDto = {
                     periodStartDate: self.toDate(self.periodDate().startDate),
                     periodEndDate: self.toDate(self.periodDate().endDate),
@@ -659,30 +751,6 @@ module nts.uk.at.view.ksc001.b {
 
         }
         
-        export interface DayOffSetting {
-            useClassification: boolean;
-            workTypeCode: string;
-        }
-        
-        export interface ReflectionSetting {
-            calendarStartDate?: string;
-            calendarEndDate?: string;
-            selectedPatternCd: string;
-            patternStartDate: string; // 'YYYY-MM-DD'
-            reflectionMethod: ReflectionMethod;
-            statutorySetting: DayOffSetting;
-            nonStatutorySetting: DayOffSetting;
-            holidaySetting: DayOffSetting;
-        }
-
-        // 休日反映方法
-        export enum ReflectionMethod {
-            // 上書き反映
-            OVERWRITE = 0,
-
-            // 穴埋め反映
-            FILLINTHEBLANK = 1
-        }
 
         // 実施区分
         export enum ImplementAtr {
@@ -799,10 +867,10 @@ module nts.uk.at.view.ksc001.b {
             
             constructor() {
                 var self = this;
-                self.patternCode = '11';
+                self.patternCode = '02';
                 self.patternStartDate = new Date();
                 self.resetMasterInfo = false;
-                self.holidayReflect = ReflectionMethod.OVERWRITE;
+                self.holidayReflect = ReflectionMethod.Overwrite;
                 self.resetAbsentHolidayBusines = false;
                 self.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
                 self.confirm = false;
