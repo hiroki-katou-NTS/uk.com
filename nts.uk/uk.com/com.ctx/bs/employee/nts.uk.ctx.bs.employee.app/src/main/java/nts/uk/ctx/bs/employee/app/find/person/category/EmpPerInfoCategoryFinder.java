@@ -360,6 +360,7 @@ public class EmpPerInfoCategoryFinder {
 			PersonEmergencyContact personEmergencyContact = personEmergencyCtRepository.getByid(parentInfoId);
 			ctgItemFixDto = CtgItemFixDto.createEmergencyContact(personEmergencyContact.getEmgencyContactId(), personEmergencyContact.getPid(), personEmergencyContact.getPersonName().v(), personEmergencyContact.getPersonMailAddress().v(), 
 					personEmergencyContact.getStreetAddressPerson().v(), personEmergencyContact.getPhone().v(), personEmergencyContact.getPriorityEmegencyContact().v(), personEmergencyContact.getRelationShip().v());
+			setCtgItemOptionDto(empPerCtgInfoDto, personEmergencyContact.getEmgencyContactId(), true);
 			break;
 		}
 		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);	

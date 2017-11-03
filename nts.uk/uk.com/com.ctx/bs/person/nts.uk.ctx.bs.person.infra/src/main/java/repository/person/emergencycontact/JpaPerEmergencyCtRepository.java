@@ -6,8 +6,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import javax.ejb.Stateless;
-
 import entity.person.emergencycontact.BpsmtEmergencyContact;
 import entity.person.emergencycontact.BpsmtEmergencyContactPK;
 import lombok.val;
