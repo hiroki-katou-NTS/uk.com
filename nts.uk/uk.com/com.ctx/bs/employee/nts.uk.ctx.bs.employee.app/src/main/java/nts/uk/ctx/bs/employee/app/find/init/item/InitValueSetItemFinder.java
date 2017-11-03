@@ -122,7 +122,7 @@ public class InitValueSetItemFinder {
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
-		Optional<TemporaryAbsence> opttemAbsence = this.tempAbsenceRepo.getBySid(employeeId, baseDate);
+		Optional<TemporaryAbsence> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
 		if (opttemAbsence.isPresent()) {
 
 			returnList = mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(), initItemList);

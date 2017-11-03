@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.temporaryabsence;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,7 +18,9 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	public final String SELECT_BY_SID_AND_REFERENCEDATE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.bsymtTemporaryAbsencePK.sid = :sid"
 			+ " AND c.startDate <= :referenceDate  AND c.endDate >= :referenceDate ";
 
-	public static final String SELECT_BY_TEMP_ABSENCE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.bsymtTemporaryAbsencePK.leaveHolidayId = :tempAbsenceId";
+	public static final String SELECT_BY_TEMP_ABSENCE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.leaveHolidayId = :tempAbsenceId";
+	
+	public static final String GETLIST_BY_SID = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.BsymtTemporaryAbsence = :tempAbsenceId";
 
 	private TemporaryAbsence toTemporaryAbsence(BsymtTemporaryAbsence entity) {
 		val domain = TemporaryAbsence.createSimpleFromJavaType(entity.sid,
@@ -27,7 +30,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	}
 
 	@Override
-	public Optional<TemporaryAbsence> getBySid(String sid, GeneralDate referenceDate) {
+	public Optional<TemporaryAbsence> getBySidAndReferDate(String sid, GeneralDate referenceDate) {
 		BsymtTemporaryAbsence entity = this.queryProxy()
 				.query(SELECT_BY_SID_AND_REFERENCEDATE, BsymtTemporaryAbsence.class).setParameter("sid", sid)
 				.setParameter("referenceDate", referenceDate).getSingleOrNull();
@@ -44,4 +47,11 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				.setParameter("tempAbsenceId", tempAbsenceId).getSingle(x -> toTemporaryAbsence(x));
 	}
 	// vinhpx: end
+
+	@Override
+	public List<TemporaryAbsence> getListBySid(String sid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
