@@ -8,5 +8,5 @@ public interface FamilySocialInsuranceRepository {
 	 * 取得した「家族社会保険」を更新する
 	 * @param domain
 	 */
-	void addFamilySocialInsurance(FamilySocialInsurance domain);
+	void updateFamilySocialInsurance(FamilySocialInsurance domain);
 }

@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsurance;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsuranceRepository;
 import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.socialinsurance.BsymtFamilySocialInsurance;
+import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.socialinsurance.BsymtFamilySocialInsurancePK;
 
 @Stateless
 public class JpaFamilySocialInsurance extends JpaRepository implements FamilySocialInsuranceRepository{
@@ -29,17 +30,33 @@ public class JpaFamilySocialInsurance extends JpaRepository implements FamilySoc
 				.setParameter("socialInsId", familySocialInsById).getSingle(x -> toDomainFamilySocialInsurance(x));
 	}
 	
-	private BsymtFamilySocialInsurance toEntity(FamilySocialInsurance domain){
-		return null;
+	private void updateEntity(FamilySocialInsurance domain,BsymtFamilySocialInsurance entity){
+		entity.setSId(domain.getSid());
+		entity.setFamilyMemberId(domain.getFamilyMemberId());
+		entity.setBasicPerNumber(domain.getBasicPensionNumber().v());
+		entity.setStrD(domain.getStartDate());
+		entity.setEndD(domain.getEndDate());
+		entity.setNursingCare(domain.isNursingCare()?1:0);
+		entity.setNationalPenNo3(domain.isNationalPensionNo3()?1:0);
+		entity.setHealthInsDep(domain.isHealthInsuranceDependent()?1:0);
 	}
 	/**
 	 * 取得した「家族社会保険」を更新する
 	 * @param domain
 	 */
 	@Override
-	public void addFamilySocialInsurance(FamilySocialInsurance domain) {
-		// TODO Auto-generated method stub
+	public void updateFamilySocialInsurance(FamilySocialInsurance domain) {
 		
+		BsymtFamilySocialInsurancePK key = new BsymtFamilySocialInsurancePK(domain.getSocailInsuaranceId());
+		Optional<BsymtFamilySocialInsurance> existItem = this.queryProxy().find(key, BsymtFamilySocialInsurance.class);
+		
+		if (!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
 	}
 
 }
