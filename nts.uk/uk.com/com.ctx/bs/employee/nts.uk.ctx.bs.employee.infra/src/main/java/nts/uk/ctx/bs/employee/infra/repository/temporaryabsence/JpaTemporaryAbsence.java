@@ -18,7 +18,9 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	public final String SELECT_BY_SID_AND_REFERENCEDATE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.bsymtTemporaryAbsencePK.sid = :sid"
 			+ " AND c.startDate <= :referenceDate  AND c.endDate >= :referenceDate ";
 
-	public static final String SELECT_BY_TEMP_ABSENCE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.bsymtTemporaryAbsencePK.leaveHolidayId = :tempAbsenceId";
+	public static final String SELECT_BY_TEMP_ABSENCE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.leaveHolidayId = :tempAbsenceId";
+	
+	public static final String GETLIST_BY_SID = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.BsymtTemporaryAbsence = :tempAbsenceId";
 
 	private TemporaryAbsence toTemporaryAbsence(BsymtTemporaryAbsence entity) {
 		val domain = TemporaryAbsence.createSimpleFromJavaType(entity.sid,
@@ -51,4 +53,5 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
