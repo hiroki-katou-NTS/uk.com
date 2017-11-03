@@ -28,5 +28,18 @@ public class JpaFamilySocialInsurance extends JpaRepository implements FamilySoc
 		return this.queryProxy().query(SELECT_FAMILY_SOCIAL_INS_BY_ID, BsymtFamilySocialInsurance.class)
 				.setParameter("socialInsId", familySocialInsById).getSingle(x -> toDomainFamilySocialInsurance(x));
 	}
+	
+	private BsymtFamilySocialInsurance toEntity(FamilySocialInsurance domain){
+		return null;
+	}
+	/**
+	 * 取得した「家族社会保険」を更新する
+	 * @param domain
+	 */
+	@Override
+	public void addFamilySocialInsurance(FamilySocialInsurance domain) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
