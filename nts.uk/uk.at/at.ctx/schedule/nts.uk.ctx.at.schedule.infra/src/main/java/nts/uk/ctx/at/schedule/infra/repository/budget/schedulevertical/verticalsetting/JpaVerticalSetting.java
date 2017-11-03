@@ -8,16 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
-import lombok.experimental.var;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Attributes;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.CalculateAtr;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.CumulativeAtr;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.DisplayAtr;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeople;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeopleFunc;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Rounding;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
@@ -27,10 +20,10 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetti
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeoplePK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItem;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItemPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSet;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrder;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrderPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSetPK;
 
 /**
  * 
@@ -65,6 +58,10 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 * author: Hoang Yen
 	 */
 	private static FormPeople toDomainFormPeople(KscmtFormPeople entity){
+		if (entity == null) {
+			return null;
+		}
+		
 		List<FormPeopleFunc> lst = new ArrayList<>();
 		for(KscmtFormPeopleFunc obj: entity.listPeopleFunc){
 			lst.add(toDomainFormPeopleFunc(obj));
@@ -146,15 +143,15 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		
 		List<VerticalCalItem> verticalCalItems = kscstVerticalCalSet.genVertItems.stream().map(t -> {
 			FormPeople formPeople = toDomainFormPeople(t.formPeople);
-			return new VerticalCalItem(t.kscmtGenVertItemPK.companyId, 
+			return VerticalCalItem.createFromJavatype(t.kscmtGenVertItemPK.companyId, 
 					t.kscmtGenVertItemPK.verticalCalCd, 
 					t.kscmtGenVertItemPK.itemId, 
 					t.itemName, 
-					EnumAdaptor.valueOf(t.calculateAtr, CalculateAtr.class),
-					EnumAdaptor.valueOf(t.displayAtr, DisplayAtr.class),
-					EnumAdaptor.valueOf(t.cumulativeAtr, CumulativeAtr.class),
-					EnumAdaptor.valueOf(t.attributes, Attributes.class),
-					EnumAdaptor.valueOf(t.rounding, Rounding.class),
+					t.calculateAtr,
+					t.displayAtr,
+					t.cumulativeAtr,
+					t.attributes,
+					t.rounding,
 					t.genVertOrder.dispOrder,
 					formPeople);
 			}).collect(Collectors.toList());
