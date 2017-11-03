@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
  */
 public interface AssignedWrkplcRepository {
 
-	// chua implement
 	public Optional<AssignedWorkplace> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate);
 
 	public AssignedWorkplace getAssignedWorkplaceById(String assignedWorkplaceId);
