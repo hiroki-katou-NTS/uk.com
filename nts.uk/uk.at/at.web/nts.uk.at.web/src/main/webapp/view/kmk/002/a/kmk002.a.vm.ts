@@ -292,21 +292,15 @@ module nts.uk.at.view.kmk002.a {
                         let rightItem = item.formulaSetting.rightItem;
 
                         // check whether left item is a nonexistent formula
-                        // only check item selection setting method
-                        if (item.isSettingMethodOfItemSelection(leftItem)) {
-                            // if formula not found => invalid setting
-                            if (!self.isFormulaExist(leftItem.formulaItemId)) {
-                                return true;
-                            }
+                        if (item.isSettingMethodOfItemSelection(leftItem)
+                            && !self.isFormulaExist(leftItem.formulaItemId)) {
+                            return true;
                         }
 
                         // check whether right item is a nonexistent formula
-                        // only check item selection setting method
-                        if (item.isSettingMethodOfItemSelection(rightItem)) {
-                            // if formula not found => invalid setting
-                            if (!self.isFormulaExist(rightItem.formulaItemId)) {
-                                return true;
-                            }
+                        if (item.isSettingMethodOfItemSelection(rightItem)
+                            && !self.isFormulaExist(rightItem.formulaItemId)) {
+                            return true;
                         }
                     }
 
@@ -972,7 +966,8 @@ module nts.uk.at.view.kmk002.a {
                         headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50,
                         formatter: used => {
                             if (used == 1) {
-                                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                                return '<div style="text-align: center;max-height: 18px;">'
+                                    + '<i class="icon icon-78"></i></div>';
                             }
                             return '';
                         }
@@ -1276,7 +1271,8 @@ module nts.uk.at.view.kmk002.a {
                 self.calcAtrDs = Enums.ENUM_OPT_ITEM.calcAtr;
                 self.timeUnitDs = Enums.ENUM_OPT_ITEM.timeRounding.unit;
                 self.timeRoundingFullDs = Enums.ENUM_OPT_ITEM.timeRounding.rounding;
-                self.timeRoundingFilterdDs = self.timeRoundingFullDs.filter(item => item.fieldName != "ROUNDING_DOWN_OVER");
+                self.timeRoundingFilterdDs = self.timeRoundingFullDs
+                    .filter(item => item.fieldName != "ROUNDING_DOWN_OVER");
                 self.timeRoundingDailyDs = ko.observableArray(self.timeRoundingFullDs);
                 self.timeRoundingMonthlyDs = ko.observableArray(self.timeRoundingFullDs);
                 self.amountUnitDs = Enums.ENUM_OPT_ITEM.amountRounding.unit;
@@ -1422,7 +1418,8 @@ module nts.uk.at.view.kmk002.a {
              */
             public isSettingMethodOfItemSelection(settingItem: SettingItemDto): boolean {
                 let self = this;
-                return settingItem.settingMethod == EnumAdaptor.valueOf('ITEM_SELECTION', Enums.ENUM_OPT_ITEM.settingMethod);
+                return settingItem.settingMethod == EnumAdaptor.valueOf('ITEM_SELECTION',
+                    Enums.ENUM_OPT_ITEM.settingMethod);
             }
 
             /**
@@ -1465,13 +1462,13 @@ module nts.uk.at.view.kmk002.a {
                 data.leftItem = {
                     settingMethod: 0,
                     dispOrder: 1,
-                    inputValue: 0,
+                    inputValue: null,
                     formulaItemId: ''
                 }
                 data.rightItem = {
                     settingMethod: 0,
                     dispOrder: 2,
-                    inputValue: 0,
+                    inputValue: null,
                     formulaItemId: ''
                 }
                 return data;
@@ -1725,22 +1722,23 @@ module nts.uk.at.view.kmk002.a {
                     self.itemSelection = dto.itemSelection;
                 }
 
-                // Rounding
-                //number
+                // Daily rounding
+                if (dto.dailyRounding) {
+                    self.numberDailyRounding(dto.dailyRounding.numberRounding);
+                    self.numberDailyUnit(dto.dailyRounding.numberUnit);
+                    self.amountDailyRounding(dto.dailyRounding.amountRounding);
+                    self.amountDailyUnit(dto.dailyRounding.amountUnit);
+                    self.timeDailyRounding(dto.dailyRounding.timeRounding);
+                    self.timeDailyUnit(dto.dailyRounding.timeUnit);
+                }
+
+                // Monthly rounding
                 self.numberMonthlyRounding(dto.monthlyRounding.numberRounding);
                 self.numberMonthlyUnit(dto.monthlyRounding.numberUnit);
-                self.numberDailyRounding(dto.dailyRounding.numberRounding);
-                self.numberDailyUnit(dto.dailyRounding.numberUnit);
-                //time
-                self.timeMonthlyRounding(dto.monthlyRounding.timeRounding);
-                self.timeMonthlyUnit(dto.monthlyRounding.timeUnit);
-                self.timeDailyRounding(dto.dailyRounding.timeRounding);
-                self.timeDailyUnit(dto.dailyRounding.timeUnit);
-                //amount
                 self.amountMonthlyRounding(dto.monthlyRounding.amountRounding);
                 self.amountMonthlyUnit(dto.monthlyRounding.amountUnit);
-                self.amountDailyRounding(dto.dailyRounding.amountRounding);
-                self.amountDailyUnit(dto.dailyRounding.amountUnit);
+                self.timeMonthlyRounding(dto.monthlyRounding.timeRounding);
+                self.timeMonthlyUnit(dto.monthlyRounding.timeUnit);
 
                 // save to stash
                 self.formulaAtrStash = dto.formulaAtr;
@@ -1801,7 +1799,7 @@ module nts.uk.at.view.kmk002.a {
                     return item.order;
                 }
                 // Error.
-                return 0;
+                return null;
             }
 
             /**

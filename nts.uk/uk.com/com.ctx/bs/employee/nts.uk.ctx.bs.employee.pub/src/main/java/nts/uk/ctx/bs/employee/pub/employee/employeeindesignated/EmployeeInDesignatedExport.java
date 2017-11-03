@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 @Builder
 // 指定職場の指定在籍状態の社員を取得
+// Export class for Request List #80
 public class EmployeeInDesignatedExport {
 	
 	/** The employee id. */

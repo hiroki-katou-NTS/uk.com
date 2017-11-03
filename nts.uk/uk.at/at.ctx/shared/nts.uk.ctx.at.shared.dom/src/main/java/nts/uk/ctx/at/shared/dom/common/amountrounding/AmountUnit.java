@@ -2,25 +2,29 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.common.numberrounding;
+package nts.uk.ctx.at.shared.dom.common.amountrounding;
 
 /**
- * The Enum Rounding.
+ * The Enum Unit.
  */
-// 端数処理
-public enum Rounding {
+// 端数処理位置
+public enum AmountUnit {
 
-	/** The truncation. */
-	// 切り捨て
-	TRUNCATION(0, "Enum_Rounding_Truncation"),
+	/** The one yen. */
+	// 1円
+	ONE_YEN(1, "ENUM_UNIT_ONE_YEN"),
 
-	/** The round up. */
-	// 切り上げ
-	ROUND_UP(1, "Enum_Rounding_Round_Up"),
+	/** The ten yen. */
+	// 10円
+	TEN_YEN(10, "ENUM_UNIT_TEN_YEN"),
 
-	/** The down 4 up 5. */
-	// 四捨五入
-	DOWN_4_UP_5(5, "Enum_Rounding_Down_4_Up_5");
+	/** The one hundred yen. */
+	// 100円
+	ONE_HUNDRED_YEN(100, "ENUM_UNIT_ONE_HUNDRED_YEN"),
+
+	/** The one thousand yen. */
+	// 1000円
+	ONE_THOUSAND_YEN(1000, "ENUM_UNIT_ONE_THOUSAND_YEN"),;
 
 	/** The value. */
 	public final int value;
@@ -29,17 +33,17 @@ public enum Rounding {
 	public final String nameId;
 
 	/** The Constant values. */
-	private final static Rounding[] values = Rounding.values();
+	private final static AmountUnit[] values = AmountUnit.values();
 
 	/**
-	 * Instantiates a new rounding.
+	 * Instantiates a new unit.
 	 *
 	 * @param value
 	 *            the value
 	 * @param nameId
 	 *            the name id
 	 */
-	private Rounding(int value, String nameId) {
+	private AmountUnit(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
@@ -49,16 +53,16 @@ public enum Rounding {
 	 *
 	 * @param value
 	 *            the value
-	 * @return the rounding
+	 * @return the unit
 	 */
-	public static Rounding valueOf(Integer value) {
+	public static AmountUnit valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (Rounding val : Rounding.values) {
+		for (AmountUnit val : AmountUnit.values) {
 			if (val.value == value) {
 				return val;
 			}

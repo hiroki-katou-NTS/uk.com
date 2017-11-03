@@ -118,14 +118,15 @@ public class MonthlyAttendanceItemFinder {
 	 * @return the int
 	 */
 	private int convertToAttdItemType(int formulaAtr) {
-
-		if (formulaAtr == OptionalItemAtr.AMOUNT.value) {
+		OptionalItemAtr vl = OptionalItemAtr.valueOf(formulaAtr);
+		switch (vl) {
+		case AMOUNT:
 			return MonthlyAttendanceItemAtr.AMOUNT.value;
-		} else if (formulaAtr == OptionalItemAtr.NUMBER.value) {
-			return MonthlyAttendanceItemAtr.NUMBER.value;
-		} else if (formulaAtr == OptionalItemAtr.TIME.value) {
+		case TIME:
 			return MonthlyAttendanceItemAtr.TIME.value;
-		} else {
+		case NUMBER:
+			return MonthlyAttendanceItemAtr.NUMBER.value;
+		default:
 			throw new RuntimeException("value not found");
 		}
 	}
