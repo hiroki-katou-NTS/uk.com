@@ -333,8 +333,6 @@ module cps002.a.vm {
 
                 layout.itemsClassification(x.itemsClassification);
 
-
-
             });
 
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
