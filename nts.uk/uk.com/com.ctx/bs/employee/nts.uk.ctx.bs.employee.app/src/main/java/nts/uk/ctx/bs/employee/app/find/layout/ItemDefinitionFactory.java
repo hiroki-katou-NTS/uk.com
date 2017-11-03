@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.bs.employee.app.find.layout;
 
+import java.util.List;
+
 import nts.uk.ctx.bs.employee.app.find.init.item.SaveDataDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
@@ -13,6 +15,8 @@ import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
@@ -229,4 +233,10 @@ public class ItemDefinitionFactory {
 	public static void matchInformation(EmpPersonInfoClassDto authClassItem, SubJobPosition subJobPosition) {
 	}
 
+	public static void matchPersEmerConts(EmpPersonInfoClassDto authClassItem,
+			List<PersonEmergencyContact> perEmerConts) {
+	}
+
+	public static void matchFamilies(EmpPersonInfoClassDto authClassItem, List<Family> families) {
+	}
 }

@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.employee.app.find.layout.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -27,6 +28,16 @@ public class EmpPersonInfoClassDto {
 
 	private List<EmpPersonInfoItemDto> dataInfoitems;
 	
+	/*
+	 * 1.Single Classification Item
+	 * One:		 SaveDataDto
+	 * Set<>: 	 SaveDataDto SaveDataDto SaveDataDto
+	 * 
+	 * 2. List Classification Item
+	 * 		SaveDataDto SaveDataDto SaveDataDto 
+	 * 		SaveDataDto SaveDataDto SaveDataDto
+	 * 		SaveDataDto SaveDataDto SaveDataDto
+	 */
 	private List<Object> dataItems;
 
 	public static EmpPersonInfoClassDto createfromDomain(LayoutPersonInfoClassification domain) {
@@ -35,6 +46,7 @@ public class EmpPersonInfoClassDto {
 		dto.setDispOrder(domain.getDispOrder().v());
 		dto.setPersonInfoCategoryID(domain.getPersonInfoCategoryID());
 		dto.setLayoutItemType(domain.getLayoutItemType().value);
+		dto.dataItems = new ArrayList<>();
 		return dto;
 	}
 

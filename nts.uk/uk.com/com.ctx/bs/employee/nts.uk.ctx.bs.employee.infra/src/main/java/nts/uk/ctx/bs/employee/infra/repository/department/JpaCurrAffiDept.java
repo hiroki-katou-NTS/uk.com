@@ -13,21 +13,24 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRepository{
+public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRepository {
 
 	private static final String SELECT_CURR_AFF_DEPT_BY_ID = "SELECT c BsymtCurrAffiDept c"
 			+ " WHERE c.bsymtCurrAffiDeptPK.affiDeptId = :affiDeptId";
-	
-	private CurrentAffiDept toDomain(BsymtCurrAffiDept entity){
-		return new CurrentAffiDept(entity.getSid(), entity.getBsymtCurrAffiDeptPK().getAffiDeptId(), entity.getDepId(), 
-				entity.getLstBsymtAssiWorkplaceHist().stream().map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD()))).collect(Collectors.toList()));
+
+	private CurrentAffiDept toDomain(BsymtCurrAffiDept entity) {
+		return new CurrentAffiDept(entity.getSid(), entity.affiDeptId, entity.depId,
+				entity.lstBsymtAssiWorkplaceHist.stream()
+						.map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD())))
+						.collect(Collectors.toList()));
 	}
-	
+
 	@Override
 	public CurrentAffiDept getCurrentAffiDeptById(String currentAffiDeptById) {
-		Optional<CurrentAffiDept> currentAffiDept = this.queryProxy().query(SELECT_CURR_AFF_DEPT_BY_ID, BsymtCurrAffiDept.class)
+		Optional<CurrentAffiDept> currentAffiDept = this.queryProxy()
+				.query(SELECT_CURR_AFF_DEPT_BY_ID, BsymtCurrAffiDept.class)
 				.setParameter("affiDeptId", currentAffiDeptById).getSingle(x -> toDomain(x));
-		return currentAffiDept.isPresent()?currentAffiDept.get():null;
+		return currentAffiDept.isPresent() ? currentAffiDept.get() : null;
 	}
 
 }

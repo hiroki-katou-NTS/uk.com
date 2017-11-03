@@ -33,25 +33,25 @@ public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable {
 	@Id
 	@Basic(optional = false)
 	@Column(name = "AFFI_DEPT_ID")
-	private String affiDeptId;
+	public String affiDeptId;
 
 	/** The sid. */
 	@Column(name = "SID")
-	private String sid;
+	public String sid;
 
 	/** The dep id. */
 	@Column(name = "DEP_ID")
-	private String depId;
+	public String depId;
 
 	/** The dep id. */
 	@Column(name = "HIST_ID")
-	private String histId;
+	public String histId;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtCurrAffiDept", orphanRemoval = true)
-	private List<BsymtSubJobPosition> lstBsymtSubJobPosition;
+	public List<BsymtSubJobPosition> lstBsymtSubJobPosition;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtAssiWorkplace", orphanRemoval = true)
-	private List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
+	public List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
 
 	@Override
 	protected Object getKey() {
