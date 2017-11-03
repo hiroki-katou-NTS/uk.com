@@ -221,6 +221,7 @@ module nts.uk.com.view.cmm050.a {
                     dfd.resolve();
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
                         _self.startPage().done(function(){});
+                        $('#email_auth').focus();
                     });
                 }).fail(function(){
                     alert('error');    
@@ -276,11 +277,9 @@ module nts.uk.com.view.cmm050.a {
                         _self.fillUI(data.authMethod);
                     }else{
                         _self.fillUI(99); 
-                    }
-                    
+                    }          
                     dfd.resolve();
                 });
-                $('#email_auth').focus();
                 
                 return dfd.promise();
             }
