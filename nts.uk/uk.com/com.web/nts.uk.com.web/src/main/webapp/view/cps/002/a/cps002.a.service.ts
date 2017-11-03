@@ -15,7 +15,8 @@ module cps002.a.service {
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
         'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
         'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}/{2}',
-        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
+        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth',
+        'getLayoutByCreateType': 'bs/employee/layout/getByCreateType'
 
     };
 
@@ -71,6 +72,12 @@ module cps002.a.service {
     export function getSelfRoleAuth() {
         return ajax(paths.getSelfRoleAuth);
     }
+
+    export function getLayoutByCreateType(command) {
+        return ajax(paths.getLayoutByCreateType, command);
+    }
+
+
 
 }
 

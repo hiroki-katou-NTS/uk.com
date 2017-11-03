@@ -333,7 +333,12 @@
 								</div>
 
 							</div>
-
+							<div class="div_line" data-bind="with: layout">
+								<div
+									data-bind="ntsLayoutControl: { 
+					data: itemsClassification,
+					editAble: editable }"></div>
+							</div>
 							<div class='div_line'>
 								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"

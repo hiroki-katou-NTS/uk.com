@@ -585,7 +585,7 @@ public class LayoutFinder {
 			}
 
 		}
-		// fill all item in list to save resources when searching by itemcode
+		// fill all item in list for save resources when searching by itemcode
 		return returnList;
 	}
 	// sonnlb code end
