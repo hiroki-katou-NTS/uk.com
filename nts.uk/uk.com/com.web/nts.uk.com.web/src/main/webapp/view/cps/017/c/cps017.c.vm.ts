@@ -16,33 +16,14 @@ module nts.uk.com.view.cps017.c.viewmodel {
         // history:
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
         historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
-        
+
         constructor() {
             let self = this;
-            
+
         }
 
         start(): JQueryPromise<any> {
-            let self = this,
-                historySelection: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selectedHisId = getShared('selectedHisId');
-                dfd = $.Deferred();
 
-            nts.uk.ui.errors.clearAll();
-
-            service.getAllSelection(selectedHisId).done((itemList: Array<IHistorySelection>) => {
-                if (itemList && itemList.length > 0) {
-                    self.listHistorySelection(itemList);
-                } else {
-                    alertError({ messageId: "Khong co data!" });
-                }
-                dfd.resolve();
-            }).fail(error => {
-                alertError({ messageId: "Khong co data!" });
-            });
-
-            return dfd.promise();
         }
 
         closeDialog() {
@@ -50,7 +31,29 @@ module nts.uk.com.view.cps017.c.viewmodel {
         }
 
         addHistory() {
-            alert("addHistory!");
+            let self = this,
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = getShared('selectHistory');
+
+            currentItem.companyCode(selectHistory.companyCode);
+            currentItem.selectionItemId(selectHistory.selectionItemId);
+            currentItem.histId(selectHistory.histId);
+            //currentItem.endDate(selectHistory.endDate);
+            command = ko.toJS(currentItem);
+
+            service.addHistoryData(command).done(function() {
+                self.AddHistoryList.removeAll();
+                service.getAllPerInfoHistorySelection(self.historySelection().selectionItemId()).done((itemList: Array<IHistorySelection>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listHistorySelection.push(x));
+                    }
+                });
+
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                self.listHistorySelection.valueHasMutated();
+            });
+
         }
     }
 

@@ -270,7 +270,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 currentItem: Selection = self.selection();
 
             //set histID 
+            //setShared('selectedItem', { selectedHisId: self.historySelection().histId(), selectionItemId: currentItem.selectionID });
             setShared('selectedHisId', self.historySelection().histId());
+
             block.invisible();
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
@@ -279,14 +281,23 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         //ダイアログC画面
         openDialogC() {
-            let self = this;
+            let self = this,
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
+                selectHistory = _.find(listHistorySelection, x => x.histId == currentItem.histId());
 
             //set histID
-            setShared('selectedHisId', self.historySelection().histId());
+            //setShared('selectedHisId', self.historySelection().histId());
+            setShared('selectHistory', selectHistory);
 
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
+//                service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((_selectionItemList: IHistorySelection) => {
+//                    self.listHistorySelection(_selectionItemList);
+//                });
+                
+
             });
         }
 
