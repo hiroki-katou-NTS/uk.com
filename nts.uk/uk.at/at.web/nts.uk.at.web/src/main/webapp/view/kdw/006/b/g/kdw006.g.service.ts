@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw006.g.service {
         register: 'at/record/workrecord/worktype/register'
     }
 
-    export function findWorkType(): JQueryPromise<any> {
+    export function getAllWorkTypes(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findWorkType);
     }
     
