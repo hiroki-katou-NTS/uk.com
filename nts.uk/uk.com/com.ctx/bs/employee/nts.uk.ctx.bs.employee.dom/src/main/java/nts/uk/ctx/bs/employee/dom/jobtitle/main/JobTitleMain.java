@@ -2,13 +2,14 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.main;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
-public class JobTitleMain {
+public class JobTitleMain extends AggregateRoot{
 	/**
 	 * domain : 職務職位 - JobPositionMain
 	 */
