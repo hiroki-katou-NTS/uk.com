@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.temporaryabsence;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -44,4 +45,10 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				.setParameter("tempAbsenceId", tempAbsenceId).getSingle(x -> toTemporaryAbsence(x));
 	}
 	// vinhpx: end
+
+	@Override
+	public List<TemporaryAbsence> getListBySid(String sid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
