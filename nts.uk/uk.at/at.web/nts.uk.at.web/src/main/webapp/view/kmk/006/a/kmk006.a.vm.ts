@@ -138,21 +138,21 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumNorEarLi = ko.observable(2);
                 self.valueEnumNorEarAtr = ko.observable(2);
                 self.valueEnumNorEarMidLi = ko.observable(2);
-                self.valueEnumNorEarMidAtr = ko.observable(1);
+                self.valueEnumNorEarMidAtr = ko.observable(2);
                 self.valueEnumNorNorLi = ko.observable(2);
                 self.valueEnumNorNorAtr = ko.observable(2);
                 self.valueEnumNorNorMidLi = ko.observable(2);
-                self.valueEnumNorNorMidAtr = ko.observable(1);
+                self.valueEnumNorNorMidAtr = ko.observable(2);
                 self.valueEnumNorLegLi = ko.observable(2);
-                self.valueEnumNorLegAtr = ko.observable(1);
+                self.valueEnumNorLegAtr = ko.observable(2);
                 self.valueEnumNorLegMidLi = ko.observable(2);
-                self.valueEnumNorLegMidAtr = ko.observable(1);
+                self.valueEnumNorLegMidAtr = ko.observable(2);
                 self.valueEnumFleTimeLi = ko.observable(2);
                 self.valueEnumFleTimeAtr = ko.observable(2);
                 self.valueEnumResResLi = ko.observable(2);
                 self.valueEnumResResAtr = ko.observable(2);
                 self.valueEnumResLatLi = ko.observable(2);
-                self.valueEnumResLatAtr = ko.observable(1);
+                self.valueEnumResLatAtr = ko.observable(2);
 
                 self.selectedCode = ko.observable('');
                 self.totalSelectedCode = ko.observable('');
@@ -245,22 +245,22 @@ module nts.uk.at.view.kmk006.a {
 
 
                 self.enableEnumNorLegLi = ko.computed(function() {
-                    return self.valueEnumNorLegAtr() != 1;
+                    return self.valueEnumNorLegAtr() != 2;
                 });
                 self.enableEnumNorLegMidLi = ko.computed(function() {
-                    return self.valueEnumNorLegMidAtr() != 1;
+                    return self.valueEnumNorLegMidAtr() != 2;
                 });
                 self.enableEnumNorNorLi = ko.computed(function() {
                     return self.valueEnumNorNorAtr() != 2;
                 });
                 self.enableEnumNorNorMidLi = ko.computed(function() {
-                    return self.valueEnumNorNorMidAtr() != 1;
+                    return self.valueEnumNorNorMidAtr() != 2;
                 });
                 self.enableEnumNorEarLi = ko.computed(function() {
                     return self.valueEnumNorEarAtr() != 2;
                 });
                 self.enableEnumNorEarMidLi = ko.computed(function() {
-                    return self.valueEnumNorEarMidAtr() != 1;
+                    return self.valueEnumNorEarMidAtr() != 2;
                 });
                 self.enableEnumFleTimeLi = ko.computed(function() {
                     return self.valueEnumFleTimeAtr() != 2;
@@ -269,7 +269,7 @@ module nts.uk.at.view.kmk006.a {
                     return self.valueEnumResResAtr() != 2;
                 });
                 self.enableEnumResLatLi = ko.computed(function() {
-                    return self.valueEnumResLatAtr() != 1;
+                    return self.valueEnumResLatAtr() != 2;
                 });
 
             }
