@@ -15,11 +15,10 @@ import lombok.NoArgsConstructor;
 public class BsymtTemporaryAbsencePK implements Serializable{/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 1L;	
 	
 	@Basic(optional = false)
-	@Column(name="SID")
-	public String sid;
+	@Column(name = "LEAVE_HOLIDAY_ID")
+	public String leaveHolidayId;
 	
 }
