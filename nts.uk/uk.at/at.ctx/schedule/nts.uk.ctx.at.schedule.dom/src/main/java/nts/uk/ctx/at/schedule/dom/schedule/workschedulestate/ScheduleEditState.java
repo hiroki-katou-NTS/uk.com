@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workscheduleeditstate;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedulestate;
 
 import lombok.AllArgsConstructor;
 
