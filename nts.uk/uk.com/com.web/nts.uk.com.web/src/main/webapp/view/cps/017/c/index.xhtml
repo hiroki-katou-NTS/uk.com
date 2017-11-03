@@ -40,10 +40,12 @@
 						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_36')}</div>
 						<span class="label">個人情報選択項目の定義</span>
 					</div>
-					<div class="row">
+					<div class="row" data-bind="with: historySelection">
 						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_37')}</div>
-						<input style="width: 90px;"
-							data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+<!-- 						<input style="width: 90px;" -->
+<!-- 							data-bind="ntsTimeEditor: {value: startDate, inputFormat: 'date'}" /> -->
+						<div
+							data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						~ <span class="label">#{i18n.getText('CPS017_48')}</span>
 					</div>
 				</div>
@@ -51,7 +53,8 @@
 				<div id="functions-area-bottom"
 					style="width: 580px; height: 100px; padding-top: 15px; text-align: center;">
 					<button id="A_BTN_REGISTER" class="proceed"
-						style="width: 145px; height: 60px; font-size: 25px;">#{i18n.getText('CPS017_40')}</button>
+						style="width: 145px; height: 60px; font-size: 25px;"
+						data-bind="click : addHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_40')}</button>
 					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_41')}</button>
 
 				</div>

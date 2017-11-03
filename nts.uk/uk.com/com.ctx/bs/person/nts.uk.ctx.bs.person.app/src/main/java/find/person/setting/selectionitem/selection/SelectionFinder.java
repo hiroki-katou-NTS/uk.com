@@ -30,7 +30,7 @@ public class SelectionFinder {
 	// アルゴリズム「選択肢履歴選択時処理」を実行する(Thực thi xử lý chọn 選択肢履歴)
 	public List<SelectionDto> getAllSelection() {
 		String contractCode = AppContexts.user().contractCode();
-		return this.selectionRepo.getAllHistorySelection(contractCode).stream()
+		return this.selectionRepo.getAllSelectByHistId(contractCode).stream()
 				.map(i -> SelectionDto.fromDomainSelection(i)).collect(Collectors.toList());
 	}
 
@@ -39,14 +39,14 @@ public class SelectionFinder {
 		List<SelectionItemOrderDto> orderList = new ArrayList<SelectionItemOrderDto>();
 		
 		// lay selection
-		List<Selection> selectionList = this.selectionRepo.getAllHistorySelection(histId);
+		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
 		
 		// kiem tra so luong item lay duoc
 		if (selectionList.isEmpty()) {
 			return orderList;
 		} else {
 			String getByHisId = selectionList.get(0).getHistId();
-			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(getByHisId);
+			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderSelectionByHistId(getByHisId);
 
 			if (!orderDomainlst.isEmpty()) {
 				orderList = orderDomainlst.stream().map(i -> {

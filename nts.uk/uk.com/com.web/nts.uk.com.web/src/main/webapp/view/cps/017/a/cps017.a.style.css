@@ -80,7 +80,7 @@
 }
 
 #name {
-	width: 200px;
+	width: 170px;
 }
 
 #externalCode {
@@ -93,8 +93,8 @@
 }
 
 .distance {
-	margin-top: 5px;
-	margin-left: 10px;
+	margin-top: 25px;
+/* 	margin-left: 10px; */
 }
 
 .formlabel {

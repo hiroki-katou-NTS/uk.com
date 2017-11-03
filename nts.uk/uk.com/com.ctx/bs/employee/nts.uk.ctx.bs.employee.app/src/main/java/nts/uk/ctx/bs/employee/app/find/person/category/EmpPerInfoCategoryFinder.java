@@ -35,6 +35,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
@@ -44,6 +46,8 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -102,6 +106,12 @@ public class EmpPerInfoCategoryFinder {
 	
 	@Inject
 	private FamilyRepository familyRepository;
+	
+	@Inject
+	private WidowHistoryRepository widowHistoryRepository;
+	
+	@Inject
+	private PersonEmergencyCtRepository personEmergencyCtRepository;
 
 	/**
 	 * get person ctg infor and list of item children
@@ -339,12 +349,18 @@ public class EmpPerInfoCategoryFinder {
 					family.getNameRomajiFull().v(), family.getNameRomajiFullKana().v(), family.getNationalityId().v(), family.getOccupationName().v(), 
 					family.getPersonId(), family.getRelationship().v(), family.getSupportCareType().value, 
 					family.getTogSepDivisionType().value, family.getWorkStudentType().value);
+			setCtgItemOptionDto(empPerCtgInfoDto, family.getFamilyId(), true);
 			break;
 		case "CS00014":
-			//WidowHistory
+			WidowHistory widowHistory = widowHistoryRepository.getWidowHistoryById(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createWidowHistory(widowHistory.getWidowHistoryId(), widowHistory.getPeriod().start(), widowHistory.getPeriod().end(), widowHistory.getWidowType().value);
+			setCtgItemOptionDto(empPerCtgInfoDto, widowHistory.getWidowHistoryId(), true);
 			break;
 		case "CS00015":
-			//PersonEmergencyContact
+			PersonEmergencyContact personEmergencyContact = personEmergencyCtRepository.getByid(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createEmergencyContact(personEmergencyContact.getEmgencyContactId(), personEmergencyContact.getPid(), personEmergencyContact.getPersonName().v(), personEmergencyContact.getPersonMailAddress().v(), 
+					personEmergencyContact.getStreetAddressPerson().v(), personEmergencyContact.getPhone().v(), personEmergencyContact.getPriorityEmegencyContact().v(), personEmergencyContact.getRelationShip().v());
+			setCtgItemOptionDto(empPerCtgInfoDto, personEmergencyContact.getEmgencyContactId(), true);
 			break;
 		}
 		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);	

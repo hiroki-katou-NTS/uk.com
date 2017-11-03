@@ -26,6 +26,8 @@ public class EmpPersonInfoClassDto {
 	private String className;
 
 	private List<EmpPersonInfoItemDto> dataInfoitems;
+	
+	private List<Object> dataItems;
 
 	public static EmpPersonInfoClassDto createfromDomain(LayoutPersonInfoClassification domain) {
 		EmpPersonInfoClassDto dto = new EmpPersonInfoClassDto();

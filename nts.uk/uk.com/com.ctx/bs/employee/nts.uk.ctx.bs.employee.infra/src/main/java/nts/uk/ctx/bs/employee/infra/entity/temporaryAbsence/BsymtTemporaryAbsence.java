@@ -22,8 +22,8 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 	public BsymtTemporaryAbsencePK bsymtTemporaryAbsencePK;
 
 	@Basic(optional = false)
-	@Column(name = "LEAVE_HOLIDAY_ID")
-	public String leaveHolidayId;
+	@Column(name="SID")
+	public String sid;
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE")

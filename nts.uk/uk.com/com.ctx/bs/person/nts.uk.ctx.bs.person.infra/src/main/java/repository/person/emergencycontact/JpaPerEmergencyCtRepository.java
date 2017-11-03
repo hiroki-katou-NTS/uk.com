@@ -6,8 +6,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import javax.ejb.Stateless;
-
 import entity.person.emergencycontact.BpsmtEmergencyContact;
 import entity.person.emergencycontact.BpsmtEmergencyContactPK;
 import lombok.val;
@@ -19,6 +17,9 @@ import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtReposit
 public class JpaPerEmergencyCtRepository extends JpaRepository implements PersonEmergencyCtRepository {
 
 	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtEmergencyContact c WHERE c.pid = :pid";
+	
+	private static final String SELECT_PER_EMER_BY_ID = "SELECT c FROM BpsmtEmergencyContact c "
+			+ " WHERE c.bpsmtEmergencyContactPK.emergencyCtId = :emergencyCtId";
 
 	private List<PersonEmergencyContact> toListEmergencyContacts(List<BpsmtEmergencyContact> listEntity) {
 
@@ -43,8 +44,9 @@ public class JpaPerEmergencyCtRepository extends JpaRepository implements Person
 
 	@Override
 	public PersonEmergencyContact getByid(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<PersonEmergencyContact> personEmergencyContact = this.queryProxy().query(SELECT_PER_EMER_BY_ID, BpsmtEmergencyContact.class)
+				.setParameter("emergencyCtId", id).getSingle(x -> toDomainEmergencyContact(x));				
+		return personEmergencyContact.isPresent()?personEmergencyContact.get(): null;
 	}
 
 	@Override

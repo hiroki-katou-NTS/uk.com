@@ -21,17 +21,20 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Stateless
-public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrkplcRepository{
+public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrkplcRepository {
 
-	private static final String SELECT_ASS_WORKPLACE_BY_ID= "SELECT a BsymtAssiWorkplace a"
+	private static final String SELECT_ASS_WORKPLACE_BY_ID = "SELECT a BsymtAssiWorkplace a"
 			+ " WHERE a.bsymtAssiWorkplacePK.assiWorkplaceId = :assiWorkplaceId";
-	
-	private AssignedWorkplace toDomain(BsymtAssiWorkplace entity){
-		return new AssignedWorkplace(entity.getEmpId(), entity.getBsymtAssiWorkplacePK().getAssiWorkplaceId(), 
-				entity.getLstBsymtAssiWorkplaceHist().stream()
-				.map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD()))).collect(Collectors.toList()));
+
+	private static final String SELECT_BY_EID_STDD = "";
+
+	private AssignedWorkplace toDomain(BsymtAssiWorkplace entity) {
+		return new AssignedWorkplace(entity.empId, entity.assiWorkplaceId,
+				entity.lstBsymtAssiWorkplaceHist.stream()
+						.map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD())))
+						.collect(Collectors.toList()));
 	}
-	
+
 	@Override
 	public Optional<AssignedWorkplace> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate) {
 		// TODO Auto-generated method stub
@@ -40,10 +43,10 @@ public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrk
 
 	@Override
 	public AssignedWorkplace getAssignedWorkplaceById(String assignedWorkplaceId) {
-		Optional<AssignedWorkplace> assignedWorkplace = this.queryProxy().query(SELECT_ASS_WORKPLACE_BY_ID, BsymtAssiWorkplace.class)
+		Optional<AssignedWorkplace> assignedWorkplace = this.queryProxy()
+				.query(SELECT_ASS_WORKPLACE_BY_ID, BsymtAssiWorkplace.class)
 				.setParameter("assiWorkplaceId", assignedWorkplaceId).getSingle(x -> toDomain(x));
 		return assignedWorkplace.isPresent() ? assignedWorkplace.get() : null;
 	}
 
-	
 }

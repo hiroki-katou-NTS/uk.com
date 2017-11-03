@@ -1,6 +1,7 @@
 package command.person.setting.selectionitem.selection;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,10 +15,12 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.ExternalCD;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -39,49 +42,61 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
 		GeneralDate getStartDate = command.getStartDate();
+		
+		/*
 		List<PerInfoHistorySelection> startDateHistoryList = this.historySelectionRepository
 				.historyStartDateSelection(getStartDate);
 		if (startDateHistoryList.size() > 0) {
 			throw new BusinessException(new RawErrorMessage("Msg_102"));
 		}
-
+		*/
+		
 		// ログインしているユーザーの権限をチェックする
-		String newId = IdentifierUtil.randomUniqueId();
-		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
+		String selectItemID = command.getSelectionItemId();
+		GeneralDate startDate = command.getStartDate();
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
 		DatePeriod period = new DatePeriod(startDate, endDate);
 
-		boolean userLogin = false;
+		boolean userLogin = true;
 		if (userLogin == true) {
-			String cid0 = PersonInfoCategory.ROOT_COMPANY_ID;
-
+			String cid = PersonInfoCategory.ROOT_COMPANY_ID;
+			
 			// ドメインモデル「選択肢履歴」を登録する
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid0,
-					period);
+			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, selectItemID,
+					cid, period);
 			this.historySelectionRepository.add(domainHist);
-		} else {
-			String cid_login = PersonInfoCategory.ROOT_COMPANY_ID;
-
+		} else {			
+			String cid_login = AppContexts.user().companyId();
+			
 			// ドメインモデル「選択肢履歴」を登録する
-			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
-					cid_login, period);
+			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.createHistorySelection(newHistId,
+					selectItemID,cid_login , period);
 			this.historySelectionRepository.add(domainHist1);
 		}
 
-		String newSelectionId = IdentifierUtil.randomUniqueId();
-		String histId = context.getCommand().getHisId();
-		List<String> getAllHistId = this.selectionRepo.getAllHist(histId);
-		for (String hid : getAllHistId) {
+		String histId = command.getHistId();
+		List<Selection> getAllSelectByHistId = this.selectionRepo.getAllSelectByHistId(histId);
+		List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo.getAllOrderSelectionByHistId(histId);
+		
+		for (Selection selection : getAllSelectByHistId) {
+			String newSelectionId = IdentifierUtil.randomUniqueId();
+			
+			// Tao do main: 選択肢
+			Selection domainSelection = Selection.createFromSelection(newSelectionId, newHistId, selection.getExternalCD().v(),
+					selection.getSelectionName().v(), selection.getExternalCD().v(), selection.getMemoSelection().v());
+			
 			// ドメインモデル「選択肢」をコピーする
-			Selection domainSelection = Selection.createFromSelection(newSelectionId, hid, command.getCompanyCode(),
-					command.getSelectionName(), command.getExternalCD(), command.getMemoSelection());
-
 			this.selectionRepo.add(domainSelection);
 
-			// ドメインモデル「選択肢の並び順と既定値」をコピーする
-			SelectionItemOrder domainSelectionOrder = SelectionItemOrder.selectionItemOrder(newSelectionId, hid,
-					command.getDisporder(), command.getInitSelection());
+			// Lay tat ca gia tri trong domain: 選択肢の並び順と既定値 theo SelectionID
+			SelectionItemOrder orderOrg = getAllOrderSelectionByHistId.stream()
+					.filter(o -> o.getSelectionID().equals(selection.getSelectionID())).collect(Collectors.toList()).get(0);
+			
+			// Tao domain: 選択肢の並び順と既定値
+			SelectionItemOrder domainSelectionOrder = SelectionItemOrder.selectionItemOrder(newSelectionId, newHistId,
+					orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
 
+			// ドメインモデル「選択肢の並び順と既定値」をコピーする
 			this.selectionOrderRepo.add(domainSelectionOrder);
 		}
 
