@@ -43,13 +43,6 @@ module nts.uk.com.view.cmm050.a {
             
             popServerEnable: KnockoutObservable<boolean>;
             
-            passwordBeforeChange: string;
-            popServerBeforeChange: string;
-            imapServerBeforeChange: string;
-            
-            popPortBeforeChange: number;
-            imapPortBeforeChange: number;
-            
             isEnableButtonTest: KnockoutObservable<boolean>;
             
             constructor(){
@@ -115,7 +108,7 @@ module nts.uk.com.view.cmm050.a {
                         _self.smtpPort(25);
                         _self.fillUI(_self.authMethod());
                     }else{
-                        _self.smtpPort(587);
+                       _self.smtpPort(587);
                        _self.authMethodEnable(false);
                        _self.havePopSetting(false);
                        _self.haveImapSetting(false);
@@ -157,9 +150,6 @@ module nts.uk.com.view.cmm050.a {
                         _self.password(pass.trim());
                     }
                 });
-                _self.password.subscribe(function(oldValue) {
-                    _self.passwordBeforeChange = oldValue;
-                }, null, "beforeChange");
                 
                 //handle when value have been changed
                 _self.popServer.subscribe(function(popServer){
@@ -167,18 +157,12 @@ module nts.uk.com.view.cmm050.a {
                         _self.popServer(popServer.trim());
                     }
                 });
-                _self.popServer.subscribe(function(oldValue) {
-                    _self.popServerBeforeChange = oldValue;
-                }, null, "beforeChange");
 
                 _self.imapServer.subscribe(function(imapServer){
                    if(imapServer.trim().length <= 0){
                         _self.imapServer(imapServer.trim());
                     }
                 });
-                _self.imapServer.subscribe(function(oldValue) {
-                    _self.imapServerBeforeChange = oldValue;
-                }, null, "beforeChange");
                 
                 //handle when value have been changed
                 _self.smtpServer.subscribe(function(smtpServer){
@@ -186,14 +170,6 @@ module nts.uk.com.view.cmm050.a {
                         _self.smtpServer(smtpServer.trim());
                     }
                 });
-                
-                //handle when value have been changed
-                _self.imapPort.subscribe(function(oldValue) {
-                    _self.imapPortBeforeChange = oldValue;
-                }, null, "beforeChange");
-                _self.popPort.subscribe(function(oldValue) {
-                    _self.popPortBeforeChange = oldValue;
-                }, null, "beforeChange");
             }
             
             /**
@@ -228,19 +204,17 @@ module nts.uk.com.view.cmm050.a {
                 
                 var dfd = $.Deferred<void>();
                 
+                //prepare data 
+                
                 var params = new model.MailServerDto(
                         _self.useAuth(),
                         _self.encryptionMethod(),
                         _self.authMethod(),
                         _self.emailAuth(),
-                        _self.useAuth() == UseServer.USE ? _self.password() : _self.passwordBeforeChange,
+                        _self.password(),
                         new model.SmtpInfoDto( _self.smtpServer(), _self.smtpPort()),
-                        new model.PopInfoDto(_self.useAuth() == UseServer.USE && _self.popUseServer() == PopUseServer.USE ? _self.popServer() : _self.popServerBeforeChange, 
-                                                _self.popUseServer(), 
-                                                _self.useAuth() == UseServer.USE ? _self.popPort() : _self.popPortBeforeChange),
-                        new model.ImapInfoDto(_self.useAuth() == UseServer.USE && _self.imapUseServer() == ImapUseServer.USE ? _self.imapServer() : _self.imapServerBeforeChange, 
-                                                _self.imapUseServer(), 
-                                                _self.useAuth() == UseServer.USE ? _self.imapPort() : _self.imapPortBeforeChange)
+                        new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
+                        new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
@@ -252,6 +226,10 @@ module nts.uk.com.view.cmm050.a {
                 });
                 
                 return dfd.promise();
+            }
+            
+            private checkToUseOlDataOrNewData() {
+                
             }
             
             /**
@@ -288,22 +266,15 @@ module nts.uk.com.view.cmm050.a {
                 _self.loadMailServerSetting().done(function(data: MailServerFindDto){
       
                     //check visible
-                    if (data.useAuth == UseServer.USE && (data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_LOGIN || data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_PLAIN)){
-                        _self.fillUI(data.authenticationMethod);
-                    }
-                    
-                    if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.POP_BEFORE_SMTP){
-                        _self.fillUI(data.authenticationMethod);
-                        if(data.popDto.popUseServer == PopUseServer.USE){
-                          _self.popServerEnable(true);
+                    if (data.useAuth == UseServer.USE){
+                        if (data.authMethod == AuthenticationMethod.POP_BEFORE_SMTP && data.popDto.popUseServer == PopUseServer.USE){
+                              _self.popServerEnable(true);
+                        }else if(data.authMethod == AuthenticationMethod.IMAP_BEFORE_SMTP && data.imapDto.imapUseServer == ImapUseServer.USE){
+                              _self.imapServerEnable(true);
                         }
-                    }
-                    
-                    if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.IMAP_BEFORE_SMTP){
-                        _self.fillUI(data.authenticationMethod);
-                        if(data.imapDto.imapUseServer == ImapUseServer.USE){
-                           _self.imapServerEnable(true);
-                        }  
+                        _self.fillUI(data.authMethod);
+                    }else{
+                        _self.fillUI(99); 
                     }
                     
                     dfd.resolve();
@@ -324,15 +295,11 @@ module nts.uk.com.view.cmm050.a {
                         _self.haveEncryptMethod(false);
                         _self.havePopSetting(true);
                         _self.haveImapSetting(false);
-                        
-                        _self.encryptionMethod(EncryptMethod.None);
                         break;
                     case AuthenticationMethod.IMAP_BEFORE_SMTP:
                         _self.haveEncryptMethod(false);
                         _self.havePopSetting(false);
                         _self.haveImapSetting(true);
-                        
-                        _self.encryptionMethod(EncryptMethod.None);
                         break;
                     case AuthenticationMethod.SMTP_AUTH_LOGIN:
                         _self.haveEncryptMethod(true);
@@ -348,8 +315,11 @@ module nts.uk.com.view.cmm050.a {
                         _self.haveEncryptMethod(false);
                         _self.havePopSetting(false);
                         _self.haveImapSetting(false);
-                        
-                        _self.encryptionMethod(EncryptMethod.None);
+                        break;
+                    default:
+                        _self.haveEncryptMethod(false);
+                        _self.havePopSetting(false);
+                        _self.haveImapSetting(false);
                         break;
                 }    
             } 
@@ -432,7 +402,7 @@ module nts.uk.com.view.cmm050.a {
                         _self.isEnableButtonTest(true);
                         _self.emailAuth(data.emailAuthencation);
                         _self.useAuth(data.useAuth);
-                        _self.authMethod(data.authenticationMethod);
+                        _self.authMethod(data.authMethod);
                         _self.password(data.password);
                         _self.encryptionMethod(data.encryptionMethod);
                         
