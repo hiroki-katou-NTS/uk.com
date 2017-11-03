@@ -42,15 +42,17 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
 		GeneralDate getStartDate = command.getStartDate();
-//		List<PerInfoHistorySelection> startDateHistoryList = this.historySelectionRepository
-//				.historyStartDateSelection(getStartDate);
-//		if (startDateHistoryList.size() > 0) {
-//			throw new BusinessException(new RawErrorMessage("Msg_102"));
-//		}
-
+		
+		/*
+		List<PerInfoHistorySelection> startDateHistoryList = this.historySelectionRepository
+				.historyStartDateSelection(getStartDate);
+		if (startDateHistoryList.size() > 0) {
+			throw new BusinessException(new RawErrorMessage("Msg_102"));
+		}
+		*/
+		
 		// ログインしているユーザーの権限をチェックする
 		String selectItemID = command.getSelectionItemId();
-
 		GeneralDate startDate = command.getStartDate();
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
 		DatePeriod period = new DatePeriod(startDate, endDate);
@@ -76,37 +78,28 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		List<Selection> getAllSelectByHistId = this.selectionRepo.getAllSelectByHistId(histId);
 		List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo.getAllOrderSelectionByHistId(histId);
 		
-		// ドメインモデル「選択肢」をコピーする
 		for (Selection selection : getAllSelectByHistId) {
 			String newSelectionId = IdentifierUtil.randomUniqueId();
+			
+			// Tao do main: 選択肢
 			Selection domainSelection = Selection.createFromSelection(newSelectionId, newHistId, selection.getExternalCD().v(),
 					selection.getSelectionName().v(), selection.getExternalCD().v(), selection.getMemoSelection().v());
-
+			
+			// ドメインモデル「選択肢」をコピーする
 			this.selectionRepo.add(domainSelection);
 
-			// ドメインモデル「選択肢の並び順と既定値」をコピーする
+			// Lay tat ca gia tri trong domain: 選択肢の並び順と既定値 theo SelectionID
 			SelectionItemOrder orderOrg = getAllOrderSelectionByHistId.stream()
 					.filter(o -> o.getSelectionID().equals(selection.getSelectionID())).collect(Collectors.toList()).get(0);
-
+			
+			// Tao domain: 選択肢の並び順と既定値
 			SelectionItemOrder domainSelectionOrder = SelectionItemOrder.selectionItemOrder(newSelectionId, newHistId,
 					orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);
 
+			// ドメインモデル「選択肢の並び順と既定値」をコピーする
 			this.selectionOrderRepo.add(domainSelectionOrder);
 		}
-		
-//		List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo.getAllOrderSelectionByHistId(histId);
-//		for (SelectionItemOrder selectionItemOrder : getAllOrderSelectionByHistId){
-//			
-//			String newSelectionId = IdentifierUtil.randomUniqueId();
-//			SelectionItemOrder domainSelectionOrder = SelectionItemOrder.selectionItemOrder(newSelectionId, newHistId,
-//					selectionItemOrder.getDisporder().v(), selectionItemOrder.getInitSelection().value);
-//
-//			this.selectionOrderRepo.add(domainSelectionOrder);
-//		}
-		
 
-		
-		
 		return newHistId;
 	}
 

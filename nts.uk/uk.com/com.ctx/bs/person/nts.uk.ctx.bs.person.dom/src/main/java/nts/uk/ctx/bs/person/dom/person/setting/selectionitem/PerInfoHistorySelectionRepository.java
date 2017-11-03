@@ -9,11 +9,13 @@ public interface PerInfoHistorySelectionRepository {
 	void add(PerInfoHistorySelection perInfoHistorySelection);
 
 	void remove(String selectionItemId);
-	
+
+	void update(PerInfoHistorySelection perInfoHistorySelection);
+
 	Optional<PerInfoHistorySelection> getHistorySelectionItem(String histId);
 
 	List<PerInfoHistorySelection> historySelection(String selectionItemId);
-	
+
 	List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate);
 
 	List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String selectionItemId, String companyId);
