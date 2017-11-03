@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,7 +39,7 @@ public class SaveWkpJobAutoCalSetCommandHandler extends CommandHandler<WkpJobAut
 		String companyId = AppContexts.user().companyId();
 
 		// Get command
-		WkpJobAutoCalSetCommand command = context.getCommand();
+		WkpJobAutoCalSetCommand command = this.getCommandBySaveCondition(context.getCommand());
 
 		// Find details
 		Optional<WkpJobAutoCalSetting> result = this.wkpJobAutoCalSettingRepo.getWkpJobAutoCalSetting(companyId,
@@ -55,4 +56,46 @@ public class SaveWkpJobAutoCalSetCommandHandler extends CommandHandler<WkpJobAut
 		}
 	}
 
+	/**
+	 * Gets the command by save condition.
+	 *
+	 * @param command
+	 *            the command
+	 * @return the command by save condition
+	 */
+	public WkpJobAutoCalSetCommand getCommandBySaveCondition(WkpJobAutoCalSetCommand command) {
+		// Check normal OT time
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getEarlyOtTime().getCalAtr()) {
+			command.getNormalOTTime().getEarlyOtTime().setUpLimitOtSet(null);
+		}
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getEarlyMidOtTime().getCalAtr()) {
+			command.getNormalOTTime().getEarlyMidOtTime().setUpLimitOtSet(null);
+		}
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getNormalOtTime().getCalAtr()) {
+			command.getNormalOTTime().getNormalOtTime().setUpLimitOtSet(null);
+		}
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getNormalMidOtTime().getCalAtr()) {
+			command.getNormalOTTime().getNormalMidOtTime().setUpLimitOtSet(null);
+		}
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getLegalOtTime().getCalAtr()) {
+			command.getNormalOTTime().getLegalOtTime().setUpLimitOtSet(null);
+		}
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getNormalOTTime().getLegalMidOtTime().getCalAtr()) {
+			command.getNormalOTTime().getLegalMidOtTime().setUpLimitOtSet(null);
+		}
+
+		// Check flex OT time
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getFlexOTTime().getFlexOtTime().getCalAtr()) {
+			command.getFlexOTTime().getFlexOtTime().setUpLimitOtSet(null);
+		}
+
+		// Check rest time
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getRestTime().getRestTime().getCalAtr()) {
+			command.getRestTime().getRestTime().setUpLimitOtSet(null);
+		}
+		if (AutoCalAtrOvertime.APPLYMANUALLYENTER.value == command.getRestTime().getLateNightTime().getCalAtr()) {
+			command.getRestTime().getLateNightTime().setUpLimitOtSet(null);
+		}
+		return command;
+	}
 }

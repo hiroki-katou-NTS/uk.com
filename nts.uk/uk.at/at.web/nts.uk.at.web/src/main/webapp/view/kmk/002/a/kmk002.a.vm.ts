@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // set ntsFixedTable style
-                $("#tbl-calc-formula").ntsFixedTable({ height: 300 });
+                $("#tbl-calc-formula").ntsFixedTable({ height: 250 });
 
                 // Load data.
                 self.loadEnum()
@@ -100,6 +100,7 @@ module nts.uk.at.view.kmk002.a {
             // stash
             optionalItemAtrStash: number;
             performanceAtrStash: number;
+            optionalItemDtoStash: OptionalItemDto;
 
             constructor() {
                 this.optionalItemNo = ko.observable('');
@@ -257,7 +258,7 @@ module nts.uk.at.view.kmk002.a {
                     }
 
                     // Check whether has formula or calculation result range is set.
-                    if (self.isFormulaSet() || self.calcResultRange.isSet(self.optionalItemAtr())) {
+                    if (self.isFormulaSet() || self.calcResultRange.isSet()) {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_573')).ifYes(() => {
 
                             // remove all formulas
@@ -316,6 +317,19 @@ module nts.uk.at.view.kmk002.a {
             private isFormulaExist(id: string): boolean {
                 let self = this;
                 return _.find(self.calcFormulas(), item => item.formulaId == id) != undefined;
+            }
+
+            /**
+             * Validate required formulaName & required setting formula
+             */
+            public validateListFormula(): void {
+                let self = this;
+                self.calcFormulas().forEach((item, index) => {
+                    // order start from 1, index start from 0
+                    index++;
+                    $('#formulaName' + index).ntsEditor('validate');
+                    $('#settingResult' + index).ntsEditor('validate');
+                });
             }
 
             /**
@@ -693,6 +707,19 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dto: OptionalItemDto = <OptionalItemDto>{};
 
+                if (self.usageAtr() == 0) {
+                    // get original data from stash
+                    dto = jQuery.extend(true, {}, self.optionalItemDtoStash);
+
+                    // set updated name & useAtr
+                    dto.usageAtr = self.usageAtr();
+                    dto.optionalItemName = self.optionalItemName();
+
+                    // return dto
+                    return dto;
+                }
+
+                // get current value of view model
                 dto.optionalItemNo = self.optionalItemNo();
                 dto.optionalItemName = self.optionalItemName();
                 dto.optionalItemAtr = self.optionalItemAtr();
@@ -710,6 +737,11 @@ module nts.uk.at.view.kmk002.a {
              */
             public fromDto(dto: OptionalItemDto): void {
                 let self = this;
+
+                // save data to stash
+                self.optionalItemDtoStash = jQuery.extend(true, {}, dto);
+
+                // bind to view model
                 self.optionalItemNo(dto.optionalItemNo);
                 self.optionalItemName(dto.optionalItemName);
                 self.optionalItemAtr(dto.optionalItemAtr);
@@ -902,6 +934,23 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Validate all result range input
+             */
+            public validateInput(): void {
+                let self = this;
+                if (self.upperCheck()) {
+                    $('#inp-upper-amount').ntsEditor('validate');
+                    $('#inp-upper-number').ntsEditor('validate');
+                    $('#inp-upper-time').ntsEditor('validate');
+                }
+                if (self.lowerCheck()) {
+                    $('#inp-lower-amount').ntsEditor('validate');
+                    $('#inp-lower-number').ntsEditor('validate');
+                    $('#inp-lower-time').ntsEditor('validate');
+                }
+            }
+
+            /**
              * Reset to default value
              */
             public resetValue(): void {
@@ -1072,13 +1121,24 @@ module nts.uk.at.view.kmk002.a {
             private isValidData(): boolean {
                 let self = this;
 
+                // validate input optional item name
+                $('#inpName').ntsEditor('validate');
+
+                // useAtr == not used
+                // skip all check except input name
+                if (self.optionalItem.usageAtr() == 0) {
+                    // check has error.
+                    if ($('.nts-editor').ntsError('hasError')) {
+                        return false;
+                    }
+                    return true;
+                }
+
                 // validate required formulaName & required setting formula
-                self.optionalItem.calcFormulas().forEach((item, index) => {
-                    // order start from 1, index start from 0
-                    index++;;
-                    $('#formulaName' + index).ntsEditor('validate');
-                    $('#settingResult' + index).ntsEditor('validate');
-                });
+                self.optionalItem.validateListFormula();
+
+                // validate calculation result range input
+                self.optionalItem.calcResultRange.validateInput();
 
                 // check has error.
                 if ($('.nts-editor').ntsError('hasError')) {

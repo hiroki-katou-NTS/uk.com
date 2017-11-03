@@ -7,8 +7,8 @@ module nts.uk.at.view.kmk006.a {
             findEnumUseClassification: "ctx/at/shared/ot/autocal/find/autocaluseclassification",
             findEnumTimeLimitUpperLimitSetting: "ctx/at/shared/ot/autocal/find/autocaltimelimitsetting",
             getComAutoCal: "ctx/at/shared/ot/autocal/com/getautocalcom",
-            saveComAutoCal: "ctx/at/shared/ot/autocal/com/save",
             
+            saveComAutoCal: "ctx/at/shared/ot/autocal/com/save",           
             saveJobAutoCal: "ctx/at/shared/ot/autocal/job/save",
             saveWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/save",
             saveWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/save",
