@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.log;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 /**
@@ -47,6 +49,8 @@ public class EmpCalAndAggregationCommand {
     private boolean monthlyAggregation;
     /** 集計区分 */
     private int summaryClass;
+    /** 就業計算と集計実行ログID*/
+    private String empCalAndSumExecLogID;
     /** ＜画面Cから受け取るパラメータ＞ */
     /**・社員ID */
     private String employeeID;

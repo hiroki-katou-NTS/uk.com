@@ -27,13 +27,8 @@ public class EmpCalAndAggregationCommandHanlder extends CommandHandler<EmpCalAnd
 	
 	@Override
 	protected void handle(CommandHandlerContext<EmpCalAndAggregationCommand> context) {
-
-        /** ログインしている社員の社員IDを取得する (Lấy login EmployeeID) */
-		String employeeID = AppContexts.user().employeeId();
-		/** 実行ボタン押下時のシステム日付を取得する (lấy thời gian hệ thống) */
-		GeneralDate  systemTime = GeneralDate.today();
-		
-		
+		EmpCalAndAggregationAssembler empCalAndAggregationAssembler = new EmpCalAndAggregationAssembler();
+		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(context.getCommand());
 		
 		
 	}

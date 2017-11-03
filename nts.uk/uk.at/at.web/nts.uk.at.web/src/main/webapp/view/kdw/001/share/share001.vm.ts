@@ -65,6 +65,8 @@ module nts.uk.at.view.kdl001.share.viewmodel {
         monthlyAggregation: boolean;
         /** 集計区分 */
         summaryClass: number;
+        /** 実行内容 */
+        excutionContent : number;
 
     }
 

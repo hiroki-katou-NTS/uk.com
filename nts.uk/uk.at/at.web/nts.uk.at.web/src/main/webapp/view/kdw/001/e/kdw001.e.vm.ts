@@ -56,7 +56,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             return dfd.promise(); 
         }
         
-        
 
         btnAsyncTask() { 
             var self = this;
