@@ -218,9 +218,10 @@ module nts.uk.com.view.cmm050.a {
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
-                    _self.startPage().done(function(){});
                     dfd.resolve();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                        _self.startPage().done(function(){});
+                    });
                 }).fail(function(){
                     alert('error');    
                 });
@@ -278,8 +279,8 @@ module nts.uk.com.view.cmm050.a {
                     }
                     
                     dfd.resolve();
-                    $('#email_auth').focus();
                 });
+                $('#email_auth').focus();
                 
                 return dfd.promise();
             }
