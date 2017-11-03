@@ -3,6 +3,7 @@
  */
 package repository.person.info.widowhistory;
 
+import java.awt.Window;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,13 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 @Stateless
 public class JpaWidowHistoryRepository extends JpaRepository implements WidowHistoryRepository {
 
+	private static final String SELECT_WIDOWHIST_BY_ID = "SELECT w FROM BpsmtWidowHis w "
+			+ " WHERE w.olderWidowId = :olderWidowId";
+	
+	private WidowHistory toDomain(BpsmtWidowHis entity){
+		return WidowHistory.createObjectFromJavaType(entity.olderWidowId, entity.widowTypeAtr, entity.startDate, entity.endDate);
+	}
+	
 	@Override
 	public WidowHistory get() {
 		// se sua lai sau
@@ -73,8 +81,9 @@ public class JpaWidowHistoryRepository extends JpaRepository implements WidowHis
 	}
 	@Override
 	public WidowHistory getWidowHistoryById(String widowHisId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<WidowHistory> widowHistory = this.queryProxy().query(SELECT_WIDOWHIST_BY_ID, BpsmtWidowHis.class)
+				.setParameter("olderWidowId", widowHisId).getSingle(x -> toDomain(x));
+		return widowHistory.isPresent()?widowHistory.get():null;
 	}
 
 
