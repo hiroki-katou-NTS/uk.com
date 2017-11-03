@@ -105,10 +105,10 @@ module nts.uk.com.view.cmm050.a {
                 _self.useAuth.subscribe(function(useAuthChanged){
                     if(useAuthChanged == UseServer.USE){
                         _self.authMethodEnable(true);
-                        _self.smtpPort(25);
+//                        _self.smtpPort(25);
                         _self.fillUI(_self.authMethod());
                     }else{
-                       _self.smtpPort(587);
+//                       _self.smtpPort(587);
                        _self.authMethodEnable(false);
                        _self.havePopSetting(false);
                        _self.haveImapSetting(false);

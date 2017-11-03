@@ -58,6 +58,7 @@ public class MailServerSaveCommandHandler extends CommandHandler<MailServerSaveC
 			mailSetting.get().saveToMemento(dto);
 			
 			if(command.getUseAuth() != UseAuthentication.USE.value){
+				command.setAuthMethod(dto.getAuthMethod());
 				command.setPassword(dto.getPassword());
 				command.setImapDto(new ImapInfoDto(dto.getImapDto().getImapServer(), dto.getImapDto().getImapUseServer(), dto.getImapDto().getImapPort()));
 				command.setPopDto(new PopInfoDto(dto.getPopDto().getPopServer(), dto.getPopDto().getPopUseServer(), dto.getPopDto().getPopPort()));
