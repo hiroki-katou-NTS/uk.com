@@ -12,18 +12,18 @@ import java.util.List;
 public interface SWorkTimeHistItemSetMemento {
 
 	/**
+	 * Sets the employee id.
+	 *
+	 * @param mployeeId the new employee id
+	 */
+	void setEmployeeId(String employeeId);
+	
+	/**
 	 * Sets the history id.
 	 *
 	 * @param historyId the new history id
 	 */
 	void setHistoryId(String historyId);
-
-	/**
-	 * Sets the employee id.
-	 *
-	 * @param mployeeId the new employee id
-	 */
-	void setEmployeeId(String mployeeId);
 
 	/**
 	 * Sets the child care atr.
@@ -35,7 +35,7 @@ public interface SWorkTimeHistItemSetMemento {
 	/**
 	 * Sets the lst time zone.
 	 *
-	 * @param lstTimeZone the new lst time zone
+	 * @param lstTimeSlot the new lst time zone
 	 */
-	void setLstTimeZone(List<SChildCareFrame> lstTimeZone);
+	void setLstTimeSlot(List<SChildCareFrame> lstTimeSlot);
 }

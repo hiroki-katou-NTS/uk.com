@@ -35,9 +35,9 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 *
 	 * @param memento the memento
 	 */
-	public ShortWorkTimeHistory(SWorkTimeHistSetMemento memento) {
-		memento.setEmployeeId(this.employeeId);
-		memento.setHistoryItem(this.historyItem);
+	public ShortWorkTimeHistory(SWorkTimeHistGetMemento memento) {
+		this.employeeId = memento.getEmployeeId();
+		this.historyItem = memento.getHistoryItem();
 	}
 	
 	/**
@@ -45,9 +45,9 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(SWorkTimeHistGetMemento memento) {
-		this.employeeId = memento.getEmployeeId();
-		this.historyItem = memento.getHistoryItem();
+	public void saveToMemento(SWorkTimeHistSetMemento memento) {
+		memento.setEmployeeId(this.employeeId);
+		memento.setHistoryItem(this.historyItem);
 	}
 	
 	/**

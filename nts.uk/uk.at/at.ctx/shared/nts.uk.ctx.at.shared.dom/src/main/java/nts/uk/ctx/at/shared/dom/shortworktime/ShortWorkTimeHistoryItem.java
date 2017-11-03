@@ -30,18 +30,18 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 	
 	/** The lst time zone. */
 	// 時間帯
-	private List<SChildCareFrame> lstTimeZone;
+	private List<SChildCareFrame> lstTimeSlot;
 	
 	/**
 	 * Instantiates a new short work time history item.
 	 *
 	 * @param memento the memento
 	 */
-	public ShortWorkTimeHistoryItem(SWorkTimeHistItemSetMemento memento) {
-		memento.setHistoryId(this.historyId);
-		memento.setEmployeeId(this.employeeId);
-		memento.setChildCareAtr(this.childCareAtr);
-		memento.setLstTimeZone(this.lstTimeZone);
+	public ShortWorkTimeHistoryItem(SWorkTimeHistItemGetMemento memento) {
+		this.historyId = memento.getHistoryId();
+		this.employeeId = memento.getEmployeeId();
+		this.childCareAtr = memento.getChildCareAtr();
+		this.lstTimeSlot = memento.getLstTimeSlot();
 	}
 	
 	/**
@@ -49,11 +49,11 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(SWorkTimeHistItemGetMemento memento) {
-		this.historyId = memento.getHistoryId();
-		this.employeeId = memento.getEmployeeId();
-		this.childCareAtr = memento.getChildCareAtr();
-		this.lstTimeZone = memento.getLstTimeZone();
+	public void saveToMemento(SWorkTimeHistItemSetMemento memento) {
+		memento.setHistoryId(this.historyId);
+		memento.setEmployeeId(this.employeeId);
+		memento.setChildCareAtr(this.childCareAtr);
+		memento.setLstTimeSlot(this.lstTimeSlot);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 		result = prime * result + ((childCareAtr == null) ? 0 : childCareAtr.hashCode());
 		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
 		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
-		result = prime * result + ((lstTimeZone == null) ? 0 : lstTimeZone.hashCode());
+		result = prime * result + ((lstTimeSlot == null) ? 0 : lstTimeSlot.hashCode());
 		return result;
 	}
 
@@ -88,10 +88,10 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 				return false;
 		} else if (!historyId.equals(other.historyId))
 			return false;
-		if (lstTimeZone == null) {
-			if (other.lstTimeZone != null)
+		if (lstTimeSlot == null) {
+			if (other.lstTimeSlot != null)
 				return false;
-		} else if (!lstTimeZone.equals(other.lstTimeZone))
+		} else if (!lstTimeSlot.equals(other.lstTimeSlot))
 			return false;
 		return true;
 	}

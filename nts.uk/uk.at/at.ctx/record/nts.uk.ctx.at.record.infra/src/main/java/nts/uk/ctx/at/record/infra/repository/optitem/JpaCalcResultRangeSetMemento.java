@@ -63,12 +63,10 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setNumberRange(Optional<NumberRange> range) {
-		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.typeValue.setLowerNumberRange(range.get().getLowerLimit().get().v());
-		}
-		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.typeValue.setUpperNumberRange(range.get().getUpperLimit().get().v());
-		}
+		this.typeValue.setLowerNumberRange(range.isPresent() && range.get().getLowerLimit().isPresent()
+				? range.get().getLowerLimit().get().v() : null);
+		this.typeValue.setUpperNumberRange(range.isPresent() && range.get().getUpperLimit().isPresent()
+				? range.get().getUpperLimit().get().v() : null);
 	}
 
 	/*
@@ -80,12 +78,10 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setTimeRange(Optional<TimeRange> range) {
-		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.typeValue.setLowerTimeRange(range.get().getLowerLimit().get().v());
-		}
-		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.typeValue.setUpperTimeRange(range.get().getUpperLimit().get().v());
-		}
+		this.typeValue.setLowerTimeRange(range.isPresent() && range.get().getLowerLimit().isPresent()
+				? range.get().getLowerLimit().get().v() : null);
+		this.typeValue.setUpperTimeRange(range.isPresent() && range.get().getUpperLimit().isPresent()
+				? range.get().getUpperLimit().get().v() : null);
 	}
 
 	/*
@@ -97,12 +93,10 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setAmountRange(Optional<AmountRange> range) {
-		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.typeValue.setLowerAmountRange(range.get().getLowerLimit().get().v());
-		}
-		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.typeValue.setUpperAmountRange(range.get().getUpperLimit().get().v());
-		}
+		this.typeValue.setLowerAmountRange(range.isPresent() && range.get().getLowerLimit().isPresent()
+				? range.get().getLowerLimit().get().v() : null);
+		this.typeValue.setUpperAmountRange(range.isPresent() && range.get().getUpperLimit().isPresent()
+				? range.get().getUpperLimit().get().v() : null);
 	}
 
 }
