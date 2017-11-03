@@ -210,7 +210,8 @@ public class LayoutFinder {
 						getDataforSingleItem(perInfoCategory, authClassItem, standandDate, employee.getPId(),
 								employee.getSId());
 					} else if (classItem.getLayoutItemType() == LayoutItemType.LIST) {
-
+						getDataforListItem(perInfoCategory, authClassItem, standandDate, employee.getPId(),
+								employee.getSId());
 					}
 
 				}
@@ -368,6 +369,11 @@ public class LayoutFinder {
 			}
 
 		}
+	}
+	
+	private void getDataforListItem(PersonInfoCategory perInfoCategory, EmpPersonInfoClassDto authClassItem,
+			GeneralDate standandDate, String personId, String employeeId) {
+		
 	}
 
 	private void getPersDataHistoryType(String perInfoCategoryId, EmpPersonInfoClassDto authClassItem, String personId,

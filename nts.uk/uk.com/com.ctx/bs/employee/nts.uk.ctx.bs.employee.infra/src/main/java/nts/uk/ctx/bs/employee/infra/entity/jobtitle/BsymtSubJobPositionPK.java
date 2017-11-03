@@ -23,7 +23,5 @@ public class BsymtSubJobPositionPK implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Basic(optional = false)
-	@Column(name = "SUB_JOB_POSITION_ID")
-	private String subJobPosId;
+	
 }
