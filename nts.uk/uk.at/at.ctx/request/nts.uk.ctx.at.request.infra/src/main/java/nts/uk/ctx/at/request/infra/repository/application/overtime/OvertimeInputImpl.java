@@ -2,11 +2,14 @@ package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
 
+@Stateless
 public class OvertimeInputImpl extends JpaRepository implements OvertimeInputRepository {
 	private static final String FIND_ALL ="SELECT e KrqdtOvertimeInput e";
 	private static final String FIND_BY_APPID;
