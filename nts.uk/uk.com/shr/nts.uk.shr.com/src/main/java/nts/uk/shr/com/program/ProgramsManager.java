@@ -157,7 +157,7 @@ public class ProgramsManager {
 	/**
 	 * CDL024
 	 */
-	public static final Program CDL024 = new Program(WebAppId.COM, ProgramIdConsts.CDL024, "KDL024_8",
+	public static final Program CDL024 = new Program(WebAppId.COM, ProgramIdConsts.CDL024, "CDL024_8",
 			"/view/cdl/024/index.xhtml");
 	/**
 	 * CDL022A
