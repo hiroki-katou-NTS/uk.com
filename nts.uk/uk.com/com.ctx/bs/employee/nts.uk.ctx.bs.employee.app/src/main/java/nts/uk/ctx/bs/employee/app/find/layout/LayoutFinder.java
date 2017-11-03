@@ -16,8 +16,14 @@ import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoClsFinder;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
+import find.person.setting.copysetting.EmpCopySettingFinder;
+import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import find.person.setting.init.category.SettingCtgDto;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.copy.item.CopySetItemFinder;
+import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSetItemFinder;
+import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
@@ -148,6 +154,17 @@ public class LayoutFinder {
 
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
+
+	@Inject
+	private PerInfoInitValueSettingCtgFinder initCtgSettingFinder;
+
+	@Inject
+	private InitValueSetItemFinder initItemSettingFinder;
+
+	@Inject
+	private EmpCopySettingFinder copySettingFinder;
+
+	private CopySetItemFinder copySetItemFinder;
 	// sonnlb end
 
 	public EmpMaintLayoutDto getLayout(GeneralDate standandDate, String mainteLayoutId, String browsingEmpId) {
@@ -451,38 +468,106 @@ public class LayoutFinder {
 
 	// sonnlb code
 
-	public NewLayoutDto getWithDataByCreateType(int createType) {
-		Optional<NewLayout> layout = repo.getLayout();
-		if (layout.isPresent()) {
-			NewLayout _layout = layout.get();
-			// get classifications
+	public NewLayoutDto getWithDataByCreateType(int createType, String initSettingId, GeneralDate baseDate,
+			String employeeId) {
 
-			// Get list Classification Item by layoutID
-			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
-			for (LayoutPersonInfoClsDto itemCls : listItemCls) {
-				switch (itemCls.getLayoutItemType()) {
-				case 0: // item
-					List<Object> itemValues = new ArrayList<Object>();
-					for (PerInfoItemDefDto itemDf : itemCls.getListItemDf()) {
-						LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getItemCode(), "xxx");
-						itemValues.add(value);
+		List<SettingItemDto> allItemData = loadAllItemByCreateType(createType, initSettingId, baseDate, employeeId);
+
+		if (!allItemData.isEmpty()) {
+			Optional<NewLayout> layout = repo.getLayout();
+			if (layout.isPresent()) {
+				NewLayout _layout = layout.get();
+
+				// Get list Classification Item by layoutID
+				List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+
+				for (LayoutPersonInfoClsDto itemCls : listItemCls) {
+					int layoutType = itemCls.getLayoutItemType();
+					switch (layoutType) {
+					case 0: // item
+
+						List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
+
+						itemCls.setItems(itemValues);
+						
+						break;
+					case 1: // list
+
+						break;
+					default:
+					case 2: // spa
+						break;
 					}
-					itemCls.setItems(itemValues);
-					break;
-				case 1: // list
-
-					break;
-				default:
-				case 2: // spa
-					break;
+					itemCls.setItems(null);
 				}
-				itemCls.setItems(null);
+				return NewLayoutDto.fromDomain(_layout, listItemCls);
+			} else {
+				return null;
 			}
-			return NewLayoutDto.fromDomain(_layout, listItemCls);
+
 		} else {
+
 			return null;
 		}
+
 	}
-	// sonnlb code
+
+	private List<Object> createItemValues(List<PerInfoItemDefDto> listItemDf, List<SettingItemDto> allItemData) {
+		List<Object> itemValueList = new ArrayList<Object>();
+		for (PerInfoItemDefDto itemDf : listItemDf) {
+
+			SettingItemDto item = findItemByCode(allItemData, itemDf.getItemCode());
+
+			LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getItemCode(),
+
+					item != null ? item.getValueAsString() : "");
+			itemValueList.add(value);
+		}
+		return itemValueList;
+	}
+
+	private SettingItemDto findItemByCode(List<SettingItemDto> allItemData, String itemCode) {
+
+		return allItemData.stream().filter(i -> i.getItemCode().equals(itemCode)).findFirst().orElse(null);
+	}
+
+	private List<SettingItemDto> loadAllItemByCreateType(int createType, String initSettingId, GeneralDate baseDate,
+			String employeeId) {
+		// get all Data
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+
+		// Copy Type
+		if (createType == 1) {
+			List<SettingCtgDto> ctgList = new ArrayList<SettingCtgDto>();
+
+			ctgList = this.copySettingFinder.getEmpCopySetting();
+
+			for (SettingCtgDto settingCtg : ctgList) {
+
+				List<SettingItemDto> itemList = this.copySetItemFinder
+						.getAllCopyItemByCtgCode(settingCtg.getCategoryCd(), employeeId, baseDate);
+				returnList.addAll(itemList);
+			}
+
+		} else {
+			// Init Value Type
+
+			List<SettingCtgDto> ctgList = new ArrayList<SettingCtgDto>();
+
+			ctgList = this.initCtgSettingFinder.getAllCategoryBySetId(initSettingId);
+
+			for (SettingCtgDto settingCtg : ctgList) {
+
+				List<SettingItemDto> itemList = this.initItemSettingFinder.getAllInitItemByCtgCode(initSettingId,
+						settingCtg.getCategoryCd(), baseDate);
+				returnList.addAll(itemList);
+
+			}
+
+		}
+		// fill all item in list to save resources when searching by itemcode
+		return returnList;
+	}
+	// sonnlb code end
 
 }

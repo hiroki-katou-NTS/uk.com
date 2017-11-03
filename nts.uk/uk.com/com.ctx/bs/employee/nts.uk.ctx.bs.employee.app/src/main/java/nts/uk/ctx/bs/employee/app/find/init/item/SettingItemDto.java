@@ -101,4 +101,21 @@ public class SettingItemDto {
 
 	}
 
+	public String getValueAsString() {
+
+		switch (this.saveData.saveDataType) {
+		case DATE:
+			DateDataDto dateData = (DateDataDto) this.saveData;
+			return dateData.getValue().toString("dd/MM/yyyy");
+		case NUMBERIC:
+			NumberDataDto numberData = (NumberDataDto) this.saveData;
+			return new Integer(numberData.getValue()).toString();
+		case STRING:
+			StringDataDto stringData = (StringDataDto) this.saveData;
+			return stringData.getValue();
+		}
+		return "";
+
+	}
+
 }
