@@ -537,24 +537,24 @@ module nts.uk.at.view.kmk006.a {
 
             private reLoadListEnum(list: any): void {
                 var self = this;
-                self.valueEnumNorEarLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyOtTime.upLimitOtSet()].value);
-                self.valueEnumNorEarAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyOtTime.calAtr()].value);
-                self.valueEnumNorEarMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyMidOtTime.upLimitOtSet()].value);
-                self.valueEnumNorEarMidAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.earlyMidOtTime.calAtr()].value);
-                self.valueEnumNorNorLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalOtTime.upLimitOtSet()].value);
-                self.valueEnumNorNorAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalOtTime.calAtr()].value);
-                self.valueEnumNorNorMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalMidOtTime.upLimitOtSet()].value);
-                self.valueEnumNorNorMidAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.normalMidOtTime.calAtr()].value);
-                self.valueEnumNorLegLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalOtTime.upLimitOtSet()].value);
-                self.valueEnumNorLegAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.legalOtTime.calAtr()].value);
-                self.valueEnumNorLegMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalMidOtTime.upLimitOtSet()].value);
-                self.valueEnumNorLegMidAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.normalOTTime.legalMidOtTime.calAtr()].value);
-                self.valueEnumFleTimeLi(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.upLimitOtSet()].value);
-                self.valueEnumFleTimeAtr(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.calAtr()].value);
-                self.valueEnumResResLi(self.autoCalAtrOvertimeEnum[list.restTime.restTime.upLimitOtSet()].value);
-                self.valueEnumResResAtr(self.autoCalAtrOvertimeEnum[list.restTime.restTime.calAtr()].value);
-                self.valueEnumResLatLi(self.autoCalAtrOvertimeEnum[list.restTime.lateNightTime.upLimitOtSet()].value);
-                self.valueEnumResLatAtr(self.autoCalAtrOvertimeEnumWithoutTimeRecorder[list.restTime.lateNightTime.calAtr()].value);
+                self.valueEnumNorEarLi(list.normalOTTime.earlyOtTime.upLimitOtSet());
+                self.valueEnumNorEarAtr(list.normalOTTime.earlyOtTime.calAtr());
+                self.valueEnumNorEarMidLi(list.normalOTTime.earlyMidOtTime.upLimitOtSet());
+                self.valueEnumNorEarMidAtr(list.normalOTTime.earlyMidOtTime.calAtr());
+                self.valueEnumNorNorLi(list.normalOTTime.normalOtTime.upLimitOtSet());
+                self.valueEnumNorNorAtr(list.normalOTTime.normalOtTime.calAtr());
+                self.valueEnumNorNorMidLi(list.normalOTTime.normalMidOtTime.upLimitOtSet());
+                self.valueEnumNorNorMidAtr(list.normalOTTime.normalMidOtTime.calAtr());
+                self.valueEnumNorLegLi(list.normalOTTime.legalOtTime.upLimitOtSet());
+                self.valueEnumNorLegAtr(list.normalOTTime.legalOtTime.calAtr());
+                self.valueEnumNorLegMidLi(list.normalOTTime.legalMidOtTime.upLimitOtSet());
+                self.valueEnumNorLegMidAtr(list.normalOTTime.legalMidOtTime.calAtr());
+                self.valueEnumFleTimeLi(list.flexOTTime.flexOtTime.upLimitOtSet());
+                self.valueEnumFleTimeAtr(list.flexOTTime.flexOtTime.calAtr());
+                self.valueEnumResResLi(list.restTime.restTime.upLimitOtSet());
+                self.valueEnumResResAtr(list.restTime.restTime.calAtr());
+                self.valueEnumResLatLi(list.restTime.lateNightTime.upLimitOtSet());
+                self.valueEnumResLatAtr(list.restTime.lateNightTime.calAtr());
             }
 
             private saveListEnum(list: any): void {
@@ -562,21 +562,21 @@ module nts.uk.at.view.kmk006.a {
                 list.normalOTTime.earlyOtTime.upLimitOtSet(self.valueEnumNorEarLi());
                 list.normalOTTime.earlyOtTime.calAtr(self.valueEnumNorEarAtr());
                 list.normalOTTime.earlyMidOtTime.upLimitOtSet(self.valueEnumNorEarMidLi());
-                list.normalOTTime.earlyMidOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorEarMidAtr(); }));
+                list.normalOTTime.earlyMidOtTime.calAtr(self.valueEnumNorEarMidAtr());
                 list.normalOTTime.normalOtTime.upLimitOtSet(self.valueEnumNorNorLi());
                 list.normalOTTime.normalOtTime.calAtr(self.valueEnumNorNorAtr());
                 list.normalOTTime.normalMidOtTime.upLimitOtSet(self.valueEnumNorNorMidLi());
-                list.normalOTTime.normalMidOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorNorMidAtr(); }));
+                list.normalOTTime.normalMidOtTime.calAtr(self.valueEnumNorNorMidAtr());
                 list.normalOTTime.legalOtTime.upLimitOtSet(self.valueEnumNorLegLi());
-                list.normalOTTime.legalOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorLegAtr(); }));
+                list.normalOTTime.legalOtTime.calAtr(self.valueEnumNorLegAtr());
                 list.normalOTTime.legalMidOtTime.upLimitOtSet(self.valueEnumNorLegMidLi());
-                list.normalOTTime.legalMidOtTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumNorLegMidAtr(); }));
+                list.normalOTTime.legalMidOtTime.calAtr(self.valueEnumNorLegMidAtr());
                 list.flexOTTime.flexOtTime.upLimitOtSet(self.valueEnumFleTimeLi());
                 list.flexOTTime.flexOtTime.calAtr(self.valueEnumFleTimeAtr());
                 list.restTime.restTime.upLimitOtSet(self.valueEnumResResLi());
                 list.restTime.restTime.calAtr(self.valueEnumResResAtr());
                 list.restTime.lateNightTime.upLimitOtSet(self.valueEnumResLatLi());
-                list.restTime.lateNightTime.calAtr(_.findIndex(self.autoCalAtrOvertimeEnumWithoutTimeRecorder ,function (o) { return o.value === self.valueEnumResLatAtr(); }));
+                list.restTime.lateNightTime.calAtr(self.valueEnumResLatAtr());
             }
 
             /**
@@ -598,6 +598,27 @@ module nts.uk.at.view.kmk006.a {
                     restTime: self.itemComAutoCalModel.restTime.toDto()
                 };
                 self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
+                
+                console.log(self.itemComAutoCalModel);
+                console.log(self.valueEnumNorEarLi());
+                console.log(self.valueEnumNorEarAtr());
+                console.log(self.valueEnumNorEarMidLi());
+                console.log(self.valueEnumNorEarMidAtr());
+                console.log(self.valueEnumNorNorLi());
+                console.log(self.valueEnumNorNorAtr());
+                console.log(self.valueEnumNorNorMidLi());
+                console.log(self.valueEnumNorNorMidAtr());
+                console.log(self.valueEnumNorLegLi());
+                console.log(self.valueEnumNorLegAtr());
+                console.log(self.valueEnumNorLegMidLi());
+                console.log(self.valueEnumNorLegMidAtr());
+                console.log(self.valueEnumFleTimeLi());
+                console.log(self.valueEnumFleTimeAtr());
+                console.log(self.valueEnumResResLi());
+                console.log(self.valueEnumResResAtr());
+                console.log(self.valueEnumResLatLi());
+                console.log(self.valueEnumResLatAtr());
+                console.log(dto);
                 service.saveComAutoCal(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
