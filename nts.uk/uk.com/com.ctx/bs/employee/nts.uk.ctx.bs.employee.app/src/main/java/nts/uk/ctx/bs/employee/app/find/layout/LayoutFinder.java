@@ -534,10 +534,10 @@ public class LayoutFinder {
 
 	// sonnlb code
 
-	public NewLayoutDto getWithDataByCreateType(int createType, String initSettingId, GeneralDate baseDate,
-			String employeeId) {
+	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 
-		List<SettingItemDto> allItemData = loadAllItemByCreateType(createType, initSettingId, baseDate, employeeId);
+		List<SettingItemDto> allItemData = loadAllItemByCreateType(command.getCreateType(),
+				command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
 
 		if (!allItemData.isEmpty()) {
 			Optional<NewLayout> layout = repo.getLayout();
