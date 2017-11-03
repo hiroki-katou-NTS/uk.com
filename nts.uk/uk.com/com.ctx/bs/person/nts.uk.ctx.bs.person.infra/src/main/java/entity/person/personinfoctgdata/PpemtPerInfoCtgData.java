@@ -19,6 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "PPEMT_PER_INFO_CTG_DATA")
 public class PpemtPerInfoCtgData extends UkJpaEntity{
 

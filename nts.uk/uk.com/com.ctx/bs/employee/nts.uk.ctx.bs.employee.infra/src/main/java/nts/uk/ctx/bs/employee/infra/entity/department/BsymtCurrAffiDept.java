@@ -11,7 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPosition;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplaceHist;
@@ -21,6 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class bsymt current affiliation department
  */
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -50,8 +54,8 @@ public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtCurrAffiDept", orphanRemoval = true)
 	public List<BsymtSubJobPosition> lstBsymtSubJobPosition;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtAssiWorkplace", orphanRemoval = true)
-	public List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtAssiWorkplaceDept", orphanRemoval = true)
+//	public List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
 
 	@Override
 	protected Object getKey() {

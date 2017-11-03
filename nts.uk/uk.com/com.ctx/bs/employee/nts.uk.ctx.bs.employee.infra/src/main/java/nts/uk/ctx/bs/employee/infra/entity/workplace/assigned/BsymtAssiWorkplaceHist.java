@@ -39,5 +39,11 @@ public class BsymtAssiWorkplaceHist {
 	@JoinColumns({
 		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
 	})
+	public BsymtAssiWorkplace bsymtAssiWorkplaceDept;
+	
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
+	})
 	public BsymtAssiWorkplace bsymtAssiWorkplace;
 }
