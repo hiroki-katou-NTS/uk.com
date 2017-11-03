@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository  {
 	
-	private final String SELECT_FROM_LOG = "SELECT c FROM KrcmtEmpExecutionLog c ";
+	private final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
 	
 	//Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
 	private final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG 

@@ -128,10 +128,14 @@ module nts.uk.at.view.kdw001.f {
             executionContent: number;
             executionContentName :string;
             existenceError: number;
-            executionTime: IExecutionTime;
+            executionTime: ExecutionTime;
             processStatus: number;
             objectPeriod: ObjectPeriod;
             calExecutionSetInfoID :string;
+            reflectApprovalSetInfo : SetInforReflAprResult;
+            dailyCreationSetInfo : SettingInforForDailyCreation;
+            dailyCalSetInfo : CalExeSettingInfor;
+            monlyAggregationSetInfo : CalExeSettingInfor;
         }
 
         export interface IExecutionTime {
@@ -195,7 +199,10 @@ module nts.uk.at.view.kdw001.f {
             processStatus: number;
             objectPeriod: ObjectPeriod;
             calExecutionSetInfoID :string;
-            
+            reflectApprovalSetInfo : SetInforReflAprResult;
+            dailyCreationSetInfo : SettingInforForDailyCreation;
+            dailyCalSetInfo : CalExeSettingInfor;
+            monlyAggregationSetInfo : CalExeSettingInfor;
             constructor(data: IExecutionLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.executionContent = data.executionContent;
@@ -205,8 +212,88 @@ module nts.uk.at.view.kdw001.f {
                 this.processStatus = data.processStatus;
                 this.objectPeriod = data.objectPeriod;
                 this.calExecutionSetInfoID = data.calExecutionSetInfoID;
+                this.reflectApprovalSetInfo = data.reflectApprovalSetInfo;
+                this.dailyCreationSetInfo = data.dailyCreationSetInfo;
+                this.dailyCalSetInfo = data.dailyCalSetInfo;
+                this.monlyAggregationSetInfo = data.monlyAggregationSetInfo;
             }
         }//end class ExecutionLog
+        
+        /**
+         * class SetInforReflAprResult 
+         */
+        export class SetInforReflAprResult{
+            executionType: number;
+            executionTypeName : string;
+            forciblyReflect : boolean;
+            constructor(executionType: number,executionTypeName : string,forciblyReflect : boolean){
+                this.executionType = executionType;
+                this.executionTypeName = executionTypeName;
+                this.forciblyReflect = forciblyReflect;    
+            }
+        }//end classSetInforReflAprResult
+        
+        /**
+         * class SettingInforForDailyCreation
+         */
+        export class SettingInforForDailyCreation{
+            executionType: number;
+            executionTypeName : string;
+            creationType : number;
+            partResetClassification : PartResetClassification;
+            constructor(executionType: number,executionTypeName : string,creationType : number,partResetClassification : PartResetClassification){
+                this.executionType = executionType;
+                this.executionTypeName = executionTypeName; 
+                this.creationType = creationType; 
+                this.partResetClassification = partResetClassification; 
+            }
+            
+        }//end class SettingInforForDailyCreation
+        
+        /**
+         * class PartResetClassification
+         */
+        export class PartResetClassification{
+            //マスタ再設定
+            masterReconfiguration : boolean;
+            //休業再設定
+            closedHolidays : boolean ;
+            // 就業時間帯再設定
+            resettingWorkingHours : boolean ;
+            // 打刻のみ再度反映
+            reflectsTheNumberOfFingerprintChecks : boolean ;
+            // 特定日区分再設定
+            specificDateClassificationResetting :  boolean ;
+            // 申し送り時間再設定
+            resetTimeAssignment :  boolean ;
+            // 育児・介護短時間再設定
+            resetTimeChildOrNurseCare : boolean ;
+            // 計算区分再設定
+            calculationClassificationResetting : boolean ;
+            constructor(
+                masterReconfiguration : boolean,
+                closedHolidays : boolean,
+                resettingWorkingHours : boolean ,
+                reflectsTheNumberOfFingerprintChecks : boolean ,
+                specificDateClassificationResetting :  boolean ,
+                resetTimeAssignment :  boolean,
+                resetTimeChildOrNurseCare : boolean,
+                calculationClassificationResetting : boolean ){
+                
+                this.masterReconfiguration = masterReconfiguration;
+                this.closedHolidays = closedHolidays;
+                this.resettingWorkingHours = resettingWorkingHours;
+                this.reflectsTheNumberOfFingerprintChecks = reflectsTheNumberOfFingerprintChecks;
+                this.specificDateClassificationResetting = specificDateClassificationResetting;
+                this.resetTimeAssignment = resetTimeAssignment;
+                this.resetTimeChildOrNurseCare = resetTimeChildOrNurseCare;
+                this.calculationClassificationResetting = calculationClassificationResetting;
+                
+            }
+            
+            
+        }//end class PartResetClassification
+        
         /**
          * class ExecutionTime
          */
@@ -232,11 +319,17 @@ module nts.uk.at.view.kdw001.f {
         export class CalExeSettingInfor {
             executionContent: number;
             executionType: number;
-            executionTypeName : String
-            constructor(executionContent: number, executionType: number,executionTypeName : String) {
+            executionTypeName : string;
+            calExecutionSetInfoID :  string;
+            caseSpecExeContentID : string ;
+            constructor(executionContent: number, executionType: number,executionTypeName : String,
+            calExecutionSetInfoID :  string,
+            caseSpecExeContentID : string ) {
                 this.executionContent = executionContent;
                 this.executionType = executionType;
                 this.executionTypeName = executionTypeName;
+                this.calExecutionSetInfoID = calExecutionSetInfoID;
+                this.caseSpecExeContentID = caseSpecExeContentID;
             }//end class ExecutionTime
         }//end class CalExeSettingInfor
 
