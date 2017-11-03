@@ -24,7 +24,7 @@ public class CopySetItemFinder {
 	@Inject
 	private InitValueSetItemFinder initItemFinder;
 
-	public List<SettingItemDto> getEmpCopySettingItemList(String categoryCd, String employeeId, GeneralDate baseDate) {
+	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String employeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
 

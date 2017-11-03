@@ -25,7 +25,7 @@ public class InitValueSetItemWebService extends WebService {
 	@Path("findInit/{settingId}/{categoryCd}/{baseDate}")
 	public List<SettingItemDto> getAllInitItem(@PathParam("settingId") String settingId,
 			@PathParam("categoryCd") String categoryCd, @PathParam("baseDate") String baseDate) {
-		return this.finder.getAllInitItem(settingId, categoryCd, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+		return this.finder.getAllInitItemByCtgCode(settingId, categoryCd, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 	}
 
 }
