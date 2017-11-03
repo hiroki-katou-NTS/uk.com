@@ -8,5 +8,5 @@ public interface IncomeTaxRepository {
 	 * 取得した「家族所得税」を更新する
 	 * @param domain
 	 */
-	void addIncomeTax(IncomeTax domain);
+	void updateIncomeTax(IncomeTax domain);
 }
