@@ -57,6 +57,9 @@ public class ClosureWs {
 	/** The Constant THREE_MONTH. */
 	public static final int THREE_MONTH = 3;
 	
+	/** The Constant TOTAL_MONTH_OF_YEAR. */
+	public static final int TOTAL_MONTH_OF_YEAR = 12;
+	
 	/**
 	 * Find all.
 	 *
@@ -103,8 +106,10 @@ public class ClosureWs {
 	@Path("checkThreeMonth")
 	public Boolean checkThreeMonth(CheckSaveDto checksave) {
 		DatePeriod period = this.finder.findByIdGetMonthDay(CLOSURE_ID_BEGIN);
-		return (period.start().month() + THREE_MONTH < checksave.getBaseDate().month());
+		return (period.start().yearMonth().v() + THREE_MONTH < checksave.getBaseDate().yearMonth()
+				.v());
 	}
+	
 	
 	/**
 	 * Check month max.
@@ -179,12 +184,10 @@ public class ClosureWs {
 		DayMonthDto beforeClosureDate = new DayMonthDto();
 		DayMonthDto afterClosureDate = new DayMonthDto();
 
-		beforeClosureDate
-				.setBeginDay(dayMonthChange.getBeforeClosureDate().start().toString());
+		beforeClosureDate.setBeginDay(dayMonthChange.getBeforeClosureDate().start().toString());
 		beforeClosureDate.setEndDay(dayMonthChange.getBeforeClosureDate().end().toString());
 
-		afterClosureDate
-				.setBeginDay(dayMonthChange.getAfterClosureDate().start().toString());
+		afterClosureDate.setBeginDay(dayMonthChange.getAfterClosureDate().start().toString());
 		afterClosureDate.setEndDay(dayMonthChange.getAfterClosureDate().end().toString());
 		dto.setBeforeClosureDate(beforeClosureDate);
 		dto.setAfterClosureDate(afterClosureDate);
