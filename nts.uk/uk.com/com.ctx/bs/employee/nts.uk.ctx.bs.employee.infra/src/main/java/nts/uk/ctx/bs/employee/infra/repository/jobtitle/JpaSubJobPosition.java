@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPosition;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPositionPK;
 
 @Stateless
 public class JpaSubJobPosition extends JpaRepository implements SubJobPosRepository {
@@ -53,8 +52,7 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 	 * @return
 	 */
 	private BsymtSubJobPosition toEntity(SubJobPosition domain){
-		BsymtSubJobPositionPK key = new BsymtSubJobPositionPK(domain.getSubJobPosId());
-		return new BsymtSubJobPosition(key, domain.getAffiDeptId(), domain.getJobTitleId(), domain.getStartDate(), domain.getEndDate(), null);
+		return new BsymtSubJobPosition(domain.getSubJobPosId(), domain.getAffiDeptId(), domain.getJobTitleId(), domain.getStartDate(), domain.getEndDate(), null);
 	}
 	private void updateEntity(SubJobPosition domain, BsymtSubJobPosition entity){
 		entity.setAffiDeptId(domain.getAffiDeptId());
@@ -77,8 +75,7 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 	@Override
 	public void updateSubJobPosition(SubJobPosition domain) {
 		// Get exist entity
-		BsymtSubJobPositionPK key = new BsymtSubJobPositionPK(domain.getSubJobPosId());
-		Optional<BsymtSubJobPosition> existItem = this.queryProxy().find(key, BsymtSubJobPosition.class);
+		Optional<BsymtSubJobPosition> existItem = this.queryProxy().find(domain.getSubJobPosId(), BsymtSubJobPosition.class);
 		if(!existItem.isPresent()){
 			return;
 		}
