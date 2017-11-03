@@ -10,16 +10,17 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 public class SaveDataDto {
 	protected SaveDataType saveDataType;
 
-	public static SaveDataDto CreateStringDataDto(String value) {
+	public static SaveDataDto createDataDto(String value) {
 		return StringDataDto.createFromJavaType(value);
 	}
 
-	public static SaveDataDto CreateNumberDataDto(int value) {
+	public static SaveDataDto createDataDto(int value) {
 		return NumberDataDto.createFromJavaType(value);
 	}
 
-	public static SaveDataDto CreateDateDataDto(GeneralDate value) {
+	public static SaveDataDto createDataDto(GeneralDate value) {
 		return DateDataDto.createFromJavaType(value);
 	}
+	
 
 }
