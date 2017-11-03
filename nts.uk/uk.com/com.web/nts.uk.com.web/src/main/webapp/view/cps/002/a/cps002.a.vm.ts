@@ -37,13 +37,11 @@ module cps002.a.vm {
 
         currentStep: KnockoutObservable<number> = ko.observable(0);
 
-        initSettingSelectedCode: KnockoutObservable<string> = ko.observable('');
+        initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
 
         currentInitSetting: KnockoutObservable<InitSetting> = ko.observable(new InitSetting(null));
 
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
-
-        layout: KnockoutObservable<any> = ko.observable({ id: '', code: '', name: '' });
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
@@ -70,12 +68,12 @@ module cps002.a.vm {
                 self.categoryList([]);
                 self.itemSettingList([]);
                 self.categorySelectedCode('');
-                self.initSettingSelectedCode('');
+                self.initValueSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
 
             });
 
-            self.initSettingSelectedCode.subscribe((initCode) => {
+            self.initValueSelectedCode.subscribe((initCode) => {
                 if (initCode === '') {
                     return;
                 }
@@ -294,17 +292,7 @@ module cps002.a.vm {
 
         gotoStep3() {
 
-            let self = this,
-                command = {
-                    createType: self.createTypeId(),
-
-                    initSettingId: self.initSettingSelectedCode(),
-
-                    baseDate: self.currentEmployee().hireDate(),
-
-                    employeeId: self.copyEmployee().employeeId
-
-                }, layout = self.layout();;
+            let self = this;
 
             self.currentStep(2);
 
@@ -436,7 +424,7 @@ module cps002.a.vm {
                     });
 
 
-                    self.initSettingSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
+                    self.initValueSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
 
 
                 }
