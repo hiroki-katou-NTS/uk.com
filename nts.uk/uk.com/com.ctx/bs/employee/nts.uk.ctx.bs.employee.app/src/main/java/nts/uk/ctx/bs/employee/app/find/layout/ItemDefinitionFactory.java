@@ -3,16 +3,14 @@
  */
 package nts.uk.ctx.bs.employee.app.find.layout;
 
-import java.util.List;
-
 import nts.uk.ctx.bs.employee.app.find.init.item.SaveDataDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
 import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
-import nts.uk.ctx.bs.employee.dom.leaveholiday.LeaveHoliday;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -216,7 +214,7 @@ public class ItemDefinitionFactory {
 
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, LeaveHoliday leaveHoliday) {
+	public static void matchInformation(EmpPersonInfoClassDto authClassItem, TemporaryAbsence leaveHoliday) {
 	}
 
 	public static void matchInformation(EmpPersonInfoClassDto authClassItem, JobTitleMain jobTitleMain) {

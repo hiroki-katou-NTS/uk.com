@@ -28,14 +28,14 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMainRepository;
-import nts.uk.ctx.bs.employee.dom.leaveholiday.LeaveHoliday;
-import nts.uk.ctx.bs.employee.dom.leaveholiday.LeaveHolidayRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
@@ -117,7 +117,7 @@ public class LayoutFinder {
 	private WidowHistoryRepository widowHistoryRepo;
 
 	@Inject
-	private LeaveHolidayRepository leaveHolidayRepo;
+	private TemporaryAbsenceRepository tempAbsenceRepo;
 
 	@Inject
 	private JobTitleMainRepository jobTitMainRepo;
@@ -292,12 +292,12 @@ public class LayoutFinder {
 					matchEmpDataForDefItems(authClassItem, empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
 					break;
 				case "CS00008":
-					Optional<LeaveHoliday> leaveHolidayOpt = leaveHolidayRepo.getByEmpIdAndStandDate(employeeId,
+					Optional<TemporaryAbsence> tempAbsc = tempAbsenceRepo.getBySidAndReferDate(employeeId,
 							standandDate);
-					if (leaveHolidayOpt.isPresent()) {
-						ItemDefinitionFactory.matchInformation(authClassItem, leaveHolidayOpt.get());
+					if (tempAbsc.isPresent()) {
+						ItemDefinitionFactory.matchInformation(authClassItem, tempAbsc.get());
 						matchEmpDataForDefItems(authClassItem,
-								empInItemDataRepo.getAllInfoItemByRecordId(leaveHolidayOpt.get().getLeaveHolidayId()));
+								empInItemDataRepo.getAllInfoItemByRecordId(tempAbsc.get().getTempAbsenceId()));
 					}
 					break;
 				case "CS00009":

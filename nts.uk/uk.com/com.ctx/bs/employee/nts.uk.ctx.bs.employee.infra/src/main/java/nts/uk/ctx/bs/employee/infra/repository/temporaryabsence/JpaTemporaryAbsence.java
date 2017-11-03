@@ -27,7 +27,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	}
 
 	@Override
-	public Optional<TemporaryAbsence> getBySid(String sid, GeneralDate referenceDate) {
+	public Optional<TemporaryAbsence> getBySidAndReferDate(String sid, GeneralDate referenceDate) {
 		BsymtTemporaryAbsence entity = this.queryProxy()
 				.query(SELECT_BY_SID_AND_REFERENCEDATE, BsymtTemporaryAbsence.class).setParameter("sid", sid)
 				.setParameter("referenceDate", referenceDate).getSingleOrNull();
