@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 
 @Data
 public class OverTimeDto {
@@ -34,7 +33,7 @@ public class OverTimeDto {
 	/**
 	 * 残業申請時間設定
 	 */
-	private List<OverTimeInput> overTimeInput;
+	private List<OvertimeInputDto> overTimeInput;
 	/**
 	 *  事前事後区分表示 
 	 */

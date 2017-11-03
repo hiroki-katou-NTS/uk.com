@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +40,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * 残業申請時間設定
 	 */
-	private OverTimeInput overTimeInput;
+	private List<OverTimeInput> overTimeInput;
 	/**
 	 * 勤務種類コード
 	 */

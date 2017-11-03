@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.overtime;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +13,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
+import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -53,6 +53,8 @@ import nts.uk.ctx.at.request.dom.setting.requestofeach.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
@@ -76,9 +78,6 @@ public class GetOvertime {
 	
 	@Inject
 	private OvertimeService overtimeService;
-	
-	@Inject
-	private OvertimeInstructRepository overtimeInstructRepository;
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
@@ -128,6 +127,9 @@ public class GetOvertime {
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
 	
+	@Inject
+	private OvertimeFrameRepository overtimeFrameRepository;
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -138,7 +140,6 @@ public class GetOvertime {
 		
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto applicationDto = new ApplicationDto();
-		OverTimeInstruct overtimeInstruct = new OverTimeInstruct();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		int rootAtr = 1;
@@ -155,22 +156,16 @@ public class GetOvertime {
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		//申請日付を取得 : lay thong tin lam them
-		applicationDto.setInputDate(appDate);
+		applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
-		if(appCommonSettingOutput != null){
-			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getUserAtr().value;
-			if(useAtr == UseAtr.USE.value){
-				if(appDate != null){
-					overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
-				}
-			}
-		}
+		OverTimeInstruct overtimeInstruct = overtimeService.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
+		
 		//01-02_時間外労働を取得: lay lao dong ngoai thoi gian
 		/*
 		 * chưa phải làm
 		 */
 		// 01-13_事前事後区分を取得
-		getDisplayPrePost(companyID, applicationDto, result, uiType);
+		getDisplayPrePost(companyID, applicationDto, result, uiType,appDate);
 		
 		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		Optional<RequestAppDetailSetting> requestAppDetailSetting = requestOfEachWorkplaceRepository.getRequestDetail(companyID, workplaceID, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -234,7 +229,7 @@ public class GetOvertime {
 		}
 		//01-09_事前申請を取得
 		if(result.getDisplayPrePostFlg() == InitValueAtr.POST.value ){
-			getPreApplication(employeeID,overtimeRestAppCommonSet, appDate, result);
+			getPreApplication(employeeID,overtimeRestAppCommonSet, appDate, applicationDto, result);
 		}
 		result.setApplication(applicationDto);
 		return result;
@@ -247,7 +242,7 @@ public class GetOvertime {
 	 * @param result
 	 * @param uiType
 	 */
-	private void getDisplayPrePost(String companyID,ApplicationDto applicationDto,OverTimeDto result,int uiType){
+	private void getDisplayPrePost(String companyID,ApplicationDto applicationDto,OverTimeDto result,int uiType,String appDate){
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository.getApplicationSettingByComID(companyID);
 		if(applicationSetting.isPresent()){
 			// if display then check What call UI?
@@ -270,6 +265,7 @@ public class GetOvertime {
 			}else{
 				//if not display
 				result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+				applicationDto.setPrePostAtr(this.otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value,ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT)).value);
 			}
 		}
 	}
@@ -444,19 +440,58 @@ public class GetOvertime {
 	 * @param appDate
 	 * @param result
 	 */
-	private void getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, OverTimeDto result){
+	private void getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate,ApplicationDto applicationDto, OverTimeDto result){
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
 				Optional<Application> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.POSTERIOR.value, ApplicationType.OVER_TIME_APPLICATION.value);
 				if(application.isPresent()){
+					applicationDto.setApplicationDate(application.get().getApplicationDate().toString(DATE_FORMAT));
 					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get().getCompanyID(), application.get().getApplicationID());
 					if(appOvertime.isPresent()){
+						
 						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode().toString());
 						Optional<WorkType> workType = workTypeRepository.findByPK(appOvertime.get().getCompanyID(), appOvertime.get().getWorkTypeCode().toString());
 						if(workType.isPresent()){
 							result.setWorkTypeName(workType.get().getName().toString());
 						}
+						
+						result.setSiftCode(appOvertime.get().getSiftCode().toString());
+						Optional<WorkTime> workTime =  workTimeRepository.findByCode(appOvertime.get().getCompanyID(),appOvertime.get().getSiftCode().toString());
+						if(workTime.isPresent()){
+							result.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
+						}
+						
+						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
+						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
+						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
+						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
 						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInput(appOvertime.get().getCompanyID(), appOvertime.get().getAppID());
+						if(overtimeInputs != null && !overtimeInputs.isEmpty()){
+							List<OvertimeInputDto> overtimeInputDtos = new ArrayList<>();
+							List<Integer> frameNo = new ArrayList<>();
+							for(OverTimeInput overTimeInput : overtimeInputs){
+								OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
+								overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceID().value);
+								overtimeInputDto.setAttendanceNo(overTimeInput.getAttendanceNo());
+								overtimeInputDto.setStartTime(overTimeInput.getStartTime().v());
+								overtimeInputDto.setEndTime(overTimeInput.getEndTime().v());
+								overtimeInputDto.setApplicationTime(overTimeInput.getApplicationTime().v());
+								overtimeInputDtos.add(overtimeInputDto);
+								frameNo.add(overTimeInput.getAttendanceNo());
+							}
+							List<OvertimeFrame> overtimeFrames =this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameNo);
+							for(OvertimeInputDto overtimeInputDto : overtimeInputDtos){
+								for(OvertimeFrame overtimeFrame : overtimeFrames){
+									if(overtimeInputDto.getAttendanceNo() == overtimeFrame.getOtFrameNo()){
+										overtimeInputDto.setAttendanceName(overtimeFrame.getOvertimeFrameName().toString());
+										continue;
+									}
+								}
+							}
+							result.setOverTimeInput(overtimeInputDtos);
+							result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
+							result.setFlexExessTime(appOvertime.get().getFlexExessTime());
+						}
 					}
 				}
 			}
