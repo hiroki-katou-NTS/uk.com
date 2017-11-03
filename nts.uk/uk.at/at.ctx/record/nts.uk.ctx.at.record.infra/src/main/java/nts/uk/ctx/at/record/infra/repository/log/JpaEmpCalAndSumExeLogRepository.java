@@ -13,10 +13,16 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository {
-
-	private final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
-													      
+public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository  {
+	
+	private final String SELECT_FROM_LOG = "SELECT c FROM KrcmtEmpExecutionLog c ";
+	
+	//Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
+	private final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG 
+			+ " WHERE c.krcmtEmpExecutionLogPK.companyID = :companyID "
+			+ "AND c.krcmtEmpExecutionLogPK.employeeID =: emmployeeID"
+			+ "ORDER BY c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
+	
 	private final String SELECT_All_LOG = SELECT_FROM_LOG 
 			+ " WHERE c.companyID = :companyID ";
 	                    
@@ -36,7 +42,19 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			+ " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
 	
-	/**.
+	/**
+	 * Get getEmpCalAndSumExeLogMaxByEmp by companyID and EmployeeID and empCalAndSumExecLogID DESC
+	 */
+	@Override
+	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID) {
+		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG_BY_EMPLOYEEID,KrcdtEmpExecutionLog.class)
+				.setParameter("companyID", companyID)
+				.setParameter("employeeID", employeeID)
+				.getList(c -> c.toDomain());
+		return !data.isEmpty() ? Optional.of(data.get(0)) : Optional.empty();
+	}
+	
+	/**
 	 * get all EmpCalAndSumExeLog
 	 */
 	@Override

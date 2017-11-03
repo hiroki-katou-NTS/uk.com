@@ -19,6 +19,20 @@ public class EmpCalAndSumExeLogFinder {
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
 	
+	/**
+	 * get All EmpCalAndSumExeLog by Employee and ID DESC
+	 * @return list EmpCalAndSumExeLog
+	 */
+	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogMaxByEmp(){
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
+				.getEmpCalAndSumExeLogMaxByEmp(companyID, employeeID)
+				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
+		if(data.isPresent())
+			return data.get();
+		return null;
+	}
 	 
 	/**
 	 * get All EmpCalAndSumExeLog

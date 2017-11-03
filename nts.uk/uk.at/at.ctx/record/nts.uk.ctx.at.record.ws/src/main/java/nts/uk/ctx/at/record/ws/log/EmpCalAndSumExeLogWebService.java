@@ -6,11 +6,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.log.EmpCalAndSumExeLogFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
@@ -22,6 +20,17 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	
 	@Inject
 	private EmpCalAndSumExeLogFinder empCalAndSumExeLogFinder;
+	
+	/**
+	 * get EmpCalAndSumExeLog by Emp
+	 * @return
+	 */
+	@POST
+	@Path("getallbyEmp")
+	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogMaxByEmp(){
+		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogMaxByEmp();
+	}
+	
 	/**
 	 * get all EmpCalAndSumExeLog
 	 * @return

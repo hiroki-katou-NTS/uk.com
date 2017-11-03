@@ -12,8 +12,15 @@ import nts.arc.time.GeneralDate;
  */
 public interface EmpCalAndSumExeLogRepository {
 	/**
-	 * get all EmpCalAndSumExeLog
-	 * 
+	 * get all  EmpCalAndSumExeLog by companyID, employeeID
+	 * @param companyID
+	 * @param employeeID
+	 * @return
+	 */
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID);
+	
+	/**
+	 * get all  EmpCalAndSumExeLog
 	 * @param companyID
 	 * @return
 	 */
