@@ -10,19 +10,22 @@ module nts.uk.com.view.cps009.c.viewmodel {
     export class ViewModel {
         currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue("", "", "" ));
         isCopy: KnockoutObservable<boolean> = ko.observable(false);
-        codeCtg: KnockoutObservable<string> = ko.observable('001');
-        nameCtg: KnockoutObservable<string> = ko.observable('Category');
+        codeCtg: KnockoutObservable<string> = ko.observable('');
+        nameCtg: KnockoutObservable<string> = ko.observable('');
         codeInput: KnockoutObservable<string> = ko.observable('');
         nameInput: KnockoutObservable<string> = ko.observable('');
+        param: any;
         constructor() {
-            let param = getShared('CPS009C_PARAM') || {id: '', code: '', name: ''};
-            
+            let self = this;
+            self.param = getShared('CPS009C_PARAMS') || {settingId: '', settingCode: '', settingName: ''};
+            self.codeCtg(self.param.settingCode);
+            self.nameCtg(self.param.settingName);
         }
 
         copyInitValue() {
             let self = this,
                 copyObj = {
-                    idSource: '744926ab-6aaa-4e73-a047-034dcaf359dd',
+                    idSource: self.param.settingId,
                     overWrite: self.isCopy(),
                     codeInput: self.currentInitVal().itemCode(),
                     nameInput: self.currentInitVal().itemName()

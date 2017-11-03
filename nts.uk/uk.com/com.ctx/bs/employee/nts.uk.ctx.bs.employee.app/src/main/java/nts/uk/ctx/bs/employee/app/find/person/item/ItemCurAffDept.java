@@ -1,8 +1,11 @@
 package nts.uk.ctx.bs.employee.app.find.person.item;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 
 @Getter
@@ -13,22 +16,19 @@ public class ItemCurAffDept extends CtgItemFixDto{
 	private String affiDeptId;
 	/**部門ID Department id*/
 	private String departmentId; 
-	/**start date*/
-	private GeneralDate strD;
-	/**end Date*/
-	private GeneralDate endD;
+	/** The DateHistoryItem. */
+	private List<DateHistoryItem> dateHistoryItem;
 	
-	private ItemCurAffDept(String employeeId, String affiDeptId, String departmentId, GeneralDate strD, GeneralDate endD){
+	private ItemCurAffDept(String employeeId, String affiDeptId, String departmentId, List<DateHistoryItem> dateHistoryItem){
 		super();
 		this.ctgItemType = CtgItemType.CURRENT_AFF_DEPARTMENT;
 		this.employeeId = employeeId;
 		this.affiDeptId = affiDeptId;
 		this.departmentId = departmentId;
-		this.strD = strD;
-		this.endD = endD;
+		this.dateHistoryItem = dateHistoryItem;
 	}
 	
-	public static ItemCurAffDept createFromJavaType(String employeeId, String affiDeptId, String departmentId, GeneralDate strD, GeneralDate endD){
-		return new ItemCurAffDept(employeeId, affiDeptId, departmentId, strD, endD);
+	public static ItemCurAffDept createFromJavaType(String employeeId, String affiDeptId, String departmentId, List<DateHistoryItem> dateHistoryItem){
+		return new ItemCurAffDept(employeeId, affiDeptId, departmentId, dateHistoryItem);
 	}
 }

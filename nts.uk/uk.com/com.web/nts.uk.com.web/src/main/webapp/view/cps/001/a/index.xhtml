@@ -42,7 +42,7 @@
 						<table id="employees"
 							data-bind="ntsGridList: {
 								rows: 10,
-								dataSource: listEmployees,
+								dataSource: listEmployee,
 								primaryKey: 'employeeId',
 								columns: [
 									{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
@@ -129,36 +129,54 @@
 						</div>
 					</div>
 				</div>
-				<div class="right-area">
+				<div class="right-area"
+					data-bind="let: { _pers: person(), _emp: employee() }">
 					<div class="top-right-area cf">
-						<div class="avatar-group" data-bind="with: person">
-							<div class="active-panel" data-bind="click: $parent.chooseAvatar.bind($parent)">
-								<img data-bind="attr: { src: avatar}" />
+						<div class="avatar-group">
+							<div class="active-panel" data-bind="click: chooseAvatar">
+								<img data-bind="attr: { src: _pers.avatar}" class="avatar" />
 							</div>
 						</div>
-						<div class="person-group" data-bind="with: person">
+						<div class="person-group">
 							<div class="active-panel">
 								<table class="person-info">
 									<tbody>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
-											<td colspan="3"></td>
+											<td>
+												<div class="info">
+													<span data-bind="text: _emp.employeeCode"></span>
+													<span data-bind="text: _pers.fullName"></span>
+												</div>
+											</td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_12')}</td>
-											<td></td>
-											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_13')}</td>
-											<td></td>
+											<td>
+												<div class="info first">
+													<span data-bind="text: _emp.employeeCode"></span>
+												</div>
+												<div class="bg-calendar-ym-set">#{i18n.getText('CPS001_13')}</div>
+												<div class="info">
+													<span data-bind="text: _emp.employeeCode"></span>
+												</div>
+											</td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_14')}</td>
-											<td colspan="4"></td>
+											<td></td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_15')}</td>
-											<td></td>
-											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_16')}</td>
-											<td></td>
+											<td>
+												<div class="info first">
+													<span data-bind="text: _emp.employeeCode"></span>
+												</div>
+												<div class="bg-calendar-ym-set">#{i18n.getText('CPS001_16')}</div>
+												<div class="info">
+													<span data-bind="text: _emp.employeeCode"></span>
+												</div>
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -169,7 +187,8 @@
 								<div class="column">
 									<button class="btn btn-location" type="button"
 										data-bind="click: pickLocation">#{i18n.getText('CPS001_34')}</button>
-									<button class="btn btn-details" type="button" data-bind="click: uploadebook"></button>
+									<button class="btn btn-details" type="button"
+										data-bind="click: uploadebook"></button>
 								</div>
 								<div class="column">
 									<button class="btn btn-print" type="button"></button>
@@ -181,7 +200,8 @@
 						</div>
 					</div>
 					<div class="bottom-right-area">
-						<div class="layout-input" data-bind="css: { 'hidden': tabActive() != 'layout'}">
+						<div class="layout-input"
+							data-bind="css: { 'hidden': tabActive() != 'layout'}">
 							<div class="form-group">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
 								<div
@@ -196,7 +216,8 @@
 								data: currentLayout().listItemClsDto,
 								editAble: 2 }"></div>
 						</div>
-						<div class="category-input" data-bind="css: { 'hidden': tabActive() != 'category'}">
+						<div class="category-input"
+							data-bind="css: { 'hidden': tabActive() != 'category'}">
 							<div class="title">category</div>
 							<div style="padding-top: 10px"
 								data-bind="ntsLayoutControl: { 

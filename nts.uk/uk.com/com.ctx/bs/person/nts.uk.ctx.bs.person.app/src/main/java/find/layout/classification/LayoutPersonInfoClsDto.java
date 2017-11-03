@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 public class LayoutPersonInfoClsDto {
 
 	private String layoutID;
@@ -20,6 +20,24 @@ public class LayoutPersonInfoClsDto {
 	private String personInfoCategoryID;
 	private int layoutItemType;
 	private List<PerInfoItemDefDto> listItemDf;
+
+	/* List item value
+	 * single/set: List<LayoutPersonInfoValueDto>
+	 * list: List<List<LayoutPersonInfoValueDto>>
+	 *-----------------------------	
+	 * single: [{value: undefined}]
+	 *-------------------------------------------------------------------------
+	 * set: [ { value: undefined }, { value: undefined }, { value: undefined }]
+	 *-------------------------------------------------------------------------
+	 * list: [
+	 * [ { value: undefined }, { value: undefined }, { value: undefined }]
+	 * [ { value: undefined }, { value: undefined }, { value: undefined }]
+	 * [ { value: undefined }, { value: undefined }, { value: undefined }]
+	 * ]
+	 *-------------------------------------------------------------------------
+	 */
+	private List<Object> items;	
+	
 	
 	
 	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType) {
@@ -28,12 +46,9 @@ public class LayoutPersonInfoClsDto {
 		this.dispOrder = dispOrder;
 		this.personInfoCategoryID = personInfoCategoryID;
 		this.layoutItemType = layoutItemType;
-	}
-	
-	
+	}	
 
 	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain) {
-
 		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDispOrder().v(),
 				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
 	}

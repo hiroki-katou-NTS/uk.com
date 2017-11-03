@@ -1,12 +1,14 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtSubJobPosition;
@@ -28,6 +30,15 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 		return this.queryProxy().query(SELECT_SUB_JOB_POS_BY_DEPT_ID, BsymtSubJobPosition.class)
 				.setParameter("affiDeptId", deptId).getList().stream()
 				.map(x -> this.toDomainEmployee(x)).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository#getByEmpIdAndStandDate(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<SubJobPosition> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

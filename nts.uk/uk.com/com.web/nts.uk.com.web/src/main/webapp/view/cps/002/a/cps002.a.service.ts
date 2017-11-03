@@ -3,7 +3,7 @@ module cps002.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'ctx/bs/person/newlayout/get',
+        'getLayout': 'ctx/bs/person/newlayout/get',
         'getUserSetting': 'ctx/bs/person/info/setting/user/getUserSetting',
         'getLastRegHistory': 'ctx/bs/person/info/setting/regisHistory/getLastRegHistory',
         'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
@@ -11,15 +11,16 @@ module cps002.a.service {
         'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
         'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
         'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
+        'getAllCopySettingItem': 'ctx/bs/person/info/setting/copySettingItem/{0}/{1}/{2}',
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
         'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
-        'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}',
+        'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}/{2}',
         'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
 
     };
 
     export function getLayout() {
-        return ajax(paths.getData);
+        return ajax(paths.getLayout);
     }
 
     export function getUserSetting() {
@@ -50,6 +51,10 @@ module cps002.a.service {
         return ajax(paths.getCopySetting);
     }
 
+    export function getAllCopySettingItem(employeeId, categoryCd, baseDate) {
+        return ajax(format(paths.getAllCopySettingItem, employeeId, categoryCd, baseDate));
+    }
+
     export function getAllInitValueSetting() {
         return ajax(paths.getAllInitValueSetting);
     }
@@ -59,8 +64,8 @@ module cps002.a.service {
 
     }
 
-    export function getAllInitValueItemSetting(settingId, categoryCd) {
-        return ajax(format(paths.getAllInitValueItemSetting, settingId, categoryCd));
+    export function getAllInitValueItemSetting(settingId, categoryCd, baseDate) {
+        return ajax(format(paths.getAllInitValueItemSetting, settingId, categoryCd, baseDate));
     }
 
     export function getSelfRoleAuth() {

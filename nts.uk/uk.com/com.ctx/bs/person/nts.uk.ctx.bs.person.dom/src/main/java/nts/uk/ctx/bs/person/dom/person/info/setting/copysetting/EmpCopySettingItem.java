@@ -1,23 +1,29 @@
 package nts.uk.ctx.bs.person.dom.person.info.setting.copysetting;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 
 @Getter
 public class EmpCopySettingItem extends AggregateRoot {
 
-	String perInfoItemDefId;
+	String itemCode;
 
-	String categoryId;
+	String itemName;
 
-	private EmpCopySettingItem(String perInfoItemDefId, String categoryId) {
-		this.perInfoItemDefId = perInfoItemDefId;
-		this.categoryId = categoryId;
+	IsRequired isRequired;
+
+	public EmpCopySettingItem(String itemCode, String itemName, IsRequired isRequired) {
+		super();
+		this.itemCode = itemCode;
+		this.itemName = itemName;
+		this.isRequired = isRequired;
 	}
 
-	public static EmpCopySettingItem createFromJavaType(String perInfoItemDefId, String categoryId) {
+	public static EmpCopySettingItem createFromJavaType(String itemCode, String itemName, int isRequired) {
 
-		return new EmpCopySettingItem(perInfoItemDefId, categoryId);
+		return new EmpCopySettingItem(itemCode, itemName, EnumAdaptor.valueOf(isRequired, IsRequired.class));
 
 	}
 

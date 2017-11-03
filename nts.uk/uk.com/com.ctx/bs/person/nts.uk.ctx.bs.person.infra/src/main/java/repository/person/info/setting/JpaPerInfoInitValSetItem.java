@@ -13,9 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.person.dom.person.info.category.CategoryCode;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
-import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
@@ -32,12 +30,19 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
 			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
 
-
 	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			+ " ITEM.requiredAtr, "
 			+ " SE.settingItemPk.settingId, SE.refMethodAtr, SE.saveDataType, SE.stringValue, SE.intValue, SE.dateValue,"
-			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart"
+			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart,"
 			// 10 11 12 13 14
+			+ " CM.timeItemMin, CM.timeItemMax, "
+
+			+ " CM.selectionItemRefCode, "
+			// for Hoa 19
+			+ " CM.dateItemType, "
+			// cái này dùng để xem date là thuộc ngày tháng năm hat năm tháng hay chỉ năm
+			+ " CM.timepointItemMin , CM.timepointItemMax "
+			// cái này dùng để  validate thằng timpoint trên màn hình
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -50,7 +55,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 			+ " LEFT JOIN PpemtPersonInitValueSettingItem SE"
 			+ " ON CTG.ppemtPerInfoCtgPK.perInfoCtgId = SE.settingItemPk.perInfoCtgId"
-			+ " AND SE.settingItemPk.settingId =:settingId AND SE.settingItemPk.perInfoCtgId =:perInfoCtgId"
+			+ " AND SE.settingItemPk.settingId =:settingId "
 			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " AND (SE.settingItemPk.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId OR SE.settingItemPk.perInfoItemDefId IS NULL)"
 			+ " ORDER BY E.disporder";
@@ -125,31 +130,20 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		String saveDataType;
 
-		if (entity[6] == null) {
-			// return defaul value
-			saveDataType = "1";
-
-		} else {
-
+		if (entity[6] != null) {
 			saveDataType = entity[6].toString();
-
+			domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 		}
-		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
-
-		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
+		
+		domain.setStringValue(new StringValue(entity[7] == null ? null : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
-		String dateValue;
+		// định dạng lại cách hiển thị của date
+		if (entity[9] != null) {
 
-		if (entity[9] == null) {
-			dateValue = "9999-12-21";
-
-		} else {
-			dateValue = entity[9].toString();
+			domain.setDateValue(GeneralDate.fromString(entity[9].toString(), "yyyy-MM-dd"));
 
 		}
-
-		domain.setDateValue(GeneralDate.fromString(dateValue, "yyyy-MM-dd"));
 
 		if (entity[10] == null) {
 			domain.setDataType(0);
@@ -168,21 +162,50 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		if (entity[14] != null) {
-			//domain.setCtgCode(entity[14].toString());
+			// domain.setCtgCode(entity[14].toString());
 			domain.setCtgCode("CO00001");
 		}
 		if (entity[13] != null && entity[14] != null) {
 			domain.setConstraint(PerInfoInitValueSetItem.processs("CO00001", entity[13].toString()));
 		}
-		
-		if (entity[15] != null) {
-			domain.setNumberDecimalPart(Integer.valueOf(entity[15].toString()));
+
+		if (entity[10] != null) {
+			if (entity[10].toString().equals("2")) {
+				if (entity[15] != null) {
+					domain.setNumberDecimalPart(Integer.valueOf(entity[15].toString()));
+				}
+
+				if (entity[16] != null) {
+					domain.setNumberIntegerPart(Integer.valueOf(entity[16].toString()));
+				}
+			}
+
 		}
 
-		if (entity[16] != null) {
-			//domain.setCtgCode(entity[14].toString());
-			domain.setNumberIntegerPart(Integer.valueOf(entity[16].toString()));
+		if (entity[17] != null) {
+			domain.setTimeItemMin(Integer.valueOf(entity[17].toString()));
 		}
+
+		if (entity[18] != null) {
+			domain.setTimeItemMax(Integer.valueOf(entity[18].toString()));
+		}
+
+		if (entity[19] != null) {
+			domain.setSelectionItemId(entity[19].toString());
+		}
+
+		if (entity[20] != null) {
+			domain.setDateType(Integer.valueOf(entity[20].toString()));
+		}
+		
+		if (entity[21] != null) {
+			domain.setTimepointItemMin(Integer.valueOf(entity[21].toString()));
+		}
+
+		if (entity[22] != null) {
+			domain.setTimepointItemMax(Integer.valueOf(entity[22].toString()));
+		}
+
 		return domain;
 
 	}
@@ -209,10 +232,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> x = this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
-				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("settingId", settingId)
+		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
+				.setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("settingId", settingId)
 				.getList(c -> toDomain(c));
-		return x;
 
 	}
 

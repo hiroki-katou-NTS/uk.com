@@ -72,4 +72,5 @@ public interface PerInfoItemDefRepositoty {
 	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
 
 	// vinhpx end
+	
 }

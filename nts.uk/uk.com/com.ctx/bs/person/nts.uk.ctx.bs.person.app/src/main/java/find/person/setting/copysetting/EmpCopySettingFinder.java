@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.person.info.category.PerInfoCtgMapDto;
+import find.person.setting.init.category.SettingCtgDto;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySetting;
@@ -24,7 +24,7 @@ public class EmpCopySettingFinder {
 	@Inject
 	PersonInfoCategoryAuthRepository PerInfoCtgRepo;
 
-	public List<PerInfoCtgMapDto> getEmpCopySetting() {
+	public List<SettingCtgDto> getEmpCopySetting() {
 		List<EmpCopySetting> copyList = this.empCopyRepo.find(AppContexts.user().companyId());
 
 		if (copyList.isEmpty()) {
@@ -40,7 +40,7 @@ public class EmpCopySettingFinder {
 
 		return this.PerInfoCtgRepo.getAllCategoryByCtgIdList(AppContexts.user().contractCode(), categoryList).stream()
 				.map(p -> {
-					return new PerInfoCtgMapDto(p.getCategoryId(), p.getCategoryCode(), p.getCategoryName(), true);
+					return new SettingCtgDto(p.getCategoryCode(), p.getCategoryName());
 				}).collect(Collectors.toList());
 
 	}

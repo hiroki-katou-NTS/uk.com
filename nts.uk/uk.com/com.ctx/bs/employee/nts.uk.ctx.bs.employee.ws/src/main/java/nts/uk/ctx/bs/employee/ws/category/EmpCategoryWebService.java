@@ -28,12 +28,12 @@ public class EmpCategoryWebService extends WebService {
 		return empCtgFinder.getAllPerInfoCtg(companyId, employeeIdSelected);
 	}
 
-	// 
+	//
 	@POST
 	@Path("getListInfoCategory/{employeeId}/{categoryId}")
 	public List<Object> getListInfoCategory(@PathParam("employeeId") String employeeId,
 			@PathParam("categoryId") String categoryId) {
-	
+		empCtgFinder.getCtgAndItemByCtgId(employeeId, categoryId);
 		return null;
 	}
 }

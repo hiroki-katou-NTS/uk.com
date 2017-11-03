@@ -66,10 +66,24 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	private String constraint;
 
 	// thêm trường numberDecimalPart của bảng common
-	private int numberDecimalPart;
+	private Integer numberDecimalPart;
 
 	// thêm trường numberIntegerPart của bảng common
-	private int numberIntegerPart;
+	private Integer numberIntegerPart;
+
+	private Integer timeItemMin;
+
+	private Integer timeItemMax;
+
+	// trường này dùng để kết nối với bảng selectionItem
+	private String selectionItemId;
+
+	// trường này để xác định xem là trường date thuộc
+	// kiểu ngày tháng năm, năm tháng or năm
+	private Integer dateType;
+	
+	private Integer timepointItemMin;
+	private Integer timepointItemMax;
 
 	/**
 	 * constructor PerInfoInitValueSetItem
@@ -95,7 +109,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
 			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
 			StringValue stringValue, IntValue intValue, GeneralDate dateValue, Integer dataType, Integer itemType,
-			String itemCode, String ctgCode, String constraint, int numberDecimalPart, int numberIntegerPart) {
+			String itemCode, String ctgCode, String constraint, Integer numberDecimalPart, Integer numberIntegerPart,
+			Integer timeItemMin, Integer timeItemMax) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.settingId = settingId;
@@ -114,6 +129,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.constraint = constraint;
 		this.numberDecimalPart = numberDecimalPart;
 		this.numberIntegerPart = numberIntegerPart;
+		this.timeItemMax = timeItemMax;
+		this.timeItemMin = timeItemMin;
 	}
 
 	/**
@@ -180,7 +197,6 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.itemType = itemType;
 		this.itemCode = itemCode;
 		this.ctgCode = ctgCode;
-		this.processs(ctgCode, itemCode);
 	}
 
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
@@ -338,11 +354,11 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	 * @return
 	 */
 	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
-			String perInfoCtgId, int refMethodType, int saveDataType, Integer intValue) {
+			String perInfoCtgId, int refMethodType, int saveDataType, BigDecimal intValue) {
 
 		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
 				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
-				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(new BigDecimal(intValue)));
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(intValue));
 	}
 
 	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,

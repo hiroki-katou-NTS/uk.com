@@ -7,6 +7,7 @@ module cps001.a.vm {
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
     import clearError = nts.uk.ui.errors.clearAll;
+    import liveView = nts.uk.request.liveView;
 
     let DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -29,40 +30,40 @@ module cps001.a.vm {
             onSearchAllClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             },
             onSearchOnlyClicked: (data: IEmployeeInfo) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees([data]);
+                self.listEmployee.removeAll();
+                self.listEmployee([data]);
             },
             onSearchOfWorkplaceClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             },
             onSearchWorkplaceChildClicked: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             },
             onApplyEmployee: (dataList: Array<IEmployeeInfo>) => {
                 let self = this;
 
-                self.listEmployees.removeAll();
-                self.listEmployees(dataList);
+                self.listEmployee.removeAll();
+                self.listEmployee(dataList);
             }
         };
 
         tabActive: KnockoutObservable<string> = ko.observable('layout');
 
-        listEmployees: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
-
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
+
+        listEmployee: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
         employee: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ employeeId: '', workplaceId: '' }));
 
         listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -103,7 +104,27 @@ module cps001.a.vm {
             });
 
             employee.employeeId.subscribe(x => {
-                self.tabActive.valueHasMutated();
+                if (x) {
+
+                    service.getAvatar(x).done((data: any) => {
+                        person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                    });
+
+                    service.getPerson(x).done((data: IPersonInfo) => {
+                        if (data) {
+                            person.personId(data.personId);
+                            person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
+                            debugger;
+                        }
+                    });
+                    self.tabActive.valueHasMutated();
+
+                    let emp = _.find(self.listEmployee(), e => e.employeeId == x);
+                    if (emp) {
+                        employee.employeeCode(emp.employeeCode);
+                        employee.employeeName(emp.employeeName);
+                    }
+                }
             });
 
             employee.employeeId.subscribe(x => {
@@ -121,8 +142,13 @@ module cps001.a.vm {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
 
+                        // lấy list item definition trong db
+                        // duyệt
                         _.each(data.listItemClsDto, x => {
+                            // khởi tạo giá trị items
                             x.items = ko.observableArray([]);
+
+                            // kiểm tra kiểu item
                             if (x.layoutItemType == 0) {
                                 if (x.listItemDf && x.listItemDf[0]) {
                                     _.each(x.listItemDf, m => {
@@ -156,10 +182,17 @@ module cps001.a.vm {
         }
 
         start() {
-            let self = this;
+            let self = this,
+                employee = self.employee();
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                 $('.btn-quick-search[tabindex=4]').click();
+                setInterval(() => {
+                    if (!employee.employeeId()) {
+                        let employees = self.listEmployee()
+                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                    }
+                }, 0);
             });
         }
 
@@ -171,17 +204,18 @@ module cps001.a.vm {
 
         chooseAvatar() {
             let self = this,
+                person: PersonInfo = self.person(),
                 employee: IEmployeeInfo = ko.toJS(self.employee);
-            
+
             // cancel click if hasn't emp
             if (!employee || !employee.employeeId) {
                 return;
             }
-            
-            setShared("employeeId", employee.employeeId);
+
+            setShared("CPS001D_PARAMS", employee);
             modal('../d/index.xhtml').onClosed(() => {
-                let data = getShared("imageId");
-                debugger;
+                let data = getShared("CPS001D_VALUES");
+                person.avatar(data.fileId ? liveView(data.fileId) : undefined);
             });
         }
 
@@ -304,7 +338,20 @@ module cps001.a.vm {
         personMobile?: string;
         code?: string;
         avatar?: string;
-        fullName?: string;
+        bloodType?: number;
+        personNameGroup?: PersonNameGroup;
+    }
+
+    interface PersonNameGroup {
+        businessEnglishName?: string;
+        businessName?: string;
+        businessOtherName?: string;
+        oldName?: string;
+        personName?: string;
+        personNameKana?: string;
+        personRomanji?: string;
+        todokedeFullName?: string;
+        todokedeOldFullName?: string;
     }
 
     class PersonInfo {
@@ -312,14 +359,25 @@ module cps001.a.vm {
         code: KnockoutObservable<string> = ko.observable('');
         avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
         fullName: KnockoutObservable<string> = ko.observable('');
-
+        //birthDate
         constructor(param: IPersonInfo) {
             let self = this;
 
             self.personId(param.personId || '');
             self.code(param.code || '');
             self.avatar(param.avatar || DEF_AVATAR);
-            self.fullName(param.fullName || '');
+            self.fullName(param.personNameGroup && param.personNameGroup.personName || '');
+
+            self.avatar.subscribe(x => {
+                if (!x) {
+                    self.avatar(DEF_AVATAR);
+                }
+            });
         }
+    }
+
+    enum TABS {
+        LAYOUT = 1,
+        CATEGORY = 2
     }
 }

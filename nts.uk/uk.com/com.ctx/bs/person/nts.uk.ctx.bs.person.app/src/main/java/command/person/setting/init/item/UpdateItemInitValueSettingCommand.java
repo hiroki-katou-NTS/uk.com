@@ -1,5 +1,7 @@
 package command.person.setting.init.item;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 
 /**
@@ -26,7 +28,15 @@ public class UpdateItemInitValueSettingCommand {
 	private int dataType;
 	
 	// những trường này có thể bằng null
-	private String timepoint;
+	private BigDecimal timePoint;
+	
+	private BigDecimal timeItem;
+	
+	// trường này dùng để xác đinh dateType  thuộc
+	// kiểu YYY-MM-DD, YY -MM, YY
+	private Integer dateType;
+	
+	// giá trị của date
 	private String dateVal;
 	
 	private String stringValue;
@@ -36,6 +46,8 @@ public class UpdateItemInitValueSettingCommand {
 	private String selectedCode;
 	
 	private int selectedRuleCode;
+	
+	private BigDecimal numberValue;
 	
 	
 

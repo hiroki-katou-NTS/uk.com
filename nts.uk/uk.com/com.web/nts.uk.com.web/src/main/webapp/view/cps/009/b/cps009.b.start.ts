@@ -29,7 +29,7 @@ function init() {
                 function(index, el: any) {
                     let nameCell = $("#grid_B").igGrid("cellAt", 0, index);
                     let referenceCell = $("#grid_B").igGrid("cellAt", 1, index);
-                    if (el.isRequired == 'true') {
+                    if (el.isRequired == 1) {
                         $(nameCell).addClass('requiredCell');
                         $(referenceCell).addClass('requiredCell');
                     } else {
