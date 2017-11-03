@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.log;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 /**
  * 
  * @author hieult
@@ -52,14 +53,15 @@ public class EmpCalAndAggregationCommand {
     /** 対象期間開始日 */
     private String periodStartDate;
     
-    private String periodEndDate
+    private String periodEndDate;
     
     /** 対象期間終了日 */
     private String targetEndDate;
     /**＜画面 J から受け取るパラメータ＞  */
     /** ケース別実行実施内容ID */
     private String caseSpecExeContentID;
-    
+    /** 実行内容*/
+    private ExecutionContent excutionContent;
 	/** 実行したメニュー */    
     private int executedMenu;
 }
