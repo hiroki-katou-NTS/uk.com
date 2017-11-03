@@ -81,13 +81,13 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 			try {
 				if(!Strings.isBlank(email)) {
 					mailSender.send("nts", email, new MailContents("nts mail", "new mail from NTS"));
+					destinationMails.add(email);
 				}
 				
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			destinationMails.add(email);
 		}
 		return destinationMails;
 	}

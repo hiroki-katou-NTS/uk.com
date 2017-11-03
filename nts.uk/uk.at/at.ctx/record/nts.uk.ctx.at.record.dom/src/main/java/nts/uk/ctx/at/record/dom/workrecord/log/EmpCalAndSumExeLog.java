@@ -22,20 +22,37 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
 public class EmpCalAndSumExeLog extends AggregateRoot {
 
 	/**
+	 * 就業計算と集計実行ログID
+	 */
+	private String empCalAndSumExecLogID;
+	
+	/**
 	 * 会社ID
 	 */
 
 	private String companyID;
 	
 	/**
-	 * ID
+	 * 処理月
 	 */
-	private String empCalAndSumExecLogID;
-
+	private YearMonth processingMonth;
+	
 	/**
-	 * 運用ケース
+	 * 実行したメニュー
+	 * ・選択して実行 ・ケース別実行
 	 */
-	private String caseSpecExeContentID;
+	private ExecutedMenu executedMenu;
+	
+	/**
+	 * 実行日
+	 */
+
+	private GeneralDate executionDate;
+	
+	/**
+	 * 実行状況
+	 */
+	private ExeStateOfCalAndSum executionStatus;
 	
 	/**
 	 * 実行社員ID
@@ -44,33 +61,15 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	private String employeeID;
 	
 	/**
-	 * 実行したメニュー
-	 * ・選択して実行 ・ケース別実行
-	 */
-	private ExecutedMenu executedMenu;
-
-	
-	
-	/**
-	 * 実行状況
-	 */
-	private ExeStateOfCalAndSum executionStatus;
-
-	/**
-	 * 実行日
-	 */
-
-	private GeneralDate executionDate;
-
-	/**
-	 * 処理月
-	 */
-	private YearMonth processingMonth;
-	
-	/**
 	 * 締めID
 	 */
 	private int closureID;
+
+	/**
+	 * 運用ケース
+	 */
+	private String caseSpecExeContentID;
+	
 	
 	/**
 	 * 実行ログ
@@ -80,26 +79,26 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	
 	
 	public static EmpCalAndSumExeLog createFromJavaType(
-			String companyID,
 			String empCalAndSumExecLogID,
-			String caseSpecExeContentID,
-			String employeeID,
-			int executedMenu,
-			int executionStatus,
-			GeneralDate executionDate,
+			String companyID,
 			Integer processingMonth,
+			int executedMenu,
+			GeneralDate executionDate,
+			int executionStatus,
+			String employeeID,
 			int closureID,
+			String caseSpecExeContentID,
 			List<ExecutionLog> executionLogs) {
 		return new EmpCalAndSumExeLog(
-				companyID,
 				empCalAndSumExecLogID,
-				caseSpecExeContentID,
-				employeeID,
-				EnumAdaptor.valueOf(executedMenu,ExecutedMenu.class),
-				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),
-				executionDate,
+				companyID,
 				new YearMonth(processingMonth),
+				EnumAdaptor.valueOf(executedMenu,ExecutedMenu.class),
+				executionDate,
+				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),
+				employeeID,
 				closureID,
+				caseSpecExeContentID,
 				executionLogs);
 	}
 	

@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.app.find.overtime.dto;
 
+import java.util.List;
+
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 
 @Data
@@ -31,7 +34,7 @@ public class OverTimeDto {
 	/**
 	 * 残業申請時間設定
 	 */
-	private OverTimeInput overTimeInput;
+	private List<OverTimeInput> overTimeInput;
 	/**
 	 *  事前事後区分表示 
 	 */
@@ -95,5 +98,33 @@ public class OverTimeDto {
 	 * 時刻計算利用
 	 */
 	private boolean displayCaculationTime;
-
+	
+	/**
+	 * 休憩時間取得表示する
+	 */
+	private boolean displayRestTime;
+	
+	/**
+	 * 加給時間を取得
+	 */
+	private boolean displayBonusTime;
+	
+	/**
+	 * applicationReasonDtos
+	 */
+	private List<ApplicationReasonDto> applicationReasonDtos;
+	/**
+	 * displayAppReason
+	 */
+	private boolean displayAppReason;
+	
+	/**
+	 * divergenceReasonDtos
+	 */
+	private List<DivergenceReasonDto> divergenceReasonDtos;
+	/**
+	 * displayDivergenceReason
+	 */
+	private boolean displayDivergenceReason;
+	
 }
