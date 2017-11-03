@@ -162,7 +162,7 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
-                //                self.getDetail(self.selectedCode());
+                self.getDetail(self.selectedCode());
                 self.checked(false);
                 self.showCode(true);
                 _.defer(() => {$("#currentCode").focus();});
