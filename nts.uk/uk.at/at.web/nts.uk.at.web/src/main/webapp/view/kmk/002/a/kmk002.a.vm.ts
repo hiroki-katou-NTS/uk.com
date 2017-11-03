@@ -639,15 +639,22 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
                 if (self.isInUse()) {
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_113' });
-                    return;
+                    nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_113')).ifYes(() => {
+                        // Remove selected formulas.
+                        self.removeSelectedFormulas();
+
+                        // reset formula order
+                        self.resetFormulaOrder();
+                    }).ifNo(() => {
+                        return;
+                    });
+                } else {
+                    // Remove selected formulas.
+                    self.removeSelectedFormulas();
+
+                    // reset formula order
+                    self.resetFormulaOrder();
                 }
-
-                // Remove selected formulas.
-                self.removeSelectedFormulas();
-
-                // reset formula order
-                self.resetFormulaOrder();
 
             }
 
@@ -871,20 +878,27 @@ module nts.uk.at.view.kmk002.a {
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
-                this.numberUpper = ko.observable(0);
-                this.numberLower = ko.observable(0);
-                this.amountUpper = ko.observable(0);
-                this.amountLower = ko.observable(0);
-                this.timeUpper = ko.observable(0);
-                this.timeLower = ko.observable(0);
+                this.numberUpper = ko.observable(null);
+                this.numberLower = ko.observable(null);
+                this.amountUpper = ko.observable(null);
+                this.amountLower = ko.observable(null);
+                this.timeUpper = ko.observable(null);
+                this.timeLower = ko.observable(null);
             }
 
             /**
              * Check if limit range is set.
              */
-            public isSet(itemAtr: number): boolean {
+            public isSet(): boolean {
                 let self = this;
-                return self.upperCheck() || self.lowerCheck();
+                return self.upperCheck()
+                    || self.lowerCheck()
+                    || !!self.numberUpper()
+                    || !!self.numberLower()
+                    || !!self.amountUpper()
+                    || !!self.amountLower()
+                    || !!self.timeUpper()
+                    || !!self.timeLower();
             }
 
             /**
@@ -894,12 +908,12 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 this.upperCheck(false);
                 this.lowerCheck(false);
-                this.numberUpper(0);
-                this.numberLower(0);
-                this.amountUpper(0);
-                this.amountLower(0);
-                this.timeUpper(0);
-                this.timeLower(0);
+                this.numberUpper(null);
+                this.numberLower(null);
+                this.amountUpper(null);
+                this.amountLower(null);
+                this.timeUpper(null);
+                this.timeLower(null);
             }
 
             /**
@@ -1075,14 +1089,13 @@ module nts.uk.at.view.kmk002.a {
                 let invalidFormulas = self.optionalItem.findInvalidFormula();
                 if (!nts.uk.util.isNullOrEmpty(invalidFormulas)) {
 
-                    // set messages bundle
+                    // set bundle errors
                     let messages = { Msg_111: [] };
                     _.each(invalidFormulas, formula => {
-                        messages.Msg_111.push(nts.uk.resource.getMessage('Msg_111', [formula.orderNo()]));
+                        $('#settingResult' + formula.orderNo()).ntsError('set',
+                            { messageId: "Msg_111", messageParams: [formula.orderNo()] });
                     });
 
-                    // show messages bundle
-                    nts.uk.ui.dialog.bundledErrors({ messageId: ['Msg_111'], messages: messages });
                     return false;
                 };
 

@@ -92,6 +92,7 @@
                                        value: calcResultRange.numberUpper,
                                        constraint: 'NumberRangeValue',
                                        option: {
+                                       grouplength: 3,
                                        decimallength: 1
                                        },
                                        required: true,
@@ -103,6 +104,9 @@
                                        name: '#[KMK002_26]',
                                        value: calcResultRange.amountUpper,
                                        constraint: 'AmountRangeValue',
+                                       option: {
+                                       grouplength: 3
+                                       },
                                        required: true,
                                        enable: calcResultRange.upperCheck() &amp;&amp; isUsed()}"/>
                                  </com:ko>
@@ -153,6 +157,7 @@
                                        value: calcResultRange.numberLower,
                                        constraint: 'NumberRangeValue',
                                        option: {
+                                       grouplength: 3,
                                        decimallength: 1
                                        },
                                        required: true,
@@ -175,6 +180,9 @@
                                        name: '#[KMK002_27]',
                                        value: calcResultRange.amountLower,
                                        constraint: 'AmountRangeValue',
+                                       option: {
+                                       grouplength: 3
+                                       },
                                        required: true,
                                        enable: calcResultRange.lowerCheck() &amp;&amp; isUsed()}"/>
                                  </com:ko>
