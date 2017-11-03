@@ -18,17 +18,17 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 	public final String SELECT_BY_SID_AND_REFERENCEDATE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.bsymtTemporaryAbsencePK.sid = :sid"
 			+ " AND c.startDate <= :referenceDate  AND c.endDate >= :referenceDate ";
 
-	public static final String SELECT_BY_TEMP_ABSENCE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.leaveHolidayId = :tempAbsenceId";
+	public static final String SELECT_BY_TEMP_ABSENCE = "SELECT c FROM BsymtTemporaryAbsence c WHERE c.bsymtTemporaryAbsencePK.leaveHolidayId = :tempAbsenceId";
 
 	private TemporaryAbsence toTemporaryAbsence(BsymtTemporaryAbsence entity) {
-		val domain = TemporaryAbsence.createSimpleFromJavaType(entity.bsymtTemporaryAbsencePK.sid,
-				entity.leaveHolidayId, entity.leaveHolidayAtr, entity.startDate, entity.endDate, entity.reason,
+		val domain = TemporaryAbsence.createSimpleFromJavaType(entity.sid,
+				entity.bsymtTemporaryAbsencePK.leaveHolidayId, entity.leaveHolidayAtr, entity.startDate, entity.endDate, entity.reason,
 				entity.familyMemberId, entity.birthday, entity.multiple);
 		return domain;
 	}
 
 	@Override
-	public Optional<TemporaryAbsence> getBySid(String sid, GeneralDate referenceDate) {
+	public Optional<TemporaryAbsence> getBySidAndReferDate(String sid, GeneralDate referenceDate) {
 		BsymtTemporaryAbsence entity = this.queryProxy()
 				.query(SELECT_BY_SID_AND_REFERENCEDATE, BsymtTemporaryAbsence.class).setParameter("sid", sid)
 				.setParameter("referenceDate", referenceDate).getSingleOrNull();
