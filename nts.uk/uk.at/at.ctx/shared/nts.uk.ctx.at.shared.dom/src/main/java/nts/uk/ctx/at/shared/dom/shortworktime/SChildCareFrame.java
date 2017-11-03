@@ -17,9 +17,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Builder
 public class SChildCareFrame extends DomainObject {
 	
-	/** The time. */
+	/** The time slot. */
 	// 回数
-	public int time;
+	public int timeSlot;
 	
 	/** The start time. */
 	// 開始時刻

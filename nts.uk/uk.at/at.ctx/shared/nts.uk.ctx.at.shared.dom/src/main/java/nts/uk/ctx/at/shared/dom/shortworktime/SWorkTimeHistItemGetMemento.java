@@ -33,9 +33,9 @@ public interface SWorkTimeHistItemGetMemento {
 	ChildCareAtr getChildCareAtr();
 	
 	/**
-	 * Gets the lst time zone.
+	 * Gets the lst time slot.
 	 *
-	 * @return the lst time zone
+	 * @return the lst time slot
 	 */
-	List<SChildCareFrame> getLstTimeZone();
+	List<SChildCareFrame> getLstTimeSlot();
 }
