@@ -36,7 +36,7 @@ public class CaseSpecExeContent extends AggregateRoot {
 	/**
 	 * 計算実行設定情報ID
 	 */
-	private String calExecutionSetInfoID;
+	//private String calExecutionSetInfoID;
 	
 	/**
 	 * 承認結果反映の設定情報
@@ -61,12 +61,11 @@ public class CaseSpecExeContent extends AggregateRoot {
 	@Setter
 	private Optional<CalExeSettingInfor> monlyAggregationSetInfo;
 
-	public CaseSpecExeContent(String caseSpecExeContentID, int orderNumber, UseCaseName useCaseName,String calExecutionSetInfoID) {
+	public CaseSpecExeContent(String caseSpecExeContentID, int orderNumber, UseCaseName useCaseName) {
 		super();
 		this.caseSpecExeContentID = caseSpecExeContentID;
 		this.orderNumber = orderNumber;
 		this.useCaseName = useCaseName;
-		this.calExecutionSetInfoID =calExecutionSetInfoID;
 		this.reflectApprovalSetInfo = Optional.empty();
 		this.dailyCreationSetInfo =  Optional.empty();
 		this.dailyCalSetInfo =  Optional.empty();
@@ -74,8 +73,8 @@ public class CaseSpecExeContent extends AggregateRoot {
 	}
 
 	public static CaseSpecExeContent createFromJavaType(String caseSpecExeContentID, int orderNumber,
-			String useCaseName,String calExecutionSetInfoID) {
-		return new CaseSpecExeContent(caseSpecExeContentID, orderNumber, new UseCaseName(useCaseName),calExecutionSetInfoID);
+			String useCaseName) {
+		return new CaseSpecExeContent(caseSpecExeContentID, orderNumber, new UseCaseName(useCaseName));
 	}
 
 }

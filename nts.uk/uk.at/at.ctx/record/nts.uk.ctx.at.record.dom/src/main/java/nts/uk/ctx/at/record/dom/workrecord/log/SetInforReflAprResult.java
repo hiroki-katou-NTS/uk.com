@@ -22,10 +22,14 @@ public class SetInforReflAprResult extends CalExeSettingInfor{
 	}
 
 	public SetInforReflAprResult(ExecutionContent executionContent, ExecutionType executionType,
-			String calExecutionSetInfoID, boolean forciblyReflect) {
-		super(executionContent, executionType, calExecutionSetInfoID);
+			String calExecutionSetInfoID, String caseSpecExeContentID, boolean forciblyReflect) {
+		super(executionContent, executionType, calExecutionSetInfoID, caseSpecExeContentID);
 		this.forciblyReflect = forciblyReflect;
 	}
+
+
+
+	
 
 	
 

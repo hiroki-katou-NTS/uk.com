@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXECUTION_LOG")
+@Table(name = "KRCST_CASE_SPEC_EXE_CONT")
 public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -35,25 +35,21 @@ public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable
 	@Column(name = "USE_CASE_NAME")
 	public String useCaseName;
 
-	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
-	public String calExecutionSetInfoID;
-
-	@OneToMany(mappedBy = "executionlog", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCDT_CAL_EXE_SET_INFOR")
+	@OneToMany(mappedBy = "caseSpecExeContent", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRCDT_CAL_EXE_SET_INFO")
 	public List<KrcdtCalExeSetInfor> lstCalExeSetInfor;
 
 	public KrcstCaseSpecExeContent(KrcstCaseSpecExeContentPK krcstCaseSpecExeContentPK, int orderNumber,
-			String useCaseName, String calExecutionSetInfoID) {
+			String useCaseName) {
 		super();
 		this.krcstCaseSpecExeContentPK = krcstCaseSpecExeContentPK;
 		this.orderNumber = orderNumber;
 		this.useCaseName = useCaseName;
-		this.calExecutionSetInfoID = calExecutionSetInfoID;
 	}
 
 	public CaseSpecExeContent toDomain() {
 		val domain = CaseSpecExeContent.createFromJavaType(this.krcstCaseSpecExeContentPK.caseSpecExeContentID,
-				this.orderNumber, this.useCaseName, this.calExecutionSetInfoID);
+				this.orderNumber, this.useCaseName);
 		for (KrcdtCalExeSetInfor calExeSetInfor : lstCalExeSetInfor) {
 			if (calExeSetInfor.krcdtCalExeSetInforPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
 				domain.setDailyCreationSetInfo(Optional.of(calExeSetInfor.toDomain()));

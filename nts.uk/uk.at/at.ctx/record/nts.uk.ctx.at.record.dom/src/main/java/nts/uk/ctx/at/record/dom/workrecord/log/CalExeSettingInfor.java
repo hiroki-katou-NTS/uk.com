@@ -30,14 +30,17 @@ public class CalExeSettingInfor extends DomainObject {
 	 */
 	private ExecutionType executionType;
 
-	public String calExecutionSetInfoID;
+	private String calExecutionSetInfoID;
+	//case ID
+	private String caseSpecExeContentID;
 
 	public CalExeSettingInfor(ExecutionContent executionContent, ExecutionType executionType,
-			String calExecutionSetInfoID) {
+			String calExecutionSetInfoID,String caseSpecExeContentID) {
 		super();
 		this.executionContent = executionContent;
 		this.executionType = executionType;
 		this.calExecutionSetInfoID = calExecutionSetInfoID;
+		this.caseSpecExeContentID = caseSpecExeContentID;
 	}
 	
 }
