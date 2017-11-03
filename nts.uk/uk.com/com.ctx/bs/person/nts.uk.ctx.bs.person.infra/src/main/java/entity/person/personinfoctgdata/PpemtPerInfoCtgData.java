@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -16,6 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PPEMT_PER_INFO_CTG_DATA")
 public class PpemtPerInfoCtgData extends UkJpaEntity{
