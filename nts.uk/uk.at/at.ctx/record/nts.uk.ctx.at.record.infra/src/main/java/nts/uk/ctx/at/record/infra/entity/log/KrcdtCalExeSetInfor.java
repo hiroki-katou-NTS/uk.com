@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -12,7 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.log.PartResetClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.SetInforReflAprResult;
@@ -27,6 +31,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author hieult
  *
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_CAL_EXE_SET_INFOR")
 public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
