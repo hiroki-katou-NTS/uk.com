@@ -4375,7 +4375,7 @@ var nts;
             var smallExtensions;
             (function (smallExtensions) {
                 $(function () {
-                    $(window).on('.limited-label', 'mouseenter', function (e) {
+                    $(document).on('mouseenter', '.limited-label', function (e) {
                         var $label = $(e.target);
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
@@ -6508,16 +6508,12 @@ var nts;
                         }
                         $grid.ntsGridList('setupSelecting');
                         if (data.multiple) {
-                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (evt, uiX) {
-                                if ($grid.data("enable") === false) {
-                                    return false;
-                                }
+                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (eventObject) {
+                                return (String($grid.data("enable")) === "true") ? true : false;
                             });
                         }
-                        $grid.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
-                            if ($grid.data("enable") === false) {
-                                return false;
-                            }
+                        $grid.bind('iggridselectionrowselectionchanging', function (eventObject) {
+                            return (String($grid.data("enable")) === "true") ? true : false;
                         });
                         $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
@@ -6561,7 +6557,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (!($grid.attr("filtered") === true || $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
+                        if (!(String($grid.attr("filtered")) === "true") && $grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -6575,10 +6571,12 @@ var nts;
                                     });
                                 });
                             }
-                            $grid.igGrid('option', 'dataSource', currentSources);
-                            $grid.igGrid("dataBind");
+                            if (!_.isEqual(currentSources, $grid.igGrid('option', 'dataSource'))) {
+                                $grid.igGrid('option', 'dataSource', currentSources);
+                                $grid.igGrid("dataBind");
+                            }
                         }
-                        else if ($grid.attr("filtered") === true || $grid.attr("filtered") === "true") {
+                        else if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
                             _.forEach(currentSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
@@ -6600,6 +6598,7 @@ var nts;
                             }
                         });
                         if (!isEqual) {
+                            _.defer(function () { $grid.trigger("selectChange"); });
                             $grid.ntsGridList('setSelected', data.value());
                         }
                         $grid.data("ui-changed", false);
@@ -6948,7 +6947,7 @@ var nts;
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var options = ko.unwrap(data.options);
+                        var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
@@ -6971,8 +6970,8 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        if (!((container.attr("filtered") === true || container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
-                            var currentSources = options.slice();
+                        if (!((String(container.attr("filtered")) === "true") || container.data("ui-changed") === true)) {
+                            var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
@@ -6983,14 +6982,15 @@ var nts;
                                     s[key] = moment(s[key]).format(c["format"]);
                                 });
                             });
-                            container.igGrid('option', 'dataSource', currentSources);
-                            container.igGrid("dataBind");
+                            if (!_.isEqual(currentSources, container.igGrid('option', 'dataSource'))) {
+                                container.igGrid('option', 'dataSource', currentSources);
+                                container.igGrid("dataBind");
+                            }
                         }
-                        else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
-                            var sources_1 = options.slice();
+                        else if (String(container.attr("filtered")) === "true") {
                             var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
-                                var itemX = _.find(sources_1, function (s) {
+                                var itemX = _.find(sources, function (s) {
                                     return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
@@ -7057,6 +7057,7 @@ var nts;
                             }
                             var isEqual = _.isEqual(currentSelectedItems, dataValue);
                             if (!isEqual) {
+                                _.defer(function () { container.trigger("selectChange"); });
                                 container.ntsGridList('setSelected', dataValue);
                             }
                         }
@@ -11188,8 +11189,13 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var index = $(row.element).attr("data-row-idx");
-                                    $grid.igGrid("virtualScrollTo", index === undefined ? getSelectRowIndex($grid, row.id) : parseInt(index));
+                                    var rowScrollTop = row.index * row.element.height();
+                                    var scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
+                                    if (isNaN(rowScrollTop)
+                                        || rowScrollTop < scrollContainer.scrollTop()
+                                        || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
+                                        $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
+                                    }
                                 }
                             });
                         }
