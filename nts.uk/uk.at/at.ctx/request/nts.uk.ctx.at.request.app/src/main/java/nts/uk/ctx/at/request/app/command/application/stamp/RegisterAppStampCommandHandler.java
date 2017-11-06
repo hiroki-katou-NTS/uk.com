@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.stamp;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -36,7 +38,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Stateless
-public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> {
+public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, List<String>> {
 	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 
@@ -44,7 +46,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 	private AppStampNewDomainService applicationStampNewDomainService;
 
 	@Override
-	protected void handle(CommandHandlerContext<AppStampCmd> context) {
+	protected List<String> handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		AppStampCmd appStampCmd = context.getCommand();
@@ -98,8 +100,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					null,
 					null,
 					null);
-				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
-				break;
+				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 			case STAMP_ADDITIONAL: 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
@@ -124,8 +125,8 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					).collect(Collectors.toList()),
 					null,
 					null);
-				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
-				break;
+				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				
 			case STAMP_CANCEL: 
 				appStamp = AppStamp.createFromJavaType(
 						companyID,  
@@ -144,8 +145,8 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
-				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
-				break;
+				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				
 			case STAMP_ONLINE_RECORD: 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
@@ -161,8 +162,8 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
-				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
-				break;
+				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				
 			case OTHER: 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
@@ -187,10 +188,10 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					).collect(Collectors.toList()),
 					null,
 					null);
-				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
-				break;
+				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				
 			default:
-				break;
+				return Collections.emptyList();
 			
 		}
 	}

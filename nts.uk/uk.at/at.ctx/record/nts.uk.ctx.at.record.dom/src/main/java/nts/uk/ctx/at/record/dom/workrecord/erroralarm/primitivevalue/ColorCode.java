@@ -1,7 +1,7 @@
 /**
  * 2:20:15 PM Jul 21, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

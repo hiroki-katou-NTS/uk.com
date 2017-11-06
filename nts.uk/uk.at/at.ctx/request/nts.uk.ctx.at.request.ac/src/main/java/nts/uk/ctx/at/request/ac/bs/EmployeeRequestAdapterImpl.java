@@ -17,11 +17,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmp
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
@@ -110,7 +112,13 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
 	@Override
 	public String empEmail(String sID) {
-		return this.personPub.getPersonInfo(sID).getCompanyMail();
+		PersonInfoExport data = this.personPub.getPersonInfo(sID);
+		if(!data.getCompanyMail().isEmpty()) {
+			return data.getCompanyMail();
+		}else {
+			return null;
+		}
+		
 	}
 
 	@Override
@@ -136,6 +144,21 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 			sEmpHistImport.setEmploymentName(sEmpHistExport.get().getEmploymentName());
 			sEmpHistImport.setPeriod(sEmpHistExport.get().getPeriod());
 			return sEmpHistImport;
+		}
+		return null;
+	}
+
+	@Override
+	public SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate) {
+		Optional<SWkpHistExport> sWkpHistExport = this.workplacePub.findBySid(employeeId, baseDate);
+		if(sWkpHistExport.isPresent()){
+			SWkpHistImport sWkpHistImport = new SWkpHistImport(sWkpHistExport.get().getDateRange(),
+					sWkpHistExport.get().getEmployeeId(),
+					sWkpHistExport.get().getWorkplaceId(),
+					sWkpHistExport.get().getWorkplaceCode(), 
+					sWkpHistExport.get().getWorkplaceName(),
+					sWkpHistExport.get().getWkpDisplayName());
+			return sWkpHistImport;	
 		}
 		return null;
 	}
