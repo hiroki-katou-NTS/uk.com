@@ -11,8 +11,8 @@ module nts.uk.com.view.cps009.d.viewmodel {
 
         currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue(
             {
-                itemCode: "0001",
-                itemName: "A"
+                itemCode: "",
+                itemName: ""
             }));
 
 

@@ -5,7 +5,7 @@ module nts.uk.com.view.cps009.b {
             init();
             __viewContext.bind(__viewContext["viewModel"]);
              $("#grid_B").igGrid("option", "dataSource", __viewContext["viewModel"].itemInitLst);
-             
+            $("#grid_B_table_isCheckBox").focus();
         });
 
     });
