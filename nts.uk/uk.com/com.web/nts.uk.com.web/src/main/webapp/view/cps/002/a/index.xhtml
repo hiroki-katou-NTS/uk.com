@@ -168,7 +168,7 @@
 						</div>
 						<!-- step1 -->
 
-						<!-- step2 -->
+						<!-- step2 end -->
 
 
 
@@ -196,7 +196,7 @@
 															mode:'igGrid', 
 															comId:'init_list', 
 															items: initValueList , 
-															selected: initValueSelectedCode , 
+															selected: initSettingSelectedCode , 
 															selectedKey: 'itemCode', 
 															fields: ['itemName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
@@ -213,7 +213,7 @@
 																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
 															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
 															multiple: false,
-															value: initValueSelectedCode ,
+															value: initSettingSelectedCode ,
 															rows:15
 														}">
 											</table>
@@ -297,9 +297,9 @@
 								</div>
 							</div>
 						</div>
-						<!-- step2 -->
+						<!-- step2 end -->
 
-						<!-- step3 -->
+						<!-- step3 start -->
 						<div class="step-3">
 							<div class="div_line">
 								<label id="step3_des">#{i18n.getText('CPS002_51')}</label>
@@ -335,7 +335,15 @@
 
 							</div>
 
-							<div class='div_line'>
+							<!-- layout start -->
+							<div class="div_line" data-bind="with: layout">
+								<div
+									data-bind="ntsLayoutControl: { 
+											data: itemsClassification,
+											editAble: 2 }"></div>
+							</div>
+							<!-- layout end -->
+							<div class='div_line' style="padding-bottom: 20px;">
 								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
@@ -350,7 +358,7 @@
 							</div>
 
 						</div>
-						<!-- step3 -->
+						<!-- step3 end -->
 						<div class="step-4"></div>
 					</div>
 

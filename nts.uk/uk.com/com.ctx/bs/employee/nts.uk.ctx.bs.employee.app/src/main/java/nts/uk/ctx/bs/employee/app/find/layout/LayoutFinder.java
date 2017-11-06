@@ -536,45 +536,51 @@ public class LayoutFinder {
 
 	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 
-		List<SettingItemDto> allItemData = loadAllItemByCreateType(command.getCreateType(),
-				command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
-
-		if (!allItemData.isEmpty()) {
-			Optional<NewLayout> layout = repo.getLayout();
-			if (layout.isPresent()) {
-				NewLayout _layout = layout.get();
-
-				// Get list Classification Item by layoutID
-				List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
-
-				for (LayoutPersonInfoClsDto itemCls : listItemCls) {
-					int layoutType = itemCls.getLayoutItemType();
-					switch (layoutType) {
-					case 0: // item
-
-						List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
-
-						itemCls.setItems(itemValues);
-
-						break;
-					case 1: // list
-
-						break;
-					default:
-					case 2: // spa
-						break;
-					}
-					itemCls.setItems(null);
-				}
-				return NewLayoutDto.fromDomain(_layout, listItemCls);
-			} else {
-				return null;
-			}
-
-		} else {
+		Optional<NewLayout> layout = repo.getLayout();
+		if (!layout.isPresent()) {
 
 			return null;
 		}
+
+		NewLayout _layout = layout.get();
+
+		// Get list Classification Item by layoutID
+		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+
+		if (command.getCreateType() != 3) {
+
+			List<SettingItemDto> allItemData = loadAllItemByCreateType(command.getCreateType(),
+					command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
+
+			if (allItemData.isEmpty()) {
+
+				return null;
+
+			}
+
+			for (LayoutPersonInfoClsDto itemCls : listItemCls) {
+				int layoutType = itemCls.getLayoutItemType();
+				switch (layoutType) {
+				case 0: // item
+
+					List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
+
+					itemCls.setItems(itemValues);
+
+					break;
+				case 1: // list
+
+					break;
+				default:
+				case 2: // spa
+					break;
+				}
+				itemCls.setItems(null);
+			}
+
+		}
+
+		return NewLayoutDto.fromDomain(_layout, listItemCls);
 
 	}
 
