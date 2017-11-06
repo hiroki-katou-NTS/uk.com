@@ -29,7 +29,7 @@ public class KshstGrantDateCom extends UkJpaEntity implements Serializable {
 	public int grantDateAtr;
 
 	/* 一律基準日 */
-	@Column(name = "GRANT_DATE")
+	@Column(name = "GIANT_STANDARD_DATE")
 	public int grantDate;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantDateCom", orphanRemoval = true)
@@ -38,6 +38,6 @@ public class KshstGrantDateCom extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return kshstGrantDateComPK;
 	}
 }

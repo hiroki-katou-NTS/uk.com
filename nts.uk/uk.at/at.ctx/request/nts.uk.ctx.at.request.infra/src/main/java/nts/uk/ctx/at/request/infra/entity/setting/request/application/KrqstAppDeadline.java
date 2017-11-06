@@ -37,7 +37,7 @@ public class KrqstAppDeadline extends UkJpaEntity implements Serializable{
 	 * 締切日数
 	 */
 	@Column(name = "DEADLINE")
-	public String deadline;
+	public int deadline;
 	
 	@Override
 	protected Object getKey() {

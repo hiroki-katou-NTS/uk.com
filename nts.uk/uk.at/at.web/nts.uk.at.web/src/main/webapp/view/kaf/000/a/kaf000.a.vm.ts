@@ -1,91 +1,128 @@
-module kaf000.a.viewmodel{
+module nts.uk.at.view.kaf000.a.viewmodel{
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import shrvm = nts.uk.at.view.kaf000.shr;
     export class ScreenModel{
         /**
          * List
          */
-        //listPhase
-        listPhase: KnockoutObservableArray<AppApprovalPhase>;
-        //listFrame
-        listFrame: KnockoutObservableArray<ApprovalFrame>;
+        //listPhaseID
+        listPhaseID: Array<String>;
+        //List  Approval Root 
+        listApprovalRoot :  KnockoutObservableArray<Array<shrvm.model.ApprovalRootOutput>> = ko.observableArray([]);
+         //Item  Approval Root 
+        approvalRoot :  KnockoutObservableArray<shrvm.model.ApprovalRootOutput> = ko.observableArray([]);
+        
+        /**
+         * obj input
+         */
+        //obj 
+        
+        objApprovalRootInput : KnockoutObservable<shrvm.model.ObjApprovalRootInput>;
+        
+        //obj output message deadline
+        outputMessageDeadline : KnockoutObservable<shrvm.model.OutputMessageDeadline> = ko.observable(null);
+        
+        //app type
+        appType : KnockoutObservable<number> = ko.observable(0);
+        
+        approvalList: Array<shrvm.model.AppApprovalPhase> = [];
         constructor(){
-            var self = this;
-            /**
-             * List
-             */
-            
-            self.listPhase = ko.observableArray([]);
-            self.listFrame = ko.observableArray([]);
-        }
-        
-        start(): JQueryPromise<any> {
             let self = this;
-            alert("sdfds");
-            self.getAllPhase();
-            
-            alert("sdfd1");
-            self.getAllFrame();
-            
+            let baseDate = new Date();
+            let date = baseDate.getFullYear + "/" + baseDate.getMonth + "/" + baseDate.getDate;
+            self.objApprovalRootInput = ko.observable(new shrvm.model.ObjApprovalRootInput("", 1,1, date))
         }
-        
-        //getAllPhase
-        getAllPhase(){
-            let appID='000';
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.getAllPhaseByAppID(appID).done(function(data){
-                self.listPhase(data);
-                dfd.resolve(data);    
+        /**
+         *
+           sid 社員ID（申請本人の社員ID）
+           employmentRootAtr 就業ルート区分
+           subjectRequest 対象申請
+           baseDate 基準日
+           workplaceID 
+         */
+        start( sid: any, employmentRootAtr: any,appType: any,standardDate: any): JQueryPromise<any> {
+            let self = this;
+            self.objApprovalRootInput().sid = sid;
+            self.objApprovalRootInput().employmentRootAtr =employmentRootAtr;
+            self.objApprovalRootInput().appType = appType;
+            self.objApprovalRootInput().standardDate = standardDate;
+            
+            self.appType(appType);
+            
+            let dfd = $.Deferred();            
+            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
+            let dfdAllApprovalRoot = self.getAllApprovalRoot();
+            $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
+//                self.getAllFrameByListPhaseId1(self.listPhaseID);
+                 dfd.resolve(); 
             });
             return dfd.promise();
         }
-        //getAllFrame
-        getAllFrame(){
-            let phaseID = 'P000';
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.getAllFrameByPhaseID(phaseID).done(function(data){
-                self.listFrame(data);
+        
+        
+        //get all listApprovalRoot
+        getAllApprovalRoot(){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
+                self.listApprovalRoot(data);
+                if(self.listApprovalRoot !=null && self.listApprovalRoot().length>0 ){
+                    self.approvalRoot(self.listApprovalRoot()[0]);
+                }
+                let listPhase = self.approvalRoot().beforeApprovers; 
+                let approvalList = [];
+                for(let x = 1; x <= listPhase.length; x++){
+                    let phaseLoop = listPhase[x-1];
+                    let appPhase = new shrvm.model.AppApprovalPhase(
+                        "",
+                        "",
+                        phaseLoop.approvalForm,
+                        x,
+                        0,
+                        []); 
+                    for(let y = 1; y <= phaseLoop.approvers.length; y++){
+                        let frameLoop = phaseLoop.approvers[y-1];
+                        let appFrame = new shrvm.model.ApprovalFrame(
+                            "",
+                            y,
+                            []);
+                        let appAccepted = new shrvm.model.ApproveAccepted(
+                            "",
+                            frameLoop.sid,
+                            0,
+                            frameLoop.confirmPerson ? 1 : 0,
+                            "",
+                            "",
+                            frameLoop.sid);
+                        appFrame.listApproveAccepted.push(appAccepted);
+                        appPhase.listFrame.push(appFrame);   
+                    };
+                    approvalList.push(appPhase);    
+                };
+                self.approvalList = approvalList;
                 dfd.resolve(data);    
-            });
+            }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            }); 
+            return dfd.promise();
+            
+        }
+         // getMessageDeadline
+        getMessageDeadline(appType: any){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            let baseDate = new Date();
+            let data = new shrvm.model.ApplicationMetadata("", self.appType(), baseDate);
+            nts.uk.at.view.kaf000.a.service.getMessageDeadline(data).done(function(data){
+                self.outputMessageDeadline(data);
+                dfd.resolve(data);    
+            }).fail(function (res: any){
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            }); 
             return dfd.promise();
         }
-        
     }
     
-    export module model {
-        
-        // class AppApprovalPhase
-        export class AppApprovalPhase{
-            appID : String;
-            phaseID : String;
-            approvalForm : number;
-            dispOrder : number;
-            approvalATR : number;    
-            constructor(appID : String,phaseID : String,approvalForm : number,dispOrder : number,approvalATR : number){
-                this.appID  = appID;
-                this.phaseID = phaseID;
-                this.approvalForm = approvalForm;
-                this.dispOrder = dispOrder;
-                this.approvalATR = approvalATR; 
-            }
-        } 
-        
-        // class ApprovalFrame
-        export class ApprovalFrame{
-            phaseID : String;
-            dispOrder : number;
-            approverSID : String;
-            approvalATR : number;
-            confirmATR : number;    
-            constructor(phaseID : String,dispOrder : number,approverSID : String,approvalATR : number,confirmATR : number){
-                this.phaseID = phaseID;
-                this.dispOrder = dispOrder;
-                this.approverSID  = approverSID;
-                this.approvalATR = approvalATR; 
-                this.confirmATR = confirmATR;
-                
-            }
-        }//end class frame   
-        
-    }
+    
 }

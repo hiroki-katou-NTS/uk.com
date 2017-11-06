@@ -1,5 +1,8 @@
 package nts.uk.ctx.bs.person.dom.person.info.category;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -16,6 +19,7 @@ public class PersonInfoCategory extends AggregateRoot {
 	private IsAbolition isAbolition;
 	private CategoryType categoryType;
 	private IsFixed isFixed;
+	private boolean alreadyCopy;
 
 	public final static String ROOT_COMPANY_ID = "000000000000-0000";
 
@@ -68,6 +72,15 @@ public class PersonInfoCategory extends AggregateRoot {
 	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,
 			int categoryType) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
+	}
+	
+	public static List<PersonInfoCategory> getAllPerInfoCategoryWithCondition(List<PersonInfoCategory> lstObj){
+		return lstObj.stream().filter(obj -> 
+			obj.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE
+			&& obj.getIsAbolition() == IsAbolition.NOT_ABOLITION
+			&& (obj.getCategoryType() != CategoryType.MULTIINFO
+			|| obj.getCategoryType() != CategoryType.DUPLICATEHISTORY)
+		).collect(Collectors.toList());
 	}
 
 	public void setCategoryName(String name) {

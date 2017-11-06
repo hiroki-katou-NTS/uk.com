@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtBranch;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtBranchPK;
 /**
  * 
  * @author hoatt
@@ -36,6 +39,18 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 				.getSingle(c->toDomainBranch(c));
 	}
 	/**
+	 * add all branch
+	 * @param lstBranch
+	 */
+	@Override
+	public void addAllBranch(List<ApprovalBranch> lstBranch) {
+		List<WwfmtBranch> lstEntity = new ArrayList<>();
+		for (ApprovalBranch branch : lstBranch) {
+			lstEntity.add(toEntity(branch));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
 	 * convert entity WwfmtBranch to domain ApprovalBranch
 	 * @param entity
 	 * @return
@@ -45,5 +60,11 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 				entity.wwfmtBranchPK.branchId,
 				entity.number);
 		return domain;
+	}
+	private WwfmtBranch toEntity(ApprovalBranch domain){
+		val entity = new WwfmtBranch();
+		entity.wwfmtBranchPK = new WwfmtBranchPK(domain.getCompanyId(), domain.getBranchId());
+		entity.number = domain.getNumber();
+		return entity;
 	}
 }

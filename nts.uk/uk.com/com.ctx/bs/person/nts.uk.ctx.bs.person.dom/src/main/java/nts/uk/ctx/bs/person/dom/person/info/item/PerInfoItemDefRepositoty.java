@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
+import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
 
 public interface PerInfoItemDefRepositoty {
 
@@ -28,8 +29,10 @@ public interface PerInfoItemDefRepositoty {
 	int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId);
 
 	List<String> getRequiredIds(String contractCd, String companyId);
-	
+
 	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
+
+	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId);
 
 	// Sonnlb Code
 
@@ -47,5 +50,26 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
 
+	List<PersonInfoItemDefinition> getAllItemFromIdList(String contractCd, List<EmpCopySettingItem> itemList);
+
+	List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
+			List<String> itemCodeList);
+
 	// Sonnlb Code
+
+	// vinhpx start
+	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
+
+	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
+
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
+
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
+			String contractCd);
+
+	void removePerInfoItemInCopySetting(String perInforCtgId, String companyId);
+
+	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
+
+	// vinhpx end
 }

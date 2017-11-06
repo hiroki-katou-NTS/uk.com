@@ -58,10 +58,9 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.actualExcessMessDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.otAdvanceDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.otActualDispAtr,AppDisplayAtr.class),
-				EnumAdaptor.valueOf(entity.warningDateDispAtr,NumDaysOfWeek.class),
+				new NumDaysOfWeek(entity.warningDateDispAtr),
 				EnumAdaptor.valueOf(entity.appReasonDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.appContentChangeFlg,AppCanAtr.class),
-				EnumAdaptor.valueOf(entity.personApprovalFlg,AprovalPersonFlg.class),
 				EnumAdaptor.valueOf(entity.scheReflectFlg,ReflectionFlg.class),
 				EnumAdaptor.valueOf(entity.priorityTimeReflectFlg,PriorityFLg.class),
 				EnumAdaptor.valueOf(entity.attendentTimeReflectFlg,ReflectionFlg.class));
@@ -94,7 +93,6 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.warningDateDispAtr = domain.getWarningDateDispAtr().v();
 		entity.appReasonDispAtr = domain.getAppReasonDispAtr().value;
 		entity.appContentChangeFlg = domain.getAppContentChangeFlg().value;
-		entity.personApprovalFlg = domain.getPersonApprovalFlg().value;
 		entity.scheReflectFlg = domain.getScheReflectFlg().value;
 		entity.priorityTimeReflectFlg = domain.getPriorityTimeReflectFlg().value;
 		entity.attendentTimeReflectFlg = domain.getAttendentTimeReflectFlg().value;
@@ -102,24 +100,12 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 	}
 
 //	@Override
-//	public Optional<ApplicationSetting> getApplicationSettingByAppType(String companyID, int appType) {
-//		return this.queryProxy().query(SELECT_WITH_APP_TYPE, KrqstApplicationSetting.class)
-//				.setParameter("companyID", companyID).setParameter("appID", appType).getSingle(c -> toDomain(c));
-//	}
-//
-//	@Override
 //	public List<ApplicationSetting> getApplicationSettingByCompany(String companyID) {
 //		return this.queryProxy().query(SELECT_WITH_CID, KrqstApplicationSetting.class)
 //				.setParameter("companyID", companyID).getList(c -> toDomain(c));
 //	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.request.dom.setting.request.application.
-	 * ApplicationSettingRepository#update(nts.uk.ctx.at.request.dom.setting.request
-	 * .application.ApplicationSetting)
-	 */
+
 	@Override
 	public void updateSingle(ApplicationSetting applicationSetting) {
 		this.commandProxy().update(toEntity(applicationSetting));
@@ -143,7 +129,6 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 
 	@Override
 	public Optional<ApplicationSetting> getApplicationSettingByComID(String companyID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(x-> toDomain(x));
 	}
 }

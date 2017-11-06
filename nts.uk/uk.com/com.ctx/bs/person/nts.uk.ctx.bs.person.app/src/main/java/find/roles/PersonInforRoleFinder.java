@@ -28,6 +28,7 @@ public class PersonInforRoleFinder {
 	
 	public Optional<PersonInforRoleDto> getDetailPersonRole(String roleId){
 		String companyId = AppContexts.user().companyCode();
+		
 		return this.personRoleRepository.getDetailPersonRole(roleId,companyId).map(c-> PersonInforRoleDto.fromDomain(c));
 	}
 }

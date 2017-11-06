@@ -74,10 +74,20 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
 	}
-	public static CompanyApprovalRoot updateSdateEdate(CompanyApprovalRoot comApprovalRoot, String sDate, String eDate){
+	public static CompanyApprovalRoot updateEdate(CompanyApprovalRoot comApprovalRoot, String eDate){
 		CompanyApprovalRoot com = comApprovalRoot;
-		ApprovalPeriod period = ApprovalPeriod.createSimpleFromJavaType(sDate, eDate);
-		com.setPeriod(period);
+		com.period.updateEndate(eDate);
 		return com;
+	}
+	public static CompanyApprovalRoot updateSdate(CompanyApprovalRoot comApprovalRoot, String startDate){
+		CompanyApprovalRoot com = comApprovalRoot;
+		com.period.updateStrartDate(startDate);
+		return com;
+	}
+	public static boolean checkValidate(String startDate, String endDate){
+		if(startDate.compareTo(endDate) <= 0){
+			return true;
+		}
+		return false;
 	}
 }

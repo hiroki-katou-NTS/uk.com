@@ -7,6 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.PersonalGrantDateCode
+				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.PersonalGrantDateName
+				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateYear
+				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateMonth
+			</com:ValidatorScript>
+			
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -38,11 +45,19 @@
 		<ui:define name="sidebar-content">
 			<div class="sidebar-content-header" data-bind="with: tabView">
 				<span class="title" data-bind="text: title"></span>
-				<button class="proceed">#{i18n.getText('KMF004_2')}</button>
-				<button class="cancel">#{i18n.getText('KMF004_4')}</button>
+				<com:ko-if bind="currentTab()=='B'">
+					<button class="proceed" data-bind="click: $parent.viewmodelB.saveData.bind($parent.viewmodelB)">#{i18n.getText('KMF004_2')}</button>
+					<button class="cancel" data-bind="click: $parent.viewmodelB.cancel.bind($parent.viewmodelB)">#{i18n.getText('KMF004_4')}</button>
+				</com:ko-if>
+				<com:ko-if bind="currentTab()=='C'">
+					<!-- Buttons for C screen -->
+					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC), hasfocus: true">#{i18n.getText('KMF004_1')}</button>
+					<button tab-index="2" class="registerBtn proceed" data-bind="click: $parent.viewmodelC.registerBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_2')}</button>
+					<button tab-index="3" class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC), enable: $parent.viewmodelC.items().length>0">#{i18n.getText('KMF004_3')}</button>
+					<button tab-index="4" class="closeBtn" data-bind="click: $parent.viewmodelC.closeBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_4')}</button>
+				</com:ko-if>
 			</div>
-			<div id="tabpanel-b" role="tabpanel" class="screen-b"
-				data-bind="with: viewmodelB">
+			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
 				<div class="contents-area">
 					<div>
 						<div data-bind="ntsFormLabel: { required: true }"
@@ -58,47 +73,49 @@
 					</div>
 					<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
 				</div>
-				<span>#{i18n.getText('KMF004_79')}</span>
+				
+				<span class="setting-title">#{i18n.getText('KMF004_79')}</span>
+				
+				<div class="help-button">
+					<button id="help" 
+						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: true }">?</button>
+				</div>
+						
 				<hr />
-				<table class="contents-header">
+				
+				<table class="data-items">
 					<thead>
 						<tr>
-							<td rowspan="2" class="numbers"></td>
-							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
+							<td width="19"></td>
+							<td colspan="2" width="153">#{i18n.getText('KMF003_43')}</td>
 						</tr>
 					</thead>
-					<tbody></tbody>
-				</table>
-				<table class="contents-data">
-					<thead></thead>
-					<tbody style="margin-left: 10px;" data-bind="foreach: items">
+					<tbody data-bind="foreach: items">
 						<tr>
-							<td data-bind="text: $index() + 1" class="numbers"></td>
-							<td class="input-units-year">
-							<input id="year" class="year-input" data-bind="ntsNumberEditor: {
+							<td data-bind="text: $index() + 1"></td>
+							<td class="hidden-right-border">
+								<input id="year" data-bind="ntsNumberEditor: {
 										value: year, 
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
 										})}" />
-							<input id="month" class="months-input" data-bind="ntsNumberEditor: {
+							</td>
+							<td>
+								<input id="month" data-bind="ntsNumberEditor: {
 										value: month, 
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'
-										})}" /></td>
-
-							<!-- <td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
-										value: restedDaysInYear, 
-										option: ko.mapping.fromJS({
-											unitID: 'DAYS',
-											width: '50'
-										})}" /></td> -->
+										})}" />
+							</td>
 						</tr>
 					</tbody>
 				</table>
+				
 				<div class="contents-area-bottom"></div>
 			</div>
+			
 			<div id="tabpanel-c" role="tabpanel" class="screen-c"
 				data-bind="with: viewmodelC">
 				<ui:include src="../c/index.xhtml" />

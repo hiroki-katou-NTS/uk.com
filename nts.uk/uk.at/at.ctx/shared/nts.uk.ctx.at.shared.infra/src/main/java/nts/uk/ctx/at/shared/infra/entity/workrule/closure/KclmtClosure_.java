@@ -17,10 +17,10 @@ public class KclmtClosure_ {
 	public static volatile SingularAttribute<KclmtClosure, KclmtClosurePK> kclmtClosurePK;
 
 	/** The use class. */
-	public static volatile SingularAttribute<KclmtClosure, String> useClass;
+	public static volatile SingularAttribute<KclmtClosure, Integer> useClass;
 
 	/** The month. */
-	public static volatile SingularAttribute<KclmtClosure, Integer> month;
+	public static volatile SingularAttribute<KclmtClosure, Integer> closureMonth;
 
 
 }

@@ -1,4 +1,5 @@
-#oViewModel #label,#oViewModel  #combo-box1,#oViewModel  #group-button,#oViewModel  #set-work-type {
+#oViewModel #label, #oViewModel  #combo-box1, #oViewModel  #group-button,
+	#oViewModel  #set-work-type {
 	float: left;
 }
 
@@ -34,7 +35,7 @@
 #oViewModel #combo-box2 {
 	top: 9px;
 	margin-left: 16px;
-	min-width: 516px !important;
+	min-width: 425px !important;
 }
 
 #oViewModel #combo-box1 {
@@ -42,23 +43,18 @@
 }
 
 #oViewModel #group-button {
-	margin-left: 265px;
-}
-
-#oViewModel #group-button>button:last-child {
-	width: 20px;
-	height: 20px;
-}
-
-
-#oViewModel #spelcial,#oViewModel #time-edit2 {
-	margin-left: 10px;
-}
-
-#oViewModel #stick-undo {
-	margin-right: 180px;
+	margin-left: 170px;
 }
 
 #oViewModel .cf1 .nts-switch-button {
 	width: 114px !important;
+}
+
+#oViewModel #image100 {
+	margin-left: 210px;
+	vertical-align: middle;
+	background: url(../image/image100.png) no-repeat center;
+	background-size: 20px 20px;
+	height: 30px;
+	width: 30px;
 }

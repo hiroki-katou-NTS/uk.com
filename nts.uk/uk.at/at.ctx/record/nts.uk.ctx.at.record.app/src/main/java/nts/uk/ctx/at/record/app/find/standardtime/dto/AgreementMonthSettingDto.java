@@ -12,7 +12,7 @@ public class AgreementMonthSettingDto {
 
 	private int yearMonthValue;
 
-	private Long errorOneMonth;
+	private int errorOneMonth;
 
-	private Long alarmOneMonth;
+	private int alarmOneMonth;
 }

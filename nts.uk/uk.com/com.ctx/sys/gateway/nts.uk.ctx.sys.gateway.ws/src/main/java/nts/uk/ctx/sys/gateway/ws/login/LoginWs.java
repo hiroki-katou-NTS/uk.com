@@ -28,7 +28,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationDto;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 
 /**
  * The Class LoginWs.
@@ -142,7 +142,7 @@ public class LoginWs extends WebService {
 	 */
 	@POST
 	@Path("getcompany")
-	public List<CompanyInformationDto> getAllCompany() {
+	public List<CompanyInformationImport> getAllCompany() {
 		return companyInformationFinder.findAll();
 	}
 

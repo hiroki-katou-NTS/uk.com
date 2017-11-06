@@ -28,19 +28,19 @@ public class EstimateNumberOfDayDto implements EstimateNumberOfDaySetMemento{
 	private boolean isYearly; 
 	
 	/** The days 1st. */
-	private int days1st;
+	private double days1st;
 	
 	/** The days 2nd. */
-	private int days2nd;
+	private double days2nd;
 	
 	/** The days 3rd. */
-	private int days3rd;
+	private double days3rd;
 	
 	/** The days 4th. */
-	private int days4th;
+	private double days4th;
 	
 	/** The days 5th. */
-	private int days5th;
+	private double days5th;
 
 	/*
 	 * (non-Javadoc)

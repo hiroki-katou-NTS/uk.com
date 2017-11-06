@@ -1,0 +1,23 @@
+#content-left {
+	float: left;
+	margin-top: 10px;
+	width: 226px;
+	height: 285px;
+}
+
+#content-right {
+	float: left;
+	margin-left: 35px;
+	margin-top: 15px;
+}
+
+#single-list_container {
+	padding: 15px !important;
+}
+
+#functions-area button.danger {
+	margin-right: 0px !important
+}
+#contents-area {
+	margin-left: 10px;
+}

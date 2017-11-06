@@ -33,12 +33,10 @@ public class Com60HourVacation extends DomainObject {
 	}
 
 	/**
-	 * Instantiates a new company compensatory leave.
+	 * Instantiates a new com 60 hour vacation.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param setting
-	 *            the setting
+	 * @param companyId the company id
+	 * @param setting the setting
 	 */
 	public Com60HourVacation(String companyId, SixtyHourVacationSetting setting) {
 		super();

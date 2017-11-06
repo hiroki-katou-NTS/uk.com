@@ -15,12 +15,13 @@ public enum WorkTypeUnit {
 
 	/** The One day. */
 	// 1日
-	OneDay(0),
+	OneDay(0, "Enum_WorkTypeUnit_OneDay"),
 
 	/** The Monring and afternoon. */
 	// 午前と午後
-	MonringAndAfternoon(1);
+	MonringAndAfternoon(1, "Enum_WorkTypeUnit_MonringAndAfternoon");
 
 	/** The value. */
 	public final int value;
+	public final String nameId;
 }

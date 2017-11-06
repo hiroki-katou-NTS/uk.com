@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -13,7 +12,6 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class ApprovalPhase extends AggregateRoot{
 	/**会社ID*/
@@ -37,17 +35,27 @@ public class ApprovalPhase extends AggregateRoot{
 			String approvalPhaseId,
 			int approvalForm,
 			int browsingPhase,
-			int orderNumber){
+			int orderNumber,
+			List<Approver>  approvers){
 		return new ApprovalPhase(companyId,
 				branchId,
 				approvalPhaseId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber, null);
+				orderNumber, approvers);
 	}
-	public static ApprovalPhase updateBranchId(ApprovalPhase approvalPhase, String branchId){
-		ApprovalPhase approvalPhaseNew = approvalPhase;
-		approvalPhaseNew.setBranchId(branchId);
-		return approvalPhaseNew;
+	public void updateBranchId(String branchId){
+		this.branchId = branchId;
+	}
+	public void updateAppPhaseId(String approvalPhaseId){
+		this.approvalPhaseId = approvalPhaseId;
+	}
+	
+	public void addApproverList(List<Approver> approvers) {
+		this.approvers = approvers;
+	}
+
+	public boolean containsConfirmer() {
+		return this.approvers.stream().anyMatch(a -> a.isConfirmer());
 	}
 }

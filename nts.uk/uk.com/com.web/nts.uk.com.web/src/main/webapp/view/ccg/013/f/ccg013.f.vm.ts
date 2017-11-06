@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg013.f.viewmodel {
         listEntity: KnockoutObservableArray<Entity>;
         //combobox
         comboWebMenuCode: KnockoutObservableArray<WebMenu>;
+
         constructor() {
             let self = this;
             self.items = ko.observableArray([]);
@@ -60,8 +61,8 @@ module nts.uk.com.view.ccg013.f.viewmodel {
                 self.getListCombobox();
                 dfd.resolve();
             }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
                 dfd.reject();
-                alert(error.message);
             });
             return dfd.promise();
         }
@@ -69,26 +70,32 @@ module nts.uk.com.view.ccg013.f.viewmodel {
         /** update data when click button register */
         register() {
             let self = this;
+            let dfd = $.Deferred();
             let arr = self.listEntity();
             let data = [];
             let obj;
             _.each(arr, function(item) {
-                if(item.webMenuCode()=='000')
-                    item.webMenuCode('');
+                if (item.webMenuCode() == '000')
+                    item.webMenuCode('   ');
                 obj = new JobTitleTying(item.jobId, item.webMenuCode());
                 data.push(obj);
             });
-            service.updateWebMenuCode(data);
-            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){$("#dateTime").focus();});
-            
+            service.updateWebMenuCode(data).done(() => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                dfd.resolve();
+            }).fail((error) => {
+                nts.uk.ui.dialog.alertError(error.message);
+                dfd.reject();
+            }).then(function() { $("#dateTime").focus(); });
+            dfd.promise();
         }
 
         /** search in list and return objects satisfy condition start date < date input < end date */
         search() {
             let self = this;
             let arrObj = [];
-            if(nts.uk.ui.errors.hasError()) {
-                return;    
+            if (nts.uk.ui.errors.hasError()) {
+                return;
             }
             service.getAllJobTitle(self.date()).done(function(listJobTitle: Array<viewmodel.TitleMenu>) {
                 listJobTitle = _.orderBy(listJobTitle, ["code"], ["asc"]);
@@ -104,9 +111,9 @@ module nts.uk.com.view.ccg013.f.viewmodel {
 
         /** close dialog */
         closeDialog() {
-            var t0 = performance.now();                
+            var t0 = performance.now();
             var t1 = performance.now();
-                
+
             nts.uk.ui.windows.close();
             console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }

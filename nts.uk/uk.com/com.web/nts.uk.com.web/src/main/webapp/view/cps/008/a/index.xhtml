@@ -38,7 +38,7 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
 						<div style="float: left">
-							<div style="width: 308px"
+							<div style="width: 395px"
 								data-bind="ntsSearchBox: {
 									searchMode: 'filter',
 									targetKey: 'code', 
@@ -50,13 +50,13 @@
 									}" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
-									height: 640,
+									height: 535,
 									options: layouts,
 									optionsValue: 'id',
 									columns: [
 						                { headerText: '', key: 'id', width: 0, hidden: true },
-						                { headerText: '#{i18n.getText('CPS008_9')}', key: 'code', width: 120, hidden: false },
-						                { headerText: '#{i18n.getText('CPS008_10')}', key: 'name', width: 171, hidden: false }
+						                { headerText: '#{i18n.getText('CPS008_9')}', key: 'code', width: 130, hidden: false },
+						                { headerText: '#{i18n.getText('CPS008_10')}', key: 'name', width: 180, hidden: false }
 						            ],
 									multiple: false,
 									value: layout().id}">
@@ -84,6 +84,7 @@
 												data-bind="ntsTextEditor: {
 															value: code,
 															constraint: 'LayoutCode',
+															required:true,
 															enable: $parent.layout().id() == undefined }" />
 										</div>
 
@@ -92,6 +93,7 @@
 												data-bind="ntsTextEditor: {
 															value: name,
 															constraint: 'LayoutName',
+															required:true,
 															enable: true
 											}" />
 										</div>
@@ -103,7 +105,7 @@
 							<button class="x-large"
 								data-bind="click: $parent.showDialogB.bind($parent) , enable: $parent.layout().id() != undefined">#{i18n.getText('CPS008_42')}</button>
 						</div>
-						<div style="padding-top: 10px"
+						<div  style="padding-top: 10px"
 							data-bind="ntsLayoutControl: { 
 								data: classifications,
 								editAble: false }"></div>

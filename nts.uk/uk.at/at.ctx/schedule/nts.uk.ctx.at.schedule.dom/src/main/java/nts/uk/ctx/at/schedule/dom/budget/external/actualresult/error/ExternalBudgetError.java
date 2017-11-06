@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * 外部予算実績項目受入エラー
  */
 @Getter
+@EqualsAndHashCode(callSuper = true, of = {"executionId", "lineNo", "columnNo"})
 public class ExternalBudgetError extends AggregateRoot {
     
     /** The error content. */

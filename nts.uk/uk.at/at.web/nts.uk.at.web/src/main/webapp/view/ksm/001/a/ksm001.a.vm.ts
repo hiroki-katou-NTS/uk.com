@@ -18,6 +18,8 @@ module nts.uk.at.view.ksm001.a {
             usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
+            defaultCurrencyOption: any;
+            defaultDaysOption: any;
 
             // Flag
             isCompanySelected: KnockoutObservable<boolean>;
@@ -59,6 +61,15 @@ module nts.uk.at.view.ksm001.a {
                     { id: 'tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.lstTargetYear = ko.observableArray([]);
+                self.defaultCurrencyOption = {
+                    width: "50",
+                    grouplength: 3,
+                    currencyformat: "JPY"
+                };
+                self.defaultDaysOption = {
+                    width: "50",
+                    decimallength: 1
+                };
 
                 // Initial data model.
                 self.companyEstablishmentModel = new EstablishmentModel();
@@ -137,15 +148,21 @@ module nts.uk.at.view.ksm001.a {
 
                 // Selected year subscription.
                 self.companyEstablishmentModel.selectedYear.subscribe(year => {
-                    self.loadCompanyEstablishment(year, false);
+                    self.loadCompanyEstablishment(year, false).done(() => {
+                        $('#first-time-input').focus();
+                    });
                 });
                 self.employmentEstablishmentModel.selectedYear.subscribe(year => {
                     self.updateEmploymentEstimateSetting(year);
-                    self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false);
+                    self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false).done(() => {
+                        $('#first-time-input').focus();
+                    });
                 });
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
                     self.updatePersonalEstimateSetting(year);
-                    self.loadPersonalEstablishment(year, self.selectedEmployeeCode(), false);
+                    self.loadPersonalEstablishment(year, self.selectedEmployeeCode(), false).done(() => {
+                        $('#first-time-input').focus();
+                    });
                 });
 
                 // Selected employee subscription.
@@ -168,6 +185,7 @@ module nts.uk.at.view.ksm001.a {
                 self.selectedEmploymentCode.subscribe(function(employmentCode) {
                     if (!employmentCode) {
                         self.employmentEstablishmentModel.disableInput();
+                        self.employmentEstablishmentModel.enableDelete(false);
                     }
                     if (employmentCode) {
                         var employment: UnitModel = self.findEmploymentByCode(employmentCode);
@@ -192,6 +210,8 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 service.findCompanySettingEstimate().done(function(data) {
                     self.usageSettingModel.updateData(data);
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 });
             }
 
@@ -252,8 +272,11 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.companyEstablishmentModel.isEnableDelete(data.setting);
                     self.initNextTabFeature();
                     dfd.resolve();
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 });
                 return dfd.promise();
             }
@@ -331,6 +354,8 @@ module nts.uk.at.view.ksm001.a {
                     self.updateEnableDeleteEmployment(employmentCode);
                     nts.uk.ui.block.clear();
                     dfd.resolve();
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 });
                 return dfd.promise();
             }
@@ -411,7 +436,9 @@ module nts.uk.at.view.ksm001.a {
                         self.initNextTabFeature();
                         nts.uk.ui.block.clear();
                         dfd.resolve();
-                    });
+                    }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
+                });
                 }
                 else {
                     nts.uk.ui.block.clear();
@@ -553,7 +580,7 @@ module nts.uk.at.view.ksm001.a {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 350,
-                    maxRows: 12
+                    maxRows: 22
                 };
 
             }
@@ -604,6 +631,7 @@ module nts.uk.at.view.ksm001.a {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
             }
@@ -619,10 +647,12 @@ module nts.uk.at.view.ksm001.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
+                            $('.nts-input').ntsError('clear');
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
+                        $('#comboTargetYear').focus();
                         nts.uk.ui.block.clear();
                     });
                 });
@@ -648,7 +678,10 @@ module nts.uk.at.view.ksm001.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                     });
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
             }
@@ -666,8 +699,12 @@ module nts.uk.at.view.ksm001.a {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                 self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                                 self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), false);
+                                $('.nts-input').ntsError('clear');
                             });
+                        }).fail(res => {
+                            nts.uk.ui.dialog.alertError(res);
                         }).always(() => {
+                            $('#comboTargetYear').focus();
                             nts.uk.ui.block.clear();
                         });
                 });
@@ -711,6 +748,7 @@ module nts.uk.at.view.ksm001.a {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
             }
@@ -727,10 +765,12 @@ module nts.uk.at.view.ksm001.a {
                             // reload page
                             self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), false);
                             self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
+                            $('.nts-input').ntsError('clear');
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
+                        $('#comboTargetYear').focus();
                         nts.uk.ui.block.clear();
                     });
                 });
@@ -765,24 +805,42 @@ module nts.uk.at.view.ksm001.a {
                 // Auto next tab when press tab key.
                 $("[tabindex='75']").on('keydown', function(e) {
                     if (e.which == 9) {
-                        self.companyEstablishmentModel.selectedTab('tab-2');
-                        self.employmentEstablishmentModel.selectedTab('tab-2');
-                        self.personalEstablishmentModel.selectedTab('tab-2');
+                        if (self.isCompanySelected()) {
+                            self.companyEstablishmentModel.selectedTab('tab-2');
+                        }
+                        if (self.isEmploymentSelected()) {
+                            self.employmentEstablishmentModel.selectedTab('tab-2');
+                        }
+                        if (self.isPersonSelected()) {
+                            self.personalEstablishmentModel.selectedTab('tab-2');
+                        }
                     }
                 });
 
                 $("[tabindex='141']").on('keydown', function(e) {
                     if (e.which == 9) {
-                        self.companyEstablishmentModel.selectedTab('tab-3');
-                        self.employmentEstablishmentModel.selectedTab('tab-3');
-                        self.personalEstablishmentModel.selectedTab('tab-3');
+                        if (self.isCompanySelected()) {
+                            self.companyEstablishmentModel.selectedTab('tab-3');
+                        }
+                        if (self.isEmploymentSelected()) {
+                            self.employmentEstablishmentModel.selectedTab('tab-3');
+                        }
+                        if (self.isPersonSelected()) {
+                            self.personalEstablishmentModel.selectedTab('tab-3');
+                        }
                     }
                 });
                 $("[tabindex='9']").on('keydown', function(e) {
                     if (e.which == 9 && !$(e.target).parents("[tabindex='9']")[0]) {
-                        self.companyEstablishmentModel.selectedTab('tab-1');
-                        self.employmentEstablishmentModel.selectedTab('tab-1');
-                        self.personalEstablishmentModel.selectedTab('tab-1');
+                        if (self.isCompanySelected()) {
+                            self.companyEstablishmentModel.selectedTab('tab-1');
+                        }
+                        if (self.isEmploymentSelected()) {
+                            self.employmentEstablishmentModel.selectedTab('tab-1');
+                        }
+                        if (self.isPersonSelected()) {
+                            self.personalEstablishmentModel.selectedTab('tab-1');
+                        }
                     }
                 });
             }

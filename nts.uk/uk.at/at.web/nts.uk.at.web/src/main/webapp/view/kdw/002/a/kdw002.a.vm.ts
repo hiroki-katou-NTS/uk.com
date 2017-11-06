@@ -41,9 +41,11 @@ module nts.uk.at.view.kdw002.a {
                     self.linebreak(attendanceItem.nameLineFeedPosition);
 
                     service.getControlOfAttendanceItem(attendanceItemId).done(cAttendanceItem => {
-                        self.txtItemId(cAttendanceItem.attendanceItemId);
-                        self.headerColorValue(cAttendanceItem.headerBackgroundColorOfDailyPerformance);
-                        self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                        if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
+                            self.txtItemId(cAttendanceItem.attendanceItemId);
+                            self.headerColorValue(cAttendanceItem.headerBackgroundColorOfDailyPerformance);
+                            self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                        }
                     });
 
                 });
@@ -64,14 +66,13 @@ module nts.uk.at.view.kdw002.a {
                         self.attendanceItems(attendanceItems);
                         self.aICurrentCode(atItems[0].attendanceItemId);
                     }
-
                 });
 
             }
 
             navigateView(): void {
                 var self = this;
-                var path = "/view/kdw/006/index.xhtml";
+                var path = "/view/kdw/006/a/index.xhtml";
                 href(path);
             }
 

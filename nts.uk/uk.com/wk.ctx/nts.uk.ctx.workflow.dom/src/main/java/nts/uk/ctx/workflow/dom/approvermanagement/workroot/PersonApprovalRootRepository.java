@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +36,12 @@ public interface PersonApprovalRootRepository {
 	 * @param psAppRoot
 	 */
 	void addPsApprovalRoot(PersonApprovalRoot psAppRoot);
+	/**
+	 * add All Person Approval Root
+	 * 
+	 * @param psAppRoot
+	 */
+	void addAllPsApprovalRoot(List<PersonApprovalRoot> psAppRoot);
 
 	/**
 	 * update Person Approval Root
@@ -44,6 +49,12 @@ public interface PersonApprovalRootRepository {
 	 * @param psAppRoot
 	 */
 	void updatePsApprovalRoot(PersonApprovalRoot psAppRoot);
+	/**
+	 * update All Person Approval Root
+	 * 
+	 * @param psAppRoot
+	 */
+	void updateAllPsApprovalRoot(List<PersonApprovalRoot> psAppRoot);
 
 	/**
 	 * get Person Approval Root By End date
@@ -55,7 +66,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate,
-			Integer applicationType);
+			Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * get PsApprovalRoot
@@ -78,7 +89,7 @@ public interface PersonApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date standardDate, int appType);
+	List<PersonApprovalRoot> findByBaseDate(String cid, String sid, GeneralDate standardDate, int appType);
 	
 	/**
 	 * 個人別就業承認ルート」を取得する
@@ -87,5 +98,21 @@ public interface PersonApprovalRootRepository {
 	 * @param sid
 	 * @param baseDate
 	 */
-	List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, Date baseDate);
+	List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate);
+	/**
+	 * ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
+	 * @param companyId
+	 * @param baseDate ・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
+	 * @return
+	 */
+	List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate);
+	/**
+	 * get Person Approval Root By type
+	 * @param companyId
+	 * @param employeeId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	List<PersonApprovalRoot> getPsApprovalRootByType(String companyId, String employeeId, Integer applicationType, int employmentRootAtr);
 }

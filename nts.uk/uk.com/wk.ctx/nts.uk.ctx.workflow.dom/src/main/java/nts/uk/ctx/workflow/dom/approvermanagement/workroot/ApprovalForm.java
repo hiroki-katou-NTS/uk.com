@@ -1,16 +1,24 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 承認形態
  * @author hoatt
  *
  */
-@AllArgsConstructor
+@Getter
 public enum ApprovalForm {
 	/** 全員承認*/
-	EVERYONE_APPROVED(1),
+	EVERYONE_APPROVED(1, "全員承認"),
 	/** 誰か一人*/
-	SINGLE_APPROVED(2);
-	public final int value;
+	SINGLE_APPROVED(2, "誰か一人");
+	
+	public int value;
+	public String name;
+	
+	private ApprovalForm(int value, String name) {
+		this.value = value;
+		this.name = name;
+	}
 }

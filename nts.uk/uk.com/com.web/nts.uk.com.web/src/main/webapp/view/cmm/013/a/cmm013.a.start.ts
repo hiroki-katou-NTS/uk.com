@@ -1,8 +1,14 @@
-module cmm013.a {
+module nts.uk.com.view.cmm013.a {
     __viewContext.ready(function() {
-        var screenModel = new cmm013.a.viewmodel.ScreenModel();
+        var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);  
-        });      
+            __viewContext.bind(screenModel);
+            // Set focus 
+            if (screenModel.createMode()) {
+                $('#job-title-code').focus();
+            } else {
+                $('#job-title-name').focus();
+            }
+        });
     });
 }

@@ -8,44 +8,28 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
 
 @Stateless
 public class JpaApproveAcceptedRepository  extends JpaRepository implements ApproveAcceptedRepository{
-	private final String SELECT_FROM_APPROVE_ACCEPTED = "SELECT c FROM KafdtApplication c"
+	private final String SELECT_FROM_APPROVE_ACCEPTED = "SELECT c FROM KafdtApproveAccepted c"
 			+ " WHERE c.kafdtApproveAcceptedPK.companyID = :companyID "
-			+ " AND c.kafdtApproveAcceptedPK.phaseID = :phaseID ";
+			+ " AND c.frameID = :frameID ";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPROVE_ACCEPTED
 			+ " AND c.kafdtApproveAcceptedPK.dispOrder = :dispOrder"
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
-	
-	private ApproveAccepted toDomain(KafdtApproveAccepted entity) {
-		return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
-				entity.kafdtApproveAcceptedPK.phaseID, 
-				entity.kafdtApproveAcceptedPK.dispOrder, 
-				entity.kafdtApproveAcceptedPK.approverSID
-				);
-	}
-	
-	private KafdtApproveAccepted toEntity(ApproveAccepted domain) {
-		return new KafdtApproveAccepted( 
-				new KafdtApproveAcceptedPK(
-					domain.getCompanyID(),
-					domain.getPhaseID(),
-					domain.getDispOrder(),
-					domain.getApproverSID()));
-	}
 	
 	/**
 	 * get all approve accepted
 	 */
 	@Override
-	public List<ApproveAccepted> getAllApproverAccepted(String companyID, String phaseID) {
+	public List<ApproveAccepted> getAllApproverAccepted(String companyID, String frameID) {
 		return this.queryProxy().query(SELECT_FROM_APPROVE_ACCEPTED, KafdtApproveAccepted.class)
 				.setParameter("companyID", companyID)
-				.setParameter("phaseID", phaseID)
-				.getList(c->toDomain(c));
+				.setParameter("frameID", frameID)
+				.getList(c-> c.toDomain());
 	}
 	
 	/**
@@ -59,25 +43,37 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 				.setParameter("phaseID", phaseID)
 				.setParameter("dispOrder", dispOrder)
 				.setParameter("approverSID", approverSID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 
 	/**
 	 * add new Approve Accepted
 	 */
 	@Override
-	public void createApproverAccepted(ApproveAccepted approveAccepted) {
-		this.commandProxy().insert(toEntity(approveAccepted));
+	public void createApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
+		this.commandProxy().insert(KafdtApproveAccepted.toEntity(approveAccepted, frameID));
 	}
-	
-	/**
-	 * delete approve accepted
-	 */
+
 	@Override
-	public void deleteApproverAccepted(String companyID, String phaseID, int dispOrder, String approverSID) {
+	public void updateApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
+		KafdtApproveAccepted newEntity = KafdtApproveAccepted.toEntity(approveAccepted, frameID);
+		KafdtApproveAccepted updateEntity = this.queryProxy()
+				.find(newEntity.kafdtApproveAcceptedPK, KafdtApproveAccepted.class).get();
+		updateEntity.approvalATR = newEntity.approvalATR;
+		updateEntity.confirmATR = newEntity.confirmATR;
+		updateEntity.approvalDate = newEntity.approvalDate;
+		updateEntity.reason = newEntity.reason;
+		updateEntity.representerSID = newEntity.representerSID;
+		this.commandProxy().update(updateEntity);
+		
+	}
+
+	@Override
+	public void deleteApproverAccepted(ApproveAccepted approveAccepted) {
 		this.commandProxy()
-		.remove(KafdtApproveAccepted.class,new KafdtApproveAcceptedPK(companyID,phaseID,dispOrder,approverSID));
+		.remove(KafdtApproveAccepted.class,new KafdtApproveAcceptedPK(approveAccepted.getCompanyID(), approveAccepted.getAppAcceptedID()));
 		this.getEntityManager().flush();
+		
 	}
 
 }

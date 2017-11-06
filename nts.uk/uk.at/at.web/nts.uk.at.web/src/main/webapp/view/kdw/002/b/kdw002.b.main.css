@@ -1,5 +1,6 @@
-#functions-area>button {
-	width: 80px;
+#contents-area {
+	width: 100%;
+	box-sizing: border-box;
 }
 
 #functions-area {
@@ -92,4 +93,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 
 .leftLabel {
 	
+}
+.copy{
+	margin-left: 350px !important;
 }

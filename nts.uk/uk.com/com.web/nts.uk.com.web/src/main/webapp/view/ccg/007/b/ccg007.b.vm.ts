@@ -6,11 +6,15 @@ module nts.uk.pr.view.ccg007.b {
         export class ScreenModel {
             loginId: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
+            contractCode: KnockoutObservable<string>;
+            contractPassword: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 self.loginId = ko.observable('');
                 self.password = ko.observable('');
+                self.contractCode = ko.observable('');
+                self.contractPassword = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
             }
             start(): JQueryPromise<void> {
@@ -20,6 +24,8 @@ module nts.uk.pr.view.ccg007.b {
                 //get local contract info
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
+                    self.contractCode(data?data.contractCode:"");
+                    self.contractPassword(data?data.contractPassword:"");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(data: any) {
                         if (data) {
                             if (data.showContract) {
@@ -58,14 +64,24 @@ module nts.uk.pr.view.ccg007.b {
                     title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
+                    var contractCode = nts.uk.ui.windows.getShared('contractCode');
+                    var contractPassword = nts.uk.ui.windows.getShared('contractPassword');
+                    self.contractCode(contractCode);
+                    self.contractPassword(contractPassword);
                 });
             }
 
             private submitLogin() {
                 var self = this;
+                var submitData: any = {};
+                submitData.loginId = nts.uk.text.padRight(_.escape(self.loginId()), " ", 12);
+                submitData.password = _.escape(self.password());
+                submitData.contractCode = _.escape(self.contractCode());
+                submitData.contractPassword = _.escape(self.contractPassword());
+                
                 blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
-                    service.submitLogin({ loginId: nts.uk.text.padRight(_.escape(self.loginId())," ",12), password: _.escape(self.password()) }).done(function() {
+                    service.submitLogin(submitData).done(function() {
                         nts.uk.characteristics.remove("form1LoginInfo").done(function() {
                             if (self.isSaveLoginInfo()) {
                                 nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {

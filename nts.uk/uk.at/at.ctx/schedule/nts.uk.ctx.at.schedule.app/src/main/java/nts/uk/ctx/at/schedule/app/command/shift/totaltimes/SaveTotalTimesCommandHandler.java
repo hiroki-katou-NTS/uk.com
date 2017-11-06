@@ -176,8 +176,8 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
         TotalConditionDto totalConditionDto = new TotalConditionDto();
         totalConditionDto.setUpperLimitSettingAtr(totalTimeDb.getTotalCondition().getUpperLimitSettingAtr().value);
         totalConditionDto.setLowerLimitSettingAtr(totalTimeDb.getTotalCondition().getLowerLimitSettingAtr().value);
-        totalConditionDto.setThresoldUpperLimit(totalTimeDb.getTotalCondition().getThresoldUpperLimit().v());
-        totalConditionDto.setThresoldLowerLimit(totalTimeDb.getTotalCondition().getThresoldLowerLimit().v());
+        totalConditionDto.setThresoldUpperLimit(totalTimeDb.getTotalCondition().getThresoldUpperLimit().v().longValue());
+        totalConditionDto.setThresoldLowerLimit(totalTimeDb.getTotalCondition().getThresoldLowerLimit().v().longValue());
         command.setTotalCondition(totalConditionDto);
         
         List<TotalSubjectsDto> listTotalSubjects = new ArrayList<>();

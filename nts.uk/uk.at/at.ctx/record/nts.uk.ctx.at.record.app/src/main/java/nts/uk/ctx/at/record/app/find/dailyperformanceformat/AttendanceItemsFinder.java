@@ -1,6 +1,9 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,18 +12,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -33,159 +35,161 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class AttendanceItemsFinder {
 
 	@Inject
-	private DivergenceTimeRepository divergenceTimeRepository;
+	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
+	/** The attd item linking finder. */
 	@Inject
-	private FrameNoAdapter frameNoAdapter;
-
-	@Inject
-	private PremiumItemAdapter premiumItemAdapter;
-
-	@Inject
-	private BPTimeItemRepository bPTimeItemRepository;
+	private AttendanceItemLinkingFinder attdItemLinkingFinder;
 
 	public List<AttendanceItemDto> find() {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
+		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
+
 		// 勤怠項目
 		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository.getListTobeUsed(companyId,
 				1);
 
+		if (dailyAttendanceItems.isEmpty()) {
+			return attendanceItemDtos;
+		}
+
 		// get list attendanceItemId
 		List<Integer> attendanceItemIds = dailyAttendanceItems.stream().map(f -> {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
-		List<FrameNoAdapterDto> attendanceItemAndFrameNos = this.frameNoAdapter.getFrameNo(attendanceItemIds);
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(attendanceItemIds);
 
-		// get list frame No
-		// List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f ->
-		// {
-		// return f.getFrameNo();
+		// List<AttendanceItemDto> attendanceItemDtoResult =
+		// dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
+		// return new AttendanceItemDto(f.getAttendanceItemId(),
+		// f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
 		// }).collect(Collectors.toList());
 
-		Map<Integer, Integer> frameNoMap = attendanceItemAndFrameNos.stream()
-				.collect(Collectors.toMap(FrameNoAdapterDto::getAttendanceItemId, FrameNoAdapterDto::getFrameNo));
-		List<Integer> frameNos = frameNoMap.values().stream().collect(Collectors.toList());
-		// 乖離時間
-		Map<Integer, DivergenceTime> divergenceTimes = this.divergenceTimeRepository
-				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTime::getDivTimeId, x -> x));
-
-		// 割増項目
-		Map<Integer, PremiumItemDto> premiumItemnames = this.premiumItemAdapter.getPremiumItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(PremiumItemDto::getDisplayNumber, x -> x));
-
-		// 加給時間項目
-		Map<Integer, BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository.getListBonusPayTimeItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-
-		// 特定加給時間項目
-		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-
-		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
-
-		dailyAttendanceItems.stream().forEach(item -> {
-			if (frameNoMap.containsKey(item.getAttendanceItemId())) {
-				AttendanceItemDto attendanceDto = new AttendanceItemDto();
-				attendanceDto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
-				attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
-				attendanceDto.setAttendanceItemName(item.getAttendanceName().v());
-				if (divergenceTimes.containsKey(item.getAttendanceItemId())) {
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							divergenceTimes.get(item.getAttendanceItemId()).getDivTimeName().v()));
-				} else if (premiumItemnames.containsKey(item.getAttendanceItemId())){
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							premiumItemnames.get(item.getAttendanceItemId()).getPremiumItemname()));
-				} else if (bonusPayTimeItems.containsKey(item.getAttendanceItemId())) {
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							bonusPayTimeItems.get(item.getAttendanceItemId()).getTimeItemName().v()));
-				} else if (specialBonusPayTimeItem.containsKey(item.getAttendanceItemId())){
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							specialBonusPayTimeItem.get(item.getAttendanceItemId()).getTimeItemName().v()));
-				}
-				attendanceItemDtos.add(attendanceDto);
-			}
+		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
+			AttendanceItemDto attendanceItemDto = new AttendanceItemDto();
+			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
+			attendanceItemDto.setAttendanceItemName(f.getAttendanceItemName());
+			attendanceItemDto.setAttendanceItemDisplayNumber(f.getAttendanceItemDisplayNumber());
+			attendanceItemDtos.add(attendanceItemDto);
 		});
 
 		return attendanceItemDtos;
 	}
-	
-	
-	
+
 	public List<AttdItemDto> findAll() {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
+		List<AttdItemDto> attendanceItemDtos = new ArrayList<>();
+
 		// 勤怠項目
 		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository.getList(companyId);
+
+		if (dailyAttendanceItems.isEmpty()) {
+			return attendanceItemDtos;
+		}
 
 		// get list attendanceItemId
 		List<Integer> attendanceItemIds = dailyAttendanceItems.stream().map(f -> {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
-		List<FrameNoAdapterDto> attendanceItemAndFrameNos = this.frameNoAdapter.getFrameNo(attendanceItemIds);
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(attendanceItemIds);
 
-		// get list frame No
-		// List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f ->
-		// {
-		// return f.getFrameNo();
-		// }).collect(Collectors.toList());
+		Map<Integer, DailyAttendanceItem> dailyAttendanceItemMap = dailyAttendanceItems.stream()
+				.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, c -> c));
 
-		Map<Integer, Integer> frameNoMap = attendanceItemAndFrameNos.stream()
-				.collect(Collectors.toMap(FrameNoAdapterDto::getAttendanceItemId, FrameNoAdapterDto::getFrameNo));
-		List<Integer> frameNos = frameNoMap.values().stream().collect(Collectors.toList());
-		// 乖離時間
-		Map<Integer, DivergenceTime> divergenceTimes = this.divergenceTimeRepository
-				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTime::getDivTimeId, x -> x));
-
-		// 割増項目
-		Map<Integer, PremiumItemDto> premiumItemnames = this.premiumItemAdapter.getPremiumItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(PremiumItemDto::getDisplayNumber, x -> x));
-
-		// 加給時間項目
-		Map<Integer, BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository.getListBonusPayTimeItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-
-		// 特定加給時間項目
-		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-
-		List<AttdItemDto> attendanceItemDtos = new ArrayList<>();
-
-		dailyAttendanceItems.stream().forEach(item -> {
-			if (frameNoMap.containsKey(item.getAttendanceItemId())) {
-				AttdItemDto attendanceDto = new AttdItemDto();
-				attendanceDto.setDailyAttendanceAtr(item.getDailyAttendanceAtr().value);
-				attendanceDto.setNameLineFeedPosition(item.getNameLineFeedPosition());
-				attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
-				attendanceDto.setAttendanceItemName(item.getAttendanceName().v());
-				if (divergenceTimes.containsKey(item.getAttendanceItemId())) {
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							divergenceTimes.get(item.getAttendanceItemId()).getDivTimeName().v()));
-				} else if (premiumItemnames.containsKey(item.getAttendanceItemId())){
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							premiumItemnames.get(item.getAttendanceItemId()).getPremiumItemname()));
-				} else if (bonusPayTimeItems.containsKey(item.getAttendanceItemId())) {
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							bonusPayTimeItems.get(item.getAttendanceItemId()).getTimeItemName().v()));
-				} else if (specialBonusPayTimeItem.containsKey(item.getAttendanceItemId())){
-					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							specialBonusPayTimeItem.get(item.getAttendanceItemId()).getTimeItemName().v()));
-				}
-				attendanceItemDtos.add(attendanceDto);
-			}
+		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
+			AttdItemDto attendanceItemDto = new AttdItemDto();
+			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
+			attendanceItemDto.setAttendanceItemName(f.getAttendanceItemName());
+			attendanceItemDto.setAttendanceItemDisplayNumber(f.getAttendanceItemDisplayNumber());
+			DailyAttendanceItem dailyAttendanceItem = dailyAttendanceItemMap.get(f.getAttendanceItemId());
+			attendanceItemDto.setDailyAttendanceAtr(dailyAttendanceItem.getDailyAttendanceAtr().value);
+			attendanceItemDto.setNameLineFeedPosition(dailyAttendanceItem.getNameLineFeedPosition());
+			attendanceItemDtos.add(attendanceItemDto);
 		});
 
 		return attendanceItemDtos;
 	}
+
+	public List<AttdItemDto> findListByAttendanceAtr(int dailyAttendanceAtr) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = this.dailyAttendanceItemRepository
+				.findByAtr(companyId, EnumAdaptor.valueOf(dailyAttendanceAtr, DailyAttendanceAtr.class)).stream()
+				.map(f -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemDisplayNumber(f.getDisplayNumber());
+					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
+					attdItemDto.setDailyAttendanceAtr(f.getDailyAttendanceAtr().value);
+					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		return attendanceItemDtos;
+	}
+
+	/**
+	 * Find by any item.
+	 *
+	 * @param request the request
+	 * @return the list
+	 * 
+	 * @author anhnm
+	 */
+	public List<AttdItemDto> findByAnyItem(AttdItemLinkRequest request) {
+		// get list attendance item by atr
+		List<AttdItemDto> attdItems = this.findListByAttendanceAtr(this.convertToAttdItemType(request.getFormulaAtr()));
+
+		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
+			// get attendance item linking
+			Map<Integer, Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
+					.collect(Collectors.toMap(item -> item.getAttendanceItemId(), item -> item.getAttendanceItemId()));
+
+			// get list attendance item filtered by attdItemLinks
+			List<AttdItemDto> filtered = this.findAll().stream()
+					.filter(item -> attdItemLinks.containsKey(item.getAttendanceItemId())).collect(Collectors.toList());
+
+			// merge two list attendance items
+			attdItems.addAll(filtered);
+		}
+
+		return attdItems;
+	}
+
+	/**
+	 * Convert to attd item type.
+	 *
+	 * @param formulaAtr the formula atr
+	 * @return the int
+	 * 
+	 * @author anhnm
+	 */
+	private int convertToAttdItemType(int formulaAtr) {
+		final int AMOUNT = OptionalItemAtr.AMOUNT.value;
+		final int NUMBER = OptionalItemAtr.NUMBER.value;
+		final int TIMTE = OptionalItemAtr.TIME.value;
+
+		if (formulaAtr == AMOUNT) {
+			return DailyAttendanceAtr.AmountOfMoney.value;
+		} else if (formulaAtr == NUMBER) {
+			return DailyAttendanceAtr.NumberOfTime.value;
+		} else if (formulaAtr == TIMTE) {
+			return DailyAttendanceAtr.Time.value;
+		} else {
+			throw new RuntimeException("value not found");
+		}
+	}
+
 }

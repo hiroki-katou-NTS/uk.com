@@ -12,10 +12,14 @@ import command.person.info.category.AddPerInfoCtgCommand;
 import command.person.info.category.AddPerInfoCtgCommandHandler;
 import command.person.info.category.UpdatePerInfoCtgCommand;
 import command.person.info.category.UpdatePerInfoCtgCommandHandler;
+import command.person.info.category.UpdatePerInfoCtgCopyCommand;
+import command.person.info.category.UpdatePerInfoCtgCopyCommandHandler;
 import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgDataEnumDto;
 import find.person.info.category.PerInfoCtgFullDto;
+import find.person.info.category.PerInfoCtgMapDto;
 import find.person.info.category.PerInfoCtgWithItemsNameDto;
+import find.person.info.category.PerInfoCtgWithParentMapDto;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/category")
@@ -30,6 +34,9 @@ public class PerInfoCtgWebservice extends WebService {
 	@Inject
 	private UpdatePerInfoCtgCommandHandler updatePerInfoCtgCommand;
 
+	@Inject
+	private UpdatePerInfoCtgCopyCommandHandler updatePerInfoCtgCopyHandler;
+	
 	@POST
 	@Path("findAll")
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
@@ -47,6 +54,26 @@ public class PerInfoCtgWebservice extends WebService {
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(@PathParam("Id") String id) {
 		return perInfoCtgFinder.getPerInfoCtgWithItemsName(id);
 	}
+	
+	//vinhpx: start
+	@POST
+	@Path("find/perInfoCtgHasItems")
+	public List<PerInfoCtgMapDto> getPerInfoCtgHasItems(String ctgName){
+		return perInfoCtgFinder.getAllPerInfoCategoryWithCondition(ctgName);
+	}
+	
+	@POST
+	@Path("find/getPerInfoWithParent")
+	public List<PerInfoCtgWithParentMapDto> getPerInfoWithParent(String parentCd){
+		return perInfoCtgFinder.getPerInfoCtgWithParent(parentCd);
+	}
+	
+	@POST
+	@Path("update/updatePerInfoCtgCopy")
+	public void UpdatePerInfoCtgCopyHandler(UpdatePerInfoCtgCopyCommand command){
+		this.updatePerInfoCtgCopyHandler.handle(command);
+	}
+	//vinhpx: end
 
 	@POST
 	@Path("findby/company")

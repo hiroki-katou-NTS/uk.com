@@ -7,15 +7,21 @@ package nts.uk.ctx.sys.gateway.ac.find.login;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.IEmployeeCESettingPub;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 
 /**
  * The Class EmployeeCodeSettingAdapterImpl.
  */
 @Stateless
 public class SysEmployeeCodeSettingAdapterImpl implements SysEmployeeCodeSettingAdapter {
+
+	@Inject
+	private IEmployeeCESettingPub iEmployeeCESettingPub;
 
 	/*
 	 * (non-Javadoc)
@@ -24,13 +30,15 @@ public class SysEmployeeCodeSettingAdapterImpl implements SysEmployeeCodeSetting
 	 * getbyCompanyId(java.lang.String)
 	 */
 	@Override
-	public Optional<EmployeeCodeSettingDto> getbyCompanyId(String companyId) {
-		// mock data
-		if (companyId.equals("000000000000-1234")) {
-			EmployeeCodeSettingDto fake = new EmployeeCodeSettingDto("000000000000-1234", 12, 1);
-			return Optional.of(fake);
-		} else {
-			return Optional.empty();
+	public Optional<EmployeeCodeSettingImport> getbyCompanyId(String companyId) {
+		Optional<EmployeeCodeEditSettingExport> opEmployeeCodeSetting = iEmployeeCESettingPub.getByComId(companyId);
+		if (opEmployeeCodeSetting.isPresent()) {
+			EmployeeCodeEditSettingExport employeeCodeSetting = opEmployeeCodeSetting.get();
+			// convert dto
+			EmployeeCodeSettingImport emCodeSetting = new EmployeeCodeSettingImport(employeeCodeSetting.getCompanyId(),
+					employeeCodeSetting.getDigitNumb(), employeeCodeSetting.getCeMethodAtr());
+			return Optional.of(emCodeSetting);
 		}
+		return Optional.empty();
 	}
 }

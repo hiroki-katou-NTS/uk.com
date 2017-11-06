@@ -1,1316 +1,728 @@
-module cmm011.a.viewmodel {
+module nts.uk.com.view.cmm011.a {
+    export module viewmodel {
 
+        import TreeWorkplace = service.model.TreeWorkplace;
+        import WorkplaceHistory = base.WorkplaceHistoryAbstract;
+        import IHistory = base.IHistory;
+        import Workplace = base.IWorkplace;
+        import CreationType = base.CreationWorkplaceType;
 
-    export class ScreenModel {
+        export class ScreenModel {
 
-        //  list box
-        itemHistId: KnockoutObservableArray<any>;
-        historyId: KnockoutObservable<any>;
-        selectedCodes_His: KnockoutObservable<any>;
-        itemHist: KnockoutObservable<any>;
-        arr: any;
-        enablebtnDelete: KnockoutObservable<boolean>;
-        enableDDialog: KnockoutObservable<boolean>;
-        enablebtnupdown: KnockoutObservable<boolean>;
+            wkpConfigHistId: string;
+            strDWorkplace: KnockoutObservable<string>; // A2_3
+            endDWorkplace: KnockoutObservable<string>; // A2_5
 
-        // treegrid
-        dataSource: KnockoutObservableArray<any>;
-        // dataSourceToInsert : chứa list workplace để insert vào csdl trong trường hợp thêm mới lịch sử
-        dataSourceToInsert: KnockoutObservableArray<any>;
-        currentItem_treegrid: KnockoutObservable<any>;
-        singleSelectedCode: KnockoutObservable<string>;
-        selectedCodes_treegrid: any;
-        headers: any;
-        lengthTreeBegin: KnockoutObservable<number>;
-        lengthTreeCurrent: KnockoutObservable<number>;
+            treeWorkplace: KnockoutObservable<TreeWorkplaceModel>;
+            workplaceHistory: KnockoutObservable<WorkplaceHistoryModel>;
 
-        allowClick: KnockoutObservable<boolean> = ko.observable(true);
-        checknull: KnockoutObservable<string>; // biến để check trường hợp HistoryList có null hay không?
-        dataSourceFlat: any; // dataSource sau khi Flat
-        itemaddHist: any;
-        numberItemNew: KnockoutObservable<number>;
-        // listDtoUpdateHierachy : chứa list workplace bị thay đổi hirachy khi thêm mới workplace.
-        // gửi list này lên để update hirachy.
-        listDtoUpdateHierachy: KnockoutObservable<any>;
-        dtoAdd: KnockoutObservable<any>;
-        checkAddHist1: KnockoutObservable<string>;
-        newEndDate: KnockoutObservable<string>;
-        // arrayItemEdit : chứa list workplace để update hirachy khi click button updaown
-        arrayItemEdit: KnockoutObservableArray<any>;
+            workplaceCode: KnockoutObservable<string>; // A6_2
+            externalCode: KnockoutObservable<string>; // A7_2
+            workplaceName: KnockoutObservable<string>; // A8_2
+            wkpDisplayName: KnockoutObservable<string>; // A9_2
+            wkpFullName: KnockoutObservable<string>; // A10_2
 
-        A_INP_CODE: KnockoutObservable<string>;
-        A_INP_CODE_enable: KnockoutObservable<boolean>;
-        A_INP_NAME: KnockoutObservable<string>;
-        A_INP_FULLNAME: KnockoutObservable<string>;
-        A_INP_OUTCODE: KnockoutObservable<string>;
-        A_INP_MEMO: KnockoutObservable<string>;
+            creationType: CreationType;
 
-        constructor() {
-            var self = this;
-            self.itemHistId = ko.observableArray([]);
-            self.historyId = ko.observable('');
-            self.enablebtnDelete = ko.observable(true);
-            self.enableDDialog = ko.observable(true);
-            self.enablebtnupdown = ko.observable(true);
-            self.selectedCodes_His = ko.observable('');
-            self.itemHist = ko.observable(null);
-            self.arr = ko.observableArray([]);
-            self.A_INP_CODE = ko.observable(null);
-            self.A_INP_NAME = ko.observable(null);
-            self.A_INP_FULLNAME = ko.observable(null);
-            self.A_INP_OUTCODE = ko.observable(null);
-            self.A_INP_CODE_enable = ko.observable(false);
-            self.A_INP_MEMO = ko.observable(null);
+            isNewMode: KnockoutObservable<boolean>;
+            isWkpHistoryLatest: KnockoutObservable<boolean>;
+            isWkpConfigHistLatest: KnockoutObservable<boolean>;
+            
+            constructor() {
+                let self = this;
 
-            self.dataSource = ko.observableArray([]);
-            self.dataSourceToInsert = ko.observableArray([]);
-            self.singleSelectedCode = ko.observable(null);
-            self.selectedCodes_treegrid = ko.observableArray([]);
-            self.headers = ko.observableArray(["", ""]);
-            self.lengthTreeCurrent = ko.observable(null);
-            self.lengthTreeBegin = ko.observable(null);
-            self.numberItemNew = ko.observable(0);
+                self.wkpConfigHistId = null;
+                self.strDWorkplace = ko.observable(null);
+                self.endDWorkplace = ko.observable(nts.uk.resource.getText("CMM011_27"));
+                self.treeWorkplace = ko.observable(new TreeWorkplaceModel(self));
+                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
 
-            self.currentItem_treegrid = ko.observable(null);
-            self.checknull = ko.observable(null);
-            self.listDtoUpdateHierachy = ko.observable(null);
-            self.dtoAdd = ko.observable(null);
-            self.checkAddHist1 = ko.observable('');
-            self.newEndDate = ko.observable(null);
-            self.arrayItemEdit = ko.observableArray([]);
+                self.workplaceCode = ko.observable(null);
+                self.externalCode = ko.observable(null);
+                self.workplaceName = ko.observable('');
+                self.wkpDisplayName = ko.observable(null);
+                self.wkpFullName = ko.observable(null);
 
-            self.singleSelectedCode.subscribe(function(codeChangeds) {
-                var _dt = self.dataSource();
-                var _code = self.singleSelectedCode();
-                var current = self.findHira(_code, _dt);
-                if (current.historyId == "") {
-                    self.A_INP_CODE_enable(true);
-                    self.A_INP_CODE("");
-                    self.A_INP_NAME("");
-                    self.A_INP_FULLNAME("");
-                    self.A_INP_OUTCODE("");
-                    $("#A_INP_CODE").focus();
-                }
-                else {
-                    self.A_INP_CODE(current.departmentCode);
-                    self.A_INP_NAME(current.name);
-                    self.A_INP_FULLNAME(current.fullName);
-                    self.A_INP_OUTCODE(current.externalCode);
-                    self.A_INP_CODE_enable(false);
-                }
+                self.creationType = null;
 
-            });
-
-            self.selectedCodes_His.subscribe((function(codeChanged) {
-                self.findHist_Dep(self.itemHistId(), codeChanged);
-                if (self.itemHist() != null) {
-                    if (self.itemHist().historyId != "") {
-                        self.enableBtn();
-                        for (var i = 0; i < self.itemHistId().length; i++) {
-                            if (self.itemHistId()[i].historyId == "") {
-                                let item = self.itemHistId()[i];
-                                self.itemHistId.remove(item);
-                                let _dt = self.itemHistId();
-                                self.itemHistId([]);
-                                _dt[0].endDate = "9999/12/31";
-                                self.itemHistId(_dt);
-                            }
-                        }
-                        if (self.numberItemNew() == 1) {
-                            self.numberItemNew(0);
-                        }
-                        self.historyId(self.itemHist().historyId);
-                        //get position by historyId
-                        var dfd = $.Deferred();
-                        service.getAllWorkPLaceByHistId(self.historyId())
-                            .done(function(department_arr: Array<viewmodel.model.DtoWKP>) {
-                                self.dataSource(department_arr);
-                                if (self.dataSource().length > 0) {
-                                    self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                                    self.singleSelectedCode(self.dataSource()[0].departmentCode);
-                                }
-                            }).fail(function(error) {
-                                alert(error.messageId);
-                            })
-                        service.getMemoWorkPLaceByHistId(self.historyId())
-                            .done(function(memo: viewmodel.model.MemoDto) {
-                                if (memo != null) {
-                                    self.A_INP_MEMO(memo.memo);
-                                }
-                            }).fail(function(error) {
-                                alert(error.messageId);
-                            })
-                        dfd.resolve();
-                        return dfd.promise();
-                    } else {
-                    }
-                }
-            }));
-            // event khi click button up
-            $(document).delegate("#tree-up-down-up", "click", function() {
-                self.checkAddHist1("clickbtnupdown");
-                self.updateHirechyOfBtnUpDown();
-            });
-
-            // event khi click button down
-            $(document).delegate("#tree-up-down-down", "click", function() {
-                self.checkAddHist1("clickbtnupdown");
-                self.updateHirechyOfBtnUpDown();
-            });
-        }
-
-        register() {
-            var self = this;
-            self.enableBtn();
-            /*case add item lần đầu khi history == null*/
-            if (self.checknull() === "landau" && self.itemHistId().length == 1 && self.checkInput()) {
-                let dto = new model.AddWorkplaceDto(self.A_INP_CODE(), null, "9999/12/31", self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_NAME(), self.itemaddHist.startDate, self.A_INP_MEMO(), self.A_INP_NAME(), "1", "1", null, null, null);
-                var dfd = $.Deferred();
-                let arr = new Array;
-                arr.push(dto);
-                service.addWorkPlace(arr)
-                    .done(function(mess: any) {
-                        location.reload();
-                    }).fail(function(error) {
-                        if (error.messageId == "ER005") {
-                            alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
-                            $("#A_INP_CODE").focus();
-                        }
-                    })
-                dfd.resolve();
-                return dfd.promise();
-            }
-            /*case update item*/
-            if (self.A_INP_CODE_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
-                var dfd = $.Deferred();
-                let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                var current:any = self.findHira(self.singleSelectedCode(), self.dataSource());
-                let dto = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), current.hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
-                let wkpCodeItemUpdate = self.A_INP_CODE();
-                let arr = new Array;
-                arr.push(dto);
-                service.upDateListWorkplace(arr)
-                    .done(function(mess: any) {
-                        self.getAllWorkPlaceByHistId(hisdto.historyId, wkpCodeItemUpdate);
-                        self.numberItemNew(0);
-                    }).fail(function(error) {
-                        if (error.messageId == "ER06") {
-                            alert("対象データがありません。");
-                        }
-                    })
-                dfd.resolve();
-                return dfd.promise();
-            }
-            /*case add item trong trường hợp histtory không thay đổi*/
-            if (self.numberItemNew() == 1 && self.checkInput()) {
-                var self = this;
-                var dfd = $.Deferred();
-                let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                let _dto = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), self.dtoAdd().hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), self.A_INP_FULLNAME(), "1", "1", null, null, null);
-                let wkpCodeItemUpdate = self.A_INP_CODE();
-                let data = self.listDtoUpdateHierachy();
-                let arr = new Array;
-                arr.push(_dto);
-                if (data != null) {
-                    service.upDateListWorkplace(data)
-                        .done(function(mess) {
-                            var dfd2 = $.Deferred();
-                            service.addWorkPlace(arr)
-                                .done(function(mess: any) {
-                                    self.getAllWorkPlaceByHistId(hisdto.historyId, wkpCodeItemUpdate);
-                                    self.numberItemNew(0);
-                                })
-                                .fail(function(error) {
-                                    if (error.messageId == "ER005") {
-                                        alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
-                                        $("#A_INP_CODE").focus();
-                                    }
-                                })
-                            dfd2.resolve();
-                            return dfd2.promise();
-                        }).fail(function(error) { })
-                    dfd.resolve();
-                    return dfd.promise();
-                } else {
-                    var dfd2 = $.Deferred();
-                    service.addWorkPlace(arr)
-                        .done(function(mess: any) {
-                            self.getAllWorkPlaceByHistId(hisdto.historyId, wkpCodeItemUpdate);
-                            self.numberItemNew(0);
-                        })
-                        .fail(function(error) {
-                            if (error.messageId == "ER005") {
-                                alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
-                                $("#A_INP_CODE").focus();
-                            }
-                        })
-                    dfd2.resolve();
-                    return dfd2.promise();
-                }
-            }
-            /*case add list workplace trong trường hợp thêm mới lịch sử từ lịch sử mới nhất*/
-            if (self.checkAddHist1() == "AddhistoryFromLatest") {
-                let _dt = self.dataSourceToInsert();
-                if (_dt.length > 0) {
-                    _dt[0].memo = self.A_INP_MEMO();
-                }
-                self.dataSourceToInsert(_dt);
-                var dfd2 = $.Deferred();
-                service.addListWorkPlace(self.dataSourceToInsert())
-                    .done(function(mess: any) {
-                        var dfd2 = $.Deferred();
-                        let _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
-                        let arr = new Array;
-                        arr.push(_dto);
-                        service.upDateEndDateWkp(arr)
-                            .done(function() {
-                                location.reload();
-                            })
-                            .fail(function() { })
-                        self.start();
-                    })
-                    .fail(function(error) { })
-                dfd2.resolve();
-                return dfd2.promise();
-            }
-            /*case add  workplace trong trường hợp thêm mới lịch sử , listworkplace = null*/
-            if (self.checkAddHist1() == "AddhistoryFromBeggin") {
-                if (self.checkInput()) {
-                    let _dto = new model.AddWorkplaceDto(self.A_INP_CODE(), null, self.itemHistId()[0].endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), "001", self.A_INP_NAME(), self.itemHistId()[0].startDate, self.A_INP_MEMO(), null, "1", "1", null, null, null);
-                    let arr1 = new Array;
-                    arr1.push(_dto);
-                    var dfd2 = $.Deferred();
-                    service.addListWorkPlace(arr1)
-                        .done(function(mess: any) {
-                            var dfd2 = $.Deferred();
-                            let _dto = new model.AddWorkplaceDto("", self.itemHistId()[1].historyId, self.itemHistId()[1].endDate, null, null, null, null, null, "addhistoryfromlatest", null, null, null, null, null, null);
-                            let arr = new Array;
-                            arr.push(_dto);
-                            service.upDateEndDateWkp(arr)
-                                .done(function() {
-                                    location.reload();
-                                })
-                                .fail(function() { })
-                            self.start();
-                        })
-                        .fail(function(error) { })
-                    dfd2.resolve();
-                    return dfd2.promise();
-                }
-            }
-            /*case khi click up down buron ==> *update lại hierachy của các item*/
-            if (self.checkAddHist1() == "clickbtnupdown") {
-                let _dt = self.arrayItemEdit();
-                let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                var dfd = $.Deferred();
-                if (self.arrayItemEdit().length > 1) {
-                    service.upDateListWorkplace(_dt)
-                        .done(function(done) {
-                            self.getAllWorkPlaceByHistId(hisdto.historyId, self.singleSelectedCode());
-                        }).fail(function(error) {
-                            alert(error.messageId);
-                        })
-                    dfd.resolve();
-                    return dfd.promise();
-                }
-            }
-        }
-
-        enableBtn() {
-            var self = this;
-            self.enablebtnDelete(true);
-            self.enableDDialog(true);
-            self.enablebtnupdown(true);
-        }
-        disableBtn() {
-            var self = this;
-            self.enablebtnDelete(false);
-            self.enableDDialog(false);
-            self.enablebtnupdown(false);
-        }
-
-        getAllWorkPlaceByHistId(historyId:any, workplaceCode:any) {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getAllWorkPLaceByHistId(historyId)
-                .done(function(department_arr: Array<viewmodel.model.DtoWKP>) {
-                    self.dataSource(department_arr);
-                    if (self.dataSource().length > 0) {
-                        self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                        self.singleSelectedCode(workplaceCode);
-                    }
-                }).fail(function(error) {
-                    alert(error.messageId);
-                })
-        }
-
-        // update hirachy khi click btn up down
-        updateHirechyOfBtnUpDown() {
-            var self = this;
-            var _dt = self.dataSource();
-            var _code = self.singleSelectedCode();
-            var current = self.findHira(_code, _dt);
-            var parrent = self.findParent(_code, _dt);
-            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-            if (parrent) {
-                //Parent hirachy code
-                var phc = parrent.hierarchyCode;
-                var changeIndexChild = _.filter(parrent['children'], function(item) {
-                    return item;
+                self.isNewMode = ko.observable(false);
+                self.isWkpHistoryLatest = ko.computed(function() {
+                    self.workplaceHistory().selectedHistoryId();
+                    return self.workplaceHistory().isSelectedLatestHistory();
                 });
-                for (var i in changeIndexChild) {
-                    var item:any = changeIndexChild[i];
-                    var itemHierachy = item.hierarchyCode;
-                    var j = parseInt(i) + 1;
-                    item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
-                    item.startDate = hisdto.startDate;
-                    item.endDate = hisdto.endDate;
-                    item.workPlaceCode = item.departmentCode;
-                    item.memo = self.A_INP_MEMO();
-                    if (self.arrayItemEdit().length > 0) {
-                        let _dt2 = self.arrayItemEdit();
-                        var isDuplicateItem = _.filter(_dt2, function(item1) {
-                            return item1.departmentCode == item.departmentCode;
-                        });
-                        if (isDuplicateItem.length > 0) {
-                            // xóa isDuplicateItem
-                            _dt2 = jQuery.grep(_dt2, function(value) {
-                                return value.departmentCode != isDuplicateItem[0].departmentCode;
-                            });
-
-                            self.arrayItemEdit(_dt2);
-                            self.arrayItemEdit().push(item);
-                        } else {
-                            self.arrayItemEdit().push(item);
-                        }
-                    } else {
-                        self.arrayItemEdit().push(item);
+                self.isWkpConfigHistLatest = ko.observable(false);
+                
+                // subscribe
+                self.strDWorkplace.subscribe((newValue) => {
+                    if (nts.uk.text.isNullOrEmpty(newValue)) {
+                        self.openWkpConfigDialog();
+                        return;
                     }
-                    if (item.children.length > 0) {
-                        self.updateHierachyWhenclickUpdownBtn(item);
-                    }
-                }
-            } else {
-                //curtent hirachy code
-                var chc = current.hierarchyCode;
-                var changeIndexChilds = _.filter(_dt, function(item) {
-                    return item;
-                });
-                for (var i in changeIndexChilds) {
-                    var item:any = changeIndexChilds[i];
-                    var itemHierachy = item.hierarchyCode;
-                    var j = parseInt(i) + 1;
-                    item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
-                    item.startDate = hisdto.startDate;
-                    item.endDate = hisdto.endDate;
-                    item.workPlaceCode = item.departmentCode;
-                    item.memo = self.A_INP_MEMO();
-                    if (self.arrayItemEdit().length > 0) {
-                        let _dt2 = self.arrayItemEdit();
-                        var isDuplicateItem = _.filter(_dt2, function(item1) {
-                            return item1.departmentCode == item.departmentCode;
-                        });
-                        if (isDuplicateItem.length > 0) {
-                            // xóa isDuplicateItem
-                            _dt2 = jQuery.grep(_dt2, function(value) {
-                                return value.departmentCode != isDuplicateItem[0].departmentCode;
-                            });
-
-                            self.arrayItemEdit(_dt2);
-                            self.arrayItemEdit().push(item);
-                        } else {
-                            self.arrayItemEdit().push(item);
-                        }
-                    } else {
-                        self.arrayItemEdit().push(item);
-                    }
-                    if (item.children.length > 0) {
-                        self.updateHierachyWhenclickUpdownBtn(item);
-                    }
-                }
-            }
-        }
-
-        deletebtn() {
-            var self = this;
-            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-            var _dt = self.dataSource();
-            var _dtflat = nts.uk.util.flatArray(_dt, 'children');
-            var _code = self.singleSelectedCode();
-            var current = self.findHira(_code, _dt);
-            let deleteobj = new model.WorkPlaceDeleteDto(current.departmentCode, current.historyId, current.hierarchyCode);
-            if (_dtflat.length < 2) {
-                return;
-            } else if (_dt.length < 2 && current.hierarchyCode.length == 3) {
-                return;
-            }
-            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                var dfd2 = $.Deferred();
-                service.deleteWorkPalce(deleteobj)
-                    .done(function() {
-                        var _dt = self.dataSource();
-                        var _code = self.singleSelectedCode();
-                        var current = self.findHira(_code, _dt);
-                        var parrent = self.findParent(_code, _dt);
-                        if (parrent) {
-                            var index = parrent.children.indexOf(current);
-                            //Parent hirachy code
-                            var phc = parrent.hierarchyCode;
-                            var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-
-                            // Thay đổi hirachiCode của các object bên dưới
-                            var changeIndexChild = _.filter(parrent['children'], function(item:any) {
-                                return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                            });
-                            for (var i in changeIndexChild) {
-                                var item1 = changeIndexChild[i];
-                                var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) - 1) + "";
-                                while ((itemAddH + "").length < 3)
-                                    itemAddH = "0" + itemAddH;
-                                item1.hierarchyCode = phc + itemAddH;
-                                item1.editIndex = true;
-                                if (item1.children.length > 0) {
-                                    self.updateHierachyWhenInsertItem(item1, phc + itemAddH);
-                                }
+                    // load again tree workplace
+                    self.treeWorkplace().findLstWorkplace(newValue).done(() => {
+                        if (self.treeWorkplace().lstWorkplace() && self.treeWorkplace().lstWorkplace().length > 0) {
+                            
+                            // reload workplace history
+                            if (self.treeWorkplace().lstWorkplace()[0].workplaceId == self.treeWorkplace().selectedWpkId()) {
+                                self.treeWorkplace().selectedWpkId.valueHasMutated();
                             }
-                            var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
-                            if (editObjs.length > 0) {
-                                let currentHis = self.itemHist();
-                                for (var k = 0; k < editObjs.length; k++) {
-                                    editObjs[k].startDate = currentHis.startDate;
-                                    editObjs[k].endDate = currentHis.endDate;
-                                    editObjs[k].memo = self.A_INP_MEMO();
-                                    editObjs[k].workPlaceCode = editObjs[k].departmentCode;
-                                }
-                            }
-                            self.listDtoUpdateHierachy(editObjs);
-                        } else {
-                            var index:any = _dt.indexOf(current);
-                            //Parent hirachy code
-                            var phc:any = current.hierarchyCode;
-                            var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-
-                            // Thay đổi hirachiCode của các object bên dưới
-                            var changeIndexChild2 = _.filter(_dt, function(item) {
-                                return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                            });
-
-                            for (var i in changeIndexChild2) {
-                                var item2 = changeIndexChild2[i];
-                                var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) - 1) + "";
-                                while ((itemAddH + "").length < 3)
-                                    itemAddH = "0" + itemAddH;
-                                item2.hierarchyCode = itemAddH;
-                                item2.editIndex = true;
-                                if (item2.children.length > 0) {
-                                    self.updateHierachyWhenInsertItem(item2, itemAddH);
-                                }
-                            }
-                            var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
-                            if (editObjs.length > 0) {
-                                let currentHis = self.itemHist();
-                                for (var k = 0; k < editObjs.length; k++) {
-                                    editObjs[k].startDate = currentHis.startDate;
-                                    editObjs[k].endDate = currentHis.endDate;
-                                    editObjs[k].memo = self.A_INP_MEMO();
-                                    editObjs[k].workPlaceCode = editObjs[k].departmentCode;
-                                }
-                            }
-                            self.listDtoUpdateHierachy(editObjs);
+                            self.treeWorkplace().selectFirst();
                         }
-                        let data = self.listDtoUpdateHierachy();
-                        if (data != null) {
-                            var dfd = $.Deferred();
-                            service.upDateListWorkplace(data)
-                                .done(function(mess) {
-                                    var current = self.findHira(deleteobj.workplaceCode, self.dataSource());
-                                    let _dt = nts.uk.util.flatArray(self.dataSource(), 'children');
-                                    let selectedcode = "";
-                                    let indexOfItemDelete = _.findIndex(_dt, function(o:any) { return o.departmentCode == deleteobj.workplaceCode; });
-                                    if (indexOfItemDelete === _dt.length - 1 || current.children.length > 0) {
-                                        selectedcode = (_dt[indexOfItemDelete - 1].departmentCode);
-                                    } else {
-                                        selectedcode = (_dt[indexOfItemDelete + 1].departmentCode);
-                                    }
-                                    self.getAllWorkPlaceByHistId(hisdto.historyId, selectedcode);
-                                }).fail(function(error) { })
-                            dfd.resolve();
-                            return dfd.promise();
-                        }
-                    })
-                    .fail(function(error) {
-                        if (error.messageId == "ER06") {
-                            alert("対象データがありません。");
-                        }
-                    })
-                dfd2.resolve();
-                return dfd2.promise();
-            }).ifNo(function() { });
-        }
-
-        findHira(value: string, sources:any) {
-            let self = this;
-
-            if (!sources || !sources.length) {
-                return undefined;
-            }
-
-            sources = nts.uk.util.flatArray(sources, 'children');
-            self.lengthTreeCurrent(sources.length + 1);
-            return _.find(sources, function(item: model.Dto) { return item.departmentCode == value; });
-        }
-
-        findParent(value: string, sources:any) :any{
-            let self = this, node:any;
-
-            if (!sources || !sources.length) {
-                return undefined;
-            }
-
-            sources = nts.uk.util.flatArray(sources, 'children');
-            self.lengthTreeCurrent(sources.length + 1);
-            return _.find(sources, function(item: model.Dto) { return _.find(item.children, function(child) { return child.departmentCode == value; }); });
-        }
-
-        findHist_Dep(items: Array<viewmodel.model.HistoryDto>, newValue: string): viewmodel.model.HistoryDto {
-            let self = this;
-            let node: viewmodel.model.HistoryDto;
-            _.find(items, function(obj: viewmodel.model.HistoryDto) {
-                if (!node) {
-                    if (obj.startDate == newValue) {
-                        node = obj;
-                        self.itemHist(node);
-                    }
-                }
-            });
-            return node;
-        };
-
-        //find history object
-        findHist(value: string): viewmodel.model.HistoryDto {
-            let self = this;
-            var itemModel:any = null;
-            _.find(self.itemHistId, function(obj: viewmodel.model.HistoryDto) {
-                if (obj.startDate == value) {
-                    itemModel = obj;
-                }
-            })
-            return itemModel;
-        }
-
-        checkInput(): boolean {
-            var self = this;
-            if (self.A_INP_CODE() == "") {
-                alert("コードが入力されていません。");
-                $("#A_INP_CODE").focus();
-                return false;
-            } else if (self.A_INP_NAME() == "") {
-                alert("名称 が入力されていません。");
-                $("#A_INP_NAME").focus();
-                return false;
-            }
-            return true
-        }
-
-
-        openCDialog() {
-            var self = this;
-            if (self.checknull() == "landau") {
-                nts.uk.ui.windows.setShared('datanull', "datanull");
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
-                    let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
-                    if (itemAddHistory) {
-                        self.disableBtn();
-                        let itemadd = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                        self.itemaddHist = itemadd;
-                        self.itemHistId().push(self.itemaddHist);
-                        self.selectedCodes_His(self.itemaddHist.startDate);
-                        self.resetInput();
-                        if (itemAddHistory.memo !== null) {
-                            self.A_INP_MEMO(itemAddHistory.memo);
-                        } else {
-                            self.A_INP_MEMO("");
-                        }
-                    }
-                });
-            } else {
-                if (self.selectedCodes_His() == null)
-                    return false;
-                nts.uk.ui.windows.setShared('datanull', "notnull");
-                nts.uk.ui.windows.setShared('startDateOfHis', self.itemHistId()[0].startDate);
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
-                    let itemAddHistory = nts.uk.ui.windows.getShared('itemHistory');
-                    if (itemAddHistory) {
-                        self.disableBtn();
-                        if (itemAddHistory.checked == true) {
-                            let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                            let arr = self.itemHistId();
-                            arr.unshift(add);
-                            let startDate = new Date(itemAddHistory.startYearMonth);
-                            startDate.setDate(startDate.getDate() - 1);
-                            let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
-                            arr[1].endDate = strStartDate;
-                            self.itemHistId(arr);
-                            self.selectedCodes_His(itemAddHistory.startYearMonth);
-                            self.A_INP_MEMO(itemAddHistory.memo);
-                            var _dt = self.dataSource();
-                            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                            var _dt2 = _.forEach(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) {
-                                item.historyId = null;
-                                item.startDate = hisdto.startDate;
-                                item.endDate = hisdto.endDate;
-                                item.workPlaceCode = item.departmentCode;
-                            });
-                            self.checkAddHist1("AddhistoryFromLatest");
-                            self.dataSourceToInsert(_dt2);
-                        } else {
-                            let add = new viewmodel.model.HistoryDto(itemAddHistory.startYearMonth, "9999/12/31", "");
-                            let arr = self.itemHistId();
-                            arr.unshift(add);
-                            //self.itemHistId.unshift(add);
-                            let startDate = new Date(itemAddHistory.startYearMonth);
-                            startDate.setDate(startDate.getDate() - 1);
-                            let strStartDate = startDate.getFullYear() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getDate();
-                            arr[1].endDate = strStartDate;
-                            self.itemHistId(arr);
-                            self.A_INP_MEMO(itemAddHistory.memo);
-                            self.selectedCodes_His(self.itemHistId()[0].startDate);
-                            self.dataSource(null);
-                            self.resetInput();
-                            self.checkAddHist1("AddhistoryFromBeggin");
-                        }
-                    }
-                });
-            }
-        }
-
-        openDDialog() {
-            var self = this;
-            if (self.selectedCodes_His() == null)
-                return false;
-            let hisdto:any = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-            let index = _.findIndex(self.itemHistId(), function(obj) { return obj == hisdto; });
-            hisdto.index = index;
-            nts.uk.ui.windows.setShared('itemHist', hisdto);
-            nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
-                let newstartDate = nts.uk.ui.windows.getShared('newstartDate');
-                let isRadiocheck = nts.uk.ui.windows.getShared('isradio');
-                if (isRadiocheck == "1") {
-                    // delete thang his dau tien + delete memo
-                    var dfd = $.Deferred();
-                    service.deleteHistory(self.itemHistId()[0].historyId)
-                        .done(function() {
-                            // cap nhat endate thang sau --> 9999/12/31
-                            var dfd = $.Deferred();
-                            if (self.itemHistId().length < 2) {
-                                location.reload();
-                            }
-                            service.updateEndDateByHistoryId(self.itemHistId()[1].historyId)
-                                .done(function() {
-                                    location.reload();
-                                })
-                                .fail(function() {
-
-                                })
-                            dfd.resolve();
-                            return dfd.promise();
-                        })
-                        .fail(function(error) {
-                            if (error.messageId == "ER06") {
-                                alert("対象データがありません。");
-                            }
-                        })
-                    dfd.resolve();
-                    return dfd.promise();
-
-                } else if (isRadiocheck == "2") {
-                    let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                    let indexItemHist = _.findIndex(self.itemHistId(), function(obj) { return obj == hisdto; });
-                    let his2 = "";
-                    let endDate = "";
-                    let newEndDateRep = "";
-                    if (indexItemHist == self.itemHistId().length - 1) {
-                        his2 = null;
-                    } else {
-                        his2 = self.itemHistId()[indexItemHist + 1].historyId;
-                        let newEndDate = new Date(newstartDate);
-                        newEndDate.setDate(newEndDate.getDate() - 1);
-                        newEndDateRep = newEndDate.getFullYear() + '/' + (newEndDate.getMonth() + 1) + '/' + newEndDate.getDate();
-                    }
-                    let obj = new model.updateDateMY(hisdto.historyId, his2, newstartDate, newEndDateRep);
-                    var dfd = $.Deferred();
-                    service.upDateStartDateandEndDate(obj)
-                        .done(function() {
-                            var dfd2 = $.Deferred();
-                            service.getAllHistory()
-                                .done(function(histories: any) {
-                                    self.itemHistId(histories);
-                                    self.selectedCodes_His(obj.newStartDate);
-                                })
-                                .fail(function() { })
-                            dfd2.resolve();
-                            return dfd2.promise();
-                        })
-                        .fail(function() { })
-                    dfd.resolve();
-                    return dfd.promise();
-                }
-            });
-        }
-
-
-        insertItemUp() {
-            var self = this;
-            if (self.lengthTreeCurrent() < 889) {
-                if (self.numberItemNew() == 0) {
-                    var _dt = self.dataSource();
-                    var _code = self.singleSelectedCode();
-                    var current = self.findHira(_code, _dt);
-                    var i = current.hierarchyCode.substr(current.hierarchyCode.length - 3, current.hierarchyCode.length);
-                    var hierachyItemadd = (parseInt(i)) + "";
-                    while ((hierachyItemadd + "").length < 3)
-                        hierachyItemadd = "0" + hierachyItemadd;
-                    var parrent = self.findParent(_code, _dt);
-                    var newObj = new model.Dto('', "999", "", "",
-                        "", "", hierachyItemadd,
-                        "情報を登録してください", "情報を登録してください",
-                        current.startDate,
-                        []);
-                    if (parrent) {
-                        var index = parrent.children.indexOf(current);
-                        //Parent hirachy code
-                        var phc = parrent.hierarchyCode;
-                        var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-
-                        // Thay đổi hirachiCode của các object bên dưới
-                        var changeIndexChild = _.filter(parrent['children'], function(item:any) {
-                            return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
-                        });
-                        for (var i in changeIndexChild) {
-                            var item1 = changeIndexChild[i];
-                            var itemAddH = (parseInt(item1.hierarchyCode.substr(item1.hierarchyCode.length - 3, 3)) + 1) + "";
-                            while ((itemAddH + "").length < 3)
-                                itemAddH = "0" + itemAddH;
-                            item1.hierarchyCode = phc + itemAddH;
-                            item1.editIndex = true;
-                            if (item1.children.length > 0) {
-                                self.updateHierachyWhenInsertItem(item1, phc + itemAddH);
-                            }
-                        }
-                        newObj.hierarchyCode = phc + hierachyItemadd;
-                        parrent.children.splice(index, 0, newObj);
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
-                        if (editObjs.length > 0) {
-                            let currentHis = self.itemHist();
-                            for (var k = 0; k < editObjs.length; k++) {
-                                editObjs[k].startDate = currentHis.startDate;
-                                editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
-                                editObjs[k].workPlaceCode = editObjs[k].departmentCode;
-                            }
-                        }
-
-                        self.dtoAdd(newObj);
-                        self.listDtoUpdateHierachy(editObjs);
-                    } else {
-                        var index:any = _dt.indexOf(current);
-                        //Parent hirachy code
-                        var phc:any = current.hierarchyCode;
-                        var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                        // Thay đổi hirachiCode của các object bên dưới
-                        var changeIndexChild2 = _.filter(_dt, function(item) {
-                            return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
-                        });
-
-                        for (var i in changeIndexChild2) {
-                            var item2 = changeIndexChild2[i];
-                            var itemAddH = (parseInt(item2.hierarchyCode.substr(item2.hierarchyCode.length - 3, 3)) + 1) + "";
-                            while ((itemAddH + "").length < 3)
-                                itemAddH = "0" + itemAddH;
-                            item2.hierarchyCode = itemAddH;
-                            item2.editIndex = true;
-                            if (item2.children.length > 0) {
-                                self.updateHierachyWhenInsertItem(item2, itemAddH);
-                            }
-                        }
-                        newObj.hierarchyCode = hierachyItemadd;
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
-                        if (editObjs.length > 0) {
-                            let currentHis = self.itemHist();
-                            for (var k = 0; k < editObjs.length; k++) {
-                                editObjs[k].startDate = currentHis.startDate;
-                                editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
-                                editObjs[k].workPlaceCode = editObjs[k].departmentCode;
-                            }
-                        }
-                        self.dtoAdd(newObj);
-                        self.listDtoUpdateHierachy(editObjs);
-                        _dt.splice(index, 0, newObj);
-                    }
-                    self.dataSource(_dt);
-                    self.numberItemNew(1);
-                    self.singleSelectedCode(newObj.departmentCode);
-                    self.resetInput();
-                    self.disableBtn();
-                } else if (self.numberItemNew() == 1) {
-                    $("#A_INP_CODE").focus();
-                    self.disableBtn();
-                }
-            } else {
-                alert("maximum 889 item");
-            }
-
-        }
-
-        resetInput() {
-            var self = this;
-            self.A_INP_CODE("");
-            self.A_INP_CODE_enable(true);
-            self.A_INP_NAME("");
-            self.A_INP_FULLNAME("");
-            self.A_INP_OUTCODE("");
-            $("#A_INP_CODE").focus();
-        }
-
-        // update hierachy when click button up down
-        updateHierachyWhenclickUpdownBtn(item: any) {
-            var self = this;
-            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-            for (var i in item.children) {
-                var itemCon = item.children[i];
-                var j:any = parseInt(i) + 1;
-                while ((j + "").length < 3)
-                    j = "0" + j;
-                itemCon.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length) + j;
-                itemCon.startDate = hisdto.startDate;
-                itemCon.endDate = hisdto.endDate;
-                itemCon.workPlaceCode = itemCon.departmentCode;
-                if (self.arrayItemEdit().length > 0) {
-                    let _dt2 = self.arrayItemEdit();
-                    var isDuplicateItem = _.filter(_dt2, function(item1) {
-                        return item1.departmentCode == itemCon.departmentCode;
                     });
-                    if (isDuplicateItem.length > 0) {
-                        // xóa isDuplicateItem
-                        _dt2 = jQuery.grep(_dt2, function(value) {
-                            return value.departmentCode != isDuplicateItem[0].departmentCode;
-                        });
-
-                        self.arrayItemEdit(_dt2);
-                        self.arrayItemEdit().push(itemCon);
+                });
+                self.workplaceName.subscribe((newValue: string) => {
+                    
+                    // set workplace name, workplace full name
+                    let wkpFullName: string = self.treeWorkplace().findPathNameByWkpIdSelected();
+                    if (wkpFullName) {
+                        wkpFullName += " " + newValue;
                     } else {
-                        self.arrayItemEdit().push(itemCon);
+                        wkpFullName = newValue;
                     }
-                } else {
-                    self.arrayItemEdit().push(itemCon);
-                }
-                if (itemCon.children.length > 0) {
-                    self.updateHierachyWhenclickUpdownBtn(itemCon);
-                }
+                    self.wkpDisplayName(newValue);
+                    self.wkpFullName(wkpFullName);
+                    
+                    // clear error
+                    self.clearError();
+                });
             }
-        }
-        
-        // update Hierachy when insert item to tree
-        updateHierachyWhenInsertItem(item: any, hierarchyCode: any) {
-            var self = this;
-            for (var i in item.children) {
-                var con = item.children[i];
-                var hierachy = con.hierarchyCode.substr(0, hierarchyCode.length);
-                var ii = con.hierarchyCode.replace(hierachy, hierarchyCode);
-                con.hierarchyCode = ii;
-                con.editIndex = true;
-                if (con.children.length > 0) {
-                    self.updateHierachyWhenInsertItem(con, hierarchyCode);
-                }
-            }
-        }
 
-        insertItemDown() {
-            var self = this;
-            if (self.lengthTreeCurrent() < 889) {
-                if (self.numberItemNew() == 0) {
-                    var _dt = self.dataSource();
-                    var _code = self.singleSelectedCode();
-                    var current = self.findHira(_code, _dt);
-                    var i = current.hierarchyCode.substr(current.hierarchyCode.length - 3, current.hierarchyCode.length);
-                    var hierachyItemadd = (parseInt(i) + 1) + "";
-                    while ((hierachyItemadd + "").length < 3)
-                        hierachyItemadd = "0" + hierachyItemadd;
-                    var parrent = self.findParent(_code, _dt);
-                    var newObj = new model.Dto('', "999", "", "",
-                        "", "", hierachyItemadd,
-                        "情報を登録してください", "情報を登録してください",
-                        current.startDate,
-                        []);
-                    if (parrent) {
-                        var index = parrent.children.indexOf(current);
-                        //Parent hirachy code
-                        var phc = parrent.hierarchyCode;
-                        var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                        // Thay đổi hirachiCode của các object bên dưới
-                        var changeIndexChild = _.filter(parrent['children'], function(item:any) {
-                            return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                        });
-                        for (var i in changeIndexChild) {
-                            var item = changeIndexChild[i];
-                            var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
-                            while ((itemAddH + "").length < 3)
-                                itemAddH = "0" + itemAddH;
-                            item.hierarchyCode = phc + itemAddH;
-                            item.editIndex = true;
-                            if (item.children.length > 0) {
-                                self.updateHierachyWhenInsertItem(item, phc + itemAddH);
-                            }
-                        }
-                        newObj.hierarchyCode = phc + hierachyItemadd;
-                        parrent.children.splice(index + 1, 0, newObj);
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
-                        if (editObjs.length > 0) {
-                            let currentHis = self.itemHist();
-                            for (var k = 0; k < editObjs.length; k++) {
-                                editObjs[k].startDate = currentHis.startDate;
-                                editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
-                                editObjs[k].workPlaceCode = editObjs[k].departmentCode;
-                            }
-                        }
-                        self.dtoAdd(newObj);
-                        if (editObjs.length > 0) {
-                            self.listDtoUpdateHierachy(editObjs);
-                        } else {
-                            self.listDtoUpdateHierachy();
-                        }
-                    }
-                    else {
-                        var index:any = _dt.indexOf(current);
-                        //Parent hirachy code
-                        var phc:any = current.hierarchyCode;
-                        var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
-                        // Thay đổi hirachiCode của các object bên dưới
-                        var changeIndexChild2 = _.filter(_dt, function(item) {
-                            return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
-                        });
-                        for (var i in changeIndexChild2) {
-                            var item = changeIndexChild2[i];
-                            var itemAddH = (parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) + 1) + "";
-                            while ((itemAddH + "").length < 3)
-                                itemAddH = "0" + itemAddH;
-                            item.hierarchyCode = itemAddH;
-                            item.editIndex = true;
-                            if (item.children.length > 0) {
-                                self.updateHierachyWhenInsertItem(item, itemAddH);
-                            }
-                        }
-                        newObj.hierarchyCode = hierachyItemadd;
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
-                        if (editObjs.length > 0) {
-                            let currentHis = self.itemHist();
-                            for (var k = 0; k < editObjs.length; k++) {
-                                editObjs[k].startDate = currentHis.startDate;
-                                editObjs[k].endDate = currentHis.endDate;
-                                editObjs[k].memo = self.A_INP_MEMO();
-                                editObjs[k].workPlaceCode = editObjs[k].departmentCode;
-                            }
-                        }
-                        self.dtoAdd(newObj);
-                        if (editObjs.length > 0) {
-                            self.listDtoUpdateHierachy(editObjs);
-                        } else {
-                            self.listDtoUpdateHierachy();
-                        }
-                        _dt.splice(index + 1, 0, newObj);
-                    }
-                    self.dataSource(_dt);
-                    self.numberItemNew(1);
-                    self.singleSelectedCode(newObj.departmentCode);
-                    self.resetInput();
-                    self.disableBtn();
-                } else if (self.numberItemNew() == 1) {
-                    $("#A_INP_CODE").focus();
-                    self.disableBtn();
-                } else {
-                    alert("maximum 889 item");
-                }
+            /**
+             * startPage
+             */
+            public startPage(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+
+                // find all history master
+                self.findAllHistory().done(() => {
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
             }
-        }
-        insertItemEnd() {
-            var self = this;
-            if (self.lengthTreeCurrent() < 889) {
-                if (self.numberItemNew() == 0) {
-                    var _dt = self.dataSource();
-                    var _code = self.singleSelectedCode();
-                    var current = self.findHira(_code, _dt);
-                    if (current.hierarchyCode.length < 30) {
-                        var hierachy_current = current.hierarchyCode;
-                        var length = current.children.length + 1;
-                        var hierachyItemadd = length + "";
-                        while ((hierachyItemadd + "").length < 3)
-                            hierachyItemadd = "0" + hierachyItemadd;
-                        var newObj:any = new model.Dto('', "999", "", "",
-                            "", "", hierachy_current + hierachyItemadd,
-                            "情報を登録してください", "情報を登録してください",
-                            current.startDate,
-                            []);
-                        current.children.push(newObj);
-                        let currentHis = self.itemHist();
-                        newObj.startDate = currentHis.startDate;
-                        newObj.endDate = currentHis.endDate;
-                        newObj.memo = self.A_INP_MEMO();
-                        self.dtoAdd(newObj);
-                        self.listDtoUpdateHierachy();
-                        self.dataSource(_dt);
-                        self.numberItemNew(1);
-                        self.singleSelectedCode(newObj.departmentCode);
-                        self.disableBtn();
+
+            /**
+             * findAllHistory
+             */
+            private findAllHistory(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                nts.uk.ui.block.grayout();
+                service.findLstWkpConfigHistory().done(function(data: Array<IHistory>) {
+                    nts.uk.ui.block.clear();
+                    // set start date, end date
+                    if (data && data.length > 0) {
+                        self.isWkpConfigHistLatest(true);
+                        self.wkpConfigHistId = data[0].historyId;
+                        self.strDWorkplace(data[0].startDate);
+                        self.endDWorkplace(data[0].endDate);
                     } else {
-                        alert("hierarchy item current is 10 ,not push item child to tree");
+                        self.strDWorkplace.valueHasMutated();
                     }
-                } else if (self.numberItemNew() == 1) {
-                    $("#A_INP_CODE").focus();
-                    self.disableBtn();
+                    dfd.resolve();
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    self.showMessageError(res);
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * removeWorkplace 
+             */
+            public removeWorkplace() {
+                let self = this;
+
+                let command: any = {};
+                command.historyIdWkpConfigInfo = self.wkpConfigHistId;
+                command.startDWkpConfigInfo = new Date(self.strDWorkplace());
+                command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+
+                nts.uk.ui.block.grayout();
+                service.removeWkp(command).done(function() {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
+                            if (self.treeWorkplace().lstWorkplace().length > 0) {
+                                self.treeWorkplace().selectFirst();
+                            }
+                        });
+                    });
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    self.showMessageError(res);
+                });
+            }
+
+            /**
+             * save workplace
+             */
+            public saveWorkplace() {
+                let self = this;
+
+                if (!self.validate()) {
+                    return;
                 }
-            } else {
-                alert("maximum 889 item");
+
+                let command: any = self.toJsonObject();
+
+                nts.uk.ui.block.grayout();
+                service.saveWkp(command).done(function() {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
+                            if (self.isNewMode()) {
+                                self.treeWorkplace().selectedWpkId(command.wkpIdSelected);
+                            } else {
+                                self.treeWorkplace().selectedWpkId(self.treeWorkplace().findWkpId(command.wkpInfor.workplaceCode));
+                            }
+                        });
+                    });
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    self.showMessageError(res);
+                });
+            }
+
+            /**
+             * toJsonObject
+             */
+            public toJsonObject(): any {
+                let self = this;
+
+                let command: any = {};
+                command.isAddMode = self.isNewMode();
+                command.createType = self.creationType;
+                command.startDate = new Date(self.strDWorkplace());
+                command.wkpConfigInfoHistId = self.wkpConfigHistId;
+                command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+
+                let workplace: any = {};
+                workplace.workplaceId = null;
+                let wkpHistory: any = {
+                    historyId: self.workplaceHistory().selectedHistoryId(),
+                    period: {
+                        startDate: new Date(self.workplaceHistory().getSelectedHistoryByHistId().startDate),
+                        endDate: new Date(self.workplaceHistory().getSelectedHistoryByHistId().endDate)
+                    }
+                };
+                workplace.wkpHistory = wkpHistory;
+                command.workplace = workplace;
+
+                let wkpInfor: any = {};
+                wkpInfor.historyId = self.workplaceHistory().selectedHistoryId();
+                wkpInfor.workplaceCode = self.workplaceCode();
+                wkpInfor.workplaceName = self.workplaceName();
+                wkpInfor.wkpGenericName = self.wkpFullName();
+                wkpInfor.wkpDisplayName = self.wkpDisplayName();
+                wkpInfor.outsideWkpCode = self.externalCode();
+                command.wkpInfor = wkpInfor;
+
+                return command;
+            }
+
+            /**
+             * openWkpConfigDialog
+             */
+            public openWkpConfigDialog() {
+                let self = this;
+                let dateRange: any = {};
+                dateRange.start = self.strDWorkplace();
+                dateRange.end = self.endDWorkplace();
+                
+                // share date range
+                nts.uk.ui.windows.setShared("DateRange", dateRange);
+                
+                nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
+                    let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
+                    if (!dialogData) {
+                        return;
+                    }
+                    self.isWkpConfigHistLatest(dialogData.isWkpConfigHistLatest);
+                    self.wkpConfigHistId = dialogData.historyId;
+                    self.strDWorkplace(dialogData.startDate);
+                    self.endDWorkplace(dialogData.endDate);
+                });
+            }
+
+            /**
+             * createWkpDialog
+             */
+            public createWkpDialog() {
+                let self = this;
+
+                let condition: any = {};
+                condition.startDate = new Date(self.strDWorkplace());
+                condition.workplaceId = self.treeWorkplace().selectedWpkId();
+
+                nts.uk.ui.block.invisible();
+                service.checkWorkplaceState(condition).done((res: any) => {
+                    nts.uk.ui.block.clear();
+                    let objTransfer: any = {};
+                    objTransfer.code = self.workplaceCode();
+                    objTransfer.name = self.workplaceName();
+                    objTransfer.isLess999Heirarchies = res.isLessMaxSiblings;
+                    objTransfer.isLessTenthHierarchy = res.isLessMaxHierarchy;
+                    nts.uk.ui.windows.setShared("ObjectTransfer", objTransfer);
+
+                    nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
+                        let creationType: CreationType = nts.uk.ui.windows.getShared("CreatedWorkplaceCondition");
+                        if (creationType) {
+                            self.isNewMode(true);
+                            self.creationType = creationType;
+                            self.workplaceHistory().newHistory();
+                        }
+                    });
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    self.showMessageError(res);
+                });
+            }
+
+            /**
+             * validate
+             */
+            private validate() {
+                let self = this;
+
+                self.clearError();
+
+                $('#wkpCd').ntsEditor('validate');
+                $('#wkpName').ntsEditor('validate');
+                $('#wkpDisplayName').ntsEditor('validate');
+                $('#wkpFullName').ntsEditor('validate');
+
+                return !$('.nts-input').ntsError('hasError');
+            }
+
+            /**
+             * clearError
+             */
+            private clearError() {
+                $('#wkpCd').ntsError('clear');
+                $('#wkpName').ntsError('clear');
+                $('#wkpDisplayName').ntsError('clear');
+                $('#wkpFullName').ntsError('clear');
+            }
+
+            /**
+             * initData
+             */
+            public initData(data: any) {
+                let self = this;
+                if (data) {
+                    self.workplaceCode(data.workplaceCode);
+                    self.workplaceName(data.workplaceName);
+                    self.wkpDisplayName(data.wkpDisplayName);
+                    self.wkpFullName(data.wkpGenericName);
+                    self.externalCode(data.outsideWkpCode);
+                } else {
+                    self.workplaceCode(null);
+                    self.workplaceName(null);
+                    self.wkpDisplayName(null);
+                    self.wkpFullName(null);
+                    self.externalCode(null);
+                }
+            }
+
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                if (!res.businessException) {
+                    return;
+                }
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
         }
 
+        /**
+         * TreeWorkplaceModel
+         */
+        class TreeWorkplaceModel {
 
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            // get init data workplace
-            service.getAllWorkplace().done(function(workplaceQueryResult: viewmodel.model.WorkPlaceQueryResult) {
-                var workplaceQueryResult = workplaceQueryResult;
-                if (workplaceQueryResult.histories == null) {
-                    nts.uk.ui.windows.setShared('datanull', "datanull");
-                    self.checknull("landau");
-                    self.openCDialog();
-                } else {
-                    if (workplaceQueryResult.workPlaces.length > 0) {
-                        self.dataSource(workplaceQueryResult.workPlaces);
+            parentModel: ScreenModel;
+
+            treeColumns: Array<any>;
+            lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
+            selectedWpkId: KnockoutObservable<string>;
+
+            treeArray: KnockoutObservableArray<any>;
+            selectedHierarchyCd: string;
+            mapHierarchy: any;
+            
+            constructor(parentModel: ScreenModel) {
+                let self = this;
+
+                self.parentModel = parentModel;
+
+                self.lstWorkplace = ko.observableArray([]);
+                self.selectedWpkId = ko.observable(null);
+                self.treeArray = ko.observableArray([]);
+                
+                self.treeColumns = [];
+
+                // subscribe
+                self.lstWorkplace.subscribe(dataList => {
+                    if (!dataList || dataList.length < 1) {
+                        
+                        // didn't exist workplace
+                        self.parentModel.isNewMode(true);
+                        
+                        // set focus
+                        $('#wkpCd').focus();
+                        
+                        // create new workplace history
+                        self.parentModel.workplaceHistory().newHistory();
+                        return;
                     }
-                    if (workplaceQueryResult.memo) {
-                        self.A_INP_MEMO(workplaceQueryResult.memo.memo);
+
+                    // update nodeText, level of tree
+                    self.updateTree(dataList);
+
+                    // convert tree to array
+                    self.treeArray(self.convertTreeToArray(dataList));
+                    
+                    // calculate with column name
+                    self.calWidthColText();
+                    
+                    // existed workplace
+                    self.parentModel.isNewMode(false);
+                });
+
+                //subscribe selected wkp Id
+                self.selectedWpkId.subscribe(newValue => {
+                    self.parentModel.isNewMode(false);
+                    self.selectedHierarchyCd = self.getSelectedHierarchyCd();
+
+                    // get wkp list hist by wkpId
+                    self.parentModel.workplaceHistory().loadWkpHistoryByWkpId(newValue);
+                });
+                self.treeArray.subscribe(newArray => {
+                    self.mapHierarchy = self.convertMapHierarchy();
+                });
+            }
+
+            /**
+             * findLstWorkplace
+             */
+            public findLstWorkplace(startDate: string): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+
+                if (nts.uk.text.isNullOrEmpty(startDate)) {
+                    return dfd.promise();
+                }
+
+                nts.uk.ui.block.grayout();
+                service.findLstWorkPlace(new Date(startDate)).done((res: Array<TreeWorkplace>) => {
+                    nts.uk.ui.block.clear();
+                    self.lstWorkplace(res);
+                    dfd.resolve();
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+
+                    if (res.messageId == "Msg_373") {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_373" }).then(() => {
+                            self.lstWorkplace([]);
+                        });
+                    } else {
+                        self.parentModel.showMessageError(res);
                     }
-                    if (workplaceQueryResult.histories.length > 0) {
-                        self.itemHistId(workplaceQueryResult.histories);
-                        if (self.dataSource().length > 0) {
-                            self.dataSourceFlat = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "children"));
-                            self.singleSelectedCode(workplaceQueryResult.workPlaces[0].departmentCode);
-                            self.selectedCodes_His(self.itemHistId()[0].startDate);
-                            self.numberItemNew(0);
-                        }
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * selectFirst
+             */
+            public selectFirst() {
+                let self = this;
+                self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
+            }
+
+            /**
+             * calHeightTree
+             */
+            public calHeightTree(): number {
+                let heightCell: number = 26;
+                return heightCell * 20;
+            }
+
+            /**
+             * findPathNameByWkpIdSelected
+             */
+            public findPathNameByWkpIdSelected(): string {
+                let self = this;
+                let index: number = 3;
+                let wkpFullName: string = "";
+                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)) {
+                    return null;
+                }
+                while (index <= self.selectedHierarchyCd.length) {
+                    let parentHierarchyCd: string = self.selectedHierarchyCd.substr(0, index);
+                    wkpFullName += " " + self.mapHierarchy[parentHierarchyCd];
+                    index += 3;
+                }
+                return wkpFullName.trim();
+            }
+
+            /**
+             * findWkpId
+             */
+            public findWkpId(wkpCd: string): string {
+                let self = this;
+                let wkpIdSelected: string = "";
+                for (let item of self.treeArray()) {
+                    if (item.code == wkpCd) {
+                        wkpIdSelected = item.workplaceId;
+                        break;
                     }
                 }
-                dfd.resolve();
-            }).fail(function(error) {
-            })
-            dfd.resolve();
-            return dfd.promise();
+                return wkpIdSelected;
+            }
+
+            /**
+             * updateTree
+             */
+            private updateTree(dataList: Array<TreeWorkplace>) {
+                let self = this;
+                for (let item of dataList) {
+                    item.nodeText = item.code + " " + item.name;
+                    item.level = item.hierarchyCode.length / 3;
+
+                    if (item.childs && item.childs.length > 0) {
+                        self.updateTree(item.childs);
+                    }
+                }
+            }
+
+            /**
+             * getSelectedHierarchyCd
+             */
+            private getSelectedHierarchyCd(): string {
+                let self = this;
+                let hierarchyCode: string = "";
+                for (let item of self.treeArray()) {
+                    if (item.workplaceId == self.selectedWpkId()) {
+                        hierarchyCode = item.hierarchyCode;
+                        break;
+                    }
+                }
+                return hierarchyCode;
+            }
+
+            /**
+             * calWidthColText
+             */
+            private calWidthColText() {
+                let self = this;
+                let maxSizeNameCol: number = Math.max(self.getMaxSizeOfTextList(self.lstWorkplace()), 250);
+                self.treeColumns = [
+                    { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
+                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
+                ];
+                let $treeGrid: any = $("#single-tree-grid");
+                ko.cleanNode($treeGrid[0]);
+                ko.applyBindings(self, $treeGrid[0]);
+            }
+
+            /**
+             * getMaxSizeOfTextList
+             */
+            private getMaxSizeOfTextList(dataList: Array<TreeWorkplace>): number {
+                let self = this;
+                let max: number = 0;
+                let paddingPerLevel: number = 32;
+                let defaultFontSize: number = 14;
+                let defaultFontFamily: Array<string> = ['DroidSansMono', 'Meiryo'];
+
+                _.forEach(self.treeArray(), function(item) {
+                    let o: any = $('<div id="test">' + item.nodeText + '</div>')
+                        .css({
+                            'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
+                            'font-size': defaultFontSize, 'font-family': defaultFontFamily
+                        })
+                        .appendTo($('body'))
+                    let w: number = o.width() + item.level * paddingPerLevel + 10;
+                    if (w > max) {
+                        max = w;
+                    }
+                    o.remove();
+                });
+                return max;
+            }
+
+            /**
+             * convertMapHierarchy
+             */
+            private convertMapHierarchy(): any {
+                let self = this;
+                return _.reduce(self.treeArray(), function(hash: any, value: any) {
+                    let key: any = value['hierarchyCode'];
+                    hash[key] = value['name'];
+                    return hash;
+                }, {});
+            }
+
+            /**
+             * convertTreeToArray
+             */
+            private convertTreeToArray(dataList: Array<TreeWorkplace>): Array<any> {
+                let self = this;
+                let res: Array<any> = [];
+                _.forEach(dataList, function(item) {
+                    if (item.childs && item.childs.length > 0) {
+                        res = res.concat(self.convertTreeToArray(item.childs));
+                    }
+                    res.push({
+                        workplaceId: item.workplaceId,
+                        code: item.code,
+                        name: item.name,
+                        nodeText: item.nodeText,
+                        hierarchyCode: item.hierarchyCode,
+                        level: item.level,
+                    });
+                })
+                return res;
+            }
+        }
+
+        /**
+         * WorkplaceHistoryModel
+         */
+        class WorkplaceHistoryModel extends WorkplaceHistory {
+
+            parentModel: ScreenModel;
+
+            constructor(parentModel: ScreenModel) {
+                super();
+                let self = this;
+                self.parentModel = parentModel;
+
+                // subscribe
+                self.selectedHistoryId.subscribe((newHistoryId) => {
+                    // load workplace info by historyId
+                    self.loadWkpHistoryInfo(self.parentModel.treeWorkplace().selectedWpkId(), newHistoryId);
+                });
+            }
+
+            /**
+             * addWkpHistoryDialog
+             */
+            public addWkpHistoryDialog() {
+                let self = this;
+                nts.uk.ui.windows.setShared("selectedWkpId", self.parentModel.treeWorkplace().selectedWpkId());
+                nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
+                    let isModeAdd: boolean = nts.uk.ui.windows.getShared("ModeAddHistory");
+
+                    // reload workplace history
+                    if (isModeAdd) {
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                    }
+                });
+            }
+
+            /**
+             * updateWkpHistoryDialog
+             */
+            public updateWkpHistoryDialog() {
+                let self = this;
+                let objectTransfer: any = {};
+                objectTransfer.wkpId = self.parentModel.treeWorkplace().selectedWpkId();
+                objectTransfer.historyId = self.selectedHistoryId();
+                objectTransfer.startDate = self.getSelectedHistoryByHistId().startDate;
+
+                nts.uk.ui.windows.setShared("WokplaceHistoryInfor", objectTransfer);
+                nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
+                    let isUpdateMode: boolean = nts.uk.ui.windows.getShared("ModeUpdateHistory");
+
+                    // reload workplace history
+                    if (isUpdateMode) {
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                    }
+                });
+            }
+
+            /**
+             * deleteWkpHistoryDialog
+             */
+            public deleteWkpHistory() {
+                let self = this;
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                    let command: any = {};
+                    command.workplaceId = self.parentModel.treeWorkplace().selectedWpkId();
+                    command.historyId = self.selectedHistoryId();
+
+                    service.removeWorkplaceHistory(command).done(() => {
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                    }).fail((res: any) => {
+                        nts.uk.ui.dialog.bundledErrors(res);
+                    })
+                });
+            }
+
+            /**
+             * loadWkpHistoryByWkpId
+             */
+            public loadWkpHistoryByWkpId(wkpId: string): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+
+                nts.uk.ui.block.grayout();
+                service.getLstWkpHist(wkpId).done(function(data: any) {
+                    let lstWpkHistory = _.map(data.workplaceHistory, (item: any) => {
+                        return {
+                            workplaceId: data.workplaceId, historyId: item.historyId,
+                            startDate: item.startDate, endDate: item.endDate
+                        };
+                    });
+                    //update list hist
+                    self.lstWpkHistory(lstWpkHistory);
+
+                    $('#wkpName').focus();
+
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    self.parentModel.showMessageError(res);
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * newHistory
+             */
+            public newHistory() {
+                let self = this;
+                let newHist: IHistory = { historyId: '', startDate: self.parentModel.strDWorkplace(), endDate: "9999/12/31" };
+                self.lstWpkHistory([newHist]);
+            }
+
+            /**
+             * loadWkpHistoryInfo
+             */
+            private loadWkpHistoryInfo(wkpId: string, historyId: string): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+//                nts.uk.ui.block.grayout(); // cause: loose focus item selected combo
+                service.getWkpInfoByHistId(wkpId, historyId).done(function(data: any) {
+//                    nts.uk.ui.block.clear();
+                    self.parentModel.initData(data);
+                    dfd.resolve();
+                }).fail((res: any) => {
+//                    nts.uk.ui.block.clear();
+                    self.parentModel.showMessageError(res);
+                });
+                return dfd.promise();
+            }
         }
     }
-    /**
-          * Model namespace.
-       */
-    export module model {
-
-        export class DepartmentQueryResult {
-            histories: Array<HistoryDto>;
-            departments: Array<Dto>;
-            memo: MemoDto;
-        }
-
-        export class WorkPlaceQueryResult {
-            histories: Array<HistoryDto>;
-            workPlaces: Array<DtoWKP>;
-            memo: MemoDto;
-        }
-
-        export class MemoDto {
-            historyId: string;
-            memo: string;
-        }
-
-        export class HistoryDto {
-            endDate: string;
-            historyId: string;
-            startDate: string;
-            constructor(startDate: string, endDate: string, historyId: string) {
-                var self = this;
-                self.endDate = endDate;
-                self.startDate = startDate;
-                self.historyId = historyId;
-            }
-        }
-        //    Department     
-        export class DtoWKP {
-            companyCode: string;
-            departmentCode: string;
-            historyId: string;
-            endDate: string;
-            externalCode: string;
-            fullName: string;
-            hierarchyCode: string;
-            name: string;
-            parentChildAttribute1: string;
-            parentChildAttribute2: string;
-            parentWorkCode1: string;
-            parentWorkCode2: string;
-            shortName: string;
-            startDate: string;
-            children: Array<Dto>;
-            constructor(companyCode: string,
-                departmentCode: string,
-                historyId: string,
-                endDate: string,
-                externalCode: string,
-                fullName: string,
-                hierarchyCode: string,
-                name: string,
-                parentChildAttribute1: string,
-                parentChildAttribute2: string,
-                parentWorkCode1: string,
-                parentWorkCode2: string,
-                shortName: string,
-                startDate: string,
-                children: Array<Dto>
-            ) {
-                var self = this;
-                self.companyCode = companyCode;
-                self.departmentCode = departmentCode;
-                self.historyId = historyId;
-                self.endDate = endDate;
-                self.externalCode = externalCode;
-                self.fullName = fullName;
-                self.hierarchyCode = hierarchyCode;
-                self.name = name;
-                self.parentChildAttribute1 = parentChildAttribute1;
-                self.parentChildAttribute2 = parentChildAttribute2;
-                self.parentWorkCode1 = parentWorkCode1;
-                self.parentWorkCode2 = parentWorkCode2;
-                self.shortName = shortName;
-                self.startDate = startDate;
-                self.children = children;
-            }
-        }
-
-        // WOrkPLace Dto
-        export class Dto {
-            companyCode: string;
-            departmentCode: string;
-            historyId: string;
-            endDate: string;
-            externalCode: string;
-            fullName: string;
-            hierarchyCode: string;
-            name: string;
-            display: string;
-            startDate: string;
-            children: Array<Dto>;
-            constructor(companyCode: string,
-                departmentCode: string,
-                historyId: string,
-                endDate: string,
-                externalCode: string,
-                fullName: string,
-                hierarchyCode: string,
-                name: string,
-                display: string,
-                startDate: string,
-                children: Array<Dto>
-            ) {
-                var self = this;
-                self.companyCode = companyCode;
-                self.departmentCode = departmentCode;
-                self.historyId = historyId;
-                self.endDate = endDate;
-                self.externalCode = externalCode;
-                self.fullName = fullName;
-                self.hierarchyCode = hierarchyCode;
-                self.name = name;
-                self.display = display;
-                self.startDate = startDate;
-                self.children = children;
-            }
-        }
-        export class AddWorkplaceDto {
-            workPlaceCode: string;
-            historyId: string;
-            endDate: string;
-            externalCode: string;
-            fullName: string;
-            hierarchyCode: string;
-            name: string;
-            startDate: string;
-            memo: string;
-            shortName: string;
-            parentChildAttribute1: string;
-            parentChildAttribute2: string;
-            parentWorkCode1: string;
-            parentWorkCode2: string;
-            children: Array<AddWorkplaceDto>;
-            constructor(
-                workPlaceCode: string,
-                historyId: string,
-                endDate: string,
-                externalCode: string,
-                fullName: string,
-                hierarchyCode: string,
-                name: string,
-                startDate: string,
-                memo: string,
-                shortName: string,
-                parentChildAttribute1: string,
-                parentChildAttribute2: string,
-                parentWorkCode1: string,
-                parentWorkCode2: string,
-                children: Array<AddWorkplaceDto>) {
-                var self = this;
-                self.memo = memo;
-                self.workPlaceCode = workPlaceCode;
-                self.historyId = historyId;
-                self.endDate = endDate;
-                self.externalCode = externalCode;
-                self.fullName = fullName;
-                self.hierarchyCode = hierarchyCode;
-                self.name = name;
-                self.shortName = shortName;
-                self.startDate = startDate;
-                self.parentChildAttribute1 = parentChildAttribute1;
-                self.parentChildAttribute2 = parentChildAttribute2;
-                self.parentWorkCode1 = parentWorkCode1;
-                self.parentWorkCode2 = parentWorkCode2;
-                self.children = children;
-            }
-        }
-
-        export class WorkPlaceDeleteDto {
-            workplaceCode: string;
-            hierarchyCode: string;
-            historyId: string;
-            constructor(workplaceCode: string, historyId: string, hierarchyCode: string) {
-                var self = this;
-                self.workplaceCode = workplaceCode;
-                self.hierarchyCode = hierarchyCode;
-                self.historyId = historyId;
-            }
-        }
-
-        export class updateDateMY {
-            historyId1: string;
-            historyId2: string;
-            newStartDate: string;
-            newEndDate: string;
-            constructor(historyId1: string, historyId2: string, newStartDate: string, newEndDate: string) {
-                var self = this;
-                self.historyId1 = historyId1;
-                self.historyId2 = historyId2;
-                self.newStartDate = newStartDate;
-                self.newEndDate = newEndDate;
-            }
-        }
-
-    }
-
 }

@@ -117,10 +117,10 @@ module nts.uk.at.view.ksm001.f {
             
             
             constructor() {
-                this.estAlarmColors1st = ko.observable('#ff0000');
-                this.estAlarmColors2nd = ko.observable('#ff0000');
-                this.estAlarmColors3rd = ko.observable('#ff0000');
-                this.estAlarmColors4th = ko.observable('#ff0000');
+                this.estAlarmColors1st = ko.observable('#0000ff');
+                this.estAlarmColors2nd = ko.observable('#ffff00');
+                this.estAlarmColors3rd = ko.observable('#ff9900');
+                this.estAlarmColors4th = ko.observable('#ff00ff');
                 this.estAlarmColors5th = ko.observable('#ff0000');
                 this.estimateTime = new ReferenceConditionModel();
                 this.estimatePrice = new ReferenceConditionModel();
@@ -130,19 +130,19 @@ module nts.uk.at.view.ksm001.f {
             updateData(dto: CommonGuidelineSettingDto) {
                 for (var color of dto.alarmColors) {
                     switch(color.guidelineCondition){
-                        case 1:
+                        case EstimatedCondition.CONDITION_1ST:
                         this.estAlarmColors1st(color.color);
                         break;    
-                        case 2:
+                        case EstimatedCondition.CONDITION_2ND:
                         this.estAlarmColors2nd(color.color);
                         break;    
-                        case 3:
+                        case EstimatedCondition.CONDITION_3RD:
                         this.estAlarmColors3rd(color.color);
                         break;    
-                        case 4:
+                        case EstimatedCondition.CONDITION_4TH:
                         this.estAlarmColors4th(color.color);
                         break;    
-                        case 5:
+                        case EstimatedCondition.CONDITION_5TH:
                         this.estAlarmColors5th(color.color);
                         break;    
                     }
@@ -155,15 +155,15 @@ module nts.uk.at.view.ksm001.f {
             toDto(): CommonGuidelineSettingDto {
                 var alarmColors: EstimatedAlarmColorDto[] = [];
                 alarmColors.push(
-                    { guidelineCondition: 1, color: this.estAlarmColors1st() });
+                    { guidelineCondition: EstimatedCondition.CONDITION_1ST, color: this.estAlarmColors1st() });
                 alarmColors.push(
-                    { guidelineCondition: 2, color: this.estAlarmColors2nd() });
+                    { guidelineCondition: EstimatedCondition.CONDITION_2ND, color: this.estAlarmColors2nd() });
                 alarmColors.push(
-                    { guidelineCondition: 3, color: this.estAlarmColors3rd() });
+                    { guidelineCondition: EstimatedCondition.CONDITION_3RD, color: this.estAlarmColors3rd() });
                 alarmColors.push(
-                    { guidelineCondition: 4, color: this.estAlarmColors4th() });
+                    { guidelineCondition: EstimatedCondition.CONDITION_4TH, color: this.estAlarmColors4th() });
                 alarmColors.push(
-                    { guidelineCondition: 5, color: this.estAlarmColors5th() });
+                    { guidelineCondition: EstimatedCondition.CONDITION_5TH, color: this.estAlarmColors5th() });
                 var dto: CommonGuidelineSettingDto =
                     {
                         alarmColors: alarmColors,
@@ -173,6 +173,20 @@ module nts.uk.at.view.ksm001.f {
                     };
                 return dto;
             }
+        }
+        
+        //  目安利用条件
+        export enum EstimatedCondition {
+            // 条件1
+            CONDITION_1ST = 1,
+            // 条件2
+            CONDITION_2ND = 2,
+            // 条件3
+            CONDITION_3RD = 3,
+            // 条件4
+            CONDITION_4TH = 4,
+            // 条件5
+            CONDITION_5TH = 5,
         }
     }
 }

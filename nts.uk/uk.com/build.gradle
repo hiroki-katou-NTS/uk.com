@@ -54,12 +54,17 @@ subprojects {
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
+	jar {
+		// contains source code
+    	from sourceSets.main.allSource
+ 	}
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 		
 		// Lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
+		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -105,12 +110,49 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.28'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.41'
-		
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.37.1'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.48.3'
+	}
+}
+//=============com.file↓===========================================
+project (':com.file:nts.uk.file.com.ws') {
+	dependencies {
+		compile project (':com.file:nts.uk.file.com.app')
+	
 	}
 }
 
+project (':com.file:nts.uk.file.com.app') {
+	dependencies {
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+	}
+}
+
+project (':com.file:nts.uk.file.com.infra') {
+	dependencies {
+		compile project (':com.file:nts.uk.file.com.app')
+
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
+		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.infra')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.infra')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')
+		
+	}
+}
+//=============com.file↑===========================================
 //========================shr　↓=====================================
 project (':shr:nts.uk.shr.com') {
 	dependencies {
@@ -249,6 +291,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 	}
 }
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub') {
@@ -512,6 +555,93 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pubimp') {
 	}
 }
 //========================bs:employee ↑=====================================
+//=====================com.screen↓==============================
+project (':com.screen:nts.uk.screen.com.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project (':com.screen:nts.uk.screen.com.app')
+	
+	}
+}
+
+project (':com.screen:nts.uk.screen.com.app') {
+	dependencies {
+	 	compile project(':shr:nts.uk.shr.com')
+	 	compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
+	}
+}
+
+project (':com.screen:nts.uk.screen.com.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project (':com.screen:nts.uk.screen.com.app')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
+		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.infra')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.infra')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
+		
+	}
+}
+//=========================com:screen↑=====================================
+
+//========================sys:env=====================================
+
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
+	}
+}
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+	}
+}
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+	}
+}
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+	}
+}
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.infra')
+	}
+}
+//========================sys:gateway ↑=====================================
+
 //=====================nts.uk.com.web↓============================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
@@ -555,6 +685,15 @@ project (':com.web:nts.uk.com.web') {
 		runtime project(':shr:nts.uk.shr.ws')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		
+		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
+		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+		
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 
@@ -619,6 +758,31 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:bs:person:nts.uk.ctx.bs.person.pubimp')
 		runtime project (':com.ctx:bs:person:nts.uk.ctx.bs.person.ws')
 		
+		runtime project (':com.screen:nts.uk.screen.com.app')
+		runtime project (':com.screen:nts.uk.screen.com.infra')
+		runtime project (':com.screen:nts.uk.screen.com.ws')
+		
+		
+		runtime project (':com.file:nts.uk.file.com.ws')
+		runtime project (':com.file:nts.uk.file.com.app')
+		runtime project (':com.file:nts.uk.file.com.infra')
+
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ac')
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.infra')
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
+		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
+		
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp')
+		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws')
+		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
@@ -680,6 +844,7 @@ project (':wk.ctx:nts.uk.ctx.workflow.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 	}
 }
 project (':wk.ctx:nts.uk.ctx.workflow.pub') {

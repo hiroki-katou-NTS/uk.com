@@ -21,40 +21,10 @@ module nts.uk.at.view.kdl023.b.viewmodel {
                     self.closeDialog();
                 });
             } else {
-                nts.uk.ui.windows.setShared('listDateSetting', self.optionDates());
+                nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
                 self.closeDialog();
             }
         }
 
-        /**
-         * Get default pattern reflection.
-         */
-        getDefaultPatternReflection() {
-            let self = this;
-            return {
-                employeeId: 'empconfig',
-                reflectionMethod: 0, // Overwrite
-                patternClassification: 1, // Configuration
-                statutorySetting: {
-                    useClassification: false,
-                    workTypeCode: self.listWorkType()[0].workTypeCode
-                },
-                nonStatutorySetting: {
-                    useClassification: false,
-                    workTypeCode: self.listWorkType()[0].workTypeCode
-                },
-                holidaySetting: {
-                    useClassification: false,
-                    workTypeCode: self.listWorkType()[0].workTypeCode
-                }
-            }
-        }
-
-        /**
-         * Get domain key
-         */
-        getDomainKey() {
-            return 'empconfig';
-        }
     }
 }

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSche
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenRepository;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 
 /**
  * 
@@ -30,6 +31,12 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " JOIN KshmtWorkTimeOrder c ON a.kwtmpWorkTimePK.siftCD = c.kshmpWorkTimeOrderPK.workTimeCode"
 			+ " WHERE a.kwtmpWorkTimePK.companyID = :companyId" + " AND a.displayAtr = :displayAtr"
 			+ " ORDER BY c.dispOrder ASC";
+
+	private final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
+			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo)"
+			+ " FROM KshmtWorkType c"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = :deprecateClassification";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
@@ -54,5 +61,15 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	public List<WorkTimeScreenDto> getListWorkTime(String companyId, int displayAtr) {
 		return this.queryProxy().query(GET_WORK_TIME_AND_WT_DAY, WorkTimeScreenDto.class)
 				.setParameter("companyId", companyId).setParameter("displayAtr", displayAtr).getList();
+	}
+
+	/**
+	 * Find by companyId and deprecateClassification
+	 */
+	@Override
+	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateClassification) {
+		return this.queryProxy().query(SELECT_BY_CID_DEPRECATE_CLS, WorkTypeScreenDto.class)
+				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
+				.getList();
 	}
 }

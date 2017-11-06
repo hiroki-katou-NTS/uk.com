@@ -5,7 +5,7 @@ import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 
 
-@IntegerMaxValue(2)
+@IntegerMaxValue(99)
 public class Years extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

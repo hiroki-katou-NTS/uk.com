@@ -57,7 +57,7 @@ public class SpecBonusPayTimesheet extends DomainObject {
 	}
 
 	public static SpecBonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId,
-			Long startTime, Long endTime, int roundingTimeAtr, int roundingAtr, int dateCode) {
+			int startTime, int endTime, int roundingTimeAtr, int roundingAtr, int dateCode) {
 		return new SpecBonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class),
 				timeItemId, new AttendanceClock(startTime),
 				new AttendanceClock(endTime), EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),

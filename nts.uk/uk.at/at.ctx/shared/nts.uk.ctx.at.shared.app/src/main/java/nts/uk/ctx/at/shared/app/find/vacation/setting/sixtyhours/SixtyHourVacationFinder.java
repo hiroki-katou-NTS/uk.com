@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.Emp60HourVacationDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingCheckDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingDto;
 
 /**
@@ -37,4 +38,11 @@ public interface SixtyHourVacationFinder {
 	 * @return the list
 	 */
 	List<String> findAllEmployment();
+	
+	/**
+	 * Check manange setting.
+	 *
+	 * @return the sixty hour vacation setting check dto
+	 */
+	SixtyHourVacationSettingCheckDto checkManangeSetting();
 }

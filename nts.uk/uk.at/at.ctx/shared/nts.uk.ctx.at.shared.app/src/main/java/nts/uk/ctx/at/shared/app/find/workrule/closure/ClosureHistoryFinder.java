@@ -31,12 +31,10 @@ public class ClosureHistoryFinder {
 	/** The repository. */
 	@Inject
 	private ClosureRepository repository;
-	
+
 	/** The repository history. */
 	@Inject
 	private ClosureHistoryRepository repositoryHistory;
-	
-	
 
 	/**
 	 * Find all.
@@ -53,20 +51,20 @@ public class ClosureHistoryFinder {
 
 		// get all closure
 		List<Closure> closures = this.repository.findAll(companyId);
-		
+
 		// get data
 		List<ClosureHistory> closureHistories = new ArrayList<>();
-		
+
 		closures.forEach(closure -> {
 			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
 					.findBySelectedYearMonth(companyId, closure.getClosureId(),
-							closure.getClosureMonth().getProcessingDate().v());
-			
-			if(closureHistoryLast.isPresent()){
+							closure.getClosureMonth().getProcessingYm().v());
+
+			if (closureHistoryLast.isPresent()) {
 				closureHistories.add(closureHistoryLast.get());
 			}
 		});
-		
+
 		// domain to data
 		return closureHistories.stream().map(closureHistory -> {
 			ClosureHistoryFindDto dto = new ClosureHistoryFindDto();
@@ -74,14 +72,15 @@ public class ClosureHistoryFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Detail.
 	 *
-	 * @param master the master
+	 * @param master
+	 *            the master
 	 * @return the closure history header dto
 	 */
-	public ClosureHistoryHeaderDto findById(ClosureHistoryInDto master){
+	public ClosureHistoryHeaderDto findById(ClosureHistoryInDto master) {
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -91,13 +90,13 @@ public class ClosureHistoryFinder {
 		// call repository find closure history
 		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
 				master.getClosureId(), master.getStartDate());
-		
+
 		// return data
 		ClosureHistoryHeaderDto dto = new ClosureHistoryHeaderDto();
-		if(closureHistory.isPresent()){
+		if (closureHistory.isPresent()) {
 			closureHistory.get().saveToMemento(dto);
 		}
 		return dto;
 	}
-	
+
 }

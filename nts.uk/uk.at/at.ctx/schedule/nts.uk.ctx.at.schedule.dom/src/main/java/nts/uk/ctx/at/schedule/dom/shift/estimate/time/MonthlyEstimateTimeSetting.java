@@ -15,13 +15,14 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
 @Getter
 public class MonthlyEstimateTimeSetting extends DomainObject{
 
+	/** The estimated condition. */
+	// 目安利用条件
+	private EstimatedCondition estimatedCondition;
+
 	/** The time. */
 	// 時間
 	private MonthlyEstimateTime time;
 	
-	/** The estimated condition. */
-	// 目安利用条件
-	private EstimatedCondition estimatedCondition;
 
 	/**
 	 * Instantiates a new monthly estimate time setting.

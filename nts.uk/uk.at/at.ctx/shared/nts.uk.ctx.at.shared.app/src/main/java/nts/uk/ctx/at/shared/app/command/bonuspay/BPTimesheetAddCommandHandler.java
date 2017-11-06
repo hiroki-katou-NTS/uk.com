@@ -42,8 +42,8 @@ public class BPTimesheetAddCommandHandler extends CommandHandler<List<BPTimeshee
 
 	private BonusPayTimesheet toBonusPayTimesheetDomain(BPTimesheetAddCommand bpTimesheetAddCommand) {
 		return BonusPayTimesheet.createFromJavaType(bpTimesheetAddCommand.timeSheetNO, bpTimesheetAddCommand.useAtr,
-				bpTimesheetAddCommand.timeItemId, Long.valueOf(bpTimesheetAddCommand.startTime),
-				Long.valueOf(bpTimesheetAddCommand.endTime), bpTimesheetAddCommand.roundingTimeAtr,
+				bpTimesheetAddCommand.timeItemId, bpTimesheetAddCommand.startTime,
+				bpTimesheetAddCommand.endTime, bpTimesheetAddCommand.roundingTimeAtr,
 				bpTimesheetAddCommand.roundingAtr);
 	}
 

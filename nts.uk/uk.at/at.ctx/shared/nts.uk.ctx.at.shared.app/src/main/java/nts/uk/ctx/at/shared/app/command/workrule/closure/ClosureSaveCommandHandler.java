@@ -27,11 +27,11 @@ public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand
 	
 	/** The repository. */
 	@Inject
-	private ClosureRepository repository;
+	private ClosureRepository closureRepo;
 	
 	/** The repository history. */
 	@Inject
-	private ClosureHistoryRepository repositoryHistory;
+	private ClosureHistoryRepository closureHistoryRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -52,10 +52,10 @@ public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand
 		// get command
 		ClosureSaveCommand command = context.getCommand();
 		
-		Optional<ClosureHistory> beginClosureHistory = this.repositoryHistory
+		Optional<ClosureHistory> beginClosureHistory = this.closureHistoryRepo
 				.findByHistoryBegin(companyId, command.getClosureId());
 		
-		Optional<ClosureHistory> endClosureHistory = this.repositoryHistory
+		Optional<ClosureHistory> endClosureHistory = this.closureHistoryRepo
 				.findByHistoryLast(companyId, command.getClosureId());
 		// check (min start month) <= closure month <= (max end month) 
 		if (beginClosureHistory.isPresent() && endClosureHistory.isPresent()
@@ -68,7 +68,7 @@ public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand
 		// to domain
 		Closure domain = command.toDomain(companyId);
 		
-		this.repository.update(domain);
+		this.closureRepo.update(domain);
 	}
 
 }

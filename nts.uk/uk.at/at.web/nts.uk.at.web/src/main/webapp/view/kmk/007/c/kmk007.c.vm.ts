@@ -43,6 +43,8 @@ module nts.uk.at.view.kmk007.c.viewmodel {
         decide() {
             var self = this;
             
+            nts.uk.ui.block.grayout();
+            
             var newData = self.items();
             
             for(var i = 0; i < newData.length; i++){
@@ -52,7 +54,9 @@ module nts.uk.at.view.kmk007.c.viewmodel {
             service.order(self.newDataItems()).done(function(data){
                 nts.uk.ui.windows.close();
             }).fail(function(res) {
-                 
+                nts.uk.ui.dialog.alertError(res.message);      
+            }).then(function() {
+                nts.uk.ui.block.clear();    
             });
         }
         

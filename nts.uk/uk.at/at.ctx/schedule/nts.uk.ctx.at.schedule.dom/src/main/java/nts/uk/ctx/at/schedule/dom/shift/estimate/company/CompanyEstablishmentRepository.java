@@ -37,4 +37,14 @@ public interface CompanyEstablishmentRepository {
 	 * @param targetYear the target year
 	 */
 	public void removeCompanyEstablishment(String companyId, int targetYear);
+	
+	
+	/**
+	 * Check setting.
+	 *
+	 * @param companyId the company id
+	 * @param targetYear the target year
+	 * @return true, if successful
+	 */
+	public boolean checkSetting(String companyId, int targetYear);
 }

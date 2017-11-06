@@ -9,12 +9,6 @@ module nts.uk.at.view.kdl023.base.service {
         getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findAll'
     }
 
-    export function save(key: any, data: model.PatternReflection): JQueryPromise<void> {
-        return nts.uk.characteristics.save(key, data);
-    }
-    export function find(key: string): JQueryPromise<model.PatternReflection> {
-        return nts.uk.characteristics.restore(key);
-    }
     export function findAllPattern(): JQueryPromise<Array<model.DailyPatternSetting>> {
         return nts.uk.request.ajax(servicePath.getAllPattern);
     }
@@ -35,10 +29,12 @@ module nts.uk.at.view.kdl023.base.service {
     }
 
     export module model {
-        export interface PatternReflection {
-            employeeId: string;
+        export interface ReflectionSetting {
+            calendarStartDate?: string;
+            calendarEndDate?: string;
+            selectedPatternCd: string;
+            patternStartDate: string; // 'YYYY-MM-DD'
             reflectionMethod: ReflectionMethod;
-            patternClassification: PatternClassification;
             statutorySetting: DayOffSetting;
             nonStatutorySetting: DayOffSetting;
             holidaySetting: DayOffSetting;
@@ -65,10 +61,6 @@ module nts.uk.at.view.kdl023.base.service {
         export interface DayOffSetting {
             useClassification: boolean;
             workTypeCode: string;
-        }
-        export enum PatternClassification {
-            Confirmation = 0,
-            Configuration = 1
         }
         export enum ReflectionMethod {
             Overwrite = 0,

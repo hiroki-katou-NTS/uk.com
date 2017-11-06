@@ -22,8 +22,8 @@
 }
 
 #functions-area button.danger {
-    margin-left: 205px;
-    margin-right: 380px;
+	margin-left: 205px;
+	margin-right: 380px;
 }
 
 #A_BTN_DELETE {
@@ -36,7 +36,7 @@
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	min-height: 600px;
+	min-height: 585px;
 	width: 20%;
 }
 
@@ -45,7 +45,6 @@ button.search-btn {
 	margin-left: 23px;
 	width: 77px;
 }
-
 
 #right-content {
 	margin-left: 30px;
@@ -67,23 +66,26 @@ button.search-btn {
 }
 
 .sub_table {
-    width: 97px;
-    height: 376px;
-    background: #F3F3F3;
-    margin-top: 62px;
-    border: 5px solid white;
-    border-left: none;
+	width: 97px;
+	height: 376px;
+	background: #F3F3F3;
+	margin-top: 62px;
+	border: 5px solid white;
+	border-left: none;
 }
 
-.clear-btn{
+.clear-btn {
 	visibility: hidden;
 }
 
-div#left-content.relative.bg-green.caret-right.caret-background{
+div#left-content.relative.bg-green.caret-right.caret-background {
 	width: 330px;
-	height: 700px;
 }
 
-i.icon.icon-searchbox{
-	    top: 8px;
+i.icon.icon-searchbox {
+	top: 8px;
+}
+
+.layout-control .drag-panel{
+	height: 500px !important;
 }

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kmk006.a.main.css" />
+			<com:scriptfile path="kmk006.a.service.js" />
+			<com:scriptfile path="../e/kmk006.e.service.js" />
+			<com:scriptfile path="kmk006.a.vm.js" />
+			<com:scriptfile path="kmk006.a.start.js" />
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul tabindex="-1" class="navigator">
+				<li data-bind="click: onSelectCompany"><a tabindex="-1"
+					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li
+					data-bind="click: onSelectWorkplace, visible: useUnitAutoCalSettingModel().useWkpSet"><a
+					tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li
+					data-bind="click: onSelectJobTitle, visible: useUnitAutoCalSettingModel().useJobSet"><a
+					tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Jobtitle')}</a></li>
+				<li
+					data-bind="click: onSelectWkpJob, visible: useUnitAutoCalSettingModel().useJobwkpSet"><a
+					tabindex="-1" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('KMK006_6')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<!-- COMPANY WORK TIME SETTING  START -->
+			<div id="tabpanel-1" role="tabpanel">
+				<!-- <com:ko tag="if" bind="isCompanySelected()"> -->
+				<ui:include src="b.xhtml" />
+				<!-- </com:ko> -->
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<!-- <com:ko tag="if" bind="isEmploymentSelected()"> -->
+				<ui:include src="c.xhtml" />
+				<!-- </com:ko> -->
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				<!-- <com:ko tag="if" bind="isPersonSelected()"> -->
+				<ui:include src="d.xhtml" />
+				<!-- </com:ko> -->
+			</div>
+			<div id="tabpanel-4" role="tabpanel">
+				<!-- <com:ko tag="if" bind="isPersonSelected()">  -->
+				<ui:include src="e.xhtml" />
+				<!--  </com:ko>  -->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

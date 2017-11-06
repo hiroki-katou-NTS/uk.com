@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,23 @@ public class AttendanceLeavingWorkOfDaily {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * ジャスト遅刻、ジャスト早退の計算区分を見て時刻調整
+	 * @param isJustTimeLateAttendance ジャスト遅刻を計算するか 
+	 * @param isJustEarlyLeave　ジャスト早退を計算するか
+	 * @return 調整後の日別実績の出退勤クラス
+	 */
+	public AttendanceLeavingWorkOfDaily calcJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
+		List<AttendanceLeavingWork> newAttendanceLeave = new ArrayList<>();
+		for(AttendanceLeavingWork attendanceLeave : attendanceLeavingWorkTime) {
+			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
+		}
+		attendanceLeavingWorkTime.clear();
+		attendanceLeavingWorkTime.addAll(newAttendanceLeave);
+		
+		return this;
 	}
 	
 }

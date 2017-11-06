@@ -16,17 +16,19 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset.TimeDayAtr;
+import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 
@@ -39,32 +41,33 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class WorkTimeFinder {
 
 	@Inject
-	IInternationalization internationalization;
-
-	@Inject
 	private WorkTimeRepository workTimeRepository;
 
 	@Inject
 	private WorkTimeSetRepository workTimeSetRepository;
 	private String[] timeDayAtr = new String[4];
 	private String[] workTimeMethodSet = new String[4];
-
+	
+	public static final int FIRST_ITEM = 0;
+	public static final int TWO_ITEM = 1;
+	public static final int TWO_TIMEZONE = 2;
+	
 	@PostConstruct
 	private void loadInitialData() {
 
-		timeDayAtr[0] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_PreviousDay.name()).get();
-		timeDayAtr[1] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_Day.name()).get();
-		timeDayAtr[2] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_NextDay.name()).get();
-		timeDayAtr[3] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_SkipDay.name()).get();
+		timeDayAtr[0] = TextResource.localize(TimeDayAtr.Enum_DayAtr_PreviousDay.name());
+		timeDayAtr[1] = TextResource.localize(TimeDayAtr.Enum_DayAtr_Day.name());
+		timeDayAtr[2] = TextResource.localize(TimeDayAtr.Enum_DayAtr_NextDay.name());
+		timeDayAtr[3] = TextResource.localize(TimeDayAtr.Enum_DayAtr_SkipDay.name());
 
 		// workTimeMethodSet[0] =
 		// internationalization.getItemName(WorkTimeMethodSet.Enum_Fixed_Work.name()).get();
 		// workTimeMethodSet[1] =
 		// internationalization.getItemName(WorkTimeMethodSet.Enum_Jogging_Time.name()).get();
-		workTimeMethodSet[0] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
-		workTimeMethodSet[1] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
-		workTimeMethodSet[2] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
-		workTimeMethodSet[3] = internationalization.getItemName(WorkTimeMethodSet.Enum_Fluid_Work.name()).get();
+		workTimeMethodSet[0] = TextResource.localize(WorkTimeMethodSet.Enum_Overtime_Work.name());
+		workTimeMethodSet[1] = TextResource.localize(WorkTimeMethodSet.Enum_Overtime_Work.name());
+		workTimeMethodSet[2] = TextResource.localize(WorkTimeMethodSet.Enum_Overtime_Work.name());
+		workTimeMethodSet[3] = TextResource.localize(WorkTimeMethodSet.Enum_Fluid_Work.name());
 	}
 
 	/**
@@ -154,16 +157,18 @@ public class WorkTimeFinder {
 				if (((24 * 60 * startAtr) + startTime) > ((24 * 60 * endAtr) + endTime))
 					throw new BusinessException("Msg_54");
 				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-				workTimeSetItems = this.workTimeSetRepository.findByStartAndEnd(companyID, codeList, startAtr,
-						startTime, endAtr, endTime);
+				workTimeSetItems = this.workTimeSetRepository.findByStartAndEnd(companyID, codeList,
+						startAtr * 24 * 60 + startTime, endAtr * 24 * 60 + endTime);
 				// when only start time is select
 			} else if ((startTime > -1) && (endTime <= -1)) {
 				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-				workTimeSetItems = this.workTimeSetRepository.findByStart(companyID, codeList, startAtr, startTime);
+				workTimeSetItems = this.workTimeSetRepository.findByStart(companyID, codeList,
+						startAtr * 24 * 60 + startTime);
 				// when only end time is select
 			} else if ((startTime <= -1) && (endTime > -1)) {
 				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-				workTimeSetItems = this.workTimeSetRepository.findByEnd(companyID, codeList, endAtr, endTime);
+				workTimeSetItems = this.workTimeSetRepository.findByEnd(companyID, codeList,
+						endAtr * 24 * 60 + endTime);
 				// when both start time and end time is invalid
 			} else {
 				throw new BusinessException("Msg_53");
@@ -188,28 +193,23 @@ public class WorkTimeFinder {
 		} else {
 			for (WorkTimeSet item : workTimeSetItems) {
 				WorkTime currentWorkTime = workTimeItems.stream().filter(x -> x.getSiftCD().toString().equals(item.getSiftCD())).findAny().get();
-				if ((item.getWorkTimeDay1() == null) && (item.getWorkTimeDay2() == null)) {
+				if (item.getPrescribedTimezoneSetting().getTimezone().isEmpty()) {
 					continue;
-				} else if (item.getWorkTimeDay1().getUse_atr().equals(UseSetting.UseAtr_NotUse)
-						&& item.getWorkTimeDay2().getUse_atr().equals(UseSetting.UseAtr_NotUse)) {
+				} else if (this.checkNotUse(item)) {
 					continue;
 				} else {
+					Timezone timezone1 = item.getPrescribedTimezoneSetting().getTimezone().get(FIRST_ITEM);
+					Timezone timezone2 = null;
+					//if have 2 timezone
+					if (item.getPrescribedTimezoneSetting().getTimezone().size() >= TWO_TIMEZONE) {
+						timezone2 = item.getPrescribedTimezoneSetting().getTimezone().get(TWO_ITEM);
+					}
 					workTimeDtos.add(new WorkTimeDto(currentWorkTime.getSiftCD().v(),
 							currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
-							(!(item.getWorkTimeDay1() == null))
-									? createWorkTimeField(item.getWorkTimeDay1().getUse_atr(),
-											item.getWorkTimeDay1().getA_m_StartCLock(),
-											item.getWorkTimeDay1().getA_m_StartAtr(),
-											item.getWorkTimeDay1().getP_m_EndClock(),
-											item.getWorkTimeDay1().getP_m_EndAtr())
-									: null,
-							(!(item.getWorkTimeDay2() == null))
-									? createWorkTimeField(item.getWorkTimeDay2().getUse_atr(),
-											item.getWorkTimeDay2().getA_m_StartCLock(),
-											item.getWorkTimeDay2().getA_m_StartAtr(),
-											item.getWorkTimeDay2().getP_m_EndClock(),
-											item.getWorkTimeDay2().getP_m_EndAtr())
-									: null,
+							(timezone1 != null) ? createWorkTimeField(timezone1.getUseAtr(), timezone1.getStart(),
+									timezone1.getEnd()) : null,
+							(timezone2 != null) ? createWorkTimeField(timezone2.getUseAtr(), timezone2.getStart(),
+									timezone2.getEnd()) : null,
 							workTimeMethodSet[currentWorkTime.getWorkTimeDivision().getWorkTimeMethodSet().value],
 							currentWorkTime.getNote().v()));
 				}
@@ -218,7 +218,14 @@ public class WorkTimeFinder {
 		}
 		return workTimeDtos;
 	}
-
+	
+	private boolean checkNotUse(WorkTimeSet workTimeSet) {
+		for (Timezone timezone : workTimeSet.getPrescribedTimezoneSetting().getTimezone()) {
+			if (timezone.getUseAtr().equals(UseSetting.UseAtr_NotUse))
+				return true;
+		}
+		return false;
+	}
 	/**
 	 * format to String form input time day
 	 * 
@@ -235,22 +242,11 @@ public class WorkTimeFinder {
 	 * @return result string
 	 * @throws ParseException
 	 */
-	private String createWorkTimeField(UseSetting useAtr, int start, TimeDayAtr startAtr, int end, TimeDayAtr endAtr) {
+	private String createWorkTimeField(UseSetting useAtr, TimeWithDayAttr start, TimeWithDayAttr end) {
 		if (useAtr.equals(UseSetting.UseAtr_Use)) {
-			return timeDayAtr[startAtr.value] + formatTime(start) + " ~ " + timeDayAtr[endAtr.value] + formatTime(end);
+			return start.dayAttr().description+ start.getRawTimeWithFormat()+ " ~ " + end.dayAttr().description+ end.getRawTimeWithFormat();
 		} else
 			return null;
-	}
-
-	/**
-	 * format int Time to string HH:mm format
-	 * 
-	 * @param time
-	 *            int Time
-	 * @return string HH:mm format
-	 */
-	private String formatTime(int time) {
-		return String.format("%02d:%02d", time / 60, time % 60);
 	}
 
 	/**

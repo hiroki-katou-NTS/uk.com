@@ -76,7 +76,7 @@ public class ValidatorScript extends UIComponentBase {
 		
 		annotationsStream(pvClass)
 			.map(a -> a.toString())
-			.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME))
+			.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME) || r.contains("nts.uk.shr.com.primitive"))
 	        .forEach(representationOfAnnotation -> {
 	        	String constraintName = Helper.getAnnotationName(representationOfAnnotation);
 	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);

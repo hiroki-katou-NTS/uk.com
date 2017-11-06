@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employee;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  * The Class EmployeeDto.
  */
 @Data
+@Builder
 public class EmployeeExport {
 
 	/** The company id. */

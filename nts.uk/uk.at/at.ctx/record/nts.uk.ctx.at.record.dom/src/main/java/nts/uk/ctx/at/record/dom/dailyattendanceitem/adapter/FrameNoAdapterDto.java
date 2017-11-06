@@ -8,5 +8,7 @@ public class FrameNoAdapterDto {
 	private int attendanceItemId;
 	
 	private int frameNo;
+	
+	private int frameCategory;
 
 }

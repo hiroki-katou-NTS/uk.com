@@ -30,7 +30,7 @@ public class KshstGrantSingle extends UkJpaEntity implements Serializable {
 		
 		/* 固定付与日数 */
 		@Column(name = "FIX_NUMBER_DAYS")
-		public int fixNumberDays;
+		public Integer fixNumberDays;
 		
 		/* 忌引とする */
 		@Column(name = "MAKE_INVITATION")

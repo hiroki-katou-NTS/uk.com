@@ -5,11 +5,9 @@
 	top: -25px !important;
 }
 
-#radio {
-	margin-top: -31px;
-	margin-left: 182px;
+#button_radio {
 	padding: 5px !important;
-	width: 278px;
+	width: 300px;
 }
 
 thead {
@@ -20,8 +18,8 @@ tr {
 	height: 10px;
 }
 
-#contents-area {
-	padding: 17px 32px;
+.contents-area{
+	padding: 24px 30px;
 }
 
 .cal-panel {
@@ -44,7 +42,6 @@ tr {
 
 .contents-header td {
 	border: 1px solid #CCC;
-	text-align: center;
 	height: 20px;
 	padding: 5px 3px;
 }
@@ -60,7 +57,7 @@ span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
 }
 
 table.contents-header td.numbers {
-	width: 42px;
+	width: 36px;
 }
 
 table.contents-header td.pay-day-cal {
@@ -68,7 +65,7 @@ table.contents-header td.pay-day-cal {
 }
 
 table.contents-header td.input-units {
-	width: 63px;
+	width: 133px !important;
 }
 
 table.contents-header td.base-date {
@@ -89,7 +86,7 @@ table.contents-header td.allow-pay {
 }
 
 .contents-header {
-	width: 16.1%;
+	width: 26.7%;
 	margin-left: 30px!important;
 }
 
@@ -100,12 +97,14 @@ table.contents-header td.allow-pay {
 
 .contents-data td {
 	border: 1px solid #CCC;
-	text-align: center;
-	height: 20px;
+    text-align: center;
+    height: 20px;
+    padding: 3px 10px;
+    width: 122px;
 }
 
 table.contents-data td.numbers {
-	width: 47px;
+	width: 22px;
 }
 
 table.contents-data td.pay-day-cal {
@@ -113,7 +112,7 @@ table.contents-data td.pay-day-cal {
 }
 
 table.contents-data td.input-units {
-	width: 69px;
+	width: 60px !important;
 }
 
 table.contents-data td.base-date {
@@ -133,4 +132,28 @@ table.contents-data tbody {
 	overflow-y: auto;
 	overflow-x: hidden;
 	border: 1px solid #CCC;
+}
+
+#label{
+	margin-left: 40px;
+	margin-bottom: 20px;
+}
+#help{
+	margin-left: 500px;
+	background: #c7f391;
+}
+.text{
+	    margin-left: 30px !important;
+}
+
+.date-input-field{
+	width: 91px;
+}
+.help-btn{
+	margin-left: 650px !important;
+}
+hr.spegator{
+	    width: 90%;
+    float: left;
+    margin-left: 30px;
 }

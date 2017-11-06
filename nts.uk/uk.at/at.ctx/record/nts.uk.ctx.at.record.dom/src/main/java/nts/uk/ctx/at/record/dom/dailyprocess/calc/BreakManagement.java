@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
 
 
@@ -84,7 +85,7 @@ public class BreakManagement {
 	 * @param noStampSet 休 未打刻時 休設定
 	 * @return 休 時間帯
 	 */
-	public List<Optional<BreakTimeSheetOfDaily>> getFluidBreakTimeSheet(FluidBreakTimeOfCalcMethod calcMethod,boolean isFixedBreakTime,SetForNoStamp noStampSet) {
+	public List<Optional<BreakTimeSheetOfDaily>> getFluidBreakTimeSheet(FluidBreakTimeOfCalcMethod calcMethod,boolean isFixedBreakTime,FluidPrefixBreakTimeSet noStampSet) {
 		List<Optional<BreakTimeSheetOfDaily>> fluidBreakTimeSheet = new ArrayList<Optional<BreakTimeSheetOfDaily>>();
 		if(isFixedBreakTime) {
 			switch(calcMethod) {
@@ -95,16 +96,11 @@ public class BreakManagement {
 				fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
 			case StampWithoutReference:
 				fluidBreakTimeSheet.add(getReferenceTimeSheetFromBreakStamp());
-				if(fluidBreakTimeSheet.isEmpty() && noStampSet.isReferToWorkTimeMasterSet()) {
+				if(fluidBreakTimeSheet.isEmpty() && noStampSet.isReferToBreakClockFromMaster()) {
 					fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
 				}
 			default:
 				throw new RuntimeException("unKnown calcMethod" + calcMethod);
-			}
-		}
-		else {
-			if(!calcMethod.isReferToMaster()) {
-				fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
 			}
 		}
 		return fluidBreakTimeSheet;

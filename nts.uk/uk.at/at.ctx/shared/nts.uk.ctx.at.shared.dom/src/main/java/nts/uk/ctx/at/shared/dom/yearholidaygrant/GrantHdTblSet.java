@@ -39,49 +39,46 @@ public class GrantHdTblSet extends AggregateRoot {
 
 	/* 備考 */
 	private YearHolidayNote yearHolidayNote;
-	
+
 	private List<GrantCondition> grantConditions;
-	
+
 	@Override
 	public void validate() {
 		super.validate();
-		
+
 		// 一斉付与を利用する」がTRUEの場合は必ず一斉付与日を登録すること
 		if (UseSimultaneousGrant.USE.equals(this.useSimultaneousGrant) && this.simultaneousGrandMonthDays == null) {
 			throw new BusinessException("Msg_261");
 		}
-				
-		// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
-		if(CalculationMethod.WORKING_DAY.equals(this.calculationMethod)){
-			for (GrantCondition grantCondition : grantConditions) {
-				if(grantCondition.getConditionValue().v() > 100){
+
+		for (int i = 0; i < this.grantConditions.size(); i++) {
+			GrantCondition currentCondition = this.grantConditions.get(i);
+
+			// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
+			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
+				if (currentCondition.getConditionValue().v() > 100) {
 					throw new BusinessException("Msg_262");
 				}
 			}
-		}
-		
-		// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
-		if(CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)){
-			for (GrantCondition grantCondition : grantConditions) {
-				if(grantCondition.getConditionValue().v() > 366){
+			
+			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
+			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
+				if (currentCondition.getConditionValue().v() > 366) {
 					throw new BusinessException("Msg_263");
 				}
 			}
-		}
 
-		for(int i=0; i<this.grantConditions.size(); i++) {
 			if (i == 0) {
 				continue;
 			}
-			
-			GrantCondition currentCondition = this.grantConditions.get(i);
-			
+
 			// 利用区分がTRUEの付与条件は、選択されている計算方法の条件値が入力されていること
-			if (currentCondition.getUseConditionAtr() == UseConditionAtr.USE && currentCondition.getConditionValue() == null) {
+			if (currentCondition.getUseConditionAtr() == UseConditionAtr.USE
+					&& currentCondition.getConditionValue() == null) {
 				throw new BusinessException("Msg_271");
 			}
-			
-			// 条件NO：1、条件値　>　条件NO：2、条件値　>　条件NO：3、条件値　>　条件NO：4、条件値　>　条件NO：5、条件値　		
+
+			// 条件NO：1、条件値 > 条件NO：2、条件値 > 条件NO：3、条件値 > 条件NO：4、条件値 > 条件NO：5、条件値
 			int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
 			int secondValue = currentCondition.getConditionValue().v();
 			if (firstValue <= secondValue) {
@@ -89,9 +86,11 @@ public class GrantHdTblSet extends AggregateRoot {
 			}
 		}
 	}
-	
-	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, CalculationMethod calculationMethod,
-			StandardCalculation standardCalculation, UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, YearHolidayNote yearHolidayNote, List<GrantCondition> grantConditions) {
+
+	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName,
+			CalculationMethod calculationMethod, StandardCalculation standardCalculation,
+			UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, YearHolidayNote yearHolidayNote,
+			List<GrantCondition> grantConditions) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
@@ -104,15 +103,13 @@ public class GrantHdTblSet extends AggregateRoot {
 		this.grantConditions = grantConditions;
 	}
 
-	public static GrantHdTblSet createFromJavaType(String companyId, String yearHolidayCode, String yearHolidayName, int calculationMethod,
-			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, String yearHolidayNote, List<GrantCondition> grantConditions) {
-		return new GrantHdTblSet(companyId, 
-				new YearHolidayCode(yearHolidayCode), 
-				new YearHolidayName(yearHolidayName), 
-				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class), 
-				EnumAdaptor.valueOf(standardCalculation, StandardCalculation.class), 
-				EnumAdaptor.valueOf(useSimultaneousGrant, UseSimultaneousGrant.class), 
-				simultaneousGrandMonthDays, 
+	public static GrantHdTblSet createFromJavaType(String companyId, String yearHolidayCode, String yearHolidayName,
+			int calculationMethod, int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays,
+			String yearHolidayNote, List<GrantCondition> grantConditions) {
+		return new GrantHdTblSet(companyId, new YearHolidayCode(yearHolidayCode), new YearHolidayName(yearHolidayName),
+				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
+				EnumAdaptor.valueOf(standardCalculation, StandardCalculation.class),
+				EnumAdaptor.valueOf(useSimultaneousGrant, UseSimultaneousGrant.class), simultaneousGrandMonthDays,
 				new YearHolidayNote(yearHolidayNote), grantConditions);
 	}
 }

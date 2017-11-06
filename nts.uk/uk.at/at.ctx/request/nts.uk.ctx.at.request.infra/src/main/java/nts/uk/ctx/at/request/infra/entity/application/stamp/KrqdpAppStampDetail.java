@@ -5,7 +5,11 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable

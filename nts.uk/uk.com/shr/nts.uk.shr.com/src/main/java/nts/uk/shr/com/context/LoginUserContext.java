@@ -1,61 +1,67 @@
 package nts.uk.shr.com.context;
 
+import nts.uk.shr.com.context.loginuser.SelectedLanguage;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
+
 public interface LoginUserContext {
 	
 	public static final String KEY_SESSION_SCOPED = "LoginUserContext";
 	
-	public boolean hasLoggedIn();
+	boolean hasLoggedIn();
 	
-	public boolean isEmployee();
+	boolean isEmployee();
 	
 	/**
 	 * Returns user ID.
 	 * @return user ID
 	 */
-	public String userId();
-	
-	/**
-	 * Returns login code.
-	 * @return login code
-	 */
-	public String loginCode();
+	String userId();
 	
 	/**
 	 * Returns person ID.
 	 * @return person ID
 	 */
-	public String personId();
+	String personId();
 	
 	/**
 	 * Returns contract code.
 	 * @return contract code
 	 */
-	public String contractCode();
+	String contractCode();
 	
 	/**
 	 * Returns company ID.
 	 * @return company ID
 	 */
-	public String companyId();
+	String companyId();
 	
 	/**
 	 * Returns company code.
 	 * @return company code
 	 */
-	public String companyCode();
+	String companyCode();
 	
 	/**
 	 * Returns employee ID.
 	 * @return employee ID
 	 */
-	public String employeeId();
+	String employeeId();
 	
 	/**
 	 * Returns employee code.
 	 * @return employee code
 	 */
-	public String employeeCode();
+	String employeeCode();
 	
+	/**
+	 * Returns roles.
+	 * @return roles
+	 */
+	LoginUserRoles roles();
 	
-	
+	/**
+	 * Returns language ID
+	 * @return language ID
+	 */
+	SelectedLanguage language();
 }

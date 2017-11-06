@@ -25,14 +25,14 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHistoryAddCommand> {
-	
+
 	/** The repository history. */
 	@Inject
-	private ClosureHistoryRepository repositoryHistory;
-	
+	private ClosureHistoryRepository closureHistoryRepo;
+
 	/** The repository. */
 	@Inject
-	private ClosureRepository repository;
+	private ClosureRepository closureRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -54,41 +54,41 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 		ClosureHistoryAddCommand command = context.getCommand();
 
 		// get last closure history
-		Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
+		Optional<ClosureHistory> closureHistoryLast = this.closureHistoryRepo
 				.findByHistoryLast(companyId, command.getClosureHistoryAdd().getClosureId());
 
 		// get closure
-		Optional<Closure> closure = this.repository.findById(companyId,
+		Optional<Closure> closure = this.closureRepo.findById(companyId,
 				command.getClosureHistoryAdd().getClosureId());
 
 		// check exist closure and closure history
 		if (closure.isPresent() && closureHistoryLast.isPresent()
-				&& closure.get().getClosureMonth().getProcessingDate().v() >= closureHistoryLast.get()
+				&& closure.get().getClosureMonth().getProcessingYm().v() >= closureHistoryLast.get()
 						.getStartYearMonth().v()
 				&& command.getClosureHistoryAdd().getStartDate() < closure.get().getClosureMonth()
-						.getProcessingDate().v()) {
+						.getProcessingYm().v()) {
 			throw new BusinessException("Msg_180");
 		}
 
 		if (closure.isPresent() && closureHistoryLast.isPresent()
-				&& closure.get().getClosureMonth().getProcessingDate().v() < closureHistoryLast.get()
+				&& closure.get().getClosureMonth().getProcessingYm().v() < closureHistoryLast.get()
 						.getStartYearMonth().v()
 				&& command.getClosureHistoryAdd().getStartDate() <= closureHistoryLast.get()
 						.getStartYearMonth().v()) {
 			throw new BusinessException("Msg_102");
 		}
-		
+
 		// to domain
 		ClosureHistory domain = command.toDomain(companyId);
 
 		closureHistoryLast.get().setEndYearMonth(
 				YearMonth.of(command.getClosureHistoryAdd().getStartDate()).previousMonth());
-		
+
 		// update domain
-		this.repositoryHistory.update(closureHistoryLast.get());
-		
+		this.closureHistoryRepo.update(closureHistoryLast.get());
+
 		// add domain
-		this.repositoryHistory.add(domain);
+		this.closureHistoryRepo.add(domain);
 	}
 
 }

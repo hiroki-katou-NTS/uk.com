@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum UseAge {
 	/* 許可する */
-	Allow(0),
+	Allow(1),
 	/* 許可しない */
-	NotAllow(1);
+	NotAllow(0);
 
 	public final int value;
 }

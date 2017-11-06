@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidworktimesheet.FluWorkHolidayTimeSheet;
@@ -36,6 +37,8 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	private boolean TreatAsTimeSpentAtWork;
 	
 	private HolidayWorkFrameNo HolidayWorkTimeSheetNo; 
+	
+	private StaturoryAtrOfHolidayWork statutoryAtr;
 	
 	/**
 	 * constructor

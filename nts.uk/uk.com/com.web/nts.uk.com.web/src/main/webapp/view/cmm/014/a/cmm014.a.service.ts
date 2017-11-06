@@ -1,77 +1,47 @@
-module cmm014.a.service {
-    var paths = {
-        getAllClassification: "basic/organization/classification/findAllClassification",
-        addClassification: "basic/organization/classification/add",
-        updateClassification: "basic/organization/classification/update",
-        removeClassification: "basic/organization/classification/remove"
+module nts.uk.com.view.cmm014.a.service {
+        
+    /**
+     *  Service paths
+     */
+    var servicePath: any = {
+        findClassification: "bs/employee/classification/find",
+        saveClassification: "bs/employee/classification/save",
+        removeClassification: "bs/employee/classification/remove"
     }
 
     /**
      * Get list classification
      */
-
-    export function getAllClassification(): JQueryPromise<Array<viewmodel.model.ClassificationDto>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.getAllClassification)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function findClassification(classificationCode: any): JQueryPromise<Array<model.ClassificationFindDto>> {
+        return nts.uk.request.ajax(servicePath.findClassification + "/" + classificationCode);
     }
 
     /**
-    * update Classification
-    */
-
-    export function addClassification(classification: viewmodel.model.ClassificationDto) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.addClassification, classification).done(
-            function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-    /**
-     * update Classification
+     * save Classification
      */
-
-    export function updateClassification(classification: viewmodel.model.ClassificationDto) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.updateClassification, classification).done(
-            function(res: any) {
-                dfd.resolve(res);
-            }
-        )
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-
-        return dfd.promise();
+    export function saveClassification(classification: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.saveClassification, classification);
     }
 
     /**
     * remove Classification
     */
-
-    export function removeClassification(classification: viewmodel.model.RemoveClassificationCommand) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.removeClassification, classification).done(
-            function(res: any) {
-                dfd.resolve(res);
+    export function removeClassification(params: any): JQueryPromise<any> {    
+        return nts.uk.request.ajax(servicePath.removeClassification, params);
+    }  
+    
+    export module model {
+        
+        export class ClassificationFindDto {
+            code: string;
+            name: string;
+            memo: string;
+            
+            constructor(code?: string, name?: string, memo?: string) {
+                this.code = code;
+                this.name = name;
+                this.memo = memo;
             }
-        )
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-
+        }
+    }    
 }

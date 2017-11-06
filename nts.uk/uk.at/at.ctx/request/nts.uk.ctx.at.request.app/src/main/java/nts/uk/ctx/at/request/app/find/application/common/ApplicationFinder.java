@@ -9,7 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -30,10 +32,12 @@ public class ApplicationFinder {
 	 * get all application by code
 	 * @return
 	 */
-	public Optional<ApplicationDto> getAppById(String applicationID){
+	public ApplicationDto getAppById(String applicationID){
 		String companyID = AppContexts.user().companyId();
-		return this.appRepo.getAppById(companyID, applicationID)
+		Optional<ApplicationDto> applicationDto = this.appRepo.getAppById(companyID, applicationID)
 				.map(c->ApplicationDto.fromDomain(c));
+		if(applicationDto.isPresent()) return applicationDto.get();
+		else return null;
 	}
 	
 	/**
@@ -54,6 +58,13 @@ public class ApplicationFinder {
 		String companyID = AppContexts.user().companyId();
 		return this.appRepo.getAllAppByAppType(companyID, applicationType).stream()
 				.map(c->ApplicationDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
+	
+	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto){
+		String companyID = AppContexts.user().companyId();
+		return this.appRepo.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
+				.stream().map(c -> { return new ApplicationMetaDto(c.getApplicationID(), c.getApplicationType().value, c.getApplicationDate()); })
 				.collect(Collectors.toList());
 	}
 

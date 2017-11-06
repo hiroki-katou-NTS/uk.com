@@ -100,12 +100,29 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	
 
 	/**
+	 * 控除項目の時間帯の法定内区分を法定外へ置き換える
+	 * @return 法定内区分を法定外に変更した控除項目の時間帯
+	 */
+	public TimeSheetOfDeductionItem StatutoryAtrFromWithinToExcess() {
+		return new TimeSheetOfDeductionItem(withRounding, 
+											timeSpan, 
+											bonusPayTimeSheet, 
+											specifiedBonusPayTimeSheet, 
+											midNighttimeSheet, 
+											goOutReason, 
+											breakAtr, 
+											deductionAtr, 
+											WithinStatutoryAtr.ExcessOfStatutory);
+	}
+	
+	/**
 	 * 休　と外　の重　
 	 * @param baseTimeSheet 現ループ中のリス　
 	 * @param compareTimeSheet　次のループで取り出すリス　
 	 */
 	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage,boolean useFixedRestTime) {
 		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
+	
 		/*両方とも育児　*/
 		if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
 			map.add(this);
@@ -126,23 +143,43 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		}
 		/*前半休憩、後半外出*/
 		else if((this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isGoOut())){
-			if(setMethod.isFluidWork()) {
-				if(!useFixedRestTime) {
-					if(clockManage.isNotClockManage()) {
-						return collectionBreakTime(this,compareTimeSheet);
+			if(/*固定用*/) {
+				TimeSpanForCalc duplicationSpan = this.getCalcrange().getDuplicatedWith(compareTimeSheet.getCalcrange()).get();
+				map.add(new TimeSheetOfDeductionItem(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get(),this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.getWithinStatutoryAtr()));/*休憩は外出と被ってない部分で作成*/
+				List<TimeSheetOfDeductionItem> replaceDeductionItemList = this.deductionTimeSheets;
+				replaceDeductionItemList.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty()), duplicationSpan, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), this.getGoOutReason(), this.getDeductionAtr(), this.getWithinStatutoryAtr());
+				map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calcrange,compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));/*外出は今まで通りの期間+外出の控除に変化する領域を保持させる*/
+				return map;
+			}
+			else {
+				if(setMethod.isFluidWork()) {
+					if(!useFixedRestTime) {
+						if(clockManage.isNotClockManage()) {
+							return collectionBreakTime(this,compareTimeSheet);
+						}
 					}
 				}
-			}			
+			}
 			map.add(this);
 			map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get(),compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));
 			return map;
 		}
 		/*前半外出、後半休憩*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
-			if(setMethod.isFluidWork()) {
-				if(!useFixedRestTime) {
-					if(clockManage.isNotClockManage()) {
-						return collectionBreakTime(compareTimeSheet,this);
+			if(/*固定用*/) {
+				TimeSpanForCalc duplicationSpan = compareTimeSheet.getCalcrange().getDuplicatedWith(this.getCalcrange()).get();
+				map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get(),compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));/*休憩は外出と被ってない部分で作成*/
+				List<TimeSheetOfDeductionItem> replaceDeductionItemList = compareTimeSheet.deductionTimeSheets;
+				replaceDeductionItemList.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty()), duplicationSpan, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), this.getGoOutReason(), this.getDeductionAtr(), this.getWithinStatutoryAtr());
+				map.add(new TimeSheetOfDeductionItem(this.calcrange,this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.getWithinStatutoryAtr()));/*外出は今まで通りの期間+外出の控除に変化する領域を保持させる*/
+				return map;
+			}
+			else {
+				if(setMethod.isFluidWork()) {
+					if(!useFixedRestTime) {
+						if(clockManage.isNotClockManage()) {
+							return collectionBreakTime(compareTimeSheet,this);
+						}
 					}
 				}
 			}
@@ -259,5 +296,12 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 			TimeSpanForCalc renewSpan = decisionNewSpan(this.calcrange,baseTime,isDateBefore);
 			return new TimeSheetOfDeductionItem(this.getTimeSheet(),renewSpan,deductionTimeSheets,bonusPayTimeSheet,midNighttimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr,this.withinStatutoryAtr);
+	}
+	
+	/**
+	 * 法定内区分を法定外にして自分自身を作り直す
+	 */
+	public TimeSheetOfDeductionItem createWithExcessAtr(){
+		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.deductionTimeSheets,this.bonusPayTimeSheet,this,midNighttimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr,WithinStatutoryAtr.WithinStatutory);
 	}
 }

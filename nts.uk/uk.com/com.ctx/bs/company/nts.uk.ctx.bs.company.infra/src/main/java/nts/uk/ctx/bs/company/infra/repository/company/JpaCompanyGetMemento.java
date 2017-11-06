@@ -9,7 +9,7 @@ import nts.uk.ctx.bs.company.dom.company.CompanyGetMemento;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
 import nts.uk.ctx.bs.company.dom.company.CompanyName;
 import nts.uk.ctx.bs.company.dom.company.StartMonth;
-import nts.uk.ctx.bs.company.infra.entity.company.CmnmtCompany;
+import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 
 /**
  * The Class JpaCompanyGetMemento.
@@ -17,9 +17,9 @@ import nts.uk.ctx.bs.company.infra.entity.company.CmnmtCompany;
 public class JpaCompanyGetMemento implements CompanyGetMemento {
 	
 	/** The company. */
-	private CmnmtCompany company;
+	private BcmmtCompany company;
 
-	public JpaCompanyGetMemento(CmnmtCompany company) {
+	public JpaCompanyGetMemento(BcmmtCompany company) {
 		this.company = company;
 	}
 	

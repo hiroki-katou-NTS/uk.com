@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(max="744:00", min = "00:00")
 public class LimitOneMonth extends TimeDurationPrimitiveValue<LimitOneMonth>{
 	
-	public LimitOneMonth(Long rawValue) {
+	public LimitOneMonth(int rawValue) {
 		super(rawValue);
 	}
 

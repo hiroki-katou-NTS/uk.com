@@ -10,9 +10,6 @@ import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveE
  */
 public class WorkTimeCommonSet {
 	@Getter
-	private LateLeaveEarlySettingOfWorkTime lateSetting;
-	
-	@Getter
 	private LateLeaveEarlySettingOfWorkTime leaveEarlySetting;
 	
 	@Getter

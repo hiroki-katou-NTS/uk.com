@@ -25,25 +25,29 @@ module nts.uk.at.view.kdw002.b {
 
                     $.when(service.getListDailyServiceTypeControl(businessTypeCode), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
-                            var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
-                            var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
-                            $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
-                            var dataSource = $('#grid').data('igGrid').dataSource;
-                            var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                            var i;
-                            var l = filteredData.length;
-                            for (i = 0; i < l; i++) {
-                                if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                    var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                                    var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
 
-                                    if (!filteredData[i].userCanSet) {
-                                        $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+                            if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
+                                var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
+                                var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
+                                $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
+                                var dataSource = $('#grid').data('igGrid').dataSource;
+                                var filteredData = dataSource.transformedData('afterfilteringandpaging');
+                                var i;
+                                var l = filteredData.length;
+                                for (i = 0; i < l; i++) {
+                                    if (!filteredData[i].userCanSet || !filteredData[i].use) {
+                                        var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                                        var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                                        cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+
+                                        if (!filteredData[i].userCanSet) {
+                                            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+                                        }
                                     }
                                 }
                             }
+                        }
                     );
 
 
@@ -61,7 +65,7 @@ module nts.uk.at.view.kdw002.b {
 
                 service.getBusinessTypes().done(businessTypes => {
 
-                    if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
+                    if (!nts.uk.util.isNullOrUndefined(businessTypes) && businessTypes.length > 0) {
                         let bussinessCodeItems = [];
                         businessTypes.forEach(businessType => {
                             bussinessCodeItems.push(new BusinessType(businessType));
@@ -80,6 +84,19 @@ module nts.uk.at.view.kdw002.b {
                 self.txtSearch = ko.observable("");
 
             }
+
+            copy(): void {
+                var self = this;
+                var bussinessCodeItems = self.bussinessCodeItems();
+                var bussinessCurrentCode = self.bussinessCurrentCode();
+                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.bussinessCurrentCode() });
+                var businessTypeName = bussinessCodeItem.businessTypeName;
+                var data = {
+                    code: bussinessCurrentCode, name: businessTypeName, bussinessItems: bussinessCodeItems
+                }
+                nts.uk.ui.windows.setShared("KDW002_B_BUSINESSTYPE", data);
+            }
+
 
             startPage(): JQueryPromise<any> {
                 let self = this;
@@ -110,7 +127,7 @@ module nts.uk.at.view.kdw002.b {
 
             navigateView(): void {
                 let self = this;
-                var path = "/view/kdw/006/index.xhtml";
+                var path = "/view/kdw/006/a/index.xhtml";
                 href(path);
             }
 
@@ -263,6 +280,100 @@ function userCanSetChanged(element, rowId) {
     $("#grid").igGridUpdating("setCellValue", rowId, "userCanSet", value != true);
 }
 
+function useHeaderChanged(element) {
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+    if (element.checked) {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", true);
+            if (filteredData[i].userCanSet) {
+                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                if (cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.classList.remove('readOnlyColorIsUse');
+                }
+
+                if (cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.classList.remove('readOnlyColorIsUse');
+                }
+
+            }
+        }
+
+    } else {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", false);
+            if (filteredData[i].userCanSet) {
+                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                if (!cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                }
+
+                if (!cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+                }
+
+            }
+        }
+
+    }
+}
+
+
+function youCanChangeItHeaderChanged(element) {
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+    if (element.checked) {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "youCanChangeIt", true);
+            }
+        }
+    } else {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "youCanChangeIt", false);
+            }
+        }
+
+    }
+
+}
+
+function canBeChangedByOthersHeaderChanged(element) {
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+    if (element.checked) {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", true);
+            }
+        }
+    } else {
+        var i;
+        var l = filteredData.length;
+        for (i = 0; i < l; i++) {
+            if (filteredData[i].userCanSet && filteredData[i].use) {
+                $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+            }
+        }
+
+    }
+
+}
+
+
 
 
 function loadIgrid() {
@@ -271,6 +382,9 @@ function loadIgrid() {
     var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${attendanceItemId})' />";
     var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${attendanceItemId})' />";
     var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${attendanceItemId})' />";
+    var useHeader = "<input type='checkbox' onclick='useHeaderChanged(this)'/> ";
+    var youCanChangeItHeader = "<input type='checkbox' onclick='youCanChangeItHeaderChanged(this)'/> ";
+    var canBeChangedByOthersHeader = "<input type='checkbox' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
     $("#grid").igGrid({
         primaryKey: "attendanceItemId",
         height: 400,
@@ -279,14 +393,16 @@ function loadIgrid() {
         alternateRowStyles: false,
         dataSourceType: "json",
         autoCommit: true,
-        virtualization: true,
-        virtualizationMode: "continuous",
+        // virtualization: true,
+        rowVirtualization: false,
+        // virtualizationMode: "continuous",
+        virtualizationMode: "fixed",
         columns: [
             { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number", columnCssClass: "readOnlyColor" },
             { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string", columnCssClass: "readOnlyColor" },
-            { key: "use", width: "150px", headerText: nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
-            { key: "youCanChangeIt", width: "150px", headerText: nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
-            { key: "canBeChangedByOthers", width: "150px", headerText: nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
+            { key: "use", width: "150px", headerText: useHeader + nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
+            { key: "youCanChangeIt", width: "150px", headerText: youCanChangeItHeader + nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
+            { key: "canBeChangedByOthers", width: "150px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
             { key: "userCanSet", dataType: "bool", hidden: true }
         ],
         features: [

@@ -5,10 +5,14 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
@@ -90,6 +94,12 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 	 */
 	@Column(name = "REQUIRED_INSTRUCTION_FLG")
 	public int requiredInstructionFlg;
+	
+	@ManyToOne
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID")
+	})
+	private KrqstComAppConfig krqstComAppConfig;
 	
 	/**
 	 * 

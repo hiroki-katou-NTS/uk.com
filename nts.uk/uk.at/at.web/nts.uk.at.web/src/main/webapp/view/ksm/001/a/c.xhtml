@@ -12,6 +12,7 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed" data-bind="enable: employmentEstablishmentModel.isEditable, click: saveEmploymentEstablishment">#{i18n.getText('KSM001_1')}</button>
 			<button tabindex="2" class="danger" data-bind="enable: employmentEstablishmentModel.isEnableDelete, click: deleteEmploymentEstablishment" >#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="3" data-bind="enable: employmentEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
@@ -29,7 +30,7 @@
 				]}"></div>
 			<div style="margin-left: 150px" data-bind="ntsFormLabel: {required: true}">
 				<label>#{i18n.getText('KSM001_5')}</label>
-				<span data-bind="text: employmentName"></span>
+				<span style="margin-left: 50px" data-bind="text: employmentName"></span>
 			</div>
 		</ui:define>
 		<ui:define name="extended-222">

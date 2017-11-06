@@ -10,6 +10,7 @@ module nts.uk.pr.view.ccg007.d {
             selectedCompanyCode: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
             contractCode: KnockoutObservable<string>;
+            contractPassword: KnockoutObservable<string>;
             constructor() {
                 var self = this;
                 self.employeeCode = ko.observable('');
@@ -18,6 +19,7 @@ module nts.uk.pr.view.ccg007.d {
                 self.selectedCompanyCode = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
                 self.contractCode = ko.observable('');
+                self.contractPassword = ko.observable('');
             }
             start(): JQueryPromise<void> {
                 var self = this;
@@ -26,6 +28,7 @@ module nts.uk.pr.view.ccg007.d {
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
                     self.contractCode(data?data.contractCode:"");
+                    self.contractPassword(data?data.contractPassword:"");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
                         if (showContractData) {
                             if (showContractData.showContract) {
@@ -58,7 +61,9 @@ module nts.uk.pr.view.ccg007.d {
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     var contractCode = nts.uk.ui.windows.getShared('contractCode');
+                    var contractPassword = nts.uk.ui.windows.getShared('contractPassword');
                     self.contractCode(contractCode);
+                    self.contractPassword(contractPassword);
                     service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
                         //get list company from server 
                         self.companyList(data);
@@ -99,8 +104,14 @@ module nts.uk.pr.view.ccg007.d {
 
             private submitLogin() {
                 var self = this;
+                var submitData: any = {};
+                submitData.companyCode = _.escape(self.selectedCompanyCode());
+                submitData.employeeCode = _.escape(self.employeeCode());
+                submitData.password = _.escape(self.password());
+                submitData.contractCode = _.escape(self.contractCode());
+                submitData.contractPassword = _.escape(self.contractPassword());
                 blockUI.invisible();
-                service.submitLogin({ companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()),contractCode: _.escape(self.contractCode()) }).done(function() {
+                service.submitLogin(submitData).done(function() {
                     nts.uk.characteristics.remove("form3LoginInfo").done(function() {
                         if (self.isSaveLoginInfo()) {
                             nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {

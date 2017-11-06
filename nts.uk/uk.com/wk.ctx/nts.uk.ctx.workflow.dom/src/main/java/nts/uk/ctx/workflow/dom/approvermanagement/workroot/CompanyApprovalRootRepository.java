@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,9 +31,10 @@ public interface CompanyApprovalRootRepository {
 	 * @param companyId
 	 * @param endDate
 	 * @param applicationType
+	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType);
+	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr);
 
 	/**
 	 * add Company Approval Root
@@ -42,6 +42,12 @@ public interface CompanyApprovalRootRepository {
 	 * @param comAppRoot
 	 */
 	void addComApprovalRoot(CompanyApprovalRoot comAppRoot);
+	/**
+	 * add All Company Approval Root
+	 * 
+	 * @param comAppRoot
+	 */
+	void addAllComApprovalRoot(List<CompanyApprovalRoot> comAppRoot);
 
 	/**
 	 * update Company Approval Root
@@ -49,6 +55,12 @@ public interface CompanyApprovalRootRepository {
 	 * @param comAppRoot
 	 */
 	void updateComApprovalRoot(CompanyApprovalRoot comAppRoot);
+	/**
+	 * update All Company Approval Root
+	 * 
+	 * @param comAppRoot
+	 */
+	void updateAllComApprovalRoot(List<CompanyApprovalRoot> comAppRoot);
 
 	/**
 	 * delete Company Approval Root
@@ -67,7 +79,7 @@ public interface CompanyApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<CompanyApprovalRoot> findByBaseDate(String cid, Date baseDate, int appType);
+	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate, int appType);
 
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する(共通）
@@ -76,5 +88,22 @@ public interface CompanyApprovalRootRepository {
 	 * @param baseDate
 	 * @return
 	 */
-	List<CompanyApprovalRoot> findByBaseDateOfCommon(String cid, Date baseDate);
+	List<CompanyApprovalRoot> findByBaseDateOfCommon(String cid, GeneralDate baseDate);
+	
+	/**
+	 * ドメインモデル「会社別就業承認ルート」を取得する
+	 * 
+	 * @param cid
+	 * @param baseDate
+	 * @return
+	 */
+	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate);
+	/**
+	 * get Company Approval Root By type
+	 * @param companyId
+	 * @param applicationType
+	 * @param employmentRootAtr
+	 * @return
+	 */
+	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType, int employmentRootAtr);
 }

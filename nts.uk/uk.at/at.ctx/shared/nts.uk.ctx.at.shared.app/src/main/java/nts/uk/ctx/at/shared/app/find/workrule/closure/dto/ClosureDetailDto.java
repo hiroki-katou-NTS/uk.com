@@ -13,10 +13,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
 /**
@@ -25,16 +25,16 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 @Getter
 @Setter
 public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMemento {
-	
+
 	/** The closure id. */
 	private int closureId;
-	
+
 	/** The closure name. */
 	private String closureName;
-	
+
 	/** The closure date. */
 	private int closureDate;
-	
+
 	/** The use classification. */
 	private int useClassification;
 
@@ -43,7 +43,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 
 	/** The start date. */
 	private int startDate;
-	
+
 	/** The month. */
 	private int month;
 
@@ -78,8 +78,8 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth)
 	 */
 	@Override
-	public void setClosureMonth(ClosureMonth month) {
-		this.month = month.getProcessingDate().v();
+	public void setClosureMonth(CurrentMonth month) {
+		this.month = month.getProcessingYm().v();
 	}
 
 	/*
@@ -97,8 +97,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setCloseName(nts.uk.ctx.at.shared.dom.workrule.closure.CloseName)
 	 */
 	@Override
@@ -109,8 +108,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setClosureId(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId)
 	 */
 	@Override
@@ -121,8 +119,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setCompanyId(nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId)
 	 */
 	@Override
@@ -133,8 +130,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setEndDate(nts.arc.time.YearMonth)
 	 */
 	@Override
@@ -146,8 +142,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setClosureDate(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate)
 	 */
 	@Override
@@ -162,8 +157,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setStartDate(nts.arc.time.YearMonth)
 	 */
 	@Override

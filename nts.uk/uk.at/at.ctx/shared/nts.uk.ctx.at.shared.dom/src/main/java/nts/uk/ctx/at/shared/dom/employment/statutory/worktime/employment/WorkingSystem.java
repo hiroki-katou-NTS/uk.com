@@ -11,7 +11,15 @@ public enum WorkingSystem {
 	VariableWorkingTimeWork,
 	ExcludedWorkingCalculate,;
 
-
+	/**
+	 * 固定勤務であるか判定する
+	 * @return　固定勤務である
+	 */
+	public boolean isRegularWork() {
+		return this.equals(RegularWork);
+	}
+	
+	
 	/**
 	 * 就業計算対象外であるか判定する
 	 * @return　就業計算対象外である

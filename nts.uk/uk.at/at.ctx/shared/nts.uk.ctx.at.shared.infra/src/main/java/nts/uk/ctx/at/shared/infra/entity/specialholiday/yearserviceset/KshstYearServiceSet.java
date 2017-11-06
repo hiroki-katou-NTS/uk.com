@@ -11,18 +11,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceCom;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_YEAR_SERVICE_SET")
+@Table(name = "KSHST_YEARSERVICE_COM_SET")
 public class KshstYearServiceSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -36,11 +32,13 @@ public class KshstYearServiceSet extends UkJpaEntity implements Serializable {
 	/** 特別休暇付与日数 **/
 	@Column(name = "GRANT_DATES")
 	public int date;
+	
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SPHD_CD", referencedColumnName = "SPHD_CD", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSHST_YEAR_SERVICE_COM.CID", insertable = false, updatable = false),
+			@JoinColumn(name = "SPHD_CD", referencedColumnName = "KSHST_YEAR_SERVICE_COM.SPHD_CD", insertable = false, updatable = false) })
 	public KshstYearServiceCom kshstYearServiceCom;
-
+	
+	
 	@Override
 	protected Object getKey() {
 		return kshstYearServiceSetPK;

@@ -12,9 +12,12 @@ public class ApprovalPhaseDto {
 	/**承認フェーズID*/
 	private String approvalPhaseId;
 	/**承認形態*/
-	private int approvalForm;
+	private Integer approvalForm;
+	/**承認形態 Name*/
+	private String appFormName;
 	/**閲覧フェーズ*/
-	private int browsingPhase;
+	private Integer browsingPhase;
 	/**順序*/
-	private int orderNumber;
+	private Integer orderNumber;
+	
 }

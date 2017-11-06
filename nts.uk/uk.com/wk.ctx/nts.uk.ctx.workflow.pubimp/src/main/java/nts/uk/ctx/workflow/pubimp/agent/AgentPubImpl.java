@@ -6,34 +6,28 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.agent.AgentRepository;
+import nts.uk.ctx.workflow.dom.agent.ApprovalAgencyInfoService;
+import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
-import nts.uk.ctx.workflow.pub.agent.AgentPubDto;
+import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
+import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 
 @Stateless
 public class AgentPubImpl implements AgentPub {
-	
+
 	@Inject
-	private AgentRepository agentRepo;
-	
+	private ApprovalAgencyInfoService approvalAgencyInfoService;
+
 	@Override
-	public List<AgentPubDto> find(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return agentRepo.find(companyId, employeeId, startDate, endDate)
-				.stream().map(x -> new AgentPubDto(
-							employeeId, 
-							x.getRequestId().toString(), 
-							x.getStartDate(), 
-							x.getEndDate(), 
-							x.getAgentSid1(), 
-							x.getAgentAppType1().value, 
-							x.getAgentSid2(), 
-							x.getAgentAppType2().value, 
-							x.getAgentSid3(), 
-							x.getAgentAppType3().value, 
-							x.getAgentSid3(), 
-							x.getAgentAppType4().value)
-				).collect(Collectors.toList());
+	public AgentPubExport getApprovalAgencyInformation(String companyID, List<String> approver) {
+		ApprovalAgencyInfoOutput agency = approvalAgencyInfoService.getApprovalAgencyInformation(companyID, approver);
+		return new AgentPubExport(
+				agency.getListApproverAndRepresenterSID().stream().map(x -> new ApproverRepresenterExport(
+						x.getApprover(), 
+						x.getRepresenter())).collect(Collectors.toList()), 
+				agency.getListRepresenterSID(),
+				agency.isFlag()
+				);
 	}
 
 }

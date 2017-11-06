@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<title>#{i18n.getText('CPS001_1')}</title>
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 920,
+					height : 700
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="cps001.c.style.css" />
+			<com:scriptfile path="cps001.c.service.js" />
+			<com:scriptfile path="cps001.c.vm.js" />
+			<com:scriptfile path="cps001.c.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button type="button" class="proceed" data-bind="click: reStoreData">#{i18n.getText('CPS001_49')}</button>
+				<button type="button" class="danger" data-bind="click: deleteData">#{i18n.getText('CPS001_50')}</button>
+				<button type="button" data-bind="click : closeUp">#{i18n.getText('CPS001_51')}</button>
+			</div>
+			<div id="contents-area" class="cf">
+				<div class="left-area">
+					<div class="bg-green caret-right caret-background" >
+						<div style="width: 700px"
+							data-bind="ntsSearchBox: {
+								targetKey: 'id', 
+								mode:'grid', 
+								searchMode: 'filter',
+								comId:'list_employees', 
+								items: ko.observableArray([]),
+								selected: 'code',
+								selectedKey: 'code',
+								fields: ['name', 'code']}"></div>
+						<table id="list_employees"
+							data-bind="ntsGridList: {								
+								rows: 20,
+								dataSource: listEmpDelete ,
+								primaryKey: 'code',
+								columns: [
+					                { headerText: nts.uk.resource.getText('CPS001_52'), key: 'code', width: 140 }, 
+					                { headerText: nts.uk.resource.getText('CPS001_53'), key: 'name', width: 160 }, 
+								],
+								multiple: false,
+								value: currentEmployee().code
+							}"></table>
+					</div>
+				</div>
+				<div class="right-area" data-bind="with: detail">
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_54')}</div>
+						<span class="text-inform" data-bind="text: datedelete"></span>
+					</div>
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_55')}</div>
+						<span class="text-inform" data-bind="text: reason"></span>
+					</div>
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_56')}</div>
+						<input data-bind="ntsTextEditor: {
+							value: newCode,
+							required: false,
+							enable: true,
+							readonly: false}" />
+					</div>
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_58')}</div>
+						<input data-bind="ntsTextEditor: {
+							value: newName,
+							required: false,
+							enable: true,
+							readonly: false}" />
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

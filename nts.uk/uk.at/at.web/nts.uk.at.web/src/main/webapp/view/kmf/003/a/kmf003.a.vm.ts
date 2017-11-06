@@ -8,7 +8,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         
         //Top input form
         code: KnockoutObservable<string>;
-        editmode: KnockoutObservable<boolean>;
+        editMode: KnockoutObservable<boolean>;
         name: KnockoutObservable<string>;
         useConditionCls: KnockoutObservable<boolean>;  
         grantDate: KnockoutObservable<string>;
@@ -71,7 +71,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(value.length > 0){
                     service.findByCode(value).done(function(data) {
-                        self.editmode(false);
+                        self.editMode(false);
                         self.code(data.yearHolidayCode);
                         self.name(data.yearHolidayName);
                         self.A6_2SelectedRuleCode(data.standardCalculation);  
@@ -87,7 +87,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useCls04(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1 ? true : false);
                         self.conditionValue04(data.grantConditions[3] && data.grantConditions[3].conditionValue.toString());
                         self.useCls05(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1 ? true : false);
-                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());                    
+                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());       
+                        self.setFocus();             
                     }).fail(function(res) {
                           
                     });
@@ -196,7 +197,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             //Grid data
             self.singleSelectedCode([]);
             
-            self.editmode(true);  
+            self.editMode(true);
+            
+            self.setFocus();
+        }
+        
+        setFocus() {
+            var self = this;
+            if (self.editMode()) {
+                $("#input-code").focus();
+            } else {
+                $("#input-name").focus();    
+            }   
         }
         
         /**
@@ -211,6 +223,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             // validate
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
+            $(".a7_7").trigger("validate");
+            
             if (nts.uk.ui.errors.hasError()) {
                 return;    
             }
@@ -286,7 +300,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             var data = new YearHolidayGrantDto(code, name, calMethod, standMethod, useConditionCls, grantMd, memo, grandConditions);
             
-            if(!self.editmode()){
+            if(!self.editMode()){
                 self.updateMode(data);
             } else {
                 self.addMode(data);
@@ -302,6 +316,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             }
             
             service.addYearHolidayGrant(data).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getData();
                 self.singleSelectedCode(data.yearHolidayCode);
             }).fail(function(error) {
@@ -316,6 +331,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             
             service.updateYearHolidayGrant(data).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getData();
                 self.singleSelectedCode(data.yearHolidayCode);
             }).fail(function(error) {
@@ -370,8 +386,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();      
                 });
-            }).ifNo(() => {
-                nts.uk.ui.dialog.info({ messageId: "Msg_36" });
             });
         }
         
@@ -472,7 +486,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             //Top input form
             self.code = ko.observable("");
-            self.editmode = ko.observable(true);  
+            self.editMode = ko.observable(true);  
             self.name = ko.observable("");              
             self.useConditionCls = ko.observable(false);            
             self.grantDate = ko.observable("");   

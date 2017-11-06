@@ -3,6 +3,9 @@ package nts.uk.ctx.at.request.dom.application.common.approvalframe;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+
 /**
  * 
  * @author hieult
@@ -36,7 +39,7 @@ public interface ApprovalFrameRepository {
 	 * @param dispOrder
 	 * @return
 	 */
-	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , int dispOrder);
+	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , int dispOrder,String approverSID);
 
 	List<ApprovalFrame> findByPhaseID(String companyID, String phaseID);
 	/**
@@ -44,7 +47,7 @@ public interface ApprovalFrameRepository {
 	 * 
 	 * @param approvalFrame
 	 */
-	void create(ApprovalFrame approvalFrame);
+	void create(ApprovalFrame approvalFrame, String phaseID);
 
 	/**
 	 * Update ApprovalFrame
@@ -52,7 +55,7 @@ public interface ApprovalFrameRepository {
 	 * @param approvalFrame
 	 */
 
-	void update(ApprovalFrame approvalFrame);
+	void update(ApprovalFrame approvalFrame, String phaseID);
 
 	/**
 	 * Delete ApprovalFrame
@@ -61,6 +64,12 @@ public interface ApprovalFrameRepository {
 	 * @param appID
 	 * @param phaseID
 	 */
-	void delete (String companyID , String phaseID , int dispOrder );
+	void delete (ApprovalFrame approvalFrame);
+	/**
+	 * get list frame by list phase
+	 * @param listPhase
+	 * @return
+	 */
+	List<ApprovalFrame> getListFrameByListPhase(String companyID,List<String> listPhaseID);
 
 }

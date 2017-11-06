@@ -85,5 +85,36 @@ public class KscmtEstPriceEmpSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kscmtEstPriceEmpSetPK;
 	}
-    
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((kscmtEstPriceEmpSetPK == null) ? 0 : kscmtEstPriceEmpSetPK.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscmtEstPriceEmpSet other = (KscmtEstPriceEmpSet) obj;
+		if (kscmtEstPriceEmpSetPK == null) {
+			if (other.kscmtEstPriceEmpSetPK != null)
+				return false;
+		} else if (!kscmtEstPriceEmpSetPK.equals(other.kscmtEstPriceEmpSetPK))
+			return false;
+		return true;
+	}
+
 }

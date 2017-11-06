@@ -12,66 +12,52 @@
 			<com:scriptfile path="kaf000.a.service.js" />
 			<com:scriptfile path="kaf000.a.vm.js" />
 			<com:scriptfile path="kaf000.a.start.js" />
+			<com:scriptfile path="kaf000.shr.vm.js" />
+			<com:scriptfile path="/kaf000.shr.vm.js"/>
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
 			<div style="height: 50px"> button </div>
+			
 			<!-- Message area -->
-			<div id="message-area"> 
-				<table >
-					<tr>
-						<!-- A1_1 -->
-						<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
-						<!-- A1_2 -->
-						<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
-					</tr>
-					<tr>
-						<!-- A1_3 -->
-						<td class="message-td">#{i18n.getText('KAF000_2')}</td>
-						<!-- A1_4 -->
-						<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
-					</tr>
-				</table>
+			<div>
+				<ui:include src="index1.xhtml" />
 			</div>
+			
 			<!-- Body -->
 			<div style="height: 50px;background-color: gray ; margin-top: 30px;'">1</div>
 			
 			<!-- Footer -->
-			<div id="label-1">
+			<div>
+				<ui:include src="index2.xhtml" />
+			</div>
+			<!-- <div id="label-1">
 				<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 			</div>	
 			<div id="table-1" >
 				<table id="table-phase">
-					<tbody>
-						<tr class="bg-green">
+					<thead>
+						<tr  class="bg-green">
 							<th class="phase-app" style="width:111px;"></th>
 							<th class="name-app" style="width:111px;"></th>
-							<th class="content-app" style="width:211px;">1234</th>
+							<th class="content-app" style="width:230px;">#{i18n.getText('KAF000_3')}</th>
 						</tr>
-						<tr>
-							<td class="bg-green" rowspan="5"> phase 1</td>
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 2</td>
-							<td >content 2</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 3</td>
-							<td >content 3</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 4</td>
-							<td >content 5</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 5</td>
-							<td >content 5</td>
-						</tr>
+					</thead>
+					<tbody data-bind="foreach :listFrameByListPhase1 ">
+						<com:ko bind="$data" tag ="foreach">
+							<tr>
+								<com:ko bind="$index() === 0" tag="if">
+									<td class="bg-green" data-bind="attr: {rowspan: $parent.length},text: $data.phaseID">test</td>
+								</com:ko>
+								<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
+								<td><label data-bind="text: $data.reason"></label></td>
+							</tr>
+						</com:ko>
 					</tbody>
 				</table>
-			</div>
+			</div> -->
+			
 				
 		</ui:define>
 	</ui:composition>

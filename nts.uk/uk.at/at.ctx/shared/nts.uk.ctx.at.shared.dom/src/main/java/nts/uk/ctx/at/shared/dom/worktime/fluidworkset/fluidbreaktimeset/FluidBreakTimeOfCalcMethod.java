@@ -8,7 +8,6 @@ package nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset;
 public enum FluidBreakTimeOfCalcMethod{
 	ReferToMaster,
 	ConbineMasterWithStamp,
-	StampWithoutReference
 	;
 	
 	/**

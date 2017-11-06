@@ -1,6 +1,4 @@
 package nts.uk.ctx.at.record.dom.divergencetime;
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -58,8 +56,8 @@ public class DivergenceTime extends AggregateRoot{
 				divTimeId, 
 				new DivergenceTimeName(divTimeName),
 				EnumAdaptor.valueOf(divTimeUseSet, UseSetting.class),
-				new Time(BigDecimal.valueOf(alarmTime)), 
-				new Time(BigDecimal.valueOf(errTime)), 
+				new Time(alarmTime), 
+				new Time(errTime), 
 				InputSetting.convert(selectUseSet,cancelErrSelect), 
 				InputSetting.convert(inputUseSet,cancelErrInput));
 				

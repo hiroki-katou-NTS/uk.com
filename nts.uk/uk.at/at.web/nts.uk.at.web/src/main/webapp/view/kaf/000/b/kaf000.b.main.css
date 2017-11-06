@@ -3,6 +3,12 @@
 	height: 68px;
 	width: 800px;
 	margin-left: 39px;
+	margin-top: 15px;
+}
+.comment{
+	width: 50px;
+    padding-left: 20px;
+	display: inline-block;
 }
 
 .message-td {
@@ -16,16 +22,28 @@
 	height: 25px;
 }
 
-#table-phase td{
+#table-phase td {
 	height: 25px;
 }
-#label-1{
+
+#label-1 {
 	margin-top: 20px;
-    margin-left: 20px;
-    float: left;
+	margin-left: 20px;
+	float: left;
 }
 
-#table-1{
+#table-1 {
 	margin-top: 10px;
-    margin-left: 150px;
+	margin-left: 150px;
+}
+
+.divKaf009 {
+	height: 600px;
+}
+
+.container {
+    width: 1300px;
+}	
+.displayControlFalse {
+	display: none;
 }

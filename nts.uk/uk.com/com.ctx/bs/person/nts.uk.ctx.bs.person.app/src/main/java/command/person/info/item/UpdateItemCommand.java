@@ -5,6 +5,7 @@ import lombok.Value;
 @Value
 public class UpdateItemCommand {
 	private String perInfoItemDefId;
+	private String perInfoCtgId;
 	private String itemName;
 	private SingleItemCommand singleItem;
 }

@@ -6,8 +6,7 @@ package nts.uk.ctx.basic.infra.repository.person;
 
 import nts.uk.ctx.basic.dom.person.PersonGetMemento;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
-import nts.uk.ctx.bs.person.dom.person.info.PersonId;
-import nts.uk.ctx.bs.person.dom.person.info.PersonName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
  * The Class JpaPersonGetMemento.
@@ -33,8 +32,8 @@ public class JpaPersonGetMemento implements PersonGetMemento {
 	 * @see nts.uk.ctx.basic.dom.person.PersonGetMemento#getPersonId()
 	 */
 	@Override
-	public PersonId getPersonId() {
-		return new PersonId(this.person.getPid());
+	public String getPersonId() {
+		return this.person.getPid();
 	}
 
 	/*

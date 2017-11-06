@@ -43,7 +43,7 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setThresoldUpperLimit(ConditionThresholdLimit setThresoldUpperLimit) {
-		this.thresoldUpperLimit = setThresoldUpperLimit.v();
+		this.thresoldUpperLimit = setThresoldUpperLimit.v().longValue();
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit) {
-		this.thresoldLowerLimit = setThresoldLowerLimit.v();
+		this.thresoldLowerLimit = setThresoldLowerLimit.v().longValue();
 	}
 
 	/*

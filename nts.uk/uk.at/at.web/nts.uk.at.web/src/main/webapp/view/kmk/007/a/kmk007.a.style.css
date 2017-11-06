@@ -14,16 +14,25 @@
 	display: table-cell;
 }
 
+#single-list>tbody>tr>td:last-child {
+	text-align: center;
+}
+
+#single-list .icon icon-dot {
+	vertical-align: middle;
+	font-size: 0px;
+}
+
 #duty-type-set-oneday {
 	background: lightyellow;
 	height: 250px;
 	width: 800px;
-	margin-top: 15px;
+	margin-top: 25px;
 	border: 1px solid;
 }
 
 #input-workTypeCode {
-	width: 30px !important; 
+	width: 30px !important;
 	margin-left: 45px;
 }
 
@@ -34,7 +43,7 @@
 #morning, #afternoon {
 	display: inline-table;
 	height: 250px;
-	width: 450px;
+	width: 440px;
 	background: beige;
 	border: 1px solid;
 	margin-top: 15px;
@@ -83,7 +92,25 @@
 .calulator-method-combo-box {
 	vertical-align: middle;
 	margin-left: 10px;
-	width: 250px
+	width: 250px;
+	margin-left: 100px;
+}
+
+#abbreviation-name-input {
+	width: 100px !important;
+	margin-left: 142px;
+	vertical-align: bottom;
+}
+
+#symbolic-name-input {
+	width: 40px !important;
+	vertical-align: bottom;
+}
+
+#memo-input {
+	width: 400px;
+	margin-left: 135px;
+	vertical-align: bottom;
 }
 
 button.ntsSwitchLanguage {

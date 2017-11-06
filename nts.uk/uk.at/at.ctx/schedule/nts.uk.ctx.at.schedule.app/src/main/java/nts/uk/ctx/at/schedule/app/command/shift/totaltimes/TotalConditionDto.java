@@ -90,7 +90,7 @@ public class TotalConditionDto {
 		 */
 		@Override
 		public ConditionThresholdLimit getThresoldUpperLimit() {
-			return new ConditionThresholdLimit(this.command.getThresoldUpperLimit());
+			return new ConditionThresholdLimit(this.command.getThresoldUpperLimit().intValue());
 		}
 
 		/*
@@ -102,7 +102,7 @@ public class TotalConditionDto {
 		 */
 		@Override
 		public ConditionThresholdLimit getThresoldLowerLimit() {
-			return new ConditionThresholdLimit(this.command.getThresoldLowerLimit());
+			return new ConditionThresholdLimit(this.command.getThresoldLowerLimit().intValue());
 		}
 
 	}

@@ -12,10 +12,13 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage;
+import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTypeOrder;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -71,6 +74,12 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	
     @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
     public List<KshmtWorkTypeSet> worktypeSetList;
+    
+    @OneToOne(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    public KshmtWorkTypeOrder kshmtWorkTypeOrder;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    public List<KshmtWorkTypeLanguage> workTypeLanguage;
     
 	@Override
 	protected Object getKey() {

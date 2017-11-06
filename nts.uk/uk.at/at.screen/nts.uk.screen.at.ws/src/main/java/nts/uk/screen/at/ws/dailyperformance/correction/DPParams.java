@@ -3,8 +3,10 @@
  */
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.screen.at.app.dailyperformance.correction.DateRange;
+import java.util.List;
+
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 
 /**
  * @author hungnm
@@ -12,5 +14,5 @@ import nts.uk.screen.at.app.dailyperformance.correction.DateRange;
  */
 public class DPParams {
 	public DateRange dateRange;
-	public GeneralDate baseDate;
+	public List<DailyPerformanceEmployeeDto> lstEmployee;
 }

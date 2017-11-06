@@ -8,67 +8,42 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.basic.dom.organization.classification.ClassificationCode
-					nts.uk.ctx.basic.dom.organization.classification.ClassificationName
+					nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
+					nts.uk.ctx.bs.employee.dom.classification.ClassificationName
 					nts.uk.shr.com.primitive.Memo
-				</com:ValidatorScript>
-			<com:stylefile path="cmm014.a.main.css" />
+			</com:ValidatorScript>
+			
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="cmm014.a.start.js" />
-			<com:scriptfile path="cmm014.a.vm.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			
+			<com:stylefile path="cmm014.a.main.css" />
 			<com:scriptfile path="cmm014.a.service.js" />
-			<script type="text/javascript">
-			</script>
+			<com:scriptfile path="cmm014.a.vm.js" />
+			<com:scriptfile path="cmm014.a.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 
 			<div id="functions-area" class="divHeader">
-				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
-					class="btnStyle">新規</button>
-				<button id="A_BTN_002"
-					data-bind="click: RegisterClassification , enable: $root.errors.isEmpty"
-					class="proceed btnStyle">登録</button>
-				<button id="A_BTN_003">マスタ修正ログ</button>
-				<button id="A_BTN_004"
-					data-bind="click: DeleteClassification , enable: hasCellphone"
-					class="danger btnStyle">削除</button>
+				<button id="A_BTN_001" data-bind="click: clearData" tabindex="1"
+					class="btnStyle">#{i18n.getText('CMM014_1')}</button>
+				<button id="A_BTN_002" tabindex="2"
+					data-bind="click: createClassification , enable: true"
+					class="proceed btnStyle">#{i18n.getText('CMM014_2')}</button>
+				<!-- <button id="A_BTN_003" tabindex="3">#{i18n.getText('CMM014_3')}</button> -->
+				<button id="A_BTN_004" tabindex="4"
+					data-bind="click: deleteClassification , enable: enableDelete"
+					class="danger btnStyle">#{i18n.getText('CMM014_4')}</button>
 
 			</div>
 
 			<div id="contents-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
-
-					<i class="icon icon-searchbox"></i>
-
-					<div class="cf">
-						<div style="float: left">
-							<div id="test"
-								data-bind="ntsSearchBox: {
-                                    comId: 'single-list',
-                                    items: dataSource,         
-                                    selected: currentCode, 
-                                    selectedKey: 'classificationCode', 
-                                    childField: 'childs', 
-                                    fields: ['classificationName', 'classificationCode']}" />
-							<br />
-							<table id="single-list"
-								data-bind="ntsGridList: {
-                                            width: 400,
-                                            height: 520,
-                                            options: dataSource,
-                                            optionsValue: 'classificationCode',
-                                            columns: columns,
-                                            multiple: false,
-                                            value: currentCode}"
-								class="cf">
-							</table>
-						</div>
-					</div>
+				<div id="left-content">
+					<div id="clf-component"></div>
 				</div>
 
 				<div id="right-content">
-					<table class="table_content" data-bind="with: currentItem">
+					<table class="table_content" data-bind="with: classificationModel">
 						<colgroup>
 							<col width="230px" />
 							<col width="*" />
@@ -78,29 +53,30 @@
 							<td class="row_1">
 								<div
 									data-bind="ntsFormLabel: { constraint: ['ClassificationCode', 'ClassificationName'], required: true }">
-									コード/名称</div>
+									#{i18n.getText('CMM014_5')}</div>
 
 
 							</td>
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input id= "A_INP_002"
+										<input id= "clfCode" tabindex="6"
 											data-bind="ntsTextEditor: {
-                                            value: INP_002_code,
+											name: '#[CMM014_6]',
+                                            value: classificationCode,
                                             constraint: 'ClassificationCode',
-                                            enable: INP_002_enable}" />
+                                            required: true,
+                                            enable: isEnableCode}" />
 									</div>
 
 									<div class="input_002">
-										<input id= "A_INP_003"
+										<input id= "clfName" tabindex="7"
 											data-bind="ntsTextEditor: {
-                                            value: INP_003_name,
-                                            constraint: 'ClassificationName'
-                                            
-                                            }" />
+												name: '#[CMM014_7]',
+	                                            value: classificationName,
+	                                            required: true,
+	                                            constraint: 'ClassificationName'}" />
 									</div>
-
 								</div>
 							</td>
 						</tr>
@@ -109,14 +85,15 @@
 							<td>
 								<div style="margin-bottom: 140px;"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">
-									<label id="A_LBL_003">メモ</label>
+									<label id="A_LBL_003">#{i18n.getText('CMM014_8')}</label>
 								</div>
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea style="margin-top: 20px; width: 446px; height: 180px"
+									<textarea id="memo" tabindex="8" style="margin-top: 20px; width: 446px; height: 180px"
 										data-bind="ntsMultilineEditor: {
-											value: INP_004_notes,
+											name: '#[CMM014_8]',
+											value: memo,
 											constraint: 'Memo'
 											}" />
 								</div>

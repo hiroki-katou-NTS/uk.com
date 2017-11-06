@@ -12,6 +12,7 @@ import entity.person.info.category.PpemtPerInfoCtgCm;
 import entity.person.info.category.PpemtPerInfoCtgCmPK;
 import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
+import entity.person.info.setting.copysetting.PpestEmployeeCopySetting;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -38,6 +39,23 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	
+
+	private final static String SELECT_CATEGORY_BY_PARENT_CD = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " AND CO.categoryParentCd = :parentCd";
+	
+	private final static String SELECT_CATEGORY_BY_PARENT_CD_WITH_ORDER = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " AND CO.categoryParentCd = :parentCd ORDER BY po.disporder";
 
 	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.ppemtPerInfoCtgCmPK.categoryCd FROM PpemtPerInfoCtgCm co"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.ppemtPerInfoCtgCmPK.categoryCd DESC";
@@ -52,6 +70,22 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 
+	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM PpestEmployeeCopySetting i "
+			+ "WHERE i.PpestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
+
+	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
+			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
+			+ " AND ca.categoryName LIKE CONCAT('%', :categoryName, '%') ORDER BY po.disporder";
+
+	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
+			+ " WHERE e.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -205,4 +239,61 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return new PpemtDateRangeItem(perInfoCtgPK, dateRangeItem.getStartDateItemId(),
 				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
+
+	// vinhpx: start
+	@Override
+	public boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_PERINFOCTGIN_COPYSETING, Long.class)
+				.setParameter("categoryId", perInfoCtgId).setParameter("companyId", companyId).getSingle();
+		return a.isPresent() ? (a.get().intValue() > 0 ? true : false) : false;
+	}
+
+	@Override
+	public void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId) {
+		boolean alreadyExist = checkPerInfoCtgAlreadyCopy(perInfoCtgId, companyId);
+		if (!alreadyExist) {
+			PpestEmployeeCopySetting obj = new PpestEmployeeCopySetting();
+			obj.PpestEmployeeCopySettingPk.categoryId = perInfoCtgId;
+			obj.companyId = companyId;
+			getEntityManager().persist(obj);
+		}
+	}
+
+	@Override
+	public List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name) {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_NAME, Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("cid", companyId).setParameter("categoryName", name).getList(c -> {
+					return createDomainFromEntity(c);
+				});
+	}
+	
+	@Override
+	public List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgCd, String contractCd) {
+		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD, Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("parentCd", parentCtgCd).getList(c -> {
+					return createDomainFromEntity(c);
+					});
+	}
+
+	@Override
+	public DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId) {
+		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).getSingleOrNull();
+		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+	}
+
+	@Override
+	public List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgId, String contractCd,
+			boolean isASC) {
+		return  this.queryProxy().query(SELECT_CATEGORY_BY_PARENT_CD + (isASC?" ASC":" DESC"), Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("parentCd", parentCtgId).getList(c -> {
+					return createDomainFromEntity(c);
+					});
+	}
+	
+	
+	// vinhpx: end
+
+	
+
+
 }

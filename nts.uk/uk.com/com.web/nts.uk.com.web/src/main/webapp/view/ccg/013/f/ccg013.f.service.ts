@@ -1,7 +1,6 @@
 module nts.uk.com.view.ccg013.f.service {
     let paths: any = {
-        
-        getAllJobTitle: "basic/company/organization/jobtitle/findall",
+        getAllJobTitle: "bs/employee/jobtitle/findAll",
         findWebMenuCode: "sys/portal/webmenu/jobtitletying/findWebMenuCode",
         updateWebMenuCode: "sys/portal/webmenu/jobtitletying/update"
     }   

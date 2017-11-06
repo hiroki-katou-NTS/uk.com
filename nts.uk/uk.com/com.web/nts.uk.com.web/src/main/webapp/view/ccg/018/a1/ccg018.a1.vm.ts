@@ -11,18 +11,13 @@ module ccg018.a1.viewmodel {
         isEmpty: KnockoutObservable<boolean>;
 
         constructor(baseModel: base.result.BaseResultModel) {
-            super(baseModel); 
+            super(baseModel);
             let self = this;
             self.screenTemplateUrl("../a1/index.xhtml");
             self.categorySet(baseModel.categorySet);
             self.listJobTitle = ko.observableArray([]);
             self.date = ko.observable(new Date().toISOString());
             self.isVisible = ko.computed(function() {
-                if (!self.categorySet()) {
-                    $("#width-tbody").addClass("width-tbody");
-                } else {
-                    $("#width-tbody").removeClass("width-tbody");
-                }
                 return !!self.categorySet();
             });
             self.comboItemsAfterLogin(baseModel.comboItemsAfterLogin);
@@ -31,9 +26,17 @@ module ccg018.a1.viewmodel {
                 { code: 1, name: nts.uk.resource.getText("CCG018_13") },
                 { code: 0, name: nts.uk.resource.getText("CCG018_14") }
             ]);
-            
-            self.isEmpty = ko.computed(function(){
-                return !nts.uk.ui.errors.hasError();    
+
+            self.isEmpty = ko.computed(function() {
+                return !nts.uk.ui.errors.hasError();
+            });
+
+            self.categorySet.subscribe((newValue) => {
+                if (newValue == 0) {
+                    $("#width-tbody").addClass("width-tbody");
+                } else {
+                    $("#width-tbody").removeClass("width-tbody");
+                }
             });
 
             self.checkCategorySet();
@@ -44,13 +47,13 @@ module ccg018.a1.viewmodel {
             let self = this;
             self.searchByDate();
         }
-        
-        checkCategorySet() : void {
+
+        checkCategorySet(): void {
             let self = this;
-            if (!self.categorySet()) {
+            if (self.categorySet() == null) {
                 self.categorySet(1);
-                self.openDialogC();    
-            }    
+                self.openDialogC();
+            }
         }
 
         /**
@@ -61,7 +64,7 @@ module ccg018.a1.viewmodel {
             let dfd = $.Deferred();
             self.items.removeAll();
             service.findDataOfTopPageJobSet(listJobId)
-                .done(function(data) {                    
+                .done(function(data) {
                     _.forEach(listJobId, function(x) {
                         let dataObj: any = _.find(data, ['jobId', x]),
                             jobTitle = _.find(self.listJobTitle(), ['id', x]);
@@ -217,5 +220,5 @@ module ccg018.a1.viewmodel {
         }
     }
 
-   
+
 }

@@ -1,0 +1,229 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 515px;
+}
+
+#functions-area, #contents-area {
+	min-width: 1260px;
+}
+
+@media ( min-width : 1280px) {
+	#functions-area, #contents-area {
+		overflow-x: hidden;
+	}
+}
+
+#contents-area>.left-area, #contents-area .right-area {
+	float: left;
+}
+
+#contents-area>.left-area {
+	width: 280px;
+	margin-left: 85px;
+}
+
+#contents-area>.left-area .bg-green {
+	padding: 12px;
+	height: 255px;
+}
+
+#contents-area>.right-area {
+	padding-left: 15px;
+	width: 860px;
+}
+
+#contents-area>.left-area #lefttabs {
+	margin-top: 5px;
+}
+
+#lefttabs .ntsSearchBox.ntsSearchBox_Component {
+	min-width: 120px;
+}
+
+.avatar-group, .person-group, .action-group {
+	float: left;
+	padding: 0 1px;
+}
+
+.avatar-group {
+	width: 110px;
+	height: 147px;
+	cursor: pointer;
+}
+
+.person-group {
+	width: 550px;
+	height: 147px;
+}
+
+.action-group {
+	width: 194px;
+}
+
+.action-group .column {
+	width: 92px;
+	margin-left: 1px;
+	padding: 3px 0 3px 5px;
+	box-sizing: border-box;
+	float: left;
+}
+
+.action-group button {
+	width: 100%;
+}
+
+.action-group .btn {
+	margin-bottom: 5px;
+}
+
+.action-group .btn-print {
+	height: 65px;
+	background-repeat: no-repeat;
+	background-position-x: 2px;
+	background-position-y: center;
+	background-image: url("images/print.png");
+}
+
+.action-group .btn-location {
+	background-repeat: no-repeat;
+	background-position-x: 2px;
+	background-position-y: center;
+	background-image: url("images/location.png");
+	background-position-y: center;
+}
+
+.action-group .btn-details {
+	background-repeat: no-repeat;
+	background-position-x: 5px;
+	background-position-y: center;
+	background-image: url("images/details.png");
+}
+
+.action-group .btn-goout {
+	cursor: pointer;
+	display: block;
+	min-height: 51px;
+	line-height: 42px;
+	padding-left: 60px;
+	background-repeat: no-repeat;
+	background-position-x: 5px;
+	background-position-y: center;
+	background-image: url("images/goout.png");
+	display: block;
+}
+
+.active-panel {
+	width: 100%;
+	min-height: 52px;
+	height: 100%;
+	box-sizing: border-box;
+	border: 1px solid #999999;
+	margin-bottom: 2px;
+}
+
+.active-panel:before {
+	content: '';
+	display: block;
+	background-color: #00B050;
+	display: block;
+	background-color: #00B050;
+	height: 7px;
+}
+
+.avatar-group img {
+	padding: 5px 2px 2px 5px;
+}
+
+.person-info {
+	margin: 5px;
+	width: calc(100% - 10px);
+	box-sizing: border-box;
+}
+
+.person-info td {
+	line-height: 30px;
+	border: 1px solid #999;
+}
+
+.person-info td:first-child {
+	width: 120px;
+	padding-left: 15px;
+}
+
+.person-info td:nth-child(3) {
+	width: 100px;
+	padding-left: 15px;
+	box-sizing: border-box;
+}
+
+#hor-scroll-button-hide {
+	margin-top: 5%;
+}
+
+.bottom-right-area {
+	padding-top: 5px;
+}
+
+.form-group:not (.item-classification ) {
+	margin-bottom: 5px;
+}
+
+.form-group:not (.item-classification )>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#contents-area .layout-control .drag-panel {
+	min-width: 860px;
+}
+
+.ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
+	.ui-iggrid .ui-iggrid-tablebody td {
+	border-top: none;
+}
+
+#employees_container .ui-iggrid-headertable th:last-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-hover:last-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-active:last-child,
+	#employees_container .ui-iggrid-tablebody td:last-child {
+	border-left: none;
+}
+
+#employees_container .ui-iggrid-headertable th:first-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-hover:first-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-active:first-child,
+	#employees_container .ui-iggrid-tablebody td:first-child {
+	border-right: none;
+}
+
+.ui-tabs .ui-tabs-panel {
+	padding: 10px;
+}
+
+.search-box {
+	margin-bottom: 15px;
+}
+.search-box>* {
+	display: inline-block;
+	vertical-align: middle;
+} 
+
+.ui-igcombo-wrapper {
+	width: 195px;
+}
+
+.caret-background.caret-right:after {
+	top: 40px;
+	border-width: 35px 10px
+}
+
+
+
+.category-input>.title {
+	display: block;
+	line-height: 37px;
+	background-color: #cee6ff;
+}

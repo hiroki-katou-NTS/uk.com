@@ -208,6 +208,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		actualTime = actualTime - dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet());
 		int workTime = calcActualTime(actualTime);
 		/*就業時間算出ロジックをここに*/
+		
 		return workTime;
 	}
 	

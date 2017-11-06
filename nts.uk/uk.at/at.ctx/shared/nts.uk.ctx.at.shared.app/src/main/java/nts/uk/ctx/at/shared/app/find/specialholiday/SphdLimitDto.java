@@ -9,7 +9,7 @@ public class SphdLimitDto {
 	private String companyId;
 
 	/*特別休暇コード*/
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	
 	/*月数*/
 	private int specialVacationMonths;

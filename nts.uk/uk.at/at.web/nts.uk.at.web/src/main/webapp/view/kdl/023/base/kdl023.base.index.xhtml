@@ -23,15 +23,16 @@
 			<ui:define name="content">
 				<div id="contents-area" data-bind="visible: true" style="display: none">
 					<div class="pull-left reflect-setting bg-green caret-right caret-background">
+					<com:ko tag="with" bind="reflectionSetting">
 						<div class="control-group cf">
 							<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_3')}</div>
 							<div tabindex="1" id="cbb-daily-work-pattern" class="pull-left" style="margin-left: 36px"
 								data-bind="ntsComboBox: {
 										name: '#[KDL023_4]',
-										options: dailyPatternList,
+										options: $parent.dailyPatternList,
 										optionsValue: 'patternCode',
 										optionsText: 'patternName',
-										value: selectedDailyPatternCode,
+										value: selectedPatternCd,
 										enable: true,
 										columns: [
 											{ prop: 'patternCode', length: 3 },
@@ -39,7 +40,6 @@
 										]}">
 							</div>
 						</div>
-						<com:ko tag="with" bind="patternReflection">
 							<div class="control-group">
 								<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
 							</div>

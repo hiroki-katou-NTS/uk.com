@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(max="168:00", min = "00:00")
 public class ErrorWeek extends TimeDurationPrimitiveValue<ErrorWeek> {
 
-	public ErrorWeek(Long rawValue) {
+	public ErrorWeek(int rawValue) {
 		super(rawValue);
 	}
 

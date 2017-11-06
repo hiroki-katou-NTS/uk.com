@@ -18,11 +18,11 @@ public class KshstGrantDatePerPK implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 
-	/* 付与日のID */
-	@Column(name = "GRANT_DATE_ID")
-	public String grantDateId;
+	/*付与日のID*/
+	@Column(name = "SPHD_CD")
+	public String specialHolidayCode;
 
-	/* コード */
-	@Column(name = "GRANT_DATE_CD")
-	public String grantDateCode;
+	/*特別休暇コード*/
+	@Column(name = "PERSONAL_GRANT_DATE_CD")
+	public String personalGrantDateCode;
 }

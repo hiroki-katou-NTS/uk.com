@@ -1,9 +1,8 @@
 #contents-area {
-	padding: 20px 60px 0 60px;
+	padding: 20px 20px 0 20px;
 }
 
 #contents-area>div:first-child {
-	padding: 0 10px;
 	margin: 10px 0 20px 0;
 }
 
@@ -28,4 +27,8 @@
 
 #contents-area tbody.ui-iggrid-tablebody tr.ui-sortable-placeholder>td {
 	visibility: visible !important;
+}
+
+.ui-iggrid .ui-iggrid-headertable, .ui-iggrid .ui-iggrid-content, .ui-iggrid .ui-widget-content, .ui-iggrid-scrolldiv table {
+	position: relative;
 }

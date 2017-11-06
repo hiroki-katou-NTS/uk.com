@@ -6,7 +6,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
-import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -27,7 +26,7 @@ public class PredetermineTimeSet extends AggregateRoot {
 	
 	private PredetermineTimeSheetSetting specifiedTimeSheet;
 	
-	private SetAdditionToWorkTime additionSet;
+	private PredetermineTime additionSet;
 	
 	public int getPredetermineEndTime() {
 		return this.dateStartTime.minute() + (int)this.rangeTimeDay.minute();
@@ -36,4 +35,15 @@ public class PredetermineTimeSet extends AggregateRoot {
 	public TimeSheetWithUseAtr getTimeSheetOf(int workNo) {
 		return this.specifiedTimeSheet.getMatchWorkNoTimeSheet(workNo);
 	}
+	
+	
+	/**
+	 * 1日の範囲を時間帯として返す
+	 * @return 1日の範囲(時間帯)
+	 */
+	public TimeSpanForCalc getOneDaySpan() {
+		return new TimeSpanForCalc(dateStartTime,new TimeWithDayAttr(dateStartTime.valueAsMinutes()+rangeTimeDay.valueAsMinutes()));
+	}
+	
+	
 }

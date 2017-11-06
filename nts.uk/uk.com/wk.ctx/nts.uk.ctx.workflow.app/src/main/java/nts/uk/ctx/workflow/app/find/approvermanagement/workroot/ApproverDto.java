@@ -10,18 +10,25 @@ public class ApproverDto {
 	private String jobTitleId;
 	/**社員ID*/
 	private String employeeId;
+	/**Name*/
+	private String name;
 	/**順序*/
 	private int orderNumber;
 	/**区分*/
 	private int approvalAtr;
 	/**確定者*/
 	private int confirmPerson;
-	public static ApproverDto fromDomain(Approver domain){
+	/**confirmPerson Name*/
+	private String confirmName;
+	
+	public static ApproverDto fromDomain(Approver domain, String name , String confirmName){
 		return new ApproverDto(domain.getApproverId(),
 					domain.getJobTitleId(),
 					domain.getEmployeeId(),
+					name,
 					domain.getOrderNumber(),
 					domain.getApprovalAtr().value,
-					domain.getConfirmPerson().value);
+					domain.getConfirmPerson().value,
+					confirmName);
 	}
 }

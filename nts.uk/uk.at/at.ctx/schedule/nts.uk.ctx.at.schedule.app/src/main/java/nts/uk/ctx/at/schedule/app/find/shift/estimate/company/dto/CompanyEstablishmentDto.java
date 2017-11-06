@@ -23,5 +23,8 @@ public class CompanyEstablishmentDto {
 	
 	/** The estimate number of day. */
 	private EstablishmentNumberOfDayDto estimateNumberOfDay;
+	
+	/** The setting. */
+	private boolean setting;
 
 }

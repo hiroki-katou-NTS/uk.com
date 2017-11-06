@@ -18,12 +18,14 @@ public class PersonInfoCategoryDetailDto {
 
 	private int allowOtherRef;
 
+	private int personEmployeeType;
+
 	private boolean isSetting;
 
 	public static PersonInfoCategoryDetailDto fromDomain(PersonInfoCategoryDetail domain) {
 		return new PersonInfoCategoryDetailDto(domain.getCategoryId(), domain.getCategoryCode(),
 				domain.getCategoryName(), domain.getCategoryType(), domain.getAllowPersonRef(),
-				domain.getAllowOtherRef(), domain.isSetting());
+				domain.getAllowOtherRef(), domain.getPersonEmployeeType(), domain.isSetting());
 
 	}
 

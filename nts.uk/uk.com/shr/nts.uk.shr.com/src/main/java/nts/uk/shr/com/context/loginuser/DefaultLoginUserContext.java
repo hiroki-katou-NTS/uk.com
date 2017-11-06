@@ -1,18 +1,24 @@
 package nts.uk.shr.com.context.loginuser;
 
+import java.io.Serializable;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.val;
+import nts.gul.misc.DeepClonable;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @RequiredArgsConstructor
-public class DefaultLoginUserContext implements LoginUserContext {
+public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<DefaultLoginUserContext>, Serializable {
 	
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
+
 	private final String userId;
 	
 	private final boolean isEmployee;
-	
-	@Setter
-	private String loginCode;
 	
 	@Setter
 	private String personId;
@@ -31,6 +37,10 @@ public class DefaultLoginUserContext implements LoginUserContext {
 	
 	@Setter
 	private String employeeCode;
+	
+	private final LoginUserRoles roles = new DefaultLoginUserRoles();
+	
+	private SelectedLanguage language;
 
 	@Override
 	public boolean hasLoggedIn() {
@@ -45,11 +55,6 @@ public class DefaultLoginUserContext implements LoginUserContext {
 	@Override
 	public String userId() {
 		return this.userId;
-	}
-	
-	@Override
-	public String loginCode() {
-		return this.loginCode;
 	}
 	
 	@Override
@@ -75,6 +80,28 @@ public class DefaultLoginUserContext implements LoginUserContext {
 	@Override
 	public String employeeCode() {
 		return this.employeeCode;
+	}
+
+	@Override
+	public LoginUserRoles roles() {
+		return this.roles;
+	}
+
+	@Override
+	public SelectedLanguage language() {
+		return this.language;
+	}
+	
+	@Override
+	public DefaultLoginUserContext deepClone() {
+		val clone = new DefaultLoginUserContext(this.userId, this.isEmployee);
+		clone.setCompanyCode(companyCode);
+		clone.setCompanyId(companyId);
+		clone.setContractCode(contractCode);
+		clone.setEmployeeCode(employeeCode);
+		clone.setEmployeeId(employeeId);
+		clone.setPersonId(personId);
+		return clone;
 	}
 	
 }

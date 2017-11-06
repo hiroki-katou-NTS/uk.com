@@ -10,4 +10,6 @@ public interface LanguageMasterRepository {
 	public List<LanguageMasterDto> getSystemLanguages();
 	
 	public Optional<LanguageMasterDto> getSystemLanguage(String languageId);
+	
+	public boolean isJapanese(String languageId);
 }
