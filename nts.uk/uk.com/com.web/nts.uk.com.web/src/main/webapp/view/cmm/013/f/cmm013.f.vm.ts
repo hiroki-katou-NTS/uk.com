@@ -251,11 +251,8 @@ module nts.uk.com.view.cmm013.f {
                             _self.showBundledErrorMessage(res);
                         });                                   
                 } else {
-                    // No value, remove data
-                    _self.sequenceCode("");
-                    _self.sequenceName("");    
-                    // Set focus
-                    $('#sequence-code').focus();
+                    // No Sequence has been choosed, switch to create mode
+                   _self.createMode(true); 
                 }                     
             }
                    
