@@ -43,6 +43,14 @@ public class CurrentAddress extends AggregateRoot {
 	private HouseType houseType;
 	/** 最寄り駅 */
 	private NearestStation nearestStation;
+	
+	public CurrentAddress(String currentAddressId, String pid, GeneralDate StartDate,
+			GeneralDate endDate, String address1, String addresskana1){
+		this.currentAddressId = currentAddressId;
+		this.pid = pid;
+		this.period = new DatePeriod(StartDate, endDate);
+		this.address1 = new AddressSet1(new PersonAddress1(address1), new PersonAddressKana1(addresskana1));
+	}
 
 	public static CurrentAddress createFromJavaType(String currentAddressId, String pid, String countryId,
 			String postalCode, String phoneNumber, String prefectures, String houseRent, GeneralDate StartDate,
@@ -57,6 +65,10 @@ public class CurrentAddress extends AggregateRoot {
 				new HouseType(houseType), new NearestStation(nearestStation));
 	}
 
-
+	//for required fields
+	public static CurrentAddress createFromJavaType(String currentAddressId, String pid, GeneralDate StartDate,
+			GeneralDate endDate, String address1, String addresskana1){
+		return new CurrentAddress(currentAddressId, pid, StartDate, endDate, address1, addresskana1);
+	}
 
 }
