@@ -191,11 +191,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // thiet lap item hang loat
         openBDialog() {
-
-            let self = this,
-                params = {
+            let self = this;
+            let ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId());
+            let  params = {
                     settingId: self.initSettingId(),
-                    settingName: ko.toJS(self.currentCategory().settingName),
+                    ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
                     categoryId: self.currentCategory().currentItemId()
                 };
 
@@ -409,7 +409,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return false
             }
             //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectedCode() != '1') {
+            if (objItem.selectedCode() != 1) {
                 return false;
             }
             return true;
@@ -421,6 +421,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
         findItem(lstITem: Array<any>, selectItemId: string): PerInfoInitValueSettingItemDto {
             return _.find(lstITem, function(obj) {
                 return obj.selectionItemId == selectItemId;
+            });
+        }
+        /**
+         * find category is selected
+         */
+        findCtg(lstCtg: Array<any>, ctgId: string): any {
+            return _.find(lstCtg, function(obj) {
+                return obj.perInfoCtgId == ctgId;
             });
         }
 }
