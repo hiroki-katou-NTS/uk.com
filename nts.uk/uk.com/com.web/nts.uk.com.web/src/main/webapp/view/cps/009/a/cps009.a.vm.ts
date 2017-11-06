@@ -94,7 +94,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMin: obj.timeItemMin,
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
-                            dateType: obj.dateType
+                            dateType: obj.dateType,
+                            timepointItemMin: obj.timepointItemMin,
+                            timepointItemMax: obj.timepointItemMax,
+                            dateWithDay : obj.intValue
                         });
                     });
 
@@ -309,7 +312,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             selectedRuleCode: obj.selectedRuleCode,
                             selectedCode: obj.selectedCode,
                             numberValue: obj.numbereditor.value,
-                            dateType: obj.dateType
+                            dateType: obj.dateType,
+                            time : obj.dateWithDay
                         };
                     })
                 };
@@ -326,40 +330,40 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 //                block.clear();
             });
         }
-                //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
-        historyFilter(){
+        //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
+        historyFilter() {
             let self = this;
             //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
             let lstItem = [];
-            _.each(self.currentCategory().itemList(), function(item){
-                if(self.checkFilter(item)){
+            _.each(self.currentCategory().itemList(), function(item) {
+                if (self.checkFilter(item)) {
                     lstItem.push(item.selectionItemId);
                 }
             });
             lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
             let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
-            if(lstItem.length == 0){
-                
-            }else{
-                let param = {lstSelItemId: lstItem,baseDate: baseDate}
-               service.refHistSel(param).done(function(data){
+            if (lstItem.length == 0) {
+
+            } else {
+                let param = { lstSelItemId: lstItem, baseDate: baseDate }
+                service.refHistSel(param).done(function(data) {
                     console.log(data);
-                }); 
+                });
             }
-            
+
         }
-        checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean{
+        checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean {
             //画面項目「個人情報初期値設定区分（A3_22）」で、「固定値」を選択している項目をチェックする(Kiểm tra Item mà có 「個人情報初期値設定区分（A3_22）」 là 「固定値」)
-            if(objItem.selectedRuleCode() != 2){
+            if (objItem.selectedRuleCode() != 2) {
                 return false;
             }
             //「固定値」になっているかつ、項目のデータ型＝選択項目かつ、参照区分！＝Enum参照条件の項目があるかチェックする(Kiểm tra những Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件)
             //Type là Selection
-            if(objItem.dataType() != 6){
+            if (objItem.dataType() != 6) {
                 return false
             }
             //参照区分 != Enum参照条件 || 参照区分＝コード名称参照条件の場合
-            if(objItem.selectedCode() != 'コード名称参照条件の場合'){
+            if (objItem.selectedCode() != 'コード名称参照条件の場合') {
                 return false;
             }
             return true;
@@ -521,6 +525,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // selectionItemId để kết nối với bảng SelectionItem
         selectionItemId?: string;
 
+        selectionItemRefType?: number;
+
         // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
         dateType?: number;
 
@@ -557,7 +563,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // trường hợp datatype là kiểu selection
         selection: KnockoutObservableArray<any>;
-        selectedCode: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<number>;
 
         //constraint
         itemCode: KnockoutObservable<string>;
@@ -575,6 +581,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         //selectionItemId? : string;
         selectionItemId: string;
+        selectionItemRefType: number;
 
         timepointItemMin: number;
 
@@ -613,7 +620,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
                 } else if (params.dateType == 2) {
-                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy-MM") || undefined);
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM") || undefined);
                 } else if (params.dateType == 3) {
                     self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
                 }
@@ -623,6 +630,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
             self.selectionItemId = params.selectionItemId || undefined;
+
+            self.selectionItemRefType = params.selectionItemRefType || undefined;
+
             self.dateType = params.dateType || undefined;
 
             if (params.dataType === 0 || params.dataType === 1) {
@@ -656,7 +666,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
                 { code: 2, name: "固定値" },
                 { code: 3, name: "ログイン者と同じ" }]);
-            self.selectedCode = ko.observable("");
+            self.selectedCode = ko.observable(params.selectionItemRefType || undefined);
 
             self.itemCode = ko.observable(params.itemCode || "");
             self.ctgCode = ko.observable(params.ctgCode || "");

@@ -23,14 +23,22 @@
 }
 
 .input-units {
-	width: 200px !important;
+	width: 209px !important;
 }
 
 .sub-input-units {
-	width: 161px !important;
+	width: 150px !important;
+	margin-left: 12px !important;
+	margin-right: 3px !important;
+	height: 16px !important;
+	margin-top: 3px !important;
+	margin-bottom: 3px !important;
+	border: 0px !important;
+	text-align: right !important;
+	/* 	width: 150px !important;
 	margin-left: 3px !important;
 	margin-right: 3px !important;
-	height: 15px !important;
+	height: 15px !important; */
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
@@ -142,12 +150,13 @@ table tr td, table tr th {
 	margin-top: -8px !important;
 	position: inherit !important;
 }
+
 .ui-igcombo-wrapper {
-    position: relative;
-    display: inline-block;
-    overflow: visible;
-    width: 140px;
-    height: 20px;
+	position: relative;
+	display: inline-block;
+	overflow: visible;
+	width: 140px;
+	height: 20px;
 }
 
 .value {
@@ -159,9 +168,8 @@ table tr td, table tr th {
 	text-align: center;
 	height: 15px;
 	padding: 5px 3px;
+	font-weight: bold;
 }
-
-
 
 #A2_012 {
 	margin-left: 0px;
@@ -170,7 +178,8 @@ table tr td, table tr th {
 }
 
 #help {
-	width: 30px;
+	width: 20px;
+	height: 20px;
 	margin-left: 5px;
 }
 
@@ -183,7 +192,6 @@ table tr td, table tr th {
 .input-units {
 	width: 200px;
 }
-
 
 /* span.ntsControl .nts-input {
 	border: none !important;
