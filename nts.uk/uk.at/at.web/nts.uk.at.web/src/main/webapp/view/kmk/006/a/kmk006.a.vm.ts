@@ -55,6 +55,7 @@ module nts.uk.at.view.kmk006.a {
             totalSelectedCode: KnockoutObservableArray<string>;
             multiSelectedCode: KnockoutObservableArray<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
+            jobAlreadySettingList: KnockoutObservableArray<JobAlreadySettingModel>;
             isDialog: KnockoutObservable<boolean>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
@@ -111,7 +112,7 @@ module nts.uk.at.view.kmk006.a {
                     isShowSelectButton: false,
                     isDialog: false,
                     alreadySettingList: self.wkpAlreadySettingList,
-                    maxRows: 10
+                    maxRows: 20
                 };
                 self.treeOptionsWkpTotal = {
                     isShowAlreadySet: false,
@@ -122,7 +123,7 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    maxRows: 10
+                    maxRows: 20
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
@@ -176,7 +177,8 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.selectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.jobAlreadySettingList
+                    alreadySettingList: self.jobAlreadySettingList,
+                    rows: 20
                 };
                 self.jobTotalListOptions = {
                     isShowAlreadySet: false,
@@ -186,7 +188,8 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectRow()
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
+                    rows: 20
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
@@ -598,27 +601,6 @@ module nts.uk.at.view.kmk006.a {
                     restTime: self.itemComAutoCalModel.restTime.toDto()
                 };
                 self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
-                
-                console.log(self.itemComAutoCalModel);
-                console.log(self.valueEnumNorEarLi());
-                console.log(self.valueEnumNorEarAtr());
-                console.log(self.valueEnumNorEarMidLi());
-                console.log(self.valueEnumNorEarMidAtr());
-                console.log(self.valueEnumNorNorLi());
-                console.log(self.valueEnumNorNorAtr());
-                console.log(self.valueEnumNorNorMidLi());
-                console.log(self.valueEnumNorNorMidAtr());
-                console.log(self.valueEnumNorLegLi());
-                console.log(self.valueEnumNorLegAtr());
-                console.log(self.valueEnumNorLegMidLi());
-                console.log(self.valueEnumNorLegMidAtr());
-                console.log(self.valueEnumFleTimeLi());
-                console.log(self.valueEnumFleTimeAtr());
-                console.log(self.valueEnumResResLi());
-                console.log(self.valueEnumResResAtr());
-                console.log(self.valueEnumResLatLi());
-                console.log(self.valueEnumResLatAtr());
-                console.log(dto);
                 service.saveComAutoCal(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -860,7 +842,7 @@ module nts.uk.at.view.kmk006.a {
                 self.isLoading(true);
 
                 $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                    self.loadWkpAutoCal(self.multiSelectedWorkplaceId);
+                    self.loadWkpAutoCal(self.multiSelectedWorkplaceId());
                     self.loadWkpAlreadySettingList().done(function() {
 
                     });
@@ -882,7 +864,7 @@ module nts.uk.at.view.kmk006.a {
                 $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
                     let code = $('#jobtitles').getDataList()[0].id;
                     self.totalSelectedCode(code);
-                    self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId, code);
+                    self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
                     // load ready setting
                     self.loadWkpJobAlreadySettingList().done(function() {
 
