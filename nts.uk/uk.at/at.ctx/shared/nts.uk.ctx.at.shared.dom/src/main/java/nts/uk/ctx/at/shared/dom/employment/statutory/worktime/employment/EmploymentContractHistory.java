@@ -10,6 +10,6 @@ import lombok.Value;
 @Value
 public class EmploymentContractHistory {
 
-	private String syainID;
+	private String employeerId;
 	private WorkingSystem workingSystem;
 }

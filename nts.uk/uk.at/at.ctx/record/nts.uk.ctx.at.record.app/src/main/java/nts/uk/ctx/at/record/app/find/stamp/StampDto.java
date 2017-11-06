@@ -28,7 +28,7 @@ public class StampDto {
 
 	public static StampDto fromDomain(StampItem domain) {
 		return new StampDto(domain.getCardNumber().v(), 
-				domain.getAttendanceTime().v(), 
+				domain.getAttendanceClock().v(), 
 				domain.getStampCombinationAtr().value,
 				domain.getStampCombinationAtr().name,
 				domain.getSiftCd().v(), 

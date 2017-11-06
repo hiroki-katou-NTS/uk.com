@@ -82,7 +82,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
-				,TimeWithCalculation(new AttendanceTime(holidayWorkTime))
+				,TimeWithCalculation.sameTime(new AttendanceTime(holidayWorkTime))
 				,this.frameTime.getBeforeApplicationTime());
 	}
 	
@@ -113,7 +113,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().getSpan()).orElse(null);
 			if(duplicateTime!=null) {//重複している場合の処理
 				//控除項目の時間帯に法定内区分をセット
-				timeSheetOfDeductionItem = timeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(
+				timeSheetOfDeductionItem = timeSheetOfDeductionItem.createBreakTimeSheetAsFixed(
 						timeSheetOfDeductionItem.getTimeSheet().getSpan(),
 						timeSheetOfDeductionItem.getGoOutReason(),
 						timeSheetOfDeductionItem.getBreakAtr(),

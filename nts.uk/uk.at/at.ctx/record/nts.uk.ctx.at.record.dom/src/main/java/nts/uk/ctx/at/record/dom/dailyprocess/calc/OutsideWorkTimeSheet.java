@@ -59,7 +59,7 @@ public class OutsideWorkTimeSheet {
 			excessTime = overTimeWork.orElse(0);
 		}
 		if(holidayWorkSheet.isPresent()) {
-			holidayWorkSheet = Optional.of(holidayWorkSheet.get().reCreateToCalcExcessWork());
+			holidayWorkSheet = Optional.of(holidayWorkSheet.get().recreate);
 		}
 		
 		return new OutsideWorkTimeSheet(overTimeWork,holidayTimeSheet);

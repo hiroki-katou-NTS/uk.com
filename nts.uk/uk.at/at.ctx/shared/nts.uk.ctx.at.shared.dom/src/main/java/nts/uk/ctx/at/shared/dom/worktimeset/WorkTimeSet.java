@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.worktimeset;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -132,7 +131,8 @@ public class WorkTimeSet extends AggregateRoot {
 	public TimeSpanForCalc getOneDaySpan() {
 		return new TimeSpanForCalc(new TimeWithDayAttr(startDateClock),new TimeWithDayAttr(startDateClock+rangeTimeDay));
 	}
-	 * Update end time shift 2.
+	
+	/* Update end time shift 2.
 	 *
 	 * @param end the end
 	 */

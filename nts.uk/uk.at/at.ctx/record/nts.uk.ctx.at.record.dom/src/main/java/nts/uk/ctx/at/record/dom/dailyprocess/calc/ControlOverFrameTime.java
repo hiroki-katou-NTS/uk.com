@@ -24,10 +24,10 @@ public class ControlOverFrameTime {
 		for(int overTimeWorkNo = 0 ; overTimeWorkNo < overTimeWorkFrameTime.size() ; overTimeWorkNo++) {
 			OverTimeWorkFrameTime a  = returnList.get(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo());
 			
-			TimeWithCalculation ove_a = TimeWithCalculation.of(a.getOverTimeWork().getTime()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getTime()
-															  ,a.getOverTimeWork().getCalcTime()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getCalcTime());
-			TimeWithCalculation tran_a = TimeWithCalculation.of(a.getTransferTime().getTime()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getTime()
-					  										  ,a.getTransferTime().getCalcTime()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getCalcTime());
+			TimeWithCalculation ove_a = TimeWithCalculation.createTimeWithCalculation( new AttendanceTime(a.getOverTimeWork().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getTime().valueAsMinutes())
+															  ,new AttendanceTime(a.getOverTimeWork().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getCalcTime().valueAsMinutes()));
+			TimeWithCalculation tran_a = TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(a.getTransferTime().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getTime().valueAsMinutes())
+					  										  ,new AttendanceTime(a.getTransferTime().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getCalcTime().valueAsMinutes()));
 			
 			
 			

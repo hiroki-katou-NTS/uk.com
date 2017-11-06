@@ -228,162 +228,164 @@ public class CalculationRangeOfOneDay extends CalculationTimeSheet{
 		}
 		/*控除時間帯の作成*/
 		//             //
+		
+		return new IntegrationOfDaily();
 	}
 
-	/**
-	 * フレックスの時間帯作成
-	 */
-	public WithinWorkTimeSheet createTimeSheetAsFlex(FluRestTime flexTimeSet,CoreTimeSetting coreTimeSetting,WorkType workType,
-													PredetermineTimeSet predetermineTimeSet,FixedWorkSetting fixedWorkSetting
-													,DailyWork dailyWork){
-		if(!flexTimeSet.getUseFixedRestTime()){
-			predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
-			/*遅刻早退処理*/
-			for() {
-				WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
-				/*遅刻時間の計算*/
-				/*早退時間の計算*/
-			}
-			WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
-		}
-		provisionalDeterminationOfDeductionTimeSheet();
-		/*固定勤務の時間帯作成*/
-		theDayOfWorkTimesLoop();
-		/*コアタイムのセット*/
-		return withinWorkingTimeSheet.createWithinFlexTimeSheet(coreTimeSetting);
-	}
-	
-	/**
-	 * 流動休憩用の控除時間帯作成
-	 */
-	public void createFluidBreakTime(DeductionAtr deductionAtr) {
-		DeductionTimeSheet.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fixedSet, breakTimeSheet);
-		
-	}
+//	/**
+//	 * フレックスの時間帯作成
+//	 */
+//	public WithinWorkTimeSheet createTimeSheetAsFlex(FluRestTime flexTimeSet,CoreTimeSetting coreTimeSetting,WorkType workType,
+//													PredetermineTimeSet predetermineTimeSet,FixedWorkSetting fixedWorkSetting
+//													,DailyWork dailyWork){
+//		if(!flexTimeSet.getUseFixedRestTime()){
+//			predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
+//			/*遅刻早退処理*/
+//			for() {
+//				WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
+//				/*遅刻時間の計算*/
+//				/*早退時間の計算*/
+//			}
+//			WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
+//		}
+//		provisionalDeterminationOfDeductionTimeSheet();
+//		/*固定勤務の時間帯作成*/
+//		theDayOfWorkTimesLoop();
+//		/*コアタイムのセット*/
+//		return withinWorkingTimeSheet.createWithinFlexTimeSheet(coreTimeSetting);
+//	}
+//	
+//	/**
+//	 * 流動休憩用の控除時間帯作成
+//	 */
+//	public void createFluidBreakTime(DeductionAtr deductionAtr) {
+//		DeductionTimeSheet.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fixedSet, breakTimeSheet);
+//		
+//	}
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
-	
-	/**
-	 * 流動勤務の時間帯作成
-	 */
-	public void createFluidWork(
-			int workNo,
-			WorkTime workTime,
-			AttendanceLeavingWorkOfDaily attendanceLeavingWork,
-			DeductionTimeSheet deductionTimeSheet,
-			PredetermineTimeSet predetermineTimeSet,
-			WithinWorkTimeSheet withinWorkTimeSheet,
-			WithinWorkTimeFrame withinWorkTimeFrame,
-			HolidayWorkTimeSheet holidayWorkTimeSheet,
-			WorkType worktype) {	
-		//所定時間設定をコピーして計算用の所定時間設定を作成する
-		this.predetermineTimeSetForCalc = new PredetermineTimeSetForCalc(
-				predetermineTimeSet.getAdditionSet(),
-				predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets(),
-				predetermineTimeSet.getSpecifiedTimeSheet().getAMEndTime(),
-				predetermineTimeSet.getSpecifiedTimeSheet().getPMStartTime());
-		//出退勤分ループ
-		for(AttendanceLeavingWork attendanceLeavingWork : attendanceLeavingWork.getAttendanceLeavingWork(workNo)) {
-			//事前に遅刻早退、控除時間帯を取得する
-			this.getForDeductionTimeSheetList(workNo, attendanceLeavingWork, predetermineTimeSet, deductionTimeSheet ,workInformationOfDaily, workType, withinWorkTimeFrame);
-		}
-		//「出勤系」か「休出系」か判断する
-		boolean isWeekDayAttendance = worktype.isWeekDayAttendance();
-		//時間休暇加算残時間未割当←時間休暇加算残時間
-		
-		if(isWeekDayAttendance) {//出勤系の場合
-			//流動勤務（就内、平日）
-			WithinWorkTimeSheet newWithinWorkTimeSheet = withinWorkTimeSheet.createAsFluidWork(predetermineTimeSetForCalc, worktype, workInformationOfDaily, fluidWorkSetting, deductionTimeSheet);
-			//流動勤務（就外、平日）
-			
-		}else{//休出系の場合
-			//流動勤務（休日出勤）
-			HolidayWorkTimeSheet holidayWorkTimeSheet = holidayWorkTimeSheet.createholidayWorkTimeSheet(attendanceLeavingWork, workingTimes, deductionTimeSheet, worktype, holidayWorkTimeOfDaily, calcRange);
-		}
-			
-		
-	}
-	
-	/**
-	 * 事前に遅刻早退、控除時間帯を取得する
-	 * @param workNo
-	 * @param attendanceLeavingWork 出退勤
-	 * @return
-	 */
-	public List<TimeSheetOfDeductionItem> getForDeductionTimeSheetList(
-			int workNo,
-			AttendanceLeavingWork attendanceLeavingWork,
-			PredetermineTimeSet predetermineTimeSet,
-			DeductionTimeSheet deductionTimeSheet,
-			WorkInformationOfDaily workInformationOfDaily,
-			WorkType workType,
-			WithinWorkTimeFrame withinWorkTimeFrame){
-		
-		//所定時間帯を取得する(流動計算で使用する所定時間の作成)
-		createPredetermineTimeSheetForFluid(workNo, predetermineTimeSet, workType, workInformationOfDaily);
-		//計算範囲を判断する
-		withinWorkTimeFrame.createWithinWorkTimeFrameForFluid(attendanceLeavingWork, dailyWork, predetermineTimeSetForCalc);
-		//遅刻時間帯を控除
-		withinWorkTimeFrame.getLateTimeSheet().lateTimeCalcForFluid(withinWorkTimeFrame, lateRangeForCalc, workTimeCommonSet, lateDecisionClock, deductionTimeSheet);
-		//控除時間帯の仮確定
-		this.provisionalDeterminationOfDeductionTimeSheet(deductionTimeSheet);
-		//早退時間帯を控除
-		
-		//勤務間の休憩設定を取得
-		
-	}
-	
-	/**
-	 * 計算用所定時間設定を作成する（流動用）
-	 * @return
-	 */
-	public void createPredetermineTimeSheetForFluid(
-			int workNo,
-			PredetermineTimeSet predetermineTimeSet,
-			WorkType workType,
-			WorkInformationOfDaily workInformationOfDaily) {
-
-		//予定と実績が同じ勤務かどうか確認
-		if(workInformationOfDaily.isMatchWorkInfomation()/*予定時間帯に値が入っているかのチェックを追加する必要あり*/) {
-			//予定時間帯を取得する
-			ScheduleTimeSheet scheduleTimeSheet = workInformationOfDaily.getScheduleTimeSheet(workNo);
-			//所定時間帯設定の時間帯を全て取得する
-			List<TimeSheetWithUseAtr> timeSheetList = predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets();
-			//変更対象の時間帯を取得
-			List<TimeSheetWithUseAtr> list = timeSheetList.stream().filter(ts -> ts.getCount()==workNo).collect(Collectors.toList());
-			TimeSheetWithUseAtr timeSheet = list.get(0);
-			//予定時間帯と変更対象の時間帯を基に時間帯を作成
-			TimeSheetWithUseAtr targetTimeSheet = new TimeSheetWithUseAtr(
-					timeSheet.getUseAtr(),
-					scheduleTimeSheet.getAttendance(),
-					scheduleTimeSheet.getLeaveWork(),
-					workNo);
-			//変更対象以外の時間帯を取得
-			List<TimeSheetWithUseAtr> list2 = timeSheetList.stream().filter(ts -> ts.getCount()!=workNo).collect(Collectors.toList());
-			TimeSheetWithUseAtr timeSheet2 = list2.get(0);
-			
-			List<TimeSheetWithUseAtr> newTimeSheetList = Arrays.asList(targetTimeSheet,timeSheet2);
-			
-			this.predetermineTimeSetForCalc = new PredetermineTimeSetForCalc(
-					this.predetermineTimeSetForCalc.getAdditionSet(),
-					newTimeSheetList,
-					this.predetermineTimeSetForCalc.getAMEndTime(),
-					this.predetermineTimeSetForCalc.getPMStartTime());		
-		}
-		//午前勤務、午後勤務の場合に時間帯を補正する処理
-		this.predetermineTimeSetForCalc.getPredetermineTimeSheet().correctPredetermineTimeSheet(workType.getDailyWork());			
-	}
-	
-	
-	/**
-	 * 控除時間帯の仮確定
-	 */
-	public void provisionalDeterminationOfDeductionTimeSheet(DeductionTimeSheet deductionTimeSheet) {
-		//控除用
-		deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
-		//計上用
-		deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
-	}
-	
+//	
+//	/**
+//	 * 流動勤務の時間帯作成
+//	 */
+//	public void createFluidWork(
+//			int workNo,
+//			WorkTime workTime,
+//			AttendanceLeavingWorkOfDaily attendanceLeavingWork,
+//			DeductionTimeSheet deductionTimeSheet,
+//			PredetermineTimeSet predetermineTimeSet,
+//			WithinWorkTimeSheet withinWorkTimeSheet,
+//			WithinWorkTimeFrame withinWorkTimeFrame,
+//			HolidayWorkTimeSheet holidayWorkTimeSheet,
+//			WorkType worktype) {	
+//		//所定時間設定をコピーして計算用の所定時間設定を作成する
+//		this.predetermineTimeSetForCalc = new PredetermineTimeSetForCalc(
+//				predetermineTimeSet.getAdditionSet(),
+//				predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets(),
+//				predetermineTimeSet.getSpecifiedTimeSheet().getAMEndTime(),
+//				predetermineTimeSet.getSpecifiedTimeSheet().getPMStartTime());
+//		//出退勤分ループ
+//		for(AttendanceLeavingWork attendanceLeavingWork : attendanceLeavingWork.getAttendanceLeavingWork(workNo)) {
+//			//事前に遅刻早退、控除時間帯を取得する
+//			this.getForDeductionTimeSheetList(workNo, attendanceLeavingWork, predetermineTimeSet, deductionTimeSheet ,workInformationOfDaily, workType, withinWorkTimeFrame);
+//		}
+//		//「出勤系」か「休出系」か判断する
+//		boolean isWeekDayAttendance = worktype.isWeekDayAttendance();
+//		//時間休暇加算残時間未割当←時間休暇加算残時間
+//		
+//		if(isWeekDayAttendance) {//出勤系の場合
+//			//流動勤務（就内、平日）
+//			WithinWorkTimeSheet newWithinWorkTimeSheet = withinWorkTimeSheet.createAsFluidWork(predetermineTimeSetForCalc, worktype, workInformationOfDaily, fluidWorkSetting, deductionTimeSheet);
+//			//流動勤務（就外、平日）
+//			
+//		}else{//休出系の場合
+//			//流動勤務（休日出勤）
+//			HolidayWorkTimeSheet holidayWorkTimeSheet = holidayWorkTimeSheet.createholidayWorkTimeSheet(attendanceLeavingWork, workingTimes, deductionTimeSheet, worktype, holidayWorkTimeOfDaily, calcRange);
+//		}
+//			
+//		
+//	}
+//	
+//	/**
+//	 * 事前に遅刻早退、控除時間帯を取得する
+//	 * @param workNo
+//	 * @param attendanceLeavingWork 出退勤
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getForDeductionTimeSheetList(
+//			int workNo,
+//			AttendanceLeavingWork attendanceLeavingWork,
+//			PredetermineTimeSet predetermineTimeSet,
+//			DeductionTimeSheet deductionTimeSheet,
+//			WorkInformationOfDaily workInformationOfDaily,
+//			WorkType workType,
+//			WithinWorkTimeFrame withinWorkTimeFrame){
+//		
+//		//所定時間帯を取得する(流動計算で使用する所定時間の作成)
+//		createPredetermineTimeSheetForFluid(workNo, predetermineTimeSet, workType, workInformationOfDaily);
+//		//計算範囲を判断する
+//		withinWorkTimeFrame.createWithinWorkTimeFrameForFluid(attendanceLeavingWork, dailyWork, predetermineTimeSetForCalc);
+//		//遅刻時間帯を控除
+//		withinWorkTimeFrame.getLateTimeSheet().lateTimeCalcForFluid(withinWorkTimeFrame, lateRangeForCalc, workTimeCommonSet, lateDecisionClock, deductionTimeSheet);
+//		//控除時間帯の仮確定
+//		this.provisionalDeterminationOfDeductionTimeSheet(deductionTimeSheet);
+//		//早退時間帯を控除
+//		
+//		//勤務間の休憩設定を取得
+//		
+//	}
+//	
+//	/**
+//	 * 計算用所定時間設定を作成する（流動用）
+//	 * @return
+//	 */
+//	public void createPredetermineTimeSheetForFluid(
+//			int workNo,
+//			PredetermineTimeSet predetermineTimeSet,
+//			WorkType workType,
+//			WorkInformationOfDaily workInformationOfDaily) {
+//
+//		//予定と実績が同じ勤務かどうか確認
+//		if(workInformationOfDaily.isMatchWorkInfomation()/*予定時間帯に値が入っているかのチェックを追加する必要あり*/) {
+//			//予定時間帯を取得する
+//			ScheduleTimeSheet scheduleTimeSheet = workInformationOfDaily.getScheduleTimeSheet(workNo);
+//			//所定時間帯設定の時間帯を全て取得する
+//			List<TimeSheetWithUseAtr> timeSheetList = predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets();
+//			//変更対象の時間帯を取得
+//			List<TimeSheetWithUseAtr> list = timeSheetList.stream().filter(ts -> ts.getCount()==workNo).collect(Collectors.toList());
+//			TimeSheetWithUseAtr timeSheet = list.get(0);
+//			//予定時間帯と変更対象の時間帯を基に時間帯を作成
+//			TimeSheetWithUseAtr targetTimeSheet = new TimeSheetWithUseAtr(
+//					timeSheet.getUseAtr(),
+//					scheduleTimeSheet.getAttendance(),
+//					scheduleTimeSheet.getLeaveWork(),
+//					workNo);
+//			//変更対象以外の時間帯を取得
+//			List<TimeSheetWithUseAtr> list2 = timeSheetList.stream().filter(ts -> ts.getCount()!=workNo).collect(Collectors.toList());
+//			TimeSheetWithUseAtr timeSheet2 = list2.get(0);
+//			
+//			List<TimeSheetWithUseAtr> newTimeSheetList = Arrays.asList(targetTimeSheet,timeSheet2);
+//			
+//			this.predetermineTimeSetForCalc = new PredetermineTimeSetForCalc(
+//					this.predetermineTimeSetForCalc.getAdditionSet(),
+//					newTimeSheetList,
+//					this.predetermineTimeSetForCalc.getAMEndTime(),
+//					this.predetermineTimeSetForCalc.getPMStartTime());		
+//		}
+//		//午前勤務、午後勤務の場合に時間帯を補正する処理
+//		this.predetermineTimeSetForCalc.getPredetermineTimeSheet().correctPredetermineTimeSheet(workType.getDailyWork());			
+//	}
+//	
+//	
+//	/**
+//	 * 控除時間帯の仮確定
+//	 */
+//	public void provisionalDeterminationOfDeductionTimeSheet(DeductionTimeSheet deductionTimeSheet) {
+//		//控除用
+//		deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
+//		//計上用
+//		deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
+//	}
+//	
 	
 }

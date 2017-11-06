@@ -20,4 +20,10 @@ public class RaiseSalaryTimeOfDailyPerfor {
 	//特定日加給時間
 	private List<AutoCalRaisingSalarySetting> autoCalRaisingSalarySettings; 
 	
+	/**
+	 * 就内・残業内・休出時間内の加給時間の合計を求める
+	 */
+	public void calcTotalBonusPayTime() {
+		
+	}
 }

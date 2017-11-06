@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.UseSetting;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceName;
 
 /**
- * 
+ * 日次の勤怠項目
  * @author nampt
  *
  */

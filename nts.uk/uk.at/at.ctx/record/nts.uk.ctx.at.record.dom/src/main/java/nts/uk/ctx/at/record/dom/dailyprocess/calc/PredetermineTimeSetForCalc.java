@@ -1,15 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.HasTimeSpanList;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetList;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -48,11 +43,15 @@ public class PredetermineTimeSetForCalc {
 			TimeSheetList timeSheets,
 			TimeWithDayAttr AMEndTime,
 			TimeWithDayAttr PMStartTime,
-			PredetermineTime addtionSet) {
+			PredetermineTime addtionSet,
+            AttendanceTime oneDayRange,
+			TimeWithDayAttr startOneDayTime) {
 		this.timeSheets = timeSheets;
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
 		this.additionSet = addtionSet;
+		this.oneDayRange = oneDayRange;
+		this.startOneDayTime = startOneDayTime;
 	}
 	
 	/**
@@ -62,7 +61,9 @@ public class PredetermineTimeSetForCalc {
 		return new PredetermineTimeSetForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets()
 											  ,predetermineTimeSet.getSpecifiedTimeSheet().getAMEndTime()
 											  ,predetermineTimeSet.getSpecifiedTimeSheet().getPMStartTime()
-											  ,predetermineTimeSet.getAdditionSet());
+											  ,predetermineTimeSet.getAdditionSet()
+											  ,predetermineTimeSet.getRangeTimeDay()
+											  ,predetermineTimeSet.getDateStartTime());
 	}
 	
 	/**
@@ -101,16 +102,15 @@ public class PredetermineTimeSetForCalc {
 	 * @return
 	 */
 	public AttendanceTime getpredetermineTime(DailyWork dailyWork) {
-		AttendanceTime returnTime;
 		switch(dailyWork.getAttendanceHolidayAttr()) {
 		case FULL_TIME:
-			returnTime = new AttendanceTime();
+			return additionSet.getTime().getOneDay();
 		case MORNING:
-			returnTime = new AttendanceTime();
+			return additionSet.getTime().getMorning();
 		case AFTERNOON:
-			returnTime = new AttendanceTime();
+			return additionSet.getTime().getAfternoon();
 		default:
-			returnTime = new AttendanceTime(0);
+			return new AttendanceTime(0);
 		}
 	}
 	

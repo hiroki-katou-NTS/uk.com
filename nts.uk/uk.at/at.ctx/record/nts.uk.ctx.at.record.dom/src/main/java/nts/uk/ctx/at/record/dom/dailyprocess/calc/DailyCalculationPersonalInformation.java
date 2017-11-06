@@ -12,5 +12,5 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Working
 @Value
 public class DailyCalculationPersonalInformation {
 	private WorkingSystem workingSystem;
-	private DailyTime StatutoryWorkingTime;
+	private ManageStatutoryWorkingTime StatutoryWorkingTime;
 }

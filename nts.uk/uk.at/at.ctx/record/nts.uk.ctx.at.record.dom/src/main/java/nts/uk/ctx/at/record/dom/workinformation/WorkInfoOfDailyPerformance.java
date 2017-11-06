@@ -48,4 +48,5 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.scheduleTimeSheets = scheduleTimeSheets; 
 	}
 
+	
 }

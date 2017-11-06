@@ -1,20 +1,20 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
-import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
 
@@ -27,16 +27,16 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBre
 @RequiredArgsConstructor
 public class BreakManagement {
 	private final BreakTimeOfDaily breakTimeOfDaily;
-	private final List<BreakTimeSheetOfDaily> breakTimeSheetOfDaily;
+	private final List<BreakTimeOfDailyPerformance> breakTimeSheetOfDaily;
 	
 	/**
 	 * 休憩時間帯を作成する
 	 * @return 休憩時間帯
 	 */
 	
-	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeDivision workTimeDivision,FixRestCalcMethod calcRest,SetForNoStamp noStampSet
+	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeDivision workTimeDivision,FixRestCalcMethod calcRest,FluidPrefixBreakTimeSet noStampSet
 															,FluidBreakTimeOfCalcMethod calcMethod) {
-		List<Optional<BreakTimeSheetOfDaily>> timeSheets = new ArrayList<Optional<BreakTimeSheetOfDaily>>();
+		List<Optional<BreakTimeOfDailyPerformance>> timeSheets = new ArrayList<Optional<BreakTimeOfDailyPerformance>>();
 		if(workTimeDivision.isfluidorFlex()) {
 			timeSheets.add(getFixedBreakTimeSheet(calcRest)); 
 		}
@@ -44,15 +44,19 @@ public class BreakManagement {
 			timeSheets.addAll(getFluidBreakTimeSheet(calcMethod,true,noStampSet));/*流動　の　休　*/;
 		}
 		List<TimeSheetOfDeductionItem> dedTimeSheet = new ArrayList<TimeSheetOfDeductionItem>();
-		for(Optional<BreakTimeSheetOfDaily> OptionalTimeSheet : timeSheets) {
+		for(Optional<BreakTimeOfDailyPerformance> OptionalTimeSheet : timeSheets) {
 			if(OptionalTimeSheet.isPresent()) {
-				for(BreakTimeSheet timeSheet : OptionalTimeSheet.get().getBreakTimeSheet())
-				dedTimeSheet.add(TimeSheetOfDeductionItem.createBreakTimeSheetAsFixed(timeSheet.getTimeSheet()
-																				, null　ここ（初期作成時)は最初時間帯と同じ範囲でOK?
-																				
+				for(BreakTimeSheet timeSheet : OptionalTimeSheet.get().getBreakTimeSheets())
+					dedTimeSheet.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(timeSheet.getStartTime().,timeSheet.getEndTime(),Finally.empty())
+																				, timeSheet.getTimeSheet()
+																				, Collections.emptyList()
+																				, Collections.emptyList()
+																				, Collections.emptyList()
+																				, Optional.empty()
+																				, Finally.empty()
 																				, Finally.of(BreakClassification.BREAK)
 																				, DeductionClassification.BREAK
-																				, WithinStatutoryAtr.WithinStatury));
+																				, WithinStatutoryAtr.WithinStatutory));
 			}
 		}
 		return dedTimeSheet;
@@ -64,15 +68,15 @@ public class BreakManagement {
 	 * @return 休  時間帯
 
  */
-	public Optional<BreakTimeSheetOfDaily> getFixedBreakTimeSheet(FixRestCalcMethod calcRest) {
+	public Optional<BreakTimeOfDailyPerformance> getFixedBreakTimeSheet(FixRestCalcMethod calcRest) {
 		if(calcRest.isReferToMaster()) {
 			return breakTimeSheetOfDaily.stream()
-										.filter(tc -> tc.getBreakClassification().isReferenceFromWorkTime())
+										.filter(tc -> tc.getBreakType().isReferWorkTime())
 										.findFirst();
 		}
 		else {
 			return breakTimeSheetOfDaily.stream()
-										.filter(tc -> tc.getBreakClassification().isReferenceFromSchedule())
+										.filter(tc -> tc.getBreakType().isReferSchedule())
 										.findFirst();
 		}
 	}
@@ -85,8 +89,8 @@ public class BreakManagement {
 	 * @param noStampSet 休 未打刻時 休設定
 	 * @return 休 時間帯
 	 */
-	public List<Optional<BreakTimeSheetOfDaily>> getFluidBreakTimeSheet(FluidBreakTimeOfCalcMethod calcMethod,boolean isFixedBreakTime,FluidPrefixBreakTimeSet noStampSet) {
-		List<Optional<BreakTimeSheetOfDaily>> fluidBreakTimeSheet = new ArrayList<Optional<BreakTimeSheetOfDaily>>();
+	public List<Optional<BreakTimeOfDailyPerformance>> getFluidBreakTimeSheet(FluidBreakTimeOfCalcMethod calcMethod,boolean isFixedBreakTime,FluidPrefixBreakTimeSet noStampSet) {
+		List<Optional<BreakTimeOfDailyPerformance>> fluidBreakTimeSheet = new ArrayList<Optional<BreakTimeOfDailyPerformance>>();
 		if(isFixedBreakTime) {
 			switch(calcMethod) {
 			case ConbineMasterWithStamp:
@@ -94,11 +98,11 @@ public class BreakManagement {
 				fluidBreakTimeSheet.add(getReferenceTimeSheetFromBreakStamp());
 			case ReferToMaster:
 				fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
-			case StampWithoutReference:
-				fluidBreakTimeSheet.add(getReferenceTimeSheetFromBreakStamp());
-				if(fluidBreakTimeSheet.isEmpty() && noStampSet.isReferToBreakClockFromMaster()) {
-					fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
-				}
+//			case StampWithoutReference:
+//				fluidBreakTimeSheet.add(getReferenceTimeSheetFromBreakStamp());
+//				if(fluidBreakTimeSheet.isEmpty() && noStampSet.isReferToBreakClockFromMaster()) {
+//					fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
+//				}
 			default:
 				throw new RuntimeException("unKnown calcMethod" + calcMethod);
 			}
@@ -111,23 +115,23 @@ public class BreakManagement {
 	 * 流動固定休  の計算方法がマスタ参 の日別計算 休 時間帯クラスを取得する
 	 * @return 日別実績の休 時間帯クラス
 	 */
-	public Optional<BreakTimeSheetOfDaily> getReferenceTimeSheetFromWorkTime(){
-		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakClassification().isReferenceFromWorkTime()).findFirst();
+	public Optional<BreakTimeOfDailyPerformance> getReferenceTimeSheetFromWorkTime(){
+		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakType().isReferWorkTime()).findFirst();
 	}
 	/**
 	 * 流動固定休　の計算方法が打刻参　の日別計算　休　時間帯クラスを取得す
 	 * @return 日別実績の休　時間帯クラス
 	 */
-	public Optional<BreakTimeSheetOfDaily> getReferenceTimeSheetFromBreakStamp(){
-		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakClassification().isReferenceFromWorkTime()).findFirst();
+	public Optional<BreakTimeOfDailyPerformance> getReferenceTimeSheetFromBreakStamp(){
+		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakType().isReferWorkTime()).findFirst();
 	}
 	
 	/**
 	 * 流動固定休　の計算方法がスケジュール参　の日別計算　休　時間帯クラスを取得す　
 	 * @return 日別実績の休　時間帯クラス
 	 */
-	public Optional<BreakTimeSheetOfDaily> getReferenceTimeSheetFromSchedule(){
-		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakClassification().isReferenceFromSchedule()).findFirst();
+	public Optional<BreakTimeOfDailyPerformance> getReferenceTimeSheetFromSchedule(){
+		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakType().isReferSchedule()).findFirst();
 	}
 	
 	/**

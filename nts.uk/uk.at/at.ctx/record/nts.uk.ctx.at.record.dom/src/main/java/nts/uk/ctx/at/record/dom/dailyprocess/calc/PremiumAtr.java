@@ -5,6 +5,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum PremiumAtr {
-	isRegularWork,
-	isPremium;
+	RegularWork,
+	Premium;
 }
