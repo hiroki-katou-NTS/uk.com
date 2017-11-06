@@ -14,12 +14,22 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMemento;
 
 /**
+ * The Class ComAutoCalSetCommand.
+ */
+
+/**
  * Sets the rest time.
  *
  * @param restTime
  *            the new rest time
  */
 @Setter
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
 
 /**
  * Gets the rest time.
@@ -79,9 +89,8 @@ public class ComAutoCalSetCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesGetMemento#
-		 * getCompanyId()
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
+		 * ComAutoCalSettingGetMemento#getCompanyId()
 		 */
 		@Override
 		public CompanyId getCompanyId() {
