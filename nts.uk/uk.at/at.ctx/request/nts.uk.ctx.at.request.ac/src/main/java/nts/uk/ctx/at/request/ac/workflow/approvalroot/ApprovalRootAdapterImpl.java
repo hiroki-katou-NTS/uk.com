@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.ac.workflow.approvalroot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -104,6 +105,11 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 						});
 					}
 				});
+			});
+		});
+		approvalRootResult.stream().forEach(x -> {
+			x.getBeforeApprovers().stream().forEach(y ->{
+				Collections.sort(y.getApprovers(), Comparator.comparing(ApproverInfoImport :: getOrderNumber));
 			});
 		});
 		return approvalRootResult;

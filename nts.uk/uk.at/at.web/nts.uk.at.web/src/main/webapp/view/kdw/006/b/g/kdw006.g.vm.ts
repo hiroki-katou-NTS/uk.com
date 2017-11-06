@@ -64,8 +64,11 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         getFullWorkTypeList() {
             let self = this;
             let dfd = $.Deferred();
-            service.findWorkType().done(function(res) {
-                _.forEach(res, function(item) {
+            service.getAllWorkTypes().done(function(res) {
+                let availabelList = _.filter(res, function(item) {
+                    return item.abolishAtr == 0;
+                });
+                _.forEach(availabelList, function(item) {
                     self.fullWorkTypeList.push({
                         workTypeCode: item.workTypeCode,
                         name: item.name,
@@ -121,7 +124,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     nts.uk.ui.block.clear();
                 });
-            }).always( () => {
+            }).fail(() => {
+                nts.uk.ui.block.clear();
+            }).always(() => {
                 nts.uk.ui.block.clear();
             });
         }
@@ -155,10 +160,21 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             } else {
                 listWorkType = [WorkTypeClass.Holiday, WorkTypeClass.HolidayWork, WorkTypeClass.Shooting];
             }
+            let viewG = __viewContext.viewModel.viewmodelG;
             service.defaultValue(listWorkType).done(function(res) {
                 let workTypeCodess = _.map(res, 'workTypeCode');
                 self.workTypeCodes = workTypeCodess;
-                let names = _(workTypeCodess).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                let fullCodeNameList = ko.toJS(viewG.fullWorkTypeList);
+                let names = [];
+                _.forEach(workTypeCodess, (code) => {
+                    let foundWT = _.find(fullCodeNameList, (codeName) => {
+                        return codeName.workTypeCode === code;
+                    });
+                    if (foundWT) {
+                        names.push(foundWT.name);
+                    }
+                });
+
                 self.workTypeName(names.join("、　"));
             });
         }

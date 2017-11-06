@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 
 /**
  * @author hungnm
@@ -42,6 +45,9 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* エラー表示項目 */
 	private BigDecimal errorDisplayItem;
+	
+	/* エラー解除ロールID */
+	private String cancelRoleId;
 
 	/* Constructor */
 	private ErrorAlarmWorkRecord() {
