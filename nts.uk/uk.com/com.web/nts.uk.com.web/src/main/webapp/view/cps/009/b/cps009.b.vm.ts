@@ -11,7 +11,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
         itemInitLst: Array<any> = [];
         itemColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_33'), key: 'itemName', width: 200 },
+            { headerText: text('CPS009_33'), key: 'itemName', width: 150 },
         ]);
 
         roundingRules: KnockoutObservableArray<any>;
