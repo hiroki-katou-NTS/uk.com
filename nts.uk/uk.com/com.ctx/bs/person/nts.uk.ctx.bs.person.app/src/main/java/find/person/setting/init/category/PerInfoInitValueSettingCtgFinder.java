@@ -33,8 +33,14 @@ public class PerInfoInitValueSettingCtgFinder {
 
 		if (ctgLst.size() > 0) {
 
-			return ctgLst.stream().filter(c -> this.settingItemRepo.isExist(c.getPerInfoCtgId()))
-					.collect(Collectors.toList());
+			return ctgLst.stream().map(c -> {
+				PerInfoInitValueSettingCtg ctg = new PerInfoInitValueSettingCtg();
+				ctg.setCategoryName(c.getCategoryName());
+				ctg.setPerInfoCtgId(c.getPerInfoCtgId());
+				ctg.setSetting(this.settingItemRepo.isExist(settingId, c.getPerInfoCtgId()));
+				return ctg;
+
+			}).collect(Collectors.toList());
 		}
 
 		return ctgLst;
@@ -44,8 +50,8 @@ public class PerInfoInitValueSettingCtgFinder {
 	public List<SettingCtgDto> getAllCategoryBySetId(String settingId) {
 
 		List<SettingCtgDto> settingList;
-		settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream().map(c -> SettingCtgDto.fromDomain(c))
-				.collect(Collectors.toList());
+		settingList = this.settingCtgRepo.getAllCategoryBySetId(settingId).stream()
+				.map(c -> SettingCtgDto.fromDomain(c)).collect(Collectors.toList());
 
 		return settingList;
 
