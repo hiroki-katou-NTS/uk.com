@@ -26,7 +26,7 @@ public class JpaI18NResourcesRepository extends JpaRepository implements I18NRes
 				.setParameter("languageId", languageId)
 				.getList(e -> {
 					val resourceType = I18NResourceType.of(e.resourceType);
-					val content = e.content.replaceAll("\r", "").replaceAll("\n", "\r\n");
+					val content = e.content.replace("\r", "").replace("\n", "\r\n");
 					switch (resourceType) {
 					case MESSAGE:
 						return (T)new MessageResourceItem(e.pk.code, content);
