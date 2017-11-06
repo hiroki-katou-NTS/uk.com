@@ -1,12 +1,13 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
     import common = nts.uk.at.view.kaf005.share.common;
+    import service = nts.uk.at.view.kaf005.shr.service;
     export class ScreenModel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
 //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
-        employeeName: KnockoutObservable<string> = ko.observable("Vu Thang Loi");
+        employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
         workState : KnockoutObservable<boolean> = ko.observable(true);;
@@ -14,11 +15,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
         //TIME LINE 1
-        timeStart1: KnockoutObservable<number> = ko.observable(0);
-        timeEnd1: KnockoutObservable<number> = ko.observable(0);   
+        timeStart1: KnockoutObservable<number> = ko.observable(null);
+        timeEnd1: KnockoutObservable<number> = ko.observable(null);   
         //TIME LINE 2
-        timeStart2: KnockoutObservable<number> = ko.observable(0);
-        timeEnd2: KnockoutObservable<number> = ko.observable(0);
+        timeStart2: KnockoutObservable<number> = ko.observable(null);
+        timeEnd2: KnockoutObservable<number> = ko.observable(null);
         //勤務種類
         workTypeCd: KnockoutObservable<string> = ko.observable('');
         workTypeName: KnockoutObservable<string> = ko.observable('');
@@ -46,7 +47,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-        useMulti : KnockoutObservable<boolean> = ko.observable(true);
+        useMulti: KnockoutObservable<boolean> = ko.observable(true);
+        
+        displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
+        displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
+        displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
+        displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
+        
+        typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
+        displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             
@@ -91,12 +102,35 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            
-            
-            dfd.resolve();
+            service.getOvertimeByUI({
+                url: "",
+                appDate: "2017/11/03",
+                uiType: 0        
+            }).done((data) => {
+                self.initData(data);
+                dfd.resolve(data);    
+            }).fail((res) => {
+                dfd.reject(res);     
+            });
             return dfd.promise();
             
         }
+        
+        initData(data: any){
+            var self = this;
+            self.displayCaculationTime(data.calculationOverTime ? true : false);
+            
+            self.employeeName(data.employeeName);
+            self.siftCD(data.siftCode);
+            self.siftName(data.siftName);
+            self.workTypeCd(data.workTypeCd);
+            self.workTypeName(data.workTypeName);
+            self.timeStart1(data.workClockFrom1);
+            self.timeEnd1(data.workClockFrom2); 
+            self.timeStart2(data.workClockTo1);
+            self.timeEnd2(data.workClockTo2); 
+        }
+        
         /**
          * KDL003
          */
