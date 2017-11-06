@@ -12,4 +12,8 @@ public class MasterListExportQuery {
 	private String languageId;
 	
 	private ReportType reportType;
+	
+	private Object option;
+	
+	private Object data;
 }
