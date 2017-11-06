@@ -36,13 +36,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " CM.dataType, CM.itemType , E.disporder, ITEM.itemCd, CTG.categoryCd, CM.numericItemDecimalPart, CM.numericItemIntegerPart,"
 			// 10 11 12 13 14
 			+ " CM.timeItemMin, CM.timeItemMax, "
-
-			+ " CM.selectionItemRefCode, "
-			// for Hoa 19
+			// for Hoa 19 20
+			+ " CM.selectionItemRefCode, CM.selectionItemRefType, "
+			// cái này dùng để xem date là thuộc ngày tháng năm hat năm tháng hay chỉ năm 21
 			+ " CM.dateItemType, "
-			// cái này dùng để xem date là thuộc ngày tháng năm hat năm tháng hay chỉ năm
+			// cái này dùng để validate thằng timpoint trên màn hình 22 , 23
 			+ " CM.timepointItemMin , CM.timepointItemMax "
-			// cái này dùng để  validate thằng timpoint trên màn hình
+
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -134,7 +134,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			saveDataType = entity[6].toString();
 			domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 		}
-		
+
 		domain.setStringValue(new StringValue(entity[7] == null ? null : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
@@ -195,15 +195,19 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 
 		if (entity[20] != null) {
-			domain.setDateType(Integer.valueOf(entity[20].toString()));
+			domain.setSelectionItemRefType(Integer.valueOf(entity[20].toString()));
 		}
-		
+
 		if (entity[21] != null) {
-			domain.setTimepointItemMin(Integer.valueOf(entity[21].toString()));
+			domain.setDateType(Integer.valueOf(entity[21].toString()));
 		}
 
 		if (entity[22] != null) {
-			domain.setTimepointItemMax(Integer.valueOf(entity[22].toString()));
+			domain.setTimepointItemMin(Integer.valueOf(entity[22].toString()));
+		}
+
+		if (entity[23] != null) {
+			domain.setTimepointItemMax(Integer.valueOf(entity[23].toString()));
 		}
 
 		return domain;
@@ -232,10 +236,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class)
-				.setParameter("perInfoCtgId", perInfoCtgId)
-				.setParameter("settingId", settingId)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("settingId", settingId).getList(c -> toDomain(c));
 
 	}
 
@@ -304,14 +306,15 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	}
 
 	@Override
-	public boolean isExist(String perInfoCtgId) {
-		List<Object[]> itemDefLst = this.queryProxy().query(CHECK_ITEM_IS_EXITED, Object[].class)
-				.setParameter("perInfoCtgId", perInfoCtgId).getList();
+	public boolean isExist(String settingId, String perInfoCtgId) {
+		List<PerInfoInitValueSetItem> itemSetting = this.getAllInitValueItem(perInfoCtgId, settingId);
+		
+		List<PerInfoInitValueSetItem> itemAll = this.getAllItem(settingId, perInfoCtgId);
 
-		if (CollectionUtil.isEmpty(itemDefLst)) {
-			return false;
+		if (itemAll.size() == itemSetting.size()) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
