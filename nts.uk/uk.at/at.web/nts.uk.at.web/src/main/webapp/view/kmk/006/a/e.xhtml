@@ -20,8 +20,8 @@
 				data-bind="ntsFormLabel: {}">
 				<label>#{i18n.getText('KMK006_33')}</label>
 			</div>
-			<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-			<button style="margin-left: 10px" data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_34')}</button>
+			<div data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			<button style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
 			<!-- <div tabindex="6" id="comboTargetYear"
 				data-bind="ntsComboBox: {
 				name: '#[KMK006_26]',
