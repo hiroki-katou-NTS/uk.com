@@ -39,6 +39,8 @@ public class VerticalCalItem extends AggregateRoot{
  	private int dispOrder;
  	private FormPeople formPeople;
  	
+ 	private FormulaAmount formulaAmount;
+ 	
 //	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
 //			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
 //			Rounding rounding, int dispOrder, FormPeople formPeople, List<FormPeopleFunc> lstPeopleFunc) {
@@ -63,7 +65,8 @@ public class VerticalCalItem extends AggregateRoot{
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
  													int rounding, int dispOrder, 
- 													FormPeople formPeople){
+ 													FormPeople formPeople,
+ 													FormulaAmount formulaAmount){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
@@ -71,6 +74,7 @@ public class VerticalCalItem extends AggregateRoot{
  				EnumAdaptor.valueOf(attributes, Attributes.class),
  				EnumAdaptor.valueOf(rounding, Rounding.class),
  				dispOrder,
- 				formPeople);
+ 				formPeople,
+ 				formulaAmount);
  	}
 }

@@ -25,4 +25,6 @@ public class KscmtFormPeoplePK implements Serializable {
 	/* 汎用縦計項目ID */
 	@Column(name = "VERTICAL_CAL_ITEM_ID")
 	public String verticalCalItemId;
+	
+	
 }
