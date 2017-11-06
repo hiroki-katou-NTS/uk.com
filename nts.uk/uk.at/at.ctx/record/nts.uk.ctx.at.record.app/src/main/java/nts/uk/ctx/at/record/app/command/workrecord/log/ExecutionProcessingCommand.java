@@ -1,7 +1,6 @@
-package nts.uk.ctx.at.record.app.command.log;
+package nts.uk.ctx.at.record.app.command.workrecord.log;
 
 import java.util.List;
-
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 /**
@@ -10,13 +9,13 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
  *
  */
 @Getter
-public class EmpCalAndAggregationCommand {
+public class ExecutionProcessingCommand {
 
 	/** ＜画面Aから受け取るパラメータ＞ (param nhận từ man A) 締めID */
     private int closureID;
     /** ＜画面Bから受け取るパラメータ＞ */
     /** 日別作成(打刻反映)実施区分 */
-     private boolean dailyCreation;
+    private boolean dailyCreation;
     /** 作成区分 */
      private int creationType;
     /** 再作成区分 */
@@ -38,7 +37,7 @@ public class EmpCalAndAggregationCommand {
     /** 申し送り時間再設定 */
     private boolean resetTimeForAssig;
     /** 計算区分 */
-    private boolean calClass;
+    private int calClass;
     /** 承認結果反映実施区分 */
     private boolean refApprovalresult;
     /** 反映区分 */
@@ -52,8 +51,8 @@ public class EmpCalAndAggregationCommand {
     /** 就業計算と集計実行ログID*/
     private String empCalAndSumExecLogID;
     /** ＜画面Cから受け取るパラメータ＞ */
-    /**・社員ID */
-    private String employeeID;
+    /** List 社員ID */
+    private List<String> lstEmployeeID;
     /** 対象期間開始日 */
     private String periodStartDate;
     

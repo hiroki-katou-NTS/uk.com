@@ -4,10 +4,11 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         //combo box 
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
+       
         //gridlist
         items: KnockoutObservableArray<Gridlist>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
-
+        currentCode: KnockoutObservable<any>;
         //
         empCalAndSumExecLogID: KnockoutObservable<string>;
         /** 実行開始日時  Start date and time of execution*/

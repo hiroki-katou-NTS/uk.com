@@ -67,4 +67,9 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 		return data;
 	}
 
+	@Override
+	public void addAll(List<TargetPerson> lstTargetPerson) {
+		this.commandProxy().insertAll(lstTargetPerson);
+	}
+
 }

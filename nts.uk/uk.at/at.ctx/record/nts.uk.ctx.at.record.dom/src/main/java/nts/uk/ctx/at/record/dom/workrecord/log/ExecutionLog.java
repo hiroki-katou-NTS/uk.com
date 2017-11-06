@@ -67,27 +67,29 @@ public class ExecutionLog {
 		}
 	}
 	
-	/**
-	 * 承認結果反映の設定情報
-	 */
-	@Setter
+	/** 承認結果反映の設定情報 */
 	private Optional<SetInforReflAprResult> reflectApprovalSetInfo;
+	public void setReflectApprovalSetInfo(SetInforReflAprResult reflectApprovalSetInfo) {
+		this.reflectApprovalSetInfo = Optional.of(reflectApprovalSetInfo);
+	}
 	
-	/**
-	 * 日別作成の設定情報
-	 */
-	@Setter
+	/** 日別作成の設定情報 */
 	private Optional<SettingInforForDailyCreation> dailyCreationSetInfo;
-	/**
-	 * 日別計算の設定情報
-	 */
-	@Setter
+	public void setDailyCreationSetInfo(SettingInforForDailyCreation dailyCreationSetInfo) {
+		this.dailyCreationSetInfo = Optional.of(dailyCreationSetInfo);
+	}
+	
+	/** 日別計算の設定情報 */
 	private Optional<CalExeSettingInfor> dailyCalSetInfo;
-	/**
-	 * 月別集計の設定情報
-	 */
-	@Setter
-	private Optional<CalExeSettingInfor>  monlyAggregationSetInfo;
+	public void setDailyCalSetInfo(CalExeSettingInfor dailyCalSetInfo) {
+		this.dailyCalSetInfo = Optional.of(dailyCalSetInfo);
+	}
+	
+	/** 月別集計の設定情報 */
+	private Optional<CalExeSettingInfor> monlyAggregationSetInfo;
+	public void setMonlyAggregationSetInfo(CalExeSettingInfor calExeSettingInfor) {
+		this.monlyAggregationSetInfo = Optional.of(calExeSettingInfor);
+	}
 	
 	public ExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ErrorPresent existenceError,
 			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod) {
@@ -114,7 +116,6 @@ public class ExecutionLog {
 			GeneralDate startObjectPeriod,
 			GeneralDate endObjectPeriod
 			) {
-		
 		return new ExecutionLog(
 				empCalAndSumExecLogID,
 				EnumAdaptor.valueOf(executionContent,ExecutionContent.class),
