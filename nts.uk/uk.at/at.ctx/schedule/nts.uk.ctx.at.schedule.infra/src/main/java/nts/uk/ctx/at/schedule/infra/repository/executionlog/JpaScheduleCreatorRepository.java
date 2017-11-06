@@ -45,7 +45,8 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscdtScheExeTarget> cq = criteriaBuilder.createQuery(KscdtScheExeTarget.class);
+		CriteriaQuery<KscdtScheExeTarget> cq = criteriaBuilder
+				.createQuery(KscdtScheExeTarget.class);
 		Root<KscdtScheExeTarget> root = cq.from(KscdtScheExeTarget.class);
 
 		// select root
@@ -54,18 +55,20 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId), executionId));
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId),
+				executionId));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
-		cq.orderBy(criteriaBuilder
-				.desc(root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.sid)));
+		cq.orderBy(criteriaBuilder.desc(
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.sid)));
 
 		// create query
 		TypedQuery<KscdtScheExeTarget> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -136,18 +139,19 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kscmt schedule creator
 	 */
-	private KscdtScheExeTarget toEntityUpdate(ScheduleCreator domain){
-		Optional<KscdtScheExeTarget> opEntity = this.findById(domain.getExecutionId(), domain.getEmployeeId());
+	private KscdtScheExeTarget toEntityUpdate(ScheduleCreator domain) {
+		Optional<KscdtScheExeTarget> opEntity = this.findById(domain.getExecutionId(),
+				domain.getEmployeeId());
 		KscdtScheExeTarget entity = new KscdtScheExeTarget();
-		
-		if(opEntity.isPresent()){
+
+		if (opEntity.isPresent()) {
 			entity = opEntity.get();
 		}
-		
+
 		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
 		return entity;
 	}
-	
+
 	/**
 	 * To domain.
 	 *
