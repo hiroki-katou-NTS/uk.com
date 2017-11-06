@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1030, height: 680 };</script>
+			<script>var dialogSize = { width: 1130, height: 680 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.i.main.css" />
 			<com:scriptfile path="kdw001.i.start.js" />
@@ -64,7 +64,7 @@
 								<th style="width: 100px; text-align: center;">#{i18n.getText('KDW001_26')}</th>
 								<th style="width: 100px;">#{i18n.getText('KDW001_80')}</th>
 								<th style="width: 90px;">#{i18n.getText('KDW001_82')}</th>
-								<th style="width: 280px;">#{i18n.getText('KDW001_79')}</th>
+								<th style="width: 290px;">#{i18n.getText('KDW001_79')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_20')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_49')}</th>
 							</tr>
@@ -105,21 +105,49 @@
 											<com:ko-if bind="$data.dailyCreationSetInfo.creationType == 1">
 												<span>#{i18n.getText('KDW001_57')}</span>
 											</com:ko-if><br />
-											<span>1</span>
-										</com:ko-if>
-										<com:ko-if bind="$data.executionContent == 1">
-											<span data-bind="text: $data.dailyCalSetInfo.executionTypeName"></span>
+											<!-- 1 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.calculationClassificationResetting == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.calculationClassificationResettingName"></span><br />
+											</com:ko-if>
+											<!-- 2 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.closedHolidays == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.closedHolidaysName"></span><br />
+											</com:ko-if>
+											<!-- 3 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.masterReconfiguration == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.masterReconfigurationName"></span><br />
+											</com:ko-if>
+											<!-- 4 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.reflectsTheNumberOfFingerprintChecks == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.reflectsTheNumberOfFingerprintChecksName"></span><br />
+											</com:ko-if>
+											<!-- 5 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeAssignment == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.resetTimeAssignmentName"></span><br />
+											</com:ko-if>
+											<!-- 6 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeChildOrNurseCare == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.resetTimeChildOrNurseCareName"></span><br />
+											</com:ko-if>
+											<!-- 7 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resettingWorkingHours == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.resettingWorkingHoursName"></span><br />
+											</com:ko-if>
+											<!-- 8 -->
+											<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.specificDateClassificationResetting == true">
+												<span data-bind="text:$data.dailyCreationSetInfo.partResetClassification.specificDateClassificationResettingName"></span>
+											</com:ko-if>
 										</com:ko-if>
 										<com:ko-if bind="$data.executionContent == 2">
-											<span data-bind="text: $data.reflectApprovalSetInfo.executionTypeName"></span>
+											<com:ko-if bind="$data.reflectApprovalSetInfo.forciblyReflect == true">
+												<span>#{i18n.getText('KDW001_68')}</span>
+											</com:ko-if>
 										</com:ko-if>
-										<com:ko-if bind="$data.executionContent == 3">
-											<span data-bind="text: $data.monlyAggregationSetInfo.executionTypeName"></span>
-										</com:ko-if>
+										
 									</td>
 									<!-- I2_16 -->
 									<td style="text-align: center;"><span class="hyperlink"
-										data-bind="click: $parent.openDialogG.bind($parent) "><span
+										data-bind="click: $parent.openDialogG.bind($parent, $data) "><span
 											data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
 									<td style="text-align: center;"><span class="hyperlink"

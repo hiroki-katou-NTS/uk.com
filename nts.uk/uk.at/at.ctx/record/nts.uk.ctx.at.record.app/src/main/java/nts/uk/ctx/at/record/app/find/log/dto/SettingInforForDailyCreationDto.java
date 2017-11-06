@@ -27,7 +27,7 @@ public class SettingInforForDailyCreationDto {
 	
 	int creationType;
 	
-	PartResetClassification partResetClassification;
+	PartResetClassificationDto partResetClassification;
 	
 	
 	public static SettingInforForDailyCreationDto fromDomain(SettingInforForDailyCreation domain) {
@@ -35,8 +35,7 @@ public class SettingInforForDailyCreationDto {
 				domain.getExecutionType().value,
 				domain.getExecutionType().nameId,
 				domain.getCreationType().value,
-				domain.getPartResetClassification().get()
-				
+				PartResetClassificationDto.fromDomain(domain.getPartResetClassification().get())
 				);
 		
 	}

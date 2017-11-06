@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -87,7 +88,7 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 		return EmpCalAndSumExeLog.createFromJavaType(
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
-				this.processingMonth,
+				new YearMonth( this.processingMonth),
 				this.executedMenu,
 				this.executedDate, 
 				this.executedStatus,

@@ -322,7 +322,7 @@ module nts.uk.at.view.kdw001.f {
             executionTypeName : string;
             calExecutionSetInfoID :  string;
             caseSpecExeContentID : string ;
-            constructor(executionContent: number, executionType: number,executionTypeName : String,
+            constructor(executionContent: number, executionType: number,executionTypeName : string,
             calExecutionSetInfoID :  string,
             caseSpecExeContentID : string ) {
                 this.executionContent = executionContent;

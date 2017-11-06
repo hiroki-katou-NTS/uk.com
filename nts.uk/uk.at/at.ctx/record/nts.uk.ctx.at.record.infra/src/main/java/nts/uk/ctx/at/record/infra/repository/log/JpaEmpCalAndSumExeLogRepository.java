@@ -20,8 +20,8 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	//Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
 	private final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG 
 			+ " WHERE c.krcmtEmpExecutionLogPK.companyID = :companyID "
-			+ "AND c.krcmtEmpExecutionLogPK.employeeID =: emmployeeID"
-			+ "ORDER BY c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
+			+ " AND c.krcmtEmpExecutionLogPK.employeeID =: emmployeeID"
+			+ " ORDER BY c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
 	
 	private final String SELECT_All_LOG = SELECT_FROM_LOG 
 			+ " WHERE c.companyID = :companyID ";

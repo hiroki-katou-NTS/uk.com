@@ -101,10 +101,6 @@ module nts.uk.at.view.kdw001.i {
                 service.getListTargetPersonByEmpId(empCalAndSumExeLogId).done(function(data) {
                     self.listTargetPerson(data);
                     self.numberPerson(self.listTargetPerson().length);
-                    self.listPerson = [];
-                    for(let i =0;i<self.listTargetPerson().length;i++){
-                        self.listPerson.push(self.listTargetPerson()[i].employeeId);
-                    }
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -117,22 +113,23 @@ module nts.uk.at.view.kdw001.i {
             /**
              *open dialog G 
              */
-            openDialogG() {
+            openDialogG(execution : modelkdw001f.ExecutionLog) {
                 let self = this;
-                let temp = self.listPerson;
                 let param = {
                     //・就業計算と集計実行ログID
                     empCalAndSumExecLogID : self.empCalAndSumExecLogID,
-                    //・社員ID（list）
-                    listPerson : self.listPerson,
+                    //・社員ID（list）  ・従業員の実行状況
+                    listTargetPerson : self.listTargetPerson(),
                     //・実行開始日時
+                    execution : execution.executionTime.startTime,
                     //・対象期間
-                    //・従業員の実行状況
+                    objectPeriod : execution.objectPeriod,
                     //・選択した締め
                     //・処理月
                     processingMonth : self.processingMonth
                 };
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml",param);
+                nts.uk.ui.windows.setShared("openG", param);
+                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
             }
 
             /**
