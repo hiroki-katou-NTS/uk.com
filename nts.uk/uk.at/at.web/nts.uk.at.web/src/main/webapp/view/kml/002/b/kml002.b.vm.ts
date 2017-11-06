@@ -43,8 +43,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
             self.verticalInputItem2 = ko.observable(0);
             
             self.operatorItem = ko.observableArray([
-                { operatorCode: 0, operatorName: 'X' },
-                { operatorCode: 1, operatorName: ':' }
+                { operatorCode: 0, operatorName: nts.uk.resource.getText("KML002_37") },
+                { operatorCode: 1, operatorName: nts.uk.resource.getText("KML002_38") },
+                { operatorCode: 2, operatorName: nts.uk.resource.getText("KML002_59") },
+                { operatorCode: 3, operatorName: ":" }
             ]);
             
             self.selectedOperator = ko.observable(0);
