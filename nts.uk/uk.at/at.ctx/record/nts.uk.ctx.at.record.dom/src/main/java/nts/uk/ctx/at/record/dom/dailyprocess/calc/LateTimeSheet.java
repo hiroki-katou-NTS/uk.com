@@ -12,10 +12,12 @@ import lombok.Getter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
@@ -355,10 +357,31 @@ public class LateTimeSheet{
 	public LateTimeSheet createLateTimeSheet(LateTimeSheet baseLateTimeSheet) {
 		//遅刻時間の計算
 		
-		
-		
-		
-		
+			
 	}
+	
+	
+	/**
+	 * 遅刻時間の休暇時間相殺
+	 * @return
+	 */
+	public DeductionOffSetTime calcDeductionOffSetTime(
+			TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime,//時間休暇使用残時間
+			DeductionAtr deductionAtr) {
+		LateLeaveEarlyTimeSheet calcRange;
+		//計算範囲の取得
+		if(deductionAtr.isDeduction()) {//パラメータが控除の場合
+			calcRange = this.getForDeducationTimeSheet().get();
+		}else {//パラメータが計上の場合
+			calcRange = this.getForRecordTimeSheet().get();
+		}
+		//遅刻時間を求める
+		int lateRemainingTime = this.getLateTime(calcRange);
+		//時間休暇相殺を利用して相殺した各時間を求める
+		DeductionOffSetTime deductionOffSetTime = new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
+		deductionOffSetTime.createDeductionOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime);
+		
+		return 	deductionOffSetTime;
+	}	
 	
 }

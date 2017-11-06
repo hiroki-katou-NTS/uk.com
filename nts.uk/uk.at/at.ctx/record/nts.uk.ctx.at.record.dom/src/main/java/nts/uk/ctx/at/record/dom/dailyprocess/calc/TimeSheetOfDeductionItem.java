@@ -12,7 +12,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.StampGoOutReason;
+import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -304,4 +306,24 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	public TimeSheetOfDeductionItem createWithExcessAtr(){
 		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.deductionTimeSheets,this.bonusPayTimeSheet,this,midNighttimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr,WithinStatutoryAtr.WithinStatutory);
 	}
+	
+	
+	/**
+	 * 外出時間の休暇時間相殺
+	 * @return
+	 */
+	public DeductionOffSetTime calcDeductionOffSetTime(
+			TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime,//時間休暇使用残時間
+			DeductionAtr deductionAtr) {
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
 }

@@ -381,7 +381,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		
 		//相殺時間の計算
-		DeductionOffSetTime deductionSffSetTime = calcDeductionOffSetTime(TimeVacationAdditionRemainingTime,lateTimeSheet);
+		DeductionOffSetTime deductionSffSetTime = lateTimeSheet.calcDeductionOffSetTime(TimeVacationAdditionRemainingTime,DeductionAtr.Appropriate);
 		//計上用時間帯から相殺時間を控除する
 		TimeWithCalculation collectLateTime = lateTime.createTimeWithCalculation(
 				new AttendanceTime(lateTime.getTime().valueAsMinutes()-deductionSffSetTime.getTotalOffSetTime()),
@@ -477,84 +477,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	}
 	
 	
-	/**
-	 * 遅刻時間の休暇時間相殺
-	 * @return
-	 */
-	public DeductionOffSetTime calcDeductionOffSetTime(
-			TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime,//時間休暇使用残時間を取得する
-			LateTimeSheet lateTimeSheet,
-			DeductionAtr deductionAtr) {
-		TimeSpanForCalc calcRange;
-		//計算範囲の取得
-		if(deductionAtr.isDeduction()) {//パラメータが控除の場合
-			calcRange = lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getSpan();
-		}else {//パラメータが計上の場合
-			calcRange = lateTimeSheet.getForRecordTimeSheet().get().getTimeSheet().getSpan();
-		}
-		//遅刻時間を求める
-		int lateRemainingTime = calcRange.lengthAsMinutes();
-		//時間休暇相殺を利用して相殺した各時間を求める
-		DeductionOffSetTime deductionOffSetTime = createDeductionOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime);
-		
-		return 	deductionOffSetTime;
-	}
 	
 	
-	/**
-	 * 時間休暇相殺を利用して相殺した各時間を求める  （一時的に作成）
-	 * @return
-	 */
-	public DeductionOffSetTime createDeductionOffSetTime(int lateRemainingTime,TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime) {
-		
-		AttendanceTime timeAnnualLeaveUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getTimeAnnualLeaveUseTime());
-		lateRemainingTime -= timeAnnualLeaveUseTime.valueAsMinutes();
-
-		AttendanceTime timeCompensatoryLeaveUseTime = new AttendanceTime(0);
-		AttendanceTime sixtyHourExcessHolidayUseTime = new AttendanceTime(0);
-		AttendanceTime timeSpecialHolidayUseTime = new AttendanceTime(0);
-		
-		if(lateRemainingTime > 0) {
-			timeCompensatoryLeaveUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getTimeCompensatoryLeaveUseTime());
-			lateRemainingTime -= timeCompensatoryLeaveUseTime.valueAsMinutes();
-		}
-		
-		if(lateRemainingTime > 0) {
-			sixtyHourExcessHolidayUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getSixtyHourExcessHolidayUseTime());
-			lateRemainingTime -= sixtyHourExcessHolidayUseTime.valueAsMinutes();
-		}
-		
-		if(lateRemainingTime > 0) {
-			timeSpecialHolidayUseTime = calcOffSetTime(lateRemainingTime,TimeVacationAdditionRemainingTime.getTimeSpecialHolidayUseTime());
-			lateRemainingTime -= timeSpecialHolidayUseTime.valueAsMinutes();
-		}
-				
-		return new DeductionOffSetTime(
-				timeAnnualLeaveUseTime,
-				timeCompensatoryLeaveUseTime,
-				sixtyHourExcessHolidayUseTime,
-				timeSpecialHolidayUseTime);
-	}
-
-	
-	/**
-	 * 
-	 * @param lateRemainingTime 遅刻残数
-	 * @param timeVacationUseTime　時間休暇使用時間
-	 * @return
-	 */
-	public AttendanceTime calcOffSetTime(int lateRemainingTime,AttendanceTime timeVacationUseTime) {
-		int offSetTime;
-		//相殺する時間を計算（比較）する
-		if(timeVacationUseTime.lessThanOrEqualTo(lateRemainingTime)) {
-			offSetTime = timeVacationUseTime.valueAsMinutes();
-		}else {
-			offSetTime = lateRemainingTime;
-		}
-		return new AttendanceTime(offSetTime);
-	}
-
-		
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	
 	/**

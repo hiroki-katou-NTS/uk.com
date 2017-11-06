@@ -209,6 +209,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		int workTime = calcActualTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		
+		//控除時間の内、時間休暇で相殺した時間を計算
+		DeductionOffSetTime timeVacationOffSetTime = dedTimeSheet.calcTotalDeductionOffSetTime(lateTimeOfDaily, lateTimeSheet);
+		
 		return workTime;
 	}
 	
@@ -283,18 +286,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 			throw new RuntimeException("半日専用のメソッドです: " + attr);
 		}
 	}
-	
-	
-	/**
-	 * 控除時間中の時間休暇相殺時間の計算
-	 * @return
-	 */
-	public DeductionOffSetTime calcTotalDeductionOffSetTime() {
-		
-		//2017/10/13はここからスタート
-		
-		
-	}
+
 	
 	
 	

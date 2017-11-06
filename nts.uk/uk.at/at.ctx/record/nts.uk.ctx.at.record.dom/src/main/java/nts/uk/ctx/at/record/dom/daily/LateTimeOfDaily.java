@@ -15,5 +15,5 @@ public class LateTimeOfDaily {
 	private TimeWithCalculation lateDeductionTime;
 	private int workNo;//workNo型で作り直す必要がある
 	private boolean calcClassification;
-	
+	private TimevacationUseTimeOfDaily timePaidUseTime;
 }
