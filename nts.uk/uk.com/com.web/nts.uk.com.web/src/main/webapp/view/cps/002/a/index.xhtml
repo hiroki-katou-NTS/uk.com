@@ -54,7 +54,7 @@
 
 					</div>
 					<div class="contents">
-						<!-- step1 -->
+						<!-- step1 start -->
 						<div class="step-1">
 							<div id="step1_content_top">
 								<div id="step1_content_top_left"
@@ -64,7 +64,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<div
+											<div class="form_step1"
 												data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD'}"></div>
 										</div>
 
@@ -75,7 +75,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_104')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input
+											<input class="form_step1"
 												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
@@ -87,7 +87,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input
+											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
 											required:true,
@@ -102,9 +102,39 @@
 											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_18')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input data-bind="ntsTextEditor: {value: cardNo}" />
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {value: cardNo}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_108')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {
+											value: employeeName ,
+											required:true,
+											option: {
+												 width: '163' 
+												 }}" />
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_109')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {
+											value: employeeName ,
+											required:true,
+											option: {
+												 width: '163',
+												 textmode:'password' 
+												 }}" />
 										</div>
 									</div>
 

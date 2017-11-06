@@ -72,6 +72,7 @@ module cps002.a.vm {
                 self.categorySelectedCode('');
                 self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
+              //  self.layout(new Layout({ id: '', code: '', name: '' }));
 
             });
 
@@ -252,8 +253,8 @@ module cps002.a.vm {
             return dfd.promise();
         }
 
-        validateForm() {
-            $(".nts-editor").trigger("validate");
+        validateStep1() {
+            $(".form_step1").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return false;
             }
@@ -262,7 +263,7 @@ module cps002.a.vm {
 
         completeStep1() {
             let self = this;
-            if (self.validateForm()) {
+            if (self.validateStep1()) {
                 self.validEmployeeInfo().done((result) => {
                     if (result.isError) {
                         dialog({ messageId: result.messageId });
@@ -549,7 +550,6 @@ module cps002.a.vm {
     }
 
     class Employee {
-        employeeId: string;
         employeeName: KnockoutObservable<string> = ko.observable("");
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(new Date());
