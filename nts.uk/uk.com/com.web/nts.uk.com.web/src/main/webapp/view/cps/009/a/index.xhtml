@@ -120,7 +120,7 @@
 									<button data-bind="click: historyFilter">適用</button>
 								</div>
 								<table class="contents-header">
-								<thead>
+								<thead style ="height: 10px;">
 										<tr>
 											<td class="input-units" colspan="2">#{i18n.getText('CPS009_21')}</td>
 
@@ -141,8 +141,11 @@
 									<tbody data-bind="foreach: currentCategory().itemList()">
 
 										<td id="name" colspan="2" class="input-units"
-											data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}"><span
-											class="months-input " data-bind="text: itemName" /></td>
+											data-bind="css:{ 
+											requiredCell: isRequired(), 
+											notrequiredCell:!isRequired()}">
+											<span class="months-input " data-bind="text: itemName" />
+										</td>
 
 										<td class="input-units">
 											<div id="combo-box"
@@ -163,7 +166,11 @@
 										<td colspan="2" class="input-units">
 											<!-- String  -->
 											<com:ko-if bind="(dataType() === 0) || (dataType() === 1)">
-												<input class="sub-input-units" data-bind="ntsTextEditor: {value: stringValue , constraint: constraint , required: true}" />
+												<input class="sub-input-units" 
+														data-bind="ntsTextEditor: {
+														value: stringValue , 
+														constraint: constraint , 
+														required: true}" />
 											</com:ko-if> 
 											
 											<!-- number  --> 
@@ -200,40 +207,58 @@
 											 <com:ko-if bind="(dataType() === 3)">
 											 	 <!-- date thuộc kiểu ngày tháng năm  --> 
 											 	<com:ko-if bind="(dateType === 1)">
-													<input class="sub-input-units" data-bind="ntsTimeEditor: {value: dateValue, inputFormat: 'date'}" />
+													<div class="sub-input-units" 
+														 data-bind="ntsDatePicker: {
+														 value: dateValue, 
+														 dateFormat: 'YYYY/MM/DD',
+														 valueFormat: 'YYYY/MM/DD'}"></div>
 												</com:ko-if>
 												
 												<!-- date thuộc kiểu tháng năm  --> 
 											 	<com:ko-if bind="(dateType === 2)">
-													<input class="sub-input-units" 
-														data-bind="ntsTimeEditor: { value: dateValue,
-																					option: {inputFormat: 'yearmonth',
-                   																	efaultValue: '201105'}}" />
+                   									<div class="sub-input-units" 
+                   										data-bind="ntsDatePicker: {
+	                   									value: dateValue, 
+	                   									dateFormat: 'YYYY/MM', 
+	                   									valueFormat: 'YYYY/MM'}"></div>								
 												</com:ko-if>
 												
 												<!-- date thuộc kiểu  năm  --> 			
 											 	<com:ko-if bind="(dateType === 3)">
-													<input class="sub-input-units" 
-														data-bind="ntsTimeEditor: { inputFormat: 'YYYY', value: dateValue, mode: 'year'}" />
+													<div class="sub-input-units" 
+														data-bind="ntsDatePicker: {
+														value: dateValue, 
+														dateFormat: 'YYYY', 
+														valueFormat: 'YYYY'}"></div>	
 												</com:ko-if>																							
 											</com:ko-if> 
 											
 											<!-- timeitem  --> 
 											<com:ko-if bind="(dataType() === 4)">
 												<input class="sub-input-units"
-													data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint: itemCode, 
-													 value: dateWithDay, enable: true, readonly: false, required: true }" />
+													data-bind="ntsTimeWithDayEditor: {
+													name: 'Time With Day', 
+													constraint: itemCode, 
+													value: dateWithDay, 
+													enable: true, 
+													readonly: false, 
+													required: true }" />
 											</com:ko-if>
 											
 											 <!-- timepoint  --> 
 											 <com:ko-if bind="(dataType() === 5)">
-											<!-- 	<input class="sub-input-units" data-bind="ntsTimeEditor: {value: timePoint, inputFormat: 'date'}" /> -->
-											<input class="sub-input-units"
-													data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint: itemCode, 
-													 value: dateWithDay, enable: true, readonly: false, required: true }" />
+												<input class="sub-input-units"
+														data-bind="ntsTimeWithDayEditor: { 
+														name: 'Time With Day', 
+														constraint: itemCode, 
+														value: dateWithDay, 
+														enable: true, 
+														readonly: false, 
+														required: true }" />
 											</com:ko-if>
 											
 											 <!--  list box  -->
+											 
 											 <com:ko-if bind="(dataType() === 6)">
 												<div class="sub-input-units"
 													data-bind="ntsComboBox: {

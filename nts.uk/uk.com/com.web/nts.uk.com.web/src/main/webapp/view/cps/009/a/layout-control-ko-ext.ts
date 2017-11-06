@@ -45,8 +45,8 @@ module CPS009Constraint {
                     break;
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     constraint.valueType = "Clock";
-                    constraint.max = parseTime(dts.timePointItemMax, true).format();
-                    constraint.min = parseTime(dts.timePointItemMin, true).format();
+                    constraint.max = parseTime(dts.timepointItemMax, true).format();
+                    constraint.min = parseTime(dts.timepointItemMin, true).format();
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                     constraint.valueType = "Selection";

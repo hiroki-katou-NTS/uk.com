@@ -35,16 +35,22 @@ public class CtgItemFixDto {
 	@Getter
 	protected CtgItemType ctgItemType; 
 	
+	public CtgItemFixDto getObject(){
+		return this;
+	}
+	// 家族所得税  IncomeTax 
 	public static CtgItemFixDto createIncomeTax(String incomeTaxID, String familyMemberId, String sid, GeneralDate startDate, GeneralDate endDate, 
 			boolean supporter, int disabilityType, int deductionTargetType){
 		return ItemIncomeTaxDto.createFromJavaType(incomeTaxID, familyMemberId, sid, startDate, endDate, 
 				supporter, disabilityType, deductionTargetType);
 	}
+	//get FamilySocialInsurance
 	public static CtgItemFixDto createFamilySocialInsurance(String familyMemberId, String sid, String socailInsuaranceId, GeneralDate startDate,
 			GeneralDate endDate, boolean nursingCare, boolean healthInsuranceDependent, boolean nationalPensionNo3, String basicPensionNumber){
 		return ItemFamilySocialInsuranceDto.createFromJavaType(familyMemberId, sid, socailInsuaranceId, startDate,
 				endDate, nursingCare, healthInsuranceDependent, nationalPensionNo3, basicPensionNumber);
 	}
+	//FamilyCare
 	public static CtgItemFixDto createFamilyCare(String familyCareId, String familyId, String sid, 
 			GeneralDate startDate, GeneralDate endDate, int careClassifi){
 		return ItemFamilyCareDto.createFromJavaType(familyCareId, familyId, sid, startDate, endDate, careClassifi);
@@ -79,10 +85,10 @@ public class CtgItemFixDto {
 		return ItemCurAffDept.createCurAffDept(employeeId, affiDeptId, departmentId, dateHistoryItem);
 	}
 	
-	public static CtgItemFixDto createPerson(String businessName, String personName, String businessOtherName, String businessEnglishName,
+	public static CtgItemFixDto createPerson(String personId, GeneralDate birthDate, int bloodType, int gender, String personMobile, String mailAddress, String businessName, String personName, String businessOtherName, String businessEnglishName,
 			String personNameKana, FullNameSetDto personRomanji, FullNameSetDto todokedeFullName, FullNameSetDto oldName, FullNameSetDto todokedeOldFullName){
-		return ItemPersonDto.createFromJavaType(businessName, personName, businessOtherName, businessEnglishName, 
-				personNameKana, personRomanji, todokedeFullName, oldName, todokedeOldFullName);
+		return ItemPersonDto.createFromJavaType(personId, birthDate, bloodType, gender, personMobile, mailAddress, businessName, personName, 
+				businessOtherName, businessEnglishName, personNameKana, personRomanji, todokedeFullName, oldName, todokedeOldFullName);
 	}
 	
 	public static CtgItemFixDto createCurrentAddress(String currentAddressId, String pid, String countryId,

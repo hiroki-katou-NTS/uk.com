@@ -9,11 +9,6 @@ module nts.uk.com.view.cps009.b.viewmodel {
 
     export class ViewModel {
         itemInitLst: Array<any> = [];
-        itemColumns: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_33'), key: 'itemName', width: 200 },
-        ]);
-
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
@@ -28,13 +23,15 @@ module nts.uk.com.view.cps009.b.viewmodel {
             ]);
             self.selectedRuleCode = ko.observable(1);
         }
-
+        /**
+         * get data from db when start
+         */
         start(): JQueryPromise<any> {
             let self = this,
             dfd = $.Deferred();
             self.itemInitLst = [];
-            let param = getShared('CPS009B_PARAMS') || { settingName: '', settingId: '', categoryId: ''};
-             self.categoryName(param.settingName);
+            let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: ''};
+            self.categoryName(param.ctgName);
             service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data){
                 if(data == null || data == undefined || data.length == 0){
                     self.itemInitLst = [];
@@ -50,29 +47,48 @@ module nts.uk.com.view.cps009.b.viewmodel {
             
             return dfd.promise();
         }
-
+        /**
+         * send data to screen main when click button 決定
+         */
         registerItems() {
             let self = this;
             //対象項目選択があろうかどうかをチェック (Kiểm tra có Item được chọn không)
-            let check = 0;
+            let lstIdResult = [];
+            let lstItemResult = [];
             _.each(self.itemInitLst, function(item){
-                if(item.isCheckBox) check++;
+                if(item.isCheckBox){
+                    lstIdResult.push(item.id);
+                }
             });
-            if(check == 0){
+            if(lstIdResult.length == 0){
                 //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_362'});
                 return;    
             }
+            _.each(lstIdResult, function(itemId){
+                let item = self.findItem(self.dataSource, itemId);
+                lstItemResult.push(item);
+            });
             setShared('CPS009B_DATA', {
                 refMethodType: self.selectedRuleCode(),
-                lstItem: self.itemInitLst
+                lstItem: lstItemResult
             });
             close();
         }
-
+        /**
+         * close dialog when click button キャンセル
+         */
         closeDialog() {
             setShared('CPS009B_DATA', null);
             close();
+        }
+        /**
+         * find item by id
+         */
+        findItem(lstItem: Array<any> , id: string): any{
+            return _.find(lstItem, function(obj){
+                return obj.perInfoItemDefId == id;
+            });
         }
     }
 

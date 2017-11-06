@@ -28,18 +28,29 @@ public class JpaIncomeTax extends JpaRepository implements IncomeTaxRepository{
 		return this.queryProxy().query(SELECT_INCOME_TAX_BY_ID, BsymtIncomeTax.class)
 				.setParameter("incomeTaxId", incomeTaxId).getSingle(x -> toDomainInComeTax(x));
 	}
-	private BsymtIncomeTax toEntity(IncomeTax domain){
-		BsymtIncomeTaxPK key = new BsymtIncomeTaxPK(domain.getIncomeTaxID());
-		return new BsymtIncomeTax(key, domain.getSid(), domain.getFamilyMemberId(), domain.getDisabilityType().value,
-				domain.getDeductionTargetType().value, domain.isSupporter()?1:0, domain.getPeriod().start(), domain.getPeriod().end());
+	private void updateEntity(IncomeTax domain, BsymtIncomeTax entity){
+		entity.setSId(domain.getSid());
+		entity.setFamilyMemberId(domain.getFamilyMemberId());
+		entity.setDisabilityType(domain.getDisabilityType().value);
+		entity.setDeductionTargetType(domain.getDeductionTargetType().value);
+		entity.setSupporter(domain.isSupporter()?1:0);
+		entity.setStrD(domain.getPeriod().start());
+		entity.setEndD(domain.getPeriod().end());
 	}
 	/**
 	 * 取得した「家族所得税」を更新する
 	 * @param domain
 	 */
 	@Override
-	public void addIncomeTax(IncomeTax domain) {
-		this.commandProxy().insert(toEntity(domain));
+	public void updateIncomeTax(IncomeTax domain) {
+		BsymtIncomeTaxPK key = new BsymtIncomeTaxPK(domain.getIncomeTaxID());
+		Optional<BsymtIncomeTax> existItem = this.queryProxy().find(key, BsymtIncomeTax.class);
+		if(!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		this.commandProxy().insert(existItem.get());
 	}
 
 }
