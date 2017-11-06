@@ -27,10 +27,10 @@ public class UpdateItemInitValueSettingCommand {
 	// dataType của item
 	private int dataType;
 	
-	// những trường này có thể bằng null
-	private BigDecimal timePoint;
+//	// những trường này có thể bằng null
+//	private BigDecimal timePoint;
 	
-	private BigDecimal timeItem;
+	private BigDecimal time;
 	
 	// trường này dùng để xác đinh dateType  thuộc
 	// kiểu YYY-MM-DD, YY -MM, YY
