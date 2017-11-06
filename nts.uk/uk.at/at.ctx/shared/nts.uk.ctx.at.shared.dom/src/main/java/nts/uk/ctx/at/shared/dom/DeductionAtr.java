@@ -1,15 +1,9 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+package nts.uk.ctx.at.shared.dom;
 
-/**
- * 控除区分
- * @author keisuke_hoshina
- *
- */
-public enum DeductionAtr {
+public enum DeductionAtr {//20171010に一時的に作成　recordコンテキストの方にも同じのがあるのでどうするのか相談が必要
 	Deduction,
 	Appropriate;
 	
-
 	/**
 	 * 控除用であるか判定する
 	 * @return　控除用である

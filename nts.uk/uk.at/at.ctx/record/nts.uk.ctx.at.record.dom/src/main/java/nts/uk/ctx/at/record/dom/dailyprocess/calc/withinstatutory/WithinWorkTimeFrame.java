@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
@@ -109,6 +110,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 				withinWorkTimeSheet.getlateDecisionClock(workNo),
 				deductionTimeSheet));
 		
+		//遅刻していない場合and猶予時間を加算する場合はここで処理を抜ける
 		if (!this.lateTimeSheet.get().isLate()) {
 			return;
 		}
@@ -227,7 +229,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		return ((CalculationTimeSheet)this).getTimeSheet().lengthAsMinutes();
 	}
 
-	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須
 	
 	/**
 	 * 計算範囲を判断（流動）　　流動時の就業時間内時間枠
@@ -280,6 +282,20 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 			throw new RuntimeException("半日専用のメソッドです: " + attr);
 		}
 	}
-
+	
+	
+	/**
+	 * 控除時間中の時間休暇相殺時間の計算
+	 * @return
+	 */
+	public DeductionOffSetTime calcTotalDeductionOffSetTime() {
 		
+		//2017/10/13はここからスタート
+		
+		
+	}
+	
+	
+	
+			
 }

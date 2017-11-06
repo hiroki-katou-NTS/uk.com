@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
@@ -70,6 +71,8 @@ public class CalculationRangeOfOneDay {
 	private AttendanceLeavingWorkOfDaily attendanceLeavingWork;
 	
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
+	
+	private TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime;//時間休暇加算残時間
 	
 	
 	/**
