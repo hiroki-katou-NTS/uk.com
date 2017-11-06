@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.workscheduleeditstate;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate;
 
 import java.io.Serializable;
 

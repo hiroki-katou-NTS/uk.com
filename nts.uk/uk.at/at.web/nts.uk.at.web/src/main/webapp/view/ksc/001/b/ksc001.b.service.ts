@@ -4,8 +4,8 @@ module nts.uk.at.view.ksc001.b {
            findPeriodById: "ctx/at/shared/workrule/closure/findPeriodById",
            checkThreeMonth: "ctx/at/shared/workrule/closure/checkThreeMonth",
            checkMonthMax: "ctx/at/shared/workrule/closure/checkMonthMax",
-           addScheduleExecutionLog: "at/schedule/exelog/add" 
-            
+           addScheduleExecutionLog: "at/schedule/exelog/add",
+           findDailyPatternSetting: "ctx/at/schedule/shift/pattern/daily"            
         }
         
         /**
