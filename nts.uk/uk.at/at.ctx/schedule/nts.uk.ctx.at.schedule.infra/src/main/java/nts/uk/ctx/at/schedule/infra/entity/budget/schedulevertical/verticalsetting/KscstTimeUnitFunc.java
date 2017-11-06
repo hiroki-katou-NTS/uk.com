@@ -5,10 +5,14 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaTimeUnit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -37,7 +41,12 @@ public class KscstTimeUnitFunc extends UkJpaEntity implements Serializable {
 	/* 順番 */
 	@Column(name = "DISPORDER")
 	public int dispOrder;
-	
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCST_FORMULA_TIME_UNIT.CID", insertable = false, updatable = false),
+		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "KSCST_FORMULA_TIME_UNIT.VERTICAL_CAL_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "ITEM_ID", referencedColumnName = "KSCST_FORMULA_TIME_UNIT.ITEM_ID", insertable = false, updatable = false)
+	})
+	public KscstFormulaTimeUnit kscstFormulaTimeUnit;
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub

@@ -47,7 +47,9 @@ public class VerticalSettingCommand {
 					x.getAttributes(),
 					x.getRounding(),
 					x.getDispOrder(),
-					x.getFormPeople() != null ? x.getFormPeople().toDomainFormPeople(companyId, x.getVerticalCalCd(), x.getItemId()) : null);
+					x.getFormPeople() != null ? x.getFormPeople().toDomainFormPeople(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
+					x.getFormulaAmount().toDomainFormAmount(companyId, companyId, x.getVerticalCalCd()));
+					
 			domain.validate();
 			domain.validate(x.getDispOrder());
 			return domain;

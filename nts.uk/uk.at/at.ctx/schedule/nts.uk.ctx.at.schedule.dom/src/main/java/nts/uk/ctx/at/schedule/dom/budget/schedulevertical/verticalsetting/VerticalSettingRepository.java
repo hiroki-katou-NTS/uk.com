@@ -95,4 +95,14 @@ public interface VerticalSettingRepository {
 	 * author: Hoang Yen
 	 */
 	void deleteFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc);
+
+	List<MoneyFunc> findAllMoneyFunc(String companyId);
+
+	List<FormulaMoney> findAllFormulaMoney(String companyId);
+
+	List<FormulaAmount> findAllFormulaAmount(String companyId);
+
+	List<TimeUnitFunc> findAllTimeUnit(String companyId);
+
+	List<FormulaTimeUnit> findAllFormulaTimeUnit(String companyId);
 }

@@ -41,6 +41,23 @@ public class VerticalCalItem extends DomainObject {
  	
  	private FormPeople formPeople;
  	
+ 	private FormulaAmount formulaAmount;
+ 	
+//	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
+//			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
+//			Rounding rounding, int dispOrder, FormPeople formPeople, List<FormPeopleFunc> lstPeopleFunc) {
+//		
+//		this.companyId = companyId;
+//		this.verticalCalCd = verticalCalCd;
+//		this.itemId = itemId;
+//		this.itemName = itemName;
+//		this.calculateAtr = calculateAtr;
+//		this.displayAtr = displayAtr;
+//		this.cumulativeAtr = cumulativeAtr;
+//		this.attributes = attributes;
+//		this.rounding = rounding;
+//		this.dispOrder = dispOrder;
+//	}
  	
  	/**
  	 * author: Hoang Yen
@@ -50,7 +67,8 @@ public class VerticalCalItem extends DomainObject {
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
  													int rounding, int dispOrder, 
- 													FormPeople formPeople){
+ 													FormPeople formPeople,
+ 													FormulaAmount formulaAmount){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
@@ -58,7 +76,8 @@ public class VerticalCalItem extends DomainObject {
  				EnumAdaptor.valueOf(attributes, Attributes.class),
  				EnumAdaptor.valueOf(rounding, Rounding.class),
  				dispOrder,
- 				formPeople);
+ 				formPeople,
+ 				formulaAmount);
  	}
  	
  	public void validate(int index) {
