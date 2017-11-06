@@ -11,11 +11,11 @@
 }
 
 .requiredCell {
-	background-color: #FAEC82;
+ background-color: #FFC000;
 }
 
 .notrequiredCell {
-	background-color: #E0F59E;
+ background-color: #C7F391;
 }
 
 .ui-iggrid table tr td {
