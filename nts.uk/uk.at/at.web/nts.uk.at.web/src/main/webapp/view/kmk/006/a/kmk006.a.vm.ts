@@ -863,7 +863,7 @@ module nts.uk.at.view.kmk006.a {
             private openDialogUsageSettingModel(): void {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/006/e/index.xhtml").onClosed(function() {
-
+                    self.loadUseUnitAutoCalSettingModel().done(function(){});
                 });
             }
 

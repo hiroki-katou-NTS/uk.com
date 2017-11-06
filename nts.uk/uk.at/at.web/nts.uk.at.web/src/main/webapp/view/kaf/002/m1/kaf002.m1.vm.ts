@@ -119,11 +119,9 @@ module nts.uk.at.view.kaf002.m1 {
                     appApprovalPhaseCmds: approvalList   
                 }
                 service.insert(command)
-                .done(() => {
+                .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                         location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
                     });    
                 })
                 .fail(function(res) { 
@@ -154,8 +152,6 @@ module nts.uk.at.view.kaf002.m1 {
                 .done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                         location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
                     });     
                 })
                 .fail(function(res) { 

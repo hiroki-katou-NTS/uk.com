@@ -1,20 +1,24 @@
-<div id ="screen-g">
+<div id="screen-g">
 	<table>
 		<tr>
 			<td id="left-side">
 				<div id="empt-list-setting" tabindex="4"></div>
 			</td>
 			<td id="right-side">
-				<div class="label">#{i18n.getText('KDW006_53')}
-					<button tabindex="5" id="image-button" data-bind="ntsHelpButton: {image: 'g/KDW006_1.png', position: 'left top-10', enable: true }">?</button>
+				<div class="label">
+					#{i18n.getText('KDW006_53')}
+					<button tabindex="5" id="image-button"
+						data-bind="ntsHelpButton: {image: 'g/KDW006_1.png', position: 'left top-10', enable: true }">?</button>
 				</div>
 				<div id="items-type1" data-bind="foreach : groups1">
 					<div class="up-part">
 						<span class="no-name-group" data-bind="text: no + ' ' + name()"></span>
-						<button tabindex="6" id="default-value" data-bind="click: defaultValue">#{i18n.getText('KDW006_54')}</button>
+						<button tabindex="6" id="default-value"
+							data-bind="click: defaultValue">#{i18n.getText('KDW006_54')}</button>
 					</div>
 					<div class="down-part">
-						<button tabindex="7" id="choose-workType" data-bind="click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+						<button tabindex="7" id="choose-workType"
+							data-bind="click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
 						<span><input id="work-type-names"
 							data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
 						<button tabindex="8" id="clear-workType" data-bind="click: clear">#{i18n.getText('KDW006_56')}</button>
@@ -25,10 +29,12 @@
 				<div id="items-type2" data-bind="foreach : groups2">
 					<div class="up-part">
 						<span class="no-group" data-bind="text: no"></span> <input
-							class="name-group" tabindex="9" data-bind="ntsTextEditor: {value: name}" />
+							class="name-group" tabindex="9"
+							data-bind="ntsTextEditor: { constraint: 'ChangeableWorkTypeGroupName', value: name}" />
 					</div>
 					<div class="down-part">
-						<button id="choose-workType" tabindex="10" data-bind="click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+						<button id="choose-workType" tabindex="10"
+							data-bind="click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
 						<span><input id="work-type-names"
 							data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
 						<button id="clear-workType" tabindex="11" data-bind="click: clear">#{i18n.getText('KDW006_56')}</button>

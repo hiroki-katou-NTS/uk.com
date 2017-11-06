@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workrule.closure.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
@@ -91,6 +93,13 @@ public class ClosureFindDto implements ClosureSetMemento{
 	 */
 	@Override
 	public void setClosureHistories(List<ClosureHistory> closureHistories) {
+		
+		// check empty list closure history
+		if (CollectionUtil.isEmpty(closureHistories)) {
+			this.closureHistories = new ArrayList<>();
+			return;
+		}
+		
 		this.closureHistories = closureHistories.stream().map(history->{
 			ClosureHistoryMasterDto dto = new ClosureHistoryMasterDto();
 			history.saveToMemento(dto);
