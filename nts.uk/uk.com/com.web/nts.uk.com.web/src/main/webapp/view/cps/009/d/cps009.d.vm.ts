@@ -15,11 +15,7 @@ module nts.uk.com.view.cps009.d.viewmodel {
                 itemName: ""
             }));
 
-
-
         constructor() {
-
-
         }
 
         newInitValue() {
@@ -29,15 +25,20 @@ module nts.uk.com.view.cps009.d.viewmodel {
                     itemCode: self.currentInitVal().itemCode(),
                     itemName: self.currentInitVal().itemName()
                 };
-            service.add(copyObj).done(function(data) {
-                dialog.info({ messageId: "Msg_20" }).then(function() {
-                    close();
+            $('.nts-input').trigger("validate");
+            if (!nts.uk.ui.errors.hasError()){
+                service.add(copyObj).done(function(data) {
+                    dialog.info({ messageId: "Msg_20" }).then(function() {
+                        close();
+                    });
+                }).fail(function(){
+                    //display message error.
+                    $('#roleCode').ntsError('set', {messageId:"Msg_3"});
                 });
-            });
+            }
         }
 
         cancelNewInitValue() {
-
             close();
         }
 
