@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.employee.app.find.person.item.ItemJobPosMain;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemPersonDto;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemTemporaryAbsence;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemWidowHistory;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemSetCurJobPos;
 
 /**
@@ -66,16 +67,16 @@ public class CtgItemFixDto {
 		return ItemJobPosMain.createFromJavaType(sId, hisId, jobTitleId, strD, endD);
 	}
 	
-	public static CtgItemFixDto createAssignedWorkplace(String employeeId, String assignedWorkplaceId, String historyId, GeneralDate strD, GeneralDate endD){
-		return ItemAssignedWorkplace.createFromJavaType(employeeId, assignedWorkplaceId, historyId, strD, endD);
+	public static CtgItemFixDto createAssignedWorkplace(String employeeId, String assignedWorkplaceId, List<DateHistoryItem> dateHistoryItem){
+		return ItemAssignedWorkplace.createFromJavaType(employeeId, assignedWorkplaceId, dateHistoryItem);
 	}
 	
 	public static CtgItemFixDto createAffiDepartment(String id, String employeeId, String departmentId, GeneralDate strD, GeneralDate endD){
 		return ItemAffiWorkplace.createFromJavaType(id, employeeId, departmentId, strD, endD);
 	}
 	
-	public static CtgItemFixDto createCurAffDept(String employeeId, String affiDeptId, String departmentId, GeneralDate strD, GeneralDate endD){
-		return ItemCurAffDept.createCurAffDept(employeeId, affiDeptId, departmentId, strD, endD);
+	public static CtgItemFixDto createCurAffDept(String employeeId, String affiDeptId, String departmentId, List<DateHistoryItem> dateHistoryItem){
+		return ItemCurAffDept.createCurAffDept(employeeId, affiDeptId, departmentId, dateHistoryItem);
 	}
 	
 	public static CtgItemFixDto createPerson(String businessName, String personName, String businessOtherName, String businessEnglishName,
@@ -100,10 +101,10 @@ public class CtgItemFixDto {
 	public static CtgItemFixDto createFamily(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,
 			String familyId, String name, String nameKana, String nameMulti, String nameMultiKana, String nameRomaji,
 			String nameRomajiKana, String nationality, String occupationName, String personId, String relationship,
-			int supportCareType, String notificationName, int togSepDivision, int workStudent){
+			int supportCareType, int togSepDivision, int workStudent){
 		return ItemFamilyDto.createFromJavaType(birthday, deadDay, entryDate, expelledDate, familyId,
 				name, nameKana, nameMulti, nameMultiKana, nameRomaji, nameRomajiKana, nationality, occupationName, 
-				personId, relationship, supportCareType, notificationName, togSepDivision, workStudent);
+				personId, relationship, supportCareType, togSepDivision, workStudent);
 	}
 	
 	public static CtgItemFixDto createEmergencyContact(String emgencyContactId, String pid, String personName,

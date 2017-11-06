@@ -37,11 +37,13 @@ module cps002.a.vm {
 
         currentStep: KnockoutObservable<number> = ko.observable(0);
 
-        initValueSelectedCode: KnockoutObservable<string> = ko.observable('');
+        initSettingSelectedCode: KnockoutObservable<string> = ko.observable('');
 
         currentInitSetting: KnockoutObservable<InitSetting> = ko.observable(new InitSetting(null));
 
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
+
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
@@ -68,12 +70,12 @@ module cps002.a.vm {
                 self.categoryList([]);
                 self.itemSettingList([]);
                 self.categorySelectedCode('');
-                self.initValueSelectedCode('');
+                self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
 
             });
 
-            self.initValueSelectedCode.subscribe((initCode) => {
+            self.initSettingSelectedCode.subscribe((initCode) => {
                 if (initCode === '') {
                     return;
                 }
@@ -291,10 +293,46 @@ module cps002.a.vm {
         }
 
         gotoStep3() {
+            let self = this,
+                command = {
+                    createType: self.createTypeId(),
 
-            let self = this;
+                    initSettingId: self.initSettingSelectedCode(),
+
+                    baseDate: self.currentEmployee().hireDate(),
+
+                    employeeId: self.copyEmployee().employeeId
+
+                },
+                layout = self.layout();
 
             self.currentStep(2);
+
+
+            service.getLayoutByCreateType(command).done((x: ILayout) => {
+                layout.id(x.id);
+                layout.code(x.code);
+                layout.name(x.name);
+
+                // remove all sibling sperators
+                let maps = _(x.itemsClassification)
+                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .filter(x => x != -1).value();
+
+                _.each(maps, (t, i) => {
+                    if (maps[i + 1] == t + 1) {
+                        _.remove(x.itemsClassification, (m: IItemClassification) => {
+                            let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
+                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                        });
+                    }
+                });
+
+                layout.itemsClassification(x.itemsClassification);
+            });
+
+
+
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result.allowAvatarUpload) {
@@ -396,7 +434,7 @@ module cps002.a.vm {
                     });
 
 
-                    self.initValueSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
+                    self.initSettingSelectedCode(lastValueItem ? lastValueItem.settingCode : result[0].settingCode);
 
 
                 }
@@ -619,6 +657,53 @@ module cps002.a.vm {
             this.itemName = param ? param.itemName : '';
             this.isRequired = param ? param.isRequired : 0;
             this.saveData = param ? param.saveData : null;
+        }
+    }
+
+    interface IItemClassification {
+        layoutID?: string;
+        dispOrder?: number;
+        className?: string;
+        personInfoCategoryID?: string;
+        layoutItemType: number;
+        listItemDf: Array<IItemDefinition>;
+    }
+
+    interface IItemDefinition {
+        id: string;
+        perInfoCtgId?: string;
+        itemCode?: string;
+        itemName: string;
+    }
+
+    interface ILayout {
+        id: string;
+        code: string;
+        name: string;
+        editable?: boolean;
+        itemsClassification?: Array<IItemClassification>;
+    }
+
+    class Layout {
+        id: KnockoutObservable<string> = ko.observable('');
+        code: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+        editable: KnockoutObservable<boolean> = ko.observable(true);
+        itemsClassification: KnockoutObservableArray<IItemClassification> = ko.observableArray([]);
+
+        constructor(param: ILayout) {
+            let self = this;
+
+            self.id(param.id);
+            self.code(param.code);
+            self.name(param.name);
+
+            if (param.editable != undefined) {
+                self.editable(param.editable);
+            }
+
+            // replace x by class that implement this interface
+            self.itemsClassification(param.itemsClassification || []);
         }
     }
 

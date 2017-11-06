@@ -77,7 +77,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySid(employeeId, referenceDate);
+			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// tốn tại domain 
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();

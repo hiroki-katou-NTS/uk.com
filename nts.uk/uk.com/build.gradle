@@ -523,6 +523,7 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.app')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra') {

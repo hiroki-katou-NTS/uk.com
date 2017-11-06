@@ -75,7 +75,7 @@ public class EmployeeWebService extends WebService {
 	public JavaTypeResult<String> getGenerateCardNo(String startLetters) {
 		return new JavaTypeResult<String>(this.employeeFinder.getGenerateCardNo(startLetters));
 	}
-	// sonnlb
+	// sonnlb code start
 
 	@POST
 	@Path("getGenerateEmplCodeAndComId")
@@ -90,7 +90,7 @@ public class EmployeeWebService extends WebService {
 		return this.employeeFinder.validateEmpInfo(empInfo);
 	}
 
-	// sonnlb
+	// sonnlb code end
 	/**
 	 * Search all employee.
 	 *

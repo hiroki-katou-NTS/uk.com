@@ -4,7 +4,17 @@ import java.util.List;
 
 public interface FamilyRepository {
 	
-	public Family getFamilyById(String familyId);
+	Family getFamilyById(String familyId);
 	
-	public List<Family> getListByPid(String pid);
+	List<Family> getListByPid(String pid);
+	/**
+	 * Add family ドメインモデル「家族」を新規登録する
+	 * @param family
+	 */
+	void addFamily(Family family);
+	/**
+	 * Update family 取得した「家族」を更新する
+	 * @param family
+	 */
+	void updateFamily(Family family);
 }

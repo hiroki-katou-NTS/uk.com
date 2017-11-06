@@ -421,4 +421,12 @@ public class ProgramIdConsts {
 	public static final String CMM018M = "CMM018M";
 
 	public static final String CMM018N = "CMM018N";
+
+	public static final String CPS009A = "CPS009A";
+
+	public static final String CPS009B = "CPS009B";
+
+	public static final String CPS009C = "CPS009C";
+
+	public static final String CPS009D = "CPS009D";
 }

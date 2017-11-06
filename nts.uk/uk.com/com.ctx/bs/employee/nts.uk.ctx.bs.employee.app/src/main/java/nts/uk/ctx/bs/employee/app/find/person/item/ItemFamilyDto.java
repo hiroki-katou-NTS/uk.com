@@ -22,13 +22,12 @@ public class ItemFamilyDto extends CtgItemFixDto{
 	private String personId;
 	private String relationship;
 	private int supportCareType;
-	private String notificationName;
 	private int togSepDivision;
 	private int workStudent;
 	private ItemFamilyDto(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,
 			String familyId, String name, String nameKana, String nameMulti, String nameMultiKana, String nameRomaji,
 			String nameRomajiKana, String nationality, String occupationName, String personId, String relationship,
-			int supportCareType, String notificationName, int togSepDivision, int workStudent){
+			int supportCareType, int togSepDivision, int workStudent){
 		super();
 		this.ctgItemType = CtgItemType.FAMILY;
 		this.birthday = birthday;
@@ -47,7 +46,6 @@ public class ItemFamilyDto extends CtgItemFixDto{
 		this.personId = personId;
 		this.relationship = relationship;
 		this.supportCareType = supportCareType;
-		this.notificationName = notificationName;
 		this.togSepDivision = togSepDivision;
 		this.workStudent = workStudent;
 	}
@@ -55,9 +53,9 @@ public class ItemFamilyDto extends CtgItemFixDto{
 	public static ItemFamilyDto createFromJavaType(GeneralDate birthday, GeneralDate deadDay, GeneralDate entryDate, GeneralDate expelledDate,
 			String familyId, String name, String nameKana, String nameMulti, String nameMultiKana, String nameRomaji,
 			String nameRomajiKana, String nationality, String occupationName, String personId, String relationship,
-			int supportCareType, String notificationName, int togSepDivision, int workStudent){
+			int supportCareType, int togSepDivision, int workStudent){
 		return new ItemFamilyDto(birthday, deadDay, entryDate, expelledDate, familyId, name, nameKana, nameMulti, 
 				nameMultiKana, nameRomaji, nameRomajiKana, nationality, occupationName, personId, relationship, 
-				supportCareType, notificationName, togSepDivision, workStudent);
+				supportCareType, togSepDivision, workStudent);
 	}
 }

@@ -12,6 +12,8 @@ import nts.uk.ctx.bs.employee.app.find.person.info.PersonDto;
 import nts.uk.ctx.bs.employee.app.find.person.info.PersonFinder;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemCurrentJobPosDto;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemEmpInfoItemDataDto;
+import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
+import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDeptRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
@@ -29,8 +31,14 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.E
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
+import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
+import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -38,6 +46,8 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
+import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -87,6 +97,21 @@ public class EmpPerInfoCategoryFinder {
 	
 	@Inject 
 	private CurrentAddressRepository currentAddressRepository;
+	
+	@Inject
+	private AssignedWrkplcRepository assignedWrkplcRepository;
+	
+	@Inject 
+	private CurrentAffiDeptRepository currentAffiDeptRepository;
+	
+	@Inject
+	private FamilyRepository familyRepository;
+	
+	@Inject
+	private WidowHistoryRepository widowHistoryRepository;
+	
+	@Inject
+	private PersonEmergencyCtRepository personEmergencyCtRepository;
 
 	/**
 	 * get person ctg infor and list of item children
@@ -280,17 +305,22 @@ public class EmpPerInfoCategoryFinder {
 				setCtgItemOptionDto(empPerCtgInfoDto, jobTitleMain.getJobTitleId(), true);
 				break;
 			case "CS00010":
-				//AssignedWorkplace assignedWorkplace = 
+				AssignedWorkplace assignedWorkplace = assignedWrkplcRepository.getAssignedWorkplaceById(parentInfoId);
+				ctgItemFixDto = CtgItemFixDto.createAssignedWorkplace(assignedWorkplace.getEmployeeId(), assignedWorkplace.getAssignedWorkplaceId(), assignedWorkplace.getDateHistoryItem());
+				setCtgItemOptionDto(empPerCtgInfoDto, assignedWorkplace.getAssignedWorkplaceId(), true);
 				break;
 			case "CS00011":
 				//Affiliation Department
 				break;
 			case "CS00012":
-				//Current affiliation Department
+				CurrentAffiDept currentAffiDept = currentAffiDeptRepository.getCurrentAffiDeptById(parentInfoId);
+				ctgItemFixDto = CtgItemFixDto.createCurAffDept(currentAffiDept.getEmployeeId(), currentAffiDept.getAffiDeptId(), currentAffiDept.getDepartmentId(), currentAffiDept.getDateHistoryItem());
+				setCtgItemOptionDto(empPerCtgInfoDto, currentAffiDept.getAffiDeptId(), true);
 				break;
 		}
 		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);	
 	}
+	
 	
 	private void setEmployeeCtgItem(EmpPerCtgInfoDto empPerCtgInfoDto, String employeeId, PersonInfoCategory perInfoCtg,
 			String parentInfoId){
@@ -313,13 +343,24 @@ public class EmpPerInfoCategoryFinder {
 			setCtgItemOptionDto(empPerCtgInfoDto, currentAddress.getCurrentAddressId(), true);
 			break;		
 		case "CS00004":
-			//Family
+			Family family = familyRepository.getFamilyById(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createFamily(family.getBirthday(), family.getDeadDay(), family.getEntryDate(), family.getExpelledDate(), 
+					family.getFamilyId(), family.getFullName().v(), family.getFullNameKana().v(), family.getNameMultiLangFull().v(), family.getNameMultiLangFullKana().v(), 
+					family.getNameRomajiFull().v(), family.getNameRomajiFullKana().v(), family.getNationalityId().v(), family.getOccupationName().v(), 
+					family.getPersonId(), family.getRelationship().v(), family.getSupportCareType().value, 
+					family.getTogSepDivisionType().value, family.getWorkStudentType().value);
+			setCtgItemOptionDto(empPerCtgInfoDto, family.getFamilyId(), true);
 			break;
 		case "CS00014":
-			//WidowHistory
+			WidowHistory widowHistory = widowHistoryRepository.getWidowHistoryById(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createWidowHistory(widowHistory.getWidowHistoryId(), widowHistory.getPeriod().start(), widowHistory.getPeriod().end(), widowHistory.getWidowType().value);
+			setCtgItemOptionDto(empPerCtgInfoDto, widowHistory.getWidowHistoryId(), true);
 			break;
 		case "CS00015":
-			//PersonEmergencyContact
+			PersonEmergencyContact personEmergencyContact = personEmergencyCtRepository.getByid(parentInfoId);
+			ctgItemFixDto = CtgItemFixDto.createEmergencyContact(personEmergencyContact.getEmgencyContactId(), personEmergencyContact.getPid(), personEmergencyContact.getPersonName().v(), personEmergencyContact.getPersonMailAddress().v(), 
+					personEmergencyContact.getStreetAddressPerson().v(), personEmergencyContact.getPhone().v(), personEmergencyContact.getPriorityEmegencyContact().v(), personEmergencyContact.getRelationShip().v());
+			setCtgItemOptionDto(empPerCtgInfoDto, personEmergencyContact.getEmgencyContactId(), true);
 			break;
 		}
 		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);	

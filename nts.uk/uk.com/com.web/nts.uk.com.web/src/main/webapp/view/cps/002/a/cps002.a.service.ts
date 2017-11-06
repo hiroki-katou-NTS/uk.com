@@ -3,7 +3,7 @@ module cps002.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'ctx/bs/person/newlayout/get',
+        'getLayout': 'ctx/bs/person/newlayout/get',
         'getUserSetting': 'ctx/bs/person/info/setting/user/getUserSetting',
         'getLastRegHistory': 'ctx/bs/person/info/setting/regisHistory/getLastRegHistory',
         'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
@@ -15,12 +15,13 @@ module cps002.a.service {
         'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
         'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
         'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}/{2}',
-        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
+        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth',
+        'getLayoutByCreateType': 'bs/employee/layout/getByCreateType'
 
     };
 
     export function getLayout() {
-        return ajax(paths.getData);
+        return ajax(paths.getLayout);
     }
 
     export function getUserSetting() {
@@ -70,6 +71,10 @@ module cps002.a.service {
 
     export function getSelfRoleAuth() {
         return ajax(paths.getSelfRoleAuth);
+    }
+    
+    export function getLayoutByCreateType(command) {
+        return ajax(paths.getLayoutByCreateType, command);
     }
 
 }

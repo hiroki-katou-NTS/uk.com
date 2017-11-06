@@ -10,5 +10,14 @@ public interface SubJobPosRepository {
 	public List<SubJobPosition> getSubJobPosByDeptId(String deptId);
 
 	public Optional<SubJobPosition> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate);
-	
+	/**
+	 * ドメインモデル「職務職位（兼務）」を新規登録する
+	 * @param domain
+	 */
+	void addSubJobPosition(SubJobPosition domain);	
+	/**
+	 * 取得した「職務職位（兼務）」を更新する
+	 * @param domain
+	 */
+	void updateSubJobPosition(SubJobPosition domain);
 }

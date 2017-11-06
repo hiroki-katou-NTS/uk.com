@@ -7,6 +7,7 @@ module cps001.a.vm {
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
     import clearError = nts.uk.ui.errors.clearAll;
+    import liveView = nts.uk.request.liveView;
 
     let DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -104,10 +105,16 @@ module cps001.a.vm {
 
             employee.employeeId.subscribe(x => {
                 if (x) {
+
+                    service.getAvatar(x).done((data: any) => {
+                        person.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                    });
+
                     service.getPerson(x).done((data: IPersonInfo) => {
                         if (data) {
                             person.personId(data.personId);
                             person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
+                            debugger;
                         }
                     });
                     self.tabActive.valueHasMutated();
@@ -165,7 +172,7 @@ module cps001.a.vm {
                             }
                         });
 
-                        //layout.listItemClsDto(data.listItemClsDto || []);
+                        layout.listItemClsDto(data.listItemClsDto || []);
                     });
 
                 }
@@ -197,6 +204,7 @@ module cps001.a.vm {
 
         chooseAvatar() {
             let self = this,
+                person: PersonInfo = self.person(),
                 employee: IEmployeeInfo = ko.toJS(self.employee);
 
             // cancel click if hasn't emp
@@ -204,10 +212,10 @@ module cps001.a.vm {
                 return;
             }
 
-            setShared("employeeId", employee.employeeId);
+            setShared("CPS001D_PARAMS", employee);
             modal('../d/index.xhtml').onClosed(() => {
-                let data = getShared("imageId");
-                debugger;
+                let data = getShared("CPS001D_VALUES");
+                person.avatar(data.fileId ? liveView(data.fileId) : undefined);
             });
         }
 
@@ -344,7 +352,6 @@ module cps001.a.vm {
         personRomanji?: string;
         todokedeFullName?: string;
         todokedeOldFullName?: string;
-
     }
 
     class PersonInfo {
@@ -352,7 +359,7 @@ module cps001.a.vm {
         code: KnockoutObservable<string> = ko.observable('');
         avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
         fullName: KnockoutObservable<string> = ko.observable('');
-
+        //birthDate
         constructor(param: IPersonInfo) {
             let self = this;
 
@@ -360,6 +367,12 @@ module cps001.a.vm {
             self.code(param.code || '');
             self.avatar(param.avatar || DEF_AVATAR);
             self.fullName(param.personNameGroup && param.personNameGroup.personName || '');
+
+            self.avatar.subscribe(x => {
+                if (!x) {
+                    self.avatar(DEF_AVATAR);
+                }
+            });
         }
     }
 

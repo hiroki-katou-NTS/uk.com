@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.app.find.person.item;
 
+import java.util.List;
+
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @Getter
 public class ItemAssignedWorkplace extends CtgItemFixDto{
@@ -16,27 +18,17 @@ public class ItemAssignedWorkplace extends CtgItemFixDto{
 	//職場ID
 	private String assignedWorkplaceId;
 	
-	/** The history id. */
-	//履歴ID
-	private String historyId;
+	private List<DateHistoryItem> dateHistoryItem;
 	
-	/**Start date*/
-	private GeneralDate strD;
-	
-	/**End date*/
-	private GeneralDate endD;
-	
-	private ItemAssignedWorkplace(String employeeId, String assignedWorkplaceId, String historyId, GeneralDate strD, GeneralDate endD){
+	private ItemAssignedWorkplace(String employeeId, String assignedWorkplaceId, List<DateHistoryItem> dateHistoryItem){
 		super();
 		this.ctgItemType = CtgItemType.ASSIGNED_WORKPLACE;
 		this.employeeId = employeeId;
 		this.assignedWorkplaceId = assignedWorkplaceId;
-		this.historyId = historyId;
-		this.strD = strD;
-		this.endD = endD;
+		this.dateHistoryItem = dateHistoryItem;
 	}
 	
-	public static ItemAssignedWorkplace createFromJavaType(String employeeId, String assignedWorkplaceId, String historyId, GeneralDate strD, GeneralDate endD){
-		return new ItemAssignedWorkplace(employeeId, assignedWorkplaceId, historyId, strD, endD);
+	public static ItemAssignedWorkplace createFromJavaType(String employeeId, String assignedWorkplaceId, List<DateHistoryItem> dateHistoryItem){
+		return new ItemAssignedWorkplace(employeeId, assignedWorkplaceId, dateHistoryItem);
 	}
 }

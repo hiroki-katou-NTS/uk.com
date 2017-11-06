@@ -4,4 +4,9 @@ import java.util.Optional;
 
 public interface FamilyCareRepository {
 	public Optional<FamilyCare> getFamilyCareById(String familyCareId);
+	/**
+	 * 取得した「家族介護」を更新する
+	 * @param domain
+	 */
+	void updateFamilyCare(FamilyCare domain);
 }

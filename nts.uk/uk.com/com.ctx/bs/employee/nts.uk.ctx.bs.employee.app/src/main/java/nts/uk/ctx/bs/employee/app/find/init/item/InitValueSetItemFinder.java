@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.employee.info.itemdata.EmpInfoItemDataFinder;
+import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
+import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
@@ -38,13 +40,16 @@ public class InitValueSetItemFinder {
 	private EmployeeRepository empBasicInfoRepo;
 
 	@Inject
+	private AffDepartmentRepository affDepartmentRepo;
+
+	@Inject
 	private AffWorkplaceHistoryRepository affWorkRepo;
 
 	@Inject
 	private TemporaryAbsenceRepository tempAbsenceRepo;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItem(String settingId, String categoryCd, GeneralDate baseDate) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(String settingId, String categoryCd, GeneralDate baseDate) {
 
 		List<SettingItemDto> resultItemList = new ArrayList<SettingItemDto>();
 
@@ -82,9 +87,8 @@ public class InitValueSetItemFinder {
 			break;
 		// 所属部門 - AffiliationDepartment
 		case "CS00011":
-			resultItemList = loadAffiliationDepartmentInfo(resultItemList, companyId, employeeId);
+			resultItemList = loadAffiliationDepartmentInfo(resultItemList, employeeId, baseDate);
 			break;
-
 		}
 
 		resultItemList.addAll(this.infoItemDataFinder.loadInfoItemDataList(categoryCd, companyId, employeeId));
@@ -96,8 +100,19 @@ public class InitValueSetItemFinder {
 
 	private List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
 			GeneralDate baseDate) {
-		// TODO Auto-generated method stub
-		return null;
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+		//
+		// Optional<JobTitleHistory> optJ =
+		// this.job.getByEmpIdAndStandDate(employeeId, baseDate);
+		// if (opttemAbsence.isPresent()) {
+		//
+		// returnList =
+		// mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(),
+		// initItemList);
+		//
+		// }
+		return returnList;
+
 	}
 
 	// JobTitleHistory end
@@ -107,7 +122,7 @@ public class InitValueSetItemFinder {
 			GeneralDate baseDate) {
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
-		Optional<TemporaryAbsence> opttemAbsence = this.tempAbsenceRepo.getBySid(employeeId, baseDate);
+		Optional<TemporaryAbsence> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
 		if (opttemAbsence.isPresent()) {
 
 			returnList = mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(), initItemList);
@@ -215,19 +230,34 @@ public class InitValueSetItemFinder {
 
 	// load AffiliationDepartment start
 
-	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String companyId,
-			String employeeId) {
-		// List<InitValueSettingItemDto> returnList = new
-		// ArrayList<InitValueSettingItemDto>();
-		//
-		// Optional<Employee> empDomain =
-		// this.empBasicInfoRepo.findBySid(companyId, employeeId);
-		// if (empDomain.isPresent()) {
-		// returnList =
-		// mergeEmpBasicInfoAndItemDefListToListDto(empDomain.get(),
-		// initItemList);
-		// }
-		return initItemList;
+	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String employeeId,
+			GeneralDate baseDate) {
+
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+
+		Optional<AffiliationDepartment> affDomain = this.affDepartmentRepo.getByEmpIdAndStandDate(employeeId, baseDate);
+		if (affDomain.isPresent()) {
+			returnList = mergeAffDepartmentAndItemDefListToListDto(affDomain.get(), initItemList);
+		}
+		return returnList;
+	}
+
+	private List<SettingItemDto> mergeAffDepartmentAndItemDefListToListDto(AffiliationDepartment affDomain,
+			List<SettingItemDto> resultItemList) {
+
+		for (SettingItemDto itemDto : resultItemList) {
+			String itemCode = itemDto.getItemCode();
+			switch (itemCode) {
+			case "IS00020":
+				itemDto.setData(affDomain.getPeriod().start());
+				break;
+			case "IS00021":
+				itemDto.setData(affDomain.getPeriod().end());
+				break;
+			}
+		}
+
+		return resultItemList;
 	}
 
 	// AffiliationDepartment end

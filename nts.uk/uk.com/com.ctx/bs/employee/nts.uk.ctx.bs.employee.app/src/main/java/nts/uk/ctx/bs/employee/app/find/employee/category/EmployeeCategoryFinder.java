@@ -13,6 +13,10 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmpCtgDomainServices;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.service.ParamForGetItemDef;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
+import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -20,8 +24,6 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
-import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -44,7 +46,10 @@ public class EmployeeCategoryFinder {
 	private CurrentAddressRepository currentAddressRepo;
 	
 	@Inject
-	private WidowHistoryRepository widowHistoryRepo;
+	private FamilyRepository familyRepo;
+	
+	@Inject
+	private PersonEmergencyCtRepository personEmergencyCtRepo;
 
 	public List<PersonInfoCtgFullDto> getAllPerInfoCtg(String companyId, String employeeIdSelected) {
 		String empIdCurrentLogin = AppContexts.user().employeeId();
@@ -150,16 +155,18 @@ public class EmployeeCategoryFinder {
 
 				break;
 			case "CS00004":
+				List<Family> lstFamily = familyRepo.getListByPid(personId);
+				
 
 				break;
 			case "CS00014":
 				// get list widowHistory 
 				//List<WidowHistory> listWidowHistory = widowHistoryRepo.getListByPid(personId);
-				// Domain WidowHistory chuwa xong
+				// Domain WidowHistory chuwa xong ( chua co pid)
 
 				break;
 			case "CS00015":
-
+				List<PersonEmergencyContact> lstEmergencyCt = personEmergencyCtRepo.getListbyPid(personId);
 				break;
 
 			}

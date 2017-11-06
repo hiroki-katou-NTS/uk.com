@@ -39,13 +39,13 @@ public class SettingItemDto {
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto = SaveDataDto.CreateDateDataDto(dateValue);
+			resultDto = SaveDataDto.createDataDto(dateValue);
 			break;
 		case NUMBERIC:
-			resultDto = SaveDataDto.CreateNumberDataDto(intValue.intValueExact());
+			resultDto = SaveDataDto.createDataDto(intValue.intValueExact());
 			break;
 		case STRING:
-			resultDto = SaveDataDto.CreateStringDataDto(stringValue);
+			resultDto = SaveDataDto.createDataDto(stringValue);
 			break;
 		}
 
@@ -63,33 +63,33 @@ public class SettingItemDto {
 	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
 			GeneralDate dateValue) {
 
-		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.CreateDateDataDto(dateValue));
+		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.createDataDto(dateValue));
 
 	}
 
 	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired, int intValue) {
 
-		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.CreateNumberDataDto(intValue));
+		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.createDataDto(intValue));
 
 	}
 
 	public static SettingItemDto createFromJavaType(String itemCode, String itemName, int isRequired,
 			String stringValue) {
 
-		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.CreateStringDataDto(stringValue));
+		return new SettingItemDto(itemCode, itemName, isRequired, SaveDataDto.createDataDto(stringValue));
 
 	}
 
 	public void setData(String value) {
-		this.saveData = StringDataDto.CreateStringDataDto(value);
+		this.saveData = StringDataDto.createDataDto(value);
 	}
 
 	public void setData(int value) {
-		this.saveData = NumberDataDto.CreateNumberDataDto(value);
+		this.saveData = NumberDataDto.createDataDto(value);
 	}
 
 	public void setData(GeneralDate value) {
-		this.saveData = DateDataDto.CreateDateDataDto(value);
+		this.saveData = DateDataDto.createDataDto(value);
 	}
 
 	public static SettingItemDto fromInfoDataItem(EmpInfoItemData domain) {
@@ -98,6 +98,23 @@ public class SettingItemDto {
 				domain.getIsRequired().value, domain.getDataState().getDataStateType().value,
 				domain.getDataState().getDateValue(), domain.getDataState().getNumberValue(),
 				domain.getDataState().getStringValue());
+
+	}
+
+	public String getValueAsString() {
+
+		switch (this.saveData.saveDataType) {
+		case DATE:
+			DateDataDto dateData = (DateDataDto) this.saveData;
+			return dateData.getValue().toString("dd/MM/yyyy");
+		case NUMBERIC:
+			NumberDataDto numberData = (NumberDataDto) this.saveData;
+			return new Integer(numberData.getValue()).toString();
+		case STRING:
+			StringDataDto stringData = (StringDataDto) this.saveData;
+			return stringData.getValue();
+		}
+		return "";
 
 	}
 
