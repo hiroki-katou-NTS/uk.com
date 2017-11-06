@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -61,9 +62,8 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	 */
 	@POST
 	@Path("getallbyempid/{empCalAndSumExecLogID}")
-	public EmpCalAndSumExeLogDto getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID")String empCalAndSumExecLogID){
+	public EmpCalAndSumExeLogDto getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID") String empCalAndSumExecLogID){
 		return this.empCalAndSumExeLogFinder.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);	
 		
 	}
-		
 }
