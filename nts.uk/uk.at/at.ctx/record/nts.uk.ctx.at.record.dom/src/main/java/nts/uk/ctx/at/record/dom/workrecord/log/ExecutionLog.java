@@ -54,10 +54,18 @@ public class ExecutionLog {
 	 */
 	private ObjectPeriod objectPeriod;
 	
-	/**
-	 * 計算実行設定情報ID
-	 */
-	private String calExecutionSetInfoID;
+	/** 計算実行設定情報ID */	
+	public String getCalExecutionSetInfoID() {
+		if (executionContent == ExecutionContent.DAILY_CREATION) {
+			return dailyCreationSetInfo.get().getCalExecutionSetInfoID();
+		} else if (executionContent == ExecutionContent.DAILY_CALCULATION) {
+			return dailyCalSetInfo.get().getCalExecutionSetInfoID();
+		} else if (executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT) {
+			return reflectApprovalSetInfo.get().getCalExecutionSetInfoID();
+		} else {
+			return monlyAggregationSetInfo.get().getCalExecutionSetInfoID();
+		}
+	}
 	
 	/**
 	 * 承認結果反映の設定情報
@@ -81,11 +89,8 @@ public class ExecutionLog {
 	@Setter
 	private Optional<CalExeSettingInfor>  monlyAggregationSetInfo;
 	
-	
-	
 	public ExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ErrorPresent existenceError,
-			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod,
-			String calExecutionSetInfoID) {
+			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod) {
 		super();
 		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
 		this.executionContent = executionContent;
@@ -93,7 +98,6 @@ public class ExecutionLog {
 		this.executionTime = executionTime;
 		this.processStatus = processStatus;
 		this.objectPeriod = objectPeriod;
-		this.calExecutionSetInfoID = calExecutionSetInfoID;
 		this.reflectApprovalSetInfo = Optional.empty();
 		this.dailyCreationSetInfo =  Optional.empty();
 		this.dailyCalSetInfo =  Optional.empty();
@@ -108,8 +112,7 @@ public class ExecutionLog {
 			GeneralDateTime endExecutionTime,
 			int processStatus,
 			GeneralDate startObjectPeriod,
-			GeneralDate endObjectPeriod,
-			String calExecutionSetInfoID
+			GeneralDate endObjectPeriod
 			) {
 		
 		return new ExecutionLog(
@@ -118,8 +121,8 @@ public class ExecutionLog {
 				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
 				new ExecutionTime(startExecutionTime,endExecutionTime),
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
-				new ObjectPeriod(startObjectPeriod,endObjectPeriod),
-				calExecutionSetInfoID);
+				new ObjectPeriod(startObjectPeriod,endObjectPeriod)
+				);
 	}
 	
 }

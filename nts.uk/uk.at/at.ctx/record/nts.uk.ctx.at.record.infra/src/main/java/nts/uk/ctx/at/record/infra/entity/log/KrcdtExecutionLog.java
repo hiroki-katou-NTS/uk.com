@@ -15,17 +15,10 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.PartResetClassification;
-import nts.uk.ctx.at.record.dom.workrecord.log.SetInforReflAprResult;
-import nts.uk.ctx.at.record.dom.workrecord.log.SettingInforForDailyCreation;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -99,8 +92,7 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				this.executionEndDate, 
 				this.processStatus, 
 				this.periodCoverdStartDate, 
-				this.periodCoverdEndDate,
-				this.calExecutionSetInfoID);
+				this.periodCoverdEndDate);
 		
 		if (this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
 			domain.setDailyCreationSetInfo(Optional.of(calExeSetInfor.toDomain()));
