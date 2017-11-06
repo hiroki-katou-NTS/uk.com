@@ -13,10 +13,10 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRound
  * @author ken_takasu
  *
  */
-public class LateLateLeaveEarlyTimeSheet extends CalculationTimeSheet{
+public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 
-	public LateLateLeaveEarlyTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
+	public LateLeaveEarlyTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets, Optional<List<BonusPayTimesheet>> bonusPayTimeSheet,
 			Optional<MidNightTimeSheet> midNighttimeSheet) {
 		super(timeSheet, calculationTimeSheet, deductionTimeSheets, bonusPayTimeSheet, midNighttimeSheet);
 		// TODO Auto-generated constructor stub

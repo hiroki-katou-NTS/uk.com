@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeS
  *
  */
 public class WorkTimeCalcMethodDetailOfHoliday {
-	private UseSetting notDeductLateLeaveEarly;
+	private UseSetting deductLateLeaveEarly;
 	
 	/**
 	 * 就業時間内時間帯から控除するか判断
@@ -18,7 +18,7 @@ public class WorkTimeCalcMethodDetailOfHoliday {
 	 * @return
 	 */
 	public boolean deductsFromWithinWorkTimeSheet(int deductTime, GraceTimeSetting graceTimeSetting) {
-		if(this.notDeductLateLeaveEarly.isUse()) {//早退設定を控除項目にするかをチェックする
+		if(this.deductLateLeaveEarly.isUse()) {//早退設定を控除項目にするかをチェックする
 			if(deductTime > 0 || !graceTimeSetting.isIncludeInWorkingHours()) {
 				return true;
 			}
