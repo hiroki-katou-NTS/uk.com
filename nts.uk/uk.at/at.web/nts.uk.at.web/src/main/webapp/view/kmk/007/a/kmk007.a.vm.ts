@@ -372,10 +372,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             $("#symbolic-name-input").trigger("validate");
             $("#memo-input").trigger("validate");
 
-            if (nts.uk.ui.errors.hasError()) { 
+            if (nts.uk.ui.errors.hasError()) {
                 return;
-            } 
-        
+            }
+
             nts.uk.ui.block.invisible();
             service.addWorkType(self.isCreated(), command).done(function() {
                 self.isCreated(false);
@@ -408,7 +408,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          */
         private removeWorkType(): any {
             let self = this;
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
             let workTypeCd = self.currentCode();
 
@@ -430,6 +430,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
+            }).ifNo(() => {
+                nts.uk.ui.block.clear();
             });
         }
 

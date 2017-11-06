@@ -13,6 +13,7 @@ public class ApprovalAgencyInfoOutput {
 	List<String> listRepresenterSID;
 
 	/**   
+	 * 全承認者パス設定フラグ
 	 * true：承認者リストに全員パス設定した, false：そうではない
 	 */
 	boolean flag;

@@ -53,14 +53,8 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     @Column(name = "DIVERGENCE_REASON_ID")
     private String divergenceReasonId;
     
-    @Column(name = "DIVERGENCE_REASON")
-    private String divergenceReason;
-    
     @Column(name = "FLEX_EXCESS_TIME")
     private int flexExcessTime;
-    
-    @Column(name = "CALCULATION_OVERTIME")
-    private int calculationOvertime;
     
     @Column(name = "OVERTIME_SHIFT_NIGHT")
     private int overtimeShiftNight;
