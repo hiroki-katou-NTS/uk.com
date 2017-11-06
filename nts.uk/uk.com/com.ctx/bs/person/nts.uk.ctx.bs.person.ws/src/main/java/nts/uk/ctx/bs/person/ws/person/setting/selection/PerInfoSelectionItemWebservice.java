@@ -20,6 +20,8 @@ import command.person.setting.selectionitem.selection.AddSelectionHistoryCommand
 import command.person.setting.selectionitem.selection.AddSelectionHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.EditHistoryCommand;
 import command.person.setting.selectionitem.selection.EditHistoryCommandHandler;
+import command.person.setting.selectionitem.selection.RemoveHistoryCommand;
+import command.person.setting.selectionitem.selection.RemoveHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommand;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommandHandler;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommand;
@@ -74,10 +76,14 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// add history data: screen C:
 	@Inject
 	AddSelectionHistoryCommandHandler addHistory;
-	
-	//Edit History:
+
+	// Edit History:
 	@Inject
 	EditHistoryCommandHandler editHistory;
+
+	// Delete history:
+	@Inject
+	RemoveHistoryCommandHandler removeHistory;
 
 	@POST
 	@Path("findAll")
@@ -157,11 +163,18 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void AddHistoryData(AddSelectionHistoryCommand command) {
 		this.addHistory.handle(command);
 	}
-	
+
 	// Edit History:
 	@POST
 	@Path("editHistory")
-	public void EditHistory(EditHistoryCommand command){
+	public void EditHistory(EditHistoryCommand command) {
 		this.editHistory.handle(command);
+	}
+
+	// Delete History:
+	@POST
+	@Path("removeHistory")
+	public void RemoveHistory(RemoveHistoryCommand command) {
+		this.removeHistory.handle(command);
 	}
 }
