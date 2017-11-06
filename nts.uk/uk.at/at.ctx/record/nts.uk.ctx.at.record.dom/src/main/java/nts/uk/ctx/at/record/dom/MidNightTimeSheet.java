@@ -1,18 +1,14 @@
 package nts.uk.ctx.at.record.dom;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -28,9 +24,8 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 //	private TimeSpanForCalc timeSpan;
 	
 	public MidNightTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> deductionSheets,
-			List<BonusPayTimesheet> bonusPayTimeSheet,Optional<MidNightTimeSheet> midNighttimeSheet,List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet) {
-		super(timeSheet, calculationTimeSheet,deductionSheets,bonusPayTimeSheet,midNighttimeSheet,specifiedBonusPayTimeSheet);
-		// TODO Auto-generated constructor stub
+			List<BonusPayTimesheet> bonusPayTimeSheet,List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheet> midNighttimeSheet) {
+		super(timeSheet, calculationTimeSheet,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 	}
 	
 	/**
@@ -38,12 +33,12 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 	 * @return 重複部分
 	 */
 	public Optional<TimeSpanForCalc> TimeSpanForCalc () {
-		return this.timeSpan.getDuplicatedWith(((CalculationTimeSheet)this).getCalculationTimeSheet());
+		return this.calcrange.getDuplicatedWith(((CalculationTimeSheet)this).getCalcrange());
 	}
 	
 	
 	public boolean contains(TimeWithDayAttr baseTime) {
-		return ((CalculationTimeSheet)this).getCalculationTimeSheet().contains(baseTime);
+		return ((CalculationTimeSheet)this).getCalcrange().contains(baseTime);
 	}
 	/**
 	 * 終了時間と基準時間の早い方の時間を取得する
@@ -66,9 +61,10 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 	public Optional<MidNightTimeSheet> reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
 		List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
 		List<BonusPayTimesheet>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
+		List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
 		Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
-		TimeSpanForCalc renewSpan = decisionNewSpan(this.calculationTimeSheet,baseTime,isDateBefore);
-		return Optional.of(new MidNightTimeSheet(this.getTimeSheet(),renewSpan,this.deductionTimeSheets));
+		TimeSpanForCalc renewSpan = decisionNewSpan(this.getCalcrange(),baseTime,isDateBefore);
+		return Optional.of(new MidNightTimeSheet(this.getTimeSheet(),renewSpan,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
 	}
 	
 	

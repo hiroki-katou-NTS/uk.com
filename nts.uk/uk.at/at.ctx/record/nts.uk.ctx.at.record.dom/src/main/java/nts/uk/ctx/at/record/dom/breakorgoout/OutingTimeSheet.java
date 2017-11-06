@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
+import nts.uk.ctx.at.record.dom.daily.WorkStampWithActualStamp;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 
@@ -21,7 +20,7 @@ public class OutingTimeSheet extends DomainObject {
 	private OutingFrameNo outingFrameNo;
 	
 	// 勤怠打刻(実打刻付き) - primitive value
-	private BigDecimal goOut;
+	private WorkStampWithActualStamp goOut;
 	
 	//外出時間.計算時間
 	private AttendanceTime outingTimeCalculation;
@@ -32,6 +31,6 @@ public class OutingTimeSheet extends DomainObject {
 	private GoingOutReason reasonForGoOut;
 	
 	// 勤怠打刻(実打刻付き) - primitive value
-	private BigDecimal comeBack;
+	private WorkStampWithActualStamp comeBack;
 	
 }

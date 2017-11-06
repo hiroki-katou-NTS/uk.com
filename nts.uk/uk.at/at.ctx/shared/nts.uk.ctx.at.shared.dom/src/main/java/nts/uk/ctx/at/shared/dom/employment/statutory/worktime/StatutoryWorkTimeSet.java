@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.DeformationLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.FlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.NormalSetting;
 
 /**
  * 法定労働時間設定

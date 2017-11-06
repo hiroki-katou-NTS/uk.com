@@ -9,12 +9,12 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingRepository;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.company.CompanyWtSettingRepository;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employee.EmployeeWtSettingRepository;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingRepository;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.company.CompanyWtSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employment.EmploymentWtSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplace.WorkPlaceWtSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.StatutoryWorkTime;
 
 /**
@@ -46,13 +46,13 @@ public class GetOfStatutoryWorkTime {
 	 * 法定労働時間の取得
 	 * @return
 	 */
-	public dailyTime getDailyTimeFromStaturoyWorkTime() {
+	public DailyTime getDailyTimeFromStaturoyWorkTime() {
 		Optional<StatutoryWorkTime> statutoryTime =;  
 		if(statutoryTime.isPresent()) {
 			return statutoryTime.get();
 		}
 		else {
-			return new dailyTime(0);
+			return new DailyTime(0);
 		}
 	}
 	

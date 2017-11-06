@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
@@ -78,7 +79,7 @@ public class OverTimeWorkOfDaily {
 	 * 残業時間が含んでいる加給時間の計算
 	 * @return 加給時間リスト
 	 */
-	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalcAtrOfDaily calcAtrOfDaily){
+	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(OverTimeWorkFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
@@ -90,7 +91,7 @@ public class OverTimeWorkOfDaily {
 	 * 残業時間が含んでいる特定日加給時間の計算
 	 * @return 加給時間リスト
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalcAtrOfDaily calcAtrOfDaily){
+	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(OverTimeWorkFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));

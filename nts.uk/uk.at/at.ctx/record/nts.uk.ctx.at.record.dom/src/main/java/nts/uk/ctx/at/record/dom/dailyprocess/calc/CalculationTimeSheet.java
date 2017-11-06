@@ -15,8 +15,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
-import nts.uk.ctx.at.record.dom.daily.BonusPayTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.CalcAtrOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
@@ -183,8 +181,14 @@ public abstract class CalculationTimeSheet {
 	 * @param time　指定時間
 	 * @return
 	 */
-	public TimeWithDayAttr getNewEndTime(TimeSpanForCalc timeSpan, TimeWithDayAttr time) {
-		return createTimeSpan(timeSpan,time).getEnd();
+	public Optional<TimeWithDayAttr> getNewEndTime(TimeSpanForCalc timeSpan, TimeWithDayAttr time) {
+		Optional<TimeSpanForCalc> newEnd = createTimeSpan(timeSpan,time);
+		if(newEnd.isPresent()) {
+			return Optional.of(newEnd.get().getEnd());
+		}
+		else {
+			return  Optional.empty();
+		}
 	}
 	
 	/**
@@ -193,8 +197,8 @@ public abstract class CalculationTimeSheet {
 	 * @param time　指定時間
 	 * @return
 	 */
-	public TimeSpanForCalc createTimeSpan(TimeSpanForCalc timeSpan, TimeWithDayAttr time) {
-		return contractTimeSheet(timeSpan.)
+	public Optional<TimeSpanForCalc> createTimeSpan(TimeSpanForCalc timeSpan, TimeWithDayAttr time) {
+		return contractTimeSheet(time);
 	}
 	
 	/**
@@ -295,8 +299,8 @@ public abstract class CalculationTimeSheet {
 										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
 										 bonusPayTimeSheet,
-										 midNightTimeSheet,
-										 specifiedBonusPayTimeSheet
+										 specifiedBonusPayTimeSheet,
+										 midNightTimeSheet
 										 ));
 			}
 		}
@@ -348,7 +352,7 @@ public abstract class CalculationTimeSheet {
 																					 	,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
 		}
 		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getBonusPay().isRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayCalcSet, actualWorkAtr)) {
-			bonusPayTimeList.forEach(tc ->{tc.getBonusPay().setTime(new AttendaceTime(0));});
+			bonusPayTimeList.forEach(tc ->{tc.getBonusPay().setTime(new AttendanceTime(0));});
 		}
 		return bonusPayTimeList;
 	}
@@ -360,8 +364,8 @@ public abstract class CalculationTimeSheet {
 	 * @param calcAtrOfDaily　日別実績の計算区分
 	 * @return 加給時間クラス(List)
 	 */
-	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalcAtrOfDaily calcAtrOfDaily){
-		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
+	public List<SpecifiedbonusPayTimeSheet> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalcAtrOfDaily calcAtrOfDaily){
+		List<SpecifiedbonusPayTimeSheet> bonusPayTimeList = new ArrayList<>();
 		for(SpecifiedbonusPayTimeSheet bonusPaySheet : this.specifiedBonusPayTimeSheet){
 			int calcTime = bonusPaySheet.calcTotalTime();
 			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo(),
@@ -370,7 +374,7 @@ public abstract class CalculationTimeSheet {
 							TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
 		}
 		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getBonusPay().isSpecificRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayCalcSet, actualWorkAtr)) {
-			bonusPayTimeList.forEach(tc ->{tc.getSpecifiedbonusPayTime().setTime(new AttendaceTime(0));});
+			bonusPayTimeList.forEach(tc ->{tc.getSpecifiedbonusPayTime().setTime(new AttendanceTime(0));});
 		}
 		return bonusPayTimeList;
 	}

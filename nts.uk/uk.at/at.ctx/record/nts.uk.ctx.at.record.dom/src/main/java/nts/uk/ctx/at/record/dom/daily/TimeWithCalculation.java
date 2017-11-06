@@ -35,6 +35,7 @@ public class TimeWithCalculation {
 	 */
 	public static TimeWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeWithCalculation(time,calcTime);
+		
 	}
 	
 	

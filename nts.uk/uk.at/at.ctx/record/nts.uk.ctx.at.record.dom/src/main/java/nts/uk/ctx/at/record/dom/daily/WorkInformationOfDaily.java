@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
 
 /**
  * 日別実績の勤務情報

@@ -10,6 +10,8 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
+import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDailyRepository;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistoryAdopter;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
@@ -40,9 +42,13 @@ public class CalculateDailyRecord {
 	@Inject
 	private GetOfStatutoryWorkTime getOfStatutoryWorkTime;
 	
+	@Inject
+	private WorkInformationOfDailyRepository workInformationOfDailyRepository;
+	
 	
 	public IntegrationOfDaily calculate(String companyId, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
 		// 実績データの計算
+		
 		return this.calculateRecord(companyId, employeeId, targetDate, integrationOfDaily);
 	}
 	
@@ -74,7 +80,7 @@ public class CalculateDailyRecord {
 		else {
 			/*1日休暇時の時間帯作成*/
 			/*出勤日の時間帯作成*/
-			val calcRangeOfOneDay =　/*現在作業分の対応範囲外のため保留 2017.10.16*/;
+			//val calcRangeOfOneDay =　/*現在作業分の対応範囲外のため保留 2017.10.16*/;
 		}
 		/*時間の計算*/
 		integrationOfDaily.calcDailyRecord(calcRangeOfOneDay);
@@ -107,8 +113,9 @@ public class CalculateDailyRecord {
 //		AttendanceLeavingWorkOfDaily attendanceLeavingOfDaily = integrationOfDaily.getAttendanceLeave().calcJustTime(justLate,justEarlyLeave);
 		
 		/*前日の勤務情報取得  (2017.10.16 VNで詳細設計中のため一時保留)*/
+		WorkInformationOfDaily yestarDayWorkInfo = workInformationOfDailyRepository.find(companyId, employeeId, targetDate.addDays(-1)).orElse(workInformationOfDailyRepository.find(companyId, employeeId, targetDate).get());
 		/*翌日の勤務情報取得  (2017.10.16 VNで詳細設計中のため一時保留)*/
-		
+		WorkInformationOfDaily tomorrowDayWorkInfo = workInformationOfDailyRepository.find(companyId, employeeId, targetDate.addDays(1)).orElse(workInformationOfDailyRepository.find(companyId, employeeId, targetDate).get());
 		return new CalculationRangeOfOneDay(/*ここで１日の範囲を作成して返す*/);
 	}
 	

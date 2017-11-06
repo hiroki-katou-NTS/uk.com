@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.bonuspay.autocalc;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.daily.CalcAtrOfDaily;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -22,18 +22,18 @@ public class BonusPayAutoCalcSet {
 	 * 計算区分から計算するかどうかを判定する
 	 * @return　計算する
 	 */
-	public boolean getCalcAtr(ActualWorkTimeSheetAtr actualAtr, CalcAtrOfDaily calcAtrOfDaily) {
+	public boolean getCalcAtr(ActualWorkTimeSheetAtr actualAtr, CalAttrOfDailyPerformance calcAtrOfDaily) {
 		switch(actualAtr) {
 		case WithinWorkTime:
 			return workingTimesheet.isCalculateAutomatic();
 		case HolidayWork:
-			return calcAtrOfDaily.getHolidayHolidayWorkTime().getLateNightTime().getCalculationClassification().isCalculateEmbossing();
+			return calcAtrOfDaily.getHolidayTimeSetting().getLateNightTime().getCalculationAttr().isCalculateEmbossing();
 		case EarlyWork:
-			return calcAtrOfDaily.getOverTimeWork().getEarlyOtTime().getCalculationClassification().isCalculateEmbossing();
+			return calcAtrOfDaily.getOvertimeSetting().getEarlyOverTime().getCalculationAttr().isCalculateEmbossing();
 		case OverTimeWork:
-			return calcAtrOfDaily.getOverTimeWork().getLegalOtTime().getCalculationClassification().isCalculateEmbossing();
+			return calcAtrOfDaily.getOvertimeSetting().getLegalOverTime().getCalculationAttr().isCalculateEmbossing();
 		case StatutoryOverTimeWork:
-			return calcAtrOfDaily.getOverTimeWork().getNormalOtTime().getCalculationClassification().isCalculateEmbossing();
+			return calcAtrOfDaily.getOvertimeSetting().getNormalOverTime().getCalculationAttr().isCalculateEmbossing();
 		default:
 			throw new RuntimeException("unknown actualAtr" + actualAtr);
 		}

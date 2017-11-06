@@ -2,6 +2,11 @@ package nts.uk.ctx.at.record.dom.calculationattribute;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 
 /**
  * 
@@ -27,4 +32,12 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	//遅刻早退
 	private AutoCalOfLeaveEarlySetting leaveEarlySetting;
 	
+//	/**
+//	 * 計算区分を全て「する」に変更する
+//	 */
+//	public static CalAttrOfDailyPerformance turnAllAtrTrue() {
+//		return new CalAttrOfDailyPerformance(new RaisingSalaryCalcAtr(true, true)
+//								 ,new AutoCalculationOfOverTimeWork(legalOvertimeHours, legalOtTime, normalOvertimeHours, normalOtTime, earlyOvertimeHours, earlyOtTime)
+//								 , new AutoCalcSetOfHolidayWorkTime(new AutoCalcSet(AutoCalculationCategoryOutsideHours.CalculateEmbossing)));
+//	}
 }
