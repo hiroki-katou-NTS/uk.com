@@ -3,8 +3,8 @@ module nts.uk.com.view.cmm013.f {
     export module viewmodel {
         
         import SequenceMaster = base.SequenceMaster;
-        import SequenceMasterSaveCommand = base.SequenceMasterSaveCommand;
-        import SequenceMasterRemoveCommand = base.SequenceMasterRemoveCommand;
+        import SequenceMasterSaveCommand = service.model.SequenceMasterSaveCommand;
+        import SequenceMasterRemoveCommand = service.model.SequenceMasterRemoveCommand;
         
         export class ScreenModel {
             

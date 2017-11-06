@@ -91,8 +91,6 @@ module nts.uk.com.view.cmm013.a {
                 _self.enable_A3_3 = ko.observable(null);
                 _self.enable_A3_4 = ko.observable(null);
                 _self.enable_A3_5 = ko.observable(null);
-
-                //$('#job-title-items-list').ntsListComponent(_self.listJobTitleOption);
             }
 
             /**
