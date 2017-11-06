@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.app.find.employee.item;
 
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.employee.category.CategoryItemFixDto;
 
+@Value
 public class ItemCurrentAddressDto extends CategoryItemFixDto {
 
 	/**

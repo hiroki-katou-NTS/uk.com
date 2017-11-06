@@ -9,11 +9,6 @@ module nts.uk.com.view.cps009.b.viewmodel {
 
     export class ViewModel {
         itemInitLst: Array<any> = [];
-        itemColumns: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_33'), key: 'itemName', width: 150 },
-        ]);
-
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
@@ -35,8 +30,8 @@ module nts.uk.com.view.cps009.b.viewmodel {
             let self = this,
             dfd = $.Deferred();
             self.itemInitLst = [];
-            let param = getShared('CPS009B_PARAMS') || { settingName: '', settingId: '', categoryId: ''};
-            self.categoryName(param.settingName);
+            let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: ''};
+            self.categoryName(param.ctgName);
             service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data){
                 if(data == null || data == undefined || data.length == 0){
                     self.itemInitLst = [];

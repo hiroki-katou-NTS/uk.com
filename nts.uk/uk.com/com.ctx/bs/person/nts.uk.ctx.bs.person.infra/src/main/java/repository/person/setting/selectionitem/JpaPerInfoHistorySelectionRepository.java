@@ -25,16 +25,13 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 
 	private static final String SELECT_ALL_HISTORY_COMPANYID_SELECTION = SELECT_ALL
 			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId";
-	
-	private static final String SELECT_HISTORY_BY_DATE = "SELECT a"
-			+ " FROM PpemtHistorySelection a"
-			+ " INNER JOIN PpemtSelItemOrder b"
-			+ " ON a.selectionItemId = b.selectionIdPK.selectionId"
-			+ " AND a.histidPK.histId = b.histId"
-			+ " AND a.selectionItemId IN :lstSelItemId"
-			+ " AND a.startDate <= :baseDate"
-			+ " AND a.endDate >= :baseDate"
-			+ " ORDER BY b.dispOrder";
+
+	private static final String SELECT_HISTORY_BY_DATE = "SELECT a" + " FROM PpemtHistorySelection a"
+			+ " INNER JOIN PpemtSelItemOrder b" + " ON a.selectionItemId = b.selectionIdPK.selectionId"
+			+ " AND a.histidPK.histId = b.histId" + " AND a.selectionItemId IN :lstSelItemId"
+			+ " AND a.startDate <= :baseDate" + " AND a.endDate >= :baseDate" + " ORDER BY b.dispOrder";
+
+	private static final String SELECT_ALL_HISTID = SELECT_ALL + " WHERE si.histId = :histId";
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
@@ -69,7 +66,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 				.setParameter("selectionItemId", selectionItemId).getList(c -> toDomain(c));
 	}
 
-	public Optional<PerInfoHistorySelection> getHistorySelectionItem(String histId) {
+	public Optional<PerInfoHistorySelection> getAllHistoryByHistId(String histId) {
 		PpemtHistorySelectionPK pkHistorySelection = new PpemtHistorySelectionPK(histId);
 
 		return this.queryProxy().find(pkHistorySelection, PpemtHistorySelection.class).map(c -> toDomain(c));
@@ -99,15 +96,18 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 				.getList(c -> toDomain(c));
 	}
 
-
-	//hoatt
+	// hoatt
 	@Override
 	public List<PerInfoHistorySelection> getHistorySelItemByDate(GeneralDate baseDate, List<String> lstSelItemId) {
 		return this.queryProxy().query(SELECT_HISTORY_BY_DATE, PpemtHistorySelection.class)
-		.setParameter("baseDate", baseDate)
-		.setParameter("lstSelItemId", lstSelItemId)
-		.getList(c->toDomain(c));
+				.setParameter("baseDate", baseDate).setParameter("lstSelItemId", lstSelItemId)
+				.getList(c -> toDomain(c));
 	}
 
-	
+	// Tuannv:
+	@Override
+	public List<String> getAllHistId(String histId) {
+		return queryProxy().query(SELECT_ALL_HISTID, String.class).setParameter("histId", histId).getList();
+	}
+
 }

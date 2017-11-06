@@ -1,8 +1,17 @@
 package nts.uk.ctx.bs.employee.app.find.person.item;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
 import nts.uk.ctx.bs.employee.app.find.person.info.FullNameSetDto;
+import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana;
 
 /**
  * The Class Person.
@@ -11,6 +20,19 @@ import nts.uk.ctx.bs.employee.app.find.person.info.FullNameSetDto;
 
 @Getter
 public class ItemPersonDto extends CtgItemFixDto{
+	
+	private String personId;
+	
+	private GeneralDate birthDate;
+	
+	private int bloodType;
+	
+	private int gender;
+	
+	private String personMobile;
+	
+	private String mailAddress;
+	
 	/** ビジネスネーム -BusinessName */
 	private String businessName;
 
@@ -38,9 +60,15 @@ public class ItemPersonDto extends CtgItemFixDto{
 	/** 旧姓届出名称 - TodokedeOldFullName */
 	private FullNameSetDto todokedeOldFullName;
 	
-	private ItemPersonDto(String businessName, String personName, String businessOtherName, String businessEnglishName,
+	private ItemPersonDto(String personId, GeneralDate birthDate, int bloodType, int gender, String personMobile, String mailAddress, String businessName, String personName, String businessOtherName, String businessEnglishName,
 			String personNameKana, FullNameSetDto personRomanji, FullNameSetDto todokedeFullName, FullNameSetDto oldName, FullNameSetDto todokedeOldFullName){
-		super();
+		super();	
+		this.personId = personId;
+		this.birthDate = birthDate;
+		this.bloodType = bloodType;
+		this.gender = gender;
+		this.personMobile = personMobile;
+		this.mailAddress = mailAddress;
 		this.ctgItemType = CtgItemType.PERSON;
 		this.businessName = businessName;
 		this.personName = personName;
@@ -53,9 +81,13 @@ public class ItemPersonDto extends CtgItemFixDto{
 		this.todokedeOldFullName = todokedeOldFullName;
 	}
 	
-	public static ItemPersonDto createFromJavaType(String businessName, String personName, String businessOtherName, String businessEnglishName,
+	public static ItemPersonDto createFromJavaType(String personId, GeneralDate birthDate, int bloodType, int gender, String personMobile, String mailAddress, String businessName, String personName, String businessOtherName, String businessEnglishName,
 			String personNameKana, FullNameSetDto personRomanji, FullNameSetDto todokedeFullName, FullNameSetDto oldName, FullNameSetDto todokedeOldFullName){
-		return new ItemPersonDto(businessName, personName, businessOtherName, businessEnglishName, personNameKana, personRomanji, todokedeFullName, oldName, todokedeOldFullName);
+		return new ItemPersonDto(personId, birthDate, bloodType, gender, personMobile, mailAddress, businessName, personName, 
+				businessOtherName, businessEnglishName, personNameKana, personRomanji, todokedeFullName, oldName, todokedeOldFullName);
 	}
 	
+	public Person toDomainRequiredField(){
+		return Person.createFromJavaType(personId, birthDate, bloodType, gender, personMobile, mailAddress, businessName, personName);
+	}
 }

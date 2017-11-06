@@ -37,9 +37,7 @@ public class EmpPerCtgInfoDto {
 		this.isAbolition = personInfoCategory.getIsAbolition().value > 0;
 		if(lstPersonInfoItemDefinition != null)
 			this.itemLst = lstPersonInfoItemDefinition.stream()
-				.map(x -> new ItemEmpPersonInfoItemDefDto(x.getPerInfoItemDefId(),
-						x.getPerInfoCategoryId(), x.getItemName().v(), x.getIsAbolition().value,
-						x.getSystemRequired().value)).collect(Collectors.toList());
+				.map(x -> ItemEmpPersonInfoItemDefDto.fromDomain(x)).collect(Collectors.toList());
 		this.ctgItemFixedDto = ctgItemDto;
 		this.ctgItemOptionalDto = ctgItemOptionalDto;
 	}
