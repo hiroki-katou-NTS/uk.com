@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 
 @AllArgsConstructor
 @Getter
@@ -14,6 +15,7 @@ public class FormulaTimeUnit {
 
 	/* コード */
 	private String verticalCalCd;
+	
 	/* 汎用縦計項目ID */
 	private String verticalCalItemId;
 

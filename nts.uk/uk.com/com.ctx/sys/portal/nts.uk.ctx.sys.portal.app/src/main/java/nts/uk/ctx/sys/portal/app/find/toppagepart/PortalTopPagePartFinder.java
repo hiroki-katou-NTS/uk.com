@@ -35,7 +35,7 @@ public class PortalTopPagePartFinder {
 		List<TopPagePartDto> listTopPagePart = topPagePartSerivce.getAllActiveTopPagePart(companyID, EnumAdaptor.valueOf(pgType, PGType.class))
 				.stream().map(topPagePart -> TopPagePartDto.fromDomain(topPagePart))
 				.collect(Collectors.toList());
-
+     
 		// Build Dto
 		ActiveTopPagePartDto activeTopPagePartDto = new ActiveTopPagePartDto(usingTopPagePartType, listTopPagePart);
 		return activeTopPagePartDto;

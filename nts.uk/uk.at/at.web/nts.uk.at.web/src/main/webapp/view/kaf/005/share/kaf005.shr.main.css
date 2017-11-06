@@ -85,7 +85,7 @@ div.form-label.broken {
 .left-contents {
 	margin-top: 10px;
 	float: left;
-	width: 930px;
+	width: 830px;
 }
 
 .right-contents {
@@ -117,10 +117,15 @@ div.form-label.broken {
 
 .lstApprover {
 	margin-left: 20px;
-	margin-top: 730px;
 }
 /*workType, Sift */
 .lblSiftCd, .lblWorkTypeCd {
 	line-height: 40px;
 	margin-left: 20px;
+}
+.header{
+	background-color: #CFF1A5;
+}
+#fixed-table .nts-editor-wrapped {
+	box-sizing: border-box;
 }

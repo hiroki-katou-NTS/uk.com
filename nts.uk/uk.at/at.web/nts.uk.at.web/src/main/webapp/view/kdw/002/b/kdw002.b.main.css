@@ -10,7 +10,6 @@
 .myLinkButton {
 	margin-top: 20px;
 	display: inline-block;
-	margin-left: 100px;
 }
 
 .myLinkButtonIcon {
@@ -43,7 +42,7 @@
 .mylabel {
 	margin-top: 56px;
 	float: right;
-	margin-right: 400px;
+	margin-right: 70px;
 }
 
 td:nth-child(3), td:nth-child(4), td:nth-child(5) {
@@ -71,7 +70,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 	padding: 6px 30px 6px 15px;
 	vertical-align: top;
 	transition: width 0.4s ease-in-out;
-	margin-top: 100px;
+	margin-top: 20px;
 	margin-bottom: 20px;
 }
 
@@ -80,7 +79,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 	margin-left: 20px;
 	min-width: 65px;
 	margin-bottom: 20px;
-	margin-top: 100px;
+	margin-top: 20px;
 }
 
 .searchButton:hover {
@@ -95,5 +94,5 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 	
 }
 .copy{
-	margin-left: 350px !important;
+	margin-left: 540px !important;
 }

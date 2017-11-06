@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+
 @AllArgsConstructor
 @Getter
-public class VerticalCalItem extends AggregateRoot{
+public class VerticalCalItem extends DomainObject {
 	/** 会社ID **/
     private String companyId;
     
@@ -37,6 +38,7 @@ public class VerticalCalItem extends AggregateRoot{
  	private Rounding rounding;
  	
  	private int dispOrder;
+ 	
  	private FormPeople formPeople;
  	
  	private FormulaAmount formulaAmount;
@@ -76,5 +78,45 @@ public class VerticalCalItem extends AggregateRoot{
  				dispOrder,
  				formPeople,
  				formulaAmount);
+ 	}
+ 	
+ 	public void validate(int index) {
+ 		switch (this.attributes) {
+		case TIME:
+//			if (this.formPeople == null) {
+//				throw new BusinessException("Msg_111", String.valueOf(index));
+//			}
+			break;
+			
+		case AMOUNT:
+//			if (this.formPeople == null) {
+//				throw new BusinessException("Msg_111", String.valueOf(index));
+//			}
+			break;
+			
+		case NUMBER_OF_PEOPLE:
+			if (this.formPeople == null) {
+				throw new BusinessException("Msg_111", String.valueOf(index));
+			}
+			break;
+			
+		case NUMBER:
+//			if (this.formPeople == null) {
+//				throw new BusinessException("Msg_111", String.valueOf(index));
+//			}
+			break;
+			
+		case AVERAGE_PRICE:
+//			if (this.formPeople == null) {
+//				throw new BusinessException("Msg_111", String.valueOf(index));
+//			}
+			break;
+			
+		default:
+//			if (this.formPeople == null) {
+//				throw new BusinessException("Msg_111", String.valueOf(index));
+//			}
+			break;
+		}
  	}
 }

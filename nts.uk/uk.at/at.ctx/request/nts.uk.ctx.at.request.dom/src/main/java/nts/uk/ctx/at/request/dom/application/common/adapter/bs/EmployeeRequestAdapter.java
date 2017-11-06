@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 
 public interface EmployeeRequestAdapter {
 	/**
@@ -55,4 +56,5 @@ public interface EmployeeRequestAdapter {
 	
 	SEmpHistImport getEmpHist(String companyId, String employeeId,
 			GeneralDate baseDate);
+	SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate);
 }

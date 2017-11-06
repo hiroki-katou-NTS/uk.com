@@ -28,9 +28,6 @@ public class CalExeSettingInfor extends DomainObject {
 	 */
 	private ExecutionType executionType;
 
-	public Object getExecutionContent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String calExecutionSetInfoID;
 	
 }
