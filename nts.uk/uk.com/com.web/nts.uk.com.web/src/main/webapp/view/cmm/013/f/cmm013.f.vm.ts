@@ -178,7 +178,7 @@ module nts.uk.com.view.cmm013.f {
                             })
                             .fail((res: any) => {
                                 nts.uk.ui.block.clear();
-                                _self.showBundledErrorMessage(res);
+                                _self.showMessageError(res);
                             }); 
                     }).ifNo(() => { 
                         // Nothing happen
@@ -248,7 +248,7 @@ module nts.uk.com.view.cmm013.f {
                             }
                         })
                         .fail((res: any) => {
-                            _self.showBundledErrorMessage(res);
+                            _self.showMessageError(res);
                         });                                   
                 } else {
                     // No Sequence has been choosed, switch to create mode
@@ -303,15 +303,25 @@ module nts.uk.com.view.cmm013.f {
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
                     });       
             }           
                        
             /**
              * Show message error
              */
-            public showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
         }
     }    
