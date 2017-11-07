@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestTimeSetting;
 
 /**
  * The Class BreakTime.
@@ -15,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestTimeSetting;
 public class FluRestTime {
 
 	// 固定休憩時間帯
-	private FixRestTimeSetting fixedRestTime;
+//	private FixRestTimeSetting fixedRestTime;
 
 	// 流動休憩時間帯
 	private FluRestTimeGroup fluidRestTime;
