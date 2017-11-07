@@ -52,7 +52,7 @@ module CPS009Constraint {
                     constraint.valueType = "Selection";
                     break;
             }
-            writeConstraint(dts.itemCode,constraint);
+            writeConstraint(dts.itemCode, constraint);
             return constraint;
         }
 
@@ -125,3 +125,4 @@ module CPS009Constraint {
         // 3:列挙型(Enum)
         ENUM = 3
     }
+}

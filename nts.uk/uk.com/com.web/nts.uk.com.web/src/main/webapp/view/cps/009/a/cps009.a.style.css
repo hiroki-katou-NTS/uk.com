@@ -4,13 +4,19 @@
 	
 }
 
+#contents-area {
+	width: 1280px;
+	height: 100%;
+	overflow-y: hidden !important;
+}
+
 .float-right {
 	float: right !important;
 }
 
 #content-left {
-	width: 260px;
-	height: 590px;
+	width: 288px !important;
+	height: 407px !important;
 	float: left;
 }
 
@@ -24,21 +30,17 @@
 
 .input-units {
 	width: 209px !important;
+	min-height: 16px !important;
+	max-height: 16px !important;
 }
 
 .sub-input-units {
 	width: 150px !important;
 	margin-left: 12px !important;
 	margin-right: 3px !important;
-	height: 16px !important;
-	margin-top: 3px !important;
-	margin-bottom: 3px !important;
 	border: 0px !important;
 	text-align: right !important;
-	/* 	width: 150px !important;
-	margin-left: 3px !important;
-	margin-right: 3px !important;
-	height: 15px !important; */
+	max-height: 8px !important;
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
@@ -75,11 +77,21 @@ button.search-btn, button.clear-btn {
 	width: 40px;
 }
 
-.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn
-	{
+.nts-searchbbox-wrapper button.search-btn {
+	vertical-align: top;
+	margin-left: 5px;
+	min-width: 67px;
+	margin-bottom: 0px !important;
+}
+
+.nts-searchbbox-wrapper button.clear-btn {
 	vertical-align: top;
 	margin-left: 5px;
 	min-width: 50px;
+}
+
+.nts-searchbbox-wrapper {
+	margin-bottom: 0px !important;
 }
 
 input.ntsSearchBox {
@@ -91,7 +103,7 @@ input.ntsSearchBox {
 }
 
 #sub-left {
-	width: 300px;
+	width: 265px;
 	height: 590px;
 	float: left;
 }
@@ -99,10 +111,17 @@ input.ntsSearchBox {
 #sub-right {
 	float: left;
 	width: 600px;
+	margin-left: 30px;
+}
+
+#search_his {
+	margin-top: 38px;
+	margin-bottom: 15px;
 }
 
 #history {
-	margin-left: 220px;
+	float: left;
+	margin-left: 200px;
 }
 
 .contents-header {
@@ -118,7 +137,13 @@ input.ntsSearchBox {
 .contents-data  td {
 	border: 1px solid #CCC;
 	text-align: left;
-	height: 2px !important;
+	min-height: 16px !important;
+	max-height: 16px !important;
+}
+
+.contents-data  tr {
+	min-height: 16px !important;
+	max-height: 16px !important;
 }
 
 table.contents-data thead, table.contents-data tbody {
@@ -136,8 +161,9 @@ thead {
 	background-color: #CFF1A5;
 }
 
-tr {
-	height: 2px !important;
+table.contents-data tr {
+	min-height: 16px !important;
+	max-height: 16px !important;
 }
 
 table tr td, table tr th {
@@ -156,7 +182,7 @@ table tr td, table tr th {
 	display: inline-block;
 	overflow: visible;
 	width: 140px;
-	height: 20px;
+	height: 15px;
 }
 
 .value {
@@ -167,20 +193,34 @@ table tr td, table tr th {
 	border: 1px solid #CCC;
 	text-align: center;
 	height: 15px;
-	padding: 5px 3px;
+	padding: 0px 0px;
 	font-weight: bold;
+}
+
+#COL_1 {
+	width: 210px !important;
+}
+
+#COL_2 {
+	width: 150px !important;
+}
+
+#COL_3 {
+	width: 257px !important;
 }
 
 #A2_012 {
 	margin-left: 0px;
 	width: 97px;
 	height: 21px;
+	padding: 0px 0px !important;
 }
 
 #help {
 	width: 20px;
 	height: 20px;
 	margin-left: 5px;
+	padding: 0px 0px !important;
 }
 
 #combo-box {
@@ -189,12 +229,23 @@ table tr td, table tr th {
 	height: 20px;
 }
 
-.input-units {
-	width: 200px;
+.input-units-1 {
+	width: 210px !important;
 }
 
-/* span.ntsControl .nts-input {
-	border: none !important;
-	border-radius: 0px;
-	overflow: none !important;
-} */
+.input-units-2 {
+	width: 150px !important;
+}
+
+.input-units-3 {
+	width: 257px !important;
+}
+
+#sub-center {
+	width: 25px !important;
+	float: left;
+}
+
+span.caret-background.caret-right.direction-right {
+	position: fixed !important;
+}
