@@ -19,6 +19,6 @@ public class FixedVerticalSettingCommand {
 	private int fixedItemAtr;
 
 	public FixedVertical toDomain(String companyId){
-		return FixedVertical.createFromJavaType(companyId,this.useAtr, this.fixedItemAtr);
+		return FixedVertical.createFromJavaType(companyId, this.fixedItemAtr, this.useAtr);
 	}
 }
