@@ -60,6 +60,12 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="genVertItem", orphanRemoval = true)
 	public KscmtGenVertOrder genVertOrder;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemBuilt", orphanRemoval = true)
+	public KscmtFormBuilt formBuilt;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemTime", orphanRemoval = true)
+	public KscmtFormTime formTime;
+	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemPeople", orphanRemoval = true)
 	public KscmtFormPeople formPeople;
 	

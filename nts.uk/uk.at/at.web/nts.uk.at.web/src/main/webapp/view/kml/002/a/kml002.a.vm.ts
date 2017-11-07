@@ -376,6 +376,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     attributes: self.calculatorItems()[i].attribute(),
                     rounding: self.calculatorItems()[i].rounding(),
                     dispOrder: self.calculatorItems()[i].order(),
+                    //for B screen
+                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.dataB : null,
+                    //for C screen
+                    formTime: self.calculatorItems()[i].attribute() == 0 ? self.dataC : null,
                     //for D screen
                     formPeople: self.calculatorItems()[i].attribute() == 2 ? self.dataD : null
                 };
