@@ -7482,7 +7482,10 @@ var nts;
                                 var srh_1 = $container.data("searchObject");
                                 var result_1 = srh_1.search(searchKey, selectedItems);
                                 if (nts.uk.util.isNullOrEmpty(result_1.options) && searchMode === "highlight") {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT")).then(function () {
+                                        $input.focus();
+                                        $input.select();
+                                    });
                                     return false;
                                 }
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
@@ -7525,7 +7528,9 @@ var nts;
                         var nextSearch = function () {
                             var searchKey = $input.val();
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
-                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(function () {
+                                    $input.focus();
+                                });
                                 return false;
                             }
                             return search(searchKey);
