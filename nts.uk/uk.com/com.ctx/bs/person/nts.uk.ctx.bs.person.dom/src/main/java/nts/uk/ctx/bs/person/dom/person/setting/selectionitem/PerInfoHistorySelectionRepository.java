@@ -31,4 +31,9 @@ public interface PerInfoHistorySelectionRepository {
 	 *get all histId 
 	 */
 	List<String> getAllHistId(String histId);
+	
+	/**
+	 * GET_LAST_HISTORY_BY_SELECTION_ID
+	 */
+	Optional<PerInfoHistorySelection> getLastHistoryBySelectioId(String selectionItemId);
 }
