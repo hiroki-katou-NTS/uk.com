@@ -539,24 +539,25 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();
 
                 //            nts.uk.ui.block.invisible();
-
-                service.getWkpJobAutoCal(wkpId, jobId).done(function(data) {
-                    //                nts.uk.ui.block.clear();
-                    if (data) {
-                        self.itemWkpJobAutoCalModel.updateData(data);
-                    }
-                    if (self.itemWkpJobAutoCalModel) {
-                        // load get all value enum
-                        self.reLoadListEnum(self.itemWkpJobAutoCalModel);
-
-                    }
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-
+                if (wkpId && jobId) {
+                    service.getWkpJobAutoCal(wkpId, jobId).done(function(data) {
+                        //                nts.uk.ui.block.clear();
+                        if (data) {
+                            self.itemWkpJobAutoCalModel.updateData(data);
+                        }
+                        if (self.itemWkpJobAutoCalModel) {
+                            // load get all value enum
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);
+    
+                        }
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+                
                 return dfd.promise();
             }
 
