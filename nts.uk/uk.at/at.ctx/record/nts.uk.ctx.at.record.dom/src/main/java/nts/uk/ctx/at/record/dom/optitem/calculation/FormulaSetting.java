@@ -64,12 +64,21 @@ public class FormulaSetting extends DomainObject {
 	 *
 	 * @return true, if is both item input
 	 */
-	private boolean isBothItemInput() {
+	public boolean isBothItemInput() {
 		if (this.leftItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT
 				&& this.rightItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT) {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Checks if is operator add or sub.
+	 *
+	 * @return true, if is operator add or sub
+	 */
+	public boolean isOperatorAddOrSub() {
+		return this.operator == OperatorAtr.ADD || this.operator == OperatorAtr.SUBTRACT;
 	}
 
 	/**
