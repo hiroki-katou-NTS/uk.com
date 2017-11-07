@@ -4,6 +4,7 @@
 package nts.uk.ctx.bs.employee.app.find.layout;
 
 import java.util.List;
+import java.util.Map;
 
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
@@ -328,14 +329,19 @@ public class ItemDefinitionFactory {
 			WidowHistory widowHistory) {
 	}
 
-	public static void matchPersEmerConts(LayoutPersonInfoClsDto authClassItem,
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchPersEmerConts(LayoutPersonInfoClsDto authClassItem,
 			List<PersonEmergencyContact> perEmerConts) {
+		return null;
 	}
 
-	public static void matchFamilies(LayoutPersonInfoClsDto authClassItem, List<Family> families) {
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
+			List<Family> families) {
+		return null;
 	}
 
-	public static void matchsubJobPoses(LayoutPersonInfoClsDto authClassItem, List<SubJobPosition> subJobPoses) {
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchsubJobPoses(LayoutPersonInfoClsDto authClassItem,
+			List<SubJobPosition> subJobPoses) {
+		return null;
 	}
 
 }

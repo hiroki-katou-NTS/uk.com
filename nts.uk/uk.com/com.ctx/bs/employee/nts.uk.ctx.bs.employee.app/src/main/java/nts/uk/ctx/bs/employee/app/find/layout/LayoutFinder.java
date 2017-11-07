@@ -4,7 +4,9 @@
 package nts.uk.ctx.bs.employee.app.find.layout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -376,19 +378,27 @@ public class LayoutFinder {
 				case "CS00015":
 					// Person Emergency Contact
 					List<PersonEmergencyContact> perEmerConts = perEmerContRepo.getListbyPid(personId);
-					ItemDefinitionFactory.matchPersEmerConts(authClassItem, perEmerConts);
-					getPersDataForListClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+					Map<String, List<LayoutPersonInfoValueDto>> ecMapFixedData = ItemDefinitionFactory
+							.matchPersEmerConts(authClassItem, perEmerConts);
+					Map<String, List<LayoutPersonInfoValueDto>> ecMapOptionData = getPersDataOptionalForListClsItem(
+							perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+					authClassItem.setItems(mapFixDataWithOptionData(ecMapFixedData, ecMapOptionData));
 					break;
 				case "CS00004":
 					// Family
 					List<Family> families = familyRepo.getListByPid(personId);
-					ItemDefinitionFactory.matchFamilies(authClassItem, families);
-					getPersDataForListClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+					Map<String, List<LayoutPersonInfoValueDto>> fMapFixedData = ItemDefinitionFactory
+							.matchFamilies(authClassItem, families);
+					Map<String, List<LayoutPersonInfoValueDto>> fMapOptionData = getPersDataOptionalForListClsItem(
+							perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+					authClassItem.setItems(mapFixDataWithOptionData(fMapFixedData, fMapOptionData));
 					break;
 				}
 			} else {
 				// UNFIXED
-				getPersDataForListClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+				Map<String, List<LayoutPersonInfoValueDto>> mapOptionData = getPersDataOptionalForListClsItem(
+						perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+				authClassItem.setItems(new ArrayList<>(mapOptionData.values()));
 			}
 		} else if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
@@ -396,18 +406,26 @@ public class LayoutFinder {
 				case "CS00012":
 					// Sub Job Position
 					List<SubJobPosition> subJobPoses = subJobPosRepo.getByEmpId(employeeId);
-					ItemDefinitionFactory.matchsubJobPoses(authClassItem, subJobPoses);
-					getEmpDataForListClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+					Map<String, List<LayoutPersonInfoValueDto>> sjpMapFixedData = ItemDefinitionFactory
+							.matchsubJobPoses(authClassItem, subJobPoses);
+					Map<String, List<LayoutPersonInfoValueDto>> sjpMapOptionData = getPersDataOptionalForListClsItem(
+							perInfoCategory.getCategoryCode().v(), authClassItem, personId);
+					authClassItem.setItems(mapFixDataWithOptionData(sjpMapFixedData, sjpMapOptionData));
 					break;
 				}
 			} else {
 				// UNFIXED
-				getEmpDataForListClsItem(perInfoCategory.getCategoryCode().v(), authClassItem, employeeId);
+				Map<String, List<LayoutPersonInfoValueDto>> mapOptionData = getEmpDataForListClsItem(
+						perInfoCategory.getCategoryCode().v(), authClassItem, employeeId);
+				authClassItem.setItems(new ArrayList<>(mapOptionData.values()));
 			}
 		}
 	}
 
-	private void getPersDataForListClsItem(String categoryCode, LayoutPersonInfoClsDto authClassItem, String personId) {
+	private Map<String, List<LayoutPersonInfoValueDto>> getPersDataOptionalForListClsItem(String categoryCode,
+			LayoutPersonInfoClsDto authClassItem, String personId) {
+		// ドメインモデル「個人情報カテゴリデータ」を取得する
+		Map<String, List<LayoutPersonInfoValueDto>> resultMap = new HashMap<>();
 		List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
 				authClassItem.getPersonInfoCategoryID());
 		perInfoCtgDatas.forEach(perInfoCtgData -> {
@@ -435,15 +453,33 @@ public class LayoutFinder {
 					if (value != null) {
 						ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, value));
 					}
+				} else {
+					ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, null));
 				}
 			}
-			authClassItem.getItems().add(ctgDataList);
+			resultMap.put(perInfoCtgData.getRecordId(), ctgDataList);
 		});
-
+		return resultMap;
 	}
 
-	private void getEmpDataForListClsItem(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			String employeeId) {
+	private List<Object> mapFixDataWithOptionData(Map<String, List<LayoutPersonInfoValueDto>> mapFixData,
+			Map<String, List<LayoutPersonInfoValueDto>> mapOptionData) {
+		List<Object> resultList = new ArrayList<Object>();
+		mapFixData.forEach((domainId, fixDataList) -> {
+			List<LayoutPersonInfoValueDto> optionDataList = mapOptionData.get(domainId);
+			if (optionDataList != null) {
+				List<LayoutPersonInfoValueDto> rowList = new ArrayList<>();
+				rowList.addAll(fixDataList);
+				rowList.addAll(optionDataList);
+				resultList.add(rowList);
+			}
+		});
+		return resultList;
+	}
+
+	private Map<String, List<LayoutPersonInfoValueDto>> getEmpDataForListClsItem(String categoryCode,
+			LayoutPersonInfoClsDto authClassItem, String employeeId) {
+		Map<String, List<LayoutPersonInfoValueDto>> resultMap = new HashMap<>();
 		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(employeeId,
 				authClassItem.getPersonInfoCategoryID());
 		empInfoCtgDatas.forEach(perInfoCtgData -> {
@@ -469,12 +505,14 @@ public class LayoutFinder {
 					if (value != null) {
 						ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, value));
 					}
+				} else {
+					ctgDataList.add(LayoutPersonInfoValueDto.initData(categoryCode, item, null));
 				}
 
 			});
-			authClassItem.getItems().add(ctgDataList);
+			resultMap.put(perInfoCtgData.getRecordId(), ctgDataList);
 		});
-
+		return resultMap;
 	}
 
 	private void getPersDataHistoryType(String categoryCode, String perInfoCategoryId,
