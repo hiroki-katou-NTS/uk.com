@@ -723,6 +723,8 @@ module nts.uk.at.view.kmk006.a {
 
 
             public saveWkpJobAutoCal(wkpId: string, jobId: string): void {
+                $('#input-date').ntsError('clear');
+                $('#input-date').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
@@ -773,6 +775,8 @@ module nts.uk.at.view.kmk006.a {
              * Apply base date
              */
             public applyBaseDate(): void {
+                $('#input-date').ntsError('clear');
+                $('#input-date').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 };

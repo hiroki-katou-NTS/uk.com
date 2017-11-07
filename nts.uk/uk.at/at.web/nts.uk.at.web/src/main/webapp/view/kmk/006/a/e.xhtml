@@ -16,11 +16,11 @@
 				data-bind="enable: createModeScreenD, click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
-			<div class="lableContentPersonal"
-				data-bind="ntsFormLabel: {}">
+			<div id="input-date" class="lableContentPersonal"
+				data-bind="ntsFormLabel: { required: true }">
 				<label>#{i18n.getText('KMK006_33')}</label>
 			</div>
-			<div data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			<div data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 			<button style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
 			<!-- <div tabindex="6" id="comboTargetYear"
 				data-bind="ntsComboBox: {
