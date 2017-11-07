@@ -20,16 +20,22 @@ public class EmpCopySettingItem extends AggregateRoot {
 
 	private IsRequired isRequired;
 
-	public EmpCopySettingItem(String itemCode, String itemName, IsRequired isRequired) {
+	public EmpCopySettingItem(String perInfoCtgId, String categoryCode, String itemDefId, String itemCode,
+			String itemName, IsRequired isRequired) {
 		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.categoryCode = categoryCode;
+		this.itemDefId = itemDefId;
 		this.itemCode = itemCode;
 		this.itemName = itemName;
 		this.isRequired = isRequired;
 	}
 
-	public static EmpCopySettingItem createFromJavaType(String itemCode, String itemName, int isRequired) {
+	public static EmpCopySettingItem createFromJavaType(String perInfoCtgId, String categoryCode, String itemDefId,
+			String itemCode, String itemName, int isRequired) {
 
-		return new EmpCopySettingItem(itemCode, itemName, EnumAdaptor.valueOf(isRequired, IsRequired.class));
+		return new EmpCopySettingItem(perInfoCtgId, categoryCode, itemDefId, itemCode, itemName,
+				EnumAdaptor.valueOf(isRequired, IsRequired.class));
 
 	}
 

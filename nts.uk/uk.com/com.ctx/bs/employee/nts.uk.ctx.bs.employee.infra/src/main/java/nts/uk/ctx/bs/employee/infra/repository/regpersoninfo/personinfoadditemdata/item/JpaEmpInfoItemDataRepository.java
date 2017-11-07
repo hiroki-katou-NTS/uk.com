@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpIn
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName FROM PpemtEmpInfoItemData id"
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.personInfoCtgId,pc.categoryCd FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtEmpInfoCtgData ic"
@@ -40,11 +40,11 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 		GeneralDate dateValue = GeneralDate.fromString(String.valueOf(entity[7].toString()), "yyyy-MM-dd");
 
-		int isRequired = Integer.parseInt(entity[9] != null ? entity[9].toString() : "0");
+		int isRequired = Integer.parseInt(entity[8] != null ? entity[9].toString() : "0");
 
-		return EmpInfoItemData.createFromJavaType("itemCode", entity[0].toString(), entity[1].toString(),
-				"perInfoCtgId", "perInfoCtgCd", entity[8].toString(), isRequired, dataStateType, entity[5].toString(),
-				intValue, dateValue);
+		return EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(), entity[1].toString(),
+				entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired, dataStateType,
+				entity[5].toString(), intValue, dateValue);
 	}
 
 	@Override
