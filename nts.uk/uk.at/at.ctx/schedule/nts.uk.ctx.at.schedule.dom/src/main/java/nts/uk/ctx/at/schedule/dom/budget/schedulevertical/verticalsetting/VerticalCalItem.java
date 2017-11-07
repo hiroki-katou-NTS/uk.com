@@ -43,6 +43,8 @@ public class VerticalCalItem extends DomainObject {
  	
  	private FormulaAmount formulaAmount;
  	
+ 	private FormulaNumerical numerical;
+ 	
 //	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
 //			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
 //			Rounding rounding, int dispOrder, FormPeople formPeople, List<FormPeopleFunc> lstPeopleFunc) {
@@ -68,7 +70,8 @@ public class VerticalCalItem extends DomainObject {
  													int cumulativeAtr, int attributes, 
  													int rounding, int dispOrder, 
  													FormPeople formPeople,
- 													FormulaAmount formulaAmount){
+ 													FormulaAmount formulaAmount,
+ 													FormulaNumerical numerical){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
@@ -77,7 +80,8 @@ public class VerticalCalItem extends DomainObject {
  				EnumAdaptor.valueOf(rounding, Rounding.class),
  				dispOrder,
  				formPeople,
- 				formulaAmount);
+ 				formulaAmount,
+ 				numerical);
  	}
  	
  	public void validate(int index) {

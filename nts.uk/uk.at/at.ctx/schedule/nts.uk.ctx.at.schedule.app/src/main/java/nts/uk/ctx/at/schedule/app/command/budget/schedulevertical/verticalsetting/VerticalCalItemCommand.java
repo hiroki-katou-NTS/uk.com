@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeople;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaAmount;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
 @Data
@@ -44,6 +45,8 @@ public class VerticalCalItemCommand {
  	
  	private FormulaAmountCommand formulaAmount;
  	
+ 	private FormulaNumericalCommand formulaNumerical;
+ 	
  	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId,String verticalCalItemId){
  		FormulaAmount amount = this.formulaAmount != null
  				? this.formulaAmount.toDomainFormAmount(companyId, verticalCalCd, verticalCalItemId)
@@ -51,6 +54,9 @@ public class VerticalCalItemCommand {
  		FormPeople formPeople1 = this.formPeople != null
  				? this.formPeople.toDomainFormPeople(companyId, verticalCalCd, itemId)
 				: null;
-		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, dispOrder, formPeople1,amount);
+ 		FormulaNumerical formula = this.formulaNumerical != null
+ 				? this.formulaNumerical.toDomainNumerical(companyId, verticalCalCd, verticalCalItemId)
+ 						: null;
+		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, dispOrder, formPeople1,amount,formula);
  	}
 }

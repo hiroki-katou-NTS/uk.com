@@ -96,13 +96,69 @@ public interface VerticalSettingRepository {
 	 */
 	void deleteFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc);
 
+	/**
+	 * Find Money Func
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
 	List<MoneyFunc> findAllMoneyFunc(String companyId);
 
-	List<FormulaMoney> findAllFormulaMoney(String companyId);
-
+	/**
+	 * Find Formula Amount
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
 	List<FormulaAmount> findAllFormulaAmount(String companyId);
 
-	List<TimeUnitFunc> findAllTimeUnit(String companyId);
-
+	/**
+	 * Find Formula Time Unit
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
 	List<FormulaTimeUnit> findAllFormulaTimeUnit(String companyId);
+
+	/**
+	 * Find Formula Nummer
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaNumerical> findAllFormNumber(String companyId);
+
+	/**
+	 * Add Formula Amount
+	 * @param formulaAmount
+	 * @author phongtq
+	 */
+	void insertFromAmount(FormulaAmount formulaAmount);
+
+	/**
+	 * Add Formula Amount
+	 * @param numerical
+	 * @author phongtq
+	 */
+	void insertFromNumerical(FormulaNumerical numerical);
+
+	/**
+	 * Find Formula Money
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaMoney> findAllFormulaMoney(String companyId, String verticalCalCd, String verticalCalItemId);
+
+	/**
+	 * Find Time Unit Func 
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @author phongtq 
+	 * @return
+	 */
+	List<TimeUnitFunc> findAllTimeUnit(String companyId, String verticalCalCd, String verticalCalItemId);
 }

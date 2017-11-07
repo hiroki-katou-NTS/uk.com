@@ -66,6 +66,8 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
 	public KscstFormulaAmount amount;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
+	public KscstFormulaNumerical numerical;
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub

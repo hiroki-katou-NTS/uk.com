@@ -277,7 +277,12 @@ module nts.uk.at.view.kml002.e.viewmodel {
 
         submit() {
             var self = this;
-
+            var data = {
+                dataList : self.rightItems(),
+                dataAmount : self.rightItemsAmount()
+                
+            }
+            nts.uk.ui.windows.setShared("KML002_E_DATA", data);
         }
 
         cancel() {
@@ -596,6 +601,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
         roundingAtr?: number;
         unitPrice?: number;
         actualDisplayAtr?: number;
+        
 
     }
 
