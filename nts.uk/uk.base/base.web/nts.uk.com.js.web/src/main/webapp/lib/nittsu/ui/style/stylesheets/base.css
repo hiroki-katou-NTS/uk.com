@@ -576,7 +576,9 @@ div.popup-panel {
 div.label {
   width: 100%;
 }
-
+.pre {
+    white-space: pre-wrap;
+}
 /*****************************
   Icon
 *****************************/
@@ -3698,6 +3700,10 @@ button.nts-switch-button[disabled]:hover {
   position: relative;
 }
 
+.extable table th, .extable table td {
+	border: 1px solid #AAB7B8;
+}
+
 /* line 4, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
@@ -3723,6 +3729,14 @@ button.nts-switch-button[disabled]:hover {
 /* line 18, ../sass/components/_extable.scss */
 .extable div.edited, .extable td.edited {
   background-color: #FAD7A0;
+}
+
+.extable div.xhidden, .extable td.xhidden {
+	background-color: #CCC;
+}
+
+.extable div.xseal, .extable td.xseal {
+	background-color: #CCC;
 }
 
 /* line 21, ../sass/components/_extable.scss */
