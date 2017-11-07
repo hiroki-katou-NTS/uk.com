@@ -62,4 +62,6 @@ public interface EmpCalAndSumExeLogRepository {
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
 			GeneralDate endDate);
 
+	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
+	
 }

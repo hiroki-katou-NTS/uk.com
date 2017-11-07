@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -43,10 +42,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 	/** 実行種別 */
 	@Column(name = "EXECUTION_TYPE")
 	public int executionType;
-	
-	@Column(name = "OPERATION_CASE_ID")
-	public String caseSpecExeContentID;
-	
+		
 	/** 確定済みの場合にも強制的に反映する */
 	@Column(name = "REF_EVEN_CONFIRM", nullable = true)
 	public Boolean alsoForciblyReflectEvenIfItIsConfirmed;
@@ -106,7 +102,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 	public KrcstCaseSpecExeContent caseSpecExeContent;
 
 	
-	public KrcdtCalExeSetInfor(KrcdtCalExeSetInforPK krcdtCalExeSetInforPK, int executionType,String caseSpecExeContentID,
+	public KrcdtCalExeSetInfor(KrcdtCalExeSetInforPK krcdtCalExeSetInforPK, int executionType,
 			Boolean alsoForciblyReflectEvenIfItIsConfirmed, Integer creationType, Boolean masterReconfiguration,
 			Boolean closedHolidays, Boolean resettingWorkingHours, Boolean reflectsTheNumberOfFingerprintChecks,
 			Boolean specificDateClassificationResetting, Boolean resetTimeAssignment, Boolean resetTimeChildOrNurseCare,
@@ -114,7 +110,6 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 		super();
 		this.krcdtCalExeSetInforPK = krcdtCalExeSetInforPK;
 		this.executionType = executionType;
-		this.caseSpecExeContentID = caseSpecExeContentID;
 		this.alsoForciblyReflectEvenIfItIsConfirmed = alsoForciblyReflectEvenIfItIsConfirmed;
 		this.creationType = creationType;
 		this.masterReconfiguration = masterReconfiguration;
@@ -143,7 +138,6 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 						EnumAdaptor.valueOf(this.krcdtCalExeSetInforPK.executionContent, ExecutionContent.class),
 						EnumAdaptor.valueOf(this.executionType, ExecutionType.class),
 						this.krcdtCalExeSetInforPK.calExecutionSetInfoID, 
-						this.caseSpecExeContentID,
 						EnumAdaptor.valueOf(this.creationType,DailyRecreateClassification.class),
 						partResetClassification);
 			return (T) settingInforForDailyCreation;
@@ -152,8 +146,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 			CalExeSettingInfor calExeSettingInfor = new CalExeSettingInfor(
 					EnumAdaptor.valueOf(this.krcdtCalExeSetInforPK.executionContent, ExecutionContent.class),
 					EnumAdaptor.valueOf(this.executionType, ExecutionType.class),
-					this.krcdtCalExeSetInforPK.calExecutionSetInfoID,
-					this.caseSpecExeContentID
+					this.krcdtCalExeSetInforPK.calExecutionSetInfoID
 					);
 			return (T) calExeSettingInfor;
 		}else if(this.krcdtCalExeSetInforPK.executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT.value) {
@@ -162,7 +155,6 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 					EnumAdaptor.valueOf(this.krcdtCalExeSetInforPK.executionContent, ExecutionContent.class),
 					EnumAdaptor.valueOf(this.executionType, ExecutionType.class),
 					this.krcdtCalExeSetInforPK.calExecutionSetInfoID,
-					this.caseSpecExeContentID,
 					this.alsoForciblyReflectEvenIfItIsConfirmed
 					);
 					
@@ -173,8 +165,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 			CalExeSettingInfor calExeSettingInfor = new CalExeSettingInfor(
 					EnumAdaptor.valueOf(this.krcdtCalExeSetInforPK.executionContent, ExecutionContent.class),
 					EnumAdaptor.valueOf(this.executionType, ExecutionType.class),
-					this.krcdtCalExeSetInforPK.calExecutionSetInfoID,
-					this.caseSpecExeContentID
+					this.krcdtCalExeSetInforPK.calExecutionSetInfoID
 					);
 			return (T) calExeSettingInfor;
 		}
@@ -188,7 +179,6 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 						domain.getExecutionContent().value
 						),
 					domain.getExecutionType().value,
-					domain.getCaseSpecExeContentID(),
 					null,
 					domain.getCreationType().value,
 					domain.getPartResetClassification().get().isMasterReconfiguration(),
@@ -209,7 +199,6 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 						domain.getExecutionContent().value
 						),
 					domain.getExecutionType().value,
-					domain.getCaseSpecExeContentID(),
 					null,
 					null,
 					null,
@@ -230,7 +219,6 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 						domain.getExecutionContent().value
 						),
 					domain.getExecutionType().value,
-					domain.getCaseSpecExeContentID(),
 					domain.isForciblyReflect(),
 					null,
 					null,
