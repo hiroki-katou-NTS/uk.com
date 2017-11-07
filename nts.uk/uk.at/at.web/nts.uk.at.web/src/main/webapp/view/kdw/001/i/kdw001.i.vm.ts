@@ -21,7 +21,9 @@ module nts.uk.at.view.kdw001.i {
             listTargetPerson: KnockoutObservableArray<model.TargetPerson>;
             listPerson: Array<string>;
             numberPerson: KnockoutObservable<number>;
-
+            numberPersonErr: KnockoutObservable<number>;
+            //InputErrMessageInfoByID
+            inputErrMessageInfoByID :  KnockoutObservable<model.InputErrMessageInfoByID>;
             constructor() {
                 let self = this;
                 //table 
@@ -45,6 +47,9 @@ module nts.uk.at.view.kdw001.i {
                 self.listTargetPerson = ko.observableArray([]);
                 self.listPerson = [];
                 self.numberPerson = ko.observable(0);
+                self.numberPersonErr = ko.observable(0);
+                // inputErrMessageInfoByID
+                self.inputErrMessageInfoByID = ko.observable(null);
             }
 
             startPage(): JQueryPromise<any> {
@@ -53,7 +58,9 @@ module nts.uk.at.view.kdw001.i {
                 let dfd = $.Deferred();
                 let dfdGetEmpCalAndSumExeLog = self.getByEmpCalAndSumExeLogId(self.empCalAndSumExecLogID);
                 let dfdGetListTargetPersonByEmpId = self.getListTargetPersonByEmpId(self.empCalAndSumExecLogID);
-                $.when(dfdGetEmpCalAndSumExeLog, dfdGetListTargetPersonByEmpId).done((dfdGetEmpCalAndSumExeLogData, dfdGetListTargetPersonByEmpIdData) => {
+                //let dfdGetAllErrMessageInfoByEmpID = self.getAllErrMessageInfoByEmpID(self.empCalAndSumExecLogID);
+                $.when(dfdGetEmpCalAndSumExeLog, dfdGetListTargetPersonByEmpId)
+                .done((dfdGetEmpCalAndSumExeLogData, dfdGetListTargetPersonByEmpIdData) => {
 
                     dfd.resolve();
                 });
@@ -74,6 +81,13 @@ module nts.uk.at.view.kdw001.i {
                     //date
                     let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data.executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
+//                        self.inputErrMessageInfoByID(new model.InputErrMessageInfoByID(value.empCalAndSumExecLogID,value.executionContent));
+//                        self.getAllErrMessageInfoByEmpID(self.inputErrMessageInfoByID()).done(function(item){
+//                            var numberPersonErr =  _.chain(item)
+//                            .groupBy("employeeID")
+//                            .toPairs()
+//                            .value();
+//                        });
                         return new modelkdw001f.ExecutionLog(value);
                     }));
                     if (self.listExecutionLog().length > 0) {
@@ -109,7 +123,27 @@ module nts.uk.at.view.kdw001.i {
                 return dfd.promise();
 
             }//end function getListTargetPersonByEmpId
-
+            
+            /**
+             * getAllErrMessageInfoByEmpID
+             */
+            getAllErrMessageInfoByEmpID(inputErrMessageInfoByID :model.InputErrMessageInfoByID){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getAllErrMessageInfoByEmpID(inputErrMessageInfoByID).done(function(data) {
+//                   var numberPersonErr =  _.chain(data)
+//                        .groupBy("employeeID")
+//                        .toPairs()
+//                        .value();
+//                    
+//                    self.numberPersonErr(numberPersonErr.length);
+                    dfd.resolve();
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+            }
             /**
              *open dialog G 
              */
@@ -172,6 +206,19 @@ module nts.uk.at.view.kdw001.i {
                 this.status = status;
             }
         }//end class ComplStateOfExeContents
+        
+          /**
+         * class InputErrMessageInfoByID
+         */
+         export class InputErrMessageInfoByID{
+             empCalAndSumExecLogID : string;
+             executionContent : number;
+             constructor(empCalAndSumExecLogID : string,executionContent : number){
+                 this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+                 this.executionContent = executionContent;
+             } 
+        }//end class InputErrMessageInfoByID
+        
 
     }//end module model
 }//end module
