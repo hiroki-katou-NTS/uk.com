@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDt
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -34,10 +33,6 @@ public class ClosureFinder {
 	/** The repository. */
 	@Inject
 	private ClosureRepository repository;
-
-	/** The repository history. */
-	@Inject
-	private ClosureHistoryRepository repositoryHistory;
 	
 	/** The Constant ZERO_START_DATE. */
 	public static final int ZERO_START_DATE = 0;
@@ -81,7 +76,7 @@ public class ClosureFinder {
 
 		ClosureFindDto dto = new ClosureFindDto();
 
-		List<ClosureHistory> closureHistories = this.repositoryHistory.findByClosureId(companyId,
+		List<ClosureHistory> closureHistories = this.repository.findByClosureId(companyId,
 				closureId);
 
 		// exist data
@@ -91,7 +86,7 @@ public class ClosureFinder {
 			closure.get().setClosureHistories(closureHistories);
 			closure.get().saveToMemento(dto);
 
-			Optional<ClosureHistory> closureHisory = this.repositoryHistory.findBySelectedYearMonth(
+			Optional<ClosureHistory> closureHisory = this.repository.findBySelectedYearMonth(
 					companyId, closureId, closure.get().getClosureMonth().getProcessingYm().v());
 
 			if (closureHisory.isPresent()) {
@@ -123,7 +118,7 @@ public class ClosureFinder {
 		
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.min());
 		
-		List<ClosureHistory> closureHistories = this.repositoryHistory.findByClosureId(companyId,
+		List<ClosureHistory> closureHistories = this.repository.findByClosureId(companyId,
 				closureId);
 		
 		// exist data
@@ -132,7 +127,7 @@ public class ClosureFinder {
 			// to data
 			closure.get().setClosureHistories(closureHistories);
 			
-			Optional<ClosureHistory> closureHisory = this.repositoryHistory.findBySelectedYearMonth(
+			Optional<ClosureHistory> closureHisory = this.repository.findBySelectedYearMonth(
 					companyId, closureId, closure.get().getClosureMonth().getProcessingYm().v());
 			
 			ClosureGetMonthDay closureGetMonthDay = new ClosureGetMonthDay();
@@ -161,7 +156,7 @@ public class ClosureFinder {
 
 		ClosureDetailDto dto = new ClosureDetailDto();
 
-		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
+		Optional<ClosureHistory> closureHistory = this.repository.findById(companyId,
 				master.getClosureId(), master.getStartDate());
 
 		// exist data
