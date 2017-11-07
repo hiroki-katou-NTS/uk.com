@@ -42,9 +42,9 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 		int isRequired = Integer.parseInt(entity[9] != null ? entity[9].toString() : "0");
 
-		return EmpInfoItemData.createFromJavaType(entity[0].toString(), entity[1].toString(), entity[2].toString(),
-				entity[3].toString(), entity[8].toString(), isRequired, dataStateType, entity[5].toString(), intValue,
-				dateValue);
+		return EmpInfoItemData.createFromJavaType("itemCode", entity[0].toString(), entity[1].toString(),
+				"perInfoCtgId", "perInfoCtgCd", entity[8].toString(), isRequired, dataStateType, entity[5].toString(),
+				intValue, dateValue);
 	}
 
 	@Override

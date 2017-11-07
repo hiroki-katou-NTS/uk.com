@@ -8,11 +8,17 @@ import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 @Getter
 public class EmpCopySettingItem extends AggregateRoot {
 
-	String itemCode;
+	private String perInfoCtgId;
 
-	String itemName;
+	private String categoryCode;
 
-	IsRequired isRequired;
+	private String itemDefId;
+
+	private String itemCode;
+
+	private String itemName;
+
+	private IsRequired isRequired;
 
 	public EmpCopySettingItem(String itemCode, String itemName, IsRequired isRequired) {
 		super();

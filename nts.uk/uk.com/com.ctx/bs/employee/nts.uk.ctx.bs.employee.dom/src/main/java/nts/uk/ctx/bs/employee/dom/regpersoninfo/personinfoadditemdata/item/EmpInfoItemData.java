@@ -25,6 +25,8 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private String perInfoCtgId;
 
+	private String perInfoCtgCd;
+
 	private String itemName;
 
 	private IsRequired isRequired;
@@ -32,20 +34,21 @@ public class EmpInfoItemData extends AggregateRoot {
 	private DataState dataState;
 
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
-			String itemName, IsRequired isRequired, DataState dataState) {
+			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState) {
 		super();
 		this.perInfoDefId = perInfoDefId;
 		this.recordId = recordId;
 		this.perInfoCtgId = perInfoCtgId;
+		this.perInfoCtgCd = perInfoCtgCd;
 		this.itemName = itemName;
 		this.dataState = dataState;
 	}
 
 	public static EmpInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
-			String perInfoCtgId, String itemName, int isRequired, int dataStateType, String stringValue,
-			BigDecimal intValue, GeneralDate dateValue) {
+			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
+			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
 
-		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, itemName,
+		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
 				EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
 						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
 
