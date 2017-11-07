@@ -190,7 +190,7 @@ module nts.uk.at.view.kmk006.a {
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.jobAlreadySettingList,
-                    rows: 20
+                    maxRows: 20
                 };
                 self.jobTotalListOptions = {
                     isShowAlreadySet: false,
@@ -201,7 +201,7 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    rows: 20
+                    maxRows: 20
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
