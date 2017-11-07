@@ -5,23 +5,24 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 
 /**
- * The Class WeekdayWorkTime.
+ * The Class FixHalfDayWorkTimezone.
  */
-// 固定勤務の平日出勤用勤務時間帯
 @Getter
-public class FixWeekdayWorkTime {
-
-	// 勤務時間帯
-	// private 固定勤務時間帯設定 workingTime;
-
-	/** The rest time. */
-	// 休憩時間帯
-	private FixRestTime restTime;
-
-	/** The am pm cls. */
-	// 午前午後区分
-	private AmPmClassification amPmCls;
+public class FixHalfDayWorkTimezone extends DomainObject {
+	
+	/** The rest time zone. */
+	//休憩時間帯 
+	private FixRestTimezoneSet restTimeZone;
+	
+	/** The work timezone. */
+	//勤務時間帯
+	private FixedWorkTimezoneSet workTimezone;
+	
+	/** The day atr. */
+	//午前午後区分
+	private AmPmClassification dayAtr;
 }

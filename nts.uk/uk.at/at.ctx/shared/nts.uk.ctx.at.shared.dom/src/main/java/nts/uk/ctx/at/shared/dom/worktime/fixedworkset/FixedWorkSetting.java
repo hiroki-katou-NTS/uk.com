@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.commonset.WorkTimezoneCommonSet;
 
 /**
  * The Class FixedWorkSetting.
@@ -14,27 +17,35 @@ import nts.arc.layer.dom.AggregateRoot;
 // 固定勤務設定
 public class FixedWorkSetting extends AggregateRoot {
 
+	/** The company id. */
+	// 会社ID
+	private String companyId;
+
 	/** The working code. */
 	// 就業時間帯コード
 	private String workingCode;
 
-	// // 半日用シフトを使用する
-	// private Boolean useHalfDayShift;
-
-	/** The offday work time. */
+	/** The offday work timezone. */
 	// 休日勤務時間帯
-	private FixOffdayWorkTime offdayWorkTime;
+	private FixOffdayWorkTimezone offdayWorkTimezone;
 
-	/** The weekday work time. */
+	/** The common setting. */
+	// 共通設定
+	private WorkTimezoneCommonSet commonSetting;
+
+	/** The use half day shift. */
+	// 半日用シフトを使用する
+	private Boolean useHalfDayShift;
+
+	/** The half day work timezone. */
 	// 平日勤務時間帯
-	private FixWeekdayWorkTime weekdayWorkTime;
+	private List<FixHalfDayWorkTimezone> halfDayWorkTimezone;
 
+	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
-	// private List<打刻反映時間帯> stampImprintingTime
+	private List<StampReflectTimezone> stampReflectTimezone;
 
-	// 残業設定
-	// private 固定勤務の残業設定 overtimeSetting
-
-	// 詳細設定
-	// private WorkTimeCommonSet advancedSetting
+	/** The legal OT setting. */
+	// 法定内残業設定
+    private LegalOTSetting legalOTSetting;
 }
