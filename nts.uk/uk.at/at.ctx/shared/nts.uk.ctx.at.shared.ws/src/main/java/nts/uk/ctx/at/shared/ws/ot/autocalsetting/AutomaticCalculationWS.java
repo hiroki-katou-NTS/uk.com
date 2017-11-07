@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.ws.ot.autocalsetting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,6 +34,20 @@ public class AutomaticCalculationWS extends WebService {
 	@Path("find/autocalatrovertime")
 	public List<EnumConstant> findEnumAutoCalAtrOvertime() {
 		return EnumAdaptor.convertToValueNameList(AutoCalAtrOvertime.class);
+	}
+	
+	/**
+	 * Find enum auto cal atr overtime without time recorder.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("find/autocalatrovertimewithouttimerecorder")
+	public List<EnumConstant> findEnumAutoCalAtrOvertimeWithoutTimeRecorder() {
+		List<EnumConstant> result = EnumAdaptor.convertToValueNameList(AutoCalAtrOvertime.class).stream()
+				.filter(item -> item.getValue() != AutoCalAtrOvertime.TIMERECORDER.value)
+				.collect(Collectors.toList());
+		return result;
 	}
 
 	/**

@@ -19,6 +19,20 @@ public class EmpCalAndSumExeLogFinder {
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
 	
+	/**
+	 * get All EmpCalAndSumExeLog by Employee and ID DESC
+	 * @return list EmpCalAndSumExeLog
+	 */
+	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogMaxByEmp(){
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo
+				.getEmpCalAndSumExeLogMaxByEmp(companyID, employeeID)
+				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
+		if(data.isPresent())
+			return data.get();
+		return null;
+	}
 	 
 	/**
 	 * get All EmpCalAndSumExeLog
@@ -37,18 +51,22 @@ public class EmpCalAndSumExeLogFinder {
 	}
 	
 	/**
-	 * get list EmpCalAndSumExeLogDto by empCalAndSumExecLogID
+	 * get EmpCalAndSumExeLogDto by empCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
-	public Optional<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
+	public EmpCalAndSumExeLogDto getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID){
 		Optional<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID)
 				.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
 		if(data.isPresent())
-			return data;
+			return data.get();
 		return null;
 	}
-
+	/**
+	 * get list EmpCalAndSumExeLogDto by startDate and endDate
+	 * @param inputEmpCalAndSumByDate
+	 * @return
+	 */
 	public List<EmpCalAndSumExeLogDto> getEmpCalAndSumExeLogByDate(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
 		String companyID = AppContexts.user().companyId();
 		List<EmpCalAndSumExeLogDto> data = empCalAndSumExeLogRepo

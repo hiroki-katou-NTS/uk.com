@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,13 +26,16 @@ public class AddFixedVerticalSettingCommandHandler extends CommandHandler<List<F
 	protected void handle(CommandHandlerContext<List<FixedVerticalSettingCommand>> context) {
 		List<FixedVerticalSettingCommand> fixedVerticalList = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		List<FixedVertical> fixVerticals = repository.findAll(companyId);
+		Map<Integer, FixedVertical> fixVerticalMap = fixVerticals.stream().collect(Collectors.toMap(x -> {
+			return x.getFixedItemAtr().value;
+		}, x -> x));
 
 		for (FixedVerticalSettingCommand item : fixedVerticalList) {
 			FixedVertical fVertical = item.toDomain(companyId);
 			fVertical.validate();
- 			Optional<FixedVertical> optional = repository.find(companyId, item.getFixedItemAtr());
-			
-			if (optional.isPresent()) {
+
+			if (fixVerticalMap.get(item.getFixedItemAtr()) != null) {
 				repository.updateFixedVertical(fVertical);
 			} else {
 				repository.addFixedVertical(fVertical);

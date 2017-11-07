@@ -13,9 +13,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -32,16 +30,6 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 * @param entity the entity
 	 */
 	public JpaOptionalItemSetMemento(KrcstOptionalItem entity) {
-
-		KrcstOptionalItemPK krcstOptionalItemPK = entity.getKrcstOptionalItemPK();
-
-		// Check PK exist
-		if (krcstOptionalItemPK == null) {
-			krcstOptionalItemPK = new KrcstOptionalItemPK();
-		}
-
-		entity.setKrcstOptionalItemPK(krcstOptionalItemPK);
-
 		this.entity = entity;
 	}
 
@@ -136,21 +124,6 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
 		KrcstCalcResultRange entityRange = this.entity.getKrcstCalcResultRange();
-		
-		// check entity null
-		if (entityRange == null) {
-			entityRange = new KrcstCalcResultRange();
-		}
-		// check pk entity null
-		if(entityRange.getKrcstCalcResultRangePK() == null){
-			entityRange.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK());
-		}
-		
-		entityRange.getKrcstCalcResultRangePK()
-				.setCid(this.entity.getKrcstOptionalItemPK().getCid());
-		entityRange.getKrcstCalcResultRangePK()
-				.setOptionalItemNo(this.entity.getKrcstOptionalItemPK().getOptionalItemNo());
-		
 		calculationResultRange.saveToMemento(new JpaCalcResultRangeSetMemento(entityRange));
 		this.entity.setKrcstCalcResultRange(entityRange);
 	}

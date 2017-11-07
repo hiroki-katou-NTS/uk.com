@@ -16,26 +16,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMement
 /**
  * The Class ComAutoCalSetCommand.
  */
-
-/**
- * Sets the rest time.
- *
- * @param restTime
- *            the new rest time
- */
 @Setter
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
 public class ComAutoCalSetCommand {
 
@@ -54,8 +35,7 @@ public class ComAutoCalSetCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the com auto cal setting
 	 */
 	public ComAutoCalSetting toDomain(String companyId) {
@@ -76,10 +56,8 @@ public class ComAutoCalSetCommand {
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId
-		 *            the company id
-		 * @param command
-		 *            the command
+		 * @param companyId the company id
+		 * @param command the command
 		 */
 		public DtoGetMemento(String companyId, ComAutoCalSetCommand command) {
 			this.companyId = companyId;
@@ -89,8 +67,9 @@ public class ComAutoCalSetCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.
-		 * ComAutoCalSettingGetMemento#getCompanyId()
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesGetMemento#
+		 * getCompanyId()
 		 */
 		@Override
 		public CompanyId getCompanyId() {
@@ -129,7 +108,5 @@ public class ComAutoCalSetCommand {
 		public AutoCalRestTimeSetting getRestTime() {
 			return this.command.getRestTime().toDomain(companyId);
 		}
-
 	}
-
 }
