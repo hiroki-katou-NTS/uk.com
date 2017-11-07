@@ -23,8 +23,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.copy.item.CopySetItemFinder;
 import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSetItemFinder;
-import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.init.item.SaveDataDto;
+import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
 import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
@@ -75,6 +75,7 @@ import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataR
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoPermissionType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
@@ -116,6 +117,8 @@ public class LayoutFinder {
 
 	@Inject
 	private PersonRepository personRepo;
+
+	// @Inject private PersonInfoRoleAuthRepository persInfoRoleAuthRepo;
 
 	@Inject
 	private CurrentAddressRepository currentAddressRepo;
@@ -195,7 +198,8 @@ public class LayoutFinder {
 
 		List<LayoutPersonInfoClassification> itemClassList = itemClsRepo.getAllByLayoutId(mainteLayoutId);
 		// PersonInfoRoleAuth perInfoRoleAuth =
-		// perInfoAuthRepo.getDetailPersonRoleAuth(roleId, companyId).get();
+		// persInfoRoleAuthRepo.getDetailPersonRoleAuth(roleId,
+		// companyId).get();
 		boolean selfBrowsing = browsingEmpId == employeeId;
 		List<EmpPersonInfoClassDto> authItemClasList = new ArrayList<>();
 
@@ -210,7 +214,7 @@ public class LayoutFinder {
 							contractCode);
 					List<EmpPersonInfoItemDto> dataInfoItems = validateAuthItem(mainteLayoutId,
 							classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing, listItemDef);
-					authClassItem.setDataInfoitems(dataInfoItems);
+					authClassItem.setInfoItems(dataInfoItems);
 					// get data
 					PersonInfoCategory perInfoCategory = perInfoCateRepo
 							.getPerInfoCategory(classItem.getPersonInfoCategoryID(), contractCode).get();
@@ -389,26 +393,98 @@ public class LayoutFinder {
 					// Person Emergency Contact
 					List<PersonEmergencyContact> perEmerConts = perEmerContRepo.getListbyPid(personId);
 					ItemDefinitionFactory.matchPersEmerConts(authClassItem, perEmerConts);
+					getPersDataForListClsItem(authClassItem, personId);
 					break;
 				case "CS00004":
 					// Family
 					List<Family> families = familyRepo.getListByPid(personId);
 					ItemDefinitionFactory.matchFamilies(authClassItem, families);
+					getPersDataForListClsItem(authClassItem, personId);
 					break;
 				}
 			} else {
 				// UNFIXED
-				List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
-						perInfoCategory.getPersonInfoCategoryId());
-
+				getPersDataForListClsItem(authClassItem, personId);
 			}
 		} else if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
-
+				switch (perInfoCategory.getCategoryCode().v()) {
+				case "CS00012":
+					// Sub Job Position
+					List<SubJobPosition> subJobPoses = subJobPosRepo.getByEmpId(employeeId);
+					ItemDefinitionFactory.matchsubJobPoses(authClassItem, subJobPoses);
+					getEmpDataForListClsItem(authClassItem, personId);
+					break;
+				}
 			} else {
-
+				// UNFIXED
+				getEmpDataForListClsItem(authClassItem, employeeId);
 			}
 		}
+	}
+
+	private void getPersDataForListClsItem(EmpPersonInfoClassDto authClassItem, String personId) {
+		List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(personId,
+				authClassItem.getPersonInfoCategoryID());
+		perInfoCtgDatas.forEach(perInfoCtgData -> {
+			List<PersonInfoItemData> dataItems = perInItemDataRepo
+					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+			List<SaveDataDto> ctgDataList = new ArrayList<>();
+			for (EmpPersonInfoItemDto item : authClassItem.getInfoItems()) {
+
+				Optional<PersonInfoItemData> dataItemOpt = dataItems.stream()
+						.filter(dataItem -> dataItem.getPerInfoItemDefId() == item.getId()).findFirst();
+				if (dataItemOpt.isPresent()) {
+					PersonInfoItemData data = dataItemOpt.get();
+					switch (data.getDataState().getDataStateType()) {
+					case String:
+						ctgDataList.add(SaveDataDto.createDataDto(data.getDataState().getStringValue()));
+						break;
+					case Numeric:
+						ctgDataList.add(SaveDataDto.createDataDto(data.getDataState().getNumberValue().intValue()));
+						break;
+					case Date:
+						ctgDataList.add(SaveDataDto.createDataDto(data.getDataState().getDateValue()));
+						break;
+					}
+				} else {
+					ctgDataList.add(SaveDataDto.createDataDto(""));
+				}
+			}
+			authClassItem.getDataItems().add(ctgDataList);
+		});
+
+	}
+
+	private void getEmpDataForListClsItem(EmpPersonInfoClassDto authClassItem, String employeeId) {
+		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(employeeId,
+				authClassItem.getPersonInfoCategoryID());
+		empInfoCtgDatas.forEach(perInfoCtgData -> {
+			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+			List<SaveDataDto> ctgDataList = new ArrayList<>();
+			authClassItem.getInfoItems().forEach(item -> {
+				Optional<EmpInfoItemData> dataItemOpt = dataItems.stream()
+						.filter(dataItem -> dataItem.getPerInfoDefId() == item.getId()).findFirst();
+				if (dataItemOpt.isPresent()) {
+					EmpInfoItemData data = dataItemOpt.get();
+					switch (data.getDataState().getDataStateType()) {
+					case String:
+						ctgDataList.add(SaveDataDto.createDataDto(data.getDataState().getStringValue()));
+						break;
+					case Numeric:
+						ctgDataList.add(SaveDataDto.createDataDto(data.getDataState().getNumberValue().intValue()));
+						break;
+					case Date:
+						ctgDataList.add(SaveDataDto.createDataDto(data.getDataState().getDateValue()));
+						break;
+					}
+				} else {
+					ctgDataList.add(SaveDataDto.createDataDto(""));
+				}
+			});
+			authClassItem.getDataItems().add(ctgDataList);
+		});
+
 	}
 
 	private void getPersDataHistoryType(String perInfoCategoryId, EmpPersonInfoClassDto authClassItem, String personId,
@@ -474,7 +550,7 @@ public class LayoutFinder {
 
 	private void matchPersDataForSingleClsItem(EmpPersonInfoClassDto authClassItem,
 			List<PersonInfoItemData> dataItems) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
+		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getInfoItems()) {
 			for (PersonInfoItemData dataItem : dataItems) {
 				if (dataInfoItem.getId() == dataItem.getPerInfoItemDefId()) {
 
@@ -498,18 +574,8 @@ public class LayoutFinder {
 
 	}
 
-	private void matchPersDataForListClsItem(EmpPersonInfoClassDto authClassItem,
-			List<PerInfoCtgData> perInfoCtgDatas) {
-		perInfoCtgDatas.forEach(perInfoCtgData -> {
-			List<PersonInfoItemData> dataItems = perInItemDataRepo
-					.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-			matchPersDataForSingleClsItem(authClassItem, dataItems);
-		});
-
-	}
-
 	private void matchEmpDataForDefItems(EmpPersonInfoClassDto authClassItem, List<EmpInfoItemData> dataItems) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
+		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getInfoItems()) {
 			for (EmpInfoItemData dataItem : dataItems) {
 				if (dataInfoItem.getId() == dataItem.getPerInfoDefId()) {
 					switch (dataItem.getDataState().getDataStateType()) {
@@ -571,14 +637,19 @@ public class LayoutFinder {
 				case 1: // list
 
 					break;
-				default:
+
 				case 2: // spa
+
 					break;
 				}
 				itemCls.setItems(null);
 			}
 
 		}
+
+		// remove all category no item;
+		listItemCls = listItemCls.stream().filter(x -> x.getListItemDf() != null ? x.getListItemDf().size() > 0 : false)
+				.collect(Collectors.toList());
 
 		return NewLayoutDto.fromDomain(_layout, listItemCls);
 
@@ -590,10 +661,19 @@ public class LayoutFinder {
 
 			SettingItemDto item = findItemByCode(allItemData, itemDf.getItemCode());
 
-			LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getItemCode(),
+			if (item != null) {
+				// because is single item
+				int rowIndex = 0;
+				LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getPerInfoCtgId(),
+						item.getCategoryCode(), itemDf.getId(), itemDf.getItemName(), itemDf.getItemCode(), rowIndex,
+						item.getValueAsString());
+				itemValueList.add(value);
+			} else {
+				// remove if can't find
+				listItemDf.remove(itemDf);
 
-					item != null ? item.getValueAsString() : "");
-			itemValueList.add(value);
+			}
+
 		}
 		return itemValueList;
 	}

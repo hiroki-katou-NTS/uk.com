@@ -30,8 +30,9 @@ public class CopySetItemFinder {
 
 		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId);
 
-		List<SettingItemDto> resultItemList = itemList.stream().map(
-				x -> SettingItemDto.createFromJavaType(x.getItemCode(), x.getItemName(), x.getIsRequired().value, ""))
+		List<SettingItemDto> resultItemList = itemList
+				.stream().map(x -> SettingItemDto.createFromJavaType(x.getPerInfoCtgId(), x.getCategoryCode(),
+						x.getItemDefId(), x.getItemCode(), x.getItemName(), x.getIsRequired().value, ""))
 				.collect(Collectors.toList());
 
 		if (itemList.isEmpty()) {

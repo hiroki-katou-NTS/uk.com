@@ -52,5 +52,13 @@ public class JpaFamilyCare extends JpaRepository implements FamilyCareRepository
 		this.commandProxy().update(existItem.get());
 	}
 
-	
+	/**
+	 * ドメインモデル「家族介護」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteFamilyCare(FamilyCare domain){
+		BsymtFamilyCarePK key = new BsymtFamilyCarePK(domain.getFamilyCareId());
+		this.commandProxy().remove(BsymtFamilyCare.class,key);
+	}
 }

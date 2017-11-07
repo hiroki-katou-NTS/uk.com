@@ -26,7 +26,7 @@ public class EmpPersonInfoClassDto {
 
 	private String className;
 
-	private List<EmpPersonInfoItemDto> dataInfoitems;
+	private List<EmpPersonInfoItemDto> infoItems;
 	
 	/*
 	 * 1.Single Classification Item

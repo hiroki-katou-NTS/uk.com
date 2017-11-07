@@ -53,4 +53,9 @@ public interface AffWorkplaceHistoryRepository {
 	 */
 	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
 			GeneralDate baseDate);
+	/**
+	 * ドメインモデル「所属職場」を削除する
+	 * @param domain
+	 */
+	void deleteAffWorkplaceHistory(AffWorkplaceHistory domain);
 }
