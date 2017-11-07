@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.app.find.log.dto;
 
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.log.SetInforReflAprResult;
+import nts.uk.ctx.at.record.dom.workrecord.log.SettingInforForDailyCreation;
 
 
 @Getter
@@ -63,6 +68,26 @@ public class ExecutionLogDto {
 	private String calExecutionSetInfoID;
 	
 	
+	private SetInforReflAprResultDto reflectApprovalSetInfo;
+	
+	/**
+	 * 日別作成の設定情報
+	 */
+
+	private SettingInforForDailyCreationDto dailyCreationSetInfo;
+	/**
+	 * 日別計算の設定情報
+	 */
+
+	private CalExeSettingInforDto dailyCalSetInfo;
+	/**
+	 * 月別集計の設定情報
+	 */
+
+	private CalExeSettingInforDto  monlyAggregationSetInfo;
+	
+	
+	
 	public static ExecutionLogDto fromDomain(ExecutionLog domain) {
 		return new ExecutionLogDto(
 				domain.getEmpCalAndSumExecLogID(), 
@@ -76,7 +101,11 @@ public class ExecutionLogDto {
 				new ObjectPeriod(
 						domain.getObjectPeriod().getStartDate(), 
 						domain.getObjectPeriod().getEndDate()),
-				domain.getCalExecutionSetInfoID()
+				domain.getCalExecutionSetInfoID(),
+				domain.getReflectApprovalSetInfo().isPresent()?SetInforReflAprResultDto.fromDomain(domain.getReflectApprovalSetInfo().get()):null,
+				domain.getDailyCreationSetInfo().isPresent()?SettingInforForDailyCreationDto.fromDomain(domain.getDailyCreationSetInfo().get()):null,
+				domain.getDailyCalSetInfo().isPresent() ?CalExeSettingInforDto.fromDomain(domain.getDailyCalSetInfo().get()):null,
+				domain.getMonlyAggregationSetInfo().isPresent()?CalExeSettingInforDto.fromDomain(domain.getMonlyAggregationSetInfo().get()):null
 				); 
 	}
 	
