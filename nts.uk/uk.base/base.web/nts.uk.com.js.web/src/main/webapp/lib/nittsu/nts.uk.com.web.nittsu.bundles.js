@@ -6509,11 +6509,11 @@ var nts;
                         $grid.ntsGridList('setupSelecting');
                         if (data.multiple) {
                             $grid.bind('iggridrowselectorscheckboxstatechanging', function (eventObject) {
-                                return (String($grid.data("enable")) === "true") ? true : false;
+                                return (String($grid.data("enable")) === "false") ? false : true;
                             });
                         }
                         $grid.bind('iggridselectionrowselectionchanging', function (eventObject) {
-                            return (String($grid.data("enable")) === "true") ? true : false;
+                            return (String($grid.data("enable")) === "false") ? false : true;
                         });
                         $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
@@ -22199,4 +22199,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
