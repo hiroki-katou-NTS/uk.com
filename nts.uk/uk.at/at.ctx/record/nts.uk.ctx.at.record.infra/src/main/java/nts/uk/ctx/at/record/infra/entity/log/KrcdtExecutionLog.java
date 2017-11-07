@@ -95,13 +95,13 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				this.periodCoverdEndDate);
 		
 		if (this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
-			domain.setDailyCreationSetInfo(Optional.of(calExeSetInfor.toDomain()));
+			domain.setDailyCreationSetInfo(calExeSetInfor.toDomain());
 		} else if(this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CALCULATION.value ) {
-			domain.setDailyCalSetInfo(Optional.of(calExeSetInfor.toDomain()));
+			domain.setDailyCalSetInfo(calExeSetInfor.toDomain());
 		} else if(this.krcdtExecutionLogPK.executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT.value) {
-			domain.setReflectApprovalSetInfo(Optional.of(calExeSetInfor.toDomain()));
+			domain.setReflectApprovalSetInfo(calExeSetInfor.toDomain());
 		} else {
-			domain.setMonlyAggregationSetInfo(Optional.of(calExeSetInfor.toDomain()));
+			domain.setMonlyAggregationSetInfo(calExeSetInfor.toDomain());
 		}
 		return domain;
 	}

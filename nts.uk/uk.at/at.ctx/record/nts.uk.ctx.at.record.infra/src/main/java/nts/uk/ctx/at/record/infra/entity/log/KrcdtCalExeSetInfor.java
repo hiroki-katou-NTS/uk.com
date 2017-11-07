@@ -145,7 +145,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 						this.krcdtCalExeSetInforPK.calExecutionSetInfoID, 
 						this.caseSpecExeContentID,
 						EnumAdaptor.valueOf(this.creationType,DailyRecreateClassification.class),
-						Optional.of(partResetClassification));
+						partResetClassification);
 			return (T) settingInforForDailyCreation;
 		} else if(this.krcdtCalExeSetInforPK.executionContent == ExecutionContent.DAILY_CALCULATION.value ) {
 			//calculation
