@@ -156,6 +156,7 @@ table th, table td {
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
 	background-color: #F8EFD4 !important;
+	visibility: hidden;
 }
 
 #multi-list {
@@ -172,11 +173,6 @@ table th, table td {
 }
 
 #popup-area6 {
-	display: none;
-	z-index: 100;
-	visibility: visible;
-	top: 155px;
-	left: 825px;
 	width: 390px
 }
 
@@ -197,11 +193,6 @@ table th, table td {
 }
 
 #popup-area9 {
-	display: none;
-	z-index: 100;
-	visibility: visible;
-	top: 155px;
-	left: 712px;
 	width: 470px
 }
 
@@ -234,21 +225,21 @@ table th, table td {
 	background-color: #008000
 }
 
-#image102 {
+#paste {
 	background: url(../image/image102.png) no-repeat center;
 	background-size: 32px 32px;
 	height: 35px;
 	width: 35px;
 }
 
-#image104 {
+#copy {
 	background: url(../image/image104.png) no-repeat center;
 	background-size: 32px 32px;
 	height: 35px;
 	width: 35px;
 }
 
-#image030 {
+#undo {
 	margin: 5px 0 0 41px;
 	background: url(../image/image030.png) no-repeat center;
 	background-size: 32px 32px;

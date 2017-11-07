@@ -160,7 +160,7 @@ module nts.uk.at.view.kml002.b.viewmodel {
             if(data.length == 0) {
                 var item : IVerticalCalItem = {
                     itemCode: "00",
-                    itemName: "Default"
+                    itemName: "Not set"
                 };
                 
                 verticalCalItems.push(item);

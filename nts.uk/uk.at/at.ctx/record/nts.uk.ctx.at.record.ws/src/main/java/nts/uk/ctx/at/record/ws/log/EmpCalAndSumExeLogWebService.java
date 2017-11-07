@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.log.EmpCalAndSumExeLogFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSum;
@@ -22,6 +21,17 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	
 	@Inject
 	private EmpCalAndSumExeLogFinder empCalAndSumExeLogFinder;
+	
+	/**
+	 * get EmpCalAndSumExeLog by Emp
+	 * @return
+	 */
+	@POST
+	@Path("getallbyEmp")
+	public EmpCalAndSumExeLogDto getEmpCalAndSumExeLogMaxByEmp(){
+		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogMaxByEmp();
+	}
+	
 	/**
 	 * get all EmpCalAndSumExeLog
 	 * @return
@@ -40,20 +50,20 @@ public class EmpCalAndSumExeLogWebService extends WebService {
 	@POST
 	@Path("getallbydate")
 	public List<EmpCalAndSumExeLogDto> getAllEmpCalAndSumExeLog(InputEmpCalAndSumByDate inputEmpCalAndSumByDate){
-		return this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogByDate(inputEmpCalAndSumByDate);	
+		List<EmpCalAndSumExeLogDto> data =  this.empCalAndSumExeLogFinder.getEmpCalAndSumExeLogByDate(inputEmpCalAndSumByDate);
+		return data;
 		
 	}
 	
 	/**
-	 * get list EmpCalAndSumExeLog by  getByEmpCalAndSumExecLogID
+	 * get  EmpCalAndSumExeLog by  getByEmpCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
 	@POST
 	@Path("getallbyempid/{empCalAndSumExecLogID}")
-	public Optional<EmpCalAndSumExeLogDto> getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID")String empCalAndSumExecLogID){
+	public EmpCalAndSumExeLogDto getByEmpCalAndSumExecLogID(@PathParam("empCalAndSumExecLogID") String empCalAndSumExecLogID){
 		return this.empCalAndSumExeLogFinder.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);	
 		
 	}
-		
 }

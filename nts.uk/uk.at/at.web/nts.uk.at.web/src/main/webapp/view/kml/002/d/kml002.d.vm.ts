@@ -41,6 +41,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
             self.currentRightCodeList = ko.observableArray([]);
             self.listBudget = ko.observableArray([]);
             self.checked.subscribe((value) => {
+                var t0 = performance.now();
                 if(self.rightItems().length > 0){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => {
                         self.rightItems([]);
@@ -69,6 +70,8 @@ module nts.uk.at.view.kml002.d.viewmodel {
                         self.items(self.listBudget());
                     }
                 }
+                var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
             })
         }
 
@@ -86,6 +89,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 unitAtr: 0
             }
             service.getByAtr(param).done((lst) => {  
+                console.log(lst);
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
                 _.map(sortedData, function(item){
                     array.push({
@@ -119,14 +123,31 @@ module nts.uk.at.view.kml002.d.viewmodel {
          * event when click register button
          */
         submit() {
+            var t0 = performance.now();
             var self = this;
+            let array = [];
+            _.forEach(self.rightItems(), function(item){
+                let data = {
+                    id: item.id,
+                    code: item.code,
+                    operatorAtr: 0,
+                    name: item.name,
+                }
+                if(item.operatorAtr == nts.uk.resource.getText("KML002_37")){
+                    data.operatorAtr = 1;     
+                }
+                array.push(data);
+            });
+            self.rightItems(array);
+            console.log(self.rightItems());
             let transfer = {
                 checked: self.checked(),
                 rightItems: self.rightItems(),
             }
             setSharedD('KML002_D_Budget', transfer);
-            console.log(transfer);
             nts.uk.ui.windows.close();
+            var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
         /**
@@ -142,15 +163,18 @@ module nts.uk.at.view.kml002.d.viewmodel {
          */
         add(){
             let self = this;
+            console.log(self.rightItems());
             if((self.rightItems().length + self.currentCodeList().length) > 100){
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             }else{
+                var righItems = self.rightItems();
+                let i = self.rightItems().length;
                 _.forEach(self.currentCodeList(), function(item){
                     var temp = _.find(self.listBudget(), function(obj) {
                         return item == obj.id;
                     });
-                    let i = self.rightItems().length;
-                    self.rightItems.push({
+                    
+                    righItems.push({
                         id: i,
                         code: temp.code,
                         operatorAtr: nts.uk.resource.getText("KML002_37"),
@@ -158,30 +182,35 @@ module nts.uk.at.view.kml002.d.viewmodel {
                     })
                     i = i+1;
                 });
+                self.rightItems(righItems);
+                console.log(self.rightItems());
             }
         }
         
         /**
          * event when click subtraction button
-         */
+         */  
         sub(){
             let self = this; 
             if((self.rightItems().length + self.currentCodeList().length) > 100){
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             }else{   
+                var righItems = self.rightItems();
+                let i = self.rightItems().length;
                 _.forEach(self.currentCodeList(), function(item){
                     var temp = _.find(self.listBudget(), function(obj) {
                         return item == obj.id;
                     });
-                    let i = self.rightItems().length;
-                    self.rightItems.push({
+                    righItems.push({
                         id: i,
                         code: temp.code,
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
                         name: temp.name,    
-                    })
+                    }) 
                     i = i+1;
                 });
+                self.rightItems(righItems);
+                console.log(self.rightItems());
             }
         }
         

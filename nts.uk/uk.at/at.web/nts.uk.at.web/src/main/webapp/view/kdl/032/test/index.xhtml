@@ -21,14 +21,17 @@
 				<button style= "margin-left: 100px;" data-bind ="click : openDialog">Open KDL 032</button>
 			</div>
 			<div id="contents-area" >
-				<div class="row1" >
-					<p style = "display: inline ;padding-left: 200px;"> reasonCD  :</p>
-					<input style = "display: inline; margin-left: 45px;margin-top: 30px;" data-bind="ntsTextEditor: {value: reasonCD}" />
-				</div>
+				<div>Please enter from 1-5. Other will not have data</div>
 				<div class="row2" >
 					<p style = "display: inline ;padding-left: 200px;"> DeviationTime ID :</p>
 					<input style = "display: inline; margin-left: 45px;margin-top: 30px;" data-bind="ntsTextEditor: {value: divergenceTimeID }" />
 				</div>
+				<div class="row1" >
+					<p style = "display: inline ;padding-left: 200px;"> reasonCD  :</p>
+					<input style = "display: inline; margin-left: 45px;margin-top: 30px;" data-bind="ntsTextEditor: {value: reasonCD}" />
+				</div>
+				<hr/>
+				<div>Result: <span data-bind="text: reasonCD"></span></div>
 			</div>
 		</ui:define>
 	</ui:composition>
