@@ -47,8 +47,10 @@
 					<!-- BEGIN A2_1 ~ A2_3 -->
 					<tr>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CDL023_3')}</div></td>
-						<td><button id="btn-config" style="width: 70px;">#{i18n.getText('CDL023_4')}</button></td>
-						<td><span data-bind="text: totalSelDisp"></span></td>
+						<td><button id="btn-config" style="width: 70px;" data-bind="click: openDialog">
+							#{i18n.getText('CDL023_4')}</button>
+						</td>
+						<td><span data-bind="text: totalSelectionDisp"></span></td>
 					</tr><!-- END A2_1 ~ A2_3 -->
 					
 					<!-- BEGIN A2_4 -->

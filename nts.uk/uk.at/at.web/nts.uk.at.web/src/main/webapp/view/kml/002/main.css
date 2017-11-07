@@ -120,7 +120,7 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .attributes {
 	min-width: 0 !important;
-	width: 80px !important;
+	width: 95px !important;
 }
 
 .item-name {
@@ -129,22 +129,22 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .display-atr {
 	min-width: 0 !important;
-	width: 110px !important;
+	width: 106px !important;
 }
 
 .total {
 	min-width: 0 !important;
-	width: 110px !important;
+	width: 106px !important;
 }
 
 .rounding {
 	min-width: 0 !important;
-	width: 130px !important;
+	width: 106px !important;
 }
 
 .fraction {
 	min-width: 0 !important;
-	width: 130px !important;
+	width: 106px !important;
 }
 
 .cbx-list-header {
@@ -156,7 +156,7 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .attribute-header {
-	width: 80px;
+	width: 95px;
 }
 
 .name-header {
@@ -164,23 +164,23 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .setting-header {
-	width: 464px;
+	width: 504px;
 }
 
 .display-atr-header {
-	width: 110px;
+	width: 106px;
 }
 
 .total-header {
-	width: 110px;
+	width: 106px;
 }
 
 .rounding-header {
-	width: 130px;
+	width: 106px;
 }
 
 .fraction-header {
-	width: 130px;
+	width: 106px;
 }
 
 .cbx-list-item {
@@ -209,23 +209,23 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .formula-item {
-	width: 200px;
+	width: 240px;
 }
 
 .display-atr-item {
-	width: 110px;
+	width: 106px;
 }
 
 .total-item {
-	width: 110px;
+	width: 106px;
 }
 
 .rounding-item {
-	width: 130px;
+	width: 106px;
 }
 
 .fraction-item {
-	width: 130px;
+	width: 106px;
 }
 
 table.link-notes {

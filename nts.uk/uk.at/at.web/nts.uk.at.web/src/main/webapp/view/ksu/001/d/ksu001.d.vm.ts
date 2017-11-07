@@ -58,7 +58,7 @@ module ksu001.d.viewmodel {
          */
         decision(): void {
             let self = this;
-            if (self.selectedCode().length === 0) {
+            if (!self.selectedCode() || self.selectedCode().length === 0) {
                 nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_499'));
                 return;
             }

@@ -4,12 +4,17 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
 
 
 /**
@@ -21,15 +26,10 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
 @AllArgsConstructor
 public class EmpCalAndSumExeLog extends AggregateRoot {
 
-	/**
-	 * 就業計算と集計実行ログID
-	 */
+	/**就業計算と集計実行ログID */
 	private String empCalAndSumExecLogID;
 	
-	/**
-	 * 会社ID
-	 */
-
+	/** 会社ID */
 	private String companyID;
 	
 	/**
@@ -75,13 +75,14 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	 * 実行ログ
 	 * 1->4 elements
 	 */
+	@Setter
 	private List<ExecutionLog> executionLogs;
 	
 	
 	public static EmpCalAndSumExeLog createFromJavaType(
 			String empCalAndSumExecLogID,
 			String companyID,
-			Integer processingMonth,
+			YearMonth processingMonth,
 			int executedMenu,
 			GeneralDate executionDate,
 			int executionStatus,
@@ -92,7 +93,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 		return new EmpCalAndSumExeLog(
 				empCalAndSumExecLogID,
 				companyID,
-				new YearMonth(processingMonth),
+				processingMonth,
 				EnumAdaptor.valueOf(executedMenu,ExecutedMenu.class),
 				executionDate,
 				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),

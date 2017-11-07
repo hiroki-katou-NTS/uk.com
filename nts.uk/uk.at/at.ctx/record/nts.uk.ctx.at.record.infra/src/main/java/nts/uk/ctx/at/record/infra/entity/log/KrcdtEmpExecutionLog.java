@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -59,7 +60,7 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "OPERATION_CASE_ID")
 	public String caseSpecExeContentID;
 
-	@OneToMany(mappedBy="executionlog", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="empexecutionlog", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRCDT_EXECUTION_LOG")
 	public List<KrcdtExecutionLog> executionLogs;
 	
@@ -85,10 +86,9 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	
 	public EmpCalAndSumExeLog toDomain() {
 		return EmpCalAndSumExeLog.createFromJavaType(
-				
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
-				this.processingMonth,
+				new YearMonth( this.processingMonth),
 				this.executedMenu,
 				this.executedDate, 
 				this.executedStatus,

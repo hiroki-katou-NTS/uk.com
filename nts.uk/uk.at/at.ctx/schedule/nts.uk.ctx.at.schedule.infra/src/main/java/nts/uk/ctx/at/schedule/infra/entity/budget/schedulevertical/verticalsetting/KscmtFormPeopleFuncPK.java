@@ -25,4 +25,8 @@ public class KscmtFormPeopleFuncPK implements Serializable {
 	/* 汎用縦計項目ID */
 	@Column(name = "VERTICAL_CAL_ITEM_ID")
 	public String verticalCalItemId;
+	
+	/* 外部予算実績項目コード */
+	@Column(name = "EXTERNAL_BUDGET_CD")
+	public String externalBudgetCd;
 }

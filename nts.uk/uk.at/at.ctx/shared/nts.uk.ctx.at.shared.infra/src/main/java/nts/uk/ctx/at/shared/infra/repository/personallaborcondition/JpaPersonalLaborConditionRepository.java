@@ -31,7 +31,9 @@ import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySc
  * The Class JpaPersonalLaborConditionRepository.
  */
 @Stateless
-public class JpaPersonalLaborConditionRepository extends JpaRepository implements PersonalLaborConditionRepository {
+public class JpaPersonalLaborConditionRepository extends JpaRepository
+		implements
+			PersonalLaborConditionRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -43,10 +45,11 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository implement
 	@Override
 	public Optional<PersonalLaborCondition> findById(String employeeId, GeneralDate baseDate) {
 
-		Optional<KshmtPerLaborCond> optionalEntityCondition = this.findByIdCondition(employeeId, baseDate);
+		Optional<KshmtPerLaborCond> optionalEntityCondition = this.findByIdCondition(employeeId,
+				baseDate);
 		if (optionalEntityCondition.isPresent()) {
-			return Optional.of(
-					this.toDomain(optionalEntityCondition.get(), this.findAllSingleDaySchedule(employeeId, baseDate)));
+			return Optional.of(this.toDomain(optionalEntityCondition.get(),
+					this.findAllSingleDaySchedule(employeeId, baseDate)));
 		}
 		return Optional.empty();
 	}
@@ -58,13 +61,15 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository implement
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	private List<KshmtSingleDaySche> findAllSingleDaySchedule(String employeeId, GeneralDate baseDate) {
+	private List<KshmtSingleDaySche> findAllSingleDaySchedule(String employeeId,
+			GeneralDate baseDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KSHMT_SINGLE_DAY_SCHE (KshmtSingleDaySche SQL)
-		CriteriaQuery<KshmtSingleDaySche> cq = criteriaBuilder.createQuery(KshmtSingleDaySche.class);
+		CriteriaQuery<KshmtSingleDaySche> cq = criteriaBuilder
+				.createQuery(KshmtSingleDaySche.class);
 
 		// root data
 		Root<KshmtSingleDaySche> root = cq.from(KshmtSingleDaySche.class);
@@ -76,19 +81,22 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository implement
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.sid),
+				employeeId));
 
 		// less than or equal start year month date
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.startYmd), baseDate));
+		lstpredicateWhere.add(
+				criteriaBuilder.lessThanOrEqualTo(root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK)
+						.get(KshmtSingleDaySchePK_.startYmd), baseDate));
 
 		// greater than or equal end year month date
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.endYmd), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root
+				.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.endYmd),
+				baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
 		// create query
 		TypedQuery<KshmtSingleDaySche> query = em.createQuery(cq);
@@ -109,41 +117,44 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository implement
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		
+
 		// call KSHMT_PER_LABOR_COND (KshmtPerLaborCond SQL)
 		CriteriaQuery<KshmtPerLaborCond> cq = criteriaBuilder.createQuery(KshmtPerLaborCond.class);
-		
+
 		// root data
 		Root<KshmtPerLaborCond> root = cq.from(KshmtPerLaborCond.class);
-		
+
 		// select root
 		cq.select(root);
-		
+
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		
+
 		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtPerLaborCond_.kshmtPerLaborCondPK).get(KshmtPerLaborCondPK_.sid), employeeId));
-		
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtPerLaborCond_.kshmtPerLaborCondPK).get(KshmtPerLaborCondPK_.sid),
+				employeeId));
+
 		// less than or equal start year month date
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(KshmtPerLaborCond_.kshmtPerLaborCondPK).get(KshmtPerLaborCondPK_.startYmd), baseDate));
-		
+				root.get(KshmtPerLaborCond_.kshmtPerLaborCondPK).get(KshmtPerLaborCondPK_.startYmd),
+				baseDate));
+
 		// greater than or equal end year month date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KshmtPerLaborCond_.kshmtPerLaborCondPK).get(KshmtPerLaborCondPK_.endYmd), baseDate));
+				root.get(KshmtPerLaborCond_.kshmtPerLaborCondPK).get(KshmtPerLaborCondPK_.endYmd),
+				baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
 		// create query
 		TypedQuery<KshmtPerLaborCond> query = em.createQuery(cq);
-		
+
 		// exclude select
 		return Optional.of(query.getSingleResult());
 	}
-	
+
 	/**
 	 * To domain.
 	 *
@@ -153,6 +164,7 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository implement
 	 */
 	private PersonalLaborCondition toDomain(KshmtPerLaborCond entityCondition,
 			List<KshmtSingleDaySche> entitySingleDays) {
-		return new PersonalLaborCondition(new JpaPersonalLaborConditionGetMemento(entityCondition, entitySingleDays));
+		return new PersonalLaborCondition(
+				new JpaPersonalLaborConditionGetMemento(entityCondition, entitySingleDays));
 	}
 }

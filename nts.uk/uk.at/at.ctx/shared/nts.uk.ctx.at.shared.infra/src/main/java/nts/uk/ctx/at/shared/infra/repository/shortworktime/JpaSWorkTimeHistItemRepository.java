@@ -4,13 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK_;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
 
 /**
  * The Class JpaSWorkTimeHistItemRepository.
@@ -42,6 +53,33 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		this.commandProxy().update(this.toEntity(domain));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository#
+	 * findByKey(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<ShortWorkTimeHistoryItem> findByKey(String empId, String histId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<BshmtWorktimeHistItem> query = builder.createQuery(BshmtWorktimeHistItem.class);
+        Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
+        		.get(BshmtWorktimeHistItemPK_.sid), empId));
+        predicateList.add(builder.equal(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
+        		.get(BshmtWorktimeHistItemPK_.histId), histId));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        
+		return em.createQuery(query).getResultList().stream()
+				.map(entity -> new ShortWorkTimeHistoryItem(new JpaSWorkTimeHistItemGetMemento(entity)))
+				.findFirst();
+	}
+	
 	/**
 	 * To entity.
 	 *
@@ -58,4 +96,5 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		domain.saveToMemento(memento);
 		return entity;
 	}
+
 }

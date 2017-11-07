@@ -11,8 +11,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class SChildCareFrame.
- * 社員の育児介護時間帯
  */
+// 社員の育児介護時間帯
 @Getter
 @Builder
 public class SChildCareFrame extends DomainObject {
