@@ -19,6 +19,7 @@ public class LayoutPersonInfoClsDto {
 	private String className;
 	private String personInfoCategoryID;
 	private int layoutItemType;
+	// None require
 	private List<PerInfoItemDefDto> listItemDf;
 
 	/* List item value
@@ -36,9 +37,7 @@ public class LayoutPersonInfoClsDto {
 	 * ]
 	 *-------------------------------------------------------------------------
 	 */
-	private List<Object> items;	
-	
-	
+	private List<Object> items;
 	
 	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType) {
 		super();

@@ -9,6 +9,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LayoutPersonInfoValueDto {
 
+	// categoryID
+	@NonNull
+	private String categoryId;
+
+	// categoryCode
+	@NonNull
+	private String categoryCode;
+
+	// itemDefID
+	@NonNull
+	private String itemDefId;
+
 	// for label text
 	@NonNull
 	private String itemName;
@@ -16,6 +28,10 @@ public class LayoutPersonInfoValueDto {
 	// for label constraint
 	@NonNull
 	private String itemCode;
+
+	@NonNull
+	// index of item in list (multiple, history)
+	private Integer row;
 
 	// is required?
 	// for render control label
