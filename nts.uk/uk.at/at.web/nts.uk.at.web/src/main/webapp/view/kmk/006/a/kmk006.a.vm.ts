@@ -295,7 +295,7 @@ module nts.uk.at.view.kmk006.a {
                     return !nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
                 });
                 self.createModeScreenD = ko.computed(() => {
-                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp()) || nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
+                    return (!nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp())) && (!nts.uk.text.isNullOrEmpty(self.selectedCurrentJob()));
                 });  
             }
 
@@ -787,6 +787,21 @@ module nts.uk.at.view.kmk006.a {
                     return;
                 } 
                 self.baseDate(self.inputDate());
+                
+                // Reload table
+                $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
+
+                });
+
+                $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
+                    let code = $('#jobtitles').getDataList()[0].id;
+                    self.totalSelectedCode(code);
+                    self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
+                    // load ready setting
+                    self.loadWkpJobAlreadySettingList().done(function() {
+
+                    });
+                });   
             }
             
             // delete Pattern
@@ -934,6 +949,12 @@ module nts.uk.at.view.kmk006.a {
                 // Update flags.
                 self.isLoading(true);
 
+                // Check Msg_374
+                if (nts.uk.text.isNullOrEmpty(self.baseDate().toString())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_374" });   
+                    return;                 
+                }
+                
                 //load grid          
                 $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
 
@@ -947,8 +968,7 @@ module nts.uk.at.view.kmk006.a {
                     self.loadWkpJobAlreadySettingList().done(function() {
 
                     });
-                });
-
+                });              
             }
 
             /**
