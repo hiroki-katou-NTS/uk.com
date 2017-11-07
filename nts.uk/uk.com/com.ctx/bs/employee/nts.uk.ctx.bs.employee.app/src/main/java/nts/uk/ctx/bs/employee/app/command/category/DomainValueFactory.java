@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.PersonAddressKana1;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.PersonAddressKana2;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.PostalCode;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.Prefectures;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FullNameKana;
 import nts.uk.ctx.bs.person.dom.person.family.NameMultiLangFull;
@@ -337,6 +338,10 @@ public class DomainValueFactory {
 //			employee.setListEntryJobHist(listEntryJobHist);
 		}
 
+	}
+	
+	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, PersonEmergencyContact emergencyContact){
+		
 	}
 
 //	public static void matchInformation(List<EmpAddItemCommand> listItem, TemporaryAbsence leaveHoliday) {

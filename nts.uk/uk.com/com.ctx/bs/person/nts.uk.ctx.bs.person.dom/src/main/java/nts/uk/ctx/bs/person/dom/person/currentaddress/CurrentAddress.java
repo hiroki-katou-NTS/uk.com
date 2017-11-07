@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.person.dom.person.currentaddress;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -12,6 +13,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CurrentAddress extends AggregateRoot {
 
 	/**

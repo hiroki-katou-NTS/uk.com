@@ -12,6 +12,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.app.command.employee.LayoutPersonInfoCommand;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
+import nts.uk.ctx.bs.person.dom.person.family.Family;
+import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
@@ -24,6 +28,13 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 	
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
+	
+	@Inject
+	private CurrentAddressRepository currentAddressRepository;
+	
+	@Inject 
+	private FamilyRepository familyRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<AddCategoryCommand> context) {
 		// Get Company Id
@@ -60,8 +71,18 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 				if (perInfoCategory.get().getIsFixed() == IsFixed.FIXED) {
 					switch (perInfoCategory.get().getCategoryCode().v()) {
 						case "CS00003":
+							CurrentAddress currentAddress = new CurrentAddress();
+							// Add data
+							DomainValueFactory.matchInformation(v, currentAddress);
+							// Add current address
+							currentAddressRepository.addCurrentAddress(currentAddress);
 							break;
 						case "CS00004":
+							Family family = new Family();
+							// Map data
+							DomainValueFactory.matchInformation(v, family);
+							// Add family
+							familyRepository.addFamily(family);
 							break;
 						case "CS00014":
 							break;
