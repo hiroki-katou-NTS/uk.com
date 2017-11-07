@@ -85,4 +85,10 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 		this.commandProxy().update(existItem.get());
 	}
 
+	@Override
+	public List<SubJobPosition> getByEmpId(String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
