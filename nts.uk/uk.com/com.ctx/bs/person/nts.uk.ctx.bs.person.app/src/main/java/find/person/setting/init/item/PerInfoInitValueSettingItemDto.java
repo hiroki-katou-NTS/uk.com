@@ -74,18 +74,32 @@ public class PerInfoInitValueSettingItemDto {
 	private Integer timepointItemMin;
 	
 	private Integer timepointItemMax;
+	
+	private BigDecimal numericItemMin;
+	
+	private BigDecimal numericItemMax;
+	
 
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
-		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), domain.getSettingId(),
-				domain.getPerInfoCtgId(), domain.getItemName(), domain.getItemType(), domain.getDataType(),
-				domain.getIsRequired().value, domain.getRefMethodType().value, domain.getSaveDataType() == null ? null : domain.getSaveDataType().value,
-				domain.getStringValue().v(), domain.getIntValue() == null ? null : domain.getIntValue().v(), domain.getDateValue(),
-				domain.getItemCode(), domain.getCtgCode(), domain.getConstraint(), domain.getNumberDecimalPart(),
+		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), 
+				domain.getSettingId(),
+				domain.getPerInfoCtgId(), domain.getItemName(), 
+				domain.getItemType(), domain.getDataType(),
+				domain.getIsRequired().value, 
+				domain.getRefMethodType().value,
+				domain.getSaveDataType() == null ? null : domain.getSaveDataType().value,
+				domain.getStringValue().v(), 
+				domain.getIntValue() == null ? null : domain.getIntValue().v(), domain.getDateValue(),
+				domain.getItemCode(), 
+				domain.getCtgCode(), 
+				domain.getConstraint(), 
+				domain.getNumberDecimalPart(),
 				domain.getNumberIntegerPart(), domain.getTimeItemMin(), domain.getTimeItemMax(),
 				domain.getSelectionItemId(), 
 				domain.getSelectionItemRefType() == null? null: domain.getSelectionItemRefType() ,
 				domain.getDateType(), 
-				domain.getTimepointItemMin(), domain.getTimepointItemMax());
+				domain.getTimepointItemMin(), domain.getTimepointItemMax(),
+				domain.getNumericItemMin(), domain.getNumericItemMax());
 
 	}
 

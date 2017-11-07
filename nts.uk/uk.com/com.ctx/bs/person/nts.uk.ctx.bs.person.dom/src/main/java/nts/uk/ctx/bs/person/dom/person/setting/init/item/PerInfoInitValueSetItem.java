@@ -88,8 +88,15 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	// kiểu ngày tháng năm, năm tháng or năm
 	private Integer dateType;
 	
+	// hai trường này dùng để xác định giá trị của item nắm
+	// trong khoảng nào khi mà item là kiểu timepoint
 	private Integer timepointItemMin;
 	private Integer timepointItemMax;
+	
+	// hai trường này dùng để xác định giá trị của item nắm
+	// trong khoảng nào khi mà item là kiểu numberic
+	private BigDecimal numericItemMin;
+	private BigDecimal numericItemMax;
 
 
 	/**
