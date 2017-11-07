@@ -5,34 +5,18 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset.commonset;
 
 /**
- * The Enum RoundingTimeUnit.
+ * The Enum ExtraordTimeCalculateMethod.
  */
-//時刻丸め単位
-public enum RoundingTimeUnit {
+//臨時時間の計算方法
+public enum ExtraordTimeCalculateMethod {
 	
-	/** The one. */
-	ONE(1, "Enum_RoundingTimeUnit_one", "1"),
-	
-	/** The five. */
-	FIVE(5, "Enum_RoundingTimeUnit_five", "5"),
-	
-	/** The six. */
-	SIX(6, "Enum_RoundingTimeUnit_six", "6"),
-	
-	/** The ten. */
-	TEN(10, "Enum_RoundingTimeUnit_ten", "10"),
-	
-	/** The fifteen. */
-	FIFTEEN(15, "Enum_RoundingTimeUnit_fifteen", "15"),
-	
-	/** The twenty. */
-	TWENTY(20, "Enum_RoundingTimeUnit_twenty", "20"),
-	
-	/** The thirty. */
-	THIRTY(30, "Enum_RoundingTimeUnit_thirty", "30"),
-	
-	/** The sixty. */
-	SIXTY(60, "Enum_FontRearSection_sixty", "60");
+	/** The record temp time. */
+	// 臨時時間に計上
+	RECORD_TEMP_TIME(0, "Enum_ExtraordTimeCalculateMethod_recordTempoTime", "臨時時間に計上"),
+
+	/** The overtime resttime record. */
+	// 残業・休出時間に計上
+	OVERTIME_RESTTIME_RECORD(1, "Enum_ExtraordTimeCalculateMethod_overTimeRestTimeRecord", "残業・休出時間に計上");
 
 	/** The value. */
 	public final int value;
@@ -44,16 +28,16 @@ public enum RoundingTimeUnit {
 	public final String description;
 
 	/** The Constant values. */
-	private final static RoundingTimeUnit[] values = RoundingTimeUnit.values();
+	private final static ExtraordTimeCalculateMethod[] values = ExtraordTimeCalculateMethod.values();
 
 	/**
-	 * Font rear section.
+	 * Instantiates a new extraord time calculate method.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private RoundingTimeUnit(int value, String nameId, String description) {
+	private ExtraordTimeCalculateMethod(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -63,16 +47,16 @@ public enum RoundingTimeUnit {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the font rear section
+	 * @return the extraord time calculate method
 	 */
-	public static RoundingTimeUnit valueOf(Integer value) {
+	public static ExtraordTimeCalculateMethod valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (RoundingTimeUnit val : RoundingTimeUnit.values) {
+		for (ExtraordTimeCalculateMethod val : ExtraordTimeCalculateMethod.values) {
 			if (val.value == value) {
 				return val;
 			}

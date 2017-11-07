@@ -4,18 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset.commonset;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
-//就業時間帯の遅刻・早退設定
+/**
+ * The Class ExtraordWorkOTFrameSet.
+ */
+//臨時勤務時の残業枠設定
 @Getter
-public class WorkTimezoneLateEarlySet extends DomainObject{
+public class ExtraordWorkOTFrameSet extends DomainObject{
 
-	//共通設定
-	private EmTimezoneLateEarlyCommonSet commonSet;
+	//TODO 残業枠NO
+//	private WorkFrameNo WorkFrameNo;
 	
-	//区分別設定
-	private List<OtherEmTimezoneLateEarlySet> otherClassSet;
+	/** The in legal work frame no. */
+	//TODO change Integer to other data type 法内残業枠NO
+	private Integer inLegalWorkFrameNo ;
+	
+	/** The settlement order. */
+	//精算順序
+	private Integer settlementOrder;
 }

@@ -4,18 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset.commonset;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
-//就業時間帯の遅刻・早退設定
+//猶予時間設定
 @Getter
-public class WorkTimezoneLateEarlySet extends DomainObject{
+public class GraceTimeSet extends DomainObject {
 
-	//共通設定
-	private EmTimezoneLateEarlyCommonSet commonSet;
+	//就業時間に含める
+	private boolean includeEmTime;
 	
-	//区分別設定
-	private List<OtherEmTimezoneLateEarlySet> otherClassSet;
+	//TODO wait QA 猶予時間
+//	private LateEarlyGraceTime graceTime;
 }

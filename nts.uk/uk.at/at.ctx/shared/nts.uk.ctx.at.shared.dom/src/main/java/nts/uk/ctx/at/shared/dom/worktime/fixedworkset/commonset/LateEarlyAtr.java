@@ -5,34 +5,18 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset.commonset;
 
 /**
- * The Enum RoundingTimeUnit.
+ * The Enum LateEarlyAtr.
  */
-//時刻丸め単位
-public enum RoundingTimeUnit {
-	
-	/** The one. */
-	ONE(1, "Enum_RoundingTimeUnit_one", "1"),
-	
-	/** The five. */
-	FIVE(5, "Enum_RoundingTimeUnit_five", "5"),
-	
-	/** The six. */
-	SIX(6, "Enum_RoundingTimeUnit_six", "6"),
-	
-	/** The ten. */
-	TEN(10, "Enum_RoundingTimeUnit_ten", "10"),
-	
-	/** The fifteen. */
-	FIFTEEN(15, "Enum_RoundingTimeUnit_fifteen", "15"),
-	
-	/** The twenty. */
-	TWENTY(20, "Enum_RoundingTimeUnit_twenty", "20"),
-	
-	/** The thirty. */
-	THIRTY(30, "Enum_RoundingTimeUnit_thirty", "30"),
-	
-	/** The sixty. */
-	SIXTY(60, "Enum_FontRearSection_sixty", "60");
+//遅刻早退区分
+public enum LateEarlyAtr {
+
+	/** The late. */
+	// 遅刻
+	LATE(0, "Enum_LateEarlyAtr_allEmployee", "遅刻"),
+
+	/** The early. */
+	// 早退
+	EARLY(1, "Enum_LateEarlyAtr_departmentAndChild", "早退");
 
 	/** The value. */
 	public final int value;
@@ -44,16 +28,16 @@ public enum RoundingTimeUnit {
 	public final String description;
 
 	/** The Constant values. */
-	private final static RoundingTimeUnit[] values = RoundingTimeUnit.values();
+	private final static LateEarlyAtr[] values = LateEarlyAtr.values();
 
 	/**
-	 * Font rear section.
+	 * Instantiates a new late early atr.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private RoundingTimeUnit(int value, String nameId, String description) {
+	private LateEarlyAtr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -63,16 +47,16 @@ public enum RoundingTimeUnit {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the font rear section
+	 * @return the late early atr
 	 */
-	public static RoundingTimeUnit valueOf(Integer value) {
+	public static LateEarlyAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (RoundingTimeUnit val : RoundingTimeUnit.values) {
+		for (LateEarlyAtr val : LateEarlyAtr.values) {
 			if (val.value == value) {
 				return val;
 			}
