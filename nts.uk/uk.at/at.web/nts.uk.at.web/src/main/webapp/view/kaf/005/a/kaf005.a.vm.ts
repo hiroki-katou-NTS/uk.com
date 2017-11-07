@@ -32,6 +32,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //MultilineEditor
         requiredReason : KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
+        //comboBox 定型理由
+        reasonCombo2: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
+        selectedReason2: KnockoutObservable<string> = ko.observable('');
+        //MultilineEditor
+        requiredReason2 : KnockoutObservable<boolean> = ko.observable(false);
+        multilContent2: KnockoutObservable<string> = ko.observable('');
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
@@ -64,23 +70,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let self = this;
           
             self.restTime.push( new common.RestTime("",null,null));
-            self.restTime.push( new common.RestTime("2",-1050,1256));
-            self.restTime.push( new common.RestTime("3",-1060,1256));
+            self.restTime.push( new common.RestTime("2",null,null));
+            self.restTime.push( new common.RestTime("3",null,null));
             
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00","11:00","100","120","100"));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,"05:00",null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
             
-            self.breakTimes.push(new common.BreakTime("1","12:00","11:00","100","120","100"));
-            self.breakTimes.push(new common.BreakTime("1","12:00","11:00","100","120","100"));
-            self.breakTimes.push(new common.BreakTime("1","12:00","11:00","100","120","100"));
+            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
+            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
+            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
             
-            self.bonusTimes.push(new common.BonusTime("1","加給時間1","11:00","100","120"));
-            self.bonusTimes.push(new common.BonusTime("1","加給時間2","11:00","100","120"));
-            self.bonusTimes.push(new common.BonusTime("1","加給時間3","11:00","100","120"));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間1",null,null));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間2",null,null));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間3",null,null));
             
             $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
             $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -119,7 +125,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         initData(data: any){
             var self = this;
             self.displayCaculationTime(data.calculationOverTime ? true : false);
-            
+            self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
+            self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
+            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
+            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
             self.employeeName(data.employeeName);
             self.siftCD(data.siftCode);
             self.siftName(data.siftName);
@@ -129,6 +138,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.timeEnd1(data.workClockFrom2); 
             self.timeStart2(data.workClockTo1);
             self.timeEnd2(data.workClockTo2); 
+            
+            self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); } ));
+            self.selectedReason(data.application.appReasonID);
+            self.multilContent(data.application.applicationReason);
+            self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); } ));
+            self.selectedReason2(data.divergenceReasonID);
+            self.multilContent2(data.divergenceReasonContent);
         }
         
         /**

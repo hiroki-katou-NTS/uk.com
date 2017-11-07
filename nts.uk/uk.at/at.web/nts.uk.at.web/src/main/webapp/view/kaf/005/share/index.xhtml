@@ -138,8 +138,8 @@
 				<tr>
 					<td class ="header" data-bind ="text: overtimeName"></td>
 					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time', readonly: true }"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: caculationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time', readonly: true}"/></td>
+					<td class="right-content" data-bind ="text: preAppTime"></td>
+					<td class="right-content" data-bind ="text: caculationTime"></td>
 				</tr>
 			</tbody>
 			</table>
@@ -163,7 +163,7 @@
 				<tr>
 					<td class ="header" data-bind ="text: breakTimeName"></td>
 					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time' }"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time', readonly: true}"/></td>
+					<td class="right-content" data-bind ="text: preAppTime"></td>
 				</tr>
 			</tbody>
 			</table>
@@ -187,7 +187,7 @@
 				<tr>
 					<td class ="header" data-bind ="text: bonusTimeName"></td>
 					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time', readonly: true}"/></td>
+					<td class="right-content" data-bind ="text: preAppTime"></td>
 				</tr>
 			</tbody>
 			</table>
@@ -227,10 +227,10 @@
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div tabindex="21" id="combo-box"
 				data-bind="ntsComboBox: {
-								options: reasonCombo,
+								options: reasonCombo2,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
-								value: selectedReason,
+								value: selectedReason2,
 								enable: true,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
@@ -242,12 +242,12 @@
 			<div id="multiline">
 				<textarea tabindex="22"
 					data-bind="ntsMultilineEditor: {
-								value: multilContent,
+								value: multilContent2,
 								constraint: 'ResidenceCode',
 								option: {
 									resizeable: false,
 			                    	width: '500',
-			                    	required: requiredReason()
+			                    	required: requiredReason2()
 			                   	},
 							}" />
 			</div>

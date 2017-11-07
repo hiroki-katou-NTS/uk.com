@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
@@ -232,6 +234,13 @@ public class GetOvertime {
 			getPreApplication(employeeID,overtimeRestAppCommonSet, appDate, applicationDto, result);
 		}
 		result.setApplication(applicationDto);
+		String employeeName = "";
+		if(Strings.isNotBlank(applicationDto.getApplicantSID())){
+			employeeName = employeeAdapter.getEmployeeName(applicationDto.getApplicantSID());
+		} else {
+			employeeName = employeeAdapter.getEmployeeName(employeeID);
+		}
+		result.setEmployeeName(employeeName);
 		return result;
 	}
 	
