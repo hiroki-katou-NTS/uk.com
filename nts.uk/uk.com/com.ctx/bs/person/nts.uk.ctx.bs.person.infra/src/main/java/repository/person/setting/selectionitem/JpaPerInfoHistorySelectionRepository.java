@@ -60,7 +60,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<PerInfoHistorySelection> historySelection(String selectionItemId) {
+	public List<PerInfoHistorySelection> getAllHistoryBySelectionItemId(String selectionItemId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).getList(c -> toDomain(c));

@@ -21,4 +21,7 @@ public interface SelectionRepository {
 
 	List<Selection> geSelectionList(String selectionCd, String histId);
 	
+	//Tuan nv: 
+	List<Selection> getAllSelectionBySelectionID(String selectionId);
+	
 }
