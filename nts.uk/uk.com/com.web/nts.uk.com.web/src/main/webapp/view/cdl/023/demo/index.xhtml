@@ -16,8 +16,15 @@
 			<com:scriptfile path="cdl023.demo.vm.js" />
 			
 			<style>
+				#content table {
+					width: 850px;
+				}
 				#content table td {
 					padding: 10px;
+				}
+				.ntsRadioBox {
+					display: inline-block;
+					width: 94px;
 				}
 			</style>
 		</ui:define>
@@ -32,7 +39,7 @@
 					
 					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Parameters:</h4>
 					<table>
-						<col width="100"></col>
+						<col width="50"></col>
 						<col width="200"></col>
 						<tr>
 							<td>複写元コード</td>
@@ -50,6 +57,24 @@
 								enable: true,
 								readonly: false}" /></td>
 						</tr>
+						<tr>
+							<td>選択対象区分</td>
+							<td><div data-bind="ntsRadioBoxGroup: {
+									options: targetList,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: selectedTarget,
+									enable: true}"></div>
+							</td>
+						</tr>
+						<com:ko tag="if" bind="enableBaseDate">
+							<tr>
+								<td>基準日</td>
+								<td><div id="base-date"
+										data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+								</td>
+							</tr>
+						</com:ko>
 					</table>
 					
 					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Return value:</h4>
