@@ -213,7 +213,10 @@ module nts.uk.ui.koExtentions {
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
                     if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT")).then(() => { 
+                            $input.focus(); 
+                            $input.select();
+                        });
                         return false;        
                     }
                     
@@ -264,12 +267,15 @@ module nts.uk.ui.koExtentions {
                     $container.data("searchKey", searchKey);  
                 }
                 return true;    
-            }
+            } 
             
             var nextSearch = function() {
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(() => { 
+                        $input.focus(); 
+//                        $input.select();
+                    });
                     return false;        
                 }
                 return search(searchKey);    

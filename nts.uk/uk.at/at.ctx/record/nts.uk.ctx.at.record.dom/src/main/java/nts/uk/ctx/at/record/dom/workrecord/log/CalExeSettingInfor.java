@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -15,11 +14,14 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
  * 計算実行設定情報
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class CalExeSettingInfor extends DomainObject {
 	
-
+	/**
+	 * 実行内容
+	 */
+	private ExecutionContent executionContent;
+	
 	/**
 	 * 実行種別
 	 * 
@@ -28,6 +30,17 @@ public class CalExeSettingInfor extends DomainObject {
 	 */
 	private ExecutionType executionType;
 
-	public String calExecutionSetInfoID;
+	private String calExecutionSetInfoID;
+	//case ID
+	private String caseSpecExeContentID;
+
+	public CalExeSettingInfor(ExecutionContent executionContent, ExecutionType executionType,
+			String calExecutionSetInfoID,String caseSpecExeContentID) {
+		super();
+		this.executionContent = executionContent;
+		this.executionType = executionType;
+		this.calExecutionSetInfoID = calExecutionSetInfoID;
+		this.caseSpecExeContentID = caseSpecExeContentID;
+	}
 	
 }

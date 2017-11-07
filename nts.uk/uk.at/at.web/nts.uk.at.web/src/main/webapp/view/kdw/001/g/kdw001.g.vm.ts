@@ -9,6 +9,9 @@ module nts.uk.at.view.kdw001.g {
             constructor() {
                 let self = this;
                 //list
+                
+                let temp:any  = nts.uk.ui.windows.getShared("openG");
+                
                 self.listClassification = ko.observableArray([]);
                 self.currentSelectedRow = ko.observable(null);
                 for (let i = 1; i <= 15; i++) {

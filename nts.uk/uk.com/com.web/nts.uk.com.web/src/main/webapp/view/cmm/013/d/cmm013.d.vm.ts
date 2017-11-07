@@ -46,7 +46,7 @@ module nts.uk.com.view.cmm013.d {
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
                     });
             }
             
@@ -85,9 +85,19 @@ module nts.uk.com.view.cmm013.d {
             /**
              * Show Error Message
              */
-            private showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
-            }           
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }        
         }
     }    
 }
