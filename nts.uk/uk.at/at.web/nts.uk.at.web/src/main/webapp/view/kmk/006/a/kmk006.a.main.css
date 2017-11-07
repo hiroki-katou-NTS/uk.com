@@ -112,3 +112,7 @@
 .personalEstablishment {
 	margin-top: 10px;
 }
+
+.table-label td {
+	margin-bottom: 10px;
+}
