@@ -45,6 +45,8 @@ public class UpdateItemInitValueSettingCommand {
 	
 	private String selectedCode;
 	
+	private String selectionItemId;
+	
 	private int selectedRuleCode;
 	
 	private BigDecimal numberValue;

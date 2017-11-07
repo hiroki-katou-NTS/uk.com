@@ -320,7 +320,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		
 		List<PerInfoInitValueSetItem> itemAll = this.getAllItem(settingId, perInfoCtgId);
 
-		if (itemAll.size() == itemSetting.size()) {
+		if (itemAll.size() == itemSetting.size() && itemAll.size() > 0) {
 			return true;
 		}
 		return false;
