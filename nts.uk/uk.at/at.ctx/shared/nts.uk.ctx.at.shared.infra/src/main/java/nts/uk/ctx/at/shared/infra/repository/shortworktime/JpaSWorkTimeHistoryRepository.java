@@ -16,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
@@ -79,6 +80,33 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository implements SWor
 				.map(entity -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(entity)))
 				.findFirst();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository#
+	 * findByBaseDate(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<ShortWorkTimeHistory> findByBaseDate(String empId, GeneralDate baseDate) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
+        Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
+        		.get(BshmtWorktimeHistPK_.sid), empId));
+        predicateList.add(builder.lessThanOrEqualTo(root.get(BshmtWorktimeHist_.strYmd), baseDate));
+        predicateList.add(builder.greaterThanOrEqualTo(root.get(BshmtWorktimeHist_.endYmd), baseDate));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        
+		return em.createQuery(query).getResultList().stream()
+				.map(entity -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(entity)))
+				.findFirst();
+	}
 
 	/**
 	 * To entity.
@@ -96,4 +124,5 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository implements SWor
 		domain.saveToMemento(memento);
 		return entity;
 	}
+
 }

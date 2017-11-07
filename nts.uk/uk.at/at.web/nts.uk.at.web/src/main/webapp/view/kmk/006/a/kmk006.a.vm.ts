@@ -90,6 +90,11 @@ module nts.uk.at.view.kmk006.a {
 
             // Common
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
+            
+            // UI 
+            createModeScreenB: KnockoutObservable<boolean>;
+            createModeScreenC: KnockoutObservable<boolean>;
+            createModeScreenD: KnockoutObservable<boolean>;           
 
             constructor() {
                 var self = this;
@@ -282,6 +287,16 @@ module nts.uk.at.view.kmk006.a {
                     return self.valueEnumResLatAtr() != 2;
                 });
 
+                // UI 
+                self.createModeScreenB = ko.computed(() => {
+                    return self.selectedCurrentWkp() ? true : false;
+                });
+                self.createModeScreenC = ko.computed(() => {
+                    return self.selectedCurrentJob() ? true : false;
+                });
+                self.createModeScreenD = ko.computed(() => {
+                    return (self.selectedCurrentWkp() && self.selectedCurrentJob()) ? true : false;
+                });  
             }
 
 
@@ -524,24 +539,25 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<any>();
 
                 //            nts.uk.ui.block.invisible();
-
-                service.getWkpJobAutoCal(wkpId, jobId).done(function(data) {
-                    //                nts.uk.ui.block.clear();
-                    if (data) {
-                        self.itemWkpJobAutoCalModel.updateData(data);
-                    }
-                    if (self.itemWkpJobAutoCalModel) {
-                        // load get all value enum
-                        self.reLoadListEnum(self.itemWkpJobAutoCalModel);
-
-                    }
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-
+                if (wkpId && jobId) {
+                    service.getWkpJobAutoCal(wkpId, jobId).done(function(data) {
+                        //                nts.uk.ui.block.clear();
+                        if (data) {
+                            self.itemWkpJobAutoCalModel.updateData(data);
+                        }
+                        if (self.itemWkpJobAutoCalModel) {
+                            // load get all value enum
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);
+    
+                        }
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+                
                 return dfd.promise();
             }
 

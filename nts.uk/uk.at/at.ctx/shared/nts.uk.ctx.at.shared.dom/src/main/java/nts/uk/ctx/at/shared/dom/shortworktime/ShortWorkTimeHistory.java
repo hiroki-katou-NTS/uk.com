@@ -16,8 +16,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimeHistory.
- * 短時間勤務履歴
  */
+// 短時間勤務履歴
 @Getter
 public class ShortWorkTimeHistory extends AggregateRoot
 		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {

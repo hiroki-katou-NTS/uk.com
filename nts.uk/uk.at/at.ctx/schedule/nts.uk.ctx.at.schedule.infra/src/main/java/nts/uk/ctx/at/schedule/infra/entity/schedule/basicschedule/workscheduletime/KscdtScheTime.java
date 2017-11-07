@@ -13,12 +13,18 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 /**
  * The Class KscdtScheTime.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "KSCDT_SCHE_TIME")
-public class KscdtScheTime implements Serializable {
+public class KscdtScheTime extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -111,6 +117,16 @@ public class KscdtScheTime implements Serializable {
     public String toString() {
         return "entity.KscmtWorkSchTime[ kscmtWorkSchTimePK=" + kscdtScheTimePK + " ]";
     }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kscdtScheTimePK;
+	}
     
     
 }

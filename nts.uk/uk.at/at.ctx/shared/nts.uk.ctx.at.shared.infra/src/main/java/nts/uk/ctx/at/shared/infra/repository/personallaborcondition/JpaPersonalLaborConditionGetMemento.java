@@ -59,7 +59,8 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	@Override
 	public BreakdownTimeDay getHolidayAddTimeSet() {
 		return new BreakdownTimeDay(new AttendanceTime(this.entityCondition.getHdAddOneDay()),
-				new AttendanceTime(this.entityCondition.getHdAddMorning()), new AttendanceTime(this.entityCondition.getHdAddAfternoon()));
+				new AttendanceTime(this.entityCondition.getHdAddMorning()),
+				new AttendanceTime(this.entityCondition.getHdAddAfternoon()));
 	}
 
 	/*
@@ -70,7 +71,8 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
-		return new PersonalWorkCategory(new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
+		return new PersonalWorkCategory(
+				new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
 	}
 
 	/*

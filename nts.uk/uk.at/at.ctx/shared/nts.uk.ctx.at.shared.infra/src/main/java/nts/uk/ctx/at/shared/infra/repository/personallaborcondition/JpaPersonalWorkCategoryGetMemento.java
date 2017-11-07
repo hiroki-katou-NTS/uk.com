@@ -21,14 +21,15 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 	
 	/** The entitys. */
 	private List<KshmtSingleDaySche> entitys;
-	
+
 	/** The Constant FIRST_DATA. */
 	public static final int FIRST_DATA = 0;
-	
+
 	/**
 	 * Instantiates a new jpa personal work category get memento.
 	 *
-	 * @param entitys the entitys
+	 * @param entitys
+	 *            the entitys
 	 */
 	public JpaPersonalWorkCategoryGetMemento(List<KshmtSingleDaySche> entitys) {
 		this.entitys = entitys;
@@ -50,8 +51,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getHolidayTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getHolidayTime()
 	 */
 	@Override
 	public SingleDaySchedule getHolidayTime() {
@@ -63,8 +67,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getWeekdayTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getWeekdayTime()
 	 */
 	@Override
 	public SingleDaySchedule getWeekdayTime() {
@@ -76,8 +83,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getPublicHolidayWork()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getPublicHolidayWork()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getPublicHolidayWork() {
@@ -89,8 +99,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getInLawBreakTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getInLawBreakTime()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getInLawBreakTime() {
@@ -102,8 +115,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getOutsideLawBreakTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getOutsideLawBreakTime()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getOutsideLawBreakTime() {
@@ -115,8 +131,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategoryGetMemento#getHolidayAttendanceTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
+	 * PersonalWorkCategoryGetMemento#getHolidayAttendanceTime()
 	 */
 	@Override
 	public Optional<SingleDaySchedule> getHolidayAttendanceTime() {
@@ -135,9 +154,11 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 	 * @param perWorkAtr the per work atr
 	 * @return the optional
 	 */
-	private Optional<KshmtSingleDaySche> findById(List<KshmtSingleDaySche> entitys, int perWorkAtr) {
+	private Optional<KshmtSingleDaySche> findById(List<KshmtSingleDaySche> entitys,
+			int perWorkAtr) {
 		List<KshmtSingleDaySche> enityfinders = entitys.stream()
-				.filter(singleDaySchedule -> singleDaySchedule.getKshmtSingleDaySchePK().getPersWorkAtr() == perWorkAtr)
+				.filter(singleDaySchedule -> singleDaySchedule.getKshmtSingleDaySchePK()
+						.getPersWorkAtr() == perWorkAtr)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(enityfinders)) {
 			return Optional.empty();

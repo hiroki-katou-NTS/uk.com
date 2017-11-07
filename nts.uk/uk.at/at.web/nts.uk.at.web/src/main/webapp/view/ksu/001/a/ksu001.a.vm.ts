@@ -59,8 +59,9 @@ module ksu001.a.viewmodel {
         selectedDate: KnockoutObservable<string> = ko.observable('');
 
         //Date time
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/10/31'));
+        currentDate: Date = new Date();
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/20'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/19'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -116,19 +117,25 @@ module ksu001.a.viewmodel {
                     $('#group-bt').show();
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
+                    $("#extable").exTable("updateMode", "none");
+                    $("#extable").exTable("viewMode", "shortName");
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
+                    $("#extable").exTable("updateMode", "edit");
+                    $("#extable").exTable("viewMode", "time");
                 } else {
                     $('#contain-view').show();
                     $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
+                    $("#extable").exTable("viewMode", "symbol");
+                    $("#extable").exTable("updateMode", "none");
                 }
             });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
                 if (newValue == 2) {
-                    //actual data display mode (in phase 2 not done, so the actual data is set to null)
+                    // actual data display mode (in phase 2 not done, so the actual data is set to null)
                     // if actual data is null, display intended data
                     self.dataSource([]);
                     self.updateExTable();
@@ -141,17 +148,38 @@ module ksu001.a.viewmodel {
                 }
             });
 
+            self.selectedBackgroundColor.subscribe((newValue) => {
+                //details the background color of the cell
+                if (newValue === '001') {
+                    //TO_DO
+                    // Return value：就業時間帯
+                } else {
+                    //get data from WorkScheduleState
+                    self.getDataWorkScheduleState();
+                    if (self.selectedModeDisplay() === '3') {
+                        //「記号」を選択 (TH chọn 「記号」)
+                        //TO-DO
+
+                    } else {
+                        //Return value of ScheduleEditState of WorkScheduleState
+                        //TO-DO
+                    }
+                }
+            });
+
             //display for A3_2
             self.lengthListSid = ko.pureComputed(() => {
                 return nts.uk.resource.getText('KSU001_54', [self.listSid().length.toString()]);
             });
 
             //start
-            self.selectedModeDisplay(1);
+
             self.initCCG001();
             self.initExTable();
+            self.selectedModeDisplay(1);
             self.initShiftCondition();
         }
+
         /**
          *shift condition  A2_4
          */
@@ -173,11 +201,11 @@ module ksu001.a.viewmodel {
                 });
                 dfd.resolve();
             });
-            console.log(self.itemsTree());
             return dfd.promise();
 
 
         }
+
         /**
          * Get data Basic_Schedule
          */
@@ -193,6 +221,21 @@ module ksu001.a.viewmodel {
                 if (data) {
                     self.dataSource(data);
                 }
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Get data Basic_Schedule
+         */
+        getDataWorkScheduleState(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getDataWorkScheduleState().done(function(data) {
+                if (data) { }
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -323,7 +366,7 @@ module ksu001.a.viewmodel {
             //define the detailColumns
             _.each(self.arrDay, (x: Time) => {
                 detailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
+                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
                 });
             });
 
@@ -500,7 +543,7 @@ module ksu001.a.viewmodel {
                 bodyHeightMode: "dynamic",
                 windowXOccupation: 80,
                 windowYOccupation: 150,
-                updateMode: "stick",
+                updateMode: "none",
                 pasteOverWrite: true,
                 stickOverWrite: true,
                 viewMode: "shortName",
@@ -515,15 +558,6 @@ module ksu001.a.viewmodel {
                 .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
                 .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
                 .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
-
-            //set mode of exTable is stickMode single
-//            $("#extable").exTable("stickMode", "single");
-//            $("#extable").exTable("updateMode", "edit");
-
-            //undo
-            $("#image030").click(function() {
-                $("#extable").exTable("stickUndo");
-            });
 
             /**
              * update text for row 2 of detailHeader
@@ -585,7 +619,7 @@ module ksu001.a.viewmodel {
                     arrObj.push(new BasicSchedule({
                         // slice string '_YYYYMMDD' to 'YYYYMMDD'
                         date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
-                        employeeId: self.listSid()[arrCell[i].rowIndex],
+                        employeeId: self.listSid()[Number(arrCell[i].rowIndex)],
                         workTimeCode: arrCell[i].value.workTimeCode,
                         workTypeCode: arrCell[i].value.workTypeCode,
                         //set static
@@ -654,7 +688,7 @@ module ksu001.a.viewmodel {
             //define the new detailColumns
             _.each(self.arrDay, (x: Time) => {
                 newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
+                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
                 });
             });
 
@@ -697,6 +731,11 @@ module ksu001.a.viewmodel {
             $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
             $("#extable").exTable("updateTable", "detail", {}, updateDetailContent);
             $("#extable").exTable("updateTable", "horizontalSummaries", {}, updateHorzSumContent);
+
+            $("#extable").on("extablecellupdated", function() {
+            });
+            $("#extable").on("extablerowupdated", function() {
+            });
         }
 
         /**
@@ -861,12 +900,23 @@ module ksu001.a.viewmodel {
             nts.uk.ui.dialog.bundledErrors(errorVm);
         }
 
-        setColorForExTable(): void {
+        //paste data on cell
+        pasteData(): void {
             let self = this;
-            // Background Color
-            if (self.selectedBackgroundColor() === '001') {
-
+            if (self.selectedModeDisplay() == 1) {
+                $("#extable").exTable("updateMode", "stick");
+                $("#extable").exTable("stickMode", "single");
             }
+        }
+
+        //copy data on cell
+        copyData(): void {
+            $("#extable").exTable("updateMode", "copyPaste");
+        }
+
+        //undo data on cell
+        undoData(): void {
+            $("#extable").exTable("stickUndo");
         }
 
         /**
@@ -1186,9 +1236,10 @@ module ksu001.a.viewmodel {
             this.workTypeName = params.workTypeName;
             this.workTimeCode = params.workTimeCode;
             this.workTimeName = params.workTimeName;
-            this.symbol = params.symbol;
-            this.startTime = params.startTime;
-            this.endTime = params.endTime;
+            let symbolArr: string[] = ["通", "◯", "✕"];
+            this.symbol = params.symbol || symbolArr[Math.floor((Math.random() * 3))];
+            this.startTime = params.startTime || "8:30";
+            this.endTime = params.endTime || "17:30";
         }
     }
 

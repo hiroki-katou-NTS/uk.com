@@ -14,15 +14,16 @@
 				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
 				<com:scriptfile path="ksc001.b.start.js" />
 				<com:scriptfile path="ksc001.b.service.js" />
 				<com:scriptfile path="ksc001.b.vm.js" />
 			</ui:define>
 			
 			<ui:define name="content">
-				<div id="functions-area">
+				<div id="functions-area" tabindex="-1">
 					<!-- Go back Style -->
-					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksc/001/a/index.xhtml' }">
+					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksc/001/a/index.xhtml' }" tabindex="1">
 						#{i18n.getText('KSC001_40')}
 					</a>
 				</div>
