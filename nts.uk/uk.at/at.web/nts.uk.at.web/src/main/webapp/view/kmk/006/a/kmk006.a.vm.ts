@@ -289,13 +289,13 @@ module nts.uk.at.view.kmk006.a {
 
                 // UI 
                 self.createModeScreenB = ko.computed(() => {
-                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp());
+                    return !nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp());
                 });
                 self.createModeScreenC = ko.computed(() => {
-                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
+                    return !nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
                 });
                 self.createModeScreenD = ko.computed(() => {
-                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp()) && nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
+                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp()) || nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
                 });  
             }
 
