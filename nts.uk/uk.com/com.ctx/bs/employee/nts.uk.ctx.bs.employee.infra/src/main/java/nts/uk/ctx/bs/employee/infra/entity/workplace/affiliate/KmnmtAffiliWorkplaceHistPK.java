@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
@@ -21,6 +22,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @Embeddable
+@AllArgsConstructor
 public class KmnmtAffiliWorkplaceHistPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
