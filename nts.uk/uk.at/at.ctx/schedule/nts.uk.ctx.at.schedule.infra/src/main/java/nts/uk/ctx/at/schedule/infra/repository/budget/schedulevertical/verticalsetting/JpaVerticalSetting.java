@@ -9,8 +9,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormBuilt;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeople;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeopleFunc;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTime;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTimeFunc;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaAmount;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaNumerical;
@@ -20,10 +23,13 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.TimeUn
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormBuilt;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeople;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeopleFunc;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeopleFuncPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeoplePK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTime;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimeFunc;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItem;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrder;
@@ -411,21 +417,104 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private VerticalCalSet convertToDomainVcs(KscmtGenVertSet kscstVerticalCalSet) {
 
 		List<VerticalCalItem> verticalCalItems = kscstVerticalCalSet.genVertItems.stream().map(t -> {
+			FormBuilt formBuilt = toDomainFormBuilt(t.formBuilt);
+			FormTime formTime = toDomainFormTime(t.formTime);
 			FormPeople formPeople = toDomainFormPeople(t.formPeople);
 			FormulaAmount amount = toDomainFormAmount(t.amount);
 			FormulaNumerical numerical = toDomainFormNumer(t.numerical);
-			return VerticalCalItem.createFromJavatype(t.kscmtGenVertItemPK.companyId,
-					t.kscmtGenVertItemPK.verticalCalCd, t.kscmtGenVertItemPK.itemId, t.itemName, t.calculateAtr,
-					t.displayAtr, t.cumulativeAtr, t.attributes, t.rounding, t.genVertOrder.dispOrder, formPeople,
-					amount, numerical);
-		}).collect(Collectors.toList());
 
+			return VerticalCalItem.createFromJavatype(t.kscmtGenVertItemPK.companyId, 
+					t.kscmtGenVertItemPK.verticalCalCd, 
+					t.kscmtGenVertItemPK.itemId, 
+					t.itemName, 
+					t.calculateAtr,
+					t.displayAtr,
+					t.cumulativeAtr,
+					t.attributes,
+					t.rounding,
+					t.genVertOrder.dispOrder,
+					formBuilt,
+					formTime,
+					formPeople,
+					amount, 
+					numerical);
+			}).collect(Collectors.toList());
+		
 		VerticalCalSet verticalCalSet = VerticalCalSet.createFromJavaType(
 				kscstVerticalCalSet.kscmtGenVertSetPK.companyId, kscstVerticalCalSet.kscmtGenVertSetPK.verticalCalCd,
 				kscstVerticalCalSet.verticalCalName, kscstVerticalCalSet.unit, kscstVerticalCalSet.useAtr,
 				kscstVerticalCalSet.assistanceTabulationAtr, verticalCalItems);
 
 		return verticalCalSet;
+	}
+
+	/**
+	 * Convert to Domain Form Time
+	 * @param entity
+	 * @return
+	 * author: TanLV
+	 */
+	private FormTime toDomainFormTime(KscmtFormTime formTime) {
+		if (formTime == null) {
+			return null;
+		}
+		
+		List<FormTimeFunc> lst = new ArrayList<>();
+		
+		for(KscmtFormTimeFunc obj: formTime.listFormTimeFunc){
+			lst.add(toDomainFormTimeFunc(obj));
+		}
+		
+		FormTime domain = FormTime.createFromJavaType(formTime.kscmtFormTimePK.companyId, 
+				formTime.kscmtFormTimePK.verticalCalCd, 
+				formTime.kscmtFormTimePK.verticalCalItemId, 
+				formTime.categoryIndicator,
+				formTime.actualDisplayAtr,
+				lst);
+		
+		return domain;
+	}
+
+	/**
+	 * Convert to Domain Form Time Func
+	 * @param entity
+	 * @return
+	 * author: TanLV
+	 */
+	private FormTimeFunc toDomainFormTimeFunc(KscmtFormTimeFunc entity) {
+		FormTimeFunc domain = FormTimeFunc.createFromJavaType(entity.kscmtFormTimeFuncPK.companyId, 
+				entity.kscmtFormTimeFuncPK.verticalCalCd, 
+				entity.kscmtFormTimeFuncPK.verticalCalItemId, 
+				entity.externalBudgetCd, 
+				entity.attendanceItemId, 
+				entity.presetItemId,
+				entity.operatorAtr,
+				entity.dispOrder);
+		return domain;
+	}
+
+	/**
+	 * Convert to Domain Form Built
+	 * @param entity
+	 * @return
+	 * author: TanLV
+	 */
+	private FormBuilt toDomainFormBuilt(KscmtFormBuilt formBuilt) {
+		if(formBuilt == null){
+			return null;
+		}
+		
+		FormBuilt domain = FormBuilt.createFromJavaTypeFormBuilt(formBuilt.kscmtFormBuiltPK.companyId, 
+				formBuilt.kscmtFormBuiltPK.verticalCalCd, 
+				formBuilt.kscmtFormBuiltPK.verticalCalItemId, 
+				formBuilt.settingMethod1,
+				formBuilt.verticalCalItem1,
+				formBuilt.verticalInputItem1,
+				formBuilt.settingMethod2,
+				formBuilt.verticalCalItem2,
+				formBuilt.verticalInputItem2,
+				formBuilt.operatorAtr);
+		return domain;
 	}
 
 	/**
