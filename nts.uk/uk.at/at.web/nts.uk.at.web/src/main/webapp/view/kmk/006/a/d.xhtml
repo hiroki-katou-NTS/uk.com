@@ -11,9 +11,9 @@
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
-				data-bind="click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
+				data-bind="enable: createModeScreenC, click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
-				data-bind="click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
+				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 		</ui:define>

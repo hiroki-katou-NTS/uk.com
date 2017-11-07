@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace.service;
+package nts.uk.ctx.bs.employee.app.command.workplace.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +14,14 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
+import nts.uk.ctx.bs.employee.dom.workplace.policy.HistoryPolicy;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Class WorkplaceServiceImpl.
+ * The Class DefaultWorkplaceServiceImpl.
  */
 @Stateless
-public class WorkplaceServiceImpl implements WorkplaceService {
+public class DefaultWorkplaceServiceImpl implements WorkplaceService {
 
     /** The workplace repo. */
     @Inject
@@ -76,7 +76,7 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         workplace.items().removeIf(item -> lstHistIdRemoved.contains(item.identifier()));
         
         // update end date of workplace history latest current
-        this.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(), HistoryUtil.getMaxDate());
+        this.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(), HistoryPolicy.getMaxDate());
     }
 
 }

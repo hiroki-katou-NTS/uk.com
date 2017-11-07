@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
+package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 /**
  * The Enum IsManagerStatus.

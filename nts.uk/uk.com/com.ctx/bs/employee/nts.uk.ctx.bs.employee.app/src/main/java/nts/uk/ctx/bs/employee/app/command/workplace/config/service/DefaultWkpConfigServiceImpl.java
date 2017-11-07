@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace.config.service;
+package nts.uk.ctx.bs.employee.app.command.workplace.config.service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,10 +25,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepos
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Class WkpConfigServiceImpl.
+ * The Class DefaultWkpConfigServiceImpl.
  */
 @Stateless
-public class WkpConfigServiceImpl implements WkpConfigService {
+public class DefaultWkpConfigServiceImpl implements WkpConfigService {
 
 	/** The workplace config repository. */
 	@Inject

@@ -129,12 +129,14 @@ module nts.uk.at.view.kmk002.d {
 
                 // Check required input
                 if (self.rightItem.settingMethod() == 1 && !self.rightItem.inputValue()) {
+                    $('#inp-right-item').ntsEditor('validate');
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
                     return false;
                 }
 
                 // Check required input
                 if (self.leftItem.settingMethod() == 1 && !self.leftItem.inputValue()) {
+                    $('#inp-left-item').ntsEditor('validate');
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
                     return false;
                 }

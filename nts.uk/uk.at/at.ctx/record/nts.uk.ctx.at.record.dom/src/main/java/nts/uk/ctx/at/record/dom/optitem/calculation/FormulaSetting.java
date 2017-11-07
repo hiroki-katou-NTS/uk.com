@@ -43,8 +43,14 @@ public class FormulaSetting extends DomainObject {
 		this.operator = memento.getOperatorAtr();
 		this.leftItem = memento.getLeftItem();
 		this.rightItem = memento.getRightItem();
+	}
 
-		// Validate.
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
 		if (this.isBothItemInput()) {
 			throw new BusinessException("Msg_420");
 		}

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace.util;
+package nts.uk.ctx.bs.employee.dom.workplace.policy;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Class HistoryUtil.
+ * The Class HistoryPolicy.
  */
-public class HistoryUtil {
+public class HistoryPolicy {
 
     /** The Constant NUMBER_ELEMENT_MIN. */
     private static final Integer NUMBER_ELEMENT_MIN = 1;
@@ -52,9 +52,8 @@ public class HistoryUtil {
     /**
      * Valid start date.
      *
-     * @param newPeriod the latest period
+     * @param newPeriod the new period
      * @param prevPeriod the prev period
-     * @param newStartDate the new start date
      */
     public static void validStartDate(DatePeriod newPeriod, DatePeriod prevPeriod) {
         boolean isHasError = false;
@@ -77,7 +76,7 @@ public class HistoryUtil {
     /**
      * Valid history latest.
      *
-     * @param wkpConfig the wkp config
+     * @param lstHistoryId the lst history id
      * @param historyIdDeletion the history id deletion
      */
     public static void validHistoryLatest(List<String> lstHistoryId, String historyIdDeletion) {

@@ -45,9 +45,8 @@ module nts.uk.com.view.cmm050.b {
             /**
              * test send mail
              */
-            public testSendMail() {
+            public testSendMail() :void {
                 let _self = this;
-                var dfd = $.Deferred<void>();
                 
                 _self.testButtonEnable(false);
                 
@@ -76,13 +75,11 @@ module nts.uk.com.view.cmm050.b {
                 service.testMailServerSetting(data).done(function(){
                     nts.uk.ui.dialog.alert({ messageId: "Msg_534" });
                     _self.testButtonEnable(true);
-                    dfd.resolve();
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     _self.testButtonEnable(true);
                 });
                 
-                return dfd.promise();
             }
             
             /**
@@ -115,8 +112,9 @@ module nts.uk.com.view.cmm050.b {
                
                 $('#email1').ntsEditor("validate");
                 $('#email2').ntsEditor("validate");
-                _self.testButtonEnable(true);
+                
                 if ($('.nts-input').ntsError('hasError')) {
+                    _self.testButtonEnable(true);
                     return true;
                 }
                 return false;
