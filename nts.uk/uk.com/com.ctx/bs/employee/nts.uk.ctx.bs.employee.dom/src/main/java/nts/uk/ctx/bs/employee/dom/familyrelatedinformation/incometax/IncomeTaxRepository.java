@@ -9,4 +9,9 @@ public interface IncomeTaxRepository {
 	 * @param domain
 	 */
 	void updateIncomeTax(IncomeTax domain);
+	/**
+	 * ドメインモデル「家族所属税」を削除する
+	 * @param domain
+	 */
+	void deleteIncomeTax(IncomeTax domain);
 }

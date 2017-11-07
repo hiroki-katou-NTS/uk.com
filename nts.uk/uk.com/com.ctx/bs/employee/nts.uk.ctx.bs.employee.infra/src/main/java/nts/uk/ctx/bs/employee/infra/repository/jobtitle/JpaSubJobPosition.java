@@ -91,4 +91,12 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 		return null;
 	}
 
+	/**
+	 * ドメインモデル「職務職位（兼務）」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteSubJobPosition(SubJobPosition domain){
+		this.commandProxy().remove(BsymtSubJobPosition.class,domain.getSubJobPosId());
+	}
 }

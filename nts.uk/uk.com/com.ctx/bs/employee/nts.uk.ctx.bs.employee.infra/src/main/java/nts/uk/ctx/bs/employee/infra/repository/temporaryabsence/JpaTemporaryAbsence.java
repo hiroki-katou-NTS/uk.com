@@ -123,5 +123,13 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		this.commandProxy().update(existItem.get());
 		
 	}
-
+	/**
+	 * ドメインモデル「休職休業」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteTemporaryAbsence(TemporaryAbsence domain){
+		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
+		this.commandProxy().remove(BsymtTemporaryAbsence.class,key);
+	}
 }
