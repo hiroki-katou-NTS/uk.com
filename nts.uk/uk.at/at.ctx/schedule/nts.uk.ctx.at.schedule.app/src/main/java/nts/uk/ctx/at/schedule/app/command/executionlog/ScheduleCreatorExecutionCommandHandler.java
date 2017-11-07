@@ -22,11 +22,12 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommandHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ClassificationDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmploymentStatusDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.WorkplaceDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ClassificationDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.WorkplaceDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
@@ -190,6 +191,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The personal labor condition repository. */
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
+	
+	/** The sc short work time adapter. */
+	@Inject
+	private ScShortWorkTimeAdapter scShortWorkTimeAdapter;
 	
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.ac.executionlog;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 
@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
  * The Class SCEmployeeAdapterImpl.
  */
 @Stateless
-public class SCEmployeeAdapterImpl implements SCEmployeeAdapter {
+public class ScEmployeeAdapterImpl implements SCEmployeeAdapter {
 
 	/** The pub. */
 	@Inject

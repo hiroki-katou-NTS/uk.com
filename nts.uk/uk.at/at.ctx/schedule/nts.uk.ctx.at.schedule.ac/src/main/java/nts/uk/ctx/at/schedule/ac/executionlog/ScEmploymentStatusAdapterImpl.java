@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.ac.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.ac.executionlog;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
 

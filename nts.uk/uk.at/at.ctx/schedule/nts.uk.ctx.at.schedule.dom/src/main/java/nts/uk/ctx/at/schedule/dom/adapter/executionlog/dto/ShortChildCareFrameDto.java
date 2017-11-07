@@ -2,24 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.adapter.executionlog;
+package nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class WorkplaceDto.
+ * The Class ShortChildCareFrameDto.
  */
 @Getter
 @Setter
-public class WorkplaceDto {
+public class ShortChildCareFrameDto {
 	
-	/** The work place id. */
-	private String workplaceId;
+	/** The time slot. */
+	private int timeSlot;
 	
-	/** The workp lace code. */
-	private String workplaceCode;
-
-	/** The work place name. */
-	private String workplaceName;
+	/** The start time. */
+	private TimeWithDayAttr startTime;
+	
+	/** The end time. */
+	private TimeWithDayAttr endTime;
 }
