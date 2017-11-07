@@ -786,22 +786,26 @@ module nts.uk.at.view.kmk006.a {
                 if (!self.inputDate()) {
                     return;
                 } 
+                
+                let emptyBaseDate: boolean = nts.uk.text.isNullOrEmpty(self.baseDate().toString());
                 self.baseDate(self.inputDate());
                 
                 // Reload table
-                $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
-
-                });
-
-                $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
-                    let code = $('#jobtitles').getDataList()[0].id;
-                    self.totalSelectedCode(code);
-                    self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
-                    // load ready setting
-                    self.loadWkpJobAlreadySettingList().done(function() {
+                if (emptyBaseDate) {
+                    $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
 
                     });
-                });   
+    
+                    $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
+                        let code = $('#jobtitles').getDataList()[0].id;
+                        self.totalSelectedCode(code);
+                        self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
+                        // load ready setting
+                        self.loadWkpJobAlreadySettingList().done(function() {
+    
+                        });
+                    });   
+                }               
             }
             
             // delete Pattern
