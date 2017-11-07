@@ -9,14 +9,14 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.layout.LayoutFinder;
 
-public class EmpAddCommandHandler extends CommandHandler<EmpAddCommand> {
+public class AddEmpCommandHandler extends CommandHandler<AddEmpCommand> {
 	@Inject
 	private LayoutFinder layoutFinder;
 
 	@Override
-	protected void handle(CommandHandlerContext<EmpAddCommand> context) {
+	protected void handle(CommandHandlerContext<AddEmpCommand> context) {
 
-		EmpAddCommand command = context.getCommand();
+		AddEmpCommand command = context.getCommand();
 
 		List<SettingItemDto> dataList = this.layoutFinder.loadAllItemByCreateType(command.getCreateType(),
 				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
