@@ -6,6 +6,8 @@ import lombok.Data;
 public class EmpAddItemCommand {
 
 	private String itemCode;
+	
+	private String itemId;
 
 	private String value;
 

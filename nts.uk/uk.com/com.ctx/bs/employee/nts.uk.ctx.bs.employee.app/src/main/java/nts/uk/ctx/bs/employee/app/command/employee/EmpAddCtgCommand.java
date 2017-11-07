@@ -9,6 +9,8 @@ public class EmpAddCtgCommand {
 
 	private String categoryCd;
 
+	private String categoryId;
+
 	private List<EmpAddItemCommand> listItem;
 
 }
