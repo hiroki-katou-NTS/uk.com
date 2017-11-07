@@ -26,7 +26,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 
 	private static final String GET_WORK_TIME_AND_WT_DAY = "SELECT NEW " + WorkTimeScreenDto.class.getName()
 			+ " (a.kwtmpWorkTimePK.siftCD, a.workTimeName, a.workTimeAbName, a.workTimeSymbol, a.workTimeDailyAtr, a.workTimeMethodSet, a.displayAtr, a.note,"
-			+ " b.a_m_StartClock, b.p_m_EndClock, b.kwtdpWorkTimeDayPK.timeNumberCnt)"
+			+ " b.start, b.end, b.kwtdpWorkTimeDayPK.timeNumberCnt)"
 			+ " FROM KwtmtWorkTime a JOIN KwtdtWorkTimeDay b ON a.kwtmpWorkTimePK.siftCD = b.kwtdpWorkTimeDayPK.siftCD"
 			+ " JOIN KshmtWorkTimeOrder c ON a.kwtmpWorkTimePK.siftCD = c.kshmpWorkTimeOrderPK.workTimeCode"
 			+ " WHERE a.kwtmpWorkTimePK.companyID = :companyId" + " AND a.displayAtr = :displayAtr"

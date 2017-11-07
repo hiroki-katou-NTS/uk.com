@@ -8,6 +8,7 @@ module nts.uk.at.view.ksc001.b {
                 self.applyKCP005ContentSearch([]);
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
+                    $('#dateRangePickerPeriod').find('input').first().focus();
                 });
             });
         });

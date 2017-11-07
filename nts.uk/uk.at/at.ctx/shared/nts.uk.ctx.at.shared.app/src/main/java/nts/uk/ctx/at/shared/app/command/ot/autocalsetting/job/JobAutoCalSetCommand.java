@@ -20,10 +20,10 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSettingGetMement
 @Setter
 @Getter
 public class JobAutoCalSetCommand {
-	
+
 	/** The job ID. */
 	private String jobId;
-	
+
 	/** The normal OT time. */
 	private AutoCalOvertimeSettingDto normalOTTime;
 
@@ -36,7 +36,8 @@ public class JobAutoCalSetCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @return the job auto cal set command
 	 */
 	public JobAutoCalSetting toDomain(String companyId) {
@@ -57,8 +58,10 @@ public class JobAutoCalSetCommand {
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId the company id
-		 * @param command the command
+		 * @param companyId
+		 *            the company id
+		 * @param command
+		 *            the command
 		 */
 		public DtoGetMemento(String companyId, JobAutoCalSetCommand command) {
 			this.companyId = companyId;
@@ -68,23 +71,24 @@ public class JobAutoCalSetCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesGetMemento#
-		 * getCompanyId()
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.
+		 * JobAutoCalSettingGetMemento#getCompanyId()
 		 */
 		@Override
 		public CompanyId getCompanyId() {
 			return new CompanyId(this.companyId);
 		}
-		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.JobAutoCalSettingGetMemento#getPositionId()
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+		 * JobAutoCalSettingGetMemento#getPositionId()
 		 */
 		@Override
 		public JobTitleId getPositionId() {
 			return new JobTitleId(this.command.getJobId());
 		}
-
 
 		/*
 		 * (non-Javadoc)
