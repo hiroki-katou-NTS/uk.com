@@ -47,7 +47,6 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 	@Override
 	protected void handle(CommandHandlerContext<UpdateInitValueSettingCommand> context) {
 		UpdateInitValueSettingCommand command = context.getCommand();
-		String em = AppContexts.user().employeeCode();
 		Optional<PerInfoInitValSetCtg> ctgSetting = this.ctgRepo.getDetailInitValSetCtg(command.getSettingId(),
 				command.getPerInfoCtgId());
 		Optional<PerInfoInitValueSetting> setting = this.settingRepo.getDetailInitValSetting(command.getSettingId());
@@ -132,11 +131,10 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							this.itemRepo.update(itemExist.get());
 
 						} else if (c.getDataType() == 6) {
-							// item =
-							// PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-							// command.getSettingId(), command.getPerInfoCtgId(),
-							// c.getRefMethodType(),
-							// c.getSaveDataType(), c.getStringValue());
+							String employeeCode = AppContexts.user().employeeCode();
+							String employeeId = AppContexts.user().employeeId();
+							
+							
 
 						}
 					} else {
@@ -152,7 +150,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 						if (c.getDataType() == 0 || c.getDataType() == 1) {
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(),
-									Integer.valueOf(c.getSelectedRuleCode()), c.getSaveDataType(), c.getStringValue());
+									Integer.valueOf(c.getSelectedRuleCode()), 1, c.getStringValue());
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 2) {
@@ -200,14 +198,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 6) {
-//							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-//									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
-//							this.itemRepo.addItem(item);
-//							 item =
-//							 PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-//							 command.getSettingId(), command.getPerInfoCtgId(),
-//							 c.getRefMethodType(),
-//							 c.getSaveDataType(), c.getStringValue());
+							
 
 						}
 					} else {

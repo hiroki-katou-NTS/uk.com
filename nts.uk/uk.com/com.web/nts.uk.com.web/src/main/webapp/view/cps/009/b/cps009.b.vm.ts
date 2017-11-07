@@ -33,10 +33,13 @@ module nts.uk.com.view.cps009.b.viewmodel {
             let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: ''};
             self.categoryName(param.ctgName);
             service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data){
+                //ドメインモデル「個人情報項目定義」を取得できているかどうかをチェック (Kiểm tra 「個人情報項目定義」 có lấy được hay không)
                 if(data == null || data == undefined || data.length == 0){
-                    self.itemInitLst = [];
-                    dfd.resolve();
-                    return dfd.promise();
+                    //データ件数＝０(Không)
+                    //メッセージ(#Msg_353#)を表示、トップページへ遷移する (Hiển thị ErrorMessage Msg_353, Chuyển đến TopPage) 
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_353'}).then(function(){
+                         close();
+                     });
                 }
                 self.dataSource = data;
                 _.each(self.dataSource, function(item){

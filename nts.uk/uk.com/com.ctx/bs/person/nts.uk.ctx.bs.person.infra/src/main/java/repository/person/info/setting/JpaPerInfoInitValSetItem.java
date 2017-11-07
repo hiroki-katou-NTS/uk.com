@@ -12,7 +12,6 @@ import entity.person.info.setting.innitvalue.PpemtPersonInitValueSettingItemPk;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
@@ -24,11 +23,11 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.StringValue;
 @Stateless
 public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoInitValueSetItemRepository {
 
-	private final String CHECK_ITEM_IS_EXITED = "SELECT a.ppemtPerInfoItemPK.perInfoItemDefId from PpemtPerInfoItem a"
-			+ " INNER JOIN PpemtPerInfoItemOrder b"
-			+ " ON a.ppemtPerInfoItemPK.perInfoItemDefId = b.ppemtPerInfoItemPK.perInfoItemDefId "
-			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
-			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
+//	private final String CHECK_ITEM_IS_EXITED = "SELECT a.ppemtPerInfoItemPK.perInfoItemDefId from PpemtPerInfoItem a"
+//			+ " INNER JOIN PpemtPerInfoItemOrder b"
+//			+ " ON a.ppemtPerInfoItemPK.perInfoItemDefId = b.ppemtPerInfoItemPK.perInfoItemDefId "
+//			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
+//			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
 
 	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			+ " ITEM.requiredAtr, "
@@ -41,7 +40,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			// cái này dùng để xem date là thuộc ngày tháng năm hat năm tháng hay chỉ năm 21
 			+ " CM.dateItemType, "
 			// cái này dùng để validate thằng timpoint trên màn hình 22 , 23
-			+ " CM.timepointItemMin , CM.timepointItemMax "
+			+ " CM.timepointItemMin , CM.timepointItemMax, "
+			// cái này dùng để validate thằng numberItem trên màn hình 24 , 25
+			+ " CM.numericItemMin, CM.numericItemMax"
 
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
@@ -209,6 +210,14 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		if (entity[23] != null) {
 			domain.setTimepointItemMax(Integer.valueOf(entity[23].toString()));
 		}
+		
+		if(entity[24] !=null) {
+			domain.setNumericItemMin(new BigDecimal(entity[24].toString()));
+		}
+		
+		if(entity[25] !=null) {
+			domain.setNumericItemMax(new BigDecimal(entity[25].toString()));
+		}
 
 		return domain;
 
@@ -311,7 +320,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		
 		List<PerInfoInitValueSetItem> itemAll = this.getAllItem(settingId, perInfoCtgId);
 
-		if (itemAll.size() == itemSetting.size()) {
+		if (itemAll.size() == itemSetting.size() && itemAll.size() > 0) {
 			return true;
 		}
 		return false;
