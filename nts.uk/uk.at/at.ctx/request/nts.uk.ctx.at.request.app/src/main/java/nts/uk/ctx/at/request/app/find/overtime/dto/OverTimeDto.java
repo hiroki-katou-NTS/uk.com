@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
 @Data
 public class OverTimeDto {
@@ -39,23 +41,15 @@ public class OverTimeDto {
 	 */
 	private int displayPrePostFlg;
 	/**
-	 * 勤務種類コード
+	 * workType
 	 */
-	private String workTypeCode;
+	private WorkTypeOvertime workType;
 	
 	/**
-	 * 勤務種類名称
+	 * siftType
 	 */
-	private String workTypeName;
-	/**
-	 * 就業時間帯
-	 */
-	private String siftCode;
-	
-	/**
-	 * 就業時間帯名称
-	 */
-	private String siftName;
+	private SiftType siftType;
+
 	/**
 	 * 勤務時間From1
 	 */

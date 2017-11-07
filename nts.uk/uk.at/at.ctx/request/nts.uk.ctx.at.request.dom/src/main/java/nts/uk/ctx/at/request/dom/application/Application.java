@@ -2,8 +2,10 @@ package nts.uk.ctx.at.request.dom.application;
 
 import java.util.List;
 import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -17,11 +19,12 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Application extends AggregateRoot{
 	/**
 	 * 会社ID
 	 */
-	private final String CompanyID;
+	private String CompanyID;
 	/**
 	 * 申請ID
 	 */

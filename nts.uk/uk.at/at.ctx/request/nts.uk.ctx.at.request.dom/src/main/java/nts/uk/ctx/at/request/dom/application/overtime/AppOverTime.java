@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AppOverTime extends AggregateRoot{
 	
 	/**

@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
+import java.util.Optional;
+
+import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 
 public interface OvertimeService {
 	/**
@@ -10,10 +12,27 @@ public interface OvertimeService {
 	 * @return
 	 */
 	public int checkOvertime(String url);
+	
 	/**
-	 * 01-01_残業通知情報を取得
-	 * @param appCommonSettingOutput
+	 * 07_勤務種類取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param personalLablorCodition
+	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public OverTimeInstruct getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID);
+	public WorkTypeOvertime getWorkType(String companyID,String employeeID, Optional<PersonalLaborCondition> personalLablorCodition, Optional<RequestAppDetailSetting> requestAppDetailSetting);
+	
+	/**
+	 * 08_就業時間帯取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param personalLablorCodition
+	 * @param requestAppDetailSetting
+	 * @return
+	 */
+	public SiftType getSiftType(String companyID,String employeeID,Optional<PersonalLaborCondition> personalLablorCodition,Optional<RequestAppDetailSetting> requestAppDetailSetting);
+	
+	
+	
 }
