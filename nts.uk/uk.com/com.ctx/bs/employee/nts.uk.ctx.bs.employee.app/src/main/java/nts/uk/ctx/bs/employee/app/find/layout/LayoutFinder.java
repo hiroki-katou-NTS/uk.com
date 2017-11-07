@@ -659,7 +659,7 @@ public class LayoutFinder {
 		List<Object> itemValueList = new ArrayList<Object>();
 		for (PerInfoItemDefDto itemDf : listItemDf) {
 
-			SettingItemDto item = findItemByCode(allItemData, itemDf.getItemCode());
+			SettingItemDto item = findItem(allItemData, itemDf);
 
 			if (item != null) {
 				// because is single item
@@ -678,13 +678,14 @@ public class LayoutFinder {
 		return itemValueList;
 	}
 
-	private SettingItemDto findItemByCode(List<SettingItemDto> allItemData, String itemCode) {
+	private SettingItemDto findItem(List<SettingItemDto> allItemData, PerInfoItemDefDto itemDf) {
 
-		return allItemData.stream().filter(i -> i.getItemCode().equals(itemCode)).findFirst().orElse(null);
+		return allItemData.stream().filter(i -> i.getItemCode().equals(itemDf.getItemCode())
+				&& i.getPerInfoCtgId().equals(itemDf.getPerInfoCtgId())).findFirst().orElse(null);
 	}
 
-	private List<SettingItemDto> loadAllItemByCreateType(int createType, String initSettingId, GeneralDate baseDate,
-			String employeeId) {
+	public List<SettingItemDto> loadAllItemByCreateType(int createType, String initSettingId, GeneralDate baseDate,
+			String employeeCopyId) {
 		// get all Data
 		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
@@ -697,7 +698,7 @@ public class LayoutFinder {
 			for (SettingCtgDto settingCtg : ctgList) {
 
 				List<SettingItemDto> itemList = this.copySetItemFinder
-						.getAllCopyItemByCtgCode(settingCtg.getCategoryCd(), employeeId, baseDate);
+						.getAllCopyItemByCtgCode(settingCtg.getCategoryCd(), employeeCopyId, baseDate);
 				returnList.addAll(itemList);
 			}
 
