@@ -155,11 +155,11 @@ module nts.uk.ui.koExtentions {
             
             if (data.multiple){
                 $grid.bind('iggridrowselectorscheckboxstatechanging', (eventObject: JQueryEventObject) => {
-                    return (String($grid.data("enable")) === "true") ? true : false;
+                    return (String($grid.data("enable")) === "false") ? false : true;
                 });
             }
             $grid.bind('iggridselectionrowselectionchanging', (eventObject: JQueryEventObject) => {
-                return (String($grid.data("enable")) === "true") ? true : false;
+                return (String($grid.data("enable")) === "false") ? false : true;
             });
 
             $grid.bind('selectionchanged', () => {
