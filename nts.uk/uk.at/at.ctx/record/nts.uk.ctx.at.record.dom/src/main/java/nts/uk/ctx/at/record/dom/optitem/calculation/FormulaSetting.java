@@ -65,11 +65,18 @@ public class FormulaSetting extends DomainObject {
 	 * @return true, if is both item input
 	 */
 	public boolean isBothItemInput() {
-		if (this.leftItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT
-				&& this.rightItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT) {
-			return true;
-		}
-		return false;
+		return this.leftItem.getSettingMethod().equals(SettingMethod.NUMERICAL_INPUT)
+				&& this.rightItem.getSettingMethod().equals(SettingMethod.NUMERICAL_INPUT);
+	}
+
+	/**
+	 * Checks if is both item select.
+	 *
+	 * @return true, if is both item select
+	 */
+	public boolean isBothItemSelect() {
+		return this.leftItem.getSettingMethod().equals(SettingMethod.ITEM_SELECTION)
+				&& this.rightItem.getSettingMethod().equals(SettingMethod.ITEM_SELECTION);
 	}
 
 	/**
