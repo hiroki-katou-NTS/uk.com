@@ -21,18 +21,18 @@
 			<com:scriptfile path="ksc001.f.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<div class="contentSchedule">
-					<label class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
+			<div id="contents-area" tabindex="-1">
+				<div class="contentSchedule" tabindex="-1">
+					<label tabindex="-1" class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
 					
 					<table class="tableSchedule" tabindex="-1">
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_49')}</td>
-							<td class="valueScheduleSetting" data-bind="text: executionStartDate"></td>
+							<td class="valueScheduleSetting" tabindex="-1" data-bind="text: executionStartDate"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
-							<td class="valueScheduleSetting" data-bind="text: executionTotal"></td>
+							<td class="valueScheduleSetting" tabindex="-1" data-bind="text: executionTotal"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
@@ -51,8 +51,8 @@
 									</ul></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>
-							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLogModel.completionStatus"></td>
+							<td tabindex="-1" class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>
+							<td tabindex="-1" class="valueScheduleSetting" data-bind="text: scheduleExecutionLogModel.completionStatus"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_52')}</td>
