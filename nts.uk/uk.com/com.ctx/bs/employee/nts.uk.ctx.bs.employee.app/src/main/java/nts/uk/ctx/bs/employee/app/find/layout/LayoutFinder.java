@@ -669,7 +669,7 @@ public class LayoutFinder {
 						item.getValueAsString());
 				itemValueList.add(value);
 			} else {
-				// remove if can't find
+				// remove itemDf not found
 				listItemDf.remove(itemDf);
 
 			}
