@@ -29,4 +29,6 @@ public interface TargetPersonRepository {
 	
 	List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID);
 	
+	void addAll(List<TargetPerson> lstTargetPerson);
+	
 }

@@ -3,6 +3,9 @@ module nts.uk.com.view.cmm013.e {
     export module viewmodel {
         
         import Constants = base.Constants;
+        import SavePeriod = base.SavePeriod;   
+        import SaveHistory = base.SaveHistory;          
+        import SaveJobTitleHistoryCommand = service.model.SaveJobTitleHistoryCommand;
         
         export class ScreenModel {
             
@@ -68,19 +71,12 @@ module nts.uk.com.view.cmm013.e {
             /**
              * toJSON
              */
-            private toJSON(): any {
+            private toJSON(): SaveJobTitleHistoryCommand {
                 let _self = this;
-                return {
-                    isCreateMode: false,
-                    jobTitleId: _self.jobTitleId,
-                    jobTitleHistory: {
-                        historyId: _self.historyId,
-                        period: {
-                            startDate: _self.startDate(),
-                            endDate: new Date("9999-12-31")
-                        }
-                    }
-                }
+                
+                let jobTitleHistory: SaveHistory = new SaveHistory(_self.historyId, new SavePeriod(new Date(_self.startDate()), new Date("9999-12-31")));
+                let command: SaveJobTitleHistoryCommand = new SaveJobTitleHistoryCommand(false, _self.jobTitleId, jobTitleHistory);
+                return command;              
             }
             
             /**
