@@ -65,10 +65,10 @@ public class VerticalCalItemCommand {
  		FormPeople formPeople1 = this.formPeople != null
  				? this.formPeople.toDomainFormPeople(companyId, verticalCalCd, itemId)
 				: null;
- 		FormulaNumerical formula = this.formulaNumerical != null
+ 		FormulaNumerical numerical = this.formulaNumerical != null
  				? this.formulaNumerical.toDomainNumerical(companyId, verticalCalCd, itemId)
  						: null;
 		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, 
-				dispOrder, built, time, formPeople1,amount);
+				dispOrder, built, time, formPeople1,amount, numerical);
  	}
 }
