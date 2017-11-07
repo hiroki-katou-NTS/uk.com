@@ -38,9 +38,9 @@
 					data-bind="click : remove, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_4')}</button>
 
 				<button id="A1_008" tabindex="4">#{i18n.getText('CPS017_50')}</button>
-				
-				<button id="A1_003" data-bind="click: openDialogB"  tabindex="5">#{i18n.getText('CPS017_3')}</button>
-				
+
+				<button id="A1_003" data-bind="click: openDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
+
 				<button id="A1_007" tabindex="6">#{i18n.getText('CPS017_49')}</button>
 
 			</div>
@@ -81,7 +81,8 @@
 					<div id="history">
 						<button id="A2_8" data-bind="click: openDialogC" tabindex="9">#{i18n.getText('CPS017_8')}</button>
 						<button id="A2_9" data-bind="click: openDialogD" tabindex="10">#{i18n.getText('CPS017_9')}</button>
-						<button id="A2_10" tabindex="11" class="danger">#{i18n.getText('CPS017_10')}</button>
+						<button id="A2_10" tabindex="11" class="danger"
+							data-bind="click : removeHistory, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS017_10')}</button>
 
 					</div>
 
@@ -114,7 +115,7 @@
 							<label>#{i18n.getText('CPS017_13')}</label>
 						</div>
 						<span class="col1" data-bind="text: selectionItemName"></span>
-					</div> 
+					</div>
 
 
 					<div id="register">
@@ -175,6 +176,7 @@
 
 					<div class="formlabel">
 						<div class="coll"
+							style="margin-right: 26px;"
 							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">#{i18n.getText('CPS017_23')}</div>
 						<input style="width: 100px;"
 							data-bind="ntsTextEditor: {
@@ -188,10 +190,12 @@
 
 					<div class="distance">
 						<div class="coll"
+							style = "margin-right: 45px;"
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
 							<label>#{i18n.getText('CPS016_21')}</label>
 						</div>
-						<textarea style="width: 350px; height: 110px; vertical-align: top;"
+						<textarea
+							style="width: 310px; height: 110px; vertical-align: top;"
 							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'MemoSelection',required: false}" />
 					</div>
 
