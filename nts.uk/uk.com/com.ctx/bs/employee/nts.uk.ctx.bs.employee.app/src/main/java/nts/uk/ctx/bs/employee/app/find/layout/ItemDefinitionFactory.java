@@ -33,7 +33,7 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 public class ItemDefinitionFactory {
 
 	public static void matchInformation(EmpPersonInfoClassDto authClassItem, Person person) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
+		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getInfoItems()) {
 			switch (dataInfoItem.getItemCode()) {
 			case "IS00001":
 				// 個人名グループ．個人名
@@ -121,7 +121,7 @@ public class ItemDefinitionFactory {
 	}
 
 	public static void matchInformation(EmpPersonInfoClassDto authClassItem, CurrentAddress currentAddress) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
+		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getInfoItems()) {
 			switch (dataInfoItem.getItemCode()) {
 			case "IS00029":
 				/*
@@ -341,7 +341,7 @@ public class ItemDefinitionFactory {
 //vinhpx: end
 	
 	public static void matchInformation(EmpPersonInfoClassDto authClassItem, Employee employee) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
+		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getInfoItems()) {
 			switch (dataInfoItem.getItemCode()) {
 			case "IS00020":
 				// 社員．社員コード
@@ -403,4 +403,8 @@ public class ItemDefinitionFactory {
 
 	public static void matchFamilies(EmpPersonInfoClassDto authClassItem, List<Family> families) {
 	}
+
+	public static void matchsubJobPoses(EmpPersonInfoClassDto authClassItem, List<SubJobPosition> subJobPoses) {
+	}
+
 }

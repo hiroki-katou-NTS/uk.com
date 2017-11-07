@@ -50,7 +50,16 @@ public class JpaIncomeTax extends JpaRepository implements IncomeTaxRepository{
 		}
 		// Update entity
 		updateEntity(domain, existItem.get());
-		this.commandProxy().insert(existItem.get());
+		this.commandProxy().update(existItem.get());
+	}
+	/**
+	 * ドメインモデル「家族所属税」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteIncomeTax(IncomeTax domain){
+		BsymtIncomeTaxPK key = new BsymtIncomeTaxPK(domain.getIncomeTaxID());
+		this.commandProxy().remove(BsymtIncomeTax.class,key);
 	}
 
 }

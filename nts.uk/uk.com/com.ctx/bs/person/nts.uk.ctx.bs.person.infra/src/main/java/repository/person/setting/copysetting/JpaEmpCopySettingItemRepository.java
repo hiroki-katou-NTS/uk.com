@@ -17,7 +17,9 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 			+ " ON ci.categoryId = cs.PpestEmployeeCopySettingPk.categoryId" + " INNER JOIN PpemtPerInfoCtg pc"
 			+ " ON ci.categoryId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON ci.PpestEmployeeCopySettingItemPk.perInfoItemDefId=pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " WHERE pc.categoryCd =:categoryCd AND pc.cid= :companyId";
+			+ " INNER JOIN PersonInfoItemAuth pa"
+			+ " ON ci.PpestEmployeeCopySettingItemPk.perInfoItemDefId = pa.personItemDefId and ci.categoryId = pa.personCategoryAuthId"
+			+ " WHERE pc.categoryCd =:categoryCd AND pc.cid= :companyId AND pa.otherAuth!=1";
 
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId) {

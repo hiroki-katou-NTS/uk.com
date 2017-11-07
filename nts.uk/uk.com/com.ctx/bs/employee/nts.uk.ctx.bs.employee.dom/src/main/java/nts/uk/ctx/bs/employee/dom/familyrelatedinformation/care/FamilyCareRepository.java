@@ -9,4 +9,9 @@ public interface FamilyCareRepository {
 	 * @param domain
 	 */
 	void updateFamilyCare(FamilyCare domain);
+	/**
+	 * ドメインモデル「家族介護」を削除する
+	 * @param domain
+	 */
+	void deleteFamilyCare(FamilyCare domain);
 }

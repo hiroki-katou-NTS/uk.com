@@ -85,4 +85,18 @@ public class JpaSubJobPosition extends JpaRepository implements SubJobPosReposit
 		this.commandProxy().update(existItem.get());
 	}
 
+	@Override
+	public List<SubJobPosition> getByEmpId(String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * ドメインモデル「職務職位（兼務）」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteSubJobPosition(SubJobPosition domain){
+		this.commandProxy().remove(BsymtSubJobPosition.class,domain.getSubJobPosId());
+	}
 }

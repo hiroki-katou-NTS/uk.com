@@ -30,16 +30,22 @@ module nts.uk.com.view.cps009.c.viewmodel {
                     codeInput: self.currentInitVal().itemCode(),
                     nameInput: self.currentInitVal().itemName()
                 }
-            console.log(copyObj)
-            service.copyInitValue(copyObj).done(function(){
-                nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
-                    //close dialog
-                    close();
+            $('.nts-input').trigger("validate");
+            if (!nts.uk.ui.errors.hasError()){
+                service.copyInitValue(copyObj).done(function(){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                        //close dialog
+                        close();
+                    });
+                }).fail(function(res){
+                    //display message error.
+                    if(res.messageId == "Msg_3"){
+                        $('#codeInput').ntsError('set', {messageId:"Msg_3"});
+                    }else{
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId});
+                    }
                 });
-            }).fail(function(res){
-                //display message error.
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId});
-            });
+                };
         }
 
         cancelCopyInitValue() {

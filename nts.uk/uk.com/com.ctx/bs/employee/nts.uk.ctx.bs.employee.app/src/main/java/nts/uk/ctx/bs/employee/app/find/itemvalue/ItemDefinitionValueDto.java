@@ -1,26 +1,15 @@
-package find.layout.classification;
+package nts.uk.ctx.bs.employee.app.find.itemvalue;
 
 import find.person.info.item.DataTypeStateDto;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @RequiredArgsConstructor
-public class LayoutPersonInfoValueDto {
-
-	// categoryID
-	@NonNull
-	private String categoryId;
-
-	// categoryCode
-	@NonNull
-	private String categoryCode;
-
-	// itemDefID
-	@NonNull
-	private String itemDefId;
-
+public class ItemDefinitionValueDto {
 	// for label text
 	@NonNull
 	private String itemName;
@@ -29,17 +18,13 @@ public class LayoutPersonInfoValueDto {
 	@NonNull
 	private String itemCode;
 
-	@NonNull
-	// index of item in list (multiple, history)
-	private Integer row;
-
-	@NonNull
-	// value of item definition
-	private Object value;
-
 	// is required?
 	// for render control label
 	private boolean required;
+
+	// value of item definition
+	@NonNull
+	private Object value;
 
 	// containt some infor of item for
 	// render control

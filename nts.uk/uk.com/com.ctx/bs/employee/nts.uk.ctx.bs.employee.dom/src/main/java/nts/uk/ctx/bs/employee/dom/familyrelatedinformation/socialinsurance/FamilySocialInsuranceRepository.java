@@ -9,4 +9,9 @@ public interface FamilySocialInsuranceRepository {
 	 * @param domain
 	 */
 	void updateFamilySocialInsurance(FamilySocialInsurance domain);
+	/**
+	 * ドメインモデル「家族社会保険」を削除する
+	 * @param domain
+	 */
+	void deleteFamilySocialInsurance(FamilySocialInsurance domain);
 }
