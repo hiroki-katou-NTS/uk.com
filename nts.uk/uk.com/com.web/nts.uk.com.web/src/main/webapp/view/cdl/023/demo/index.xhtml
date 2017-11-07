@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+		
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../../sample/catalog/catalog.css" />
+			<com:scriptfile path="../../../sample/catalog/catalog.js" />
+			<com:scriptfile path="cdl023.demo.start.js" />
+			<com:scriptfile path="cdl023.demo.vm.js" />
+			
+			<style>
+				#content table td {
+					padding: 10px;
+				}
+			</style>
+		</ui:define>
+
+		<ui:define name="content">
+		
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				
+				<div id="content" class="cf">
+					<button data-bind="click: openDialog">Test CDL023</button>
+					
+					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Parameters:</h4>
+					<table>
+						<col width="100"></col>
+						<col width="200"></col>
+						<tr>
+							<td>複写元コード</td>
+							<td><input id="code" data-bind="ntsTextEditor: {
+								value: code,
+								required: true,
+								enable: true,
+								readonly: false}" /></td>
+						</tr>
+						<tr>
+							<td>複写元名称</td>
+							<td><input id="name" data-bind="ntsTextEditor: {
+								value: name,
+								required: true,
+								enable: true,
+								readonly: false}" /></td>
+						</tr>
+					</table>
+					
+					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Return value:</h4>
+					<table>
+						<col width="100"></col>
+						<col width="400"></col>
+						<tr>
+							<td>複写先List</td>
+							<td><div data-bind="text: valueReturn"></div></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

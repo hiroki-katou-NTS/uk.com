@@ -1,15 +1,20 @@
 module nts.uk.at.view.kmk006.a {
 
     import Enum = service.model.Enum;
-    //importDto
+    
+    // Import Dto
     import ComAutoCalSettingDto = a.service.model.ComAutoCalSettingDto;
+    import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
+    import WkpAutoCalSettingDto = service.model.WkpAutoCalSettingDto;
+    import WkpJobAutoCalSettingDto = service.model.WkpJobAutoCalSettingDto;
+    
+    // Import Setting Dto
     import AutoCalOvertimeSettingDto = service.model.AutoCalOvertimeSettingDto;
     import AutoCalRestTimeSettingDto = service.model.AutoCalRestTimeSettingDto;
     import AutoCalFlexOvertimeSettingDto = service.model.AutoCalFlexOvertimeSettingDto;
     import AutoCalSettingDto = service.model.AutoCalSettingDto;
-    import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
-    import WkpAutoCalSettingDto = service.model.WkpAutoCalSettingDto;
-    import WkpJobAutoCalSettingDto = service.model.WkpJobAutoCalSettingDto;
+    
+    // Import Base unit for Setting
     import UnitAutoCalSettingDto = nts.uk.at.view.kmk006.e.service.model.UnitAutoCalSettingDto;
 
     export module viewmodel {
@@ -78,6 +83,7 @@ module nts.uk.at.view.kmk006.a {
             enableEnumResResLi: KnockoutObservable<boolean>;
             enableEnumResLatLi: KnockoutObservable<boolean>;
             baseDate: KnockoutObservable<Date>;
+            inputDate: KnockoutObservable<Date>;
             isLoading: KnockoutObservable<boolean>;
             date: KnockoutObservable<string>;
             yearMonth: KnockoutObservable<number>;
@@ -88,6 +94,7 @@ module nts.uk.at.view.kmk006.a {
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
+                self.inputDate = ko.observable(new Date());
                 self.isMultiSelectKcp = ko.observable(false);
                 self.date = ko.observable('20000101');
                 self.yearMonth = ko.observable(200001);
@@ -696,8 +703,7 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
 
-                // save enum
-
+                // Save enum
                 self.saveListEnum(self.itemWkpJobAutoCalModel);
                 var jobId = self.selectedCurrentJob();
                 var wkpId = self.selectedCurrentWkp();
@@ -723,9 +729,25 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
                     nts.uk.ui.block.clear();
-                });
+                });                       
             }
 
+            /**
+             * Apply base date
+             */
+            public applyBaseDate(): void {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                };
+                var self = this;
+
+                // Apply input date
+                if (!self.inputDate()) {
+                    return;
+                } 
+                self.baseDate(self.inputDate());
+            }
+            
             // delete Pattern
             public deleteJobAutoCal() {
                 let self = this;

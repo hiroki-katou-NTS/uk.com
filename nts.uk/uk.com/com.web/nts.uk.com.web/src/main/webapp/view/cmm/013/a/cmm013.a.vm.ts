@@ -145,7 +145,9 @@ module nts.uk.com.view.cmm013.a {
                 let _self = this;
 
                 if (!jobTitleId) {
-                    return;
+                    // No JobTitle has been choosed, switch to create mode
+                    _self.createMode(true);
+                    return;                  
                 }
 
                 // Load JobTitle history info 
