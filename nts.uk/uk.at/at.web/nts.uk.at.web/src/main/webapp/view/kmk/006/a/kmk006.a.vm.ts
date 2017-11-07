@@ -289,13 +289,13 @@ module nts.uk.at.view.kmk006.a {
 
                 // UI 
                 self.createModeScreenB = ko.computed(() => {
-                    return self.selectedCurrentWkp() ? true : false;
+                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp());
                 });
                 self.createModeScreenC = ko.computed(() => {
-                    return self.selectedCurrentJob() ? true : false;
+                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
                 });
                 self.createModeScreenD = ko.computed(() => {
-                    return (self.selectedCurrentWkp() && self.selectedCurrentJob()) ? true : false;
+                    return nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp()) && nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
                 });  
             }
 
@@ -731,12 +731,12 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
-                if(self.totalSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())){
                     $('#tree-grid').ntsError('set', {messageId:"Msg_719"});
                      nts.uk.ui.block.clear();
                     return;    
                 }
-                if(self.totalSelectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
                      $('#jobtitles').ntsError('set', {messageId:"Msg_720"});
                      nts.uk.ui.block.clear();
                     return;    
