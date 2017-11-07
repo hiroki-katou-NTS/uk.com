@@ -8,10 +8,12 @@ import java.util.List;
 import find.person.info.item.PerInfoItemDefDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LayoutPersonInfoClsDto {
 
 	private String layoutID;
