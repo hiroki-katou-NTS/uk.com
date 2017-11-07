@@ -23,31 +23,28 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSCST_FORMULA_MONEY")
 public class KscstFormulaMoney extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	/* 主キー */
 	@EmbeddedId
 	public KscstFormulaMoneyPK kscstFormulaMoneyPK;
-	
-    /* カテゴリ区分 */
+
+	/* カテゴリ区分 */
 	@Column(name = "CATEGORY_INDICATOR")
 	public int categoryIndicator;
-    
-    /* 実績表示区分 */
+
+	/* 実績表示区分 */
 	@Column(name = "ACTUAL_DISPLAY_ATR")
 	public int actualDisplayAtr;
 
 	@OneToOne
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "KSCST_MONEY_FUNC.CID", insertable = false, updatable = false),
-			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "KSCST_MONEY_FUNC.VERTICAL_CAL_CD", insertable = false, updatable = false),
-			@JoinColumn(name = "ITEM_ID", referencedColumnName = "KSCST_MONEY_FUNC.ITEM_ID", insertable = false, updatable = false)
-		})
-
-	public KscmtGenVertItem kscmtGenVertItemMoney;
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false) })
+	public KscstFormulaAmount kscstFormulaAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstFormulaMoney", orphanRemoval = true)
 	public List<KscstMoneyFunc> listMoney;
-	
+
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub

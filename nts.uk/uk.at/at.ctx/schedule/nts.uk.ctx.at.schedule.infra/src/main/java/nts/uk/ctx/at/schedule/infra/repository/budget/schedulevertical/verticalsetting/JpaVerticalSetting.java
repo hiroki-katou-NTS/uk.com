@@ -171,7 +171,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		TimeUnitFunc unitFunc = TimeUnitFunc.createFromJavatype(obj.kscstTimeUnitFuncPK.companyId, 
 				obj.kscstTimeUnitFuncPK.verticalCalCd, 
 				obj.kscstTimeUnitFuncPK.verticalCalItemId, 
-				obj.dispOrder, 
+				obj.kscstTimeUnitFuncPK.dispOrder, 
 				obj.attendanceItemId, 
 				obj.presetItemId, 
 				obj.operatorAtr);
@@ -189,7 +189,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		MoneyFunc domain = MoneyFunc.createFromJavatype(entity.kscstMoneyFuncPK.companyId, 
 															entity.kscstMoneyFuncPK.verticalCalCd, 
 															entity.kscstMoneyFuncPK.verticalCalItemId, 
-															entity.dispOrder,
+															entity.kscstMoneyFuncPK.dispOrder,
 															entity.externalBudgetCd,
 															entity.attendanceItemId,
 															entity.presetItemId,
@@ -263,7 +263,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	private KscstMoneyFunc toEntityFormMoney(MoneyFunc func){
 		KscstMoneyFunc entity = new KscstMoneyFunc();
-		entity.kscstMoneyFuncPK = new KscstMoneyFuncPK(func.getCompanyId(), func.getVerticalCalCd(), func.getVerticalCalItemId());
+		entity.kscstMoneyFuncPK = new KscstMoneyFuncPK(func.getCompanyId(), func.getVerticalCalCd(), func.getVerticalCalItemId(), func.getDispOrder());
 		entity.externalBudgetCd = func.getExternalBudgetCd();
 		entity.attendanceItemId = func.getAttendanceItemId();
 		entity.presetItemId = func.getPresetItemId();
@@ -324,8 +324,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	private KscstTimeUnitFunc toEntityTimeUnitFunc(TimeUnitFunc unitFunc){
 		KscstTimeUnitFunc entity = new KscstTimeUnitFunc();
-		entity.kscstTimeUnitFuncPK = new KscstTimeUnitFuncPK(unitFunc.getCompanyId(), unitFunc.getVerticalCalCd(), unitFunc.getVerticalCalItemId());
-		entity.dispOrder = unitFunc.getDispOrder();
+		entity.kscstTimeUnitFuncPK = new KscstTimeUnitFuncPK(unitFunc.getCompanyId(), unitFunc.getVerticalCalCd(), unitFunc.getVerticalCalItemId(), unitFunc.getDispOrder());
 		entity.attendanceItemId = unitFunc.getAttendanceItemId();
 		entity.presetItemId = unitFunc.getPresetItemId();
 		entity.operatorAtr = unitFunc.getOperatorAtr().value;

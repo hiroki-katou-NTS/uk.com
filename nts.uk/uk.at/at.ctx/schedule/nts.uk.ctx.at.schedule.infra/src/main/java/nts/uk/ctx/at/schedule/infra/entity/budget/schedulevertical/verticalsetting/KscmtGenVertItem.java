@@ -63,7 +63,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemPeople", orphanRemoval = true)
 	public KscmtFormPeople formPeople;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemFormula", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
 	public KscstFormulaAmount amount;
 	
 	@Override
