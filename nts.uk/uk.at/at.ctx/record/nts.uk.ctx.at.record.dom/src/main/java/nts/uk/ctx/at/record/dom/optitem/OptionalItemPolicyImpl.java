@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetting;
 
@@ -72,7 +73,8 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 	 */
 	private boolean isFormulaSettingValid(Formula formula) {
 		FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting();
-		if (!formulaSetting.isBothItemInput() && formulaSetting.isOperatorAddOrSub()) {
+		if (formula.getCalcAtr().equals(CalculationAtr.FORMULA_SETTING) && formulaSetting.isBothItemSelect()
+				&& formulaSetting.isOperatorAddOrSub()) {
 			OptionalItem leftItem = this.optItemRepo.find(formula.getCompanyId().v(),
 					formulaSetting.getLeftItem().getFormulaItemId().v());
 			OptionalItem rightItem = this.optItemRepo.find(formula.getCompanyId().v(),
