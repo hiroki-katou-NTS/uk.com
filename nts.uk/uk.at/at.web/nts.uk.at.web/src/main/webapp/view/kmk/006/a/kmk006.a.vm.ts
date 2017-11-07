@@ -90,6 +90,11 @@ module nts.uk.at.view.kmk006.a {
 
             // Common
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
+            
+            // UI 
+            createModeScreenB: KnockoutObservable<boolean>;
+            createModeScreenC: KnockoutObservable<boolean>;
+            createModeScreenD: KnockoutObservable<boolean>;           
 
             constructor() {
                 var self = this;
@@ -282,6 +287,16 @@ module nts.uk.at.view.kmk006.a {
                     return self.valueEnumResLatAtr() != 2;
                 });
 
+                // UI 
+                self.createModeScreenB = ko.computed(() => {
+                    return self.selectedCurrentWkp() ? true : false;
+                });
+                self.createModeScreenC = ko.computed(() => {
+                    return self.selectedCurrentJob() ? true : false;
+                });
+                self.createModeScreenD = ko.computed(() => {
+                    return (self.selectedCurrentWkp() && self.selectedCurrentJob()) ? true : false;
+                });  
             }
 
 
