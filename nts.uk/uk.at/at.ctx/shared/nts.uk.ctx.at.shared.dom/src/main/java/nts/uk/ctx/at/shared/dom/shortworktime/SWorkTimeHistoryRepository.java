@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.shortworktime;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface SWorkTimeHistoryRepository.
  */
@@ -33,4 +35,13 @@ public interface SWorkTimeHistoryRepository {
 	 * @return the optional
 	 */
 	Optional<ShortWorkTimeHistory> findByKey(String empId, String histId);
+	
+	/**
+	 * Find by base date.
+	 *
+	 * @param empId the emp id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	Optional<ShortWorkTimeHistory> findByBaseDate(String empId, GeneralDate baseDate);
 }

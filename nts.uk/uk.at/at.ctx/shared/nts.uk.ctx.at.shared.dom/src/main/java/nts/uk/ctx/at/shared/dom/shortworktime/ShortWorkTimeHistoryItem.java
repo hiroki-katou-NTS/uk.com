@@ -11,8 +11,8 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class ShortWorkTimeHistoryItem.
- * 短時間勤務履歴項目
  */
+// 短時間勤務履歴項目
 @Getter
 public class ShortWorkTimeHistoryItem extends AggregateRoot {
 
