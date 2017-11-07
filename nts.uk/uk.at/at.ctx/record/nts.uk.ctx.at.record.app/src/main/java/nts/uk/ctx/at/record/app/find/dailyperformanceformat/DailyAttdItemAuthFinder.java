@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItemAuthority;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
