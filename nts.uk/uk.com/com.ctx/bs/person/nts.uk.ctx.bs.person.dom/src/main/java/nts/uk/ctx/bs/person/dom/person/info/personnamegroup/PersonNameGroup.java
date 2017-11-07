@@ -43,6 +43,11 @@ public class PersonNameGroup {
 		this.personName = personName;
 	}
 	
+	public PersonNameGroup(PersonName personName, BusinessName businessName) {
+		super();
+		this.personName = personName;
+		this.businessName = businessName;
+	}
 	
 	
 	

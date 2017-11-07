@@ -25,6 +25,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.StringValue;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The class UpdateInitValueSettingHandler
@@ -46,6 +47,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 	@Override
 	protected void handle(CommandHandlerContext<UpdateInitValueSettingCommand> context) {
 		UpdateInitValueSettingCommand command = context.getCommand();
+		String em = AppContexts.user().employeeCode();
 		Optional<PerInfoInitValSetCtg> ctgSetting = this.ctgRepo.getDetailInitValSetCtg(command.getSettingId(),
 				command.getPerInfoCtgId());
 		Optional<PerInfoInitValueSetting> setting = this.settingRepo.getDetailInitValSetting(command.getSettingId());
@@ -116,7 +118,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 
 							itemExist.get().setRefMethodType(EnumAdaptor
 									.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-							itemExist.get().setIntValue(new IntValue(c.getTimeItem()));
+							itemExist.get().setIntValue(new IntValue(c.getTime()));
 							itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
 							this.itemRepo.update(itemExist.get());
 
@@ -125,7 +127,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							// time point
 							itemExist.get().setRefMethodType(EnumAdaptor
 									.valueOf(Integer.valueOf(c.getSelectedRuleCode()), ReferenceMethodType.class));
-							itemExist.get().setIntValue(new IntValue(c.getTimePoint()));
+							itemExist.get().setIntValue(new IntValue(c.getTime()));
 							itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
 							this.itemRepo.update(itemExist.get());
 
@@ -184,7 +186,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							item.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(c.getSelectedRuleCode()),
 									ReferenceMethodType.class));
 							item.setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
-							item.setIntValue(new IntValue(c.getTimeItem()));
+							item.setIntValue(new IntValue(c.getTime()));
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 5) {
@@ -194,15 +196,18 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							item.setRefMethodType(EnumAdaptor.valueOf(Integer.valueOf(c.getSelectedRuleCode()),
 									ReferenceMethodType.class));
 							item.setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
-							item.setIntValue(new IntValue(c.getTimePoint()));
+							item.setIntValue(new IntValue(c.getTime()));
 							this.itemRepo.addItem(item);
 
 						} else if (c.getDataType() == 6) {
-							// item =
-							// PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-							// command.getSettingId(), command.getPerInfoCtgId(),
-							// c.getRefMethodType(),
-							// c.getSaveDataType(), c.getStringValue());
+//							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+//									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
+//							this.itemRepo.addItem(item);
+//							 item =
+//							 PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
+//							 command.getSettingId(), command.getPerInfoCtgId(),
+//							 c.getRefMethodType(),
+//							 c.getSaveDataType(), c.getStringValue());
 
 						}
 					} else {

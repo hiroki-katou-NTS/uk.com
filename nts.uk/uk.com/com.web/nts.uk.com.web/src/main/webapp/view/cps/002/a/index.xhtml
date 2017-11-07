@@ -54,7 +54,7 @@
 
 					</div>
 					<div class="contents">
-						<!-- step1 -->
+						<!-- step1 start -->
 						<div class="step-1">
 							<div id="step1_content_top">
 								<div id="step1_content_top_left"
@@ -64,7 +64,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<div
+											<div class="form_step1"
 												data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD'}"></div>
 										</div>
 
@@ -75,7 +75,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_104')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input
+											<input class="form_step1"
 												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
@@ -87,7 +87,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input
+											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
 											required:true,
@@ -102,9 +102,39 @@
 											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_18')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input data-bind="ntsTextEditor: {value: cardNo}" />
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {value: cardNo}" />
 											<button
 												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_108')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {
+											value: employeeName ,
+											required:true,
+											option: {
+												 width: '163' 
+												 }}" />
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_109')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {
+											value: employeeName ,
+											required:true,
+											option: {
+												 width: '163',
+												 textmode:'password' 
+												 }}" />
 										</div>
 									</div>
 
@@ -168,7 +198,7 @@
 						</div>
 						<!-- step1 -->
 
-						<!-- step2 -->
+						<!-- step2 end -->
 
 
 
@@ -196,7 +226,7 @@
 															mode:'igGrid', 
 															comId:'init_list', 
 															items: initValueList , 
-															selected: initValueSelectedCode , 
+															selected: initSettingSelectedCode , 
 															selectedKey: 'itemCode', 
 															fields: ['itemName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
@@ -213,7 +243,7 @@
 																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
 															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
 															multiple: false,
-															value: initValueSelectedCode ,
+															value: initSettingSelectedCode ,
 															rows:15
 														}">
 											</table>
@@ -297,9 +327,9 @@
 								</div>
 							</div>
 						</div>
-						<!-- step2 -->
+						<!-- step2 end -->
 
-						<!-- step3 -->
+						<!-- step3 start -->
 						<div class="step-3">
 							<div class="div_line">
 								<label id="step3_des">#{i18n.getText('CPS002_51')}</label>
@@ -335,7 +365,15 @@
 
 							</div>
 
-							<div class='div_line'>
+							<!-- layout start -->
+							<div class="div_line" data-bind="with: layout">
+								<div
+									data-bind="ntsLayoutControl: { 
+											data: itemsClassification,
+											editAble: 2 }"></div>
+							</div>
+							<!-- layout end -->
+							<div class='div_line' style="padding-bottom: 20px;">
 								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
@@ -350,7 +388,7 @@
 							</div>
 
 						</div>
-						<!-- step3 -->
+						<!-- step3 end -->
 						<div class="step-4"></div>
 					</div>
 

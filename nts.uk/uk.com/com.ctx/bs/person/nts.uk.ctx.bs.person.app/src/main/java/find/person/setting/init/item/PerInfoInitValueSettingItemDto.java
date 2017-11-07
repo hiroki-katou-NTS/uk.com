@@ -67,6 +67,8 @@ public class PerInfoInitValueSettingItemDto {
 	
 	private String selectionItemId;
 	
+	private Integer selectionItemRefType;
+	
 	private Integer dateType;
 	
 	private Integer timepointItemMin;
@@ -80,7 +82,9 @@ public class PerInfoInitValueSettingItemDto {
 				domain.getStringValue().v(), domain.getIntValue() == null ? null : domain.getIntValue().v(), domain.getDateValue(),
 				domain.getItemCode(), domain.getCtgCode(), domain.getConstraint(), domain.getNumberDecimalPart(),
 				domain.getNumberIntegerPart(), domain.getTimeItemMin(), domain.getTimeItemMax(),
-				domain.getSelectionItemId(), domain.getDateType(), 
+				domain.getSelectionItemId(), 
+				domain.getSelectionItemRefType() == null? null: domain.getSelectionItemRefType() ,
+				domain.getDateType(), 
 				domain.getTimepointItemMin(), domain.getTimepointItemMax());
 
 	}

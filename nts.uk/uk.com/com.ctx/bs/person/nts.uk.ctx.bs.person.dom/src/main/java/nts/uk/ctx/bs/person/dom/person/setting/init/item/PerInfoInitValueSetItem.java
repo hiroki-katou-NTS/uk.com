@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonCategoryItemData;
+import nts.uk.ctx.bs.person.dom.person.info.category.ReferenceStateData;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 
 /**
@@ -77,6 +78,11 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	// trường này dùng để kết nối với bảng selectionItem
 	private String selectionItemId;
+	
+	private Integer selectionItemRefType;
+	
+	
+	private Map<Integer, Map<Integer, String>> selectionLst;
 
 	// trường này để xác định xem là trường date thuộc
 	// kiểu ngày tháng năm, năm tháng or năm
@@ -84,6 +90,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	
 	private Integer timepointItemMin;
 	private Integer timepointItemMax;
+
 
 	/**
 	 * constructor PerInfoInitValueSetItem
@@ -383,10 +390,11 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		PersonCategoryItemData item = new PersonCategoryItemData();
 		for (Map.Entry ctg : item.CategoryMap.entrySet()) {
 			if (ctg.getKey() == categoryCode) {
-				Map<String, String> itemChild = (Map<String, String>) ctg.getValue();
+				Map<String, ReferenceStateData> itemChild = (Map<String, ReferenceStateData>) ctg.getValue();
 				for (Map.Entry itemSub : itemChild.entrySet()) {
 					if (itemSub.getKey().equals(itemCode)) {
-						return itemSub.getValue().toString();
+						ReferenceStateData data = (ReferenceStateData) itemSub.getValue();
+						return data.getConstraint();
 
 					}
 				}
