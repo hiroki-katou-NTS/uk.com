@@ -59,6 +59,15 @@ public class PersonalLaborCondition extends AggregateRoot{
 	}
 	
 	/**
+	 * Checks if is use schedule management.
+	 *
+	 * @return true, if is use schedule management
+	 */
+	public boolean isUseScheduleManagement(){
+		return this.scheduleManagementAtr.equals(UseAtr.USE);
+	}
+	
+	/**
 	 * Save to memento.
 	 *
 	 * @param memento the memento
