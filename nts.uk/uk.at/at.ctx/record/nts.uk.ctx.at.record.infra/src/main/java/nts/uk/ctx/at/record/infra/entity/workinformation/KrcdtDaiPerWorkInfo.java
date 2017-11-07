@@ -57,9 +57,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "BACK_STRAIGHT_ATR")
 	public Integer backStraightAttribute;
 
-	@Column(name = "WORK_NO")
-	public String workNo;
-
 	@OneToMany(mappedBy="daiPerWorkInfo", cascade = CascadeType.ALL)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
 	
