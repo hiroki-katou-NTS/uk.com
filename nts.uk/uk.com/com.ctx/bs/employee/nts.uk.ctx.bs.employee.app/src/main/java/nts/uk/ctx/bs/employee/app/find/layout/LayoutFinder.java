@@ -602,9 +602,9 @@ public class LayoutFinder {
 
 	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 
-		
 		Optional<NewLayout> layout = repo.getLayout();
 		if (!layout.isPresent()) {
+
 			return null;
 		}
 
@@ -662,7 +662,10 @@ public class LayoutFinder {
 			SettingItemDto item = findItemByCode(allItemData, itemDf.getItemCode());
 
 			if (item != null) {
-				LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getItemCode(),
+				// because is single item
+				int rowIndex = 0;
+				LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getPerInfoCtgId(),
+						item.getCategoryCode(), itemDf.getId(), itemDf.getItemName(), itemDf.getItemCode(), rowIndex,
 						item.getValueAsString());
 				itemValueList.add(value);
 			} else {

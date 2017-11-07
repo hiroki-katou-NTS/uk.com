@@ -33,12 +33,13 @@ public class LayoutPersonInfoValueDto {
 	// index of item in list (multiple, history)
 	private Integer row;
 
+	@NonNull
+	// value of item definition
+	private Object value;
+
 	// is required?
 	// for render control label
 	private boolean required;
-
-	// value of item definition
-	private Object value;
 
 	// containt some infor of item for
 	// render control
