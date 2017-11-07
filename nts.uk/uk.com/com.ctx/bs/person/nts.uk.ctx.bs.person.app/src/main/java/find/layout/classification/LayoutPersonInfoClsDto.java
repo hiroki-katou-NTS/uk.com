@@ -8,10 +8,12 @@ import java.util.List;
 import find.person.info.item.PerInfoItemDefDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LayoutPersonInfoClsDto {
 
 	private String layoutID;
@@ -19,6 +21,7 @@ public class LayoutPersonInfoClsDto {
 	private String className;
 	private String personInfoCategoryID;
 	private int layoutItemType;
+	// None require
 	private List<PerInfoItemDefDto> listItemDf;
 
 	/* List item value
@@ -36,9 +39,7 @@ public class LayoutPersonInfoClsDto {
 	 * ]
 	 *-------------------------------------------------------------------------
 	 */
-	private List<Object> items;	
-	
-	
+	private List<Object> items;
 	
 	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType) {
 		super();

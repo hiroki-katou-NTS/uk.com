@@ -8,22 +8,34 @@ import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 @Getter
 public class EmpCopySettingItem extends AggregateRoot {
 
-	String itemCode;
+	private String perInfoCtgId;
 
-	String itemName;
+	private String categoryCode;
 
-	IsRequired isRequired;
+	private String itemDefId;
 
-	public EmpCopySettingItem(String itemCode, String itemName, IsRequired isRequired) {
+	private String itemCode;
+
+	private String itemName;
+
+	private IsRequired isRequired;
+
+	public EmpCopySettingItem(String perInfoCtgId, String categoryCode, String itemDefId, String itemCode,
+			String itemName, IsRequired isRequired) {
 		super();
+		this.perInfoCtgId = perInfoCtgId;
+		this.categoryCode = categoryCode;
+		this.itemDefId = itemDefId;
 		this.itemCode = itemCode;
 		this.itemName = itemName;
 		this.isRequired = isRequired;
 	}
 
-	public static EmpCopySettingItem createFromJavaType(String itemCode, String itemName, int isRequired) {
+	public static EmpCopySettingItem createFromJavaType(String perInfoCtgId, String categoryCode, String itemDefId,
+			String itemCode, String itemName, int isRequired) {
 
-		return new EmpCopySettingItem(itemCode, itemName, EnumAdaptor.valueOf(isRequired, IsRequired.class));
+		return new EmpCopySettingItem(perInfoCtgId, categoryCode, itemDefId, itemCode, itemName,
+				EnumAdaptor.valueOf(isRequired, IsRequired.class));
 
 	}
 

@@ -5,9 +5,9 @@ package nts.uk.ctx.bs.employee.app.find.layout;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.employee.app.find.init.item.SaveDataDto;
-import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoClassDto;
-import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpPersonInfoItemDto;
+import find.layout.classification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoValueDto;
+import find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
@@ -30,97 +30,11 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
  */
 public class ItemDefinitionFactory {
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, Person person) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
-			switch (dataInfoItem.getItemCode()) {
-			case "IS00001":
-				// 個人名グループ．個人名
-				authClassItem.getDataItems()
-						.add(SaveDataDto.createDataDto(person.getPersonNameGroup().getPersonName().v()));
-				break;
-			case "IS00002":
-				// 個人名グループ．個人名カナ
-				authClassItem.getDataItems()
-						.add(SaveDataDto.createDataDto(person.getPersonNameGroup().getPersonNameKana().v()));
-				break;
-			case "IS00003":
-				// 個人名グループ．個人名ローマ字．氏名
-				authClassItem.getDataItems().add(
-						SaveDataDto.createDataDto(person.getPersonNameGroup().getPersonRomanji().getFullName().v()));
-				break;
-			case "IS00004":
-				// 個人名グループ．個人名ローマ字．氏名カナ
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v());
-				break;
-			case "IS00005":
-				// 個人名グループ．ビジネスネーム
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getBusinessName().v());
-				break;
-			case "IS00006":
-				// 個人名グループ．ビジネスネーム．英語
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getBusinessEnglishName().v());
-				break;
-			case "IS00007":
-				// 個人名グループ．ビジネスネーム．その他
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getBusinessOtherName().v());
-				break;
-			case "IS00008":
-				// 個人名グループ．個人旧氏名．氏名
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getOldName().getFullName().v());
-				break;
-			case "IS00009":
-				// 個人名グループ．個人旧氏名．氏名カナ
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getOldName().getFullNameKana().v());
-				break;
-			case "IS00010":
-				// 個人名グループ．個人届出名称．氏名
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getTodokedeFullName().getFullName().v());
-				break;
-			case "IS00011":
-				// 個人名グループ．個人届出名称．氏名カナ
-				authClassItem.getDataItems()
-						.add(person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v());
-				break;
-			case "IS00012":
-				// 個人名グループ．個人届出名称．氏名
-				authClassItem.getDataItems().add(person.getPersonNameGroup().getTodokedeFullName().getFullName().v());
-				break;
-			case "IS00013":
-				// 個人名グループ．個人届出名称．氏名カナ
-				authClassItem.getDataItems()
-						.add(person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v());
-				break;
-			case "IS00014":
-				// 性別
-				authClassItem.getDataItems().add(person.getGender().value);
-				break;
-			case "IS00015":
-				// 個人携帯
-				authClassItem.getDataItems().add(person.getPersonMobile().toString());
-				break;
-			case "IS00016":
-				// 個人メールアドレス
-				authClassItem.getDataItems().add(person.getMailAddress().toString());
-				break;
-			case "IS00017":
-				// 趣味
-				authClassItem.getDataItems().add(person.getHobBy().toString());
-				break;
-			case "IS00018":
-				// 嗜好
-				authClassItem.getDataItems().add(person.getTaste().toString());
-				break;
-			case "IS00019":
-				// 国籍
-				authClassItem.getDataItems().add(person.getCountryId().toString());
-				break;
-			}
-		}
-	}
-
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, CurrentAddress currentAddress) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
-			switch (dataInfoItem.getItemCode()) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			CurrentAddress currentAddress) {
+		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+			Object data = null;
+			switch (itemDef.getItemCode()) {
 			case "IS00029":
 				/*
 				 * 現住所．期間 現住所．期間．開始日 現住所．期間．終了日
@@ -129,63 +43,232 @@ public class ItemDefinitionFactory {
 				break;
 			case "IS00030":
 				// 現住所．郵便番号
-				authClassItem.getDataItems().add(currentAddress.getPostalCode().v());
+				data = currentAddress.getPostalCode().v();
 				break;
 
 			case "IS00031":
 				// 現住所．都道府県
-				authClassItem.getDataItems().add(currentAddress.getPrefectures().v());
+				data = currentAddress.getPrefectures().v();
 				break;
 			case "IS00032":
 				// 現住所．国
-				authClassItem.getDataItems().add(currentAddress.getCountryId());
+				data = currentAddress.getCountryId();
 				break;
 			case "IS00033":
 				// 現住所．住所１
-				authClassItem.getDataItems().add(currentAddress.getAddress1().getAddress1().v());
+				data = currentAddress.getAddress1().getAddress1().v();
 				break;
 			case "IS00034":
 				// 現住所．住所カナ１
-				authClassItem.getDataItems().add(currentAddress.getAddress1().getAddressKana1().v());
+				data = currentAddress.getAddress1().getAddressKana1().v();
 				break;
 			case "IS00035":
 				// 現住所．住所2
-				authClassItem.getDataItems().add(currentAddress.getAddress2().getAddress2().v());
+				data = currentAddress.getAddress2().getAddress2().v();
 				break;
 			case "IS00036":
 				// 現住所．住所カナ2
-				authClassItem.getDataItems().add(currentAddress.getAddress2().getAddressKana2().v());
+				data = currentAddress.getAddress2().getAddressKana2().v();
 				break;
 			case "IS00037":
 				// 現住所．電話番号
-				authClassItem.getDataItems().add(currentAddress.getPhoneNumber().v());
+				data = currentAddress.getPhoneNumber().v();
 				break;
 			case "IS00038":
 				// 現住所．住宅状況種別
-				authClassItem.getDataItems().add(currentAddress.getHomeSituationType().v());
+				data = currentAddress.getHomeSituationType().v();
 				break;
 			case "IS00039":
 				// 現住所．社宅家賃
-				authClassItem.getDataItems().add(currentAddress.getHouseRent().v());
+				data = currentAddress.getHouseRent().v();
 				break;
-
+			}
+			if (data != null) {
+				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
 			}
 		}
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, WidowHistory widowHistory) {
+	// vinhpx: start
+	// person
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Person person) {
+		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+			Object data = null;
+			switch (itemDef.getItemCode()) {
+			case "IS00001":
+				// 個人名グループ．個人名
+				data = person.getPersonNameGroup().getPersonName().v();
+				break;
+			case "IS00002":
+				// 個人名グループ．個人名カナ
+				data = person.getPersonNameGroup().getPersonNameKana().v();
+				break;
+			case "IS00003":
+				// 個人名グループ．個人名ローマ字．氏名
+				data = person.getPersonNameGroup().getPersonRomanji().getFullName().v();
+				break;
+			case "IS00004":
+				// 個人名グループ．個人名ローマ字．氏名カナ
+				data = person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v();
+				break;
+			case "IS00005":
+				// 個人名グループ．ビジネスネーム
+				data = person.getPersonNameGroup().getBusinessName().v();
+				break;
+			case "IS00006":
+				// 個人名グループ．ビジネスネーム．英語
+				data = person.getPersonNameGroup().getBusinessEnglishName().v();
+				break;
+			case "IS00007":
+				// 個人名グループ．ビジネスネーム．その他
+				data = person.getPersonNameGroup().getBusinessOtherName().v();
+				break;
+			case "IS00008":
+				// 個人名グループ．個人旧氏名．氏名
+				data = person.getPersonNameGroup().getOldName().getFullName().v();
+				break;
+			case "IS00009":
+				// 個人名グループ．個人旧氏名．氏名カナ
+				data = person.getPersonNameGroup().getOldName().getFullNameKana().v();
+				break;
+			case "IS00010":
+				// 個人名グループ．個人届出名称．氏名
+				data = person.getPersonNameGroup().getTodokedeFullName().getFullName().v();
+				break;
+			case "IS00011":
+				// 個人名グループ．個人届出名称．氏名カナ
+				data = person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v();
+				break;
+			case "IS00012":
+				// 個人名グループ．個人届出名称．氏名
+				data = person.getPersonNameGroup().getTodokedeFullName().getFullName().v();
+				break;
+			case "IS00013":
+				// 個人名グループ．個人届出名称．氏名カナ
+				data = person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v();
+				break;
+			case "IS00014":
+				// 性別
+				data = person.getGender().value;
+				break;
+			case "IS00015":
+				// 個人携帯
+				data = person.getPersonMobile().v();
+				break;
+			case "IS00016":
+				// 個人メールアドレス
+				data = person.getMailAddress().v();
+				break;
+			case "IS00017":
+				// 趣味
+				data = person.getHobBy().v();
+				break;
+			case "IS00018":
+				// 嗜好
+				data = person.getTaste().v();
+				break;
+			case "IS00019":
+				// 国籍
+				data = person.getCountryId().v();
+				break;
+			}
+			if (data != null) {
+				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+			}
+		}
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, Employee employee) {
-		for (EmpPersonInfoItemDto dataInfoItem : authClassItem.getDataInfoitems()) {
-			switch (dataInfoItem.getItemCode()) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Family family) {
+		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+			Object data = null;
+			switch (itemDef.getItemCode()) {
+			case "IS00040":
+				// 氏名
+				data = family.getFullName().v();
+				break;
+			case "IS00041":
+				// 氏名カナ
+				data = family.getFullNameKana().v();
+				break;
+			case "IS00042":
+				// 氏名ローマ字
+				data = family.getNameRomajiFull().v();
+				break;
+			case "IS00043":
+				// 氏名ローマ字カナ
+				data = family.getNameRomajiFullKana().v();
+				break;
+			case "IS00044":
+				// 氏名他言語
+				data = family.getNameMultiLangFull().v();
+				break;
+			case "IS00045":
+				// 氏名他言語カナ
+				data = family.getNameMultiLangFullKana().v();
+				break;
+			case "IS00046":
+				// 届出氏名
+				data = family.getTokodekeName().v();
+				break;
+			case "IS00047":
+				// 生年月日
+				data = family.getBirthday();
+				break;
+			case "IS00048":
+				// 死亡年月日
+				data = family.getDeadDay();
+				break;
+			case "IS00049":
+				// 入籍年月日
+				data = family.getEntryDate();
+				break;
+			case "IS00050":
+				// 除籍年月日
+				data = family.getExpelledDate();
+				break;
+			case "IS00051":
+				// 国籍
+				data = family.getNationalityId().v();
+				break;
+			case "IS00052":
+				// 職業
+				data = family.getOccupationName().v();
+				break;
+			case "IS00053":
+				// 続柄
+				data = family.getRelationship().v();
+				break;
+			case "IS00054":
+				// 同居別居区分
+				data = family.getTogSepDivisionType().value;
+				break;
+			case "IS00055":
+				// 支援介護区分
+				data = family.getSupportCareType().value;
+				break;
+			case "IS00056":
+				// 勤労学生
+				data = family.getWorkStudentType().value;
+				break;
+			}
+			if (data != null) {
+				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+			}
+		}
+	}
+	// vinhpx: end
+
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Employee employee) {
+		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+			Object data = null;
+			switch (itemDef.getItemCode()) {
 			case "IS00020":
 				// 社員．社員コード
-				authClassItem.getDataItems().add(employee.getSCd().v());
+				data = employee.getSCd().v();
 				break;
 			case "IS00021":
 				// 社員．入社年月日
-				authClassItem.getDataItems().add(employee.getJoinDate());
+				data = employee.getJoinDate();
 				break;
 			case "IS00022":
 				// 社員．本採用年月日
@@ -194,15 +277,15 @@ public class ItemDefinitionFactory {
 				break;
 			case "IS00024":
 				// 社員．会社メールアドレス
-				authClassItem.getDataItems().add(employee.getCompanyMail().v());
+				data = employee.getCompanyMail().v();
 				break;
 			case "IS00025":
 				// 社員．会社携帯メールアドレス
-				authClassItem.getDataItems().add(employee.getMobileMail().v());
+				data = employee.getMobileMail().v();
 				break;
 			case "IS00026":
 				// 社員．会社携帯電話番号
-				authClassItem.getDataItems().add(employee.getCompanyMobile().v());
+				data = employee.getCompanyMobile().v();
 				break;
 			case "IS00027":
 				// 社員．採用区分
@@ -211,32 +294,48 @@ public class ItemDefinitionFactory {
 				break;
 			case "IS00028":
 				// 社員．退職年月日
-				authClassItem.getDataItems().add(employee.getRetirementDate());
+				data = employee.getRetirementDate();
 				break;
+			}
+			if (data != null) {
+				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
 			}
 		}
 
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, TemporaryAbsence leaveHoliday) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			TemporaryAbsence leaveHoliday) {
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, JobTitleMain jobTitleMain) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			JobTitleMain jobTitleMain) {
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, AssignedWorkplace assignedWorkplace) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			AssignedWorkplace assignedWorkplace) {
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, AffiliationDepartment affDepartment) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			AffiliationDepartment affDepartment) {
 	}
 
-	public static void matchInformation(EmpPersonInfoClassDto authClassItem, SubJobPosition subJobPosition) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			SubJobPosition subJobPosition) {
 	}
 
-	public static void matchPersEmerConts(EmpPersonInfoClassDto authClassItem,
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			WidowHistory widowHistory) {
+	}
+
+	public static void matchPersEmerConts(LayoutPersonInfoClsDto authClassItem,
 			List<PersonEmergencyContact> perEmerConts) {
 	}
 
-	public static void matchFamilies(EmpPersonInfoClassDto authClassItem, List<Family> families) {
+	public static void matchFamilies(LayoutPersonInfoClsDto authClassItem, List<Family> families) {
 	}
+
+	public static void matchsubJobPoses(LayoutPersonInfoClsDto authClassItem, List<SubJobPosition> subJobPoses) {
+	}
+
 }

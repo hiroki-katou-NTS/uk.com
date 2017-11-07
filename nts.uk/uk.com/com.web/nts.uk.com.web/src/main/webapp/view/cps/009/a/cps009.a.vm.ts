@@ -195,13 +195,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // thiet lap item hang loat
         openBDialog() {
-
-            let self = this,
-                params = {
-                    settingId: self.initSettingId(),
-                    settingName: ko.toJS(self.currentCategory().settingName),
-                    categoryId: self.currentCategory().currentItemId()
-                };
+            let self = this;
+            let ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId());
+            let params = {
+                settingId: self.initSettingId(),
+                ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
+                categoryId: self.currentCategory().currentItemId()
+            };
 
             setShared('CPS009B_PARAMS', params);
             block.invisible();
@@ -430,7 +430,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return false
             }
             //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectedCode() != '1') {
+            if (objItem.selectedCode() != 1) {
                 return false;
             }
             return true;
@@ -444,9 +444,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return obj.selectionItemId == selectItemId;
             });
         }
+
+        /**
+         * find category is selected
+         */
+        findCtg(lstCtg: Array<any>, ctgId: string): any {
+            return _.find(lstCtg, function(obj) {
+                return obj.perInfoCtgId == ctgId;
+            });
+        }
+
     }
-
-
     export class InitValueSettingDetail {
         settingCode: KnockoutObservable<string>;
         settingName: KnockoutObservable<string>;
@@ -454,8 +462,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         currentItemId: KnockoutObservable<string> = ko.observable('');
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'perInfoCtgId', width: 100, hidden: true },
-            { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 30, formatter: makeIcon },
-            { headerText: text('CPS009_16'), key: 'categoryName', width: 220 }
+            { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
+            { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
         ]);
         itemList: KnockoutObservableArray<any>;
         constructor(params: IInitValueSettingDetail) {

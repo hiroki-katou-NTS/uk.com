@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.app.find.person.item;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.person.category.CtgItemFixDto;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 
 @Getter
 public class ItemCurrentAddressDto extends CtgItemFixDto{
@@ -56,5 +57,9 @@ public class ItemCurrentAddressDto extends CtgItemFixDto{
 		return new ItemCurrentAddressDto(currentAddressId, pid, countryId, postalCode, phoneNumber, prefectures, 
 				houseRent, StartDate, endDate, address1, addresskana1, address2, 
 				addresskana2, homeSituationType, personMailAddress, houseType, nearestStation);
+	}
+	
+	public CurrentAddress toDomainRequiredField(){
+		return CurrentAddress.createFromJavaType(currentAddressId, pid, StartDate, endDate, address1, addresskana1);
 	}
 }

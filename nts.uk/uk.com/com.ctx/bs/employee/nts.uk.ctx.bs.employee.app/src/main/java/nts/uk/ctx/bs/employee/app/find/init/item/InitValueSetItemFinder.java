@@ -297,9 +297,10 @@ public class InitValueSetItemFinder {
 	// Aff WorkPlace end
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
-		return SettingItemDto.createFromJavaType(domain.getItemCode(), domain.getItemName(),
-				domain.getIsRequired().value, domain.getSaveDataType().value, domain.getDateValue(),
-				domain.getIntValue().v(), domain.getStringValue().v());
+		return SettingItemDto.createFromJavaType(domain.getPerInfoCtgId(), domain.getCtgCode(),
+				domain.getPerInfoItemDefId(), domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
+				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
+				domain.getStringValue().v());
 	}
 
 	// sonnlb

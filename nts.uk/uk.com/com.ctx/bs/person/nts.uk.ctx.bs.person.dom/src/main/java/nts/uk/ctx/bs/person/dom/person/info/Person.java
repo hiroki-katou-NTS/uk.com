@@ -4,12 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.bs.person.dom.person.info;
 
+import javax.persistence.EnumType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 
@@ -59,11 +63,29 @@ public class Person extends AggregateRoot {
 	public static Person createFromJavaType(String pId, String personName) {
 		return new Person(pId, new PersonNameGroup(new PersonName(personName)));
 	}
-
+	
+	//for required field
+	public static Person createFromJavaType(String personId, GeneralDate birthDate, int bloodType, int gender, String personMobile, String mailAddress, String businessName, String personName) {
+		return new Person(personId, birthDate, EnumAdaptor.valueOf(bloodType, BloodType.class),
+				EnumAdaptor.valueOf(gender, GenderPerson.class), new PersonMobile(personMobile), 
+				new PersonMailAddress(mailAddress), new BusinessName(businessName), new PersonName(personName));
+	}
 	public Person(String personId, PersonNameGroup personNameGroup) {
 		super();
 		this.personId = personId;
 		this.personNameGroup = personNameGroup;
+	}
+	
+	//constructor for required field
+	public Person(String personId, GeneralDate birthDate, BloodType bloodType, GenderPerson gender, PersonMobile personMobile, PersonMailAddress mailAddress, BusinessName businessName, PersonName personName){
+		super();
+		this.personId = personId;
+		this.birthDate = birthDate;
+		this.bloodType = bloodType;
+		this.gender = gender;
+		this.personMobile = personMobile;
+		this.mailAddress = mailAddress;
+		this.personNameGroup = new PersonNameGroup(personName, businessName);
 	}
 
 }
