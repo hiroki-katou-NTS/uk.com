@@ -588,7 +588,7 @@ module nts.custombinding {
                             constraint: itemCode,
                             inputFormat: 'HH:mm',
                             enable: editable,
-                            readonly: item.readonly }, attr: { placeholder: itemName, id: itemCode }" />
+                            readonly: readonly }, attr: { placeholder: itemName, id: itemCode }" />
                     </div>
                     <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
                         <input data-bind="ntsTimeEditor: {
@@ -596,7 +596,7 @@ module nts.custombinding {
                             constraint: itemCode,
                             inputFormat: 'HH:mm',
                             enable: editable,
-                            readonly:  readonly
+                            readonly: readonly
                         }, attr: { placeholder: itemName, id: itemCode }" />
                     </div>
                     <div data-bind="if: item.dataTypeValue == 6" class="selection">
@@ -1208,14 +1208,19 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let modifitem = (def: any, item: any) => {
-                        def.itemCode = item.itemCode;
-                        def.itemName = item.itemName;
-                        def.required = !!item.isRequired;
+                        def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                        def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+
+                        def.required = _.has(def, "required") && def.required || !!item.isRequired;
+
                         def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
-                        def.readonly = !!opts.sortable.isEnabled();
-                        def.editable = !!opts.sortable.isEditable();
-                        def.type = (item.itemTypeState || <any>{}).itemType;
-                        def.item = $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+
+                        def.hidden = _.has(def, "actionRole") ? def.actionRole == 0 : true;
+                        def.readonly = _.has(def, "actionRole") ? def.actionRole == 1 : !!opts.sortable.isEnabled();
+                        def.editable = _.has(def, "actionRole") ? def.actionRole == 2 : !!opts.sortable.isEditable();;
+
+                        def.type = _.has(def, "item") ? def.item.itemType : (item.itemTypeState || <any>{}).itemType;
+                        def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
                     };
 
                     x.dispOrder = i + 1;
@@ -1237,7 +1242,7 @@ module nts.custombinding {
                         switch (x.layoutItemType) {
                             case IT_CLA_TYPE.ITEM:
                                 _.each((x.listItemDf || []), (item, i) => {
-                                    let def = x.items()[i];
+                                    let def = _.find(x.items(), (m: any) => m.itemCode == item.itemCode);
 
                                     if (!def) {
                                         def = {};
@@ -1264,7 +1269,7 @@ module nts.custombinding {
                                     x.items()[i] = row;
 
                                     _.each((x.listItemDf || []), (item, j) => {
-                                        let def = row[j];
+                                        let def = _.find(row, (m: any) => m.itemCode == item.itemCode);
 
                                         if (!def) {
                                             def = {};

@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.employee;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -9,14 +10,15 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.layout.LayoutFinder;
 
-public class AddEmpCommandHandler extends CommandHandler<AddEmpCommand> {
+@Stateless
+public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand> {
 	@Inject
 	private LayoutFinder layoutFinder;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddEmpCommand> context) {
+	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
-		AddEmpCommand command = context.getCommand();
+		AddEmployeeCommand command = context.getCommand();
 
 		List<SettingItemDto> dataList = this.layoutFinder.loadAllItemByCreateType(command.getCreateType(),
 				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());

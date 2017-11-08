@@ -1,19 +1,25 @@
 package nts.uk.ctx.bs.employee.app.find.person.category;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.layout.classification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoValueDto;
+import find.person.info.item.PerInfoItemDefDto;
+import find.person.info.item.SetItemDto;
 import lombok.val;
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
+import nts.uk.ctx.bs.employee.app.find.layout.ItemDefFactoryNew;
+import nts.uk.ctx.bs.employee.app.find.layout.ItemDefinitionFactory;
 import nts.uk.ctx.bs.employee.app.find.person.info.PersonDto;
-import nts.uk.ctx.bs.employee.app.find.person.info.PersonFinder;
-import nts.uk.ctx.bs.employee.app.find.person.item.ItemCurrentJobPosDto;
 import nts.uk.ctx.bs.employee.app.find.person.item.ItemEmpInfoItemDataDto;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDeptRepository;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCare;
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.care.FamilyCareRepository;
@@ -39,6 +45,8 @@ import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
+import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -49,7 +57,6 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-//import nts.uk.ctx.bs.person.app.find.layout.classification.LayoutPersonInfoValueDto;
 /**
  * get person information category and it's children
  * 
@@ -87,7 +94,7 @@ public class EmpPerInfoCategoryFinder {
 	private EmployeeRepository employeeRepository;
 
 	@Inject
-	private PersonFinder personFinder;
+	private PersonRepository personRepository;
 
 	@Inject
 	private TemporaryAbsenceRepository temporaryAbsenceRepository;
@@ -112,6 +119,84 @@ public class EmpPerInfoCategoryFinder {
 
 	@Inject
 	private PersonEmergencyCtRepository personEmergencyCtRepository;
+	
+	@Inject
+	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
+	
+	//New update: start
+	/**
+	 * get person information category and it's children (Hiển thị category và
+	 * danh sách tab category con của nó)
+	 * 
+	 * @param ctgId
+	 * @return list PerCtgInfo: cha va danh sach con
+	 */
+	public List<PersonInfoCategory> getCtgAndChildren(String ctgId) {
+		String contractCode = AppContexts.user().contractCode();
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
+		List<PersonInfoCategory> lstPerInfoCtg = new ArrayList<>();
+		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO)
+			lstPerInfoCtg = perInfoCtgRepositoty
+				.getPerInfoCtgByParentCdWithOrder(perInfoCtg.getCategoryParentCode().v(), contractCode, true);		
+		lstPerInfoCtg.add(perInfoCtg);
+		return lstPerInfoCtg;
+	}
+	
+	/**
+	 * Hiển thị nội dung của 1 Tab 
+	 * @param ctgId
+	 * @return List<LayoutPersonInfoClsDto> : nội dung items và data của nó
+	 */
+	public List<LayoutPersonInfoClsDto> getCtgInfoData(String ctgId, String employeeId, String infoId){
+		//app context
+		String contractCode = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
+		String loginEmpId = AppContexts.user().employeeId();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		//get Employee
+		Employee employee = employeeRepository.findBySid(companyId, employeeId).get();
+		//Get PersonInfoCategory
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
+		//get PerInfoItemDefDto
+		List<PerInfoItemDefDto> lstPerInfoItemDef = perInfoCtgDomainService
+				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, infoId,
+						roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)))
+				.stream().map(x -> fromDomain(x)).collect(Collectors.toList());
+		
+		if (perInfoCtg.getIsFixed() == IsFixed.FIXED)
+			if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
+				setEmployeeCtgItem(perInfoCtg, lstPerInfoItemDef, employee, infoId);
+			else
+				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employee.getPId(), infoId);
+		else{
+			//optional data
+			//setCtgItemOptionDto(empPerCtgInfoDto, parentInfoId, true);
+		}
+		//return list
+		List<LayoutPersonInfoClsDto> lstLayoutPerInfoClsDto = new ArrayList<>();
+		return lstLayoutPerInfoClsDto;
+	}
+	
+	public List<LayoutPersonInfoClsDto> getCtgInfoTabData(String ctgId){
+		//return list
+		List<LayoutPersonInfoClsDto> lstLayoutPerInfoClsDto = new ArrayList<>();
+		return lstLayoutPerInfoClsDto;
+	}
+	
+	
+	private PerInfoItemDefDto fromDomain(PersonInfoItemDefinition domain){
+		PerInfoItemDefDto perInfoItemDefDto = new PerInfoItemDefDto();
+		perInfoItemDefDto.setId(domain.getPerInfoItemDefId());
+		perInfoItemDefDto.setPerInfoCtgId(domain.getPerInfoCategoryId());
+		perInfoItemDefDto.setItemCode(domain.getItemCode().v());
+		perInfoItemDefDto.setItemName(domain.getItemName().v());
+		perInfoItemDefDto.setIsFixed(domain.getIsFixed().value);
+		perInfoItemDefDto.setIsRequired(domain.getIsRequired().value);
+		//perInfoItemDefDto.setItemTypeState(domain.getItemTypeState());
+		return perInfoItemDefDto;
+	}
+	//New update: end
+		
 
 	/**
 	 * get person ctg infor and list of item children
@@ -135,43 +220,36 @@ public class EmpPerInfoCategoryFinder {
 	 * @param parentInfoId
 	 * @return EmpPerCtgInfoDto
 	 */
-	public EmpPerCtgInfoDto getCtgAndItemByParent(String employeeId, String ctgId, String parentInfoId) {
+	public List<LayoutPersonInfoClsDto> getCtgAndItemByParent(String employeeId, String ctgId, String parentInfoId) {
+		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
-		List<PersonInfoItemDefinition> lstPerInfoItemDef;
+		List<PerInfoItemDefDto> lstPerInfoItemDef;
 		val perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO) {
-			lstPerInfoItemDef = pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCtg.getPersonInfoCategoryId(), companyId,
-					contractCode);
-			List<ItemEmpInfoItemDataDto> lstCtgItemOptionalDto;
-			return EmpPerCtgInfoDto.createObjectFromDomain(perInfoCtg);
+			lstPerInfoItemDef = perInfoCtgDomainService.getPerItemDef(new ParamForGetPerItem(perInfoCtg, parentInfoId,
+					roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)))
+					.stream().map(x -> fromDomain(x)).collect(Collectors.toList());
+			return lstLayoutPersonInfoClsDto;
 		} else {
 			lstPerInfoItemDef = perInfoCtgDomainService.getPerItemDef(new ParamForGetPerItem(perInfoCtg, parentInfoId,
-					roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)));
+					roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)))
+					.stream().map(x -> fromDomain(x)).collect(Collectors.toList());
 			EmpPerCtgInfoDto empPerCtgInfoDto = new EmpPerCtgInfoDto();
-			empPerCtgInfoDto = EmpPerCtgInfoDto.createObjectFromDomain(perInfoCtg, lstPerInfoItemDef);
+			//empPerCtgInfoDto = EmpPerCtgInfoDto.createObjectFromDomain(perInfoCtg, lstPerInfoItemDef);
 			setEmployeeCtgItem(empPerCtgInfoDto, perInfoCtg, parentInfoId);
-			return empPerCtgInfoDto;
+			return lstLayoutPersonInfoClsDto;
 		}
 	}
-
-	/**
-	 * get person information category and it's children (Hiển thị category và
-	 * danh sách category con của nó)
-	 * 
-	 * @param ctgId
-	 * @return
-	 */
-	public List<PersonInfoCategory> getCtgAndChildren(String ctgId) {
-		String contractCode = AppContexts.user().contractCode();
-		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
-		List<PersonInfoCategory> lstPerInfoCtg = perInfoCtgRepositoty
-				.getPerInfoCtgByParentCdWithOrder(perInfoCtg.getCategoryParentCode().v(), contractCode, true);
-		lstPerInfoCtg.add(perInfoCtg);
-		return lstPerInfoCtg;
+	
+	private List<LayoutPersonInfoValueDto> mappingData(){
+		List<LayoutPersonInfoValueDto> lst = new ArrayList<>();
+		return lst;
 	}
+	
+	
 
 	/**
 	 * Hiển thị item và danh sách data
@@ -186,18 +264,23 @@ public class EmpPerInfoCategoryFinder {
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
-		EmployeeDto employee = EmployeeDto.fromDomain(employeeRepository.findBySid(companyId, employeeId).get());
+		//get Employee
+		Employee employee = employeeRepository.findBySid(companyId, employeeId).get();
+		//Get PersonInfoCategory
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCode).get();
-		List<PersonInfoItemDefinition> lstPerInfoItemDef = perInfoCtgDomainService
-				.getPerInfoItemDefWithAuth(new ParamForGetPerItem(perInfoCtg, parentInfoId,
-						roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)));
-		EmpPerCtgInfoDto empPerCtgInfoDto = EmpPerCtgInfoDto.createObjectFromDomain(perInfoCtg, lstPerInfoItemDef);
+		//get PerInfoItemDefDto
+		List<PerInfoItemDefDto> lstPerInfoItemDef = perInfoCtgDomainService
+				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, parentInfoId,
+						roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)))
+				.stream().map(x -> fromDomain(x)).collect(Collectors.toList());
+		
+		EmpPerCtgInfoDto empPerCtgInfoDto = EmpPerCtgInfoDto.createObjectFromDomain(perInfoCtg);
 
 		if (perInfoCtg.getIsFixed() == IsFixed.FIXED)
 			if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
-				setEmployeeCtgItem(empPerCtgInfoDto, employee, perInfoCtg, parentInfoId);
+				setEmployeeCtgItem(perInfoCtg, lstPerInfoItemDef, employee, parentInfoId);
 			else
-				setEmployeeCtgItem(empPerCtgInfoDto, employeeId, perInfoCtg, parentInfoId);
+				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employeeId, parentInfoId);
 		else
 			setCtgItemOptionDto(empPerCtgInfoDto, parentInfoId, true);
 		return null;
@@ -234,41 +317,7 @@ public class EmpPerInfoCategoryFinder {
 			String parentInfoId) {
 		CtgItemFixDto ctgItemFixDto = new CtgItemFixDto();
 		switch (perInfoCtg.getCategoryCode().v()) {
-		case "CS00005":
-			IncomeTax incomeTax = incomeTaxRepository.getIncomeTaxById(parentInfoId).get();
-			ctgItemFixDto = CtgItemFixDto.createIncomeTax(incomeTax.getIncomeTaxID(), incomeTax.getFamilyMemberId(),
-					incomeTax.getSid(), incomeTax.getPeriod().start(), incomeTax.getPeriod().end(),
-					incomeTax.isSupporter(), incomeTax.getDisabilityType().value,
-					incomeTax.getDeductionTargetType().value);
-			setCtgItemOptionDto(empPerCtgInfoDto, incomeTax.getIncomeTaxID(), true);
-			break;
-		case "CS00006":
-			FamilySocialInsurance familySocialInsurance = familySocialInsuranceRepository
-					.getFamilySocialInsById(parentInfoId).get();
-			ctgItemFixDto = CtgItemFixDto.createFamilySocialInsurance(familySocialInsurance.getFamilyMemberId(),
-					familySocialInsurance.getSid(), familySocialInsurance.getSocailInsuaranceId(),
-					familySocialInsurance.getStartDate(), familySocialInsurance.getEndDate(),
-					familySocialInsurance.isNursingCare(), familySocialInsurance.isHealthInsuranceDependent(),
-					familySocialInsurance.isNationalPensionNo3(), familySocialInsurance.getBasicPensionNumber().v());
-			setCtgItemOptionDto(empPerCtgInfoDto, familySocialInsurance.getSocailInsuaranceId(), true);
-			break;
-		case "CS00007":
-			FamilyCare familyCare = familyCareRepository.getFamilyCareById(parentInfoId).get();
-			ctgItemFixDto = CtgItemFixDto.createFamilyCare(familyCare.getFamilyCareId(), familyCare.getFamilyId(),
-					familyCare.getSid(), familyCare.getPeriod().start(), familyCare.getPeriod().end(),
-					familyCare.getCareClassifi().value);
-			setCtgItemOptionDto(empPerCtgInfoDto, familyCare.getFamilyCareId(), true);
-			break;
-		case "CS00013":
-			List<SubJobPosition> lstSubJobPos = subJobPosRepository.getSubJobPosByDeptId(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto
-					.createSetCurJobPos(
-							lstSubJobPos.stream()
-									.map(x -> new ItemCurrentJobPosDto(x.getSubJobPosId(), x.getAffiDeptId(),
-											x.getJobTitleId(), x.getStartDate(), x.getEndDate()))
-									.collect(Collectors.toList()));
-			lstSubJobPos.stream().forEach(x -> setCtgItemOptionDto(empPerCtgInfoDto, x.getJobTitleId(), false));
-			break;
+		
 		}
 		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);
 	}
@@ -281,39 +330,31 @@ public class EmpPerInfoCategoryFinder {
 	 * @param perInfoCtg
 	 * @param parentInfoId
 	 */
-	private void setEmployeeCtgItem(EmpPerCtgInfoDto empPerCtgInfoDto, EmployeeDto employee,
-			PersonInfoCategory perInfoCtg, String parentInfoId) {
-		CtgItemFixDto ctgItemFixDto = new CtgItemFixDto();
+	private List<LayoutPersonInfoClsDto> setEmployeeCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, Employee employee, String infoId) {
+		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
+		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
+
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00002":
-			ctgItemFixDto = CtgItemFixDto.createEmployee(employee.getPersonId(), employee.getEmployeeId(),
-					employee.getEmployeeCode(), employee.getEmployeeMail(), employee.getRetirementDate(),
-					employee.getJoinDate());
-			setCtgItemOptionDto(empPerCtgInfoDto, employee.getPersonId(), true);
+					
+			//set optional data
 			break;
 		case "CS00008":
 			// Waiting for DateHistoryItem
-			TemporaryAbsence temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(parentInfoId).get();
-			ctgItemFixDto = CtgItemFixDto.createLeaveHoliday(temporaryAbsence.getEmployeeId(),
-					temporaryAbsence.getTempAbsenceId(), temporaryAbsence.getTempAbsenceType().value,
-					temporaryAbsence.getStartDate(), temporaryAbsence.getEndDate(),
-					temporaryAbsence.getTempAbsenceReason(), temporaryAbsence.getFamilyMemberId(),
-					temporaryAbsence.getBirthDate(), temporaryAbsence.getMulPregnancySegment());
-			setCtgItemOptionDto(empPerCtgInfoDto, temporaryAbsence.getTempAbsenceId(), true);
+			Optional<TemporaryAbsence> temporaryAbsence = temporaryAbsenceRepository.getByTempAbsenceId(infoId);
+			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, 
+					temporaryAbsence.isPresent()?temporaryAbsence.get(): new TemporaryAbsence());	
 			break;
 		case "CS00009":
-			JobTitleMain jobTitleMain = jobTitleMainRepository.getJobTitleMainById(parentInfoId).get();
-			ctgItemFixDto = CtgItemFixDto.createJobTitleMain(jobTitleMain.getSid(),
-					jobTitleMain.getDateHistoryItem().identifier(), jobTitleMain.getJobTitleId(),
-					jobTitleMain.getDateHistoryItem().start(), jobTitleMain.getDateHistoryItem().end());
-			setCtgItemOptionDto(empPerCtgInfoDto, jobTitleMain.getJobTitleId(), true);
+			Optional<JobTitleMain> jobTitleMain = jobTitleMainRepository.getJobTitleMainById(infoId);
+			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, 
+					jobTitleMain.isPresent()?jobTitleMain.get() : new JobTitleMain());
 			break;
 		case "CS00010":
 			// Waiting for DateHistoryItem
-			AssignedWorkplace assignedWorkplace = assignedWrkplcRepository.getAssignedWorkplaceById(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto.createAssignedWorkplace(assignedWorkplace.getEmployeeId(),
-					assignedWorkplace.getAssignedWorkplaceId(), assignedWorkplace.getDateHistoryItem());
-			setCtgItemOptionDto(empPerCtgInfoDto, assignedWorkplace.getAssignedWorkplaceId(), true);
+			AssignedWorkplace assignedWorkplace = assignedWrkplcRepository.getAssignedWorkplaceById(infoId);
+			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, assignedWorkplace);	
 			break;
 		case "CS00011":
 			// Waiting for DateHistoryItem
@@ -321,80 +362,85 @@ public class EmpPerInfoCategoryFinder {
 			break;
 		case "CS00012":
 			// Waiting for DateHistoryItem
-			CurrentAffiDept currentAffiDept = currentAffiDeptRepository.getCurrentAffiDeptById(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto.createCurAffDept(currentAffiDept.getEmployeeId(),
-					currentAffiDept.getAffiDeptId(), currentAffiDept.getDepartmentId(),
-					currentAffiDept.getDateHistoryItem());
-			setCtgItemOptionDto(empPerCtgInfoDto, currentAffiDept.getAffiDeptId(), true);
+			CurrentAffiDept currentAffiDept = currentAffiDeptRepository.getCurrentAffiDeptById(infoId);
+			//ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, currentAffiDept);
+			break;
+		case "CS00005":
+			Optional<IncomeTax> incomeTax = incomeTaxRepository.getIncomeTaxById(infoId);
+//			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, 
+//					incomeTax.isPresent()? incomeTax.get() : new IncomeTax());
+			break;
+		case "CS00006":
+			Optional<FamilySocialInsurance> familySocialInsurance = familySocialInsuranceRepository
+					.getFamilySocialInsById(infoId);
+//			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, 
+//					familySocialInsurance.isPresent()? familySocialInsurance.get() : new FamilySocialInsurance());
+			break;
+		case "CS00007":
+			Optional<FamilyCare> familyCare = familyCareRepository.getFamilyCareById(infoId);
+//			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, 
+//					familyCare.isPresent()? familyCare.get() : new FamilyCare());
+			break;
+		case "CS00013":
+			List<SubJobPosition> lstSubJobPos = subJobPosRepository.getSubJobPosByDeptId(infoId);
+			//ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, lstSubJobPos);
 			break;
 		}
-		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);
+		return lstLayoutPersonInfoClsDto;
 	}
-
-	private void setEmployeeCtgItem(EmpPerCtgInfoDto empPerCtgInfoDto, String employeeId, PersonInfoCategory perInfoCtg,
-			String parentInfoId) {
-		CtgItemFixDto ctgItemFixDto = new CtgItemFixDto();
+//
+	private List<PerInfoItemDefDto> getPerItemSet(PerInfoItemDefDto item){
+		//1 set - 2 Single
+		List<PerInfoItemDefDto> lstResult = new ArrayList<>();
+		if (item.getItemTypeState().getItemType() == 1) {
+			//get itemId list of children
+			SetItemDto setItem = (SetItemDto) item.getItemTypeState();
+			// get children by itemId list
+			lstResult = perInfoItemDefRepositoty.getPerInfoItemDefByListId(setItem.getItems(), AppContexts.user().contractCode())
+					.stream().map(x -> fromDomain(x)).collect(Collectors.toList());
+		}
+		lstResult.add(item);	
+		return lstResult;
+	}
+	
+	/**
+	 * 
+	 * @param perInfoCtg
+	 * @param lstPerInfoItemDef
+	 * @param personId
+	 * @param infoId
+	 */
+	private void setPersonCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, String personId, String infoId) {
+		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
+		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00001":
-			PersonDto person = personFinder.getPersonByEmpId(employeeId);
-			ctgItemFixDto = CtgItemFixDto.createPerson(person.getPersonId(), person.getBirthDate(),
-					person.getBloodType(), person.getGender(), person.getPersonMobile(), person.getMailAddress(),
-					person.getPersonNameGroup().getBusinessName(), person.getPersonNameGroup().getPersonName(),
-					person.getPersonNameGroup().getBusinessOtherName(),
-					person.getPersonNameGroup().getBusinessEnglishName(),
-					person.getPersonNameGroup().getPersonNameKana(), person.getPersonNameGroup().getPersonRomanji(),
-					person.getPersonNameGroup().getTodokedeFullName(), person.getPersonNameGroup().getOldName(),
-					person.getPersonNameGroup().getTodokedeFullName());
-			setCtgItemOptionDto(empPerCtgInfoDto, person.getPersonId(), true);
+			
+			Optional<Person> person = personRepository.getByPersonId(personId);
+			for(PerInfoItemDefDto item : lstPerInfoItemDef){
+				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, person.isPresent() ? person.get() : new Person());
+				lstLayoutPersonInfoClsDto.add(objMap);
+			}	
 			break;
 		case "CS00003":
-			CurrentAddress currentAddress = currentAddressRepository.getCurAddById(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto.createCurrentAddress(currentAddress.getCurrentAddressId(),
-					currentAddress.getPid(), currentAddress.getCountryId(), currentAddress.getPostalCode().v(),
-					currentAddress.getPhoneNumber().v(), currentAddress.getPrefectures().v(),
-					currentAddress.getHouseRent().v(), currentAddress.getPeriod().start(),
-					currentAddress.getPeriod().end(), currentAddress.getAddress1().getAddress1().v(),
-					currentAddress.getAddress1().getAddressKana1().v(), currentAddress.getAddress2().getAddress2().v(),
-					currentAddress.getAddress2().getAddressKana2().v(), currentAddress.getHomeSituationType().v(),
-					currentAddress.getPersonMailAddress().v(), currentAddress.getHouseType().v(),
-					currentAddress.getNearestStation().v());
-			setCtgItemOptionDto(empPerCtgInfoDto, currentAddress.getCurrentAddressId(), true);
+			CurrentAddress currentAddress = currentAddressRepository.getCurAddById(infoId);
+			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, currentAddress);
 			break;
 		case "CS00004":
-			Family family = familyRepository.getFamilyById(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto.createFamily(family.getBirthday(), family.getDeadDay(), family.getEntryDate(),
-					family.getExpelledDate(), family.getFamilyId(), family.getFullName().v(),
-					family.getFullNameKana().v(), family.getNameMultiLangFull().v(),
-					family.getNameMultiLangFullKana().v(), family.getNameRomajiFull().v(),
-					family.getNameRomajiFullKana().v(), family.getNationalityId().v(), family.getOccupationName().v(),
-					family.getPersonId(), family.getRelationship().v(), family.getSupportCareType().value,
-					family.getTogSepDivisionType().value, family.getWorkStudentType().value);
-			setCtgItemOptionDto(empPerCtgInfoDto, family.getFamilyId(), true);
+			Family family = familyRepository.getFamilyById(infoId);
+			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, family);
 			break;
 		case "CS00014":
-			WidowHistory widowHistory = widowHistoryRepository.getWidowHistoryById(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto.createWidowHistory(widowHistory.getWidowHistoryId(),
-					widowHistory.getPeriod().start(), widowHistory.getPeriod().end(),
-					widowHistory.getWidowType().value);
-			setCtgItemOptionDto(empPerCtgInfoDto, widowHistory.getWidowHistoryId(), true);
+			WidowHistory widowHistory = widowHistoryRepository.getWidowHistoryById(infoId);
+			ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, widowHistory);
 			break;
 		case "CS00015":
-			PersonEmergencyContact personEmergencyContact = personEmergencyCtRepository.getByid(parentInfoId);
-			ctgItemFixDto = CtgItemFixDto.createEmergencyContact(personEmergencyContact.getEmgencyContactId(),
-					personEmergencyContact.getPid(), personEmergencyContact.getPersonName().v(),
-					personEmergencyContact.getPersonMailAddress().v(),
-					personEmergencyContact.getStreetAddressPerson().v(), personEmergencyContact.getPhone().v(),
-					personEmergencyContact.getPriorityEmegencyContact().v(),
-					personEmergencyContact.getRelationShip().v());
-			setCtgItemOptionDto(empPerCtgInfoDto, personEmergencyContact.getEmgencyContactId(), true);
+			PersonEmergencyContact personEmergencyContact = personEmergencyCtRepository.getByid(infoId);
+			//ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, personEmergencyContact);
 			break;
 		}
-		empPerCtgInfoDto.setCtgItemFixedDto(ctgItemFixDto);
 	}
 
-	//private List<LayoutPersonInfoValueDto> mapToLayout(List<PersonInfoItemDefinition> lstPerInfoItemDef, List<ItemEmpInfoItemDataDto> lstCtgItemOptionalDto) {
-
-	//	return null;
-
-	//}
 }

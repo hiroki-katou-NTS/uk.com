@@ -4,10 +4,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import find.layout.classification.ActionRole;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumConstant;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PerInfoItemDefDto {
 
 	private String id;
