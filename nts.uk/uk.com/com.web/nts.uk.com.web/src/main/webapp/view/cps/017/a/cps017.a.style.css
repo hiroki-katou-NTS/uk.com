@@ -189,7 +189,7 @@ button.search-btn {
 }
 
 .clear-btn {
-	visibility: hidden;
+/* 	visibility: hidden; */
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {

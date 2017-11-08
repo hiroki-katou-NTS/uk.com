@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-
 public class LayoutPersonInfoValueDto {
 
 	// categoryID
@@ -44,8 +43,12 @@ public class LayoutPersonInfoValueDto {
 	// for render control label
 	private boolean required;
 
-	// containt some infor of item for
-	// render control
+	/*
+	 * hidden value - view only - can edit
+	 */
+	private ActionRole actionRole;
+
+	// contains some information of item for render control
 	private DataTypeStateDto item;
 
 	public LayoutPersonInfoValueDto() {
