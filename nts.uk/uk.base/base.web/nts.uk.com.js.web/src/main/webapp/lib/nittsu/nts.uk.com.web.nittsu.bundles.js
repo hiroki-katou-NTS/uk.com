@@ -4178,11 +4178,11 @@ var nts;
                     var row = $("<tr/>");
                     row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
                     var nameId = error["supplements"]["NameID"];
-                    if (!nts.uk.util.isNullOrUndefined(nameId)) {
+                    if (!uk.util.isNullOrUndefined(nameId)) {
                         row.click(function (evt, ui) {
                             var element = $("body").find('[NameID="' + nameId + '"]');
                             var tab = element.closest("[role='tabpanel']");
-                            while (!nts.uk.util.isNullOrEmpty(tab)) {
+                            while (!uk.util.isNullOrEmpty(tab)) {
                                 var tabId = tab.attr("id");
                                 tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
                                 tab = tab.parent().closest("[role='tabpanel']");
@@ -4196,8 +4196,7 @@ var nts;
                     var id = uk.util.randomId();
                     $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
                     var container = $("body").find("#" + id);
-                    container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
-                        "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+                    container.append("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>\u30A8\u30E9\u30FC\u5185\u5BB9</th>\n                    <th style='display: none;'/>    <th style='width: 150px;'>\u30A8\u30E9\u30FC\u30B3\u30FC\u30C9</th>   </tr>   </thead>    <tbody/><   /table> </div>\n                    <div id='functions-area-bottom'/>");
                     var errorBody = container.find("tbody");
                     if ($.isArray(errors["errors"])) {
                         _.forEach(errors["errors"], function (error, idx) {

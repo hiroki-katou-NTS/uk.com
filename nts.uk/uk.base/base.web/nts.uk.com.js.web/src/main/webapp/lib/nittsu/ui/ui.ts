@@ -597,11 +597,11 @@ module nts.uk.ui {
             let row = $("<tr/>");
             row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
             let nameId = error["supplements"]["NameID"];   
-            if (!nts.uk.util.isNullOrUndefined(nameId)) {
+            if (!util.isNullOrUndefined(nameId)) {
                 row.click(function(evt, ui){
                     let element = $("body").find('[NameID="' + nameId + '"]');
                     let tab = element.closest("[role='tabpanel']");
-                    while(!nts.uk.util.isNullOrEmpty(tab)){
+                    while(!util.isNullOrEmpty(tab)){
                         let tabId = tab.attr("id");
                         tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
                         tab = tab.parent().closest("[role='tabpanel']");
@@ -616,8 +616,9 @@ module nts.uk.ui {
             let id = util.randomId();
             $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
             let container = $("body").find("#" + id);
-            container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
-                    "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+            container.append(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>エラー内容</th>
+                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/><   /table> </div>
+                    <div id='functions-area-bottom'/>`);
             let errorBody = container.find("tbody");
             if($.isArray(errors["errors"])) {
                  _.forEach(errors["errors"], function(error, idx: number){ 
