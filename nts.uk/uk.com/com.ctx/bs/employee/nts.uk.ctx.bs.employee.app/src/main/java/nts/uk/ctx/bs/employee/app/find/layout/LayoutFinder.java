@@ -196,9 +196,10 @@ public class LayoutFinder {
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
-			if (validateAuthClassItem(roleId, classItem, selfBrowsing)) {
+			if ( classItem.getLayoutItemType() == LayoutItemType.SeparatorLine) {
+				authItemClasList.add(classItem);
+			} else if (validateAuthClassItem(roleId, classItem, selfBrowsing)) {
 				LayoutPersonInfoClsDto authClassItem = classItem;
-
 				/*List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(mainteLayoutId,
 						classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
 						authClassItem.getListItemDf());*/
