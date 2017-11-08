@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -44,7 +43,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	private ClosureEmploymentRepository closureEmploymentRepository;
 
 	@Inject
-	private ClosureHistoryRepository closureHistoryRepository;
+	private ClosureRepository closureHistoryRepository;
 
 	@Override
 	public int createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime, int reCreateAttr, String empCalAndSumExecLogID) {
@@ -178,7 +177,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		Collections.sort(currentMonthLocked);
 
 		List<ClosureHistory> closureHistories = new ArrayList<>();
-//		= this.closureHistoryRepository.findByListClouseId(companyId,
+//		= this.closureRepository.findByListClouseId(companyId,
 //				closeIdLocked, currentMonthLocked.get(0), currentMonthLocked.get(currentMonthLocked.size() - 1));
 		
 		if (!closureHistories.isEmpty()) {
