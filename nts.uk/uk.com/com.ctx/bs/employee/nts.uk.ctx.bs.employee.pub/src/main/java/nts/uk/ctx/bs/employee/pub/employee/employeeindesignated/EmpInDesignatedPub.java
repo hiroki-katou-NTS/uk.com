@@ -21,5 +21,6 @@ public interface EmpInDesignatedPub {
 	 * @param empStatus the emp status
 	 * @return the emp in designated
 	 */
+	// RequestList #80
 	List<EmployeeInDesignatedExport> getEmpInDesignated(String workplaceId, GeneralDate referenceDate, List<Integer> empStatus);
 }

@@ -57,11 +57,9 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		Optional<KrcstActualLock> optional = this.queryProxy().find(
 				new KrcstActualLockPK(actualLock.getCompanyId(), actualLock.getClosureId().value),
 				KrcstActualLock.class);
-		KrcstActualLock entity = null;
+		KrcstActualLock entity = new KrcstActualLock();
 		if (optional.isPresent()) {
 			entity = optional.get();
-		} else {
-			entity = new KrcstActualLock();
 		}
 		actualLock.saveToMemento(new JpaActualLockSetMemento(entity));
 		this.commandProxy().update(entity);

@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormPeople;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalItem;
 
 @Data
 @AllArgsConstructor
@@ -34,4 +38,12 @@ public class VerticalCalItemCommand {
  	private int rounding;
  	
  	private int dispOrder;
+ 	private FormPeopleCommand formPeople;
+ 	
+ 	public VerticalCalItem toDomainCalItem(String companyId, String verticalCalCd, String itemId){
+ 		FormPeople formPeople1 = this.formPeople != null
+ 				? this.formPeople.toDomainFormPeople(companyId, verticalCalCd, itemId)
+				: null;
+		return VerticalCalItem.createFromJavatype(companyId, verticalCalCd, itemId, itemId, calculateAtr, displayAtr, cumulativeAtr, attributes, rounding, dispOrder, formPeople1);
+ 	}
 }

@@ -31,7 +31,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		// ③日別実績の作成処理
 		// 日別作成を実行するかチェックする
 		Optional<EmpCalAndSumExeLog> exeLogDailyCreation = this.empCalAndSumExeLogRepository
-				.getListByExecutionContent(empCalAndSumExecLogID, 0);
+				.getByExecutionContent(empCalAndSumExecLogID, 0);
 		if (exeLogDailyCreation.isPresent()) {
 			// パラメータ「実行区分」＝手動 の場合
 			if (executionAttr == 0) {

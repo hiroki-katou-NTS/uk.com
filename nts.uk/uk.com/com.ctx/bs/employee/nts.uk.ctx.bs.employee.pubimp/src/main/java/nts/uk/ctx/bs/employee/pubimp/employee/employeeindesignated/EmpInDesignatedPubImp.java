@@ -16,7 +16,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeindesignated.EmpInDesignatedPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeindesignated.EmployeeInDesignatedExport;
-import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
 
@@ -49,7 +48,7 @@ public class EmpInDesignatedPubImp implements EmpInDesignatedPub {
 		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
 			return null;
 		}
-		// Get List of Employee Id
+		// Get List of Employee Id from AffWorkplaceHistory List
 		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 		// Output List

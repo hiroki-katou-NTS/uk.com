@@ -19,14 +19,12 @@ import lombok.NoArgsConstructor;
 public class KrcdtCalExeSetInforPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	
-	/** 実行種別 */
-	@Column(name = "EXECUTION_TYPE")
-	public int executionType;
 	
 	/** 計算実行設定情報 */
 	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
 	public String calExecutionSetInfoID;
+	/**実行内容*/
+	@Column(name = "EXECUTION_CONTENT")
+	public int executionContent;
 
 }

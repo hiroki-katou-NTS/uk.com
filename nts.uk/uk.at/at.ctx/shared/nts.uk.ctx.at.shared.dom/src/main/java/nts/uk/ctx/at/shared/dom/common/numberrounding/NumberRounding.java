@@ -4,34 +4,67 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.common.numberrounding;
 
-import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
-
 /**
- * The Class NumberRounding.
+ * The Enum Rounding.
  */
-// 数値丸め
-@Getter
-public class NumberRounding extends DomainObject{
-	
-	/** The unit. */
-	// 単位
-	private Unit unit;
-	
-	/** The rounding. */
-	// 端数処理
-	private Rounding rounding;
+// 端数処理
+public enum NumberRounding {
+
+	/** The truncation. */
+	// 切り捨て
+	TRUNCATION(0, "Enum_Rounding_Truncation"),
+
+	/** The round up. */
+	// 切り上げ
+	ROUND_UP(1, "Enum_Rounding_Round_Up"),
+
+	/** The down 4 up 5. */
+	// 四捨五入
+	DOWN_4_UP_5(5, "Enum_Rounding_Down_4_Up_5");
+
+	/** The value. */
+	public final int value;
+
+	/** The name id. */
+	public final String nameId;
+
+	/** The Constant values. */
+	private final static NumberRounding[] values = NumberRounding.values();
 
 	/**
-	 * Instantiates a new number rounding.
+	 * Instantiates a new rounding.
 	 *
-	 * @param unit the unit
-	 * @param rounding the rounding
+	 * @param value
+	 *            the value
+	 * @param nameId
+	 *            the name id
 	 */
-	public NumberRounding(Unit unit, Rounding rounding) {
-		super();
-		this.unit = unit;
-		this.rounding = rounding;
+	private NumberRounding(int value, String nameId) {
+		this.value = value;
+		this.nameId = nameId;
 	}
 
+	/**
+	 * Value of.
+	 *
+	 * @param value
+	 *            the value
+	 * @return the rounding
+	 */
+	public static NumberRounding valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (NumberRounding val : NumberRounding.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

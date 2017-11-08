@@ -149,41 +149,41 @@ public abstract class LoginBaseCommand<T> extends CommandHandler<T> {
 	
 	protected void setRoleId(String userId)
 	{
+		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
+		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
+		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
+		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
+		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
+		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
 		// 就業
-		if (this.getRoleId(userId, RoleType.EMPLOYMENT) != null) {
-			manager.roleIdSetter().forPersonnel(this.getRoleId(userId, RoleType.EMPLOYMENT));
+		if (employmentRoleId != null) {
+			manager.roleIdSetter().forPersonnel(employmentRoleId);
 		}
-		
 		// 給与
-		if (this.getRoleId(userId, RoleType.SALARY) != null) {
-			manager.roleIdSetter().forPayroll(this.getRoleId(userId, RoleType.SALARY));
+		if (salaryRoleId != null) {
+			manager.roleIdSetter().forPayroll(salaryRoleId);
 		}
-		
-		//人事
-		
-		
-		// オフィスヘルパー
-		if (this.getRoleId(userId, RoleType.OFFICE_HELPER) != null) {
-			manager.roleIdSetter().forOfficeHelper(this.getRoleId(userId, RoleType.OFFICE_HELPER));
-		}
-		
-		//会計
-		//マイナンバー
-		//グループ会社管理
-		
-		// 会社管理者
-		if (this.getRoleId(userId, RoleType.COMPANY_MANAGER) != null) {
-			manager.roleIdSetter().forCompanyAdmin(this.getRoleId(userId, RoleType.COMPANY_MANAGER));
-		}
+		// 人事
 
-		//システム管理者
-		if (this.getRoleId(userId, RoleType.SYSTEM_MANAGER) != null) {
-			manager.roleIdSetter().forSystemAdmin(this.getRoleId(userId, RoleType.SYSTEM_MANAGER));
+		// オフィスヘルパー
+		if (officeHelperRoleId != null) {
+			manager.roleIdSetter().forOfficeHelper(officeHelperRoleId);
 		}
-		
-		//個人情報
-		if (this.getRoleId(userId, RoleType.PERSONAL_INFO) != null) {
-			manager.roleIdSetter().forPersonalInfo(this.getRoleId(userId, RoleType.PERSONAL_INFO));
+		// 会計
+		// マイナンバー
+		// グループ会社管理
+
+		// 会社管理者
+		if (companyManagerRoleId != null) {
+			manager.roleIdSetter().forCompanyAdmin(companyManagerRoleId);
+		}
+		// システム管理者
+		if (systemManagerRoleId != null) {
+			manager.roleIdSetter().forSystemAdmin(systemManagerRoleId);
+		}
+		// 個人情報
+		if (personalInfoRoleId != null) {
+			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
 		}
 	}
 

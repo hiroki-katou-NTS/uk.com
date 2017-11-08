@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.app.command.optitem;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,16 +36,16 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	private BigDecimal numberLower;
 
 	/** The time upper. */
-	private int timeUpper;
+	private Integer timeUpper;
 
 	/** The time lower. */
-	private int timeLower;
+	private Integer timeLower;
 
 	/** The amount upper. */
-	private int amountUpper;
+	private Integer amountUpper;
 
 	/** The amount lower. */
-	private int amountLower;
+	private Integer amountLower;
 
 	/*
 	 * (non-Javadoc)
@@ -78,8 +79,8 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 * getNumberRange()
 	 */
 	@Override
-	public NumberRange getNumberRange() {
-		return new NumberRange(this.numberUpper, this.numberLower);
+	public Optional<NumberRange> getNumberRange() {
+		return Optional.of(new NumberRange(this.numberUpper, this.numberLower));
 	}
 
 	/*
@@ -90,8 +91,8 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 * getTimeRange()
 	 */
 	@Override
-	public TimeRange getTimeRange() {
-		return new TimeRange(this.timeUpper, this.timeLower);
+	public Optional<TimeRange> getTimeRange() {
+		return Optional.of(new TimeRange(this.timeUpper, this.timeLower));
 	}
 
 	/*
@@ -102,8 +103,8 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 * getAmountRange()
 	 */
 	@Override
-	public AmountRange getAmountRange() {
-		return new AmountRange(this.amountUpper, this.amountLower);
+	public Optional<AmountRange> getAmountRange() {
+		return Optional.of(new AmountRange(this.amountUpper, this.amountLower));
 	}
 
 }

@@ -111,10 +111,6 @@ public class WorkplaceInfoDto {
         @Override
         public String getHistoryId() {
             return this.historyId;
-//            if (StringUtil.isNullOrEmpty(historyId, true)) {
-//                historyId = IdentifierUtil.randomUniqueId();
-//            }
-//            return historyId;
         }
 
         /*
