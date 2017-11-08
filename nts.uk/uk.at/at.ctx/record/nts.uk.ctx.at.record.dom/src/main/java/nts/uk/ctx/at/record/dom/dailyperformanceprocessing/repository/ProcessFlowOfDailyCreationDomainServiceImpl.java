@@ -1,20 +1,20 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowOfDailyCreationDomainService{
@@ -29,7 +29,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private CreateDailyResultDomainService createDailyResultDomainService;
 
 	@Override
-	public boolean processFlowOfDailyCreation(int executionAttr, BigDecimal startDate, BigDecimal endDate,
+	public boolean processFlowOfDailyCreation(int executionAttr, DatePeriod periodTime,
 			String executionID, String empCalAndSumExecLogID, int reCreateAttr) {
 		
 		LoginUserContext login = AppContexts.user();
@@ -52,12 +52,12 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		}
 		
 		// get List personId
-		List<String> personIdList = targetPersons.stream().map(f -> {
+		List<String> employeeIdList = targetPersons.stream().map(f -> {
 			return f.getEmployeeId();
 		}).collect(Collectors.toList());
 		
 		//各処理の実行
-		//this.createDailyResultDomainService.createDailyResult(personIdList, reCreateAttr, startDate, endDate, executionAttr, empCalAndSumExecLogID);
+		this.createDailyResultDomainService.createDailyResult(employeeIdList, reCreateAttr, periodTime, executionAttr, empCalAndSumExecLogID);
 		
 		return false;
 	}
