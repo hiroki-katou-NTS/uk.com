@@ -27,14 +27,5 @@ public interface PerInfoCtgDataRepository {
 	 * @param data
 	 */
 	void updateCategoryData(PerInfoCtgData data);
-	
-	
-	//sonnlb code start
-
-	void addNewCategoryData(PerInfoCtgData perInfoCtgData);
-		
-	//sonnlb code end
-	
-	
 
 }
