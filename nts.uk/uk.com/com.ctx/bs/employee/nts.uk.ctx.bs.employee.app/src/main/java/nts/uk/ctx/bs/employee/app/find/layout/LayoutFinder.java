@@ -163,12 +163,19 @@ public class LayoutFinder {
 	private CopySetItemFinder copySetItemFinder;
 	// sonnlb end
 
-	public EmpMaintLayoutDto getLayout(GeneralDate standandDate, String mainteLayoutId, String browsingEmpId) {
+	public EmpMaintLayoutDto getLayout(LayoutQuery query) {
+
+		GeneralDate standandDate = GeneralDate.legacyDate(query.getStandandDate());
+		String mainteLayoutId = query.getMainteLayoutId();
+		String browsingEmpId = query.getBrowsingEmpId();
+
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
+
+		String loginEmployeeId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonnel();
-		Employee employee = employeeRepo.findBySid(companyId, employeeId).get();
+
+		Employee employee = employeeRepo.findBySid(companyId, browsingEmpId).get();
 		GeneralDate joinDate = employee.getJoinDate();
 		GeneralDate retirementDate = employee.getRetirementDate();
 		if (standandDate.before(joinDate)) {
@@ -177,6 +184,7 @@ public class LayoutFinder {
 		if (standandDate.after(retirementDate)) {
 			standandDate = retirementDate;
 		}
+
 		MaintenanceLayout maintenanceLayout = maintenanceRepo.getById(companyId, mainteLayoutId).get();
 		EmpMaintLayoutDto result = EmpMaintLayoutDto.createFromDomain(maintenanceLayout);
 
@@ -184,37 +192,21 @@ public class LayoutFinder {
 		// PersonInfoRoleAuth perInfoRoleAuth =
 		// persInfoRoleAuthRepo.getDetailPersonRoleAuth(roleId,
 		// companyId).get();
-		boolean selfBrowsing = browsingEmpId == employeeId;
+		boolean selfBrowsing = browsingEmpId == loginEmployeeId;
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
 
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
 			if (validateAuthClassItem(roleId, classItem, selfBrowsing)) {
 				LayoutPersonInfoClsDto authClassItem = classItem;
 
-				List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(mainteLayoutId,
+				/*List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(mainteLayoutId,
 						classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
-						authClassItem.getListItemDf());
+						authClassItem.getListItemDf());*/
+				List<PerInfoItemDefDto> dataInfoItems = authClassItem.getListItemDf();
 				authClassItem.setListItemDf(dataInfoItems);
-
+				System.out.println(classItem.getPersonInfoCategoryID());
 				PersonInfoCategory perInfoCategory = perInfoCateRepo
 						.getPerInfoCategory(classItem.getPersonInfoCategoryID(), contractCode).get();
-
-				// action role
-				switch (perInfoCategory.getCategoryType()) {
-				case CONTINUOUSHISTORY:
-				case NODUPLICATEHISTORY:
-				case DUPLICATEHISTORY:
-				case CONTINUOUS_HISTORY:
-
-					break;
-				case MULTIINFO:
-					if (selfBrowsing) {
-
-					} else {
-
-					}
-					break;
-				}
 
 				// get data
 				if (classItem.getLayoutItemType() == LayoutItemType.ITEM.value) {
@@ -234,15 +226,21 @@ public class LayoutFinder {
 	}
 
 	private boolean validateAuthClassItem(String roleId, LayoutPersonInfoClsDto item, boolean selfBrowsing) {
-		PersonInfoCategoryAuth personCategoryAuth = perInfoCtgAuthRepo
-				.getDetailPersonCategoryAuthByPId(roleId, item.getPersonInfoCategoryID()).get();
-		if (selfBrowsing && personCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES) {
+		return true;
+		/*
+		Optional<PersonInfoCategoryAuth> personCategoryAuthOpt = perInfoCtgAuthRepo
+				.getDetailPersonCategoryAuthByPId(roleId, item.getPersonInfoCategoryID());
+		if (!personCategoryAuthOpt.isPresent()) {
+			return false;
+		}
+
+		if (selfBrowsing && personCategoryAuthOpt.get().getAllowPersonRef() == PersonInfoPermissionType.YES) {
 			return true;
 		}
-		if (!selfBrowsing && personCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
+		if (!selfBrowsing && personCategoryAuthOpt.get().getAllowOtherRef() == PersonInfoPermissionType.YES) {
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 
 	private List<PerInfoItemDefDto> validateAuthItem(String mainteLayoutId, String perInfocategoryId,
@@ -586,6 +584,7 @@ public class LayoutFinder {
 		List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(personId, perInfoCategoryId);
 		String startDateId = dateRangeItem.getStartDateItemId();
 		String endDateId = dateRangeItem.getEndDateItemId();
+		
 		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
 			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
 			GeneralDate startDate = null;
