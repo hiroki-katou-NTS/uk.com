@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.service;
+package nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 @AllArgsConstructor
-public class SpecificDateItemOutput {
+public class WpSpecificDateSettingExport {
 	private GeneralDate date;
 	private List<Integer> numberList;
 }

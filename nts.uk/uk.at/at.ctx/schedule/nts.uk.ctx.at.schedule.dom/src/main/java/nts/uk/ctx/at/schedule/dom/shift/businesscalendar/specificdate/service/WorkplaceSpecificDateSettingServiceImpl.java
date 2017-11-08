@@ -4,10 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.repository.SpecificDateItemRepository;
@@ -15,7 +17,12 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDa
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
+@Stateless
 public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecificDateSettingService {
 	
 	@Inject
@@ -26,6 +33,9 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 	
 	@Inject
 	private SpecificDateItemRepository specificDateItemRepository;
+	
+	@Inject
+	private ScWorkplaceAdapter scWorkplaceAdapter;
 
 	@Override
 	public SpecificDateItemOutput workplaceSpecificDateSettingService(String companyID, String workPlaceID, GeneralDate date) {
@@ -39,8 +49,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		}
 			
 		// アルゴリズム「職場IDから上位職場を取得する」を実行する ( Acquire upper workplace from workplace ID )
-		// SyWorkplacePub.findParentWpkIdsByWkpId
-		List<String> workplaceIDList = Collections.emptyList();
+		List<String> workplaceIDList = scWorkplaceAdapter.findParentWpkIdsByWkpId(companyID, workPlaceID, date);
 		workplaceIDList.stream().forEach(workplace -> {
 			List<WorkplaceSpecificDateItem> workplaceSpecificDateItemList = workplaceSpecificDateRepository.getWpSpecByDateWithName(workplace, date.toString("yyyy/MM/dd"));
 			workplaceSpecificDateItemList.stream().distinct();

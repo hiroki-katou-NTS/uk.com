@@ -1,10 +1,11 @@
-package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.service;
+package nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -12,7 +13,7 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 @AllArgsConstructor
-public class SpecificDateItemOutput {
+public class WpSpecificDateSettingImport {
 	private GeneralDate date;
 	private List<Integer> numberList;
 }
