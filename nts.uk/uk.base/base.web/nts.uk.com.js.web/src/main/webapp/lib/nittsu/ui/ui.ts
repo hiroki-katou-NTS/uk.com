@@ -617,7 +617,7 @@ module nts.uk.ui {
             $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
             let container = $("body").find("#" + id);
             container.append(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>エラー内容</th>
-                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/><   /table> </div>
+                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/>    </table> </div>
                     <div id='functions-area-bottom'/>`);
             let errorBody = container.find("tbody");
             if($.isArray(errors["errors"])) {
