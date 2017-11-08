@@ -44,15 +44,18 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 						ent.saveDataAtr, ent.stringVal, BigDecimal.valueOf(ent.intVal), ent.dateVal))
 				.collect(Collectors.toList());
 	}
-	
-	//sonnlb code start
 
+	private PpemtPerInfoItemData toEntity(PersonInfoItemData domain){
+		return new PpemtPerInfoItemData();
+	}
+	/**
+	 * Add item data
+	 * @param domain
+	 */
 	@Override
-	public void addnewItemData(PersonInfoItemData itemData) {
+	public void addItemData(PersonInfoItemData domain) {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	//sonnlb code end
 
 }

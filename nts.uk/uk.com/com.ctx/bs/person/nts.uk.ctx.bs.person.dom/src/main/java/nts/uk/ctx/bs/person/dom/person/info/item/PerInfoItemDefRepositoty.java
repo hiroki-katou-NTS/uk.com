@@ -73,4 +73,12 @@ public interface PerInfoItemDefRepositoty {
 
 	// vinhpx end
 	
+	/**
+	 * getNotFixedPerInfoItemDefByCategoryId 
+	 * @param perInfoCategoryId
+	 * @param contractCd
+	 * @return
+	 */
+	List<PersonInfoItemDefinition> getNotFixedPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
+	
 }

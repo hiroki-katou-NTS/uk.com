@@ -11,8 +11,10 @@ public interface PerInfoItemDataRepository {
 	
 	List<PersonInfoItemData> getAllInfoItemByRecordId(String recordId);
 	
-	// sonnlb code start
-		void addnewItemData(PersonInfoItemData itemData);
-	// sonnlb code end
+	/**
+	 * Add item data
+	 * @param domain
+	 */
+	void addItemData(PersonInfoItemData domain);
 
 }
