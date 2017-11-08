@@ -279,14 +279,21 @@ module nts.uk.at.view.kml002.e.viewmodel {
             var self = this;
             var data = {
                 dataList : self.rightItems(),
-                dataAmount : self.rightItemsAmount()
-                
+                dataAmount : self.rightItemsAmount(),
+                calMethodAtr : self.selectedMethod(),
+                roundingTime : self.roundingCd(),
+                roundingAtr : self.selectedProcessing(),
+                unitPrice : self.uPCd(),
+                actualDisplayAtrAmount : self.checked(),
+                actualDisplayAtr : self.checkedAmount(),
+                categoryIndicator: self.catCode()
             }
             nts.uk.ui.windows.setShared("KML002_E_DATA", data);
         }
 
         cancel() {
             var self = this;
+             nts.uk.ui.windows.close(); 
 
         }
         getData(): JQueryPromise<any> {
