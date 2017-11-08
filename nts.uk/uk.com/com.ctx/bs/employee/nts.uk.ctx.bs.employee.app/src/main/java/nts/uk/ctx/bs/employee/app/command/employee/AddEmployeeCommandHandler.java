@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.employee;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -9,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.layout.LayoutFinder;
 
+@Stateless
 public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand> {
 	@Inject
 	private LayoutFinder layoutFinder;
