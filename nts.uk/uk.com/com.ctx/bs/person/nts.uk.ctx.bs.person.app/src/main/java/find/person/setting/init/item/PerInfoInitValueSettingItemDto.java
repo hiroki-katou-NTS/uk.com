@@ -1,6 +1,9 @@
 package find.person.setting.init.item;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -65,9 +68,13 @@ public class PerInfoInitValueSettingItemDto {
 	
 	private Integer timeItemMax;
 	
+	// item thuoc kieu selection
+	
 	private String selectionItemId;
 	
 	private Integer selectionItemRefType;
+	
+	private List<SelectionInitDto> selection = new ArrayList<>();
 	
 	private Integer dateType;
 	
@@ -78,9 +85,9 @@ public class PerInfoInitValueSettingItemDto {
 	private BigDecimal numericItemMin;
 	
 	private BigDecimal numericItemMax;
-	
 
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
+		
 		return new PerInfoInitValueSettingItemDto(domain.getPerInfoItemDefId(), 
 				domain.getSettingId(),
 				domain.getPerInfoCtgId(), domain.getItemName(), 
@@ -97,6 +104,7 @@ public class PerInfoInitValueSettingItemDto {
 				domain.getNumberIntegerPart(), domain.getTimeItemMin(), domain.getTimeItemMax(),
 				domain.getSelectionItemId(), 
 				domain.getSelectionItemRefType() == null? null: domain.getSelectionItemRefType() ,
+			    new ArrayList<>(),
 				domain.getDateType(), 
 				domain.getTimepointItemMin(), domain.getTimepointItemMax(),
 				domain.getNumericItemMin(), domain.getNumericItemMax());

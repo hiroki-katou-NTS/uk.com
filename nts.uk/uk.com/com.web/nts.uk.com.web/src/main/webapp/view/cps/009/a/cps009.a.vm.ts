@@ -96,6 +96,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMin: obj.timeItemMin,
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
+                            selection: obj.selection,
                             dateType: obj.dateType,
                             timepointItemMin: obj.timepointItemMin,
                             timepointItemMax: obj.timepointItemMax,
@@ -611,6 +612,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         selectionItemRefType?: number;
 
+        selection?: Array<any>;
+
         // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
         dateType?: number;
 
@@ -724,9 +727,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-            self.selectionItemId = params.selectionItemId || undefined;
+            if (params.dataType === 6) {
+                self.selectionItemId = params.selectionItemId || undefined;
 
-            self.selectionItemRefType = params.selectionItemRefType || undefined;
+                self.selectionItemRefType = params.selectionItemRefType || undefined;
+
+                self.selection = ko.observableArray(params.selection || []);
+            }
 
             self.dateType = params.dateType || undefined;
 
@@ -758,9 +765,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     { code: 3, name: "ログイン者と同じ" }]);
             }
 
-            self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
-                { code: 2, name: "固定値" },
-                { code: 3, name: "ログイン者と同じ" }]);
+
             self.selectedCode = ko.observable(params.selectionItemRefType || undefined);
 
             self.itemCode = ko.observable(params.itemCode || "");
