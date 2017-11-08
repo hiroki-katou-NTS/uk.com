@@ -7,6 +7,8 @@ module nts.uk.com.view.cps017.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
+    import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
@@ -52,7 +54,7 @@ module nts.uk.com.view.cps017.d.viewmodel {
         }
     }
 
-    
+
 
     // History:
     interface IHistorySelection {
@@ -67,7 +69,7 @@ module nts.uk.com.view.cps017.d.viewmodel {
         histId: KnockoutObservable<string> = ko.observable('');
         selectionItemId: KnockoutObservable<string> = ko.observable('');
         companyCode: KnockoutObservable<string> = ko.observable('');
-        startDate: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<string> = ko.observable(formatDate(new Date()) || undefined);
         endDate: KnockoutObservable<string> = ko.observable('');
 
         constructor(param: IHistorySelection) {
@@ -75,7 +77,7 @@ module nts.uk.com.view.cps017.d.viewmodel {
             self.histId(param.histId || '');
             self.selectionItemId(param.selectionItemId || '');
             self.companyCode(param.companyCode || '');
-            self.startDate(param.startDate || '');
+            self.startDate(formatDate(new Date()) || undefined);
             self.endDate(param.endDate || '');
         }
 

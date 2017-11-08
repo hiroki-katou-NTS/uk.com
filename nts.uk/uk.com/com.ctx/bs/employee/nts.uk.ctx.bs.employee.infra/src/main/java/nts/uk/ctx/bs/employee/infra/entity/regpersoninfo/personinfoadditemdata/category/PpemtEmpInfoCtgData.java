@@ -31,7 +31,7 @@ public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	// 社員ID
 	@Basic(optional = false)
-	@Column(name = "S_ID")
+	@Column(name = "SID")
 	public String employeeId;
 
 	@Override

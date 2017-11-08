@@ -32,7 +32,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 
 	@Override
 	public List<PerInfoCtgData> getByPerIdAndCtgId(String perId, String ctgId) {
-		List<PpemtPerInfoCtgData> datas = this.queryProxy().namedQuery(GET_BY_CTGID_PID, PpemtPerInfoCtgData.class)
+		List<PpemtPerInfoCtgData> datas = this.queryProxy().query(GET_BY_CTGID_PID, PpemtPerInfoCtgData.class)
 				.setParameter("pInfoCtgId", ctgId).setParameter("pId", perId).getList();
 		return datas.stream().map(entity -> new PerInfoCtgData(entity.recordId, entity.pInfoCtgId, entity.pId))
 				.collect(Collectors.toList());
