@@ -71,4 +71,12 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 		this.commandProxy().update(existItem.get());
 	}
 
+	//sonnlb code start 
+		@Override
+		public void addNewCategoryData(PerInfoCtgData perInfoCtgData) {
+			this.commandProxy().insert(toEntity(perInfoCtgData));
+			
+		}
+	//sonnlb code end
+
 }
