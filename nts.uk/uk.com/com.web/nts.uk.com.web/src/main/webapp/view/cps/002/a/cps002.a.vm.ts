@@ -11,7 +11,7 @@ module cps002.a.vm {
 
     export class ViewModel {
 
-        date: KnockoutObservable<Date> = ko.observable(new Date());
+        date: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
         createTypeList: KnockoutObservableArray<any> = ko.observableArray([
             new BoxModel(1, text('CPS002_26')),
@@ -46,7 +46,7 @@ module cps002.a.vm {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
 
         ccgcomponent: any = {
-            baseDate: ko.observable(new Date()),
+            baseDate: ko.observable(moment().toDate()),
             isQuickSearchTab: true,
             isAdvancedSearchTab: true,
             isAllReferableEmployee: true,
@@ -72,7 +72,7 @@ module cps002.a.vm {
                 self.categorySelectedCode('');
                 self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
-              //  self.layout(new Layout({ id: '', code: '', name: '' }));
+                //  self.layout(new Layout({ id: '', code: '', name: '' }));
 
             });
 
@@ -461,17 +461,33 @@ module cps002.a.vm {
 
         finish() {
 
-            let self = this;
+            let self = this,
+                itemDataList = _(ko.toJS(self.layout).itemsClassification).map(x => x.items).flatten().flatten().value(),
+                command = {
+                    employeeCopyId: self.copyEmployee().employeeId,
+                    InitSettingId: self.currentInitSetting(),
+                    employeeName: self.currentEmployee().employeeName(),
+                    employeeCode: self.currentEmployee().employeeCode(),
+                    hireDate: self.currentEmployee().hireDate(),
+                    cardNo: self.currentEmployee().cardNo(),
+                    avatarId: self.currentEmployee().avatarId(),
+                    createType: self.createTypeId(),
+                    itemDataList: itemDataList
+                };
 
-            nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
-                if (getShared('isContinue')) {
+            //            service.addNewEmployee(command).done(() => {
+            //                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+            //                    if (getShared('isContinue')) {
+            //
+            //                        self.gotoStep1();
+            //
+            //                    } else {
+            //                        jump('/view/cps/001/a/index.xhtml');
+            //                    }
+            //                });
+            //
+            //            })
 
-                    self.gotoStep1();
-
-                } else {
-                    jump('/view/cps/001/a/index.xhtml');
-                }
-            });
         }
 
         openEModal(param, data) {
@@ -552,7 +568,7 @@ module cps002.a.vm {
     class Employee {
         employeeName: KnockoutObservable<string> = ko.observable("");
         employeeCode: KnockoutObservable<string> = ko.observable("");
-        hireDate: KnockoutObservable<Date> = ko.observable(new Date());
+        hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
         cardNo: KnockoutObservable<string> = ko.observable("");
         initvalueCode: string;
         avatarId: KnockoutObservable<string> = ko.observable("");

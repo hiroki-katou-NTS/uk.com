@@ -26,5 +26,8 @@ public interface SelectionRepository {
 	//Lanlt
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
 	//Lanlt
+
+	//Tuan nv: 
+	List<Selection> getAllSelectionBySelectionID(String selectionId);
 	
 }

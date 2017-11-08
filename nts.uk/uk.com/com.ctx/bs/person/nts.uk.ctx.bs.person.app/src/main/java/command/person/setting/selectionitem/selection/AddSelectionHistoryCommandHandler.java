@@ -1,6 +1,7 @@
 package command.person.setting.selectionitem.selection;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -42,15 +43,15 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
 		GeneralDate getStartDate = command.getStartDate();
-		
+
 		/*
-		List<PerInfoHistorySelection> startDateHistoryList = this.historySelectionRepository
-				.historyStartDateSelection(getStartDate);
-		if (startDateHistoryList.size() > 0) {
-			throw new BusinessException(new RawErrorMessage("Msg_102"));
-		}
-		*/
-		
+		 * List<PerInfoHistorySelection> startDateHistoryList =
+		 * this.historySelectionRepository
+		 * .historyStartDateSelection(getStartDate); if
+		 * (startDateHistoryList.size() > 0) { throw new BusinessException(new
+		 * RawErrorMessage("Msg_102")); }
+		 */
+
 		// ログインしているユーザーの権限をチェックする
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
@@ -58,40 +59,58 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		DatePeriod period = new DatePeriod(startDate, endDate);
 
 		boolean userLogin = true;
+		// get last hist
+		Optional<PerInfoHistorySelection> optlastHist = this.historySelectionRepository
+				.getLastHistoryBySelectioId(selectItemID);
+
 		if (userLogin == true) {
 			String cid = PersonInfoCategory.ROOT_COMPANY_ID;
-			
+
 			// ドメインモデル「選択肢履歴」を登録する
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, selectItemID,
 					cid, period);
 			this.historySelectionRepository.add(domainHist);
-		} else {			
+		} else {
 			String cid_login = AppContexts.user().companyId();
-			
+
 			// ドメインモデル「選択肢履歴」を登録する
 			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.createHistorySelection(newHistId,
-					selectItemID,cid_login , period);
+					selectItemID, cid_login, period);
 			this.historySelectionRepository.add(domainHist1);
+		}
+		// if last hist isPresent (not first time create)
+		if (optlastHist.isPresent()) {
+			PerInfoHistorySelection lastHist = optlastHist.get();
+			//set end date lastHist = startDate of newHist -1
+			DatePeriod lastHistPeriod = new DatePeriod(lastHist.getPeriod().start(), startDate.addDays(-1));
+			
+			lastHist.setPeriod(lastHistPeriod);
+
+			this.historySelectionRepository.update(lastHist);
+
 		}
 
 		String histId = command.getHistId();
 		List<Selection> getAllSelectByHistId = this.selectionRepo.getAllSelectByHistId(histId);
-		List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo.getAllOrderSelectionByHistId(histId);
-		
+		List<SelectionItemOrder> getAllOrderSelectionByHistId = this.selectionOrderRepo
+				.getAllOrderSelectionByHistId(histId);
+
 		for (Selection selection : getAllSelectByHistId) {
 			String newSelectionId = IdentifierUtil.randomUniqueId();
-			
+
 			// Tao do main: 選択肢
-			Selection domainSelection = Selection.createFromSelection(newSelectionId, newHistId, selection.getExternalCD().v(),
-					selection.getSelectionName().v(), selection.getExternalCD().v(), selection.getMemoSelection().v());
-			
+			Selection domainSelection = Selection.createFromSelection(newSelectionId, newHistId,
+					selection.getExternalCD().v(), selection.getSelectionName().v(), selection.getExternalCD().v(),
+					selection.getMemoSelection().v());
+
 			// ドメインモデル「選択肢」をコピーする
 			this.selectionRepo.add(domainSelection);
 
 			// Lay tat ca gia tri trong domain: 選択肢の並び順と既定値 theo SelectionID
 			SelectionItemOrder orderOrg = getAllOrderSelectionByHistId.stream()
-					.filter(o -> o.getSelectionID().equals(selection.getSelectionID())).collect(Collectors.toList()).get(0);
-			
+					.filter(o -> o.getSelectionID().equals(selection.getSelectionID())).collect(Collectors.toList())
+					.get(0);
+
 			// Tao domain: 選択肢の並び順と既定値
 			SelectionItemOrder domainSelectionOrder = SelectionItemOrder.selectionItemOrder(newSelectionId, newHistId,
 					orderOrg.getDisporder().v(), orderOrg.getInitSelection().value);

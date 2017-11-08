@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import entity.person.setting.selectionitem.PpemtHistorySelection;
 import entity.person.setting.selectionitem.PpemtHistorySelectionPK;
+import entity.person.setting.selectionitem.selection.PpemtSelection;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
@@ -32,6 +33,9 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 			+ " AND a.startDate <= :baseDate" + " AND a.endDate >= :baseDate" + " ORDER BY b.dispOrder";
 
 	private static final String SELECT_ALL_HISTID = SELECT_ALL + " WHERE si.histId = :histId";
+
+	private static final String GET_LAST_HISTORY_BY_SELECTION_ID = SELECT_ALL_HISTORY_SELECTION
+			+ " AND si.endDate =:endDate";
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
@@ -60,7 +64,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<PerInfoHistorySelection> historySelection(String selectionItemId) {
+	public List<PerInfoHistorySelection> getAllHistoryBySelectionItemId(String selectionItemId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).getList(c -> toDomain(c));
@@ -108,6 +112,14 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	@Override
 	public List<String> getAllHistId(String histId) {
 		return queryProxy().query(SELECT_ALL_HISTID, String.class).setParameter("histId", histId).getList();
+	}
+
+	@Override
+	public Optional<PerInfoHistorySelection> getLastHistoryBySelectioId(String selectionItemId) {
+		GeneralDate endDate = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
+		return this.queryProxy().query(GET_LAST_HISTORY_BY_SELECTION_ID, PpemtHistorySelection.class)
+				.setParameter("selectionItemId", selectionItemId).setParameter("endDate", endDate)
+				.getSingle(c -> toDomain(c));
 	}
 
 }

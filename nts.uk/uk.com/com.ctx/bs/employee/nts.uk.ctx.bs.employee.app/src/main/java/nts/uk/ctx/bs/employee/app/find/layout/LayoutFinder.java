@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import find.layout.NewLayoutDto;
+import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoClsFinder;
 import find.layout.classification.LayoutPersonInfoValueDto;
@@ -194,9 +195,28 @@ public class LayoutFinder {
 						classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
 						authClassItem.getListItemDf());
 				authClassItem.setListItemDf(dataInfoItems);
-				// get data
+
 				PersonInfoCategory perInfoCategory = perInfoCateRepo
 						.getPerInfoCategory(classItem.getPersonInfoCategoryID(), contractCode).get();
+
+				// action role
+				switch (perInfoCategory.getCategoryType()) {
+				case CONTINUOUSHISTORY:
+				case NODUPLICATEHISTORY:
+				case DUPLICATEHISTORY:
+				case CONTINUOUS_HISTORY:
+
+					break;
+				case MULTIINFO:
+					if (selfBrowsing) {
+
+					} else {
+
+					}
+					break;
+				}
+
+				// get data
 				if (classItem.getLayoutItemType() == LayoutItemType.ITEM.value) {
 					getDataforSingleItem(perInfoCategory, authClassItem, standandDate, employee.getPId(),
 							employee.getSId());
@@ -230,12 +250,26 @@ public class LayoutFinder {
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
 
 		List<PersonInfoItemAuth> authItems = perInfoItemAuthRepo.getAllItemAuth(roleId, perInfocategoryId);
+
 		for (PerInfoItemDefDto itemDef : listItemDef) {
 			PersonInfoItemAuth authItem = authItems.stream().filter(p -> p.getPersonItemDefId().equals(itemDef.getId()))
 					.collect(Collectors.toList()).get(0);
-			if ((selfBrowsing && authItem.getSelfAuth() != PersonInfoAuthType.HIDE)
-					|| (!selfBrowsing && authItem.getOtherAuth() != PersonInfoAuthType.HIDE)) {
-				dataInfoItems.add(itemDef);
+			if (selfBrowsing) {
+				if (authItem.getSelfAuth() == PersonInfoAuthType.REFERENCE) {
+					itemDef.setActionRole(ActionRole.VIEW_ONLY);
+					dataInfoItems.add(itemDef);
+				} else if (authItem.getSelfAuth() == PersonInfoAuthType.UPDATE) {
+					itemDef.setActionRole(ActionRole.EDIT);
+					dataInfoItems.add(itemDef);
+				}
+			} else {
+				if (authItem.getOtherAuth() == PersonInfoAuthType.REFERENCE) {
+					itemDef.setActionRole(ActionRole.VIEW_ONLY);
+					dataInfoItems.add(itemDef);
+				} else if (authItem.getOtherAuth() == PersonInfoAuthType.UPDATE) {
+					itemDef.setActionRole(ActionRole.EDIT);
+					dataInfoItems.add(itemDef);
+				}
 			}
 		}
 

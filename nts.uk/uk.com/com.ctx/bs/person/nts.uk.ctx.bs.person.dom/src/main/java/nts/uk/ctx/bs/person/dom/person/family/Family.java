@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.person.dom.person.family;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -16,6 +17,7 @@ import nts.uk.ctx.bs.person.dom.person.info.CountryId;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 // 家族

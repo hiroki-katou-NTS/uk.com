@@ -264,6 +264,44 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }
         }
 
+        removeHistory() {
+            //alert("delete history!!");    
+            let self = this,
+                items = ko.unwrap(self.listHistorySelection),
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection();
+
+            currentItem.histId(self.historySelection().histId());
+            command = ko.toJS(currentItem);
+            oldIndex = _.findIndex(listHistorySelection, x => x.histId == currentItem.histId());
+            lastIndex = items.length - 1;
+            if (items.length > 0) {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeHistory(command).done(function() {
+                        self.listHistorySelection.removeAll();
+                        service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<IHistorySelection>) => {
+                            if (itemList && itemList.length) {
+                                itemList.forEach(x => self.listHistorySelection.push(x));
+                                if (oldIndex == lastIndex) {
+                                    oldIndex--;
+                                }
+                                let newItem = itemList[oldIndex];
+                                currentItem.histId(newItem.histId);
+                            }
+                        });
+                        self.listItems.valueHasMutated();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                    });
+                }).ifNo(() => {
+                    self.listItems.valueHasMutated();
+                    return;
+                })
+            } else {
+                alertError({ messageId: "Msg_521" });
+                self.registerDataSelectioItem();
+            }
+        }
+
         //ダイアログC画面
         openDialogB() {
             let self = this,
@@ -293,10 +331,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
                 block.clear();
-//                service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((_selectionItemList: IHistorySelection) => {
-//                    self.listHistorySelection(_selectionItemList);
-//                });
-                
+                //                service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((_selectionItemList: IHistorySelection) => {
+                //                    self.listHistorySelection(_selectionIte         //                });
+
 
             });
         }

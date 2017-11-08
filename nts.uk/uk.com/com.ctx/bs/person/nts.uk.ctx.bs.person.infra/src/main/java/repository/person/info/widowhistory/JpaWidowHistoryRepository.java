@@ -4,6 +4,7 @@
 package repository.person.info.widowhistory;
 
 import java.awt.Window;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -84,6 +85,12 @@ public class JpaWidowHistoryRepository extends JpaRepository implements WidowHis
 		Optional<WidowHistory> widowHistory = this.queryProxy().query(SELECT_WIDOWHIST_BY_ID, BpsmtWidowHis.class)
 				.setParameter("olderWidowId", widowHisId).getSingle(x -> toDomain(x));
 		return widowHistory.isPresent()?widowHistory.get():null;
+	}
+
+	@Override
+	public  List<WidowHistory> getbyPid(String pid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

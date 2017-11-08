@@ -3,20 +3,21 @@ module cps002.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getLayout': 'ctx/bs/person/newlayout/get',
-        'getUserSetting': 'ctx/bs/person/info/setting/user/getUserSetting',
-        'getLastRegHistory': 'ctx/bs/person/info/setting/regisHistory/getLastRegHistory',
-        'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
-        'getCardNumber': 'basic/organization/employee/getGenerateCardNo',
-        'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
-        'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
-        'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
-        'getAllCopySettingItem': 'ctx/bs/person/info/setting/copySettingItem/{0}/{1}/{2}',
-        'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
-        'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
-        'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}/{2}',
-        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth',
-        'getLayoutByCreateType': 'bs/employee/layout/getByCreateType'
+        getLayout: 'ctx/bs/person/newlayout/get',
+        getUserSetting: 'ctx/bs/person/info/setting/user/getUserSetting',
+        getLastRegHistory: 'ctx/bs/person/info/setting/regisHistory/getLastRegHistory',
+        getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
+        getCardNumber: 'basic/organization/employee/getGenerateCardNo',
+        getGenerateEmplCodeAndComId: 'basic/organization/employee/getGenerateEmplCodeAndComId',
+        validateEmpInfo: 'basic/organization/employee/validateEmpInfo',
+        getCopySetting: 'ctx/bs/person/info/setting/copySetting/getCopySetting',
+        getAllCopySettingItem: 'ctx/bs/person/info/setting/copySettingItem/{0}/{1}/{2}',
+        getAllInitValueSetting: 'ctx/bs/person/info/setting/init/findAllHasChild',
+        getAllInitValueCtgSetting: 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
+        getAllInitValueItemSetting: 'regpersoninfo/init/item/findInit/{0}/{1}/{2}',
+        getSelfRoleAuth: 'ctx/bs/person/roles/auth/getSelfAuth',
+        getLayoutByCreateType: 'bs/employee/layout/getByCreateType',
+        addNewEmployee: 'basic/organization/employee/addNewEmployee',
 
     };
 
@@ -72,9 +73,13 @@ module cps002.a.service {
     export function getSelfRoleAuth() {
         return ajax(paths.getSelfRoleAuth);
     }
-    
+
     export function getLayoutByCreateType(command) {
         return ajax(paths.getLayoutByCreateType, command);
+    }
+
+    export function addNewEmployee(command) {
+        return ajax(paths.addNewEmployee, command);
     }
 
 }

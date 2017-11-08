@@ -90,6 +90,67 @@ public class ItemDefinitionFactory {
 		}
 	}
 
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
+			List<CurrentAddress> listCurrentAddress) {
+		for (int i = 0; i < listCurrentAddress.size(); i++) {
+			for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
+				Object data = null;
+				switch (itemDef.getItemCode()) {
+				case "IS00029":
+					/*
+					 * 現住所．期間 現住所．期間．開始日 現住所．期間．終了日
+					 */
+					// dataInfoItem.setData(listCurrentAddress.getPeriod());
+					break;
+				case "IS00030":
+					// 現住所．郵便番号
+					data = listCurrentAddress.get(i).getPostalCode().v();
+					break;
+
+				case "IS00031":
+					// 現住所．都道府県
+					data = listCurrentAddress.get(i).getPrefectures().v();
+					break;
+				case "IS00032":
+					// 現住所．国
+					data = listCurrentAddress.get(i).getCountryId();
+					break;
+				case "IS00033":
+					// 現住所．住所１
+					data = listCurrentAddress.get(i).getAddress1().getAddress1().v();
+					break;
+				case "IS00034":
+					// 現住所．住所カナ１
+					data = listCurrentAddress.get(i).getAddress1().getAddressKana1().v();
+					break;
+				case "IS00035":
+					// 現住所．住所2
+					data = listCurrentAddress.get(i).getAddress2().getAddress2().v();
+					break;
+				case "IS00036":
+					// 現住所．住所カナ2
+					data = listCurrentAddress.get(i).getAddress2().getAddressKana2().v();
+					break;
+				case "IS00037":
+					// 現住所．電話番号
+					data = listCurrentAddress.get(i).getPhoneNumber().v();
+					break;
+				case "IS00038":
+					// 現住所．住宅状況種別
+					data = listCurrentAddress.get(i).getHomeSituationType().v();
+					break;
+				case "IS00039":
+					// 現住所．社宅家賃
+					data = listCurrentAddress.get(i).getHouseRent().v();
+					break;
+				}
+				if (data != null) {
+					authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+				}
+			}
+		}
+	}
+
 	// vinhpx: start
 	// person
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Person person) {
@@ -327,6 +388,16 @@ public class ItemDefinitionFactory {
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
 			WidowHistory widowHistory) {
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchCurrentAddress(LayoutPersonInfoClsDto personInfoClsDto,
+			List<CurrentAddress> currentAddress) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchWidowHistory(LayoutPersonInfoClsDto personInfoClsDto,
+			List<WidowHistory> lstWidowHistory) {
+		return null;
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchPersEmerConts(LayoutPersonInfoClsDto authClassItem,

@@ -48,7 +48,7 @@ public class RemoveHistoryCommandHandler extends CommandHandler<RemoveHistoryCom
 		// Xoa domain: history
 		this.perInfoHistSeleRepo.remove(getHistId);
 
-		// Xoa domain: Selection
+		// Xoa domain: SelectionS
 		this.selectionRepo.remove(getHistId);
 
 		// Xoa domain: Selection Order
