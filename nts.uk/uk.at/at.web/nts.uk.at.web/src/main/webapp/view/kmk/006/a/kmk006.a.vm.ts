@@ -82,7 +82,10 @@ module nts.uk.at.view.kmk006.a {
             enableEnumFleTimeLi: KnockoutObservable<boolean>;
             enableEnumResResLi: KnockoutObservable<boolean>;
             enableEnumResLatLi: KnockoutObservable<boolean>;
-            baseDate: KnockoutObservable<Date>;
+            baseDateJobList: KnockoutObservable<Date>;
+            baseDateTreeList: KnockoutObservable<Date>;
+            baseDateJobListTotal: KnockoutObservable<Date>;
+            baseDateTreeListTotal: KnockoutObservable<Date>;
             inputDate: KnockoutObservable<Date>;
             isLoading: KnockoutObservable<boolean>;
             date: KnockoutObservable<string>;
@@ -98,7 +101,10 @@ module nts.uk.at.view.kmk006.a {
 
             constructor() {
                 var self = this;
-                self.baseDate = ko.observable(new Date());
+                self.baseDateJobList = ko.observable(new Date());
+                self.baseDateTreeList = ko.observable(new Date());
+                self.baseDateJobListTotal = ko.observable(new Date());
+                self.baseDateTreeListTotal = ko.observable(new Date());
                 self.inputDate = ko.observable(new Date());
                 self.isMultiSelectKcp = ko.observable(false);
                 self.date = ko.observable('20000101');
@@ -119,7 +125,7 @@ module nts.uk.at.view.kmk006.a {
                     isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateTreeList,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
@@ -131,7 +137,7 @@ module nts.uk.at.view.kmk006.a {
                     isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.totalSelectedWorkplaceId,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateTreeListTotal,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
@@ -182,7 +188,7 @@ module nts.uk.at.view.kmk006.a {
                 self.componentItemCode = ko.observable('');
                 self.jobListOptions = {
                     isShowAlreadySet: true,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateJobList,
                     isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -194,7 +200,7 @@ module nts.uk.at.view.kmk006.a {
                 };
                 self.jobTotalListOptions = {
                     isShowAlreadySet: false,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateJobListTotal,
                     isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -647,7 +653,7 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
-                if(self.selectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.selectedCode())){
                     nts.uk.ui.block.clear();
                     return;    
                 }
@@ -689,7 +695,7 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
-                if(self.multiSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.multiSelectedWorkplaceId())) {
                     nts.uk.ui.block.clear();
                     return;    
                 }
@@ -722,16 +728,17 @@ module nts.uk.at.view.kmk006.a {
             }
 
 
-            public saveWkpJobAutoCal(wkpId: string, jobId: string): void {
-                $('#input-date').ntsError('clear');
-                $('#input-date').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
-                    return;
-                }
+            public saveWkpJobAutoCal(wkpId: string, jobId: string): void {         
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
+                self.clearAllError();
                 let isError: boolean = false;
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    isError = true;
+                    nts.uk.ui.block.clear();
+                }             
                 if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())){
                     isError = true;
                     $('#tree-grid').ntsError('set', {messageId:"Msg_719"});
@@ -781,7 +788,7 @@ module nts.uk.at.view.kmk006.a {
             public applyBaseDate(): void {
                 $('#input-date').ntsError('clear');
                 $('#input-date').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
+                if ($('#input-date').ntsError('hasError')) {
                     return;
                 };
                 var self = this;
@@ -791,8 +798,10 @@ module nts.uk.at.view.kmk006.a {
                     return;
                 } 
                 
-                let emptyBaseDate: boolean = nts.uk.text.isNullOrEmpty(self.baseDate().toString());
-                self.baseDate(self.inputDate());
+                let emptyBaseDate: boolean = (nts.uk.text.isNullOrEmpty(self.baseDateJobListTotal().toString()) 
+                || nts.uk.text.isNullOrEmpty(self.baseDateTreeListTotal().toString())) 
+                self.baseDateJobListTotal(self.inputDate());
+                self.baseDateTreeListTotal(self.inputDate());
                 
                 // Reload table
                 if (emptyBaseDate) {
@@ -816,7 +825,7 @@ module nts.uk.at.view.kmk006.a {
             public deleteJobAutoCal() {
                 let self = this;
                 
-                if(self.selectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.selectedCode())) {
                     return;    
                 }
 
@@ -844,7 +853,7 @@ module nts.uk.at.view.kmk006.a {
             public deleteWkpAutoCal() {
                 let self = this;
                 
-                if(self.multiSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.multiSelectedWorkplaceId())) {
                     return;    
                 }
 
@@ -872,10 +881,10 @@ module nts.uk.at.view.kmk006.a {
             public deleteWkpJobAutoCal() {
                 let self = this;
                 
-                if(self.totalSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())) {
                     return;    
                 }
-                if(self.totalSelectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedCode())) {
                     return;    
                 }
 
@@ -902,11 +911,11 @@ module nts.uk.at.view.kmk006.a {
             /**
          * on click tab panel company action event
          */
-            public onSelectCompany(): JQueryPromise<void> {
-                $('.nts-input').ntsError('clear');
+            public onSelectCompany(): JQueryPromise<void> {            
                 var self = this;
                 var dfd = $.Deferred<void>();
 
+                self.clearAllError();
                 self.loadComAutoCal();
 
                 self.isLoading(true);
@@ -917,18 +926,18 @@ module nts.uk.at.view.kmk006.a {
             }
 
             public onSelectJobTitle(): void {
-                $('.nts-input').ntsError('clear');
                 var self = this;
-
-                self.isLoading(true);
-
+                
+                self.clearAllError();
+                self.baseDateJobList(new Date());
+                self.isLoading(true);                           
+                
                 $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                     let code = $('#component-items-list').getDataList()[0].id;
                     self.selectedCode(code);
                     self.loadJobAutoCal(code);
                     self.loadJobAlreadySettingList();
                 });
-
             }
 
 
@@ -936,10 +945,10 @@ module nts.uk.at.view.kmk006.a {
           * on click tab panel employment action event
           */
             public onSelectWorkplace(): void {
-                $('.nts-input').ntsError('clear');
                 var self = this;
 
-                // Update flags.
+                self.clearAllError();
+                self.baseDateTreeList(new Date());
                 self.isLoading(true);
 
                 $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
@@ -951,14 +960,16 @@ module nts.uk.at.view.kmk006.a {
             }
 
             public onSelectWkpJob(): void {
-                $('.nts-input').ntsError('clear');
                 var self = this;
 
-                // Update flags.
+                self.clearAllError();
+                self.baseDateJobListTotal(new Date());
+                self.baseDateTreeListTotal(new Date());
                 self.isLoading(true);
 
                 // Check Msg_374
-                if (nts.uk.text.isNullOrEmpty(self.baseDate().toString())) {
+                if (nts.uk.text.isNullOrEmpty(self.baseDateJobListTotal().toString()) 
+                || nts.uk.text.isNullOrEmpty(self.baseDateTreeListTotal().toString())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_374" });   
                     return;                 
                 }
@@ -999,6 +1010,9 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
+            private clearAllError() {
+                nts.uk.ui.errors.clearAll();
+            }
         }
         // exportclass
         export class TreeType {
