@@ -731,15 +731,19 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
+                let isError: boolean = false;
                 if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())){
+                    isError = true;
                     $('#tree-grid').ntsError('set', {messageId:"Msg_719"});
-                     nts.uk.ui.block.clear();
-                    return;    
+                    nts.uk.ui.block.clear();
                 }
                 if (nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
-                     $('#jobtitles').ntsError('set', {messageId:"Msg_720"});
-                     nts.uk.ui.block.clear();
-                    return;    
+                    isError = true;
+                    $('#jobtitles').ntsError('set', {messageId:"Msg_720"});
+                    nts.uk.ui.block.clear();                   
+                }
+                if (isError) {
+                    return;       
                 }
 
                 // Save enum
