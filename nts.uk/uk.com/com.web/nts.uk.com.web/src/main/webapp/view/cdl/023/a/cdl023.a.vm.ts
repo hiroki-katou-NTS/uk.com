@@ -94,16 +94,22 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     screenUrl = '/view/cdl/004/a/index.xhtml';
                     keyInput = 'inputCDL004';
                     keyOutput = 'outputCDL004';
+                    
+                    // set data share
                     shareData.baseDate = self.baseDate;
                     break;
                 case TargetType.WORKPLACE:
                     screenUrl = '/view/cdl/008/a/index.xhtml';
                     keyInput = 'inputCDL008';
                     keyOutput = 'outputCDL008';
+                    
+                    // set data share
                     shareData.baseDate = self.baseDate;
                     break;
-//                case TargetType.DEPARMENT:
-//                    screenUrl = '/view/cdl/007/a/index.xhtml';
+                case TargetType.DEPARMENT:
+                    screenUrl = '/view/cdl/007/a/index.xhtml';
+                    nts.uk.ui.dialog.alert("Not cover.");
+                    return;
 //                    break;
                 case TargetType.WORKPLACE_PERSONAL:
                     screenUrl = '/view/cdl/009/a/index.xhtml';
@@ -113,6 +119,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     // set data share
                     shareData.target = 1;
                     shareData.baseDate = self.baseDate;
+                    shareData.selectedIds = self.lstSelected();
                     break;
                 case TargetType.DEPARMENT_PERSONAL:
                     screenUrl = '/view/cdl/009/a/index.xhtml';
@@ -122,6 +129,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     // set data share
                     shareData.target = 2;
                     shareData.baseDate = self.baseDate;
+                    shareData.selectedIds = self.lstSelected();
                     break;
                 default:
                     nts.uk.ui.dialog.alert("Target type not found.");

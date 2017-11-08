@@ -27,8 +27,8 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCla
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 

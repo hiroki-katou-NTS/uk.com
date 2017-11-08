@@ -101,10 +101,6 @@ module kcp.share.tree {
         static NO_SELECT = 4;
     }
 
-    export interface TreeStyle {
-        height: number;
-    }
-
     export class TreeComponentScreenModel {
         itemList: KnockoutObservableArray<UnitModel>;
         backupItemList: KnockoutObservableArray<UnitModel>;
@@ -121,7 +117,6 @@ module kcp.share.tree {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         $input: JQuery;
         data: TreeComponentOption
-        treeStyle: TreeStyle;
         maxRows: number;
 
         isSetTabindex: KnockoutObservable<boolean>;
@@ -177,8 +172,6 @@ module kcp.share.tree {
                 }
                 return false;
             });
-            self.calHeightTree(data);
-
 
             // subscribe change selected level
             self.levelSelected.subscribe(function(level) {
@@ -315,16 +308,6 @@ module kcp.share.tree {
                 o.remove();
             });
             return max;
-        }
-
-        /**
-         * Calculate number max row
-         */
-        private calHeightTree(data: TreeComponentOption) {
-            let height = 24;
-            this.treeStyle = {
-                height: height * (data.maxRows + 1) + 16
-            };
         }
 
         /**

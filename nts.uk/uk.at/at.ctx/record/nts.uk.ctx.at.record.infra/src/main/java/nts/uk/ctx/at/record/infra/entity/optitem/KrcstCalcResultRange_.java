@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.optitem;
 
-import java.math.BigDecimal;
-
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
@@ -34,10 +32,10 @@ public class KrcstCalcResultRange_ {
 	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> lowerTimeRange;
 
 	/** The upper number range. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, BigDecimal> upperNumberRange;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Double> upperNumberRange;
 
 	/** The lower number range. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, BigDecimal> lowerNumberRange;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Double> lowerNumberRange;
 
 	/** The upper amount range. */
 	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> upperAmountRange;
