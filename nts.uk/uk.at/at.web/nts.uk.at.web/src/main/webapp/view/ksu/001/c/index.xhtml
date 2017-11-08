@@ -37,8 +37,8 @@
 						</tr>
 					</table>
 					<button id="error-output"
-						data-bind="click: exportExcel, hasfocus : isError">#{i18n.getText('KSU001_210')}</button>
-					<table id="error-status">
+						data-bind="click: exportExcel, hasfocus : isError, visible: !isError">#{i18n.getText('KSU001_210')}</button>
+					<table id="error-status" data-bind="visible: !isError">
 						<thead>
 							<tr>
 								<th>#{i18n.getText('KSU001_204')}</th>

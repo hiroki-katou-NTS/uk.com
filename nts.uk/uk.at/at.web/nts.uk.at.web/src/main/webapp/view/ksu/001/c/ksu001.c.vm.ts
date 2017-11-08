@@ -101,8 +101,6 @@ module nts.uk.at.view.ksu001.c {
                                         if (item.valueAsBoolean == false) {
                                             self.processingState(nts.uk.resource.getText('KSU001_215'));
                                             self.state(nts.uk.resource.getText('KSU001_213'));
-                                            $('#error-status').css('display', '');
-                                            $('#error-output').css({ 'display': '' });
                                             self.isError(false);
                                         } else {
                                             self.processingState(nts.uk.resource.getText('KSU001_215'));
