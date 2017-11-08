@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
@@ -142,6 +143,7 @@ public class GetOvertime {
 				applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
 				OverTimeInstruct overtimeInstruct = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
+				
 		//01-02_時間外労働を取得: lay lao dong ngoai thoi gian
 		/*
 		 * chưa phải làm
@@ -226,7 +228,7 @@ public class GetOvertime {
 					
 				}
 				//01-09_事前申請を取得
-				if(result.getApplication().getPrePostAtr()  == InitValueAtr.POST.value ){
+				if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
 					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
 					convertOverTimeDto(companyID,applicationDto,result,appOvertime);
 				}
@@ -248,12 +250,12 @@ public class GetOvertime {
 				}
 				result.setDivergenceReasonDtos(divergenceReasonDtos);
 	}
+	
 	/**
-	 * 01-09_事前申請を取得
-	 * @param employeeId
-	 * @param overtimeRestAppCommonSet
-	 * @param appDate
+	 * @param companyID
+	 * @param applicationDto
 	 * @param result
+	 * @param appOvertime
 	 */
 	private void convertOverTimeDto(String companyID,ApplicationDto applicationDto, OverTimeDto result,AppOverTime appOvertime){
 		if(appOvertime.getApplication() != null){
