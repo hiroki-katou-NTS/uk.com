@@ -4,20 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.DeductionTime;
 
 /**
- * The Class FixRestTimezoneSet.
+ * The Class EmTimeOfTimezoneSet.
  */
-//固定勤務の休憩時間帯
+//就業時間の時間帯設定
 @Getter
-public class FixRestTimezoneSet extends DomainObject {
+public class EmTimeOfTimezoneSet extends DomainObject{
 
+	/** The em time frame no. */
+	// 就業時間枠NO
+	private EmTimeFrameNo emTimeFrameNo;
+	
 	/** The timezone. */
 	// 時間帯
-	private List<DeductionTime> timezone;
+	private TimeZoneRounding timezone;
 }

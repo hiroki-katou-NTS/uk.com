@@ -11,11 +11,11 @@ import nts.arc.layer.dom.DomainObject;
  * The Class OverTimeOfTimeZoneSet.
  */
 @Getter
-public class OverTimeOfTimeZoneSet extends DomainObject{
+public class OverTimeOfTimeZoneSet extends DomainObject {
 
 	/** The work timezone no. */
-	// TODO 就業時間帯NO
-	private Integer workTimezoneNo;
+	// 就業時間帯NO
+	private EmTimezoneNo workTimezoneNo;
 
 	/** The restraint time use. */
 	// 拘束時間として扱う
@@ -25,8 +25,8 @@ public class OverTimeOfTimeZoneSet extends DomainObject{
 	// 早出残業として扱う
 	private boolean earlyOTUse;
 
-	// TODO 時間帯
-	// private timezone;
+	// 時間帯
+	private TimeZoneRounding timezone;
 
 	/** The OT frame no. */
 	// TODO 残業枠NO

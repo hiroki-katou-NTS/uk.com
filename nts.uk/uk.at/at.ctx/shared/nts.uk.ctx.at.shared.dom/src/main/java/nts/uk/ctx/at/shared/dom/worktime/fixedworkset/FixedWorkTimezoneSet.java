@@ -18,7 +18,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 
 	/** The working timezone. */
 	// 就業時間帯
-	private WorkTimeOfTimezoneSet workingTimezone;
+	private List<EmTimeOfTimezoneSet> workingTimezone;
 
 	/** The OT timezone. */
 	// 残業時間帯
