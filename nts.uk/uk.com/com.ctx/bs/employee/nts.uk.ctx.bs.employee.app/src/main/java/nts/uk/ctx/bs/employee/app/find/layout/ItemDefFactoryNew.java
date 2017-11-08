@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 
+import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
@@ -15,7 +16,7 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
  */
 
 public class ItemDefFactoryNew {
-	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, Person person) {
+	public static LayoutPersonInfoClsDto matchInformation(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, Person person) {
 		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 		layoutPerInfoClsDto.setListItemDf(listItemDef);
 		layoutPerInfoClsDto.setItems(new ArrayList<>());
@@ -101,7 +102,9 @@ public class ItemDefFactoryNew {
 				break;
 			}
 			if (data != null) {
-				layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+				LayoutPersonInfoValueDto obj = LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data);
+				obj.setActionRole(actionRole);
+				layoutPerInfoClsDto.getItems().add(obj);
 			}				
 		}
 		return layoutPerInfoClsDto;

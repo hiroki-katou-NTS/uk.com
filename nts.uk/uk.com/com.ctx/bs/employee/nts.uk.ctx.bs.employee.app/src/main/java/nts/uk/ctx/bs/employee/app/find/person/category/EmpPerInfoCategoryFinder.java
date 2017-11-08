@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
@@ -56,6 +57,8 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * get person information category and it's children
@@ -123,6 +126,9 @@ public class EmpPerInfoCategoryFinder {
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 	
+	@Inject
+	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
+	
 	//New update: start
 	/**
 	 * get person information category and it's children (Hiển thị category và
@@ -167,7 +173,7 @@ public class EmpPerInfoCategoryFinder {
 			if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
 				setEmployeeCtgItem(perInfoCtg, lstPerInfoItemDef, employee, infoId);
 			else
-				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employee.getPId(), infoId);
+				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employeeId, employee.getPId(), infoId);
 		else{
 			//optional data
 			//setCtgItemOptionDto(empPerCtgInfoDto, parentInfoId, true);
@@ -280,7 +286,7 @@ public class EmpPerInfoCategoryFinder {
 			if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
 				setEmployeeCtgItem(perInfoCtg, lstPerInfoItemDef, employee, parentInfoId);
 			else
-				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employeeId, parentInfoId);
+				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employeeId, employee.getPId(), parentInfoId);
 		else
 			setCtgItemOptionDto(empPerCtgInfoDto, parentInfoId, true);
 		return null;
@@ -410,7 +416,7 @@ public class EmpPerInfoCategoryFinder {
 	 * @param personId
 	 * @param infoId
 	 */
-	private void setPersonCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, String personId, String infoId) {
+	private void setPersonCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, String empId, String personId, String infoId) {
 		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
 		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
 		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
@@ -420,7 +426,9 @@ public class EmpPerInfoCategoryFinder {
 			Optional<Person> person = personRepository.getByPersonId(personId);
 			for(PerInfoItemDefDto item : lstPerInfoItemDef){
 				List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
-				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, person.isPresent() ? person.get() : new Person());
+				//getActionRole ActionRole
+				ActionRole  actionRole = getActionRole(empId, perInfoCtg.getPersonInfoCategoryId(), item.getId());
+				LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, actionRole, person.isPresent() ? person.get() : new Person());			
 				lstLayoutPersonInfoClsDto.add(objMap);
 			}	
 			break;
@@ -441,6 +449,22 @@ public class EmpPerInfoCategoryFinder {
 			//ItemDefinitionFactory.matchInformation(perInfoCtg.getCategoryCode().v(), layoutPersonInfoClsDto, personEmergencyContact);
 			break;
 		}
+	}
+	
+	private ActionRole getActionRole(String empId, String ctgId, String perInfoItemId){
+		String loginEmpId = AppContexts.user().employeeId();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		boolean isSelfAuth = empId.equals(loginEmpId);
+		if(isSelfAuth)
+			return personInfoItemAuthRepository
+					.getItemDetai(roleId, ctgId, perInfoItemId)
+					.get().getSelfAuth() != PersonInfoAuthType.UPDATE ? 
+							ActionRole.EDIT: ActionRole.VIEW_ONLY;		
+		else 
+			return personInfoItemAuthRepository
+					.getItemDetai(roleId, ctgId, perInfoItemId)
+					.get().getOtherAuth() != PersonInfoAuthType.UPDATE?
+							ActionRole.EDIT: ActionRole.VIEW_ONLY;	
 	}
 
 }
