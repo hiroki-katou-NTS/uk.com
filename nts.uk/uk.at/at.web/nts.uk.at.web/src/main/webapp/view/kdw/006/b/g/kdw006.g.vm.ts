@@ -61,7 +61,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
 
-        getFullWorkTypeList() {
+        getFullWorkTypeList(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             service.getAllWorkTypes().done(function(res) {
@@ -87,9 +87,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
+            service.getWorkTypes(self.selectedCode()).done(function(res) {
             self.groups1.removeAll();
             self.groups2.removeAll();
-            service.getWorkTypes(self.selectedCode()).done(function(res) {
                 _.forEach(res, function(item) {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                     let comment = '';

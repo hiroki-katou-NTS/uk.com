@@ -4,17 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
+import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
  * The Class NumberRangeValue.
  */
 // 回数範囲値
-@DecimalRange(min = "-99999999", max = "999999999")
-public class NumberRangeValue extends DecimalPrimitiveValue<NumberRangeValue> {
+@HalfIntegerRange(min = -99999999.5, max = 999999999.5)
+public class NumberRangeValue extends HalfIntegerPrimitiveValue<NumberRangeValue> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -24,7 +22,7 @@ public class NumberRangeValue extends DecimalPrimitiveValue<NumberRangeValue> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public NumberRangeValue(BigDecimal rawValue) {
+	public NumberRangeValue(Double rawValue) {
 		super(rawValue);
 	}
 

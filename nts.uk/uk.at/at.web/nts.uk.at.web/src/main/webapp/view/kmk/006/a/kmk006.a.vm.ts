@@ -82,7 +82,10 @@ module nts.uk.at.view.kmk006.a {
             enableEnumFleTimeLi: KnockoutObservable<boolean>;
             enableEnumResResLi: KnockoutObservable<boolean>;
             enableEnumResLatLi: KnockoutObservable<boolean>;
-            baseDate: KnockoutObservable<Date>;
+            baseDateJobList: KnockoutObservable<Date>;
+            baseDateTreeList: KnockoutObservable<Date>;
+            baseDateJobListTotal: KnockoutObservable<Date>;
+            baseDateTreeListTotal: KnockoutObservable<Date>;
             inputDate: KnockoutObservable<Date>;
             isLoading: KnockoutObservable<boolean>;
             date: KnockoutObservable<string>;
@@ -98,8 +101,11 @@ module nts.uk.at.view.kmk006.a {
 
             constructor() {
                 var self = this;
-                self.baseDate = ko.observable(new Date());
-                self.inputDate = ko.observable(new Date());
+                self.baseDateJobList = ko.observable(moment(new Date()).toDate());
+                self.baseDateTreeList = ko.observable(moment(new Date()).toDate());
+                self.baseDateJobListTotal = ko.observable(moment(new Date()).toDate());
+                self.baseDateTreeListTotal = ko.observable(moment(new Date()).toDate());
+                self.inputDate = ko.observable(moment(new Date()).toDate());
                 self.isMultiSelectKcp = ko.observable(false);
                 self.date = ko.observable('20000101');
                 self.yearMonth = ko.observable(200001);
@@ -119,7 +125,7 @@ module nts.uk.at.view.kmk006.a {
                     isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateTreeList,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
@@ -131,7 +137,7 @@ module nts.uk.at.view.kmk006.a {
                     isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.totalSelectedWorkplaceId,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateTreeListTotal,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
@@ -182,7 +188,7 @@ module nts.uk.at.view.kmk006.a {
                 self.componentItemCode = ko.observable('');
                 self.jobListOptions = {
                     isShowAlreadySet: true,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateJobList,
                     isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -194,7 +200,7 @@ module nts.uk.at.view.kmk006.a {
                 };
                 self.jobTotalListOptions = {
                     isShowAlreadySet: false,
-                    baseDate: self.baseDate,
+                    baseDate: self.baseDateJobListTotal,
                     isMultiSelect: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -222,7 +228,7 @@ module nts.uk.at.view.kmk006.a {
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
-                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode);
+                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
                     let data = $('#tree-grid').getDataList();
                     for (let ent of data) {
                         if (ent.workplaceId == codeChanged) {
@@ -451,16 +457,15 @@ module nts.uk.at.view.kmk006.a {
                 return dfd.promise();
             }
 
-
-            // load ComAutoCal
+            /**
+             * Screen A: Load ComAutoCal
+             */
             private loadComAutoCal(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
 
-                //            nts.uk.ui.block.invisible();
-
-                service.getComAutoCal().done(function(data) {
-                    //                nts.uk.ui.block.clear();
+                //nts.uk.ui.block.grayout();
+                service.getComAutoCal().done((data) => {
                     if (data) {
                         self.itemComAutoCalModel.updateData(data);
                     }
@@ -469,91 +474,94 @@ module nts.uk.at.view.kmk006.a {
                         self.reLoadListEnum(self.itemComAutoCalModel);
                     }
                     dfd.resolve();
-                }).fail(function(res) {
+                }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
+                    dfd.reject(res);
+                }).always(() => {
+                    //nts.uk.ui.block.clear();
                 });
 
                 return dfd.promise();
             }
 
-
-            // load  JobAutoCal
-            private loadJobAutoCal(jobId: string): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-
-                //            nts.uk.ui.block.invisible();
-
-                service.getJobAutoCal(jobId).done(function(data) {
-                    //                nts.uk.ui.block.clear();
-                    if (data) {
-                        self.itemJobAutoCalModel.updateData(data);
-                    }
-                    if (self.itemJobAutoCalModel) {
-                        // load get all value enum
-                        self.reLoadListEnum(self.itemJobAutoCalModel);
-
-                    }
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-
-                return dfd.promise();
-            }
-
-            // load  JobAutoCal
+            /**
+             * Screen B: Load WkpAutoCal
+             */
             private loadWkpAutoCal(wkpId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-
-                //            nts.uk.ui.block.invisible();
-
-                service.getWkpAutoCal(wkpId).done(function(data) {
-                    //                nts.uk.ui.block.clear();
-                    if (data) {
-                        self.itemWkpAutoCalModel.updateData(data);
-                    }
-                    if (self.itemWkpAutoCalModel) {
-                        // load get all value enum
-                        self.reLoadListEnum(self.itemWkpAutoCalModel);
-
-                    }
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
+               
+                if (wkpId) {
+                    //nts.uk.ui.block.grayout();
+                    service.getWkpAutoCal(wkpId).done((data) => {
+                        if (data) {
+                            self.itemWkpAutoCalModel.updateData(data);
+                        }
+                        if (self.itemWkpAutoCalModel) {
+                            // load get all value enum
+                            self.reLoadListEnum(self.itemWkpAutoCalModel);
+                        }
+                        dfd.resolve();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(res);
+                        dfd.reject(res);
+                    }).always(() => {
+                        //nts.uk.ui.block.clear();
+                    });
+                }               
 
                 return dfd.promise();
             }
+            
+            /**
+             * Screen C: Load JobAutoCal
+             */
+            private loadJobAutoCal(jobId: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();                
 
+                if (jobId) {
+                    //nts.uk.ui.block.grayout();
+                    service.getJobAutoCal(jobId).done((data) => {
+                        if (data) {
+                            self.itemJobAutoCalModel.updateData(data);
+                        }
+                        if (self.itemJobAutoCalModel) {
+                            // load get all value enum
+                            self.reLoadListEnum(self.itemJobAutoCalModel); 
+                        }
+                        dfd.resolve();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(res);
+                        dfd.reject(res);
+                    }).always(() => {
+                        //nts.uk.ui.block.clear();
+                    });
+                }               
+
+                return dfd.promise();
+            }
+            
             // load  JobAutoCal
             private loadWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
 
-                //            nts.uk.ui.block.invisible();
+                //nts.uk.ui.block.grayout();
                 if (wkpId && jobId) {
-                    service.getWkpJobAutoCal(wkpId, jobId).done(function(data) {
-                        //                nts.uk.ui.block.clear();
+                    service.getWkpJobAutoCal(wkpId, jobId).done((data) => {             
                         if (data) {
                             self.itemWkpJobAutoCalModel.updateData(data);
                         }
                         if (self.itemWkpJobAutoCalModel) {
                             // load get all value enum
-                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);
-    
+                            self.reLoadListEnum(self.itemWkpJobAutoCalModel);    
                         }
                         dfd.resolve();
-                    }).fail(function(res) {
+                    }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res);
-                    }).always(function() {
+                        dfd.reject(res);
+                    }).always(() => {
                         nts.uk.ui.block.clear();
                     });
                 }
@@ -611,7 +619,7 @@ module nts.uk.at.view.kmk006.a {
             public saveCompanyAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
-                };
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
 
@@ -643,11 +651,11 @@ module nts.uk.at.view.kmk006.a {
             public saveJobAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
-                };
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
-                if(self.selectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.selectedCode())){
                     nts.uk.ui.block.clear();
                     return;    
                 }
@@ -666,11 +674,15 @@ module nts.uk.at.view.kmk006.a {
                 self.itemJobAutoCalModel.updateData(self.itemJobAutoCalModel.toDto());
 
                 service.saveJobAutoCal(dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
-                        self.loadJobAutoCal(jobId);
-                        self.loadJobAlreadySettingList();
+                     self.loadJobAlreadySettingList().done(function() {
+                        // show message 15
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+                                // reload pa    
+                                self.selectedCode(jobId);
+                                self.loadJobAutoCal(jobId);
+                           });
+                        });
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -685,11 +697,11 @@ module nts.uk.at.view.kmk006.a {
             public saveWkpAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
-                };
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
-                if(self.multiSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.multiSelectedWorkplaceId())) {
                     nts.uk.ui.block.clear();
                     return;    
                 }
@@ -708,11 +720,14 @@ module nts.uk.at.view.kmk006.a {
                 self.itemWkpAutoCalModel.updateData(self.itemWkpAutoCalModel.toDto());
 
                 service.saveWkpAutoCal(dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
-                        self.loadWkpAutoCal(wkpId);
-                        self.loadWkpAlreadySettingList();
+                    self.loadWkpAlreadySettingList().done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
+                                // reload pa    
+                                self.loadWkpAutoCal(wkpId);
+                                self.loadWkpAlreadySettingList();
+                            });
+                        });
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -722,16 +737,17 @@ module nts.uk.at.view.kmk006.a {
             }
 
 
-            public saveWkpJobAutoCal(wkpId: string, jobId: string): void {
-                $('#input-date').ntsError('clear');
-                $('#input-date').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
-                    return;
-                }
+            public saveWkpJobAutoCal(wkpId: string, jobId: string): void {         
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
+                self.clearAllError();
                 let isError: boolean = false;
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    isError = true;
+                    nts.uk.ui.block.clear();
+                }             
                 if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())){
                     isError = true;
                     $('#tree-grid').ntsError('set', {messageId:"Msg_719"});
@@ -781,7 +797,7 @@ module nts.uk.at.view.kmk006.a {
             public applyBaseDate(): void {
                 $('#input-date').ntsError('clear');
                 $('#input-date').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
+                if ($('#input-date').ntsError('hasError')) {
                     return;
                 };
                 var self = this;
@@ -791,8 +807,10 @@ module nts.uk.at.view.kmk006.a {
                     return;
                 } 
                 
-                let emptyBaseDate: boolean = nts.uk.text.isNullOrEmpty(self.baseDate().toString());
-                self.baseDate(self.inputDate());
+                let emptyBaseDate: boolean = (nts.uk.text.isNullOrEmpty(self.baseDateJobListTotal().toString()) 
+                || nts.uk.text.isNullOrEmpty(self.baseDateTreeListTotal().toString())) 
+                self.baseDateJobListTotal(self.inputDate());
+                self.baseDateTreeListTotal(self.inputDate());
                 
                 // Reload table
                 if (emptyBaseDate) {
@@ -816,7 +834,7 @@ module nts.uk.at.view.kmk006.a {
             public deleteJobAutoCal() {
                 let self = this;
                 
-                if(self.selectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.selectedCode())) {
                     return;    
                 }
 
@@ -824,10 +842,16 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.block.grayout();
 
                     service.deleteJobAutoCal(self.selectedCurrentJob()).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            self.loadJobAutoCal(self.selectedCurrentJob());
-                            self.loadJobAlreadySettingList();
+                        self.loadJobAlreadySettingList().done(function() {
+                            // show message 16
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+                                    self.loadJobAutoCal(self.selectedCurrentJob());
+                                    self.loadJobAlreadySettingList();
+                                });
+                            });
                         });
+                       
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     }).always(function() {
@@ -844,7 +868,7 @@ module nts.uk.at.view.kmk006.a {
             public deleteWkpAutoCal() {
                 let self = this;
                 
-                if(self.multiSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.multiSelectedWorkplaceId())) {
                     return;    
                 }
 
@@ -852,10 +876,15 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.block.grayout();
 
                     service.deleteWkpAutoCal(self.selectedCurrentWkp()).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            self.loadJobAutoCal(self.selectedCurrentWkp());
-                            self.loadWkpAlreadySettingList();
+                        self.loadWkpAlreadySettingList().done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
+                                    self.loadJobAutoCal(self.selectedCurrentWkp());
+                                });
+                            });
+                           
                         });
+                        
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     }).always(function() {
@@ -872,10 +901,10 @@ module nts.uk.at.view.kmk006.a {
             public deleteWkpJobAutoCal() {
                 let self = this;
                 
-                if(self.totalSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())) {
                     return;    
                 }
-                if(self.totalSelectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedCode())) {
                     return;    
                 }
 
@@ -902,11 +931,11 @@ module nts.uk.at.view.kmk006.a {
             /**
          * on click tab panel company action event
          */
-            public onSelectCompany(): JQueryPromise<void> {
-                $('.nts-input').ntsError('clear');
+            public onSelectCompany(): JQueryPromise<void> {            
                 var self = this;
                 var dfd = $.Deferred<void>();
 
+                self.clearAllError();
                 self.loadComAutoCal();
 
                 self.isLoading(true);
@@ -917,18 +946,22 @@ module nts.uk.at.view.kmk006.a {
             }
 
             public onSelectJobTitle(): void {
-                $('.nts-input').ntsError('clear');
                 var self = this;
 
+                self.clearAllError();
+                self.baseDateJobList(moment(new Date()).toDate());
                 self.isLoading(true);
-
-                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
-                    let code = $('#component-items-list').getDataList()[0].id;
-                    self.selectedCode(code);
-                    self.loadJobAutoCal(code);
-                    self.loadJobAlreadySettingList();
+                                   
+                self.loadJobAlreadySettingList().done(function() {
+                    $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+                        let code = $('#component-items-list').getDataList()[0].id;
+                        self.selectedCode(code);
+                        self.loadJobAutoCal(code);
+                    });
                 });
-
+                
+                console.log(self.jobAlreadySettingList());
+                
             }
 
 
@@ -936,29 +969,30 @@ module nts.uk.at.view.kmk006.a {
           * on click tab panel employment action event
           */
             public onSelectWorkplace(): void {
-                $('.nts-input').ntsError('clear');
                 var self = this;
 
-                // Update flags.
+                self.clearAllError();
+                self.baseDateTreeList(moment(new Date()).toDate());
                 self.isLoading(true);
-
-                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                    self.loadWkpAutoCal(self.multiSelectedWorkplaceId());
-                    self.loadWkpAlreadySettingList().done(function() {
+                self.loadWkpAlreadySettingList().done(function() {
+                    $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
+                        self.loadWkpAutoCal(self.multiSelectedWorkplaceId());
 
                     });
                 });
             }
 
             public onSelectWkpJob(): void {
-                $('.nts-input').ntsError('clear');
                 var self = this;
 
-                // Update flags.
+                self.clearAllError();
+                self.baseDateJobListTotal(moment(new Date()).toDate());
+                self.baseDateTreeListTotal(moment(new Date()).toDate());
                 self.isLoading(true);
 
                 // Check Msg_374
-                if (nts.uk.text.isNullOrEmpty(self.baseDate().toString())) {
+                if (nts.uk.text.isNullOrEmpty(self.baseDateJobListTotal().toString()) 
+                || nts.uk.text.isNullOrEmpty(self.baseDateTreeListTotal().toString())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_374" });   
                     return;                 
                 }
@@ -999,6 +1033,9 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
+            private clearAllError() {
+                nts.uk.ui.errors.clearAll();
+            }
         }
         // exportclass
         export class TreeType {
