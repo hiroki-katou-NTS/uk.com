@@ -42,9 +42,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 
-	@Inject
-	private ClosureRepository closureHistoryRepository;
-
 	@Override
 	public int createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime, int reCreateAttr, String empCalAndSumExecLogID) {
 

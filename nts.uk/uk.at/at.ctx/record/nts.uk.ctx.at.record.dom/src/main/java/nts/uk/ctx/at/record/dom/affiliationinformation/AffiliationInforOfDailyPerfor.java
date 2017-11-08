@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 /**
  * 
  * @author nampt
- * 日別実績の計算区分 - root
+ * 日別実績の所属情報 - root
  *
  */
 @Getter
@@ -20,10 +20,8 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	
 	private String employeeId;
 	
-	//職位ID - primitive value
 	private String jobTitleID;
 	
-	//職場ID - primitive value
 	private String wplID;
 	
 	private GeneralDate ymd;
