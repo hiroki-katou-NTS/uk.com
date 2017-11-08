@@ -44,7 +44,7 @@ public class EmpCtgTabChildrenWebService extends WebService{
 	@Path("find/getCtgAndChildrenByParams/{employeeId}/{categoryId}/{parentInfoId}")
 	public EmpPerCtgInfoDto getCtgAndChildrenByParams(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
 			@PathParam("parentInfoId") String parentInfoId){
-		return this.empPerInfoCategoryFinder.getCtgAndItemByParent(employeeId, ctgId, parentInfoId);
+		return null;
 	}
 	
 
