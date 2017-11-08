@@ -28,7 +28,7 @@ export module viewmodel {
 
             //Init selectedEmployee
             self.selectedEmployee = ko.observableArray([]);
-            self.baseDate = ko.observable(new Date());
+            self.baseDate = ko.observable(moment(new Date()).toDate());
         }
 
         loadGrid() {
