@@ -10,6 +10,8 @@ import find.layout.NewLayoutDto;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.bs.employee.app.find.layout.LayoutFinder;
+import nts.uk.ctx.bs.employee.app.find.layout.LayoutQuery;
+import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
 
 @Path("bs/employee/layout")
 @Produces(MediaType.APPLICATION_JSON)
@@ -17,6 +19,12 @@ public class LayoutWebService extends WebService {
 
 	@Inject
 	private LayoutFinder layoutFinder;
+	
+	@Path("getByEmp")
+	@POST
+	public EmpMaintLayoutDto getByCreateType(LayoutQuery query) {
+		return this.layoutFinder.getLayout(query);
+	}
 
 	@Path("getByCreateType")
 	@POST

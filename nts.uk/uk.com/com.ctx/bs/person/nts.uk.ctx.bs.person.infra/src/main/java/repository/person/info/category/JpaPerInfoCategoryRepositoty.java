@@ -84,7 +84,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " AND ca.categoryName LIKE CONCAT('%', :categoryName, '%') ORDER BY po.disporder";
 
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
-			+ " WHERE e.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
 	
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtDateRangeItem d"
 			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
@@ -280,8 +280,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId) {
-		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).getSingleOrNull();
-		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getSingleOrNull();
+		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+				item.endDateItemId, item.dateRangeItemId);
 	}
 
 	@Override

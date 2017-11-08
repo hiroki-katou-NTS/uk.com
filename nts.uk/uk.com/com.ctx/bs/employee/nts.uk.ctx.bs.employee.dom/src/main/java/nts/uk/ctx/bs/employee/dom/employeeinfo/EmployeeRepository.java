@@ -138,4 +138,9 @@ public interface EmployeeRepository {
 	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
 	
 	List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId );
+	//sonnlb code start
+
+	void addNewEmployee(Employee newEmployee);
+	
+	//sonnlb code end
 }

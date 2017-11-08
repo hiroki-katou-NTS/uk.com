@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.dom.temporaryabsence;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -13,6 +14,7 @@ import nts.arc.time.GeneralDate;
  * */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class TemporaryAbsence extends AggregateRoot{
 	/**社員ID*/
 	private String employeeId;
