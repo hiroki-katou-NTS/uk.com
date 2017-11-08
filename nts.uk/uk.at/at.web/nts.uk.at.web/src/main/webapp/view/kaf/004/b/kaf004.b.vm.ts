@@ -109,6 +109,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         
                     prePostAtr = 0;
                 }
+                nts.uk.ui.block.invisible();
                 let lateOrLeaveEarly: LateOrLeaveEarly = {
                     prePostAtr: prePostAtr, 
                     applicationDate: self.date(),

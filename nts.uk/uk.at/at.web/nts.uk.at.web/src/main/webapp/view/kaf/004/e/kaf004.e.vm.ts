@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     self.lateTime2(self.late2() ? 60 : 0);
                     self.earlyTime2(self.early2() ? 30 : 0);
                 }
+                nts.uk.ui.block.invisible();
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     version: self.version,
                     appID: self.appID(),
