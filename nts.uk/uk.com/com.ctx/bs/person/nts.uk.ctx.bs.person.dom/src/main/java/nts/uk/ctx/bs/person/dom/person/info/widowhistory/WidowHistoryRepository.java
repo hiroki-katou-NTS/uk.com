@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.bs.person.dom.person.info.widowhistory;
 
+import java.util.List;
+
 /**
  * @author danpv
  *
@@ -22,4 +24,6 @@ public interface WidowHistoryRepository {
 	void updateWidowHistory(WidowHistory widowHistory);
 	
 	WidowHistory getWidowHistoryById(String widowHisId);
+	
+	 List<WidowHistory> getbyPid(String pid);
 }
