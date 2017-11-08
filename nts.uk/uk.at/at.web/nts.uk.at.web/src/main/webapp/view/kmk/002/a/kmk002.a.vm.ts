@@ -312,6 +312,14 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Check whether daily rounding is enabled or not
+             */
+            public isDailyRoundingEnabled(): boolean {
+                let self = this;
+                return self.isUsed() && self.performanceAtr() == 1; 
+            }
+
+            /**
              * Check a formula's existent
              */
             private isFormulaExist(id: string): boolean {
@@ -1109,7 +1117,7 @@ module nts.uk.at.view.kmk002.a {
 
                         dfd.resolve();
                     })
-                    .fail(res => nts.uk.ui.dialog.alertError(res))
+                    .fail(res => nts.uk.ui.dialog.bundledErrors(res))
                     .always(() => nts.uk.ui.block.clear()); // clear block ui.;
 
                 return dfd.promise();

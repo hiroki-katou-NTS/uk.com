@@ -21,21 +21,8 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosurePK;
  */
 public class JpaClosureSetMemento implements ClosureSetMemento {
 
+	
 	/** The kclmt closure. */
-
-	/**
-	 * Sets the kclmt closure.
-	 *
-	 * @param kclmtClosure
-	 *            the new kclmt closure
-	 */
-
-	/**
-	 * Sets the kclmt closure.
-	 *
-	 * @param kclmtClosure
-	 *            the new kclmt closure
-	 */
 	@Setter
 	private KclmtClosure kclmtClosure;
 

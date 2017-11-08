@@ -190,7 +190,7 @@ module nts.uk.at.view.kmk006.a {
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.jobAlreadySettingList,
-                    rows: 20
+                    maxRows: 20
                 };
                 self.jobTotalListOptions = {
                     isShowAlreadySet: false,
@@ -201,7 +201,7 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    rows: 20
+                    maxRows: 20
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
@@ -289,13 +289,13 @@ module nts.uk.at.view.kmk006.a {
 
                 // UI 
                 self.createModeScreenB = ko.computed(() => {
-                    return self.selectedCurrentWkp() ? true : false;
+                    return !nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp());
                 });
                 self.createModeScreenC = ko.computed(() => {
-                    return self.selectedCurrentJob() ? true : false;
+                    return !nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
                 });
                 self.createModeScreenD = ko.computed(() => {
-                    return (self.selectedCurrentWkp() && self.selectedCurrentJob()) ? true : false;
+                    return (!nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp())) && (!nts.uk.text.isNullOrEmpty(self.selectedCurrentJob()));
                 });  
             }
 
@@ -723,18 +723,20 @@ module nts.uk.at.view.kmk006.a {
 
 
             public saveWkpJobAutoCal(wkpId: string, jobId: string): void {
+                $('#input-date').ntsError('clear');
+                $('#input-date').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
-                if(self.totalSelectedWorkplaceId() === undefined){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedWorkplaceId())){
                     $('#tree-grid').ntsError('set', {messageId:"Msg_719"});
                      nts.uk.ui.block.clear();
                     return;    
                 }
-                if(self.totalSelectedCode() === ""){
+                if (nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
                      $('#jobtitles').ntsError('set', {messageId:"Msg_720"});
                      nts.uk.ui.block.clear();
                     return;    
@@ -773,6 +775,8 @@ module nts.uk.at.view.kmk006.a {
              * Apply base date
              */
             public applyBaseDate(): void {
+                $('#input-date').ntsError('clear');
+                $('#input-date').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 };
@@ -782,7 +786,26 @@ module nts.uk.at.view.kmk006.a {
                 if (!self.inputDate()) {
                     return;
                 } 
+                
+                let emptyBaseDate: boolean = nts.uk.text.isNullOrEmpty(self.baseDate().toString());
                 self.baseDate(self.inputDate());
+                
+                // Reload table
+                if (emptyBaseDate) {
+                    $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
+
+                    });
+    
+                    $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
+                        let code = $('#jobtitles').getDataList()[0].id;
+                        self.totalSelectedCode(code);
+                        self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
+                        // load ready setting
+                        self.loadWkpJobAlreadySettingList().done(function() {
+    
+                        });
+                    });   
+                }               
             }
             
             // delete Pattern
@@ -930,6 +953,12 @@ module nts.uk.at.view.kmk006.a {
                 // Update flags.
                 self.isLoading(true);
 
+                // Check Msg_374
+                if (nts.uk.text.isNullOrEmpty(self.baseDate().toString())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_374" });   
+                    return;                 
+                }
+                
                 //load grid          
                 $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
 
@@ -943,8 +972,7 @@ module nts.uk.at.view.kmk006.a {
                     self.loadWkpJobAlreadySettingList().done(function() {
 
                     });
-                });
-
+                });              
             }
 
             /**

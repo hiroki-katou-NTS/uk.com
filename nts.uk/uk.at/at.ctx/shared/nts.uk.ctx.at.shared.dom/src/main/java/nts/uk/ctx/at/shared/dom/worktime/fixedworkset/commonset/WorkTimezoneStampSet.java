@@ -2,18 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
+package nts.uk.ctx.at.shared.dom.worktime.fixedworkset.commonset;
+
+import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
-/**
- * The Class BreakTime.
- */
+//就業時間帯の打刻設定
 @Getter
-// 固定勤務の休憩時間帯
-public class FixRestTime {
-
-	/** The setting. */
-	// 休憩時間帯
-	private FixRestTimeSetting setting;
+public class WorkTimezoneStampSet extends DomainObject{
+	
+	//丸め設定
+	private List<RoundingSet> roundingSet;
 }

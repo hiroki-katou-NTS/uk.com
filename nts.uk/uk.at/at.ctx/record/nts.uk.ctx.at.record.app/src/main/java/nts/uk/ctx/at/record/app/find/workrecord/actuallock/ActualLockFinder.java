@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -46,10 +45,6 @@ public class ActualLockFinder {
 	/** The closure repo. */
 	@Inject
 	private ClosureRepository closureRepo;
-
-	/** The closure hist repo. */
-	@Inject
-	private ClosureHistoryRepository closureHistRepo;
 
 	@Inject
 	private ClosureService closureService;
@@ -79,7 +74,7 @@ public class ActualLockFinder {
 		List<Closure> closureList = this.closureRepo.findAll(companyId);
 
 		List<Closure> filtedList = closureList.stream().filter(closure -> {
-			Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
+			Optional<ClosureHistory> closureHistOpt = this.closureRepo.findBySelectedYearMonth(companyId,
 					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
 			// Check exist
 			if (!closureHistOpt.isPresent()) {
@@ -96,7 +91,7 @@ public class ActualLockFinder {
 			filtedList.stream().forEach(c -> {
 				ActualLockFinderDto dto = new ActualLockFinderDto();
 				// Find ClosureHistory
-				Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
+				Optional<ClosureHistory> closureHistOpt = this.closureRepo.findBySelectedYearMonth(companyId,
 						c.getClosureId(), c.getClosureMonth().getProcessingYm().v());
 				// Find ActualLock
 				Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, c.getClosureId());
