@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.dom.department;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -15,6 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class AffiliationDepartment. - 所属部門
  */
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AffiliationDepartment extends AggregateRoot {
