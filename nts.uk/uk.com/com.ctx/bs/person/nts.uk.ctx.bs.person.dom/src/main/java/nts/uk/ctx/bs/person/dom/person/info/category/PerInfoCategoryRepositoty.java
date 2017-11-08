@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 
 public interface PerInfoCategoryRepositoty {
 
@@ -45,5 +46,11 @@ public interface PerInfoCategoryRepositoty {
 	
 	//laitv
 	DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId);
+	
+	//sonnlb code start
+
+	void addNewCategoryData(PerInfoCtgData perInfoCtgData);
+	
+	//sonnlb code end
 	
 }
