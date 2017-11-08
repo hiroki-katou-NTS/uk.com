@@ -29,10 +29,10 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 
 	// ===================== Optional ======================= //
 	/** The number upper. */
-	private Integer numberUpper;
+	private Double numberUpper;
 
 	/** The number lower. */
-	private Integer numberLower;
+	private Double numberLower;
 
 	/** The time upper. */
 	private Integer timeUpper;
@@ -80,11 +80,11 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	@Override
 	public void setNumberRange(Optional<NumberRange> range) {
 		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-			this.numberLower = range.get().getLowerLimit().get().v().intValue();
+			this.numberLower = range.get().getLowerLimit().get().v();
 
 		}
 		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-			this.numberUpper = range.get().getUpperLimit().get().v().intValue();
+			this.numberUpper = range.get().getUpperLimit().get().v();
 		}
 	}
 

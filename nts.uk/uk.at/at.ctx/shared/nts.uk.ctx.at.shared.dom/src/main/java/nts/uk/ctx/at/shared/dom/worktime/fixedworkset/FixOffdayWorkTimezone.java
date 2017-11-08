@@ -18,7 +18,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
-	private List<FixRestTimezoneSet> restTimezone;
+	private FixRestTimezoneSet restTimezone;
 
 	/** The work timezone. */
 	// 勤務時間帯

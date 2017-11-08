@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -30,10 +29,10 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 
 	// ===================== Optional ======================= //
 	/** The number upper. */
-	private BigDecimal numberUpper;
+	private Double numberUpper;
 
 	/** The number lower. */
-	private BigDecimal numberLower;
+	private Double numberLower;
 
 	/** The time upper. */
 	private Integer timeUpper;

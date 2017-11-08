@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
-//primitivalue 精算順序
-public class SettlementOrder {
+public class EmTimeFrameNo {
 
 }
