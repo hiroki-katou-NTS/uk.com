@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.WorkClock;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonContent;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
