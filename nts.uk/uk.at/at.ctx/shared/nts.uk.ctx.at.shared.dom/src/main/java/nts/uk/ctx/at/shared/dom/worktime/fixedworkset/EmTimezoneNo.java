@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
-//primitivalue 精算順序
-public class SettlementOrder {
+//decimal 1~10 not primitive
+public class EmTimezoneNo {
 
 }

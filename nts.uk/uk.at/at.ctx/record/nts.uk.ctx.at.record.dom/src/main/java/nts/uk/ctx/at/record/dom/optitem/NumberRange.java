@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -33,7 +32,7 @@ public class NumberRange extends DomainObject {
 	 * @param upperLimit the upper limit
 	 * @param lowerLimit the lower limit
 	 */
-	public NumberRange(BigDecimal upperLimit, BigDecimal lowerLimit) {
+	public NumberRange(Double upperLimit, Double lowerLimit) {
 		super();
 		if (upperLimit == null) {
 			this.upperLimit = Optional.empty();
