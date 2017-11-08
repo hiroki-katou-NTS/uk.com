@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.monthlyattditem;
 
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.UseSetting;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceName;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 
 /**
  * The Interface MonthlyAttendanceItemSetMemento.

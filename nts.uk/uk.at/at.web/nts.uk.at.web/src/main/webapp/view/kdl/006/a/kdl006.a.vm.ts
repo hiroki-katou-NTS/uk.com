@@ -139,7 +139,9 @@ module nts.uk.at.view.kdl006.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                service.findWorkplaceInfo()
+                let baseDate: Date = new Date('2017/06/28');
+                
+                service.findWorkplaceInfo(baseDate)
                     .done((data: any[]) => {
                         _self.listWorkplace = data;
                         dfd.resolve();

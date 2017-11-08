@@ -63,7 +63,7 @@ public class SequenceMasterWebService extends WebService {
 	@Path("save")
 	@POST
 	public void saveSequence(SaveSequenceCommand command) {
-		this.saveSequenceCommandHandler.handle(command);;
+		this.saveSequenceCommandHandler.handle(command);
 	}
 	
 	/**
@@ -74,6 +74,6 @@ public class SequenceMasterWebService extends WebService {
 	@Path("remove")
 	@POST
 	public void removeSequence(RemoveSequenceCommand command) {
-		this.removeSequenceCommandHandler.handle(command);;
+		this.removeSequenceCommandHandler.handle(command);
 	}
 }

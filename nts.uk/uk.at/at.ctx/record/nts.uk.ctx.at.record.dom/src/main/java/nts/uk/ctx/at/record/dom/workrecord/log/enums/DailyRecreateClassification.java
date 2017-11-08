@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.log.enums;
 
 /**
+ * 日別再作成区分
  * @author danpv
  *
  */

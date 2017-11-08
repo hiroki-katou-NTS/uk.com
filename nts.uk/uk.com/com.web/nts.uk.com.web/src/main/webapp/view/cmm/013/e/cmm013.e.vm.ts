@@ -3,6 +3,9 @@ module nts.uk.com.view.cmm013.e {
     export module viewmodel {
         
         import Constants = base.Constants;
+        import SavePeriod = base.SavePeriod;   
+        import SaveHistory = base.SaveHistory;          
+        import SaveJobTitleHistoryCommand = service.model.SaveJobTitleHistoryCommand;
         
         export class ScreenModel {
             
@@ -54,7 +57,7 @@ module nts.uk.com.view.cmm013.e {
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
                     });
             }
             
@@ -68,19 +71,12 @@ module nts.uk.com.view.cmm013.e {
             /**
              * toJSON
              */
-            private toJSON(): any {
+            private toJSON(): SaveJobTitleHistoryCommand {
                 let _self = this;
-                return {
-                    isCreateMode: false,
-                    jobTitleId: _self.jobTitleId,
-                    jobTitleHistory: {
-                        historyId: _self.historyId,
-                        period: {
-                            startDate: _self.startDate(),
-                            endDate: new Date("9999-12-31")
-                        }
-                    }
-                }
+                
+                let jobTitleHistory: SaveHistory = new SaveHistory(_self.historyId, new SavePeriod(new Date(_self.startDate()), new Date("9999-12-31")));
+                let command: SaveJobTitleHistoryCommand = new SaveJobTitleHistoryCommand(false, _self.jobTitleId, jobTitleHistory);
+                return command;              
             }
             
             /**
@@ -95,10 +91,20 @@ module nts.uk.com.view.cmm013.e {
             
             /**
              * Show Error Message
-             */
-            private showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
-            }           
+             */        
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }
         }
     }    
 }

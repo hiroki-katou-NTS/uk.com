@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.monthlyattditem;
 
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.UseSetting;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceName;
 import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemSetMemento;
 import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 
 /**
  * The Class JpaMonthlyAttendanceItemSetMemento.

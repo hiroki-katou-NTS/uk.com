@@ -61,11 +61,14 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
 
-        getFullWorkTypeList() {
+        getFullWorkTypeList(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.findWorkType().done(function(res) {
-                _.forEach(res, function(item) {
+            service.getAllWorkTypes().done(function(res) {
+                let availabelList = _.filter(res, function(item) {
+                    return item.abolishAtr == 0;
+                });
+                _.forEach(availabelList, function(item) {
                     self.fullWorkTypeList.push({
                         workTypeCode: item.workTypeCode,
                         name: item.name,
@@ -84,9 +87,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
+            service.getWorkTypes(self.selectedCode()).done(function(res) {
             self.groups1.removeAll();
             self.groups2.removeAll();
-            service.getWorkTypes(self.selectedCode()).done(function(res) {
                 _.forEach(res, function(item) {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
@@ -124,7 +127,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             }).fail(() => {
                 nts.uk.ui.block.clear();
             }).always(() => {
-                nts.uk.ui.block.clear();                
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -161,7 +164,17 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             service.defaultValue(listWorkType).done(function(res) {
                 let workTypeCodess = _.map(res, 'workTypeCode');
                 self.workTypeCodes = workTypeCodess;
-                let names = _(workTypeCodess).map(x => (_.find(ko.toJS(viewG.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                let fullCodeNameList = ko.toJS(viewG.fullWorkTypeList);
+                let names = [];
+                _.forEach(workTypeCodess, (code) => {
+                    let foundWT = _.find(fullCodeNameList, (codeName) => {
+                        return codeName.workTypeCode === code;
+                    });
+                    if (foundWT) {
+                        names.push(foundWT.name);
+                    }
+                });
+
                 self.workTypeName(names.join("、　"));
             });
         }

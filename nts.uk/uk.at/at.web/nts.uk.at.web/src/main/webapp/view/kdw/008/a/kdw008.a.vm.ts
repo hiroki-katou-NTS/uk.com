@@ -59,20 +59,20 @@ module nts.uk.at.view.kdw008.a {
                 self.currentBusinessType = ko.observable(new AuthorityDetailModel(null));
 
                 self.columns1 = ko.observableArray([
-                    { headerText: 'コード', key: 'dailyPerformanceFormatCode', width: 100 },
-                    { headerText: '勤務種別名称', key: 'dailyPerformanceFormatName', width: 150, formatter: _.escape }
+                    { headerText: 'コード', key: 'dailyPerformanceFormatCode', width: 90 },
+                    { headerText: '勤務種別名称', key: 'dailyPerformanceFormatName', width: 120, formatter: _.escape }
                 ]);
                 this.selectedCode = ko.observable();
 
                 self.columns3 = ko.observableArray([
                     { headerText: 'コード', key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: '名称', key: 'attendanceItemName', width: 150 }
+                    { headerText: '名称', key: 'attendanceItemName', width: 100 }
                 ]);
                 self.columns2 = ko.observableArray([
                     { headerText: 'コード', key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: '名称', key: 'attendanceItemName', width: 150 }
+                    { headerText: '名称', key: 'attendanceItemName', width: 100 }
                 ]);
 
                 //swap list 2
@@ -131,6 +131,7 @@ module nts.uk.at.view.kdw008.a {
                     self.isRemove(true);
                     nts.uk.ui.errors.clearAll();
                     self.getDetail(self.currentDailyFormatCode(), 1);
+//                    self.selectedTab('tab-1');
                 });
 
             }
@@ -162,7 +163,7 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
-                //                self.getDetail(self.selectedCode());
+                self.getDetail(self.selectedCode());
                 self.checked(false);
                 self.showCode(true);
                 _.defer(() => {$("#currentCode").focus();});
@@ -177,7 +178,7 @@ module nts.uk.at.view.kdw008.a {
                     self.selectedSheetNo(selectedSheetNo);
                 }
                 new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
-                    self.selectedTab('tab-1');
+                    
                     if (data) {
                         if (data.isDefaultInitial == 1) {
                             self.checked(true);
@@ -346,8 +347,8 @@ module nts.uk.at.view.kdw008.a {
                 new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
                     if (data && data.length > 0) {
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
-                        self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
+                        self.currentDailyFormatCode(dailyPerformanceFormatCode);
+//                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         //                        self.selectedCode(dailyPerformanceFormatCode);
                         self.selectedSheetNo(1);
                         self.getDetail(dailyPerformanceFormatCode);
