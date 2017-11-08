@@ -114,7 +114,6 @@ module cps001.a.vm {
                         if (data) {
                             person.personId(data.personId);
                             person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
-                            debugger;
                         }
                     });
                     self.tabActive.valueHasMutated();
@@ -153,16 +152,18 @@ module cps001.a.vm {
                                 if (x.listItemDf && x.listItemDf[0]) {
                                     _.each(x.listItemDf, m => {
                                         x.items.push({
+                                            itemDefId: m.id,
                                             itemCode: m.itemCode,
                                             value: ko.observable('xxxx')
                                         });
                                     });
                                 }
                             } else {
-                                _.each(Array(1), (_x, i) => {
+                                _.each(Array(3), (_x, i) => {
                                     let rows = [];
                                     _.each(x.listItemDf, (m, j) => {
                                         rows.push({
+                                            itemDefId: m.id,
                                             itemCode: m.itemCode,
                                             value: ko.observable('xxxx')
                                         });
