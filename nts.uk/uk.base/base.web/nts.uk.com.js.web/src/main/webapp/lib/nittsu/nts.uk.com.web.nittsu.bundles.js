@@ -480,7 +480,7 @@ var nts;
             var exception;
             (function (exception_1) {
                 function isBundledBusinessErrors(exception) {
-                    return check(exception, Array.isArray(exception["messageId"])
+                    return check(exception, $.isArray(exception["errors"])
                         && exception["businessException"]);
                 }
                 exception_1.isBundledBusinessErrors = isBundledBusinessErrors;

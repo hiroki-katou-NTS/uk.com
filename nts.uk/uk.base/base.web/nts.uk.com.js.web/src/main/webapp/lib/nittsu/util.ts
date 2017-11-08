@@ -529,7 +529,7 @@
         
         export module exception {
             export function isBundledBusinessErrors(exception: any): boolean {
-                return check(exception, Array.isArray(exception["messageId"]) 
+                return check(exception, $.isArray(exception["errors"]) 
                                             && exception["businessException"]);
             }    
             
