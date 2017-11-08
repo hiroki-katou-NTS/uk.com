@@ -150,4 +150,12 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		// Update person table
 		this.commandProxy().update(existItem.get());
 	}
+
+	//sonnlb code start
+	@Override
+	public void addNewPerson(Person domain) {
+		this.commandProxy().insert(toEntity(domain));
+		
+	}
+	//sonnlb code end
 }
