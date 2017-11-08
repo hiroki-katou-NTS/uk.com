@@ -1,6 +1,5 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
@@ -21,8 +21,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	private CreateDailyResultEmployeeDomainService createDailyResultEmployeeDomainService;
 
 	@Override
-	public int createDailyResult(List<String> emloyeeIds, int reCreateAttr, GeneralDate startDate,
-			GeneralDate endDate, int executionAttr, String empCalAndSumExecLogID) {
+	public int createDailyResult(List<String> emloyeeIds, int reCreateAttr, DatePeriod periodTime, int executionAttr, String empCalAndSumExecLogID) {
 		
 		/**
 		 * 正常終了 : 0
@@ -42,10 +41,10 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 			endStatus = 0;
 		}
 		
-		emloyeeIds.forEach(f -> {
+
 			//社員1人分の処理
-			this.createDailyResultEmployeeDomainService.createDailyResultEmployee(f, startDate, endDate);
-		});
+			this.createDailyResultEmployeeDomainService.createDailyResultEmployee(emloyeeIds, periodTime,reCreateAttr,empCalAndSumExecLogID);
+
 
 		return endStatus;
 	}
