@@ -1,12 +1,15 @@
 package find.layout.classification;
 
 import find.person.info.item.DataTypeStateDto;
+import find.person.info.item.PerInfoItemDefDto;
+import find.person.info.item.SingleItemDto;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
+
 public class LayoutPersonInfoValueDto {
 
 	// categoryID
@@ -44,4 +47,24 @@ public class LayoutPersonInfoValueDto {
 	// containt some infor of item for
 	// render control
 	private DataTypeStateDto item;
+
+	public LayoutPersonInfoValueDto() {
+
+	}
+
+	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object data) {
+		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setCategoryCode(categoryCode);
+		dataObject.setItemDefId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setValue(data);
+		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+		dataObject.setItem(sigleItem.getDataTypeState());
+		return dataObject;
+	}
+
 }

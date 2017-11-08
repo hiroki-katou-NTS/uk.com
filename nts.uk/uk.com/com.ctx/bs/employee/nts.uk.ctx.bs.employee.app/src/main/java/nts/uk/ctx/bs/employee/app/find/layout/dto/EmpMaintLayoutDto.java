@@ -5,6 +5,7 @@ package nts.uk.ctx.bs.employee.app.find.layout.dto;
 
 import java.util.List;
 
+import find.layout.classification.LayoutPersonInfoClsDto;
 import lombok.Data;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
 
@@ -23,7 +24,7 @@ public class EmpMaintLayoutDto {
 
 	private String layoutName;
 
-	private List<EmpPersonInfoClassDto> classificationItems;
+	private List<LayoutPersonInfoClsDto> classificationItems;
 
 	public static EmpMaintLayoutDto createFromDomain(MaintenanceLayout domain) {
 		EmpMaintLayoutDto dto = new EmpMaintLayoutDto();

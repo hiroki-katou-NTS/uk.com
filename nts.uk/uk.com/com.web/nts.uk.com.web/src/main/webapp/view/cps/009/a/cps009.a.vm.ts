@@ -35,6 +35,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
 
             self.initSettingId.subscribe(function(value: string) {
+                nts.uk.ui.errors.clearAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
                         self.currentCategory().setData({
@@ -56,6 +57,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             });
 
             self.currentCategory().currentItemId.subscribe(function(value: string) {
+                nts.uk.ui.errors.clearAll();
                 if (value) {
                     self.getItemList(self.initSettingId(), value);
                 } else {
@@ -97,7 +99,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             dateType: obj.dateType,
                             timepointItemMin: obj.timepointItemMin,
                             timepointItemMax: obj.timepointItemMax,
-                            dateWithDay: obj.intValue
+                            dateWithDay: obj.intValue,
+                            numericItemMin: obj.numericItemMin,
+                            numericItemMax: obj.numericItemMax
                         });
                     });
 
@@ -193,15 +197,32 @@ module nts.uk.com.view.cps009.a.viewmodel {
         openBDialog() {
             let self = this;
             let ctgCurrent = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId());
-            let  params = {
-                    settingId: self.initSettingId(),
-                    ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
-                    categoryId: self.currentCategory().currentItemId()
-                };
+            let params = {
+                settingId: self.initSettingId(),
+                ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
+                categoryId: self.currentCategory().currentItemId()
+            };
 
             setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+                let itemSelected = getShared('CPS009B_DATA');
+                if (itemSelected.lstItem.length > 0) {
+                    _.each(itemSelected.lstItem, function(item) {
+                        // đoạn này kiểm tra xem những item được chọn trong màn B được thiết lập
+                        // sau đó thì đi tìm kiếm index của item đó nằm trong list item hiện tại của màn A 
+                        // để set lại selected cho combox của cột 2 của item
+                        let i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
+                            return obj.perInfoItemDefId;
+                        }), item.perInfoItemDefId);
+                        if (i > -1) {
+                            self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
+                        }
+                    });
+
+
+
+                }
                 self.start(params.settingId);
                 block.clear();
             });
@@ -394,7 +415,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 }
             });
         }
-        
+
         /**
          * check item co thoa man dieu kien de loc khong?
          */
@@ -414,7 +435,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
             return true;
         }
-        
+
         /**
          * find item by selectItemId
          */
@@ -423,6 +444,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return obj.selectionItemId == selectItemId;
             });
         }
+
         /**
          * find category is selected
          */
@@ -431,383 +453,428 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return obj.perInfoCtgId == ctgId;
             });
         }
-}
-
-
-export class InitValueSettingDetail {
-    settingCode: KnockoutObservable<string>;
-    settingName: KnockoutObservable<string>;
-    ctgList: KnockoutObservableArray<any>;
-    currentItemId: KnockoutObservable<string> = ko.observable('');
-    ctgColums: KnockoutObservableArray<any> = ko.observableArray([
-        { headerText: '', key: 'perInfoCtgId', width: 100, hidden: true },
-        { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
-        { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
-    ]);
-    itemList: KnockoutObservableArray<any>;
-    constructor(params: IInitValueSettingDetail) {
-        let self = this;
-        self.settingCode = ko.observable(params.settingCode);
-        self.settingName = ko.observable(params.settingName);
-        self.ctgList = ko.observableArray(params.ctgList);
-        self.itemList = ko.observableArray(params.itemList || []);
-
 
     }
+    export class InitValueSettingDetail {
+        settingCode: KnockoutObservable<string>;
+        settingName: KnockoutObservable<string>;
+        ctgList: KnockoutObservableArray<any>;
+        currentItemId: KnockoutObservable<string> = ko.observable('');
+        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: '', key: 'perInfoCtgId', width: 100, hidden: true },
+            { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
+            { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
+        ]);
+        itemList: KnockoutObservableArray<any>;
+        constructor(params: IInitValueSettingDetail) {
+            let self = this;
+            self.settingCode = ko.observable(params.settingCode);
+            self.settingName = ko.observable(params.settingName);
+            self.ctgList = ko.observableArray(params.ctgList);
+            self.itemList = ko.observableArray(params.itemList || []);
 
-    setData(params: IInitValueSettingDetail) {
-        let self = this;
-        self.settingCode(params.settingCode);
-        self.settingName(params.settingName);
-        self.ctgList(params.ctgList);
-        if (self.ctgList().length > 0) {
-            self.currentItemId(params.ctgList[0].perInfoCtgId);
-        } else {
-            self.currentItemId('');
+
+        }
+
+        setData(params: IInitValueSettingDetail) {
+            let self = this;
+            self.settingCode(params.settingCode);
+            self.settingName(params.settingName);
+            self.ctgList(params.ctgList);
+            if (self.ctgList().length > 0) {
+                self.currentItemId(params.ctgList[0].perInfoCtgId);
+            } else {
+                self.currentItemId('');
+            }
         }
     }
-}
 
 
-// obj list bên trái
-export interface IInitValueSetting {
-    companyId?: string;
-    settingId: string;
-    settingCode: string;
-    settingName: string;
-}
-
-export class InitValueSetting {
-    companyId: string;
-    settingId: string;
-    settingCode: string;
-    settingName: string;
-    constructor(params: IInitValueSetting) {
-        this.settingId = params.settingId;
-        this.settingCode = params.settingCode;
-        this.settingName = params.settingName;
+    // obj list bên trái
+    export interface IInitValueSetting {
+        companyId?: string;
+        settingId: string;
+        settingCode: string;
+        settingName: string;
     }
 
-}
+    export class InitValueSetting {
+        companyId: string;
+        settingId: string;
+        settingCode: string;
+        settingName: string;
+        constructor(params: IInitValueSetting) {
+            this.settingId = params.settingId;
+            this.settingCode = params.settingCode;
+            this.settingName = params.settingName;
+        }
 
-export interface ICategoryInfo {
-    perInfoCtgId: string;
-    categoryName: string;
-    setting: boolean;
-}
-
-export class CategoryInfo {
-    perInfoCtgId: string;
-    categoryName: string;
-    setting: boolean;
-    constructor(params: ICategoryInfo) {
-        this.perInfoCtgId = params.perInfoCtgId;
-        this.categoryName = params.categoryName;
-        this.setting = params.setting;
     }
-}
 
-export interface IInitValue {
-    id: string;
-    itemName: string;
-    comboxValue: string;
-    value: string;
-}
-
-export class InitValue {
-    id: string;
-    itemName: string;
-    comboxValue: string;
-    value: string;
-    constructor(params: IInitValue) {
-        this.id = params.id;
-        this.itemName = params.itemName;
-        this.comboxValue = params.comboxValue;
-        this.value = params.value;
+    export interface ICategoryInfo {
+        perInfoCtgId: string;
+        categoryName: string;
+        setting: boolean;
     }
-}
 
-export interface IInitValueSettingDetail {
-    settingCode: string;
-    settingName: string;
-    ctgList?: Array<any>;
-    itemList?: Array<any>;
-}
-
-export class ItemModel {
-    code: string;
-    name: string;
-
-    constructor(code: string, name: string) {
-        this.code = code;
-        this.name = name;
+    export class CategoryInfo {
+        perInfoCtgId: string;
+        categoryName: string;
+        setting: boolean;
+        constructor(params: ICategoryInfo) {
+            this.perInfoCtgId = params.perInfoCtgId;
+            this.categoryName = params.categoryName;
+            this.setting = params.setting;
+        }
     }
-}
 
-export interface IPerInfoInitValueSettingItemDto {
+    export interface IInitValue {
+        id: string;
+        itemName: string;
+        comboxValue: string;
+        value: string;
+    }
 
-    // đoạn này dùng để  hiển thị
-    perInfoItemDefId: string;
-    settingId?: string;
-    perInfoCtgId: string;
-    itemName: string;
-    isRequired: number;
-    refMethodType: number;
-    //dành cho cột 2 - combo
-    itemType: number; //日付　型-1; 統合ログインコード-2; 口座名１～口座名５-3; .....
-    listComboItem?: Array<any>;
+    export class InitValue {
+        id: string;
+        itemName: string;
+        comboxValue: string;
+        value: string;
+        constructor(params: IInitValue) {
+            this.id = params.id;
+            this.itemName = params.itemName;
+            this.comboxValue = params.comboxValue;
+            this.value = params.value;
+        }
+    }
 
-    //trường này dùng để phân biệt item đó thuộc kiểu dữ liệu nào number or string
-    dataType: number;
+    export interface IInitValueSettingDetail {
+        settingCode: string;
+        settingName: string;
+        ctgList?: Array<any>;
+        itemList?: Array<any>;
+    }
 
-    // đoạn này dùng để lưu dữ liệu        
-    saveDataType: number;
-    stringValue?: string;
-    intValue?: number;
-    dateValue?: string;
-    dateWithDay?: number;
-    timePoint?: string;
+    export class ItemModel {
+        code: string;
+        name: string;
 
-    // xác định contraint của item đó
-    itemCode: string;
-    ctgCode: string;
-    constraint: string;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
 
-    // xác định nếu item thuộc kiểu number thì thuộc loại integer hay decimal
-    numberDecimalPart: number;
-    numberIntegerPart: number;
+    export interface IPerInfoInitValueSettingItemDto {
 
-    // timepoint
-    timeItemMin?: number;
+        // đoạn này dùng để  hiển thị
+        perInfoItemDefId: string;
+        settingId?: string;
+        perInfoCtgId: string;
+        itemName: string;
+        isRequired: number;
+        refMethodType: number;
+        //dành cho cột 2 - combo
+        itemType: number; //日付　型-1; 統合ログインコード-2; 口座名１～口座名５-3; .....
+        listComboItem?: Array<any>;
 
-    timeItemMax?: number;
+        //trường này dùng để phân biệt item đó thuộc kiểu dữ liệu nào number or string
+        dataType: number;
 
-    // lưu giá trị của integer value or decimal value of numberic type
-    numbereditor: any;
+        // đoạn này dùng để lưu dữ liệu        
+        saveDataType: number;
+        stringValue?: string;
+        intValue?: number;
+        dateValue?: string;
+        dateWithDay?: number;
+        timePoint?: string;
 
-    // selectionItemId để kết nối với bảng SelectionItem
-    selectionItemId?: string;
+        // xác định contraint của item đó
+        itemCode: string;
+        ctgCode: string;
+        constraint: string;
 
-    selectionItemRefType?: number;
+        // xác định nếu item thuộc kiểu number thì thuộc loại integer hay decimal
+        numberDecimalPart: number;
+        numberIntegerPart: number;
 
-    // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
-    dateType?: number;
+        // timepoint
+        timeItemMin?: number;
 
-    timepointItemMin?: number;
+        timeItemMax?: number;
 
-    timepointItemMax?: number;
-}
+        // lưu giá trị của integer value or decimal value of numberic type
+        numbereditor: any;
 
-export class PerInfoInitValueSettingItemDto {
-    perInfoItemDefId: KnockoutObservable<string>;
-    settingId: KnockoutObservable<string>;
-    perInfoCtgId: KnockoutObservable<string>;
-    itemName: KnockoutObservable<string>;
-    isRequired: KnockoutObservable<number>;
+        // selectionItemId để kết nối với bảng SelectionItem
+        selectionItemId?: string;
 
-    refMethodType: KnockoutObservable<number>;
-    itemType: KnockoutObservable<number>;
-    listComboItem: KnockoutObservableArray<any>;
-    selectedRuleCode: KnockoutObservable<number>;
+        selectionItemRefType?: number;
 
+        // xác định dateType thuộc kiểu ngày tháng năm hay năm tháng hay năm
+        dateType?: number;
 
-    dataType: KnockoutObservable<number>;
+        timepointItemMin?: number;
 
-    saveDataType: KnockoutObservable<number>;
-    stringValue: KnockoutObservable<string>;
-    intValue: KnockoutObservable<number>;
+        timepointItemMax?: number;
 
-    //dateType
-    dateType: number;
-    dateValue: KnockoutObservable<String>;
+        numericItemMin?: number;
 
-    dateWithDay: KnockoutObservable<number>;
-    timePoint: KnockoutObservable<string>;
+        numericItemMax?: number;
+    }
 
-    // trường hợp datatype là kiểu selection
-    selection: KnockoutObservableArray<any>;
-    selectedCode: KnockoutObservable<number>;
+    export class PerInfoInitValueSettingItemDto {
+        perInfoItemDefId: KnockoutObservable<string>;
+        settingId: KnockoutObservable<string>;
+        perInfoCtgId: KnockoutObservable<string>;
+        itemName: KnockoutObservable<string>;
+        isRequired: KnockoutObservable<number>;
 
-    //constraint
-    itemCode: KnockoutObservable<string>;
-    ctgCode: KnockoutObservable<string>;
-    constraint: KnockoutObservable<string>;
-
-    // kiểu number có 2 loại là số nguyên với số thực
-    numbericItem: NumbericItem;
-    numbereditor: any;
-
-    // timepoint
-    timeItemMin: number;
-
-    timeItemMax: number;
-
-    //selectionItemId? : string;
-    selectionItemId: string;
-    selectionItemRefType: number;
-
-    timepointItemMin: number;
-
-    timepointItemMax: number;
-
-    constructor(params: IPerInfoInitValueSettingItemDto) {
-        let self = this;
-        self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
-        self.settingId = ko.observable(params.settingId || "");
-        self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
-        self.itemName = ko.observable(params.itemName || "");
-
-        self.isRequired = ko.observable(params.isRequired || 0);
-        self.refMethodType = ko.observable(params.refMethodType || 0);
-
-        self.saveDataType = ko.observable(params.saveDataType || 0);
-        self.stringValue = ko.observable(params.stringValue || "");
-        self.intValue = ko.observable(params.intValue || 0);
+        refMethodType: KnockoutObservable<number>;
+        itemType: KnockoutObservable<number>;
+        listComboItem: KnockoutObservableArray<any>;
+        selectedRuleCode: KnockoutObservable<number>;
 
 
-        self.dateWithDay = ko.observable(params.dateWithDay || 0);
-        self.timePoint = ko.observable(params.timePoint || "");
+        dataType: KnockoutObservable<number>;
 
-        self.timeItemMin = params.timeItemMin || undefined;
-        self.timeItemMax = params.timeItemMax || undefined;
+        saveDataType: KnockoutObservable<number>;
+        stringValue: KnockoutObservable<string>;
+        intValue: KnockoutObservable<number>;
 
-        self.timepointItemMin = params.timepointItemMin || undefined;
+        //dateType
+        dateType: number;
+        dateValue: KnockoutObservable<String>;
 
-        self.timepointItemMax = params.timepointItemMax || undefined;
+        dateWithDay: KnockoutObservable<number>;
+        timePoint: KnockoutObservable<string>;
+
+        // trường hợp datatype là kiểu selection
+        selection: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<number>;
+
+        //constraint
+        itemCode: KnockoutObservable<string>;
+        ctgCode: KnockoutObservable<string>;
+        constraint: KnockoutObservable<string>;
+
+        // kiểu number có 2 loại là số nguyên với số thực
+        numbericItem: NumbericItem;
+        numbereditor: any;
+
+        // timepoint
+        timeItemMin: number;
+
+        timeItemMax: number;
+
+        //selectionItemId? : string;
+        selectionItemId: string;
+        selectionItemRefType: number;
+
+        timepointItemMin: number;
+
+        timepointItemMax: number;
+
+        numericItemMin: number;
+
+        numericItemMax: number;
+
+        constructor(params: IPerInfoInitValueSettingItemDto) {
+            let self = this;
+            self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
+            self.settingId = ko.observable(params.settingId || "");
+            self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
+            self.itemName = ko.observable(params.itemName || "");
+
+            self.isRequired = ko.observable(params.isRequired || 0);
+            self.refMethodType = ko.observable(params.refMethodType || 0);
+
+            self.saveDataType = ko.observable(params.saveDataType || 0);
+            self.stringValue = ko.observable(params.stringValue || null);
+            self.intValue = ko.observable(params.intValue || 0);
 
 
-        self.itemType = ko.observable(params.itemType || undefined);
-        self.dataType = ko.observable(params.dataType || undefined);
+            self.dateWithDay = ko.observable(params.dateWithDay || 0);
+            self.timePoint = ko.observable(params.timePoint || "");
 
-        if (params.dataType === 3) {
-            if (params.dateType === 1) {
-                self.dateValue = ko.observable(params.dateValue || undefined);
-            } else if (params.dateType == 2) {
-                self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM") || undefined);
-            } else if (params.dateType == 3) {
-                self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+            self.timeItemMin = params.timeItemMin || undefined;
+            self.timeItemMax = params.timeItemMax || undefined;
+
+            self.timepointItemMin = params.timepointItemMin || undefined;
+
+            self.timepointItemMax = params.timepointItemMax || undefined;
+
+            self.numericItemMin = params.numericItemMin || undefined;
+
+            self.numericItemMax = params.numericItemMax || undefined;
+
+            self.itemType = ko.observable(params.itemType || undefined);
+            self.dataType = ko.observable(params.dataType || undefined);
+
+            if (params.dataType === 3) {
+                if (params.dateType === 1) {
+                    self.dateValue = ko.observable(params.dateValue || undefined);
+                } else if (params.dateType == 2) {
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM") || undefined);
+                } else if (params.dateType == 3) {
+                    self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+                }
+
             }
 
-        }
+            self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-        self.selectedRuleCode = ko.observable(params.refMethodType || 1);
+            self.selectionItemId = params.selectionItemId || undefined;
 
-        self.selectionItemId = params.selectionItemId || undefined;
+            self.selectionItemRefType = params.selectionItemRefType || undefined;
 
-        self.selectionItemRefType = params.selectionItemRefType || undefined;
+            self.dateType = params.dateType || undefined;
 
-        self.dateType = params.dateType || undefined;
+            if (params.dataType === 0 || params.dataType === 1) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "ログイン者と同じ" },
+                    { code: 4, name: "入力日と同じ" },
+                    { code: 5, name: "システム日付と同じ" }]);
+            } else if (params.dataType === 2) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "社員コードと同じ" }]);
+            } else if (params.dataType === 3) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "氏名と同じ" }]);
+            } else if (params.dataType === 4) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "氏名（カナ）と同じ" }]);
+            } else if (params.dataType === 5) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "ログイン者と同じ" }]);
+            } else if (params.dataType === 6) {
+                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+                    { code: 2, name: "固定値" },
+                    { code: 3, name: "ログイン者と同じ" }]);
+            }
 
-        if (params.dataType === 0 || params.dataType === 1) {
-            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                { code: 2, name: "固定値" },
-                { code: 3, name: "ログイン者と同じ" },
-                { code: 4, name: "入力日と同じ" },
-                { code: 5, name: "システム日付と同じ" }]);
-        } else if (params.dataType === 2) {
-            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                { code: 2, name: "固定値" },
-                { code: 3, name: "社員コードと同じ" }]);
-        } else if (params.dataType === 3) {
-            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                { code: 2, name: "固定値" },
-                { code: 3, name: "氏名と同じ" }]);
-        } else if (params.dataType === 4) {
-            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                { code: 2, name: "固定値" },
-                { code: 3, name: "氏名（カナ）と同じ" }]);
-        } else if (params.dataType === 5) {
-            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
+            self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
                 { code: 2, name: "固定値" },
                 { code: 3, name: "ログイン者と同じ" }]);
-        } else if (params.dataType === 6) {
-            self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                { code: 2, name: "固定値" },
-                { code: 3, name: "ログイン者と同じ" }]);
+            self.selectedCode = ko.observable(params.selectionItemRefType || undefined);
+
+            self.itemCode = ko.observable(params.itemCode || "");
+            self.ctgCode = ko.observable(params.ctgCode || "");
+            self.constraint = ko.observable(params.constraint || "");
+
+
+
+            self.numbericItem = new NumbericItem(params.dataType,
+                {
+                    numberDecimalPart: params.numberDecimalPart,
+                    numberIntegerPart: params.numberIntegerPart
+                }) || null;
+            if (params.numberDecimalPart === 0 && params.numberIntegerPart === 0) {
+                self.numbereditor = {
+                    value: ko.observable(params.intValue || 0),
+                    constraint: params.itemCode,
+                    option: new nts.uk.ui.option.NumberEditorOption({
+                        grouplength: 3,
+                        decimallength: 0,
+                        width: "",
+                        textalign: "left",
+                        currencyformat: "JPY"
+                    }),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+            } else {
+
+                self.numbereditor = {
+                    value: ko.observable(params.intValue || 0),
+                    constraint: params.itemCode,
+                    option: new nts.uk.ui.option.NumberEditorOption({
+                        grouplength: 3,
+                        decimallength: params.numberDecimalPart,
+                        width: "",
+                        textalign: "left",
+                        currencyformat: "JPY"
+                    }),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+            }
+
+            //            if (self.selectedRuleCode() === 2) {
+            //                if (params.dataType === 1) {
+            //                    self.stringValue.subscribe(function(value) {
+            //                        if ($("#string").ntsError('hasError')) {
+            //                            $("#string").focus();
+            //                            //                            $('.contents-data').on('focus', '#string', function() {
+            //                            //                                console.log("AA")
+            //                            //                            });
+            //                        }
+            //
+            //                    });
+            //                }
+            //
+            //                if (params.dataType === 2) {
+            //                    self.numbereditor.value.subscribe(function(value) {
+            //                        if ($("#number").ntsError('hasError')) {
+            //                            $("#number").focus();
+            //                            //                             $('.contents-data').on('focus', '#number', function() {
+            //                            //                                console.log("AA")
+            //                            //                            });
+            //                        }
+            //
+            //                    });
+            //
+            //                }
+            //                if (params.dataType === 3 || params.dataType === 4 || params.dataType === 5) {
+            //                    self.dateValue.subscribe(function(value) {
+            //                        if ($("#date").ntsError('hasError')) {
+            //                            $("#date").focus();
+            //                        }
+            //
+            //                    });
+            //                }
+            //
+            //            }
         }
+    }
 
-        self.selection = ko.observableArray([{ code: 1, name: "設定なし" },
-            { code: 2, name: "固定値" },
-            { code: 3, name: "ログイン者と同じ" }]);
-        self.selectedCode = ko.observable(params.selectionItemRefType || undefined);
+    export interface IPerInfoInitValueSettingDto {
+        companyId?: string;
+        settingId: string;
+        settingCode: string;
+        settingName: string;
 
-        self.itemCode = ko.observable(params.itemCode || "");
-        self.ctgCode = ko.observable(params.ctgCode || "");
-        self.constraint = ko.observable(params.constraint || "");
+    }
 
+    export interface INumbericItem {
+        numberDecimalPart: number;
+        numberIntegerPart: number;
 
+    }
 
-        self.numbericItem = new NumbericItem(params.dataType,
-            {
-                numberDecimalPart: params.numberDecimalPart,
-                numberIntegerPart: params.numberIntegerPart
-            }) || null;
-        if (params.numberDecimalPart === 0 && params.numberIntegerPart === 0) {
-            self.numbereditor = {
-                value: ko.observable(params.intValue || 0),
-                constraint: self.constraint(),
-                option: new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3,
-                    decimallength: 0,
-                    width: "",
-                    textalign: "left",
-                    currencyformat: "JPY"
-                }),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-        } else {
-
-            self.numbereditor = {
-                value: ko.observable(params.intValue || 0),
-                constraint: self.constraint(),
-                option: new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3,
-                    decimallength: params.numberDecimalPart,
-                    width: "",
-                    textalign: "left",
-                    currencyformat: "JPY"
-                }),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
+    export class NumbericItem {
+        numberDecimalPart: number;
+        numberIntegerPart: number;
+        constructor(params: number, params2: INumbericItem) {
+            let self = this;
+            if (params === 2) {
+                this.numberIntegerPart = params2.numberIntegerPart;
+                this.numberDecimalPart = params2.numberDecimalPart;
+            }
         }
 
     }
-}
 
-export interface IPerInfoInitValueSettingDto {
-    companyId?: string;
-    settingId: string;
-    settingCode: string;
-    settingName: string;
 
-}
-
-export interface INumbericItem {
-    numberDecimalPart: number;
-    numberIntegerPart: number;
-
-}
-
-export class NumbericItem {
-    numberDecimalPart: number;
-    numberIntegerPart: number;
-    constructor(params: number, params2: INumbericItem) {
-        let self = this;
-        if (params === 2) {
-            this.numberIntegerPart = params2.numberIntegerPart;
-            this.numberDecimalPart = params2.numberDecimalPart;
-        }
+    function makeIcon(value, row) {
+        if (value == "false")
+            return '';
+        return '●';
     }
-
-}
-
-
-function makeIcon(value, row) {
-    if (value == "false")
-        return '';
-    return '<i class=\"icon icon-dot\"></i>';
-}
 
 }
