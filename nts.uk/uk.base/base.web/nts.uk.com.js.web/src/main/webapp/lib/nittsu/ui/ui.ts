@@ -593,9 +593,22 @@ module nts.uk.ui {
             return handlers;
         };
         
-        function addError(errorBody: JQuery, msg: string, id: string, idx: number){
+        function addError(errorBody: JQuery, error: any, idx: number){
             let row = $("<tr/>");
-            row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");   
+            row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
+            let nameId = error["supplements"]["NameID"];   
+            if (!nts.uk.util.isNullOrUndefined(nameId)) {
+                row.click(function(evt, ui){
+                    let element = $("body").find('[NameID="' + nameId + '"]');
+                    let tab = element.closest("[role='tabpanel']");
+                    while(!nts.uk.util.isNullOrEmpty(tab)){
+                        let tabId = tab.attr("id");
+                        tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
+                        tab = tab.parent().closest("[role='tabpanel']");
+                    } 
+                    element.focus();
+                });    
+            }
             row.appendTo(errorBody);  
         }
         
@@ -606,23 +619,20 @@ module nts.uk.ui {
             container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
                     "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
             let errorBody = container.find("tbody");
-            let idxCount = 0;
-            _.forEach(errors["messageId"], function(id, idx: number){ 
-                if ($.isArray(errors.messages[id])) {
-                   _.forEach(errors.messages[id], function (m) {
-                        addError(errorBody, m , id, idx + idxCount + 1); 
-                        idxCount++;
-                   }); 
-                } else {
-                    addError(errorBody, errors.messages[id], id, idx + idxCount + 1); 
-                }  
-            });
+            if($.isArray(errors["errors"])) {
+                 _.forEach(errors["errors"], function(error, idx: number){ 
+                    addError(errorBody, error, idx + 1);  
+                 });   
+            } else {
+                addError(errorBody, errors, 1);
+            }
+            
             let functionArea = container.find("#functions-area-bottom");
             functionArea.append("<button class='ntsButton ntsClose large'/>");
             container.dialog({
                     title: "エラー一覧",   
                     dialogClass: "no-close-btn",
-                    modal: true,
+                    modal: false,
                     resizable: false,
                     width: 450,
                     maxHeight: 500,
