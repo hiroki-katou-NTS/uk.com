@@ -35,9 +35,6 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
-import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
-import nts.uk.ctx.bs.person.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
@@ -45,7 +42,7 @@ import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRep
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.shr.com.context.AppContexts;
 
-public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand> {
+public class UpdateCategoryCommandHandler extends CommandHandler<AddCategoryCommand> {
 	@Inject 
 	private EmployeeRepository employeeRepository;
 	
@@ -87,6 +84,7 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 	
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<AddCategoryCommand> context) {
 		// Get Company Id
@@ -124,21 +122,18 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 					switch (perInfoCategory.get().getCategoryCode().v()) {
 						case "CS00003":
 							CurrentAddress currentAddress = new CurrentAddress();
-							currentAddress.setCurrentAddressId(newId);
-							currentAddress.setPid(personID);
 							// Add data
 							DomainValueFactory.matchInformation(listItem, currentAddress);
 							// Add current address
-							currentAddressRepository.addCurrentAddress(currentAddress);
+							currentAddressRepository.updateCurrentAddress(currentAddress);
 							break;
 						case "CS00004":
 							Family family = new Family();
-							family.setFamilyId(newId);
 							family.setPersonId(personID);
 							// Map data
 							DomainValueFactory.matchInformation(listItem, family);
 							// Add family
-							familyRepository.addFamily(family);
+							familyRepository.updateFamily(family);
 							break;
 						case "CS00014":
 							break;
@@ -165,18 +160,16 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 					switch (perInfoCategory.get().getCategoryCode().v()) {
 					case "CS00008":
 						TemporaryAbsence temporaryAbsence = new TemporaryAbsence();
-						temporaryAbsence.setTempAbsenceId(newId);
 						temporaryAbsence.setEmployeeId(empID);
 						DomainValueFactory.matchInformation(listItem, temporaryAbsence);
-						temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
+						temporaryAbsenceRepository.updateTemporaryAbsence(temporaryAbsence);
 						break;
 					case "CS00009":
 						JobTitle jobTitle = new JobTitle();
-						jobTitle.setJobTitleId(newId);
 						// Add data
 						DomainValueFactory.matchInformation(listItem, jobTitle);
 						// Add current address
-						jobTitleRepository.add(jobTitle);
+						jobTitleRepository.update(jobTitle);
 						break;
 					case "CS00010":
 						AffWorkplaceHistory affWorkplaceHistory = new AffWorkplaceHistory();
@@ -188,12 +181,11 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						break;
 					case "CS00011":
 						AffiliationDepartment affiliationDepartment = new AffiliationDepartment();
-						affiliationDepartment.setDepartmentId(newId);
 						affiliationDepartment.setEmployeeId(empID);
 						// Map data
 						DomainValueFactory.matchInformation(listItem, affiliationDepartment);
 						// Add affiliationDepartment
-						affDepartmentRepository.addAffDepartment(affiliationDepartment);
+						affDepartmentRepository.updateAffDepartment(affiliationDepartment);
 						break;
 					case "CS00012":
 						break;
@@ -203,7 +195,7 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						// Map data
 						DomainValueFactory.matchInformation(listItem, subJob);
 						// Add SubJobPosition
-						subJobPosRepository.addSubJobPosition(subJob);
+						subJobPosRepository.updateSubJobPosition(subJob);
 						break;
 				}
 					
@@ -213,29 +205,10 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 				if (listItem.size() > 0){
 					perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(newId,categoryID,empID));
 					for (LayoutPersonInfoCommand item : listItem){
-						DataState state = null;
-						
-						switch( getItemType(listItemDef,item.getItemCode())){
-						case STRING:
-							state = DataState.createFromStringValue(DomainValueFactory.convertToString(item.getValue()));
-						break;
-						case NUMERIC:
-//							state = DataState.createFromNumberValue(DomainValueFactory.convertToInt(item.getValue()));
-						break;
-						case DATE:
-							state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
-						break;
-						case TIME:
-							state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
-						break;
-						case TIMEPOINT:
-							state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
-						break;
-						case SELECTION:
-//							state = DataState.createFromNumberValue(DomainValueFactory.convertToString(item.getValue()));
-						break;
-						}
+						DataState state = new DataState();
 						itemData = new PersonInfoItemData(DomainValueFactory.convertToString(item.getItemDefId()), newId,state);
+						
+//						perInfoItemDataRepository
 					}
 				}
 					
@@ -277,14 +250,11 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 //		}
 		
 	}
-	
-	private DataTypeValue getItemType(List<PersonInfoItemDefinition> listItemDef, String itemCode){
+	private int getItemType(List<PersonInfoItemDefinition> listItemDef, String itemCode){
 		PersonInfoItemDefinition itemDef = listItemDef.stream().filter(item-> itemCode.equals(item.getItemCode().v())).findAny().orElse(null);
 		if (itemDef != null){
-			SingleItem item = (SingleItem)itemDef.getItemTypeState();
-			DataTypeState dataType = item.getDataTypeState();
-			return dataType.getDataTypeValue();
+//			return itemDef.getItemTypeState().getItemType();
 		}
-		return null;
+		return 0;
 	}
 }
