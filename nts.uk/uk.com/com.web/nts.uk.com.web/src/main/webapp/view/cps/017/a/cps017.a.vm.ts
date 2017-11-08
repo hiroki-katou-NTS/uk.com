@@ -330,7 +330,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             block.invisible();
             modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
+                self.start();
                 block.clear();
+
                 //                service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((_selectionItemList: IHistorySelection) => {
                 //                    self.listHistorySelection(_selectionIte         //                });
 
@@ -351,6 +353,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 block.clear();
             });
         }
+
+        // load lai history
+//        reloadHistory() {
+//            service.getAllPerInfoHistorySelection(self).done((itemList: Array<IHistorySelection>) => {
+//                if (itemList && itemList.length) {
+//                    itemList.forEach(x => self.listHistorySelection.push(x));
+//                }
+//            });
+//
+//        }
     }
 
     //SelectionItem

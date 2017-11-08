@@ -25,11 +25,11 @@ module nts.uk.com.view.cps017.a.service {
         let _path = format(paths.getAllPerInfoHistorySelection, selectedId);
         return nts.uk.request.ajax("com", _path);
     }
-    
+
     //
-//    export function getAllOrderItemSelection() {
-//        return ajax(paths.getAllOrderItemSelection);
-//    }
+    //    export function getAllOrderItemSelection() {
+    //        return ajax(paths.getAllOrderItemSelection);
+ //    }
     
     export function getAllOrderItemSelection(histId: string) {
         let _path = format(paths.getAllOrderItemSelection, histId);
@@ -50,7 +50,7 @@ module nts.uk.com.view.cps017.a.service {
     export function removeDataSelection(command) {
         return ajax(paths.removeDataSelection, command);
     }
-    
+
     // remoe history:
     export function removeHistory(command) {
         return ajax(paths.removeHistory, command);
