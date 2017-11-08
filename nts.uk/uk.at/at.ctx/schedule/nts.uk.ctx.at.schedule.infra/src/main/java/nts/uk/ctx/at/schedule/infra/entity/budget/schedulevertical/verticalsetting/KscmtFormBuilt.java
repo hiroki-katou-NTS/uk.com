@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -34,7 +35,7 @@ public class KscmtFormBuilt extends UkJpaEntity implements Serializable {
 	
 	/* 縦計入力項目 */
 	@Column(name = "VERTICAL_INPUT_ITEM_1")
-	public int verticalInputItem1;
+	public BigDecimal verticalInputItem1;
 	
 	/* 設定方法 */
 	@Column(name = "SETTING_METHOD_2")
@@ -45,7 +46,7 @@ public class KscmtFormBuilt extends UkJpaEntity implements Serializable {
 	
 	/* 縦計入力項目 */
 	@Column(name = "VERTICAL_INPUT_ITEM_2")
-	public int verticalInputItem2;
+	public BigDecimal verticalInputItem2;
 	
 	/* 演算子区分 */
 	@Column(name = "OPERATOR_ATR")

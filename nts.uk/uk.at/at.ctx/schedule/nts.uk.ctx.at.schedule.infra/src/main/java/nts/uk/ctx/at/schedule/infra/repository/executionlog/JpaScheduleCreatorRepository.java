@@ -121,6 +121,45 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 				domains.stream().map(domain -> this.toEntity(domain)).collect(Collectors.toList()));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository#
+	 * countByStatus(java.lang.String, int)
+	 */
+	@Override
+	public int countByStatus(String executionId, int executionStatus) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KscdtScheExeTarget> root = cq.from(KscdtScheExeTarget.class);
+
+		// select count (*) root
+		cq.select(criteriaBuilder.count(root));
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal execution id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtScheExeTarget_.kscdtScheExeTargetPK).get(KscdtScheExeTargetPK_.exeId),
+				executionId));
+
+		// equal execution status
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(KscdtScheExeTarget_.exeStatus), executionStatus));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
+		// create query
+		TypedQuery<Long> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getSingleResult().intValue();
+	}
+	
 	/**
 	 * To entity.
 	 *

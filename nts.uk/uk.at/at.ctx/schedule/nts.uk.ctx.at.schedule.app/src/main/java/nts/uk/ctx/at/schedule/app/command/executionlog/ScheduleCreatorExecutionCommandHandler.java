@@ -1312,6 +1312,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			
 			if (CollectionUtil.isEmpty(worktypeSets)) {
 				this.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
+				return DEFAULT_CODE;
 			}
 			return worktypeSets.get(0).getWorkTypeCd().v();
 		}

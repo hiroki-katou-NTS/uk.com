@@ -24,12 +24,15 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Vertic
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormBuilt;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormBuiltPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeople;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeopleFunc;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeopleFuncPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormPeoplePK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTime;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimeFunc;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimeFuncPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItem;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrder;
@@ -542,6 +545,17 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					new KscmtGenVertOrderPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(),
 							x.getItemId()),
 					x.getDispOrder());
+			
+			KscmtFormBuilt built = null;
+			if (x.getFormBuilt() != null) {
+				built = toEntityFormBuilt(x.getFormBuilt());
+			}
+			
+			KscmtFormTime time = null;
+			if (x.getFormTime() != null) {
+				time = toEntityFormTime(x.getFormTime());
+			}
+			
 			KscmtFormPeople entity = null;
 			if (x.getFormPeople() != null) {
 				entity = toEntityFormPeople(x.getFormPeople());
@@ -551,11 +565,13 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			if (x.getFormulaAmount() != null) {
 				amount = toEntityFormAmount(x.getFormulaAmount());
 			}
+			
 			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
+			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
 					x.getCumulativeAtr().value, x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder,
-					entity, amount);
+					built, time, entity, amount);
 		}).collect(Collectors.toList());
 
 		KscmtGenVertSet kscstVerticalCalSet = new KscmtGenVertSet();
@@ -571,6 +587,41 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		kscstVerticalCalSet.genVertItems = items;
 
 		return kscstVerticalCalSet;
+	}
+
+	private KscmtFormTime toEntityFormTime(FormTime formTime) {
+		val entity = new KscmtFormTime();
+		
+		entity.kscmtFormTimePK = new KscmtFormTimePK(formTime.getCompanyId(), formTime.getVerticalCalCd(),
+				formTime.getVerticalCalItemId());
+		entity.categoryIndicator = formTime.getCategoryIndicator().value;
+		entity.actualDisplayAtr = formTime.getActualDisplayAtr().value;
+		
+		List<KscmtFormTimeFunc> lst = new ArrayList<>();
+		
+		if (formTime.getLstFormTimeFunc() != null) {
+			for (FormTimeFunc item : formTime.getLstFormTimeFunc()) {
+				lst.add(toEntityFormTimeFunc(item));
+			}
+		}
+		
+		entity.listFormTimeFunc = lst;
+		
+		return entity;
+	}
+
+	private KscmtFormTimeFunc toEntityFormTimeFunc(FormTimeFunc item) {
+		val entity = new KscmtFormTimeFunc();
+		
+		entity.kscmtFormTimeFuncPK = new KscmtFormTimeFuncPK(item.getCompanyId(), item.getVerticalCalCd(),
+				item.getVerticalCalItemId());
+		entity.externalBudgetCd = item.getExternalBudgetCd();
+		entity.attendanceItemId = item.getAttendanceItemId();
+		entity.presetItemId = item.getPresetItemId();
+		entity.operatorAtr = item.getOperatorAtr().value;
+		entity.dispOrder = item.getDispOrder();
+		
+		return entity;
 	}
 
 	/**
@@ -601,6 +652,17 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 					new KscmtGenVertOrderPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(),
 							x.getItemId()),
 					x.getDispOrder());
+			
+			KscmtFormBuilt built = null;
+			if (x.getFormBuilt() != null) {
+				built = toEntityFormBuilt(x.getFormBuilt());
+			}
+			
+			KscmtFormTime time = null;
+			if (x.getFormTime() != null) {
+				time = toEntityFormTime(x.getFormTime());
+			}
+			
 			KscmtFormPeople entity = null;
 			if (x.getFormPeople() != null) {
 				entity = toEntityFormPeople(x.getFormPeople());
@@ -610,16 +672,33 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			if (x.getFormulaAmount() != null) {
 				amount = toEntityFormAmount(x.getFormulaAmount());
 			}
+			
 			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
+			
 			return new KscmtGenVertItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
 					x.getCumulativeAtr().value, x.getAttributes().value, x.getRounding().value, kscstVerticalItemOrder,
-					entity, amount);
+					built, time, entity, amount);
 		}).collect(Collectors.toList());
 
 		kscstVerticalCalSet.genVertItems = items;
 
 		this.commandProxy().update(kscstVerticalCalSet);
+	}
+
+	private KscmtFormBuilt toEntityFormBuilt(FormBuilt formBuilt) {
+		KscmtFormBuilt entity = new KscmtFormBuilt();
+		entity.kscmtFormBuiltPK = new KscmtFormBuiltPK(formBuilt.getCompanyId(), formBuilt.getVerticalCalCd(),
+				formBuilt.getVerticalCalItemId());
+		entity.settingMethod1 = formBuilt.getSettingMethod1().value;
+		entity.verticalCalItem1 = formBuilt.getVerticalCalItem1();
+		entity.verticalInputItem1 = formBuilt.getVerticalInputItem1();
+		entity.settingMethod2 = formBuilt.getSettingMethod2().value;
+		entity.verticalCalItem2 = formBuilt.getVerticalCalItem2();
+		entity.verticalInputItem2 = formBuilt.getVerticalInputItem2();
+		entity.operatorAtr = formBuilt.getOperatorAtr().value;
+
+		return entity;
 	}
 
 	/**
