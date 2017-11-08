@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormBuilt;
@@ -27,7 +29,7 @@ public class FormBuiltCommand {
     private int verticalCalItem1;
     
     /* 縦計入力項目 */
-    private int verticalInputItem1;
+    private BigDecimal verticalInputItem1;
     
     /* 設定方法 */
     private int settingMethod2;
@@ -35,13 +37,13 @@ public class FormBuiltCommand {
     private int verticalCalItem2;
     
     /* 縦計入力項目 */
-    private int verticalInputItem2;
+    private BigDecimal verticalInputItem2;
     
     /* 演算子区分 */
     private int operatorAtr;
     
     public FormBuilt toDomainFormBuilt(String companyId, String verticalCalCd, String verticalCalItemId){
     	return FormBuilt.createFromJavaTypeFormBuilt(companyId, verticalCalCd, verticalCalItemId, settingMethod1, verticalCalItem1, verticalInputItem1, settingMethod2,
-    			verticalCalItem2, verticalCalItem2, operatorAtr);
+    			verticalCalItem2, verticalInputItem2, operatorAtr);
     }	
 }

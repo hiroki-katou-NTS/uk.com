@@ -55,8 +55,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             //A6_3 + A6_4
             self.useCls = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_To_Use") },
-                { code: '1', name: nts.uk.resource.getText("Enum_Not_Use") }
+                { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
+                { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
             ]);
             
             self.useClsSelected = ko.observable(0); 

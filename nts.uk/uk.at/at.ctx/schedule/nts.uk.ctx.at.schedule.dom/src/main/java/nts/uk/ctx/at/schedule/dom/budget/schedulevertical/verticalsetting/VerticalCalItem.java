@@ -53,22 +53,6 @@ public class VerticalCalItem extends DomainObject {
  	
  	private FormulaNumerical numerical;
  	
-//	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
-//			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
-//			Rounding rounding, int dispOrder, FormPeople formPeople, List<FormPeopleFunc> lstPeopleFunc) {
-//		
-//		this.companyId = companyId;
-//		this.verticalCalCd = verticalCalCd;
-//		this.itemId = itemId;
-//		this.itemName = itemName;
-//		this.calculateAtr = calculateAtr;
-//		this.displayAtr = displayAtr;
-//		this.cumulativeAtr = cumulativeAtr;
-//		this.attributes = attributes;
-//		this.rounding = rounding;
-//		this.dispOrder = dispOrder;
-//	}
- 	
  	/**
  	 * author: Hoang Yen
  	 */
@@ -101,41 +85,41 @@ public class VerticalCalItem extends DomainObject {
  			if (this.formBuilt == null) {
 				throw new BusinessException("Msg_111", String.valueOf(index));
 			}
+ 		} else {
+ 			switch (this.attributes) {
+				case TIME:
+					if (this.formTime == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
+					break;
+					
+				case AMOUNT:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				case NUMBER_OF_PEOPLE:
+					if (this.formPeople == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
+					break;
+					
+				case NUMBER:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				case AVERAGE_PRICE:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				default:
+					break;
+			}
  		}
- 		
- 		switch (this.attributes) {
-			case TIME:
-				if (this.formTime == null) {
-					throw new BusinessException("Msg_111", String.valueOf(index));
-				}
-				break;
-				
-			case AMOUNT:
-	//			if (this.formPeople == null) {
-	//				throw new BusinessException("Msg_111", String.valueOf(index));
-	//			}
-				break;
-				
-			case NUMBER_OF_PEOPLE:
-				if (this.formPeople == null) {
-					throw new BusinessException("Msg_111", String.valueOf(index));
-				}
-				break;
-				
-			case NUMBER:
-	//			if (this.formPeople == null) {
-	//				throw new BusinessException("Msg_111", String.valueOf(index));
-	//			}
-				break;
-				
-			case AVERAGE_PRICE:
-	//			if (this.formPeople == null) {
-	//				throw new BusinessException("Msg_111", String.valueOf(index));
-	//			}
-				break;
-				
-			default:
-				break;
-		}
  	}
 }

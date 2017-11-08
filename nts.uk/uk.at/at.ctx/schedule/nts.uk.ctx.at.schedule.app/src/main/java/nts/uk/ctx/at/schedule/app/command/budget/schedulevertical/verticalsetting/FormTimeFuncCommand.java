@@ -12,8 +12,6 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTi
 @Data
 @AllArgsConstructor
 public class FormTimeFuncCommand {
-	/* 会社ID */
-    private String companyId;
     
     /*コード*/
     private String verticalCalCd;
