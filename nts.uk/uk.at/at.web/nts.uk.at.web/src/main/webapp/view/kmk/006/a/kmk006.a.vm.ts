@@ -839,10 +839,16 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.block.grayout();
 
                     service.deleteJobAutoCal(self.selectedCurrentJob()).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            self.loadJobAutoCal(self.selectedCurrentJob());
-                            self.loadJobAlreadySettingList();
+                        self.loadJobAlreadySettingList().done(function() {
+                            $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+                                 // show message 16
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                    self.loadJobAutoCal(self.selectedCurrentJob());
+                                    self.loadJobAlreadySettingList();
+                                });
+                            });
                         });
+                       
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     }).always(function() {
