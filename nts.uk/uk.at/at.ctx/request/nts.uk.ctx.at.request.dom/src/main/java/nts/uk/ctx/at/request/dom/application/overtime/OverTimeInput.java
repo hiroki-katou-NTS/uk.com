@@ -30,6 +30,10 @@ public class OverTimeInput{
 	 */
 	private int attendanceNo;
 	/**
+	 * 勤怠種類名称
+	 */
+	private String attandanceName;
+	/**
 	 * 開始時間
 	 */
 	private OvertimeAppPrimitiveTime startTime;

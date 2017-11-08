@@ -44,11 +44,10 @@ public class OvertimeInstructImpl extends JpaRepository implements OvertimeInstr
 	}
 	private OverTimeInstruct convertToDomain(KrqdtOvertimeInstruct krqdtOvertimeInstruct){
 		 return OverTimeInstruct.createSimpleFromJavaType(krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getCid(),
-				krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getAppId(),
 				krqdtOvertimeInstruct.getWorkContent(),
 				krqdtOvertimeInstruct.getInputDate(),
-				krqdtOvertimeInstruct.getTargetPerson(),
-				krqdtOvertimeInstruct.getInstructDate(),
+				krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getTargetPerson(),
+				krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getInstructDate(),
 				krqdtOvertimeInstruct.getInstructor(),
 				krqdtOvertimeInstruct.getOvertimeInstructReason(),
 				krqdtOvertimeInstruct.getOvertimeHour(),

@@ -3,22 +3,19 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
-import javax.persistence.EnumType;
+import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * ケース別実行内容
+ * 
  * @author danpv
  *
  */
 @Getter
-@AllArgsConstructor
 public class CaseSpecExeContent extends AggregateRoot {
 
 	/**
@@ -35,27 +32,49 @@ public class CaseSpecExeContent extends AggregateRoot {
 	 * 運用ケース名
 	 */
 	private UseCaseName useCaseName;
+
 	/**
-	 * 設定情報
+	 * 計算実行設定情報ID
 	 */
-	private CalExeSettingInfor settingInformation;
+	//private String calExecutionSetInfoID;
 	
-	public static CaseSpecExeContent createFromJavaType(
-			String caseSpecExeContentID,
-			int orderNumber,
-			String useCaseName,
-			int executionContent,
-			int executionType
-			) {
-		return new CaseSpecExeContent(
-				caseSpecExeContentID,
-				orderNumber,
-				new UseCaseName(useCaseName),
-				new CalExeSettingInfor(
-						EnumAdaptor.valueOf(executionType, ExecutionType.class)
-						)
-				);
-		
+	/**
+	 * 承認結果反映の設定情報
+	 */
+	
+	@Setter
+	private Optional<SetInforReflAprResult> reflectApprovalSetInfo;
+
+	/**
+	 * 日別作成の設定情報
+	 */
+	@Setter
+	private Optional<SettingInforForDailyCreation> dailyCreationSetInfo;
+	/**
+	 * 日別計算の設定情報
+	 */
+	@Setter
+	private Optional<CalExeSettingInfor> dailyCalSetInfo;
+	/**
+	 * 月別集計の設定情報
+	 */
+	@Setter
+	private Optional<CalExeSettingInfor> monlyAggregationSetInfo;
+
+	public CaseSpecExeContent(String caseSpecExeContentID, int orderNumber, UseCaseName useCaseName) {
+		super();
+		this.caseSpecExeContentID = caseSpecExeContentID;
+		this.orderNumber = orderNumber;
+		this.useCaseName = useCaseName;
+		this.reflectApprovalSetInfo = Optional.empty();
+		this.dailyCreationSetInfo =  Optional.empty();
+		this.dailyCalSetInfo =  Optional.empty();
+		this.monlyAggregationSetInfo =  Optional.empty();
+	}
+
+	public static CaseSpecExeContent createFromJavaType(String caseSpecExeContentID, int orderNumber,
+			String useCaseName) {
+		return new CaseSpecExeContent(caseSpecExeContentID, orderNumber, new UseCaseName(useCaseName));
 	}
 
 }

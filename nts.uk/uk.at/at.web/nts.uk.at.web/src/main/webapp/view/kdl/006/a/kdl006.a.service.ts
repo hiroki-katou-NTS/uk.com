@@ -23,8 +23,8 @@ module nts.uk.at.view.kdl006.a {
         /**
          * findWorkplaceInfo
          */
-        export function findWorkplaceInfo(): JQueryPromise<any[]> {
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceInfo);
+        export function findWorkplaceInfo(baseDate: Date): JQueryPromise<any[]> {
+            return nts.uk.request.ajax('com', servicePath.findWorkplaceInfo, {baseDate : baseDate});
         }
         
         /**

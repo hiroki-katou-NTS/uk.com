@@ -15,10 +15,10 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.command.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.service.WorkplaceService;
-import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
+import nts.uk.ctx.bs.employee.dom.workplace.policy.HistoryPolicy;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -60,7 +60,7 @@ public class DeleteWkpHistoryCommandHandler extends CommandHandler<DeleteWkpHist
         List<String> lstHistoryId = workplace.items().stream()
                 .map(item -> item.identifier())
                 .collect(Collectors.toList());
-        HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
+        HistoryPolicy.validHistoryLatest(lstHistoryId, command.getHistoryId());
         
         // remove workplace history (remove parent) and workplace infor
         this.wkpRepo.removeWkpHistory(companyId, command.getWorkplaceId(), command.getHistoryId());

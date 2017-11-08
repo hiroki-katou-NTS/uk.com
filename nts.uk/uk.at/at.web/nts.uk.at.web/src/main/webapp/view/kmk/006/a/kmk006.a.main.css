@@ -1,10 +1,10 @@
 @CHARSET "UTF-8";
 .tab-content-1, .tab-content-2, .tab-content-3 {
-	width: 800px;
+	width: 700px;
 	height: 600px;
 }
 .table-label {
-	width: 800px;
+	width: 770px;
 	margin-left: 30px;
 }
 
@@ -61,7 +61,9 @@
 	margin-left: 9px;
 	margin-top: 8px;
 }
-
+#nts-component-tree {
+    padding: 20px !important; 
+}
 .bg-dark-green {
 	background-color: #C7F391;
 }

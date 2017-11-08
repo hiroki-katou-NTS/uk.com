@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 計算式設定-時間/カテゴリ区分
+ *
+ */
 @AllArgsConstructor
 public enum CategoryIndicator {
 	/** 0- 外部予算実績項目 **/

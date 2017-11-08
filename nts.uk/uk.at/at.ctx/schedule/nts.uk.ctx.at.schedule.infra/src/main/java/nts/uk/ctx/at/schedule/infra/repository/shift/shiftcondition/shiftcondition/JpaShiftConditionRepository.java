@@ -15,6 +15,9 @@ public class JpaShiftConditionRepository extends JpaRepository implements ShiftC
 
 	private final String SELECT_SHIFT_CON_BY_COMPANY = SELECT_SHIFT_CONDITION_NO_WHERE
 			+ "WHERE c.kscmntShiftConditionPk.companyId =:companyId ORDER  BY c.kscmntShiftConditionPk.conditionNo";
+	private final String SELECT_LIST_CONDITION = SELECT_SHIFT_CONDITION_NO_WHERE
+			+ "WHERE c.kscmntShiftConditionPk.companyId =:companyId AND c.kscmntShiftConditionPk.conditionNo  IN :conditionNos "
+			+ "ORDER BY c.kscmntShiftConditionPk.conditionNo ASC ";
 
 	@Override
 	public List<ShiftCondition> getListShiftCondition(String companyId) {
@@ -26,6 +29,13 @@ public class JpaShiftConditionRepository extends JpaRepository implements ShiftC
 		return ShiftCondition.createFromJavaType(entity.kscmntShiftConditionPk.companyId, entity.categoryNo,
 				entity.kscmntShiftConditionPk.conditionNo, entity.conditionErrorMessage, entity.conditionName,
 				entity.conditionDetailNo);
+	}
+
+	@Override
+	public List<ShiftCondition> getShiftCondition(String companyId, List<Integer> conditionNos) {
+		return this.queryProxy().query(SELECT_LIST_CONDITION, KscmtShiftCondition.class)
+				.setParameter("companyId", companyId).setParameter("conditionNos", conditionNos)
+				.getList(entity -> toDomain(entity));
 	}
 
 }

@@ -25,23 +25,20 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  *
  */
 @Stateless
-public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
-		implements WorkingTypeChangedByEmpRepo {
+public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository implements WorkingTypeChangedByEmpRepo {
 
 	private final String GET_ALL_OF_EMPLOYEE = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
 			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
 
 	@Override
-	public WorkingTypeChangedByEmployment get(CompanyId companyId,
-			EmploymentCode empCode) {
+	public WorkingTypeChangedByEmployment get(CompanyId companyId, EmploymentCode empCode) {
 		List<KrcmtWorktypeChangeable> entities = this.queryProxy()
 				.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", companyId.v())
 				.setParameter("employeeCode", empCode.v()).getList();
-		if ( entities.isEmpty()) {
+		if (entities.isEmpty()) {
 			// default company
-			entities = this.queryProxy()
-					.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", "000000000000-0000")
-					.setParameter("employeeCode", "0").getList();
+			entities = this.queryProxy().query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class)
+					.setParameter("companyId", "000000000000-0000").setParameter("employeeCode", "0").getList();
 		}
 		Map<Integer, ChangeableWorktypeGroup> map = new HashMap<>();
 		entities.forEach(ent -> {
@@ -54,6 +51,17 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 			group.getWorkTypeList().add(ent.pk.workTypeCode);
 			map.put(ent.pk.workTypeGroupNo.intValue(), group);
 		});
+
+		List<ChangeableWorktypeGroup> groups = new ArrayList<>(map.values());
+		groups.forEach(group -> {
+			if (group.getWorkTypeList().size() == 1) {
+				List<String> workTypes = new ArrayList<>(group.getWorkTypeList());
+				if (workTypes.get(0) == "") {
+					group.getWorkTypeList().clear();
+				}
+			}
+		});
+
 		return new WorkingTypeChangedByEmployment(companyId, empCode, new ArrayList<>(map.values()));
 	}
 
@@ -61,7 +69,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 	public void save(WorkingTypeChangedByEmployment workingType) {
 		String cid = workingType.getCompanyId().v();
 		String empCode = workingType.getEmpCode().v();
-		
+
 		// delete all old results
 		List<KrcmtWorktypeChangeable> deleteEntities = this.queryProxy()
 				.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", cid)
@@ -70,12 +78,20 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 		this.getEntityManager().flush();
 		// create and insert new results
 		workingType.getChangeableWorkTypeGroups().forEach(group -> {
-			group.getWorkTypeList().forEach(workTypeCode -> {
+			if (group.getWorkTypeList().isEmpty()) {
 				KrcmtWorktypeChangeablePk pk = new KrcmtWorktypeChangeablePk(cid, empCode,
-						new BigDecimal(group.getNo()), workTypeCode);
+						new BigDecimal(group.getNo()), "　");
 				KrcmtWorktypeChangeable entity = new KrcmtWorktypeChangeable(pk, group.getName().v());
 				this.commandProxy().insert(entity);
-			});
+			} else {
+				group.getWorkTypeList().forEach(workTypeCode -> {
+					KrcmtWorktypeChangeablePk pk = new KrcmtWorktypeChangeablePk(cid, empCode,
+							new BigDecimal(group.getNo()), workTypeCode);
+					KrcmtWorktypeChangeable entity = new KrcmtWorktypeChangeable(pk,
+							!group.getName().v().isEmpty() ? group.getName().v() : "　");
+					this.commandProxy().insert(entity);
+				});
+			}
 		});
 
 	}

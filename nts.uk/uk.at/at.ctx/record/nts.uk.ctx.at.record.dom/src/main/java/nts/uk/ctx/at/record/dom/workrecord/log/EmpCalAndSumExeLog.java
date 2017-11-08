@@ -4,12 +4,17 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
 
 
 /**
@@ -21,21 +26,33 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
 @AllArgsConstructor
 public class EmpCalAndSumExeLog extends AggregateRoot {
 
-	/**
-	 * 会社ID
-	 */
-
+	/**就業計算と集計実行ログID */
+	private String empCalAndSumExecLogID;
+	
+	/** 会社ID */
 	private String companyID;
 	
 	/**
-	 * ID
+	 * 処理月
 	 */
-	private String empCalAndSumExecLogID;
-
+	private YearMonth processingMonth;
+	
 	/**
-	 * 運用ケース
+	 * 実行したメニュー
+	 * ・選択して実行 ・ケース別実行
 	 */
-	private String caseSpecExeContentID;
+	private ExecutedMenu executedMenu;
+	
+	/**
+	 * 実行日
+	 */
+
+	private GeneralDate executionDate;
+	
+	/**
+	 * 実行状況
+	 */
+	private ExeStateOfCalAndSum executionStatus;
 	
 	/**
 	 * 実行社員ID
@@ -44,62 +61,45 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	private String employeeID;
 	
 	/**
-	 * 実行したメニュー
-	 * ・選択して実行 ・ケース別実行
-	 */
-	private ExecutedMenu executedMenu;
-
-	
-	
-	/**
-	 * 実行状況
-	 */
-	private ExeStateOfCalAndSum executionStatus;
-
-	/**
-	 * 実行日
-	 */
-
-	private GeneralDate executionDate;
-
-	/**
-	 * 処理月
-	 */
-	private YearMonth processingMonth;
-	
-	/**
 	 * 締めID
 	 */
 	private int closureID;
+
+	/**
+	 * 運用ケース
+	 */
+	private String caseSpecExeContentID;
+	
 	
 	/**
 	 * 実行ログ
 	 * 1->4 elements
 	 */
+	@Setter
 	private List<ExecutionLog> executionLogs;
 	
 	
 	public static EmpCalAndSumExeLog createFromJavaType(
-			String companyID,
 			String empCalAndSumExecLogID,
-			String caseSpecExeContentID,
-			String employeeID,
+			String companyID,
+			YearMonth processingMonth,
 			int executedMenu,
-			int executionStatus,
 			GeneralDate executionDate,
-			Integer processingMonth,
+			int executionStatus,
+			String employeeID,
 			int closureID,
+			String caseSpecExeContentID,
 			List<ExecutionLog> executionLogs) {
 		return new EmpCalAndSumExeLog(
-				companyID,
 				empCalAndSumExecLogID,
-				caseSpecExeContentID,
-				employeeID,
+				companyID,
+				processingMonth,
 				EnumAdaptor.valueOf(executedMenu,ExecutedMenu.class),
-				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),
 				executionDate,
-				new YearMonth(processingMonth),
+				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),
+				employeeID,
 				closureID,
+				caseSpecExeContentID,
 				executionLogs);
 	}
 	

@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 単価
+ *
+ */
 @AllArgsConstructor
 public enum UnitPrice {
 	/** 0-基準単価 **/

@@ -11,17 +11,17 @@
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
-				data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_9')}</button>
+				data-bind="enable: createModeScreenD, click: saveWkpJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
-				data-bind="click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
+				data-bind="enable: createModeScreenD, click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div class="lableContentPersonal"
 				data-bind="ntsFormLabel: {}">
 				<label>#{i18n.getText('KMK006_33')}</label>
 			</div>
-			<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-			<button style="margin-left: 10px" data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_34')}</button>
+			<div data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			<button style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
 			<!-- <div tabindex="6" id="comboTargetYear"
 				data-bind="ntsComboBox: {
 				name: '#[KMK006_26]',
@@ -38,7 +38,7 @@
 		</ui:define>
 		<ui:define name="extended-222">
 			<div class="pull-right"
-				style="margin-top: 10px; margin-right: 50px; margin-bottom: 50px; margin-left: 80px">
+				style="margin-top: 10px; margin-right: 5px; margin-bottom: 50px; margin-left: 10px">
 				<div style="margin-top: 30px" id="tree-grid"></div>
 				<div style="margin-top: 30px" id="jobtitles"></div>
 			</div>

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapterDto;
-import nts.uk.ctx.at.record.pub.dailyattendanceitem.DailyAttendanceItemRecPub;
+import nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem.DailyAttendanceItemRecPub;
 
 @Stateless
 public class DailyAttendanceItemAcFinder implements DailyAttendanceItemAdapter {

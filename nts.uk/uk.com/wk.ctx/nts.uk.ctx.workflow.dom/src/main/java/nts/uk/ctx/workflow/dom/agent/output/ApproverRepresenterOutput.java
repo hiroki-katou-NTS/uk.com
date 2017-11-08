@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.agent.output;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 /**
  * 承認者の代行情報リスト
@@ -10,14 +11,13 @@ import lombok.NoArgsConstructor;
  * @author tutk
  *
  */
-@Data
+@Value
 @AllArgsConstructor
-@NoArgsConstructor
 public class ApproverRepresenterOutput {
 	String approver;
-	String representer;
+	RepresenterInformationOutput representer;
 	
 	public boolean isPass() {
-		return this.representer.equals("Pass");
+		return this.representer.getValue().equals(RepresenterInformationOutput.Path_Information);
 	}
 }

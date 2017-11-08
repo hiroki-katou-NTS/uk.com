@@ -253,7 +253,7 @@ module nts.uk.at.view.ksc001.b {
              * function convert string to Date
              */
             private toDate(strDate: string): Date {
-                return moment.utc(strDate, 'yyyy/MM/dd').toDate();
+                return moment(strDate, 'YYYY/MM/DD').toDate();
             }
             /**
            * start page data 
@@ -289,7 +289,6 @@ module nts.uk.at.view.ksc001.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
-
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,

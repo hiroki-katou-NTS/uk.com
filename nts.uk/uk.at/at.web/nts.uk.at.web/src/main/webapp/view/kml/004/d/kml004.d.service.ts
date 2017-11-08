@@ -3,7 +3,7 @@ module nts.uk.at.view.kml004.d.service {
          *  Service paths
          */
         var paths: any = {
-            findAll: "ctx/at/schedule/shift/totaltimes/getallitem",
+            findAll: "at/shared/scherec/totaltimes/getallitem",
             findCNTCode: "at/schedule/schedulehorizontal/findCNT"
         }
 
