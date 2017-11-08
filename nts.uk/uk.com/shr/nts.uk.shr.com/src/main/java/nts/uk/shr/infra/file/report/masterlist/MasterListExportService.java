@@ -66,7 +66,7 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		String companyname = this.company.getCurrentCompany()
 				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
-		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"));
+		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
 		String language = languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName();
 		headers.put("【会社】", context.companyCode() + " " + companyname);
 		headers.put("【種類】", query.getDomainType());
