@@ -13,9 +13,13 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana;
 
 /**
  * The Class Person.
@@ -87,5 +91,33 @@ public class Person extends AggregateRoot {
 		this.mailAddress = mailAddress;
 		this.personNameGroup = new PersonNameGroup(personName, businessName);
 	}
+	
+	// sonnlb code start
+
+		public static Person createFromJavaType(GeneralDate birthDate, int bloodType, int gender, String personId,
+				String mailAddress, String personMobile, String businessName, String personName, String businessOtherName,
+				String businessEnglishName, String personNameKana, String personRomanji, String personRomanjiKana,
+				String todokedeFullName, String todokedeFullNameKana, String oldName, String oldNameKana,
+				String todokedeOldFullName, String todokedeOldFullNameKana, String hobBy, String countryId, String taste) {
+
+			FullNameSet personRomanjiSet = new FullNameSet(personRomanji, personRomanjiKana);
+			FullNameSet todokedeFullNameSet = new FullNameSet(todokedeFullName, todokedeFullNameKana);
+			FullNameSet oldNameSet = new FullNameSet(oldName, oldNameKana);
+			FullNameSet todokedeOldFullNameSet = new FullNameSet(todokedeOldFullName, todokedeOldFullNameKana);
+
+			PersonNameGroup personNameGroup = new PersonNameGroup(new BusinessName(businessName),
+					new PersonName(personName), new BusinessOtherName(businessOtherName),
+					new BusinessEnglishName(businessEnglishName), new PersonNameKana(personNameKana), personRomanjiSet,
+					todokedeFullNameSet, oldNameSet, todokedeOldFullNameSet);
+
+			return new Person(birthDate, EnumAdaptor.valueOf(bloodType, BloodType.class),
+					EnumAdaptor.valueOf(gender, GenderPerson.class), personId, new PersonMailAddress(mailAddress),
+					new PersonMobile(personMobile), personNameGroup, new Hobby(hobBy), new Nationality(countryId),
+					new Taste(taste)
+
+			);
+		}
+
+		// sonnlb code end
 
 }
