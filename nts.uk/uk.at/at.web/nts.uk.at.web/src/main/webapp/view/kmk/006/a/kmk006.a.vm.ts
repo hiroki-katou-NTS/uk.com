@@ -228,7 +228,7 @@ module nts.uk.at.view.kmk006.a {
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
-                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode);
+                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
                     let data = $('#tree-grid').getDataList();
                     for (let ent of data) {
                         if (ent.workplaceId == codeChanged) {
@@ -617,7 +617,7 @@ module nts.uk.at.view.kmk006.a {
             public saveCompanyAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
-                };
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
 
@@ -649,7 +649,7 @@ module nts.uk.at.view.kmk006.a {
             public saveJobAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
-                };
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
@@ -672,11 +672,15 @@ module nts.uk.at.view.kmk006.a {
                 self.itemJobAutoCalModel.updateData(self.itemJobAutoCalModel.toDto());
 
                 service.saveJobAutoCal(dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
-                        self.loadJobAutoCal(jobId);
-                        self.loadJobAlreadySettingList();
+                     self.loadJobAlreadySettingList().done(function() {
+                        $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+                             // show message 15
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                // reload pa    
+                                self.selectedCode(jobId);
+                                self.loadJobAutoCal(jobId);
+                            });
+                        });
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -691,7 +695,7 @@ module nts.uk.at.view.kmk006.a {
             public saveWkpAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
-                };
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
                 
@@ -927,17 +931,21 @@ module nts.uk.at.view.kmk006.a {
 
             public onSelectJobTitle(): void {
                 var self = this;
-                
+
                 self.clearAllError();
                 self.baseDateJobList(new Date());
-                self.isLoading(true);                           
-                
-                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
-                    let code = $('#component-items-list').getDataList()[0].id;
-                    self.selectedCode(code);
-                    self.loadJobAutoCal(code);
-                    self.loadJobAlreadySettingList();
+                self.isLoading(true);
+                                   
+                self.loadJobAlreadySettingList().done(function() {
+                    $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
+                        let code = $('#component-items-list').getDataList()[0].id;
+                        self.selectedCode(code);
+                        self.loadJobAutoCal(code);
+                    });
                 });
+                
+                console.log(self.jobAlreadySettingList());
+                
             }
 
 
@@ -950,10 +958,9 @@ module nts.uk.at.view.kmk006.a {
                 self.clearAllError();
                 self.baseDateTreeList(new Date());
                 self.isLoading(true);
-
-                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                    self.loadWkpAutoCal(self.multiSelectedWorkplaceId());
-                    self.loadWkpAlreadySettingList().done(function() {
+                self.loadWkpAlreadySettingList().done(function() {
+                    $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
+                        self.loadWkpAutoCal(self.multiSelectedWorkplaceId());
 
                     });
                 });
