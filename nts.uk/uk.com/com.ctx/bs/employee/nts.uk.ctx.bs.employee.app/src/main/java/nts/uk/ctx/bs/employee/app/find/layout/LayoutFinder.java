@@ -209,10 +209,10 @@ public class LayoutFinder {
 						.getPerInfoCategory(classItem.getPersonInfoCategoryID(), contractCode).get();
 
 				// get data
-				if (classItem.getLayoutItemType() == LayoutItemType.ITEM.value) {
+				if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
 					getDataforSingleItem(perInfoCategory, authClassItem, standandDate, employee.getPId(),
 							employee.getSId());
-				} else if (classItem.getLayoutItemType() == LayoutItemType.LIST.value) {
+				} else if (classItem.getLayoutItemType() == LayoutItemType.LIST) {
 					getDataforListItem(perInfoCategory, authClassItem, standandDate, employee.getPId(),
 							employee.getSId());
 				}
@@ -688,20 +688,20 @@ public class LayoutFinder {
 			}
 
 			for (LayoutPersonInfoClsDto itemCls : listItemCls) {
-				int layoutType = itemCls.getLayoutItemType();
+				LayoutItemType layoutType = itemCls.getLayoutItemType();
 				switch (layoutType) {
-				case 0: // item
+				case ITEM: // item
 
 					List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
 
 					itemCls.setItems(itemValues);
 
 					break;
-				case 1: // list
+				case LIST: // list
 
 					break;
 
-				case 2: // spa
+				case SeparatorLine: // spa
 
 					break;
 				}
