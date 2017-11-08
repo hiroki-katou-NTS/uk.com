@@ -2,6 +2,7 @@ module nts.uk.at.view.kdw001.f {
     import getText = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel {
+            nameClosure : string;
             enable: KnockoutObservable<boolean>;
             required: KnockoutObservable<boolean>;
             dateValue: KnockoutObservable<any>;
@@ -10,7 +11,7 @@ module nts.uk.at.view.kdw001.f {
             //table
             columns: Array<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
-
+    
             //InputEmpCalAndSumByDate
             inputEmpCalAndSumByDate: KnockoutObservable<model.InputEmpCalAndSumByDate>;
             //list obj EmpCalAndSumExeLog 
@@ -20,6 +21,7 @@ module nts.uk.at.view.kdw001.f {
 
             constructor() {
                 let self = this;
+                self.nameClosure = " 選択した締め";
                 //
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
@@ -161,8 +163,13 @@ module nts.uk.at.view.kdw001.f {
 
             //open dialog I
             openDialogI() {
-                var empCalAndSumExecLogID = this.currentSelectedRow();
-                nts.uk.ui.windows.setShared("openI", this.currentSelectedRow());
+                let self = this;
+                var param = {
+                    nameClosure : self.nameClosure,
+                    empCalAndSumExecLogID : this.currentSelectedRow()
+                    
+                };
+                nts.uk.ui.windows.setShared("openI", param);
                 nts.uk.ui.windows.sub.modal("/view/kdw/001/i/index.xhtml");
             }
             

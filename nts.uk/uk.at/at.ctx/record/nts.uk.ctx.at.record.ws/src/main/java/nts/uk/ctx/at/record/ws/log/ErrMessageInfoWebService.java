@@ -20,10 +20,15 @@ public class ErrMessageInfoWebService {
 	private ErrMessageInfoFinder finder;
 	
 	@POST
-	@Path("getallbyempid")
+	@Path("getallbyid")
 	public List<ErrMessageInfoDto> getAllErrMessageInfoByEmpID(InputErrMessageInfoByID inputErrMessageInfoByID){
 		return this.finder.getAllErrMessageInfoByID(inputErrMessageInfoByID);
 	}
 	
+	@POST
+	@Path("getallbyempid/{empCalAndSumExecLogID}")
+	public List<ErrMessageInfoDto> getAllErrMessageInfoByEmpID(@PathParam("empCalAndSumExecLogID") String empCalAndSumExecLogID){
+		return this.finder.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
+	}
 
 }

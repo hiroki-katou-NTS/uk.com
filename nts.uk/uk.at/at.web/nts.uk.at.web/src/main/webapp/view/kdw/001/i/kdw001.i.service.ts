@@ -22,8 +22,8 @@ module nts.uk.at.view.kdw001.i {
         /**
          * get getAllErrMessageInfoByEmpID by  empCalAndSumExeLogId
          */
-         export function getAllErrMessageInfoByEmpID(inputErrMessageInfoByID: any ) : JQueryPromise<Array<any>>{
-            return nts.uk.request.ajax("at",paths.getAllErrMessageInfoByEmpID,inputErrMessageInfoByID);
+         export function getAllErrMessageInfoByEmpID(empCalAndSumExecLogID: any ) : JQueryPromise<Array<any>>{
+            return nts.uk.request.ajax("at",paths.getAllErrMessageInfoByEmpID+"/"+empCalAndSumExecLogID);
         }
     
     }

@@ -18,8 +18,20 @@ public class ErrMessageInfoFinder {
 	
 	public List<ErrMessageInfoDto> getAllErrMessageInfoByID(InputErrMessageInfoByID inputErrMessageInfoByID){
 		List<ErrMessageInfoDto> data = errMessageInfoRepo
-				.getAllErrMessageInfoByEmpID(inputErrMessageInfoByID.getEmpCalAndSumExecLogID(),
+				.getAllErrMessageInfoByID(inputErrMessageInfoByID.getEmpCalAndSumExecLogID(),
 						inputErrMessageInfoByID.getExecutionContent())
+				.stream()
+				.map(c -> ErrMessageInfoDto.fromDomain(c))
+				.collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+		
+	}
+	
+	public List<ErrMessageInfoDto> getAllErrMessageInfoByEmpID(String empCalAndSumExecLogID){
+		List<ErrMessageInfoDto> data = errMessageInfoRepo
+				.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID)
 				.stream()
 				.map(c -> ErrMessageInfoDto.fromDomain(c))
 				.collect(Collectors.toList());
