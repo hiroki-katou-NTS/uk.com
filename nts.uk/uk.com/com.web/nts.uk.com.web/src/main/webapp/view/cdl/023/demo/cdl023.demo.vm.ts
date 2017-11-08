@@ -56,7 +56,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             
             // validate
             if (!self.validate()) {
-                 nts.uk.ui.dialog.alert("Somethings field are requred.");
+                 nts.uk.ui.dialog.alert("Something fields are requred or wrong.");
                 return;
             }
             
@@ -84,15 +84,20 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
          * validate
          */
         private validate(): boolean  {
+            let self = this;
+            
             // clear error
             $('#code').ntsError('clear');
             $('#name').ntsError('clear');
-            $('#base-date').ntsError('clear');
             
             // validate
             $('#code').ntsEditor('validate');
             $('#name').ntsEditor('validate');
-            $('#base-date').ntsEditor('validate');
+            
+            // validate base date
+            if (self.enableBaseDate() && nts.uk.text.isNullOrEmpty(self.baseDate())) {
+                return false;
+            }
             
             return !$('.nts-input').ntsError('hasError');
         }
@@ -106,6 +111,6 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         code: string;
         name: string;
         targetType: number;
-        baseDate: Date;
+        baseDate?: Date;
     }
 }
