@@ -16,8 +16,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.command.employee.AddEmpCommand;
-import nts.uk.ctx.bs.employee.app.command.employee.AddEmpCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.employee.AddEmployeeCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.AddEmployeeCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
@@ -36,7 +36,7 @@ public class EmployeeWebService extends WebService {
 	private EmployeeFinder employeeFinder;
 
 	@Inject
-	AddEmpCommandHandler addEmpHandler;
+	AddEmployeeCommandHandler addEmpHandler;
 
 	/** The employee query processor. */
 	@Inject
@@ -201,7 +201,7 @@ public class EmployeeWebService extends WebService {
 	// sonnlb start
 	@POST
 	@Path("addNewEmployee")
-	public void addNewEmployee(AddEmpCommand command) {
+	public void addNewEmployee(AddEmployeeCommand command) {
 		this.addEmpHandler.handle(command);
 	}
 

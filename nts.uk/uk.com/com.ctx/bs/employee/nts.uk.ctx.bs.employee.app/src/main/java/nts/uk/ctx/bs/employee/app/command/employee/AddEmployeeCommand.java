@@ -6,7 +6,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
-public class AddEmpCommand {
+public class AddEmployeeCommand {
 
 	private String employeeCopyId;
 	private String InitSettingId;
