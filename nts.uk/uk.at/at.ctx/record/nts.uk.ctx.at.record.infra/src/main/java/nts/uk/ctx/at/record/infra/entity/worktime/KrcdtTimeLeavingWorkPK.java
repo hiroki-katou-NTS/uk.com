@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtTimeLeavingWorkPK implements Serializable {
+public class KrcdtTimeLeavingWorkPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
