@@ -7,7 +7,10 @@ package nts.uk.ctx.bs.employee.dom.jobtitle;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
@@ -16,7 +19,10 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
  * The Class JobTitle.
  */
 //職位
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 public class JobTitle extends AggregateRoot {
 	
 	/** The company id. */

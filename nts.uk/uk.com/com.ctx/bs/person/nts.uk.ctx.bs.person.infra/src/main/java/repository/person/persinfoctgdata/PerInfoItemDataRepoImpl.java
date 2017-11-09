@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import entity.person.personinfoctgdata.PpemtPerInfoItemData;
+import entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 
@@ -44,5 +46,32 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 						ent.saveDataAtr, ent.stringVal, BigDecimal.valueOf(ent.intVal), ent.dateVal))
 				.collect(Collectors.toList());
 	}
+
+	// sonnlb code start
+	private PpemtPerInfoItemData toEntity(PersonInfoItemData domain) {
+
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+
+		String stringValue = domain.getDataState().getStringValue();
+
+		int intValue = domain.getDataState().getNumberValue().intValue();
+
+		GeneralDate dateValue = domain.getDataState().getDateValue();
+
+		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
+				dateValue);
+	}
+
+	/**
+	 * Add item data
+	 * 
+	 * @param domain
+	 */
+	@Override
+	public void addItemData(PersonInfoItemData domain) {
+		this.commandProxy().insert(toEntity(domain));
+
+	}
+	// sonnlb code end
 
 }

@@ -52,4 +52,28 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
 				.setParameter("recordId", recordId).getList(c -> toDomain(c));
 	}
+
+	@Override
+	public void addItemData(EmpInfoItemData infoItemData) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void addEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
 }

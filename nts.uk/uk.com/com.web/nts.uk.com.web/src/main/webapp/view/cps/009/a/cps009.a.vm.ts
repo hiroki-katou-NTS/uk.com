@@ -208,22 +208,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 let itemSelected = getShared('CPS009B_DATA');
-                if (itemSelected.lstItem.length > 0) {
-                    _.each(itemSelected.lstItem, function(item) {
-                        // đoạn này kiểm tra xem những item được chọn trong màn B được thiết lập
-                        // sau đó thì đi tìm kiếm index của item đó nằm trong list item hiện tại của màn A 
-                        // để set lại selected cho combox của cột 2 của item
-                        let i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
-                            return obj.perInfoItemDefId;
-                        }), item.perInfoItemDefId);
-                        if (i > -1) {
-                            self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
-                        }
-                    });
-
-
-
+                if (itemSelected.isCancel) {
+                    return;
+                } else {
+                    if (itemSelected.lstItem.length > 0) {
+                        _.each(itemSelected.lstItem, function(item) {
+                            // đoạn này kiểm tra xem những item được chọn trong màn B được thiết lập
+                            // sau đó thì đi tìm kiếm index của item đó nằm trong list item hiện tại của màn A 
+                            // để set lại selected cho combox của cột 2 của item
+                            let i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
+                                return obj.perInfoItemDefId;
+                            }), item.perInfoItemDefId);
+                            if (i > -1) {
+                                self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
+                            }
+                        });
+                    }
                 }
+
                 self.start(params.settingId);
                 block.clear();
             });
@@ -310,10 +312,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // cap nhat init value
         update() {
             let self = this,
+                currentCtg = self.findCtg(self.currentCategory().ctgList(), self.currentCategory().currentItemId()),
                 updateObj = {
                     settingId: self.initSettingId(),
                     settingName: self.currentCategory().settingName(),
                     perInfoCtgId: self.currentCategory().currentItemId(),
+                    isSetting: currentCtg.setting,
                     itemLst: _.map(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
                         return {
                             perInfoItemDefId: obj.perInfoItemDefId,
@@ -330,10 +334,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timePoint: obj.timePoint,
                             value: obj.value,
                             selectedRuleCode: obj.selectedRuleCode,
-                            selectedCode: obj.selectedCode,
+                            selectionId: obj.selectedCode,
                             numberValue: obj.numbereditor.value,
                             dateType: obj.dateType,
-                            time: obj.dateWithDay
+                            time: obj.dateWithDay,
+
                         };
                     })
                 };
@@ -342,6 +347,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.start(updateObj.settingId);
                     self.currentCategory().currentItemId(updateObj.perInfoCtgId);
+                    self.currentCategory().currentItemId.valueHasMutated();
                 });
 
                 //                block.clear();
@@ -393,8 +399,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         lstItem.push(item.selectionItemId);
                     }
                 });
-                //                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
-                //                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
                 let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
                 let lstFilter = [];
                 self.currentCategory().itemList([]);
@@ -431,7 +435,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return false
             }
             //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectedCode() != 1) {
+            if (objItem.selectionItemRefType != 1) {
                 return false;
             }
             return true;
@@ -654,7 +658,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // trường hợp datatype là kiểu selection
         selection: KnockoutObservableArray<any>;
-        selectedCode: KnockoutObservable<number>;
+        selectedCode: KnockoutObservable<string>;
 
         //constraint
         itemCode: KnockoutObservable<string>;
@@ -733,6 +737,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
+                self.selectedCode = ko.observable(params.stringValue || undefined);
             }
 
             self.dateType = params.dateType || undefined;
@@ -765,8 +770,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     { code: 3, name: "ログイン者と同じ" }]);
             }
 
-
-            self.selectedCode = ko.observable(params.selectionItemRefType || undefined);
 
             self.itemCode = ko.observable(params.itemCode || "");
             self.ctgCode = ko.observable(params.ctgCode || "");
