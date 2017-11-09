@@ -97,6 +97,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
                             selection: obj.selection,
+                            selectionItemRefType : obj.selectionItemRefType,
                             dateType: obj.dateType,
                             timepointItemMin: obj.timepointItemMin,
                             timepointItemMax: obj.timepointItemMax,
