@@ -64,11 +64,17 @@ module nts.uk.at.view.kdw001.j {
             }
 
             opendScreenD() {
-                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 2, "screenName": "J" });
+                //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 2, "screenName": "J" });
+//                let self = this;
+//                self.activeStep(2);
+                $("#wizard").ntsWizard("next");
             }
 
             opendScreenC() {
-                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0 });
+                //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0 });
+//                let self = this;
+//                self.activeStep(0);
+                $("#wizard").ntsWizard("prev");
             }
 
             navigateView() {
