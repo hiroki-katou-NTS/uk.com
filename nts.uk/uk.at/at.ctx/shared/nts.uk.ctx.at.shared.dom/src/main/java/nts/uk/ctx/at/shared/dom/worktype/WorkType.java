@@ -182,4 +182,18 @@ public class WorkType extends AggregateRoot {
 	public boolean isOneDay() {
 		return this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay;
 	}
+	
+	/**
+	 * check leave for a day
+	 * @return true leave for a day else false leave for half day(morning or afternoon)
+	 */
+	public boolean IsLeaveForADay() {
+		// half day
+		if (!this.isOneDay()) {
+			return this.dailyWork.IsLeaveForMorning() && this.dailyWork.IsLeaveForAfternoon();
+		}
+		
+		// all day
+		return this.dailyWork.IsLeaveForADay();
+	}
 }
