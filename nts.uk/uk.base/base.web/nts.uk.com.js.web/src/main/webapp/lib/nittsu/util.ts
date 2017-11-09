@@ -526,6 +526,25 @@
                 }
             }
         }
+        
+        export module exception {
+            export function isBundledBusinessErrors(exception: any): boolean {
+                return check(exception, $.isArray(exception["errors"]) 
+                                            && exception["businessException"]);
+            }    
+            
+            export function isErrorToReject(res: any) : boolean{
+                return check(res, res.businessException || res.optimisticLock);
+            }
+            
+            export function isBusinessError(res: any) : boolean{
+                return check(res, res.businessException);
+            }
+            
+            function check(exception: any, expression: boolean): boolean{
+                return !isNullOrUndefined(exception) && expression;
+            }
+        }
     }
 
     export class WebStorageWrapper {
