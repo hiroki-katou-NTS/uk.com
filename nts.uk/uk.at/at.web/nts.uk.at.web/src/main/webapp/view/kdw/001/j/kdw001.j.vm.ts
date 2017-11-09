@@ -28,13 +28,9 @@ module nts.uk.at.view.kdw001.j {
                 //Init for grid list
                 this.items = ko.observableArray([]);
 
-                for (let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給'));
-                }
-
                 this.columns2 = ko.observableArray([
-                    { headerText: 'コード', key: 'code', width: 80, hidden: true },
-                    { headerText: getText('KDW001_85'), key: 'name', width: 200 }
+                    { headerText: getText('KDW001_32'), key: 'caseSpecExeContentID', width: 70, hidden: false },
+                    { headerText: getText('KDW001_85'), key: 'useCaseName', width: 200 }
                 ]);
 
                 this.currentCode = ko.observable();
@@ -54,6 +50,19 @@ module nts.uk.at.view.kdw001.j {
                 //self.stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
             }
 
+            start() {
+                let self = this;
+                service.getAllCaseSpecExeContent().done(function(data) {
+                    let items = _.map(data, item => {
+                        return new CaseSpecExeContent(item);
+                    });
+                    self.items(items);
+                    
+                    //Set first select
+                    self.currentCode(self.items()[0].caseSpecExeContentID);
+                });
+            }
+
             opendScreenD() {
                 nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 2, "screenName": "J" });
             }
@@ -67,15 +76,25 @@ module nts.uk.at.view.kdw001.j {
             }
         }
 
-        class ItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+        //Define CaseSpecExeContent 
+        export class CaseSpecExeContent {
+            caseSpecExeContentID: string;
+            orderNumber: number;
+            useCaseName: string;
+
+            constructor(x: ICaseSpecExeContent) {
+                let self = this;
+                self.caseSpecExeContentID = x.caseSpecExeContentID;
+                self.orderNumber = x.orderNumber;
+                self.useCaseName = x.useCaseName;
             }
         }
 
+        export interface ICaseSpecExeContent {
+            caseSpecExeContentID: string;
+            orderNumber: number;
+            useCaseName: string;
+        }
     }
 
 }
