@@ -34,7 +34,7 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 		AddSelectionCommand command = context.getCommand();
 
 		// check ton tai selectionCD:
-		List<Selection> checkSelectionCD = this.selectionRepo.geSelectionList(command.getSelectionCD(), command.getHistId());
+		List<Selection> checkSelectionCD = this.selectionRepo.getAllSelectionBySelectionCdAndHistId(command.getSelectionCD(), command.getHistId());
 		if (!checkSelectionCD.equals(checkSelectionCD)) {
 			throw new BusinessException(new RawErrorMessage("Msg_3"));
 		}
