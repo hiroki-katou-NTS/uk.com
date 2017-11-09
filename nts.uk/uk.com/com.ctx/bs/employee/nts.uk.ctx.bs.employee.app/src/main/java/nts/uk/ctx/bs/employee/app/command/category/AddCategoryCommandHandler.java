@@ -285,9 +285,9 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 	}
 	
 	private DataTypeValue getItemType(List<PersonInfoItemDefinition> listItemDef, String itemCode){
-		PersonInfoItemDefinition itemDef = listItemDef.stream().filter(item-> itemCode.equals(item.getItemCode().v())).findAny().orElse(null);
-		if (itemDef != null){
-			SingleItem item = (SingleItem)itemDef.getItemTypeState();
+		Optional<PersonInfoItemDefinition> itemDef = listItemDef.stream().filter(item-> itemCode.equals(item.getItemCode().v())).findFirst();
+		if (itemDef.isPresent()){
+			SingleItem item = (SingleItem)itemDef.get().getItemTypeState();
 			DataTypeState dataType = item.getDataTypeState();
 			return dataType.getDataTypeValue();
 		}
