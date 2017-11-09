@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.command.category;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import nts.arc.enums.EnumAdaptor;
@@ -206,6 +207,7 @@ public class DomainValueFactory {
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
+			// TODO Pending item code of endDate
 			case "IS00030":
 				// 現住所．郵便番号
 				currentAddress.setPostalCode(new PostalCode(convertToString(dataInfoItem.getValue())));
@@ -267,7 +269,7 @@ public class DomainValueFactory {
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-
+			// TODO Pending item code
 			}
 			// Address 1
 			currentAddress.setAddress1(address1);
@@ -493,11 +495,19 @@ public class DomainValueFactory {
 	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, SubJobPosition subJobPosition) {
 	}
-	
+	/**
+	 * Covert value to string
+	 * @param obj
+	 * @return
+	 */
 	public static String convertToString(Object obj){
 		return obj == null ? "" : obj.toString();
 	}
-	
+	/**
+	 * Convert value to int
+	 * @param obj
+	 * @return
+	 */
 	public static int convertToInt(Object obj){
 		try {
 			return Integer.parseInt(convertToString(obj));
@@ -505,12 +515,29 @@ public class DomainValueFactory {
 			return 0;
 		}
 	}
-	
+	/**
+	 * Convert value to Date
+	 * @param obj
+	 * @return
+	 */
 	public static GeneralDate convertToDate(Object obj){
 		try {
 			return GeneralDate.fromString(convertToString(obj), DATE_FORMAT);
 		} catch (Exception e) {
 			return null;
+		}
+	}
+	
+	/**
+	 * Convert value to decimal
+	 * @param obj
+	 * @return
+	 */
+	public static BigDecimal convertToDecimal(Object obj){
+		try {
+			return new BigDecimal(convertToString(obj));
+		} catch (Exception e) {
+			return new BigDecimal("0");
 		}
 	}
 }
