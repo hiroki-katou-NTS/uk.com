@@ -1,8 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.category;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -57,10 +56,20 @@ import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * mapping value of items from client to server 
+ * @author hopnt
+ *
+ */
 public class DomainValueFactory {
 	/** The Constant DATE_FORMAT. */
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
+	/**
+	 * Domain Person mapping value of items from client to server 
+	 * @param listItem
+	 * @param person
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, Person person) {
 		PersonNameGroup perNameGroup = new PersonNameGroup();
 		for (LayoutPersonInfoCommand dataInfoItem : listItem) {
@@ -107,7 +116,7 @@ public class DomainValueFactory {
 				break;
 			case "IS00008":
 				// 個人名グループ．個人旧氏名．氏名
-//				perNameGroup.setOldName(p
+//				perNameGroup.setOldName(oldName);
 //				authClassItem.getDataItems().add(person.getPersonNameGroup().getOldName().getFullName().v());
 				break;
 			case "IS00009":
@@ -172,7 +181,11 @@ public class DomainValueFactory {
 			person.setPersonNameGroup(perNameGroup);
 		}
 	}
-
+	/**
+	 * Domain CurrentAddress mapping value of items from client to server
+	 * @param listItem
+	 * @param currentAddress
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, CurrentAddress currentAddress) {
 		for (LayoutPersonInfoCommand dataInfoItem : listItem) {
 			// Address 1
@@ -184,24 +197,17 @@ public class DomainValueFactory {
 			// Date period
 			GeneralDate startDate = null;
 			GeneralDate endDate = null;
-			boolean flag = false;
 			
 			switch (dataInfoItem.getItemCode()) {
 			case "IS00029":
 				/*
 				 * 現住所．期間 現住所．期間．開始日 現住所．期間．終了日
 				 */
-				if (!flag){
-					startDate = convertToDate(dataInfoItem.getValue());
-					flag = true;
-					// Remove item from list
-				} else {
-					endDate = convertToDate(dataInfoItem.getValue());
-					// Remove item from list
-				}
+				startDate = convertToDate(dataInfoItem.getValue());
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
+			// TODO Pending item code of endDate
 			case "IS00030":
 				// 現住所．郵便番号
 				currentAddress.setPostalCode(new PostalCode(convertToString(dataInfoItem.getValue())));
@@ -263,7 +269,7 @@ public class DomainValueFactory {
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-
+			// TODO Pending item code
 			}
 			// Address 1
 			currentAddress.setAddress1(address1);
@@ -273,7 +279,11 @@ public class DomainValueFactory {
 			currentAddress.setPeriod(new DatePeriod(startDate, endDate));
 		}
 	}
-
+	/**
+	 * Domain Family mapping value of items from client to server
+	 * @param listItem
+	 * @param family
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, Family family) {
 		for(LayoutPersonInfoCommand infoItem: listItem){
 			switch(infoItem.getItemCode()){
@@ -382,6 +392,11 @@ public class DomainValueFactory {
 			}
 		}
 	}
+	/**
+	 * Domain Employee mapping  value of items from client to server 
+	 * @param listItem
+	 * @param employee
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, Employee employee) {
 		JobEntryHistory jobHist = new JobEntryHistory();
 		for (LayoutPersonInfoCommand dataInfoItem : listItem) {
@@ -432,51 +447,67 @@ public class DomainValueFactory {
 				break;
 			}
 			// Job history
-//			employee.setListEntryJobHist(listEntryJobHist);
+//			employee.setListEntryJobHist(jobHist);
 		}
 
 	}
-	
+	/**
+	 * Domain PersonEmergencyContact mapping value of items from client to server
+	 * @param listItem
+	 * @param emergencyContact
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, PersonEmergencyContact emergencyContact){
 		
 	}
-
+	
+	/**
+	 * Domain TemporaryAbsence mapping value of items from client to server
+	 * @param listItem
+	 * @param leaveHoliday
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, TemporaryAbsence leaveHoliday) {
 	}
-
+	/**
+	 * Domain JobTitle mapping value of items from client to server
+	 * @param listItem
+	 * @param jobTitle
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, JobTitle jobTitle) {
 	}
+	/**
+	 * Domain AffWorkplaceHistory mapping value of items from client to server
+	 * @param listItem
+	 * @param jobTitle
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, AffWorkplaceHistory affWorkplaceHistory) {
 	}
-//	public static void matchInformation(List<EmpAddItemCommand> listItem, AssignedWorkplace assignedWorkplace) {
-//	}
-//
+	/**
+	 * Domain AffiliationDepartment mapping value of items from client to server
+	 * @param listItem
+	 * @param jobTitle
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, AffiliationDepartment affDepartment) {
 	}
-
+	/**
+	 * Domain SubJobPosition mapping value of items from client to server
+	 * @param listItem
+	 * @param subJobPosition
+	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, SubJobPosition subJobPosition) {
 	}
-//
-//	public static void matchPersEmerConts(List<EmpAddItemCommand> listItem,
-//			List<PersonEmergencyContact> perEmerConts) {
-//	}
-//
-//	public static void matchFamilies(List<EmpAddItemCommand> listItem, List<Family> families) {
-//	}
-//
-//	public static void matchsubJobPoses(List<EmpAddItemCommand> listItem, List<SubJobPosition> subJobPoses) {
-//	}
-	
-//	private static List<LayoutPersonInfoCommand> findItemValue(List<LayoutPersonInfoCommand> listItem, String itemCode){
-//		List<LayoutPersonInfoCommand> result = listItem.stream()               
-//                .filter(item -> itemCode.equals(item.getItemCode())).collect(Collectors.toList());   
-//		return result;
-//	}
-	
+	/**
+	 * Covert value to string
+	 * @param obj
+	 * @return
+	 */
 	public static String convertToString(Object obj){
 		return obj == null ? "" : obj.toString();
 	}
-	
+	/**
+	 * Convert value to int
+	 * @param obj
+	 * @return
+	 */
 	public static int convertToInt(Object obj){
 		try {
 			return Integer.parseInt(convertToString(obj));
@@ -484,12 +515,29 @@ public class DomainValueFactory {
 			return 0;
 		}
 	}
-	
+	/**
+	 * Convert value to Date
+	 * @param obj
+	 * @return
+	 */
 	public static GeneralDate convertToDate(Object obj){
 		try {
 			return GeneralDate.fromString(convertToString(obj), DATE_FORMAT);
 		} catch (Exception e) {
 			return null;
+		}
+	}
+	
+	/**
+	 * Convert value to decimal
+	 * @param obj
+	 * @return
+	 */
+	public static BigDecimal convertToDecimal(Object obj){
+		try {
+			return new BigDecimal(convertToString(obj));
+		} catch (Exception e) {
+			return new BigDecimal("0");
 		}
 	}
 }

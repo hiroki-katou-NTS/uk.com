@@ -26,6 +26,7 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
  * @author danpv
  * 
  *         Class lưu trữ cấu trúc đề mapping ItemDefinition và các Object Domain
+ *         dành cho việc chuyển data từ server đến client
  *         File tham khảo
  *         \\192.168.50.4\share\500_新構想開発\03_概要設計\01_概要設計書\04_共通\CPS_個人情報\個人情報定義\項目定義-説明書.xlsx
  *
