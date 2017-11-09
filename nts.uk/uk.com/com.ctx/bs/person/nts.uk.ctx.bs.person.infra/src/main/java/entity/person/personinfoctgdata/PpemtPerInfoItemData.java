@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -19,6 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "PPEMT_PER_INFO_ITEM_DATA")
 @AllArgsConstructor
+@NoArgsConstructor
 public class PpemtPerInfoItemData extends UkJpaEntity {
 
 	@EmbeddedId
