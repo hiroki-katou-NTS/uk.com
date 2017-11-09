@@ -167,7 +167,7 @@ public class GetOvertime {
 				result.setDisplayCaculationTime(true);
 				//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 				Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,GeneralDate.fromString(appDate, DATE_FORMAT));
-				// 07_勤務種類取得: lay loai di lam : chua xong
+				// 07_勤務種類取得: lay loai di lam 
 				WorkTypeOvertime workTypeOvertime = overtimeService.getWorkType(companyID, employeeID,personalLablorCodition,requestAppDetailSetting);
 				result.setWorkType(workTypeOvertime);
 				
