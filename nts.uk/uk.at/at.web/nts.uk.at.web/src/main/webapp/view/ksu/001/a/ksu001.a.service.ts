@@ -1,7 +1,7 @@
 module ksu001.a.service {
     var paths: any = {
         getDataBasicSchedule: "screen/at/schedule/basicschedule/getData",
-        getDataWorkScheduleState: "at/schedule/workschedulestate/findAll",
+        getDataWorkScheduleState: "screen/at/schedule/basicschedule/getDataWorkScheduleState",
         registerData: "at/schedule/basicschedule/register",
         getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",
         getShiftConditionCategory: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory"
@@ -20,8 +20,8 @@ module ksu001.a.service {
     export function getShiftConditionCategory(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftConditionCategory);
     }
-    
-    export function getDataWorkScheduleState(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataWorkScheduleState);
+
+    export function getDataWorkScheduleState(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWorkScheduleState, obj);
     }
 }

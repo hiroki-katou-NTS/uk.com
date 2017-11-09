@@ -22,7 +22,7 @@ public class BasicScheduleScreenProcessor {
 	private BasicScheduleScreenRepository bScheduleScreenRepo;
 
 	public List<BasicScheduleScreenDto> getByListSidAndDate(BasicScheduleScreenParams params) {
-		return this.bScheduleScreenRepo.getByListSidAndDate(params.sId, params.startDate, params.endDate);
+		return this.bScheduleScreenRepo.getByListSidAndDate(params.employeeId, params.startDate, params.endDate);
 	}
 
 	public List<WorkTimeScreenDto> getListWorkTime() {

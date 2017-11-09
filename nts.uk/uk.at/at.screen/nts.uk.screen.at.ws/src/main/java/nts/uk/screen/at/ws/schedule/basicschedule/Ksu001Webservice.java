@@ -13,6 +13,9 @@ import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenParams;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
 
 /**
  * 
@@ -25,6 +28,9 @@ public class Ksu001Webservice extends WebService {
 
 	@Inject
 	private BasicScheduleScreenProcessor bScheduleScreenProces;
+	
+	@Inject
+	private WorkScheduleStateScreenProcessor workScheduleStateScreenProces;
 
 	@POST
 	@Path("getData")
@@ -47,5 +53,11 @@ public class Ksu001Webservice extends WebService {
 	@Path("getListWorkType")
 	public List<WorkTypeScreenDto> getByCIdAndDeprecateCls() {
 		return this.bScheduleScreenProces.findByCIdAndDeprecateCls();
+	}
+	
+	@POST
+	@Path("getDataWorkScheduleState")
+	public List<WorkScheduleStateScreenDto> getDataWorkScheduleState(WorkScheduleStateScreenParams params) {
+		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
 	}
 }
