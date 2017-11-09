@@ -171,6 +171,10 @@ module nts.uk.at.view.kaf005.share {
                 this.representerSID = representerSID;    
             }
         }
+        export class AppOverTime {
+                
+        }
+        
         export class RestTime{
                 restTimeID: KnockoutObservable<string>;
                 startTime: KnockoutObservable<number>;

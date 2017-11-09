@@ -90,7 +90,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="cf valign-center control-group">
+		<div class="cf valign-center control-group" data-bind="if: displayCaculationTime() &amp; breakInputFieldDisFlg()">
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_40')}</div>
 			<table id="fixed-table">
 			<colgroup>
@@ -114,7 +114,7 @@
 			</tbody>
 			</table>
 		</div>
-		<div>
+		<div data-bind="if: displayCaculationTime">
 			<button style ="margin: 15px 0px 10px 261px" class="caret-bottom">#{i18n.getText('KAF005_43')}</button>
 		</div>
 		<div class="cf valign-center control-group">
@@ -168,7 +168,7 @@
 			</tbody>
 			</table>
 		</div>
-		<div class="cf valign-center control-group">
+		<div class="cf valign-center control-group" data-bind="if: displayBonusTime">
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_81')}</div>
 			<table id="fixed-bonus_time-table">
 			<colgroup>
