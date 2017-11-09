@@ -266,11 +266,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         checkDisplayAction() {
             let self = this;
             if (self.outputDetailCheck() != null) {
+                //※6    
+                //ドメインモデル「申請」．入力者 == ログイン者社員ID                                                                      
+                //ドメインモデル「申請」．申請者 == ログイン者社員ID                                                                      \
+                if(self.outputDetailCheck().loginInputOrApproval){
+                    self.displayButtonControl().displayRelease(true);    
+                }else{//その以外
+                    self.displayButtonControl().displayRelease(false);
+                }
                 //check 利用者
                 let user = self.outputDetailCheck().user;
                 switch(user){
                     case 1: {
                         // 利用者 = 承認者
+                        
                         // check ステータス
                         let reflectPlanState = self.outputDetailCheck().reflectPlanState;
                         if(reflectPlanState==6||reflectPlanState==5||reflectPlanState==0||reflectPlanState==1){
@@ -359,6 +368,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         }
                     }   
                 } 
+                
             }
         }
 
@@ -777,16 +787,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             authorizableFlags: boolean;
             approvalATR: number;
             alternateExpiration: boolean;
+            loginInputOrApproval: boolean;
             constructor(user: number,
                 reflectPlanState: number,
                 authorizableFlags: boolean,
                 approvalATR: number,
-                alternateExpiration: boolean) {
+                alternateExpiration: boolean,
+                loginInputOrApproval: boolean) {
                 this.user = user;
                 this.reflectPlanState = reflectPlanState;
                 this.authorizableFlags = authorizableFlags;
                 this.approvalATR = approvalATR;
                 this.alternateExpiration = alternateExpiration;
+                this.loginInputOrApproval = loginInputOrApproval;
             }
         }//end class DetailedScreenPreBootModeOutput
 
