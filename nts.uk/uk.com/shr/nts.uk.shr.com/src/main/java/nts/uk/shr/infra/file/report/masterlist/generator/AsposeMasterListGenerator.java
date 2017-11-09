@@ -1,5 +1,6 @@
 package nts.uk.shr.infra.file.report.masterlist.generator;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +21,7 @@ import com.aspose.cells.TextAlignmentType;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
@@ -29,7 +31,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private final String REPORT_ID = "MASTER_LIST";
 	
-	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}.xlsx";
+	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}_{DATE}.xlsx";
 	
 	private final int HEADER_INFOR_START_ROW = 0;
 	
@@ -58,9 +60,11 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		sheet.setName("マスターリスト");
 		
+		String reportName = this.fillHeader(cells, dataSource.getHeaders(), columns.size() <= 1 ? 1 : columns.size() - 1);
+		
 		if (!columns.isEmpty()){
 			this.setCommonStyle(cells);
-			this.fillHeader(cells, dataSource.getHeaders(), columns);
+			
 			this.drawTableHeader(cells, columns);
 			this.drawTableBody(cells, columns, dataSource.getMasterList());
 
@@ -75,8 +79,6 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 			}
 		}
 		reportContext.processDesigner();
-		
-		String reportName = REPORT_FILE_NAME.replace("{TYPE}", dataSource.getHeaders().get("【種類】"));
 		
 		switch (dataSource.getReportType()) {
 		case CSV:
@@ -93,6 +95,11 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		}
 		
 	}
+
+	private String getCreateReportTime(String createDate) {
+		return GeneralDateTime.fromString(createDate, "yyyy/MM/dd HH:mm:ss")
+				.localDateTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+	}
 	
 	private void setCommonStyle(Cells cells){
 		
@@ -100,12 +107,12 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		cells.setStandardHeightPixels(STANDARD_HEIGHT);
 	}
 
-	private void fillHeader (Cells cells, Map<String, String> headerData, List<MasterHeaderColumn> columns) {
+	private String fillHeader (Cells cells, Map<String, String> headerData, int columnSize) {
 		
 		int i = START_COLUMN;
 		for (Entry<String, String> headerInfor : headerData.entrySet()) {
 			Cell labelCell = cells.get(HEADER_INFOR_START_ROW + i, 0);
-			Range valueCell = cells.createRange(HEADER_INFOR_START_ROW + i, 1, 1, columns.size() - 1);
+			Range valueCell = cells.createRange(HEADER_INFOR_START_ROW + i, 1, 1, columnSize);
 			valueCell.merge();
 			
 			labelCell.setValue(headerInfor.getKey());
@@ -115,6 +122,10 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 			valueCell.setStyle(style);
 			i++;
 		}
+		String reportName = REPORT_FILE_NAME.replace("{TYPE}", headerData.get("【種類】"))
+				.replace("{DATE}", getCreateReportTime(headerData.get("【日時】")));
+		
+		return reportName;
 	}
 	
 	private void drawTableHeader(Cells cells, List<MasterHeaderColumn> columns) {
