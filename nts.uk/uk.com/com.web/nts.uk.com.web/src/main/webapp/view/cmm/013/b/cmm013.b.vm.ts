@@ -101,7 +101,15 @@ module nts.uk.com.view.cmm013.b {
              * Show Error Message
              */
             private showMessageError(res: any): void {
-                if (res.businessException) {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }   

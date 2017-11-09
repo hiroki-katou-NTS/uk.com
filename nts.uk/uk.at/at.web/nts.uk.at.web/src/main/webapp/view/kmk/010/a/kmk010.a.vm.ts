@@ -150,7 +150,9 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/b/index.xhtml").onClosed(function() {
-                    self.startPage();
+                    self.startPage().done(() => {
+                        service.initTooltip();
+                    });
                 });
             }
             /**
@@ -160,7 +162,9 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/c/index.xhtml").onClosed(function() {
-                    self.startPage();
+                    self.startPage().done(() => {
+                        service.initTooltip();
+                    });
                 });
             }
 
@@ -193,7 +197,9 @@ module nts.uk.at.view.kmk010.a {
                     // save all
                     service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            self.startPage();
+                            self.startPage().done(() => {
+                                service.initTooltip();
+                            });
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -216,8 +222,10 @@ module nts.uk.at.view.kmk010.a {
             /**
              * update language by select language
              */
-            public updateLanguage(): void {
+            public updateLanguage(): void{
                 var self = this;
+                var loadOverTimeDfd = $.Deferred<void>();
+                var loadOutsideDfd = $.Deferred<void>();
                 if(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN){
                     service.findAllOvertime().done(function(dataOvertime){
                         for (var overtime of self.outsideOTSettingModel.overtimes()) {
@@ -226,7 +234,8 @@ module nts.uk.at.view.kmk010.a {
                                     overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
-                        } 
+                        }
+                        loadOverTimeDfd.resolve();
                     });    
                     service.findAllOutsideOTBRDItem().done(function(dataOvertimeBRD){
                         for (var overtime of self.outsideOTSettingModel.breakdownItems()) {
@@ -235,7 +244,8 @@ module nts.uk.at.view.kmk010.a {
                                     overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
-                        } 
+                        }
+                        loadOutsideDfd.resolve();
                     });
                 }else {
                     service.findAllOvertimeNameLanguage(self.languageId).done(function(dataOvertimeLang){
@@ -246,6 +256,7 @@ module nts.uk.at.view.kmk010.a {
                                 }    
                             }
                         }
+                        loadOverTimeDfd.resolve();
                     });    
                     
                     service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataOvertimeBRDLang){
@@ -255,9 +266,14 @@ module nts.uk.at.view.kmk010.a {
                                     overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
-                        } 
+                        }
+                        loadOutsideDfd.resolve();
                     });
                 }
+                // When load done -> re init tooltip.
+                $.when(loadOverTimeDfd.done(), loadOutsideDfd.done()).done(() => {
+                    service.initTooltip();
+                })
             }
             
             /**
@@ -428,6 +444,7 @@ module nts.uk.at.view.kmk010.a {
                                 }
                             }
                             self.attendanceItemName(selectedName.join(' + '));
+                            service.initTooltip();
                         });
                     });
                 }).fail(function(error){

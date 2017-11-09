@@ -13,19 +13,22 @@ module nts.uk.com.view.cdl009.a {
 //            $('#workplace-component').focusTreeGridComponent();
             
             // Check init selected code.
-            if (screenModel.isMultiSelect()) {
-                var selectedData: string[] = [];
-                for (var code of screenModel.multiSelectedTree()) {
-                    if (screenModel.checkExistWorkplace(code, $("#workplace-component").getDataList())) {
-                        selectedData.push(code);
-                    }
-                }
-                screenModel.multiSelectedTree(selectedData);
-            } else {
-                if (!screenModel.checkExistWorkplace(screenModel.selectedWorkplace(), $("#workplace-component").getDataList())) {
-                    screenModel.selectedWorkplace(null);
-                }
-            }
+//            if (screenModel.isMultiSelect()) {
+                
+//                var selectedData: string[] = [];
+//                for (var id of screenModel.multiSelectedTree()) {
+//                    if (screenModel.checkExistWorkplace(id, $("#workplace-component").getDataList())) {
+//                        selectedData.push(id);
+//                    }
+//                }
+//                screenModel.multiSelectedTree(selectedData);
+            
+//            } 
+//            else {
+//                if (!screenModel.checkExistWorkplace(screenModel.selectedWorkplace(), $("#workplace-component").getDataList())) {
+//                    screenModel.selectedWorkplace(null);
+//                }
+//            }
         });
     });
 }

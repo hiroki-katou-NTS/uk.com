@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.record.dom.optitem.AmountRange;
 import nts.uk.ctx.at.record.dom.optitem.CalcRangeCheck;
 import nts.uk.ctx.at.record.dom.optitem.CalcResultRangeSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.NumberRange;
 import nts.uk.ctx.at.record.dom.optitem.TimeRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
 
 /**
  * The Class JpaCalcResultRangeSetMemento.
@@ -23,17 +24,9 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	/**
 	 * Instantiates a new jpa calc result range set memento.
 	 *
-	 * @param typeValue
-	 *            the type value
+	 * @param typeValue the type value
 	 */
 	public JpaCalcResultRangeSetMemento(KrcstCalcResultRange typeValue) {
-		KrcstCalcResultRangePK krcstCalcResultRangePK = typeValue.getKrcstCalcResultRangePK();
-		// Check PK exist
-		if (krcstCalcResultRangePK == null) {
-			krcstCalcResultRangePK = new KrcstCalcResultRangePK();
-		}
-		typeValue.setKrcstCalcResultRangePK(krcstCalcResultRangePK);
-
 		this.typeValue = typeValue;
 	}
 
@@ -69,9 +62,11 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 * (nts.uk.ctx.at.record.dom.optitem.NumberRange)
 	 */
 	@Override
-	public void setNumberRange(NumberRange range) {
-		this.typeValue.setUpperNumberRange(range.getUpperLimit().v().intValue());
-		this.typeValue.setLowerNumberRange(range.getLowerLimit().v().intValue());
+	public void setNumberRange(Optional<NumberRange> range) {
+		this.typeValue.setLowerNumberRange(range.isPresent() && range.get().getLowerLimit().isPresent()
+				? range.get().getLowerLimit().get().v() : null);
+		this.typeValue.setUpperNumberRange(range.isPresent() && range.get().getUpperLimit().isPresent()
+				? range.get().getUpperLimit().get().v() : null);
 	}
 
 	/*
@@ -82,9 +77,11 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 * nts.uk.ctx.at.record.dom.optitem.TimeRange)
 	 */
 	@Override
-	public void setTimeRange(TimeRange range) {
-		this.typeValue.setUpperTimeRange(range.getUpperLimit().v().intValue());
-		this.typeValue.setLowerTimeRange(range.getLowerLimit().v().intValue());
+	public void setTimeRange(Optional<TimeRange> range) {
+		this.typeValue.setLowerTimeRange(range.isPresent() && range.get().getLowerLimit().isPresent()
+				? range.get().getLowerLimit().get().v() : null);
+		this.typeValue.setUpperTimeRange(range.isPresent() && range.get().getUpperLimit().isPresent()
+				? range.get().getUpperLimit().get().v() : null);
 	}
 
 	/*
@@ -95,9 +92,11 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 * (nts.uk.ctx.at.record.dom.optitem.AmountRange)
 	 */
 	@Override
-	public void setAmountRange(AmountRange range) {
-		this.typeValue.setUpperAmountRange(range.getUpperLimit().v().intValue());
-		this.typeValue.setLowerAmountRange(range.getLowerLimit().v().intValue());
+	public void setAmountRange(Optional<AmountRange> range) {
+		this.typeValue.setLowerAmountRange(range.isPresent() && range.get().getLowerLimit().isPresent()
+				? range.get().getLowerLimit().get().v() : null);
+		this.typeValue.setUpperAmountRange(range.isPresent() && range.get().getUpperLimit().isPresent()
+				? range.get().getUpperLimit().get().v() : null);
 	}
 
 }

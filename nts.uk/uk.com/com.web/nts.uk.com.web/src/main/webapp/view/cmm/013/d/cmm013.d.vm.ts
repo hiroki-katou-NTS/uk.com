@@ -2,7 +2,10 @@ module nts.uk.com.view.cmm013.d {
 
     export module viewmodel {
         
-        import Constants = base.Constants;               
+        import Constants = base.Constants;  
+        import SavePeriod = base.SavePeriod;   
+        import SaveHistory = base.SaveHistory;          
+        import SaveJobTitleHistoryCommand = service.model.SaveJobTitleHistoryCommand;
         
         export class ScreenModel {
             
@@ -43,7 +46,7 @@ module nts.uk.com.view.cmm013.d {
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
                     });
             }
             
@@ -57,23 +60,16 @@ module nts.uk.com.view.cmm013.d {
             /**
              * toJSON
              */
-            private toJSON(): any {
+            private toJSON(): SaveJobTitleHistoryCommand {
                 let _self = this;
                 let jobTitleId: string = nts.uk.ui.windows.getShared(Constants.SHARE_IN_DIALOG_ADD_HISTORY);
                 if (!jobTitleId) {
-                    return {};
+                    return null;
                 }
-                return {
-                    isCreateMode: true,
-                    jobTitleId: jobTitleId,
-                    jobTitleHistory: {
-                        historyId: "",
-                        period: {
-                            startDate: _self.startDate(),
-                            endDate: new Date("9999-12-31")
-                        }
-                    }
-                }
+                
+                let jobTitleHistory: SaveHistory = new SaveHistory("", new SavePeriod(new Date(_self.startDate()), new Date("9999-12-31")));
+                let command: SaveJobTitleHistoryCommand = new SaveJobTitleHistoryCommand(true, jobTitleId, jobTitleHistory);
+                return command;
             }
             
             /**
@@ -89,9 +85,19 @@ module nts.uk.com.view.cmm013.d {
             /**
              * Show Error Message
              */
-            private showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
-            }           
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }        
         }
     }    
 }

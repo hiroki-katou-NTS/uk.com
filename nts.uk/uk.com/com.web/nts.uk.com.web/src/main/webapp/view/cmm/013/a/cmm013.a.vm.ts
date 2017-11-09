@@ -91,8 +91,6 @@ module nts.uk.com.view.cmm013.a {
                 _self.enable_A3_3 = ko.observable(null);
                 _self.enable_A3_4 = ko.observable(null);
                 _self.enable_A3_5 = ko.observable(null);
-
-                //$('#job-title-items-list').ntsListComponent(_self.listJobTitleOption);
             }
 
             /**
@@ -147,7 +145,9 @@ module nts.uk.com.view.cmm013.a {
                 let _self = this;
 
                 if (!jobTitleId) {
-                    return;
+                    // No JobTitle has been choosed, switch to create mode
+                    _self.createMode(true);
+                    return;                  
                 }
 
                 // Load JobTitle history info 
@@ -295,9 +295,19 @@ module nts.uk.com.view.cmm013.a {
             /**
              * Show Error Message
              */
-            private showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res);
-            }
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }   
 
             /**
              * Start create mode
@@ -338,7 +348,7 @@ module nts.uk.com.view.cmm013.a {
                     })
                     .fail((res: any) => {
                         nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
                     });
             }
 
