@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import find.layout.NewLayoutDto;
-import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoClsFinder;
 import find.layout.classification.LayoutPersonInfoValueDto;
@@ -243,31 +242,18 @@ public class LayoutFinder {
 	private List<PerInfoItemDefDto> validateAuthItem(String mainteLayoutId, String perInfocategoryId,
 			String contractCode, String roleId, boolean selfBrowsing, List<PerInfoItemDefDto> listItemDef) {
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
-
 		List<PersonInfoItemAuth> authItems = perInfoItemAuthRepo.getAllItemAuth(roleId, perInfocategoryId);
-
 		for (PerInfoItemDefDto itemDef : listItemDef) {
-			PersonInfoItemAuth authItem = authItems.stream().filter(p -> p.getPersonItemDefId().equals(itemDef.getId()))
-					.collect(Collectors.toList()).get(0);
-			if (selfBrowsing) {
-				if (authItem.getSelfAuth() == PersonInfoAuthType.REFERENCE) {
-					itemDef.setActionRole(ActionRole.VIEW_ONLY);
+			Optional<PersonInfoItemAuth> authItemOpt = authItems.stream()
+					.filter(p -> p.getPersonItemDefId().equals(itemDef.getId())).findFirst();
+			if (authItemOpt.isPresent()) {
+				if (selfBrowsing && authItemOpt.get().getSelfAuth() != PersonInfoAuthType.HIDE) {
 					dataInfoItems.add(itemDef);
-				} else if (authItem.getSelfAuth() == PersonInfoAuthType.UPDATE) {
-					itemDef.setActionRole(ActionRole.EDIT);
-					dataInfoItems.add(itemDef);
-				}
-			} else {
-				if (authItem.getOtherAuth() == PersonInfoAuthType.REFERENCE) {
-					itemDef.setActionRole(ActionRole.VIEW_ONLY);
-					dataInfoItems.add(itemDef);
-				} else if (authItem.getOtherAuth() == PersonInfoAuthType.UPDATE) {
-					itemDef.setActionRole(ActionRole.EDIT);
+				} else if (!selfBrowsing && authItemOpt.get().getOtherAuth() != PersonInfoAuthType.HIDE) {
 					dataInfoItems.add(itemDef);
 				}
 			}
 		}
-
 		return dataInfoItems;
 	}
 
