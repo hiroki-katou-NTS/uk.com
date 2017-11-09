@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.adapter.executionlog;
 
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
+
 /**
  * The Interface SCEmployeeAdapter.
  */

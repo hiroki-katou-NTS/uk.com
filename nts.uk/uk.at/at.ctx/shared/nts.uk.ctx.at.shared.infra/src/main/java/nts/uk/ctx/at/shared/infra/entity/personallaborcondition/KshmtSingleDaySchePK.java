@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.entity.personallaborcondition;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,14 +14,15 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class KshmtSingleDaySchePK.
  */
-@Embeddable
 @Getter
 @Setter
+@Embeddable
 public class KshmtSingleDaySchePK implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -44,21 +44,22 @@ public class KshmtSingleDaySchePK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "START_YMD")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
-    private Date startYmd;
+    @Convert(converter = GeneralDateToDBConverter.class)
+    private GeneralDate startYmd;
     
     /** The end ymd. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "END_YMD")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
-    private Date endYmd;
+    @Convert(converter = GeneralDateToDBConverter.class)
+    private GeneralDate endYmd;
 
     /**
      * Instantiates a new kshmt single day sche PK.
      */
     public KshmtSingleDaySchePK() {
     }
+
 
     /**
      * Instantiates a new kshmt single day sche PK.
@@ -68,41 +69,42 @@ public class KshmtSingleDaySchePK implements Serializable {
      * @param startYmd the start ymd
      * @param endYmd the end ymd
      */
-    public KshmtSingleDaySchePK(String sid, int persWorkAtr, Date startYmd, Date endYmd) {
-        this.sid = sid;
-        this.persWorkAtr = persWorkAtr;
-        this.startYmd = startYmd;
-        this.endYmd = endYmd;
-    }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (sid != null ? sid.hashCode() : 0);
-		hash += (int) persWorkAtr;
-		hash += (startYmd != null ? startYmd.hashCode() : 0);
-		hash += (endYmd != null ? endYmd.hashCode() : 0);
-		return hash;
+    public KshmtSingleDaySchePK(String sid, int persWorkAtr, GeneralDate startYmd,
+			GeneralDate endYmd) {
+		super();
+		this.sid = sid;
+		this.persWorkAtr = persWorkAtr;
+		this.startYmd = startYmd;
+		this.endYmd = endYmd;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+
+
+
+	/* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (sid != null ? sid.hashCode() : 0);
+        hash += (int) persWorkAtr;
+        hash += (startYmd != null ? startYmd.hashCode() : 0);
+        hash += (endYmd != null ? endYmd.hashCode() : 0);
+        return hash;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
 	@Override
 	public boolean equals(Object object) {
-		// not set
 		if (!(object instanceof KshmtSingleDaySchePK)) {
 			return false;
 		}
 		KshmtSingleDaySchePK other = (KshmtSingleDaySchePK) object;
-		if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
+		if ((this.sid == null && other.sid != null)
+				|| (this.sid != null && !this.sid.equals(other.sid))) {
 			return false;
 		}
 		if (this.persWorkAtr != other.persWorkAtr) {
@@ -126,8 +128,8 @@ public class KshmtSingleDaySchePK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshmtSingleDaySchePK[ sid=" + sid + ", persWorkAtr=" + persWorkAtr + ", startYmd=" + startYmd
-				+ ", endYmd=" + endYmd + " ]";
+		return "entity.KshmtSingleDaySchePK[ sid=" + sid + ", persWorkAtr=" + persWorkAtr
+				+ ", startYmd=" + startYmd + ", endYmd=" + endYmd + " ]";
 	}
 
 }

@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 累計区分
+ *
+ */
 @AllArgsConstructor
 public enum CumulativeAtr {
 	/** 0- 累計しない **/

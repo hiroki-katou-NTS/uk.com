@@ -40,6 +40,19 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.requestofeach.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -69,20 +82,41 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	private OvertimeInputRepository overtimeInputRepository;
 	@Inject
 	private WpSpecificDateSettingAdapter wpSpecificDateSettingAdapter;
-	
+	@Inject
+	private WTBonusPaySettingRepository wTBonusPaySettingRepository;
+	@Inject
+	private PSBonusPaySettingRepository pSBonusPaySettingRepository;
+	@Inject
+	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
+	@Inject
+	private CPBonusPaySettingRepository cPBonusPaySettingRepository;
+	@Inject
+	private BPSettingRepository bPSettingRepository;
+	@Inject
+	private SpecBPTimesheetRepository specBPTimesheetRepository;
 	
 	@Override
-	public OverTimeInstruct getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID) {
-		OverTimeInstruct overtimeInstruct = new OverTimeInstruct();
+	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID) {
+		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
 		if(appCommonSettingOutput != null){
 			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getUserAtr().value;
 			if(useAtr == UseAtr.USE.value){
 				if(appDate != null){
-					overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
+					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
+					OverTimeInstruct overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
+					if(overtimeInstruct != null){
+						overtimeInstructInformation.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() 
+								+" "+ overtimeInstruct.getStartClock()
+								+"~"+ overtimeInstruct.getEndClock() 
+								+" "+ overtimeInstruct.getTargetPerson()
+								+" ("+ overtimeInstruct.getInstructor() + ")");
+					}
 				}
+			}else{
+				overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
 			}
 		}
-		return overtimeInstruct;
+		return overtimeInstructInformation;
 	}
 
 	@Override
@@ -159,8 +193,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
-			String appDate,String companyID) {
+	public Optional<BonusPaySetting> getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
+			String appDate,String companyID,String siftCode) {
+		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
@@ -168,9 +203,31 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 			if(sWkpHistImport != null){
 				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
-			
+			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftCode));
+			if(!workingTimesheetBonusPaySetting.isPresent()){
+				Optional<PersonalBonusPaySetting> personalBonusPaySetting =this.pSBonusPaySettingRepository.getPersonalBonusPaySetting(employeeID);
+				
+				if(!personalBonusPaySetting.isPresent()){
+					Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(new WorkplaceId(sWkpHistImport.getWorkplaceId()));
+					if(!workplaceBonusPaySetting.isPresent()){
+						Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository.getSetting(companyID);
+						if(!companyBonusPaySetting.isPresent()){
+							return bonusPaySetting;
+						}else{
+							bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, companyBonusPaySetting.get().getBonusPaySettingCode());
+						}
+					}else{
+						bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, workplaceBonusPaySetting.get().getBonusPaySettingCode());
+					}
+				}else{
+					bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, personalBonusPaySetting.get().getBonusPaySettingCode());
+				}
+			}else{
+				bonusPaySetting = bPSettingRepository.getBonusPaySetting(companyID, workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
+			}
 			
 		}
+		return bonusPaySetting;
 	}
 
 	@Override

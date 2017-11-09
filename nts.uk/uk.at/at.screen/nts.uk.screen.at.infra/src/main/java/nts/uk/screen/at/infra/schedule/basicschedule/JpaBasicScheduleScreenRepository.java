@@ -47,9 +47,9 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	 * get list BasicSchedule by list String and startDate and endDate
 	 */
 	@Override
-	public List<BasicScheduleScreenDto> getByListSidAndDate(List<String> sId, GeneralDate startDate,
+	public List<BasicScheduleScreenDto> getByListSidAndDate(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class).setParameter("sId", sId)
+		return this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class).setParameter("sId", employeeId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> toDto(x));
 	}
 

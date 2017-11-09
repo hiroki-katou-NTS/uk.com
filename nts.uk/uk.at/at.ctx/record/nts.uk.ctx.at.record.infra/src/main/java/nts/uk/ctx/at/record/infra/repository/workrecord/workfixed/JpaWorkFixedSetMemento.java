@@ -36,7 +36,7 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	@Override
 	public void setClosureId(Integer closureId) {
 		this.typedValue.getKrcstWorkFixedPK().setClosureId(closureId);
-		;
+		
 
 	}
 
@@ -61,7 +61,7 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	 */
 	@Override
 	public void setConfirmClsStatus(ConfirmClsStatus confirmClsStatus) {
-		this.typedValue.setConfirmCls((short) confirmClsStatus.value);
+		this.typedValue.setConfirmCls(confirmClsStatus.value);
 	}
 
 	/* (non-Javadoc)
@@ -78,5 +78,13 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	@Override
 	public void setProcessDate(Integer processDate) {
 		this.typedValue.setProcessYm(processDate);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento#setCid(java.lang.String)
+	 */
+	@Override
+	public void setCid(String cid) {
+		this.typedValue.getKrcstWorkFixedPK().setCid(cid);	
 	}
 }

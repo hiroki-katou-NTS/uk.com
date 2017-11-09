@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkTimeRepository workTimeRepository;
+	
 
 	@Override
 	public int checkOvertime(String url) {
@@ -41,6 +43,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService#getWorkType(java.lang.String, java.lang.String, java.util.Optional, java.util.Optional)
+	 */
 	@Override
 	public WorkTypeOvertime getWorkType(String companyID, String employeeID,
 			Optional<PersonalLaborCondition> personalLablorCodition,
@@ -74,6 +79,37 @@ public class OvertimeServiceImpl implements OvertimeService {
 					/*
 					 * ドメインモデル「勤務種類」を取得 anh chinh lam
 					 */
+				// １日の勤務＝以下に該当するもの
+				//　出勤、休出、振出、連続勤務
+				List<Integer> allDayAtrs = new ArrayList<>();
+				//出勤
+				allDayAtrs.add(0);
+				//休出
+				allDayAtrs.add(11);
+				//振出
+				allDayAtrs.add(7);
+				// 連続勤務
+				allDayAtrs.add(10);
+				// 午前 また 午後 in (休日, 振出, 年休, 出勤, 特別休暇, 欠勤, 代休, 時間消化休暇)
+				List<Integer> halfAtrs = new ArrayList<>();
+				// 休日
+				halfAtrs.add(1);
+				// 振出
+				halfAtrs.add(7);
+				// 年休
+				halfAtrs.add(8);
+				// 出勤
+				halfAtrs.add(0);
+				//特別休暇
+				halfAtrs.add(4);
+				// 欠勤
+				halfAtrs.add(5);
+				// 代休
+				halfAtrs.add(6);
+				//時間消化休暇
+				halfAtrs.add(9);
+				
+				List<WorkType> workTypes = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs);
 				
 				/*
 				 * ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
@@ -86,6 +122,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					result.setWorkTypeName(workType.get().getName().toString());
 				}else{
 					//先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+					result.setWorkTypeCode(workTypes.get(0).getWorkTypeCode().toString());
+					result.setWorkTypeName(workTypes.get(0).getName().toString());
 				}
 			}
 		}

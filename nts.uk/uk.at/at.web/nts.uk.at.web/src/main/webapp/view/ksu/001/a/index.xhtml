@@ -34,7 +34,7 @@
 			<div data-bind="with: viewA">
 				<div id="functions-area">
 					<button id="saveData" tabindex="1" class="proceed"
-						data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1')}</button>
+						data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_1')}</button>
 					<button tabindex="2" class="done">#{i18n.getText('KSU001_2')}</button>
 					<button tabindex="3" class="create">#{i18n.getText('KSU001_3')}</button>
 					<button tabindex="7" class="check">#{i18n.getText('KSU001_4')}</button>
@@ -379,11 +379,11 @@
 									data-bind="text: lengthListSid"></span>
 							</div>
 							<div id="top-area-2">
-								<button tabindex="-1" id="prevMonth"></button>
+								<button tabindex="-1" id="prevMonth" data-bind="click: backMonth"></button>
 								<span id="date-time-prev" data-bind="text: dateTimePrev"></span><span
 									id="special">#{i18n.getText('KSU001_66')}</span> <span
 									id="date-time-after" data-bind="text: dateTimeAfter"></span>
-								<button tabindex="-1" id="nextMonth"></button>
+								<button tabindex="-1" id="nextMonth" data-bind="click: nextMonth"></button>
 
 								<label class="ml-30">#{i18n.getText('KSU001_38')}:</label>
 								<div tabindex="-1" class="cf"

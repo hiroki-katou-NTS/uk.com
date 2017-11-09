@@ -90,8 +90,14 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
-		AffJobTitleHistory affJobTitleHist = this.jobTitleHistoryRepository
-				.findBySid(employeeId, baseDate).get();
+		Optional<AffJobTitleHistory> optAffJobTitleHist = this.jobTitleHistoryRepository
+				.findBySid(employeeId, baseDate);
+
+		if (!optAffJobTitleHist.isPresent()) {
+			return Optional.empty();
+		}
+
+		AffJobTitleHistory affJobTitleHist = optAffJobTitleHist.get();
 
 		Employee employee = this.employeeRepository.getBySid(employeeId).get();
 

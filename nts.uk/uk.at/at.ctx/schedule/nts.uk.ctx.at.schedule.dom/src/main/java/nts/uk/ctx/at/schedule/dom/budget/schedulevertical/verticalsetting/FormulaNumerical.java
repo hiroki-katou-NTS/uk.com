@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
@@ -23,4 +24,12 @@ public class FormulaNumerical {
     
     /* 順番 */
     private int dispOrder;
+    
+    public static FormulaNumerical createFromJavatype(String companyId, String verticalCalCd, String verticalCalItemId,
+			String externalBudgetCd, int operatorAtr, int dispOrder) {
+		return new FormulaNumerical(companyId, verticalCalCd, verticalCalItemId,
+				externalBudgetCd, 
+				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class),
+				dispOrder);
+	}
 }
