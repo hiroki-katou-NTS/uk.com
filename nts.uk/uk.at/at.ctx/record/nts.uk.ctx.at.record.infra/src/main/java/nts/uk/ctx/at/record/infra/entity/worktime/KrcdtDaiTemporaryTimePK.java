@@ -12,16 +12,14 @@ import nts.arc.time.GeneralDate;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcdtTimeLeavingWorkPK implements Serializable {
+public class KrcdtDaiTemporaryTimePK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "SID")
 	public String employeeId;
-	
-	@Column(name = "WORK_NO")
-	public String workNo;
 
 	@Column(name = "YMD")
 	public GeneralDate ymd;
+
 }

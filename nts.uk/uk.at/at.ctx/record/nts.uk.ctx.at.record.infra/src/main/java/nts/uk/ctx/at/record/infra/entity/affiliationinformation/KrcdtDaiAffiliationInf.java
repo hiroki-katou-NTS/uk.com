@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStatusPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

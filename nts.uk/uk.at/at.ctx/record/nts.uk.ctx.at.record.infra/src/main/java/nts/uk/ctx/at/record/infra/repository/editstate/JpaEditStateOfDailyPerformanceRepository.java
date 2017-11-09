@@ -1,23 +1,23 @@
-package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
+package nts.uk.ctx.at.record.infra.repository.editstate;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 
 @Stateless
-public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
-		implements TimeLeavingOfDailyPerformanceRepository {
+public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
+		implements EditStateOfDailyPerformanceRepository {
 
 	private static final String REMOVE_BY_EMPLOYEE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
+		builderString.append("FROM KrcdtDailyRecEditSet a ");
+		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
 	}
 

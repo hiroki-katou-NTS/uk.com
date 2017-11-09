@@ -4,20 +4,19 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingWorkRepository;
 
 @Stateless
-public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
-		implements TimeLeavingOfDailyPerformanceRepository {
+public class JpaTimeLeavingWorkRepository extends JpaRepository implements TimeLeavingWorkRepository {
 
 	private static final String REMOVE_BY_EMPLOYEE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
+		builderString.append("FROM KrcdtTimeLeavingWork a ");
+		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
 	}
 
