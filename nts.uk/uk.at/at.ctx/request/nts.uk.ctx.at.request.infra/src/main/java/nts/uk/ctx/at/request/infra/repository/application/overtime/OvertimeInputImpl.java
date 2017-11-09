@@ -35,7 +35,7 @@ public class OvertimeInputImpl extends JpaRepository implements OvertimeInputRep
 		return OverTimeInput.createSimpleFromJavaType(entity.getKrqdtOvertimeInputPK().getCid(),
 				entity.getKrqdtOvertimeInputPK().getAppId(),
 				entity.getKrqdtOvertimeInputPK().getAttendanceId(),
-				entity.getKrqdtOvertimeInputPK().getAttendanceNo(),
+				entity.getKrqdtOvertimeInputPK().getFrameNo(),
 				entity.getStartTime(),
 				entity.getEndTime(),
 				entity.getApplicationTime());

@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 
 /**
  * 01_初期データ取得
@@ -23,7 +23,7 @@ public interface IOvertimePreProcess {
 	 * @param appCommonSettingOutput
 	 * @return
 	 */
-	public OverTimeInstruct getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID);
+	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID);
 	
 	/**
 	 * 01-03_残業枠を取得
@@ -37,7 +37,7 @@ public interface IOvertimePreProcess {
 	 * @param overtimeRestAppCommonSet
 	 * @param appDate
 	 */
-	public void getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID);
+	public Optional<BonusPaySetting> getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID, String siftCode);
 	/**
 	 * 01-05_申請定型理由を取得
 	 * @param companyID
