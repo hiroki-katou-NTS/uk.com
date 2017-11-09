@@ -15,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -38,7 +40,6 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.requestofeach.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -66,6 +67,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
+	@Inject
+	private WpSpecificDateSettingAdapter wpSpecificDateSettingAdapter;
 	
 	
 	@Override
@@ -157,11 +160,15 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 
 	@Override
 	public void getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
-			String appDate) {
+			String appDate,String companyID) {
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
+			if(sWkpHistImport != null){
+				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
+			}
+			
 			
 		}
 	}

@@ -138,6 +138,11 @@ public class GetOvertime {
 		return result;
 	}
 	
+	public OverTimeDto getOvertimeByAppID(String appID){
+		OverTimeDto result = new OverTimeDto();
+		return result;
+	}
+	
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID, AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr){
 		//申請日付を取得 : lay thong tin lam them
 				applicationDto.setApplicationDate(appDate);
@@ -188,7 +193,7 @@ public class GetOvertime {
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
-				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate);
+				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID);
 			}else{
 				result.setDisplayBonusTime(false);
 			}

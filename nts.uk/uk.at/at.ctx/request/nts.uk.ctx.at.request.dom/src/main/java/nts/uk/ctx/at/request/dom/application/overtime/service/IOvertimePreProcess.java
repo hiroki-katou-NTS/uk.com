@@ -37,7 +37,7 @@ public interface IOvertimePreProcess {
 	 * @param overtimeRestAppCommonSet
 	 * @param appDate
 	 */
-	public void getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate);
+	public void getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID);
 	/**
 	 * 01-05_申請定型理由を取得
 	 * @param companyID
