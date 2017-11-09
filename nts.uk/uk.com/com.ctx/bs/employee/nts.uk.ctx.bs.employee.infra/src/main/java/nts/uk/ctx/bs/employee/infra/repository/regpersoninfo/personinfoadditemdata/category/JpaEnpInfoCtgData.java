@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.category.PpemtEmpInfoCtgData;
+import nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.category.PpemtEmpInfoCtgDataPk;
 
 @Stateless
 public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRepository {
@@ -33,5 +34,21 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 				.setParameter("employeeId", employeeId).setParameter("personInfoCtgId", categoryId).getList().stream()
 				.map(x -> toDomain(x)).collect(Collectors.toList());
 	}
+
+	// sonnlb code start
+
+	private PpemtEmpInfoCtgData toEntity(EmpInfoCtgData domain) {
+		PpemtEmpInfoCtgDataPk key = new PpemtEmpInfoCtgDataPk(domain.getRecordId());
+
+		return new PpemtEmpInfoCtgData(key, domain.getPersonInfoCtgId(), domain.getEmployeeId());
+	}
+
+	@Override
+	public void addCategoryData(EmpInfoCtgData domain) {
+		this.commandProxy().insert(toEntity(domain));
+
+	}
+
+	// sonnlb code end
 
 }
