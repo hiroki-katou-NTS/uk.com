@@ -4,25 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.flex;
 
+import java.util.List;
+
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktimeset.fluid.FluRestTime;
 
 /**
- * The Class WeekdayWorkTime.
+ * The Class FlexOffdayWorkTime.
  */
-// 固定勤務の平日出勤用勤務時間帯
 @Getter
-public class FleWeekdayWorkTime {
+// フレックス勤務の休日出勤用勤務時間帯
+public class FlexOffdayWorkTime {
 
+	/** The work timezone. */
 	// 勤務時間帯
-	// private 固定勤務時間帯設定 workingTime;
+	private List<BreakTimezoneSet> workTimezone;
 
-	/** The rest time. */
+	/** The rest timezone. */
 	// 休憩時間帯
-	private FluRestTime restTime;
-
-	/** The am pm cls. */
-	// TODO: ko thấy define???
-	// 午前午後区分
-	// private AmPmClassification amPmCls;
+	private FlowWorkRestTimezone restTimezone;
 }
