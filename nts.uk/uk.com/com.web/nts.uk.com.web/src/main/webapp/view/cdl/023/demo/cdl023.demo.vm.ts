@@ -56,7 +56,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             
             // validate
             if (!self.validate()) {
-                 nts.uk.ui.dialog.alert("Something fields are requred or wrong.");
+                 nts.uk.ui.dialog.alert("Something fields are required or wrong.");
                 return;
             }
             

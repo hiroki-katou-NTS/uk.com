@@ -109,6 +109,7 @@ module nts.uk.com.view.cdl003.a {
              * close windows
              */
             private closeWindows(): void{
+                nts.uk.ui.windows.setShared('CDL003Cancel', true);
                 nts.uk.ui.windows.close();  
             }
         }
