@@ -69,5 +69,19 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItem(sigleItem.getDataTypeState());
 		return dataObject;
 	}
-
+	public static LayoutPersonInfoValueDto initData(String categoryCode, PerInfoItemDefDto itemDef, Object data, ActionRole actionRole) {
+		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setCategoryCode(categoryCode);
+		dataObject.setItemDefId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setValue(data);
+		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+		dataObject.setItem(sigleItem.getDataTypeState());
+		dataObject.setActionRole(actionRole);
+		return dataObject;
+	}
 }
