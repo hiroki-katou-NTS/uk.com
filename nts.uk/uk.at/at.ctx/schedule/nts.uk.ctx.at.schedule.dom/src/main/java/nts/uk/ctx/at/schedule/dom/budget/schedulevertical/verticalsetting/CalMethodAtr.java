@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 金額計算方法
+ *
+ */
 @AllArgsConstructor
 public enum CalMethodAtr {
 	/** 0- 金額項目 **/

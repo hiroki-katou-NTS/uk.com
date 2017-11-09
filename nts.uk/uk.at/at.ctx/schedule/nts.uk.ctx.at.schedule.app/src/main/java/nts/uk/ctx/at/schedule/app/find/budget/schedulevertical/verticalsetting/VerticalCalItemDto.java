@@ -35,6 +35,8 @@ public class VerticalCalItemDto {
     
     // 端数処理
  	private int rounding;
+ 	
+ 	private int dispOrder;
 
 	public static VerticalCalItemDto fromDomain(VerticalCalItem domain) {
 		return new VerticalCalItemDto(
@@ -46,7 +48,8 @@ public class VerticalCalItemDto {
 				domain.getDisplayAtr().value,
 				domain.getCumulativeAtr().value,
 				domain.getAttributes().value,
-				domain.getRounding().value
+				domain.getRounding().value,
+				domain.getDispOrder()
 			);
 	}
 }
