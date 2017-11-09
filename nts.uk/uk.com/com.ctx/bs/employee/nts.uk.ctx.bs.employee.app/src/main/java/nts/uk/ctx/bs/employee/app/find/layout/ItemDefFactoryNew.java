@@ -7,6 +7,7 @@ import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 
 /**
@@ -100,6 +101,25 @@ public class ItemDefFactoryNew {
 				// 国籍
 				data = person.getCountryId().v();
 				break;
+			}
+			if (data != null) {
+				LayoutPersonInfoValueDto obj = LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data);
+				obj.setActionRole(actionRole);
+				layoutPerInfoClsDto.getItems().add(obj);
+			}				
+		}
+		return layoutPerInfoClsDto;
+	}
+	
+	public static LayoutPersonInfoClsDto matchInfoCurrentAddres(String categoryCode, List<PerInfoItemDefDto> listItemDef, ActionRole actionRole, CurrentAddress currentAddress) {
+		LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+		layoutPerInfoClsDto.setListItemDf(listItemDef);
+		layoutPerInfoClsDto.setItems(new ArrayList<>());
+		//LayoutPersonInfoClsDto
+		for (PerInfoItemDefDto itemDef : listItemDef) {
+			Object data = null;
+			switch (itemDef.getItemCode()) {
+			
 			}
 			if (data != null) {
 				LayoutPersonInfoValueDto obj = LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data);
