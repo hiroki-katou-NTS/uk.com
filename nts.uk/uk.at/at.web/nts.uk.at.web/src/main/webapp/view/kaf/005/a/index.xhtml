@@ -24,11 +24,15 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" data-bind="">
-				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: register" tabindex="1">#{i18n.getText('KAF009_3')}</button>
-				<button tabindex="2" id="btnSpecSetting" data-bind="">#{i18n.getText('KAF009_4')}</button>
-				<button tabindex="3" data-bind="click: openCMM018">#{i18n.getText('KAF009_5')}</button>
+				<!--A1_1 登録ボタン--> 
+				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: register" tabindex="1">#{i18n.getText('KAF005_10')}</button>
+				<!--A1_2 実績参照ボタン--> 				
+				<button tabindex="2" id="btnSpecSetting" data-bind="">#{i18n.getText('KAF005_11')}</button>
+				<!--A1_3 承認者変更ボタン--> 				
+				<button tabindex="3" data-bind="click: openCMM018">#{i18n.getText('KAF005_12')}</button>
+				<!--A1_4 登録時にメールを送信する--> 				
 				<div class="btnSendMail"
-					data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }"></div>
+					data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF005_13')}' }"></div>
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->
