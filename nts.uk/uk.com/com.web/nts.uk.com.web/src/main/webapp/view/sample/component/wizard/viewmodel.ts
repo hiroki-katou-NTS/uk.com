@@ -19,6 +19,8 @@ module nts.uk.ui.wizard.viewmodel {
         timeOfDay: KnockoutObservable<string>;
         time: KnockoutObservable<number>;
         yearmontheditor: any;
+        roundingRules: KnockoutObservableArray<any>;
+        selectedRuleCode: any;
         
         constructor() {
             var self = this;
@@ -42,6 +44,12 @@ module nts.uk.ui.wizard.viewmodel {
             self.currentCodeList.subscribe(function (newValue) {
 //                alert(newValue);    
             });
+            self.roundingRules = ko.observableArray([
+                { code: '1', name: '四捨五入' },
+                { code: '2', name: '切り上げ' },
+                { code: '3', name: '切り捨て' }
+            ]);
+            self.selectedRuleCode = ko.observable(1);
             
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
@@ -87,12 +95,14 @@ module nts.uk.ui.wizard.viewmodel {
             $('#wizard').ntsWizard("end");
         }
         next() {
-            $('#wizard').ntsWizard("next");
-            $('#inputSelectImplementAtr').focus();
+            $('#wizard').ntsWizard("next").done(function(){
+                $('#inputSelectImplementAtr').focus();    
+            });
         }
         previous() {
-            $('#wizard').ntsWizard("prev");
-            $('#inputSelectImplementAtr').focus();
+            $('#wizard').ntsWizard("prev").done(function(){
+                $('#inputSelectImplementAtr').focus();     
+            });
         }
         getCurrentStep() {
             alert($('#wizard').ntsWizard("getCurrentStep"));
