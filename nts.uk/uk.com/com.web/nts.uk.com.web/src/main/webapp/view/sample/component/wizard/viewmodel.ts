@@ -88,9 +88,11 @@ module nts.uk.ui.wizard.viewmodel {
         }
         next() {
             $('#wizard').ntsWizard("next");
+            $('#inputSelectImplementAtr').focus();
         }
         previous() {
             $('#wizard').ntsWizard("prev");
+            $('#inputSelectImplementAtr').focus();
         }
         getCurrentStep() {
             alert($('#wizard').ntsWizard("getCurrentStep"));
