@@ -90,7 +90,6 @@ module nts.uk.at.view.kdw001.i {
                     let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data.executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
                         let temp = [];
-                        self.listErrMessageInfo();
                         for(let i = 0;i<self.listErrMessageInfo().length;i++){
                             if(self.listErrMessageInfo()[i].executionContent == value.executionContent){
                                 temp.push(self.listErrMessageInfo()[i]);
@@ -171,15 +170,35 @@ module nts.uk.at.view.kdw001.i {
                     //・処理月
                     processingMonth : self.processingMonth
                 };
-                nts.uk.ui.windows.setShared("openG", param);
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
+                if(self.listTargetPerson().length>0){
+                    nts.uk.ui.windows.setShared("openG", param);
+                    nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
+                }
             }
 
             /**
              *open dialog H 
              */
-            openDialogH() {
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/h/index.xhtml");
+            openDialogH(execution : modelkdw001f.ExecutionLog) {
+                let self = this;
+                let param = {
+                    //・就業計算と集計実行ログID
+                    empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    //・社員ID（list）  ・従業員の実行状況
+                    listTargetPerson : self.listTargetPerson(), 
+                    //・実行開始日時
+                    executionStartTime : execution.executionTime.startTime,
+                    //・対象期間
+                    objectPeriod : execution.objectPeriod,
+                    //・選択した締め
+                    nameClosue : self.nameClosure,
+                    //・処理月
+                    processingMonth : self.processingMonth
+                };
+                if(execution.numberPersonErr >0){
+                    nts.uk.ui.windows.setShared("openH", param);
+                    nts.uk.ui.windows.sub.modal("/view/kdw/001/h/index.xhtml");
+                }
             }
 
             closeDialog(): void {

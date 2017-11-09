@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
@@ -69,6 +70,16 @@ public class ClosureWs {
 	@Path("findAll")
 	public List<ClosureFindDto> findAll(){
 		return this.finder.findAll();
+	}
+	/**
+	 * Find all for log
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findallforlog")
+	public List<ClosureForLogDto> findAllForLog(){
+		return this.finder.findAllForLog();
 	}
 	
 	

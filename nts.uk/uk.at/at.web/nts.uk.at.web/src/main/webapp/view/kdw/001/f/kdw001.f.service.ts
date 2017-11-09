@@ -4,7 +4,7 @@ module nts.uk.at.view.kdw001.f {
             getAllEmpCalAndSumExeLog : "at/record/log/getallbydate",
             getCaseSpecExeContentById : "at/record/case/getcasebyid",
             getAllCaseSpecExeContent :  "at/record/case/getallcase",
-            getAllClosure : "ctx/at/shared/workrule/closure/findAll"
+            getAllClosure : "ctx/at/shared/workrule/closure/findallforlog"
         }
         
         /**

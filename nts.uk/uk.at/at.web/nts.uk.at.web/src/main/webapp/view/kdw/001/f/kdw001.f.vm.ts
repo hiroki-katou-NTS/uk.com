@@ -234,7 +234,7 @@ module nts.uk.at.view.kdw001.f {
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth + "月度";
+                this.processingMonthName = data.processingMonth%100 + "月度";
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
