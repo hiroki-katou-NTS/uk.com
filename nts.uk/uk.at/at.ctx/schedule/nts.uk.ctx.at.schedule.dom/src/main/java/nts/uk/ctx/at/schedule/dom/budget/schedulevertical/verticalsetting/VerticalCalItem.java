@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+
 @AllArgsConstructor
 @Getter
-public class VerticalCalItem extends AggregateRoot{
+public class VerticalCalItem extends DomainObject {
 	/** 会社ID **/
     private String companyId;
     
@@ -37,23 +38,20 @@ public class VerticalCalItem extends AggregateRoot{
  	private Rounding rounding;
  	
  	private int dispOrder;
+ 	
+ 	// B
+ 	private FormBuilt formBuilt;
+ 	
+ 	// C
+ 	private FormTime formTime;
+ 	
+ 	// D
  	private FormPeople formPeople;
  	
-//	public VerticalCalItem(String companyId, String verticalCalCd, String itemId, String itemName,
-//			CalculateAtr calculateAtr, DisplayAtr displayAtr, CumulativeAtr cumulativeAtr, Attributes attributes,
-//			Rounding rounding, int dispOrder, FormPeople formPeople, List<FormPeopleFunc> lstPeopleFunc) {
-//		
-//		this.companyId = companyId;
-//		this.verticalCalCd = verticalCalCd;
-//		this.itemId = itemId;
-//		this.itemName = itemName;
-//		this.calculateAtr = calculateAtr;
-//		this.displayAtr = displayAtr;
-//		this.cumulativeAtr = cumulativeAtr;
-//		this.attributes = attributes;
-//		this.rounding = rounding;
-//		this.dispOrder = dispOrder;
-//	}
+ 	// E
+ 	private FormulaAmount formulaAmount;
+ 	
+ 	private FormulaNumerical numerical;
  	
  	/**
  	 * author: Hoang Yen
@@ -63,7 +61,11 @@ public class VerticalCalItem extends AggregateRoot{
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
  													int rounding, int dispOrder, 
- 													FormPeople formPeople){
+ 													FormBuilt formBuilt,
+ 													FormTime formTime,
+ 													FormPeople formPeople,
+ 													FormulaAmount formulaAmount,
+ 													FormulaNumerical numerical){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
@@ -71,6 +73,53 @@ public class VerticalCalItem extends AggregateRoot{
  				EnumAdaptor.valueOf(attributes, Attributes.class),
  				EnumAdaptor.valueOf(rounding, Rounding.class),
  				dispOrder,
- 				formPeople);
+ 				formBuilt,
+ 				formTime,
+ 				formPeople,
+ 				formulaAmount,
+ 				numerical);
+ 	}
+ 	
+ 	public void validate(int index) {
+ 		if(this.calculateAtr == CalculateAtr.FORMULA_SETTING) {
+ 			if (this.formBuilt == null) {
+				throw new BusinessException("Msg_111", String.valueOf(index));
+			}
+ 		} else {
+ 			switch (this.attributes) {
+				case TIME:
+					if (this.formTime == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
+					break;
+					
+				case AMOUNT:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				case NUMBER_OF_PEOPLE:
+					if (this.formPeople == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
+					break;
+					
+				case NUMBER:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				case AVERAGE_PRICE:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				default:
+					break;
+			}
+ 		}
  	}
 }

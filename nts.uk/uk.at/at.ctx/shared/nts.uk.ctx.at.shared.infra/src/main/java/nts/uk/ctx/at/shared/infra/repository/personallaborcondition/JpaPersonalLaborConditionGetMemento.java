@@ -47,7 +47,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public UseAtr getScheduleManagementAtr() {
-		return UseAtr.valueOf(this.entityCondition.getSchedMgmtAtr());
+		return UseAtr.valueOf(this.entityCondition.getScheManageAtr());
 	}
 
 	/*
@@ -58,8 +58,9 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public BreakdownTimeDay getHolidayAddTimeSet() {
-		return new BreakdownTimeDay(new AttendanceTime(this.entityCondition.getHdAddOneDay()),
-				new AttendanceTime(this.entityCondition.getHdAddMorning()), new AttendanceTime(this.entityCondition.getHdAddAfternoon()));
+		return new BreakdownTimeDay(new AttendanceTime(this.entityCondition.getOneDay()),
+				new AttendanceTime(this.entityCondition.getMorning()),
+				new AttendanceTime(this.entityCondition.getAfternoon()));
 	}
 
 	/*
@@ -70,7 +71,8 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
-		return new PersonalWorkCategory(new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
+		return new PersonalWorkCategory(
+				new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
 	}
 
 	/*
@@ -114,8 +116,8 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 * PersonalLaborConditionGetMemento#getAutomaticEmbossSetAtr()
 	 */
 	@Override
-	public UseAtr getAutomaticEmbossSetAtr() {
-		return UseAtr.valueOf(this.entityCondition.getAutoEmbossSetAtr());
+	public UseAtr getAutoStampSetAtr() {
+		return UseAtr.valueOf(this.entityCondition.getAutoStampSetAtr());
 	}
 
 }

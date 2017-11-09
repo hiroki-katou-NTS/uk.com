@@ -40,7 +40,7 @@ module nts.uk.at.view.kdl023.viewmodel {
         /**
          * Start page.
          */
-        private startPage(): JQueryPromise<any> {
+        public startPage(): JQueryPromise<void> {
             nts.uk.ui.block.invisible();
             let dfd = $.Deferred<any>();
             let self = this;

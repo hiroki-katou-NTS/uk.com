@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 public class BasicScheduleScreenDto {
-	private String sId;
+	private String employeeId;
 	private GeneralDate date;
 	private String workTypeCode;
 	private String workTimeCode;

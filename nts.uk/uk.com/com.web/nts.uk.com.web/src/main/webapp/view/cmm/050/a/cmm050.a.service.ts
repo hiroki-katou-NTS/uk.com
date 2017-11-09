@@ -30,7 +30,7 @@ module nts.uk.com.view.cmm050.a {
         export class MailServerDto {
             useAuth: number;
             encryptionMethod: number;
-            authenticationMethod: number;
+            authMethod: number;
             emailAuthencation: string;
             password: string;
             smtpDto: SmtpInfoDto;
@@ -41,7 +41,7 @@ module nts.uk.com.view.cmm050.a {
                         password: string, smtpDto?: SmtpInfoDto, popDto?:  PopInfoDto, imapDto?: ImapInfoDto){
                 this.useAuth = useAuth;
                 this.encryptionMethod = encryptionMethod;
-                this.authenticationMethod = authenticationMethod;
+                this.authMethod = authenticationMethod;
                 this.emailAuthencation = emailAuthencation;
                 this.password = password;
                 this.smtpDto = smtpDto;

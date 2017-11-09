@@ -13,12 +13,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 /**
  * The Class KscdtScheFeeTime.
  */
 @Entity
 @Table(name = "KSCDT_SCHE_FEE_TIME")
-public class KscdtScheFeeTime implements Serializable {
+public class KscdtScheFeeTime extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -88,6 +90,14 @@ public class KscdtScheFeeTime implements Serializable {
 	public String toString() {
 		return "entity.KscmtWsPersonFeeTime[ kscmtWsPersonFeeTimePK=" + kscdtScheFeeTimePK
 				+ " ]";
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kscdtScheFeeTimePK;
 	}
     
 }

@@ -92,7 +92,7 @@ table.calculator-items td {
 	border-bottom: 1px solid #CCC;
 	border-top: 1px solid #CCC;
 	border-left: 1px solid #CCC;
-	padding: 0px 3px;
+	padding: 3px 4px;
 }
 
 table.calculator-items thead, table.calculator-items tbody {
@@ -120,7 +120,9 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .attributes {
 	min-width: 0 !important;
-	width: 80px !important;
+	width: 95px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .item-name {
@@ -129,26 +131,34 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 
 .display-atr {
 	min-width: 0 !important;
-	width: 110px !important;
+	width: 106px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .total {
 	min-width: 0 !important;
-	width: 110px !important;
+	width: 106px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .rounding {
 	min-width: 0 !important;
-	width: 130px !important;
+	width: 106px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .fraction {
 	min-width: 0 !important;
-	width: 130px !important;
+	width: 106px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .cbx-list-header {
-	width: 32px;
+	width: 33px;
 }
 
 .number-header {
@@ -156,7 +166,7 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .attribute-header {
-	width: 80px;
+	width: 98px;
 }
 
 .name-header {
@@ -164,23 +174,23 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .setting-header {
-	width: 464px;
+	width: 499px;
 }
 
 .display-atr-header {
-	width: 110px;
+	width: 109px;
 }
 
 .total-header {
-	width: 110px;
+	width: 109px;
 }
 
 .rounding-header {
-	width: 130px;
+	width: 109px;
 }
 
 .fraction-header {
-	width: 130px;
+	width: 109px;
 }
 
 .cbx-list-item {
@@ -209,23 +219,23 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .formula-item {
-	width: 200px;
+	width: 240px;
 }
 
 .display-atr-item {
-	width: 110px;
+	width: 106px;
 }
 
 .total-item {
-	width: 110px;
+	width: 106px;
 }
 
 .rounding-item {
-	width: 130px;
+	width: 106px;
 }
 
 .fraction-item {
-	width: 130px;
+	width: 106px;
 }
 
 table.link-notes {

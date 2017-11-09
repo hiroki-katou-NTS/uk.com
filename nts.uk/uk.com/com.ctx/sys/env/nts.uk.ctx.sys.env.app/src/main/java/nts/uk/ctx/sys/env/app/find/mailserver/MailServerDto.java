@@ -33,7 +33,7 @@ public class MailServerDto implements MailServerSetMemento {
 	private int encryptionMethod;
 
 	/** The authentication method. */
-	private int authenticationMethod;
+	private int authMethod;
 
 	/** The email authencation. */
 	private String emailAuthencation;
@@ -94,7 +94,7 @@ public class MailServerDto implements MailServerSetMemento {
 	 */
 	@Override
 	public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
-		this.authenticationMethod = authenticationMethod.value;
+		this.authMethod = authenticationMethod.value;
 	}
 
 	/*

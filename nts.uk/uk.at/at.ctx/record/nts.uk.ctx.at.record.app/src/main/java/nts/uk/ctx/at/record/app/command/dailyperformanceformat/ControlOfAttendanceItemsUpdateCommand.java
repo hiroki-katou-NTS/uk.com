@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 
 @Stateless
 public class ControlOfAttendanceItemsUpdateCommand extends CommandHandler<ControlOfAttendanceItemsCommand> {

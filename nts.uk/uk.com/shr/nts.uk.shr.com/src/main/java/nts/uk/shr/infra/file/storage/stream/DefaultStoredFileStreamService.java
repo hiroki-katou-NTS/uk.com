@@ -18,6 +18,7 @@ import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.file.FileUtil;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 
 @Stateless
 public class DefaultStoredFileStreamService implements StoredFileStreamService {
@@ -27,7 +28,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	@Override
 	public void store(StoredFileInfo fileInfo, InputStream streamToStore) {
 		try {
-			Files.copy(streamToStore, pathToTargetStoredFile(fileInfo.getId()));
+			Files.copy(CommonKeyCrypt.encrypt(streamToStore, fileInfo.getOriginalSize()), pathToTargetStoredFile(fileInfo.getId()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -39,17 +40,23 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 			throw new BusinessException(new RawErrorMessage("file not found"));
 		}
 		
-		return FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.get().getId()));
+		return CommonKeyCrypt.decrypt(
+				FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.get().getId())), 
+				fileInfo.get().getOriginalSize());
 	}
 	@Override
 	public InputStream takeOut(StoredFileInfo fileInfo) {
-		return FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.getId()));
+		return CommonKeyCrypt.decrypt(
+				FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.getId())), 
+				fileInfo.getOriginalSize());
 	}
 
 	@Override
 	public InputStream takeOutDeleteOnClosed(StoredFileInfo fileInfo) {
-		return FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.getId()),
-				StandardOpenOption.DELETE_ON_CLOSE);
+		return CommonKeyCrypt.decrypt(
+				FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.getId()),
+						StandardOpenOption.DELETE_ON_CLOSE), 
+				fileInfo.getOriginalSize());
 	}
 
 	@Override

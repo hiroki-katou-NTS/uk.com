@@ -10,40 +10,30 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository {
-
+public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository  {
+	
 	private final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
-													      
+	
+	//Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
+	private final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG 
+			+ " WHERE c.krcmtEmpExecutionLogPK.companyID = :companyID "
+			+ " AND c.krcmtEmpExecutionLogPK.employeeID =: emmployeeID"
+			+ " ORDER BY c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
+	
 	private final String SELECT_All_LOG = SELECT_FROM_LOG 
-			+ " WHERE c.krcdtEmpExecutionLogPK.companyID = :companyID ";
+			+ " WHERE c.companyID = :companyID ";
 	                    
-	private final String SELECT_LOG_BY_CODE = SELECT_All_LOG
-			+ " AND c.krcdtEmpExecutionLogPK.operationCaseID = :operationCaseID "
-			+ " AND c.krcdtEmpExecutionLogPK.employeeID = :employeeID "
-			+ " AND c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtEmpExecutionLog empl JOIN KrcdtExecutionLog el "
 			+ " ON empl.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcdtExecutionLogPK.empCalAndSumExecLogID "
 			+ " WHERE " + ".krcdtEmpExecutionLogPK.companyID = :companyID " + " AND el.executionContent = 0";
 
-//	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcmtEmpExecutionLog c "
-//			+ "JOIN KrcmtExecutionLog d ON c.krcmtEmpExecutionLogPK.companyID = d.krcmtExecutionLogPK.companyID "
-//			+ "AND c.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = d.krcmtExecutionLogPK.empCalAndSumExecLogID "
-//			+ "AND c.krcmtEmpExecutionLogPK.caseSpecExeContentID = d.krcmtExecutionLogPK.caseSpecExeContentID "
-//			+ "AND c.krcmtEmpExecutionLogPK.employeeID = d.krcmtExecutionLogPK.employeeID "
-//			+ "WHERE d.krcmtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
-
 	private final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" + " SET a.processStatus = 1"
 			+ " WHERE a.krcdtExecutionLogPK.empCalAndSumExecLogID = empCalAndSumExecLogID"
 			+ " AND a.executionContent = 0 ";
-
-//	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
-//			+ " ON empl.krcmtEmpExecutionLogPK.empCalAndSumExecLogID = el.krcmtExecutionLogPK.empCalAndSumExecLogID " 
-//			+ " WHERE "
-//			+ ".krcmtEmpExecutionLogPK.companyID = :companyID "
-//			+ " AND el.executionContent = 0";
 
 	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtEmpExecutionLog c " 		
 			+" WHERE c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID " ;
@@ -51,32 +41,31 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG
 			+ " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
-
+	
+	/**
+	 * Get getEmpCalAndSumExeLogMaxByEmp by companyID and EmployeeID and empCalAndSumExecLogID DESC
+	 */
+	@Override
+	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID) {
+		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG_BY_EMPLOYEEID,KrcdtEmpExecutionLog.class)
+				.setParameter("companyID", companyID)
+				.setParameter("employeeID", employeeID)
+				.getList(c -> c.toDomain());
+		return !data.isEmpty() ? Optional.of(data.get(0)) : Optional.empty();
+	}
+	
 	/**
 	 * get all EmpCalAndSumExeLog
 	 */
 	@Override
-	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID) {
+	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID ) {
 		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG, KrcdtEmpExecutionLog.class)
 				.setParameter("companyID", companyID).getList(c -> c.toDomain());
 		return data;
 	}
 
-	/**
-	 * get EmpCalAndSumExeLog by code
-	 */
 	@Override
-	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID,
-			String operationCaseID, String employeeID) {
-		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_CODE, KrcdtEmpExecutionLog.class)
-				.setParameter("companyID", companyID).setParameter("operationCaseID", operationCaseID)
-				.setParameter("employeeID", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
-				.getSingle(c -> c.toDomain());
-		return data;
-	}
-
-	@Override
-	public Optional<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
+	public Optional<EmpCalAndSumExeLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
 		Optional<EmpCalAndSumExeLog> optional = this.queryProxy()
 				.query(SELECT_BY_EXECUTION_LOG, KrcdtEmpExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
@@ -96,9 +85,9 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	 */
 
 	@Override
-	public List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
-		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
-				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getList(c -> c.toDomain());
+	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
+		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
+				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle(c -> c.toDomain());
 		return data;
 	}
 

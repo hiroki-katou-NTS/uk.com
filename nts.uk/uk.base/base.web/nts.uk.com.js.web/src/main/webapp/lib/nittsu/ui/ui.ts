@@ -355,7 +355,7 @@ module nts.uk.ui {
             return max;
         }
         function createNoticeDialog(message, buttons, header?: DialogHeader) {
-            var $control = $('<div/>').addClass('control');
+            var $control = $('<div/>').addClass('control').addClass("pre");
             let text;
             if (typeof message === "object") {
                 //business exception
@@ -829,7 +829,7 @@ module nts.uk.ui {
     module smallExtensions {
 
         $(() => {
-            $(window).on('.limited-label', 'mouseenter', e => {
+            $(document).on('mouseenter', '.limited-label', e => {
                 let $label = $(e.target);
 
                 // Check if contents is overflow

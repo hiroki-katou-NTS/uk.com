@@ -44,9 +44,11 @@ module nts.uk.at.view.ksc001.i {
                 let self = this;
                 let dfd = $.Deferred();
                 self.items([]);
+                //get all creater
                 service.findAllCreator(parentData.executionId).done(function(data: Array<any>) {
                     self.targetRange(nts.uk.resource.getText("KSC001_46", [parentData.startDate, parentData.endDate]));
                     self.executionNumber(nts.uk.resource.getText("KSC001_47", [data.length]));
+                    //push data to list
                     if (data && data.length > 0) {
                         data.forEach(function(item, index) {
                             self.items.push(new ItemModel(item.employeeCode, item.employeeName, item.executionStatus));
@@ -82,6 +84,8 @@ module nts.uk.at.view.ksc001.i {
             }
 
         }
+        
+        //item data
         class ItemModel {
             code: string;
             name: string;

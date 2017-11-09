@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
 /**
  * @author hungnm

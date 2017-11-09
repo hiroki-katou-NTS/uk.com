@@ -82,5 +82,4 @@ public interface WorkplaceInfoRepository {
 	 */
 	boolean isExistedWkpCd(String companyId, String newWkpCd);
 	
-	List<WorkplaceInfo> findByWkpByCidAndBaseDate(String companyId, GeneralDate baseDate);
 }

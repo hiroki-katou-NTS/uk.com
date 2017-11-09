@@ -26,9 +26,12 @@ module nts.uk.com.view.cmm011.f {
                 self.isLessTenthHierarchy = ko.observable(true);
                 
                 self.itemList = ko.observableArray([
-                    new BoxModel(CreationType.CREATE_ON_TOP, nts.uk.resource.getText("CMM011_33", ['Com_Workplace']), self.isLess999Hierarchies),
-                    new BoxModel(CreationType.CREATE_BELOW, nts.uk.resource.getText("CMM011_34", ['Com_Workplace']), self.isLess999Hierarchies),
-                    new BoxModel(CreationType.CREATE_TO_CHILD, nts.uk.resource.getText("CMM011_35", ['Com_Workplace']), self.isLessTenthHierarchy)
+                    new BoxModel(CreationType.CREATE_ON_TOP, nts.uk.resource.getText("CMM011_33", ['Com_Workplace']),
+                        self.isLess999Hierarchies),
+                    new BoxModel(CreationType.CREATE_BELOW, nts.uk.resource.getText("CMM011_34", ['Com_Workplace']),
+                        self.isLess999Hierarchies),
+                    new BoxModel(CreationType.CREATE_TO_CHILD, nts.uk.resource.getText("CMM011_35", ['Com_Workplace']),
+                        self.isLessTenthHierarchy)
                 ]);
                 self.selectedValBox = ko.observable(CreationType.CREATE_ON_TOP);
                 
