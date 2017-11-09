@@ -16,5 +16,17 @@ public interface PerInfoItemDataRepository {
 	 * @param domain
 	 */
 	void addItemData(PersonInfoItemData domain);
+	
+	/**
+	 * Update item data
+	 * @param domain
+	 */
+	void updateItemData(PersonInfoItemData domain);
+	
+	/**
+	 * Delete item data
+	 * @param domain
+	 */
+	void deleteItemData(PersonInfoItemData domain);
 
 }
