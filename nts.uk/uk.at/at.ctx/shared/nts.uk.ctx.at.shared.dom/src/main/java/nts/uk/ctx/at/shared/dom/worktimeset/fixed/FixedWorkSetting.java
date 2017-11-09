@@ -21,9 +21,9 @@ public class FixedWorkSetting extends AggregateRoot {
 	// 会社ID
 	private String companyId;
 
-	/** The working code. */
+	/** The work time code. */
 	// 就業時間帯コード
-	private String workingCode;
+	private String workTimeCode;
 
 	/** The offday work timezone. */
 	// 休日勤務時間帯
