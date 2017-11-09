@@ -58,4 +58,22 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void addEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
 }

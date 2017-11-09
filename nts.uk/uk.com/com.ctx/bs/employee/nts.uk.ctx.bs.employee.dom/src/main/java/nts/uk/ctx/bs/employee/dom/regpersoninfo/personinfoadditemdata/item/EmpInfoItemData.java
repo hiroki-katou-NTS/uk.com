@@ -43,7 +43,12 @@ public class EmpInfoItemData extends AggregateRoot {
 		this.itemName = itemName;
 		this.dataState = dataState;
 	}
-
+	public EmpInfoItemData(String perInfoDefId, String recordId, DataState dataState) {
+		super();
+		this.perInfoDefId = perInfoDefId;
+		this.recordId = recordId;
+		this.dataState = dataState;
+	}
 	public static EmpInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
 			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
 			String stringValue, BigDecimal intValue, GeneralDate dateValue) {

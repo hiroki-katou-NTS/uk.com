@@ -126,7 +126,7 @@ input.ntsSearchBox {
 
 .contents-header {
 	width: 100%;
-	margin-top: 20px !important;
+	margin-top: 10px !important;
 }
 
 .contents-data {
@@ -152,7 +152,7 @@ table.contents-data thead, table.contents-data tbody {
 
 table.contents-data tbody {
 	height: 500px;
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
 	border: 1px solid #CCC;
 }
@@ -172,7 +172,7 @@ table tr td, table tr th {
 }
 
 .ui-igcombo-buttonicon, .ui-igcombo-clearicon {
-	top: 27% !important;
+	top: 20% !important;
 	margin-top: -8px !important;
 	position: inherit !important;
 }
@@ -189,6 +189,11 @@ table tr td, table tr th {
 	width: 200px !important;
 }
 
+#combox1 {
+	height: 18px;
+	margin-left: 16px;
+}
+
 .contents-header td {
 	border: 1px solid #CCC;
 	text-align: center;
@@ -202,11 +207,11 @@ table tr td, table tr th {
 }
 
 #COL_2 {
-	width: 150px !important;
+	width: 170px;
 }
 
 #COL_3 {
-	width: 257px !important;
+	width: 240px;
 }
 
 #A2_012 {
@@ -224,21 +229,28 @@ table tr td, table tr th {
 }
 
 #combo-box {
-	margin-left: 14px;
+	margin-left: 9px;
 	min-width: 100px !important;
 	height: 20px;
 }
 
 .input-units-1 {
-	width: 210px !important;
+	min-width: 196px !important;
+	max-width: 196px !important;
 }
 
 .input-units-2 {
-	width: 150px !important;
+	min-width: 159px !important;
+	max-width: 159px !important;
 }
 
 .input-units-3 {
-	width: 257px !important;
+	min-width: 205px !important;
+	max-width: 240px !important;
+}
+
+#notdata {
+	min-width: 239px !important;
 }
 
 #sub-center {
