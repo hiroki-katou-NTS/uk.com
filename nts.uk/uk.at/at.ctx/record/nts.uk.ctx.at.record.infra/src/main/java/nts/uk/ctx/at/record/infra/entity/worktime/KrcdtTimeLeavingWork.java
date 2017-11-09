@@ -21,13 +21,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_TIME_LEAVING_WORK")
-public class KrcmtTimeLeavingWork extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_TIME_LEAVING_WORK")
+public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtTimeLeavingWorkPK krcmtTimeLeavingWorkPK;
+	public KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK;
 	
 	@Column(name = "ATD_ACTUAL_ROUDING_TIME")
 	public BigDecimal attendanceActualRoudingTime;
@@ -85,6 +85,6 @@ public class KrcmtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtTimeLeavingWorkPK;
+		return this.krcdtTimeLeavingWorkPK;
 	}
 }
