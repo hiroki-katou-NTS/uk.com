@@ -28,6 +28,6 @@ public class KrqdtOvertimeInputPK implements Serializable{
 	    @Column(name = "ATTENDANCE_ID")
 	    private int attendanceId;
 	    
-	    @Column(name = "ATTENDANCE_NO")
-	    private int attendanceNo;
+	    @Column(name = "FRAME_NO")
+	    private int frameNo;
 }

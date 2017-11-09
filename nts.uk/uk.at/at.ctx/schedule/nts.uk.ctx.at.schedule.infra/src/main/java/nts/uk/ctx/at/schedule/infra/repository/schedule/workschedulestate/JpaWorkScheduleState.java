@@ -21,7 +21,7 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 
 	private final WorkScheduleState toDomain(KscstWorkScheduleState entity) {
 		WorkScheduleState domain = WorkScheduleState.createFromJavaType(entity.scheduleEditState,
-				entity.kscstWorkScheduleStatePK.scheduleItemId, entity.date,
+				entity.kscstWorkScheduleStatePK.scheduleItemId, entity.kscstWorkScheduleStatePK.date,
 				entity.kscstWorkScheduleStatePK.employeeId);
 		return domain;
 	}

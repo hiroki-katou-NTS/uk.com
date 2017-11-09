@@ -4,10 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.difftime;
 
+import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
+
 /**
  * The Class DiffTimeOTTimezoneSet.
  */
-public class DiffTimeOTTimezoneSet {
+@Getter
+public class DiffTimeOTTimezoneSet extends DomainObject {
 
 	/** The is update start time. */
 	// 開始時刻に合わせて時刻を変動させる

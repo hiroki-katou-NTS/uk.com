@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -24,5 +25,8 @@ public class KscstWorkScheduleStatePK implements Serializable {
 	public String employeeId;
 
 	@Column(name = "SCHEDULE_ITEM_ID")
-	public String scheduleItemId;
+	public int scheduleItemId;
+	
+	@Column(name = "YMD")
+	public GeneralDate date;
 }

@@ -47,7 +47,11 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	/** The process date. */
 	//処理年月
 	private Integer processDate;
-
+	
+	/** The cid. */
+    //会社ID
+    private String cid;
+	
 	/**
 	 * Instantiates a new work fixed finder dto.
 	 */
@@ -66,7 +70,7 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	 * @param processDate the process date
 	 */
 	public WorkFixedFinderDto(Integer closureId, String confirmPid, String wkpId, Integer confirmClsStatus,
-			GeneralDate fixedDate, Integer processDate) {
+			GeneralDate fixedDate, Integer processDate, String cid) {
 		super();
 		this.closureId = closureId;
 		this.confirmPid = confirmPid;
@@ -74,6 +78,7 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 		this.confirmClsStatus = confirmClsStatus;
 		this.fixedDate = fixedDate;
 		this.processDate = processDate;
+		this.cid = cid;
 	}
 
 	/* (non-Javadoc)
@@ -124,6 +129,14 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	@Override
 	public void setProcessDate(Integer processDate) {
 		this.processDate = processDate;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento#setCid(java.lang.String)
+	 */
+	@Override
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 		
 }

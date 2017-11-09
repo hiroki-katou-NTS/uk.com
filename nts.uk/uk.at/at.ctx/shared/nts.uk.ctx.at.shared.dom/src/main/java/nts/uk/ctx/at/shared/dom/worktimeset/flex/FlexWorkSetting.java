@@ -4,8 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.flex;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktimeset.fixed.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.WorkTimezoneCommonSet;
 
 /**
  * The Class FlexWorkSetting.
@@ -14,31 +18,43 @@ import nts.arc.layer.dom.AggregateRoot;
 // フレックス勤務設定
 public class FlexWorkSetting extends AggregateRoot {
 
-	/** The working code. */
-	// 就業時間帯コード
-	private String workingCode;
+	/** The company id. */
+	// 会社ID
+	private String companyId;
 
-	/** The weekday work time. */
-	// 平日勤務時間帯
-	private FleWeekdayWorkTime weekdayWorkTime;
+	/** The work time code. */
+	// 就業時間帯コード
+	private String workTimeCode;
+
+	/** The core time setting. */
+	// コアタイム時間帯
+	private CoreTimeSetting coreTimeSetting;
+
+	/** The rest setting. */
+	// 休憩設定
+	private FlexRestSetting restSetting;
 
 	/** The offday work time. */
 	// 休日勤務時間帯
-	private FleOffdayWorkTime offdayWorkTime;
+	private FlexOffdayWorkTime offdayWorkTime;
 
+	/** The common setting. */
 	// 共通設定
-	// private WorkTimeCommonSet commonSetting;
+	private WorkTimezoneCommonSet commonSetting;
 
-	// 休憩設定: 固定勤務の休憩設定
-	// private 固定勤務の休憩設定 restSetting;
-
-	// 打刻反映時間帯
-	// private List<打刻反映時間帯> stampImprintingTime
-
+	/** The use half day shift. */
 	// 半日用シフトを使用する
-	// private Boolean useHalfDayShift;
+	private boolean useHalfDayShift;
 
-	// コアタイム時間帯設定
-	// private コアタイム時間帯設定 coreTimeSetting
+	/** The half day work timezone. */
+	// 平日勤務時間帯
+	private List<FlexHalfDayWorkTime> halfDayWorkTimezone;
 
+	/** The stamp reflect timezone. */
+	// 打刻反映時間帯
+	private List<StampReflectTimezone> stampReflectTimezone;
+
+	/** The calculate setting. */
+	// 計算設定
+	private FlexCalcSetting calculateSetting;
 }

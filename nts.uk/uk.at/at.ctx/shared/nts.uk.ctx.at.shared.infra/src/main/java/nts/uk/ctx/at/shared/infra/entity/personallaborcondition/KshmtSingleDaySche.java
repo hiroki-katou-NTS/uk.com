@@ -21,7 +21,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KshmtSingleDaySche.
  */
-
 @Getter
 @Setter
 @Entity
@@ -33,7 +32,6 @@ public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
     
     /** The Constant DEFAULT_TIME. */
     public static final int DEFAULT_TIME = 0;
-    
     /** The kshmt single day sche PK. */
     @EmbeddedId
     protected KshmtSingleDaySchePK kshmtSingleDaySchePK;
@@ -113,17 +111,19 @@ public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (kshmtSingleDaySchePK != null ? kshmtSingleDaySchePK.hashCode() : 0);
-        return hash;
-    }
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (kshmtSingleDaySchePK != null ? kshmtSingleDaySchePK.hashCode() : 0);
+		return hash;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KshmtSingleDaySche)) {
 			return false;
@@ -137,23 +137,22 @@ public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KshmtSingleDaySche[ kshmtSingleDaySchePK=" + kshmtSingleDaySchePK + " ]";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "entity.KshmtSingleDaySche[ kshmtSingleDaySchePK=" + kshmtSingleDaySchePK + " ]";
+	}
 
-	/**
-	 * Gets the key.
-	 *
-	 * @return the key
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.getKshmtSingleDaySchePK();
+		return this.kshmtSingleDaySchePK;
 	}
-    
     
 }

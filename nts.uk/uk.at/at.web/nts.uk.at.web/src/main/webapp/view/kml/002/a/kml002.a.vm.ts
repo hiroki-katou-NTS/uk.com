@@ -26,6 +26,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
         addLineEnable: KnockoutObservable<boolean>;
         deleteLineEnable: KnockoutObservable<boolean>;
         dataB: any;
+        dataC: any;
+        dataD: any;
+        dataE: any;
+        dataF: any;
+        dataG: any;
         
         constructor() {
             var self = this;
@@ -53,8 +58,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             //A6_3 + A6_4
             self.useCls = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_To_Use") },
-                { code: '1', name: nts.uk.resource.getText("Enum_Not_Use") }
+                { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
+                { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") }
             ]);
             
             self.useClsSelected = ko.observable(0); 
@@ -199,7 +204,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 total: 0,
                                 rounding: data.verticalCalItems[i].rounding,
                                 fraction: 0,
-                                order: i + 1,
+                                order: data.verticalCalItems[i].dispOrder,
                                 attrEnable: false,
                                 settingMethodEnable: false,
                                 totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true
@@ -209,7 +214,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         }
                         
                         self.calculatorItems([]);
-                        self.calculatorItems(items);
+                        var sortedItems = _.sortBy(items, [function(o) { return o.order(); }]);
+                        self.calculatorItems(sortedItems);
                     }).fail(function(res) {
                           
                     });
@@ -372,7 +378,19 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     cumulativeAtr: self.calculatorItems()[i].fraction(),
                     attributes: self.calculatorItems()[i].attribute(),
                     rounding: self.calculatorItems()[i].rounding(),
-                    dispOrder: self.calculatorItems()[i].order()
+                    dispOrder: self.calculatorItems()[i].order(),
+                    //for B screen
+                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.dataB : null,
+                    //for C screen
+                    formTime: self.calculatorItems()[i].attribute() == 0 ? self.dataC : null,
+                    //for D screen
+                    formPeople: self.calculatorItems()[i].attribute() == 2 ? self.dataD : null,
+                    //for E screen
+                    
+                    //for F screen
+                    
+                    //for G screen
+                    
                 };
                 
                 verticalCalItems.push(item);
@@ -598,8 +616,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
             
             var verticalCalItems = new Array<VerticalCalItemDto>();
+            var currentItem = _.find(self.calculatorItems(), function(o) { return o.itemCd() == itemCd; });
             
-            for(var i = 0; i < itemCd - 1; i++) {
+            for(var i = 0; i < currentItem.order() - 1; i++) {
                 var item = {
                     verticalCalCd: self.code(),
                     itemId: self.calculatorItems()[i].itemCd(),
@@ -648,27 +667,27 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 if(attribute == 0) {
                     self.passDataToDialogs(itemCd, attribute, itemName);            
                     nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
-                        
+                        self.dataC = nts.uk.ui.windows.getShared("KML002_C_DATA");
                     }); 
                 } else if(attribute == 1) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
-                    
+                        self.dataE = nts.uk.ui.windows.getShared("KML002_E_DATA");
                     }); 
                 } else if(attribute == 2) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/d/index.xhtml").onClosed(() => {
-                    
+                        self.dataD = nts.uk.ui.windows.getShared("KML002_D_Budget");
                     }); 
                 } else if(attribute == 3) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
-                    
+                        self.dataF = nts.uk.ui.windows.getShared("KML002_F_DATA");
                     }); 
                 } else if(attribute == 4) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
-                    
+                        self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
                     }); 
                 }
             }
@@ -805,27 +824,27 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     ]);
                 } else {
                     self.roundingItems([
-                        { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_RoundingTime_NONE") },
-                        { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1INT") },
-                        { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_RoundingTime_2INT") },
-                        { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_RoundingTime_3INT") },
-                        { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_RoundingTime_4INT") },
-                        { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_RoundingTime_5INT") },
-                        { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_RoundingTime_6INT") },
-                        { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_RoundingTime_7INT") },
-                        { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_RoundingTime_8INT") },
-                        { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_RoundingTime_9INT") },
-                        { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_RoundingTime_10INT") },
-                        { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_RoundingTime_11INT") },
-                        { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_RoundingTime_1DECIMAL") },
-                        { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_RoundingTime_2DECIMAL") },
-                        { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_RoundingTime_3DECIMAL") }
+                        { roundingCode: 0, roundingName: nts.uk.resource.getText("Enum_Unit_NONE") },
+                        { roundingCode: 1, roundingName: nts.uk.resource.getText("Enum_Unit_Int_1_Digits") },
+                        { roundingCode: 2, roundingName: nts.uk.resource.getText("Enum_Unit_Int_2_Digits") },
+                        { roundingCode: 3, roundingName: nts.uk.resource.getText("Enum_Unit_Int_3_Digits") },
+                        { roundingCode: 4, roundingName: nts.uk.resource.getText("Enum_Unit_Int_4_Digits") },
+                        { roundingCode: 5, roundingName: nts.uk.resource.getText("Enum_Unit_Int_5_Digits") },
+                        { roundingCode: 6, roundingName: nts.uk.resource.getText("Enum_Unit_Int_6_Digits") },
+                        { roundingCode: 7, roundingName: nts.uk.resource.getText("Enum_Unit_Int_7_Digits") },
+                        { roundingCode: 8, roundingName: nts.uk.resource.getText("Enum_Unit_Int_8_Digits") },
+                        { roundingCode: 9, roundingName: nts.uk.resource.getText("Enum_Unit_Int_9_Digits") },
+                        { roundingCode: 10, roundingName: nts.uk.resource.getText("Enum_Unit_Int_10_Digits") },
+                        { roundingCode: 11, roundingName: nts.uk.resource.getText("Enum_Unit_Int_11_Digits") },
+                        { roundingCode: 12, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_1st") },
+                        { roundingCode: 13, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_2nd") },
+                        { roundingCode: 14, roundingName: nts.uk.resource.getText("Enum_Unit_Decimal_3rd") }
                     ]);
                     
                     self.fractionItems([
-                        { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Down") },
-                        { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Up") },
-                        { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Off") }
+                        { fractionCode: 0, fractionName: nts.uk.resource.getText("Enum_Rounding_Truncation") },
+                        { fractionCode: 1, fractionName: nts.uk.resource.getText("Enum_Rounding_Round_Up") },
+                        { fractionCode: 2, fractionName: nts.uk.resource.getText("Enum_Rounding_Down_4_Up_5") }
                     ]);
                 }
             });  

@@ -32,6 +32,9 @@ public class WorkFixedCommand {
 	
 	/** The process date. */
 	private Integer processDate;
+	
+	/** The cid. */
+    private String cid;
     
 	/**
 	 * To domain.
@@ -66,6 +69,9 @@ public class WorkFixedCommand {
     	
     	/** The process date. */
     	private Integer processDate;
+    	
+    	/** The cid. */
+        private String cid;
 		
     	/**
 	     * Instantiates a new work fixed get memento impl.
@@ -81,6 +87,7 @@ public class WorkFixedCommand {
             this.wkpId = saveCommand.wkpId;
             this.confirmClsStatus = saveCommand.confirmClsStatus;
             this.processDate = saveCommand.processDate;
+            this.cid = saveCommand.cid;
         }
 
 		/* (non-Javadoc)
@@ -129,6 +136,14 @@ public class WorkFixedCommand {
 		@Override
 		public Integer getProcessDate() {
 			return this.processDate;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento#getCid()
+		 */
+		@Override
+		public String getCid() {
+			return this.cid;
 		}
 	}
 }

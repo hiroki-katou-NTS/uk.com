@@ -111,6 +111,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 			x.getBeforeApprovers().stream().forEach(y ->{
 				Collections.sort(y.getApprovers(), Comparator.comparing(ApproverInfoImport :: getOrderNumber));
 			});
+			Collections.sort(x.getBeforeApprovers(), Comparator.comparing(ApprovalPhaseImport::getOrderNumber));
 		});
 		return approvalRootResult;
 	}

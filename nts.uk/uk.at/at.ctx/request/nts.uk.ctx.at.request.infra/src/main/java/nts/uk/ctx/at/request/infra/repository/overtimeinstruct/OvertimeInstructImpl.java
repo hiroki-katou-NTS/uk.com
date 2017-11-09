@@ -22,9 +22,8 @@ public class OvertimeInstructImpl extends JpaRepository implements OvertimeInstr
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE o.inputDate = :inputDate");
-		query.append(" AND o.instructDate = :instructDate");
-		query.append(" AND o.targetPerson = :targetPerson");
+		query.append(" WHERE o.krqdtOvertimeInstructPK.instructDate = :instructDate");
+		query.append(" AND o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
 		FIND_FOR_TARGET_PERSON = query.toString();
 		
 	}
@@ -33,7 +32,7 @@ public class OvertimeInstructImpl extends JpaRepository implements OvertimeInstr
 	public OverTimeInstruct getOvertimeInstruct(GeneralDate instructDate, String targetPerson) {
 		
 		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtOvertimeInstruct.class)
-		.setParameter("instructDate", instructDate)
+		.setParameter("instructDate", instructDate.date())
 		.setParameter("targetPerson", targetPerson).getList(c -> convertToDomain(c));
 		if(overTimeInstructs != null){
 			if(overTimeInstructs.size() > 0){

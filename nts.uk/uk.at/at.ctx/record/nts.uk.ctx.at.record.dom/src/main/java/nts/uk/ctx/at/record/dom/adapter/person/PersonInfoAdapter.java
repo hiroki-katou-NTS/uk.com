@@ -5,15 +5,16 @@
 package nts.uk.ctx.at.record.dom.adapter.person;
 
 /**
- * The Interface PersonAdapter.
+ * The Interface PersonInfoAdapter.
  */
 public interface PersonInfoAdapter {
 
+	
 	/**
 	 * Gets the person info.
 	 *
-	 * @param sID the s ID
+	 * @param employeeId the employee id
 	 * @return the person info
 	 */
-	PersonInfoImportedDto getPersonInfo(String sID);
+	PersonInfoImportedDto getPersonInfo(String employeeId);
 }

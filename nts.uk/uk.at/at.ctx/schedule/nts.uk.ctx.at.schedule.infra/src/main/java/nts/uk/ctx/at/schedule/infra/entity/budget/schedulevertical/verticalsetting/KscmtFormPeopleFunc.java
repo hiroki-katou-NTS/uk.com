@@ -40,7 +40,7 @@ public class KscmtFormPeopleFunc extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_FORM_PEOPLE.CID", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "KSCMT_FORM_PEOPLE.VERTICAL_CAL_CD", insertable = false, updatable = false),
-		@JoinColumn(name = "ITEM_ID", referencedColumnName = "KSCMT_FORM_PEOPLE.VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false)
+		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "KSCMT_FORM_PEOPLE.VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false)
 	})
 	public KscmtFormPeople kscmtFormPeople;
 	

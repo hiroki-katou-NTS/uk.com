@@ -28,20 +28,24 @@
 			<com:scriptfile path="cps017.d.vm.js" />
 			<com:scriptfile path="cps017.d.start.js" />
 		</ui:define>
+
+
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="form-group">
 					<div class="row">
-						<div class="collll">#{i18n.getText('CPS017_42')}</div>
+						<div class="collll">#{i18n.getText('CPS017_35')}</div>
 					</div>
 					<div class="row">
-						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_43')}</div>
+						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_36')}</div>
 						<span class="label">個人情報選択項目の定義</span>
 					</div>
-					<div class="row">
-						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_44')}</div>
-						<input style="width: 90px;"
-							data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+					<div class="row" data-bind="with: historySelection">
+						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_37')}</div>
+<!-- 						<input style="width: 90px;" -->
+<!-- 							data-bind="ntsTimeEditor: {value: startDate, inputFormat: 'date'}" /> -->
+						<div
+							data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						~ <span class="label">#{i18n.getText('CPS017_48')}</span>
 					</div>
 				</div>
@@ -49,12 +53,17 @@
 				<div id="functions-area-bottom"
 					style="width: 580px; height: 100px; padding-top: 15px; text-align: center;">
 					<button id="A_BTN_REGISTER" class="proceed"
-						style="width: 145px; height: 60px; font-size: 25px;">#{i18n.getText('CPS017_46')}</button>
-					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_47')}</button>
+						style="width: 145px; height: 60px; font-size: 25px;"
+						data-bind="click : editHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_40')}</button>
+					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_41')}</button>
 
 				</div>
 			</div>
 		</ui:define>
+
+
+
+
 	</ui:composition>
 </body>
 </html>

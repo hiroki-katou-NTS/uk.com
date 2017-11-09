@@ -289,7 +289,6 @@ module nts.uk.at.view.ksc001.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
-
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
