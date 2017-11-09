@@ -34,6 +34,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkTimeRepository workTimeRepository;
+	
 
 	@Override
 	public int checkOvertime(String url) {
