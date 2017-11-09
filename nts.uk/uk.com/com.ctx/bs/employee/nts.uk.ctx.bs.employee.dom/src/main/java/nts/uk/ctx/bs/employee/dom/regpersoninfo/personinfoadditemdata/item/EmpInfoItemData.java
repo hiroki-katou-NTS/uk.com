@@ -59,6 +59,15 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	}
 
+	public static EmpInfoItemData createFromJavaType(String perInfoDefId, String recordId, int dataStateType,
+			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+
+		return new EmpInfoItemData(new ItemCode(""), perInfoDefId, recordId, "", "", "",
+				EnumAdaptor.valueOf(0, IsRequired.class), createDataState(
+						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
+
+	}
+
 	private static DataState createDataState(DataStateType dataStateType, String stringValue, BigDecimal intValue,
 			GeneralDate dateValue) {
 

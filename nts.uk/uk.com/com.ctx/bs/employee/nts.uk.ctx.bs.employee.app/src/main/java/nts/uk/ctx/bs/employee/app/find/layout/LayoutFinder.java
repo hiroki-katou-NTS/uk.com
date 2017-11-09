@@ -740,8 +740,13 @@ public class LayoutFinder {
 
 	}
 
-	// sonnlb code
+	// sonnlb code start
 
+	/**
+	 * get Layout Dto by create type 
+	 * @param command : command from client push to webservice
+	 * @return NewLayoutDto
+	 */
 	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 
 		Optional<NewLayout> layout = repo.getLayout();
@@ -757,10 +762,10 @@ public class LayoutFinder {
 
 		if (command.getCreateType() != 3) {
 
-			List<SettingItemDto> allItemData = loadAllItemByCreateType(command.getCreateType(),
+			List<SettingItemDto> layoutItemList = loadAllItemByCreateType(command.getCreateType(),
 					command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
 
-			if (allItemData.isEmpty()) {
+			if (layoutItemList.isEmpty()) {
 
 				return null;
 
@@ -771,7 +776,7 @@ public class LayoutFinder {
 				switch (layoutType) {
 				case ITEM: // item
 
-					List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
+					List<Object> itemValues = createItemValueList(itemCls.getListItemDf(), layoutItemList);
 
 					itemCls.setItems(itemValues);
 
@@ -797,11 +802,17 @@ public class LayoutFinder {
 
 	}
 
-	private List<Object> createItemValues(List<PerInfoItemDefDto> listItemDf, List<SettingItemDto> allItemData) {
+	/**
+	 * create item list from each item layout list and value from dataSourceList
+	 * @param dataSourceList : datasource List
+	 * @param layoutItemList : itemList need set value
+	 * @return itemList as List<Object>
+	 */
+	private List<Object> createItemValueList(List<PerInfoItemDefDto> dataSourceList, List<SettingItemDto> layoutItemList) {
 		List<Object> itemValueList = new ArrayList<Object>();
-		for (PerInfoItemDefDto itemDf : listItemDf) {
+		for (PerInfoItemDefDto itemDf : dataSourceList) {
 
-			SettingItemDto item = findItem(allItemData, itemDf);
+			SettingItemDto item = findItemFromList(layoutItemList, itemDf);
 
 			if (item != null) {
 				// because is single item
@@ -812,7 +823,7 @@ public class LayoutFinder {
 				itemValueList.add(value);
 			} else {
 				// remove itemDf not found
-				listItemDf.remove(itemDf);
+				layoutItemList.remove(itemDf);
 
 			}
 
@@ -820,12 +831,26 @@ public class LayoutFinder {
 		return itemValueList;
 	}
 
-	private SettingItemDto findItem(List<SettingItemDto> allItemData, PerInfoItemDefDto itemDf) {
+	/**
+	 * get item from list when same itemcode and categoryId
+	 * @param itemDataList list source
+	 * @param item condiction
+	 * @return SettingItemDto
+	 */
+	private SettingItemDto findItemFromList(List<SettingItemDto> itemDataList, PerInfoItemDefDto item) {
 
-		return allItemData.stream().filter(i -> i.getItemCode().equals(itemDf.getItemCode())
-				&& i.getPerInfoCtgId().equals(itemDf.getPerInfoCtgId())).findFirst().orElse(null);
+		return itemDataList.stream().filter(i -> i.getItemCode().equals(item.getItemCode())
+				&& i.getPerInfoCtgId().equals(item.getPerInfoCtgId())).findFirst().orElse(null);
 	}
 
+	/**
+	 * load All SettingItemDto in database by createType
+	 * @param createType : type client need create data
+	 * @param initSettingId : settingId need find item in
+	 * @param baseDate : date need find
+	 * @param employeeCopyId : id of employee copy 
+	 * @return SettingItemDto List
+	 */
 	public List<SettingItemDto> loadAllItemByCreateType(int createType, String initSettingId, GeneralDate baseDate,
 			String employeeCopyId) {
 		// get all Data
