@@ -9,4 +9,11 @@ public interface EmInfoCtgDataRepository {
 	
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId);
 	
+	void addEmpInfoCtgData(EmpInfoCtgData domain);
+	
+	void updateEmpInfoCtgData(EmpInfoCtgData domain);
+	
+	void deleteEmpInfoCtgData(EmpInfoCtgData domain);
+	
+	
 }
