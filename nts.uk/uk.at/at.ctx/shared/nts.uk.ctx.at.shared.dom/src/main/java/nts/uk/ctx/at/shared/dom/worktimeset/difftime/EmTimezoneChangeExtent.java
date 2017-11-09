@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.TimeRounding;
 /**
  * The Class EmTimezoneChangeExtent.
  */
+//就業時間帯変動可能範囲
 @Getter
 public class EmTimezoneChangeExtent extends DomainObject {
 
