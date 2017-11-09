@@ -12,7 +12,8 @@ module nts.uk.com.view.cps009.b.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
-        dataSource: Array<any> =[];
+        dataSource: Array<any> = [];
+        isCancel: boolean = false;
         constructor() {
 
             let self = this;
@@ -28,26 +29,26 @@ module nts.uk.com.view.cps009.b.viewmodel {
          */
         start(): JQueryPromise<any> {
             let self = this,
-            dfd = $.Deferred();
+                dfd = $.Deferred();
             self.itemInitLst = [];
-            let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: ''};
+            let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '' };
             self.categoryName(param.ctgName);
-            service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data){
+            service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data) {
                 //ドメインモデル「個人情報項目定義」を取得できているかどうかをチェック (Kiểm tra 「個人情報項目定義」 có lấy được hay không)
-                if(data == null || data == undefined || data.length == 0){
+                if (data == null || data == undefined || data.length == 0) {
                     //データ件数＝０(Không)
                     //メッセージ(#Msg_353#)を表示、トップページへ遷移する (Hiển thị ErrorMessage Msg_353, Chuyển đến TopPage) 
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_353'}).then(function(){
-                         close();
-                     });
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_353' }).then(function() {
+                        close();
+                    });
                 }
                 self.dataSource = data;
-                _.each(self.dataSource, function(item){
-                     self.itemInitLst.push(new ItemInitValue(item.perInfoItemDefId,item.itemCode, item.itemName, item.isRequired, false));
+                _.each(self.dataSource, function(item) {
+                    self.itemInitLst.push(new ItemInitValue(item.perInfoItemDefId, item.itemCode, item.itemName, item.isRequired, false));
                 });
                 dfd.resolve();
             });
-            
+
             return dfd.promise();
         }
         /**
@@ -58,38 +59,51 @@ module nts.uk.com.view.cps009.b.viewmodel {
             //対象項目選択があろうかどうかをチェック (Kiểm tra có Item được chọn không)
             let lstIdResult = [];
             let lstItemResult = [];
-            _.each(self.itemInitLst, function(item){
-                if(item.isCheckBox){
+            _.each(self.itemInitLst, function(item) {
+                if (item.isCheckBox) {
                     lstIdResult.push(item.id);
                 }
             });
-            if(lstIdResult.length == 0){
+            if (lstIdResult.length == 0) {
                 //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_362'});
-                return;    
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_362' });
+                return;
             }
-            _.each(lstIdResult, function(itemId){
+            _.each(lstIdResult, function(itemId) {
                 let item = self.findItem(self.dataSource, itemId);
                 lstItemResult.push(item);
             });
-            setShared('CPS009B_DATA', {
+            self.isCancel = false;
+            let obj = {
+                isCancel: false,
                 refMethodType: self.selectedRuleCode(),
                 lstItem: lstItemResult
-            });
+            };
+            setShared('CPS009B_DATA', obj);
+
             close();
         }
         /**
          * close dialog when click button キャンセル
          */
         closeDialog() {
-            setShared('CPS009B_DATA', null);
+            let self = this,
+                obj = {
+                    isCancel: true,
+                    refMethodType: 0,
+                    lstItem: []
+
+                };
+
+            self.isCancel = true;
+            setShared('CPS009B_DATA', obj);
             close();
         }
         /**
          * find item by id
          */
-        findItem(lstItem: Array<any> , id: string): any{
-            return _.find(lstItem, function(obj){
+        findItem(lstItem: Array<any>, id: string): any {
+            return _.find(lstItem, function(obj) {
                 return obj.perInfoItemDefId == id;
             });
         }
