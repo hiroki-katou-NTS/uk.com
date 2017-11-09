@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
@@ -73,6 +74,12 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNewCategoryData(PerInfoCtgData perInfoCtgData) {
 		// TODO Auto-generated method stub
 		
 	}
