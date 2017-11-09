@@ -6,7 +6,7 @@
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
 		</div>
 		<!--事前事後区分 -->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: displayPrePostFlg">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
 			<div tabindex="5" class="cf"
 				data-bind="ntsSwitchButton: {
@@ -25,70 +25,72 @@
 			<div class="lblTitle" data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF009_11')}</div>
 			<div tabindex="6" id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
 		</div>
-		<!--Work Change-->
-		<div class="table" data-bind="visible : typeSiftVisible()">
-			<div class="cell valign-center">
-				<div class="valign-center control-group"
-					data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF009_22')}</div>
-				<BR />
-				<div class="valign-center control-group"
-					data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF009_23')}</div>
+		<div data-bind="if: displayCaculationTime">
+			<!--Work Change-->
+			<div class="table" data-bind="visible : typeSiftVisible()">
+				<div class="cell valign-center">
+					<div class="valign-center control-group"
+						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF009_22')}</div>
+					<BR />
+					<div class="valign-center control-group"
+						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF009_23')}</div>
+				</div>
+				<div class="cell valign-center">
+					<button tabindex="18" class="workSelect" data-bind="enable: true,click : openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
+				</div>
+				<div class="cell valign-center">
+					<label class="lblWorkTypeCd"
+						data-bind="text: workTypeCd"></label> <LABEL
+						data-bind="text: workTypeName"></LABEL> <BR /> <label
+						class="lblSiftCd" data-bind="text: siftCD"></label>
+					<LABEL data-bind="text: siftName"></LABEL>
+				</div>
 			</div>
-			<div class="cell valign-center">
-				<button tabindex="18" class="workSelect" data-bind="enable: true,click : openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
+			<!--勤務時間 1-->
+			<div class="valign-center control-group">
+				<div class="table">
+					<div class="cell valign-top">
+						<div class="lblTitle" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF009_13')}</div>
+					</div>
+					<div class="cell valign-center">
+						<div>
+							<input tabindex="7" class="row-cell-margin" id="inpStartTime1"
+								data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
+							<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
+						</div>
+					</div>
+	
+					<div class="cell valign-center">
+						<div class="row-cell-margin">
+							<input tabindex="8" id="inpEndTime1"
+								data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="cell valign-center">
-				<label class="lblWorkTypeCd"
-					data-bind="text: workTypeCd"></label> <LABEL
-					data-bind="text: workTypeName"></LABEL> <BR /> <label
-					class="lblSiftCd" data-bind="text: siftCD"></label>
-				<LABEL data-bind="text: siftName"></LABEL>
+			<!--勤務時間 2-->
+			<div class="valign-center control-group" data-bind="if: useMulti()">
+				<div class="table">
+					<div class="cell valign-top">
+						<div class="lblTitle"></div>
+					</div>
+					<div class="cell valign-center">
+						<div>
+							<input tabindex="12" class="row-cell-margin" id="inpStartTime2"
+								data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
+							<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
+						</div>
+					</div>
+					<div class="cell valign-center">
+						<div>
+							<input tabindex="13" class="row-cell-margin" id="inpEndTime2"
+								data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<!--勤務時間 1-->
-		<div class="valign-center control-group">
-			<div class="table">
-				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF009_13')}</div>
-				</div>
-				<div class="cell valign-center">
-					<div>
-						<input tabindex="7" class="row-cell-margin" id="inpStartTime1"
-							data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
-						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
-					</div>
-				</div>
-
-				<div class="cell valign-center">
-					<div class="row-cell-margin">
-						<input tabindex="8" id="inpEndTime1"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--勤務時間 2-->
-		<div class="valign-center control-group" data-bind="if: useMulti()">
-			<div class="table">
-				<div class="cell valign-top">
-					<div class="lblTitle"></div>
-				</div>
-				<div class="cell valign-center">
-					<div>
-						<input tabindex="12" class="row-cell-margin" id="inpStartTime2"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
-						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
-					</div>
-				</div>
-				<div class="cell valign-center">
-					<div>
-						<input tabindex="13" class="row-cell-margin" id="inpEndTime2"
-							data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="cf valign-center control-group">
+		<div class="cf valign-center control-group" data-bind="if: displayCaculationTime() &amp; breakInputFieldDisFlg()">
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_40')}</div>
 			<table id="fixed-table">
 			<colgroup>
@@ -112,7 +114,7 @@
 			</tbody>
 			</table>
 		</div>
-		<div>
+		<div data-bind="if: displayCaculationTime">
 			<button style ="margin: 15px 0px 10px 261px" class="caret-bottom">#{i18n.getText('KAF005_43')}</button>
 		</div>
 		<div class="cf valign-center control-group">
@@ -123,14 +125,12 @@
 				<col width="110px"/>
 				<col width="110px"/>
 				<col width="110px"/>
-				<col width="110px"/>
 			</colgroup>
 			<thead>
 				<tr>
 					<th class="ui-widget-header" rowspan="2"></th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_51')}</th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_52')}</th>
-					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_53')}</th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_54')}</th>
 				</tr>
 			</thead>
@@ -138,9 +138,8 @@
 				<tr>
 					<td class ="header" data-bind ="text: overtimeName"></td>
 					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: instructTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: caculationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+					<td class="right-content" data-bind ="text: preAppTime"></td>
+					<td class="right-content" data-bind ="text: caculationTime"></td>
 				</tr>
 			</tbody>
 			</table>
@@ -152,34 +151,27 @@
 				<col width="110px"/>
 				<col width="110px"/>
 				<col width="110px"/>
-				<col width="110px"/>
-				<col width="110px"/>
 			</colgroup>
 			<thead>
 				<tr>
 					<th class="ui-widget-header" rowspan="2"></th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_71')}</th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_72')}</th>
-					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_73')}</th>
-					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_74')}</th>
 				</tr>
 			</thead>
 			<tbody data-bind ="foreach: breakTimes">
 				<tr>
 					<td class ="header" data-bind ="text: breakTimeName"></td>
-					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: instructTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: caculationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time' }"/></td>
+					<td class="right-content" data-bind ="text: preAppTime"></td>
 				</tr>
 			</tbody>
 			</table>
 		</div>
-		<div class="cf valign-center control-group">
+		<div class="cf valign-center control-group" data-bind="if: displayBonusTime">
 			<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_81')}</div>
 			<table id="fixed-bonus_time-table">
 			<colgroup>
-				<col width="110px"/>
 				<col width="110px"/>
 				<col width="110px"/>
 				<col width="110px"/>
@@ -189,21 +181,19 @@
 					<th class="ui-widget-header" rowspan="2"></th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_82')}</th>
 					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_83')}</th>
-					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_84')}</th>
 				</tr>
 			</thead>
 			<tbody data-bind ="foreach: bonusTimes">
 				<tr>
 					<td class ="header" data-bind ="text: bonusTimeName"></td>
 					<td><input data-bind ="ntsTimeEditor: {value: appTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: preAppTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
-					<td><input data-bind ="ntsTimeEditor: {value: instructTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time'}"/></td>
+					<td class="right-content" data-bind ="text: preAppTime"></td>
 				</tr>
 			</tbody>
 			</table>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: typicalReasonDisplayFlg">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div tabindex="19" id="combo-box"
 				data-bind="ntsComboBox: {
@@ -216,7 +206,7 @@
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: displayAppReasonContentFlg">
 			<div class="lblTitle"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
@@ -233,31 +223,31 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: displayDivergenceReasonForm">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div tabindex="21" id="combo-box"
 				data-bind="ntsComboBox: {
-								options: reasonCombo,
+								options: reasonCombo2,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
-								value: selectedReason,
+								value: selectedReason2,
 								enable: true,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-center control-group">
+		<div class="valign-center control-group" data-bind="if: displayDivergenceReasonInput">
 			<div class="lblTitle"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
 				<textarea tabindex="22"
 					data-bind="ntsMultilineEditor: {
-								value: multilContent,
+								value: multilContent2,
 								constraint: 'ResidenceCode',
 								option: {
 									resizeable: false,
 			                    	width: '500',
-			                    	required: requiredReason()
+			                    	required: requiredReason2()
 			                   	},
 							}" />
 			</div>

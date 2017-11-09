@@ -4,5 +4,11 @@ import java.util.Optional;
 
 public interface OvertimeRestAppCommonSetRepository {
 	
-	Optional<OvertimeRestAppCommonSetting> getOvertimeRestAppCommonSetting(String companyID);
+	/**
+	 * @param companyID
+	 * @return
+	 */
+	Optional<OvertimeRestAppCommonSetting> getOvertimeRestAppCommonSetting(String companyID, int appType);
+	
+	
 }

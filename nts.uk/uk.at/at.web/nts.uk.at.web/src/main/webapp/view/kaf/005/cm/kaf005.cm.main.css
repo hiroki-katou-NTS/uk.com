@@ -129,3 +129,7 @@ div.form-label.broken {
 #fixed-table .nts-editor-wrapped {
 	box-sizing: border-box;
 }
+.right-content {
+	text-align: right !important;
+    padding-right: 10px !important;
+}

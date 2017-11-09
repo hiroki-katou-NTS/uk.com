@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 /**
@@ -8,6 +11,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
  * 残業枠
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OvertimeFrame {
 	
 	/**
@@ -32,5 +37,9 @@ public class OvertimeFrame {
 	 * 残業枠名称
 	 */
 	private FrameNamePri overtimeFrameName;
+	
+	public static OvertimeFrame createSimpleFromJavaType(String companyID, int otFrameNo, int useAtr,String transferFrameName,String overtimeFrameName ){
+		return new OvertimeFrame(companyID, otFrameNo, EnumAdaptor.valueOf(useAtr, UseAtr.class), new FrameNamePri(transferFrameName), new FrameNamePri(overtimeFrameName));
+	}
 
 }

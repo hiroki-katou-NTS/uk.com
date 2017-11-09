@@ -51,6 +51,19 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
 			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "
 			+ "AND c.kshmtWorkTypeSetPK.workTypeCode =:workTypeCode ";
+	
+	// findWorkType(java.lang.String, java.lang.Integer, java.util.List, java.util.List)
+	private static String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
+	
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = :abolishAtr");
+		builder.append(" AND c.oneDayAtr IN :oneDayAtrs");
+		builder.append(" OR c.morningAtr IN :morningAtrs");
+		builder.append(" OR c.afternoonAtr IN :afternoonAtrs");
+		FIND_WORKTYPE_ALLDAY_AND_HALFDAY = builder.toString();
+	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
@@ -158,6 +171,23 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
 		return this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KshmtWorkType.class)
 				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#
+	 * findWorkType(java.lang.String, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
+	public List<WorkType> findWorkType(String companyId, int abolishAtr, List<Integer> allDayAtrs, List<Integer> halfAtrs) {
+		return this.queryProxy().query(FIND_WORKTYPE_ALLDAY_AND_HALFDAY, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("oneDayAtr", allDayAtrs)
+				.setParameter("morningAtr", halfAtrs)
+				.setParameter("afternoonAtrs", halfAtrs)
+				.getList(c -> toDomain(c));
 	}
 
 	/**
