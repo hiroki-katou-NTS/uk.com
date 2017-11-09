@@ -38,7 +38,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<PerInfoSelectionItem> getAllPerInfoSelectionItem(String contractCd) {
+	public List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCd) {
 		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE, PpemtSelectionItem.class)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
 	}
@@ -51,14 +51,14 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	// check selectionItemId
 	@Override
-	public Optional<PerInfoSelectionItem> getPerInfoSelectionItem(String selectionItemId) {
+	public Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId) {
 		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
 		return this.queryProxy().find(pk, PpemtSelectionItem.class).map(c -> toDomain(c));
 	}
 
 	// get selectionItem By Name
 	@Override
-	public Optional<PerInfoSelectionItem> getSelectionByName(String selectionItemName) {
+	public Optional<PerInfoSelectionItem> getSelectionItemByName(String selectionItemName) {
 		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_NAME, PpemtSelectionItem.class)
 				.setParameter("selectionItemName", selectionItemName).getSingle(c -> toDomain(c));
 	}

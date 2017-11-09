@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.familyrelatedinformation.incometax;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -9,6 +10,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class IncomeTax extends AggregateRoot {
 
 	/**

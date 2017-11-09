@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonCategoryItemData;
+import nts.uk.ctx.bs.person.dom.person.info.category.ReferenceStateData;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 
 /**
@@ -66,10 +67,37 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	private String constraint;
 
 	// thêm trường numberDecimalPart của bảng common
-	private int numberDecimalPart;
+	private Integer numberDecimalPart;
 
 	// thêm trường numberIntegerPart của bảng common
-	private int numberIntegerPart;
+	private Integer numberIntegerPart;
+
+	private Integer timeItemMin;
+
+	private Integer timeItemMax;
+
+	// trường này dùng để kết nối với bảng selectionItem
+	private String selectionItemId;
+	
+	private Integer selectionItemRefType;
+	
+	
+	private Map<Integer, Map<Integer, String>> selectionLst;
+
+	// trường này để xác định xem là trường date thuộc
+	// kiểu ngày tháng năm, năm tháng or năm
+	private Integer dateType;
+	
+	// hai trường này dùng để xác định giá trị của item nắm
+	// trong khoảng nào khi mà item là kiểu timepoint
+	private Integer timepointItemMin;
+	private Integer timepointItemMax;
+	
+	// hai trường này dùng để xác định giá trị của item nắm
+	// trong khoảng nào khi mà item là kiểu numberic
+	private BigDecimal numericItemMin;
+	private BigDecimal numericItemMax;
+
 
 	/**
 	 * constructor PerInfoInitValueSetItem
@@ -95,7 +123,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
 			IsRequired isRequired, ReferenceMethodType refMethodType, SaveDataType saveDataType,
 			StringValue stringValue, IntValue intValue, GeneralDate dateValue, Integer dataType, Integer itemType,
-			String itemCode, String ctgCode, String constraint, int numberDecimalPart, int numberIntegerPart) {
+			String itemCode, String ctgCode, String constraint, Integer numberDecimalPart, Integer numberIntegerPart,
+			Integer timeItemMin, Integer timeItemMax) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.settingId = settingId;
@@ -114,6 +143,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.constraint = constraint;
 		this.numberDecimalPart = numberDecimalPart;
 		this.numberIntegerPart = numberIntegerPart;
+		this.timeItemMax = timeItemMax;
+		this.timeItemMin = timeItemMin;
 	}
 
 	/**
@@ -180,7 +211,6 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.itemType = itemType;
 		this.itemCode = itemCode;
 		this.ctgCode = ctgCode;
-		this.processs(ctgCode, itemCode);
 	}
 
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId, String itemName,
@@ -338,11 +368,11 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	 * @return
 	 */
 	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
-			String perInfoCtgId, int refMethodType, int saveDataType, Integer intValue) {
+			String perInfoCtgId, int refMethodType, int saveDataType, BigDecimal intValue) {
 
 		return new PerInfoInitValueSetItem(perInfoItemDefId, settingId, perInfoCtgId,
 				EnumAdaptor.valueOf(refMethodType, ReferenceMethodType.class),
-				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(new BigDecimal(intValue)));
+				EnumAdaptor.valueOf(saveDataType, SaveDataType.class), new IntValue(intValue));
 	}
 
 	public static PerInfoInitValueSetItem convertFromJavaType(String perInfoItemDefId, String settingId,
@@ -367,10 +397,11 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		PersonCategoryItemData item = new PersonCategoryItemData();
 		for (Map.Entry ctg : item.CategoryMap.entrySet()) {
 			if (ctg.getKey() == categoryCode) {
-				Map<String, String> itemChild = (Map<String, String>) ctg.getValue();
+				Map<String, ReferenceStateData> itemChild = (Map<String, ReferenceStateData>) ctg.getValue();
 				for (Map.Entry itemSub : itemChild.entrySet()) {
 					if (itemSub.getKey().equals(itemCode)) {
-						return itemSub.getValue().toString();
+						ReferenceStateData data = (ReferenceStateData) itemSub.getValue();
+						return data.getConstraint();
 
 					}
 				}

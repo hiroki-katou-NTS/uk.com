@@ -3,6 +3,8 @@ package nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface SelectionRepository {
 
 	void add(Selection selection);
@@ -11,14 +13,21 @@ public interface SelectionRepository {
 
 	void remove(String selectionId);
 
-	List<Selection> getAllHistorySelection(String histId);
+	List<Selection> getAllSelectByHistId(String histId);
 
-	Optional<Selection> getHistSelection(String histId);
+	Optional<Selection> getSelectionByHistId(String histId);
 	
-	Optional<Selection> getCheckBySelectionCD(String selectionCD);
+	Optional<Selection> getSelectionBySelectionCd(String selectionCD);
 	
-	List<String> getAllHist(String histId);
+	List<String> getAllHistId(String histId);
 
-	List<Selection> geSelectionList(String selectionCd, String histId);
+	List<Selection> getAllSelectionBySelectionCdAndHistId(String selectionCd, String histId);
+	
+	//Lanlt
+	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
+	//Lanlt
+
+	//Tuan nv: 
+	List<Selection> getAllSelectionBySelectionID(String selectionId);
 	
 }
