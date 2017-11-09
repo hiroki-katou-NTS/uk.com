@@ -305,11 +305,15 @@ public class LayoutFinder {
 					break;
 				case "CS00003":
 					// CurrentAddress
-					CurrentAddress currentAddress = currentAddressRepo.get(personId, standandDate);
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							currentAddress, null);
-					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
-							perInItemDataRepo.getAllInfoItemByRecordId(currentAddress.getCurrentAddressId()));
+					Optional<CurrentAddress> currentAddressOpt = currentAddressRepo.getByPerIdAndStd(personId,
+							standandDate);
+					if (currentAddressOpt.isPresent()) {
+						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
+								currentAddressOpt.get(), null);
+						matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
+								perInItemDataRepo
+										.getAllInfoItemByRecordId(currentAddressOpt.get().getCurrentAddressId()));
+					}
 					break;
 				case "CS00014":
 					// WidowHistory
@@ -380,21 +384,25 @@ public class LayoutFinder {
 					break;
 				case "CS00011":
 					// Affiliation Department
-					AffiliationDepartment affDepartment = affDepartmentRepo
-							.getByEmpIdAndStandDate(employeeId, standandDate).get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							affDepartment, null);
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-							empInItemDataRepo.getAllInfoItemByRecordId(affDepartment.getDepartmentId()));
+					Optional<AffiliationDepartment> affDepartmentOpt = affDepartmentRepo
+							.getByEmpIdAndStandDate(employeeId, standandDate);
+					if (affDepartmentOpt.isPresent()) {
+						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
+								affDepartmentOpt.get(), null);
+						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
+								empInItemDataRepo.getAllInfoItemByRecordId(affDepartmentOpt.get().getDepartmentId()));
+					}
 					break;
 				case "CS00012":
 					// Sub Job Position
-					SubJobPosition subJobPosition = subJobPosRepo.getByEmpIdAndStandDate(employeeId, standandDate)
-							.get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							subJobPosition, null);
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-							empInItemDataRepo.getAllInfoItemByRecordId(subJobPosition.getAffiDeptId()));
+					Optional<SubJobPosition> subJobPositionOpt = subJobPosRepo.getByEmpIdAndStandDate(employeeId,
+							standandDate);
+					if (subJobPositionOpt.isPresent()) {
+						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
+								subJobPositionOpt.get(), null);
+						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
+								empInItemDataRepo.getAllInfoItemByRecordId(subJobPositionOpt.get().getAffiDeptId()));
+					}
 					break;
 				}
 			} else {

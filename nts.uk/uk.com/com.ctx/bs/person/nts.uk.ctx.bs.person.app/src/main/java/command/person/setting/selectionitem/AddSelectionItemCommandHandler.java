@@ -39,7 +39,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 
 		// ドメインモデル「個人情報の選択項目」のエラーチェック
 		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
-				.getSelectionByName(command.getSelectionItemName());
+				.getSelectionItemByName(command.getSelectionItemName());
 
 		// 「選択項目名称」は重複してはならない
 		if (optCheckExistByName.isPresent()) {
