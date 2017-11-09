@@ -57,12 +57,12 @@ module nts.uk.at.view.kdw001.c {
                 self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
-
+    
                 this.employeeList = ko.observableArray<UnitModel>([]);
                 
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: false,
+                    isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,

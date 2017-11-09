@@ -55,11 +55,11 @@ module nts.uk.at.view.kdw001.j {
             }
 
             opendScreenD() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 2, "screenName": "J" });
+                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 2, "screenName": "J" });
             }
 
             opendScreenC() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 0 });
+                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0 });
             }
 
             navigateView() {
