@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktimeset.fixed.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.WorkTimezoneCommonSet;
 
 /**
@@ -24,7 +25,7 @@ public class TimeDiffWorkSetting extends AggregateRoot {
 
 	/** The employment timezone code. */
 	// 就業時間帯コード
-	private EmploymentTimezoneCode employmentTimezoneCode;
+	private WorkTimeCode employmentTimezoneCode;
 
 	/** The rest set. */
 	// 休憩設定
@@ -56,6 +57,6 @@ public class TimeDiffWorkSetting extends AggregateRoot {
 
 	/** The overtime setting. */
 	// 残業設定
-	private InLegalOTSet overtimeSetting;
+	private LegalOTSetting overtimeSetting;
 
 }
