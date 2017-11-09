@@ -15,8 +15,6 @@ public interface EmpInfoItemDataRepository {
 	List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId);
 
 	void addItemData(EmpInfoItemData infoItemData);
-
-	void addNewCategoryData(PerInfoCtgData perInfoCtgData);
 	
 	void addEmpInfoItemData(EmpInfoItemData domain);
 	
