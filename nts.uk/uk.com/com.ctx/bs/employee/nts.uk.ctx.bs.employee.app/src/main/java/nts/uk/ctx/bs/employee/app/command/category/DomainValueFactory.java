@@ -57,6 +57,11 @@ import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * mapping value of items from client to server 
+ * @author hopnt
+ *
+ */
 public class DomainValueFactory {
 	/** The Constant DATE_FORMAT. */
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
