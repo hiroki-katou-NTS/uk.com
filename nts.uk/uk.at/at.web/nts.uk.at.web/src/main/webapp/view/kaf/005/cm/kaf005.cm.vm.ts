@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf005.a.viewmodel {
+module nts.uk.at.view.kaf005.cm.viewmodel {
     import common = nts.uk.at.view.kaf005.share.common;
     import service = nts.uk.at.view.kaf005.shr.service;
     export class ScreenModel {
@@ -59,7 +59,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
         displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
         displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
-        breakInputFieldDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
         
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -111,8 +110,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             var dfd = $.Deferred();
             service.getOvertimeByUI({
                 url: "",
-                appDate: moment(new Date()).format("YYYY/MM/DD"),
-                uiType: 1        
+                appDate: "2017/11/03",
+                uiType: 0        
             }).done((data) => {
                 self.initData(data);
                 dfd.resolve(data);    
@@ -146,10 +145,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); } ));
             self.selectedReason2(data.divergenceReasonID);
             self.multilContent2(data.divergenceReasonContent);
-        }
-        
-        register(){
-            console.log("register");        
         }
         
         /**
