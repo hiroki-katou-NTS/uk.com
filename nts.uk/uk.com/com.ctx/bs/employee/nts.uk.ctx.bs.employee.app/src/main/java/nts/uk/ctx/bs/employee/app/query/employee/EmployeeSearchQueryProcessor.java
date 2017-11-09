@@ -495,11 +495,11 @@ public class EmployeeSearchQueryProcessor {
 //			return item.getWorkplaceId().v();
 //		}).collect(Collectors.toList());
 //		
-//		List<EmployeeSearchData> empDataList = new ArrayList<>();
+//		List<EmployeeSearchOutput> empDataList = new ArrayList<>();
 //		// Get WorkplaceInfo
 //		workplaceIds.stream().forEach(wpId -> {
 //			Optional<WorkplaceInfo> workplaceInfo = this.workplaceInfoRepo.findByWkpId(wpId, referenceDate);
-//			EmployeeSearchData empData = new EmployeeSearchData();
+//			EmployeeSearchOutput empData = new EmployeeSearchOutput();
 ////			empData.setEmployeeId(employeeId);
 //		});
 		

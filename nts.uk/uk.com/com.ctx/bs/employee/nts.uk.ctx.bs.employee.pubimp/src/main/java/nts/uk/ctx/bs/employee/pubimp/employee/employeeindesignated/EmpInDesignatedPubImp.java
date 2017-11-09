@@ -48,7 +48,7 @@ public class EmpInDesignatedPubImp implements EmpInDesignatedPub {
 		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
 			return null;
 		}
-		// Get List of Employee Id
+		// Get List of Employee Id from AffWorkplaceHistory List
 		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 		// Output List
