@@ -6,11 +6,14 @@ package entity.person.personinfoctgdata;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+
 /**
  * @author danpv
  *
  */
 @Embeddable
+@AllArgsConstructor
 public class PpemtPerInfoItemDataPK {
 
 	@Column(name = "RECORD_ID")
