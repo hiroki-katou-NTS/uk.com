@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.find.init.item;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
 
@@ -7,7 +8,9 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.SaveDataType;
  * @author sonnlb
  *
  */
+
 public class SaveDataDto {
+	@Getter
 	protected SaveDataType saveDataType;
 
 	public static SaveDataDto createDataDto(String value) {
@@ -21,6 +24,5 @@ public class SaveDataDto {
 	public static SaveDataDto createDataDto(GeneralDate value) {
 		return DateDataDto.createFromJavaType(value);
 	}
-	
 
 }
