@@ -400,7 +400,7 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchCurrentAddress(
-			LayoutPersonInfoClsDto personInfoClsDto, List<CurrentAddress> currentAddress) {
+			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<CurrentAddress> currentAddress) {
 		return null;
 	}
 
@@ -414,14 +414,44 @@ public class ItemDefinitionFactory {
 		return null;
 	}
 
-	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
-			List<Family> families) {
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,List<Family> families) {
 		return null;
 	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamily(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<Family> families) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchWidowHistory(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<WidowHistory> widowHistory) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchPersonEmergencyContact(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<PersonEmergencyContact> personEmergencyContact) {
+		return null;
+	}
+
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchsubJobPoses(LayoutPersonInfoClsDto authClassItem,
 			List<SubJobPosition> subJobPoses) {
 		return null;
 	}
 
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
+			LayoutPersonInfoClsDto personInfoClsDto, List<TemporaryAbsence> temporaryAbsence) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
+			LayoutPersonInfoClsDto personInfoClsDto,ActionRole actionRole, List<TemporaryAbsence> temporaryAbsence) {
+		return null;
+	}
+	
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchJobTitleMain(
+			LayoutPersonInfoClsDto personInfoClsDto,ActionRole actionRole, List<JobTitleMain> jobTitleMain) {
+		return null;
+	}
 }

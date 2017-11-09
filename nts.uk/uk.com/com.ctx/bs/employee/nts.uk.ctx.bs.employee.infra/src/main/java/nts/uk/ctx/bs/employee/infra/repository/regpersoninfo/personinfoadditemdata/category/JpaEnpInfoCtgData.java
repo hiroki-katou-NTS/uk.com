@@ -34,4 +34,22 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 				.map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
+	@Override
+	public void addEmpInfoCtgData(EmpInfoCtgData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateEmpInfoCtgData(EmpInfoCtgData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEmpInfoCtgData(EmpInfoCtgData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

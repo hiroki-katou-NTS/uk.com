@@ -42,9 +42,10 @@ public class UpdateItemInitValueSettingCommand {
 	private String stringValue;
 	
 	private int intValue;
+	// luu tru selecttionId vao kieu IntValue trong bang InitItemValue
+	private String selectionId;
 	
-	private String selectedCode;
-	
+	// trường  này lấy từ bảng item common xác định đc môt list hiển thị ở cột 3 của list item
 	private String selectionItemId;
 	
 	private int selectedRuleCode;

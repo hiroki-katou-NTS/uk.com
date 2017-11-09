@@ -15,4 +15,10 @@ public interface EmpInfoItemDataRepository {
 	List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId);
 
 	void addNewCategoryData(PerInfoCtgData perInfoCtgData);
+	
+	void addEmpInfoItemData(EmpInfoItemData domain);
+	
+	void updateEmpInfoItemData(EmpInfoItemData domain);
+	
+	void deleteEmployInfoItemData(EmpInfoItemData domain);
 }

@@ -20,6 +20,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosRepository;
 import nts.uk.ctx.bs.employee.dom.position.jobposition.SubJobPosition;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
@@ -146,9 +148,37 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 							break;
 					}
 					// ドメインモデル「個人情報カテゴリデータ」を更新する
+					List<PersonInfoItemDefinition> listItemDef = perInfoItemDefRepositoty.getNotFixedPerInfoItemDefByCategoryId(categoryID, contractCode);
+					PersonInfoItemData itemData = null;
 					if (listItem.size() >0){
-						for (LayoutPersonInfoCommand dataInfoItem : listItem) {
-//							perInfoCtgDataRepository.addCategoryData(currentAddressReposit);
+						// Add category data
+						perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(newId,categoryID,personID));
+						// Add item data
+						for (LayoutPersonInfoCommand item : listItem) {
+							DataState state = null;
+							// Create data state
+							switch( getItemType(listItemDef,item.getItemCode())){
+							case STRING:
+								state = DataState.createFromStringValue(DomainValueFactory.convertToString(item.getValue()));
+							break;
+							case NUMERIC:
+								state = DataState.createFromNumberValue(DomainValueFactory.convertToDecimal(item.getValue()));
+							break;
+							case DATE:
+								state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
+							break;
+							case TIME:
+								state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
+							break;
+							case TIMEPOINT:
+								state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
+							break;
+							case SELECTION:
+								state = DataState.createFromNumberValue(DomainValueFactory.convertToDecimal(item.getValue()));
+							break;
+							}
+							itemData = new PersonInfoItemData(DomainValueFactory.convertToString(item.getItemDefId()), newId,state);
+							perInfoItemDataRepository.addItemData(itemData);
 						}
 					}
 				} else {
@@ -209,33 +239,36 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 					
 				// 社員情報の任意項目のデータを登録する
 				List<PersonInfoItemDefinition> listItemDef = perInfoItemDefRepositoty.getNotFixedPerInfoItemDefByCategoryId(categoryID, contractCode);
-				PersonInfoItemData itemData = null;
 				if (listItem.size() > 0){
-					perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(newId,categoryID,empID));
+					// Add emp category data
+					emInfoCtgDataRepository.addEmpInfoCtgData(new EmpInfoCtgData(newId,categoryID,empID));
+					// Add item data
+					EmpInfoItemData itemData = null;
 					for (LayoutPersonInfoCommand item : listItem){
-						DataState state = null;
-						
+						nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState state = null;
+						// Create data state
 						switch( getItemType(listItemDef,item.getItemCode())){
 						case STRING:
-							state = DataState.createFromStringValue(DomainValueFactory.convertToString(item.getValue()));
+							state = nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState.createFromStringValue(DomainValueFactory.convertToString(item.getValue()));
 						break;
 						case NUMERIC:
-//							state = DataState.createFromNumberValue(DomainValueFactory.convertToInt(item.getValue()));
+							state = nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState.createFromNumberValue(DomainValueFactory.convertToDecimal(item.getValue()));
 						break;
 						case DATE:
-							state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
+							state = nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
 						break;
 						case TIME:
-							state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
+							state = nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
 						break;
 						case TIMEPOINT:
-							state = DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
+							state = nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState.createFromDateValue(DomainValueFactory.convertToDate(item.getValue()));
 						break;
 						case SELECTION:
-//							state = DataState.createFromNumberValue(DomainValueFactory.convertToString(item.getValue()));
+							state = nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState.createFromNumberValue(DomainValueFactory.convertToDecimal(item.getValue()));
 						break;
 						}
-						itemData = new PersonInfoItemData(DomainValueFactory.convertToString(item.getItemDefId()), newId,state);
+						itemData = new EmpInfoItemData(item.getItemDefId(), newId, state);
+						empInfoItemDataRepository.addEmpInfoItemData(itemData);
 					}
 				}
 					
@@ -244,37 +277,6 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 				}
 			}
 		 });
-//		for (LayoutPersonInfoCommand item : groupByCategory){
-//			// ドメインモデル「個人情報カテゴリ」を取得する
-//			perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(item.getCategoryId(),contractCode);
-//			// In case of person
-//			if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-//				// IS FIXED
-//				if (perInfoCategory.get().getIsFixed() == IsFixed.FIXED) {
-//					switch (perInfoCategory.get().getCategoryCode().v()) {
-//						case "CS00003":
-//							break;
-//						case "CS00004":
-//							break;
-//						case "CS00014":
-//							break;
-//						case "CS00015":
-//							break;
-//					}
-//				} else {
-//					
-//				}
-//			} 
-			// In case of Employee
-//			else if(perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
-//				// IS FIXED
-//				if (perInfoCategory.get().getIsFixed() == IsFixed.FIXED) {
-//					
-//				} else {
-//					
-//				}
-//			}
-//		}
 		
 	}
 	
