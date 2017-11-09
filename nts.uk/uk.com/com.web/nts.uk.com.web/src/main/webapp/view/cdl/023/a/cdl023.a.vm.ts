@@ -38,7 +38,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             let dfd = $.Deferred();
 
             // get data shared
-            let object: any = nts.uk.ui.windows.getShared("ObjectDuplication");
+            let object: any = nts.uk.ui.windows.getShared("CDL023Input");
             self.code(object.code);
             self.name(object.name);
             self.targetType = object.targetType;
@@ -52,6 +52,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          * closeDialog
          */
         public closeDialog() {
+            nts.uk.ui.windows.setShared("CDL023Cancel", true);
             nts.uk.ui.windows.close();
         }
 
