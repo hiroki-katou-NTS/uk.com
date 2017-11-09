@@ -100,10 +100,11 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		applicationData.getListPhase().stream().forEach(x -> {
 			x.getListFrame().stream().forEach(y ->{
 				//ログイン者の承認区分
-				if(y.getListApproveAccepted().contains(employeeID)) {
-					int indexLogin = y.getListApproveAccepted().indexOf(employeeID);
-					outputData.setApprovalATR(y.getListApproveAccepted().get(indexLogin).getApprovalATR());
-				}
+				y.getListApproveAccepted().stream().forEach(z ->{
+					if(z.getApproverSID().equals(employeeID)) {
+						outputData.setApprovalATR(z.getApprovalATR());
+					}
+				});				
 			});
 		});
 		// 利用者をチェックする(Check người sử dụng)
