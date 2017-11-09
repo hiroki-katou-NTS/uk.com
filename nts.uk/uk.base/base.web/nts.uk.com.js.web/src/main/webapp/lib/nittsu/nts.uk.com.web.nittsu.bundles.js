@@ -9357,6 +9357,9 @@ var nts;
                                 container.children('.steps').children('ul').children('.done').addClass('step-prev');
                                 container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                                 active(container.steps("getCurrentIndex"));
+                                if (container.data("waitStepShowed")) {
+                                    container.trigger("stepShowed");
+                                }
                                 return true;
                             }
                         }).data("length", options.length);
@@ -10941,7 +10944,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_17) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -10972,30 +10975,65 @@ var nts;
                         ;
                     };
                     function begin(wizard) {
+                        var dfd = $.Deferred();
+                        wizard.data("waitStepShowed", true);
                         wizard.setStep(0);
-                        return wizard;
+                        wizard.bind("stepShowed", function (evt, ui) {
+                            wizard.unbind("stepShowed");
+                            wizard.data("waitStepShowed", false);
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
                     }
                     function end(wizard) {
+                        var dfd = $.Deferred();
+                        wizard.data("waitStepShowed", true);
                         wizard.setStep(wizard.data("length") - 1);
-                        return wizard;
+                        wizard.bind("stepShowed", function (evt, ui) {
+                            wizard.unbind("stepShowed");
+                            wizard.data("waitStepShowed", false);
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
                     }
                     function goto(wizard, index) {
+                        var dfd = $.Deferred();
+                        wizard.data("waitStepShowed", true);
                         wizard.setStep(index);
-                        return wizard;
+                        wizard.bind("stepShowed", function (evt, ui) {
+                            wizard.unbind("stepShowed");
+                            wizard.data("waitStepShowed", false);
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
                     }
                     function prev(wizard) {
+                        var dfd = $.Deferred();
+                        wizard.data("waitStepShowed", true);
                         wizard.steps("previous");
-                        return wizard;
+                        wizard.bind("stepShowed", function (evt, ui) {
+                            wizard.unbind("stepShowed");
+                            wizard.data("waitStepShowed", false);
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
                     }
                     function next(wizard) {
+                        var dfd = $.Deferred();
+                        wizard.data("waitStepShowed", true);
                         wizard.steps("next");
-                        return wizard;
+                        wizard.bind("stepShowed", function (evt, ui) {
+                            wizard.unbind("stepShowed");
+                            wizard.data("waitStepShowed", false);
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
                     }
                     function getCurrentStep(wizard) {
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
