@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetti
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTimeFunc;
 
 /**
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTi
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FormTimeFuncCommand {
     
     /*コード*/

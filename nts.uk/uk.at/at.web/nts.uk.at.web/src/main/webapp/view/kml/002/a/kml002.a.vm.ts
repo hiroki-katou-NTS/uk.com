@@ -28,6 +28,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
         dataB: any;
         dataC: any;
         dataD: any;
+        dataE: any;
+        dataF: any;
+        dataG: any;
         
         constructor() {
             var self = this;
@@ -381,7 +384,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     //for C screen
                     formTime: self.calculatorItems()[i].attribute() == 0 ? self.dataC : null,
                     //for D screen
-                    formPeople: self.calculatorItems()[i].attribute() == 2 ? self.dataD : null
+                    formPeople: self.calculatorItems()[i].attribute() == 2 ? self.dataD : null,
+                    //for E screen
+                    
+                    //for F screen
+                    
+                    //for G screen
+                    
                 };
                 
                 verticalCalItems.push(item);
@@ -663,7 +672,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 } else if(attribute == 1) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
-                    
+                        self.dataE = nts.uk.ui.windows.getShared("KML002_E_DATA");
                     }); 
                 } else if(attribute == 2) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
@@ -673,12 +682,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 } else if(attribute == 3) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
-                    
+                        self.dataF = nts.uk.ui.windows.getShared("KML002_F_DATA");
                     }); 
                 } else if(attribute == 4) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
-                    
+                        self.dataG = nts.uk.ui.windows.getShared("KML002_G_DATA");
                     }); 
                 }
             }
