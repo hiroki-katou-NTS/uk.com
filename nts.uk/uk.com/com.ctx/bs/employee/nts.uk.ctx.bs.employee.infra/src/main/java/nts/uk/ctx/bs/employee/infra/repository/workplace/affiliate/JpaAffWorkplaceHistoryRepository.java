@@ -262,6 +262,15 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 				.collect(Collectors.toList());
 	}
 	/**
+	 * Convert from domain to entity
+	 * @param domain
+	 * @return
+	 */
+	private KmnmtAffiliWorkplaceHist toEntity(AffWorkplaceHistory domain){
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+		return new KmnmtAffiliWorkplaceHist(key, domain.getPeriod().end());
+	}
+	/**
 	 * ドメインモデル「所属職場」を削除する
 	 * @param domain
 	 */
@@ -270,5 +279,13 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
 		
 		this.commandProxy().remove(KmnmtAffiliWorkplaceHist.class,key);
+	}
+	/**
+	 * ドメインモデル「所属職場」を新規登録する
+	 * @param domain
+	 */
+	@Override
+	public void addAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		this.commandProxy().insert(toEntity(domain));
 	}
 }

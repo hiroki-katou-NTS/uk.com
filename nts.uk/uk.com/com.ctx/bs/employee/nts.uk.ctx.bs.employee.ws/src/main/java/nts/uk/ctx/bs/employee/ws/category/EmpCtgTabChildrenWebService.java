@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.find.person.category.EmpPerCtgInfoDto;
 import nts.uk.ctx.bs.employee.app.find.person.category.EmpPerInfoCategoryFinder;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
@@ -28,9 +27,9 @@ public class EmpCtgTabChildrenWebService extends WebService{
 	 */
 	
 	@POST
-	@Path("find/getCtgAndItemByCtgId/{categoryId}")
-	public EmpPerCtgInfoDto getCtgAndItemByCtgId(@PathParam("categoryId") String ctgId){
-		return this.empPerInfoCategoryFinder.getCtgAndItemByCtgId(ctgId);
+	@Path("find/getCtgTab/{categoryId}")
+	public List<PersonInfoCategory> getCtgTab(@PathParam("categoryId") String ctgId){
+		return null;
 	}
 	
 	/**
@@ -41,25 +40,12 @@ public class EmpCtgTabChildrenWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("find/getCtgAndChildrenByParams/{employeeId}/{categoryId}/{parentInfoId}")
-	public EmpPerCtgInfoDto getCtgAndChildrenByParams(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
-			@PathParam("parentInfoId") String parentInfoId){
-		return this.empPerInfoCategoryFinder.getCtgAndItemByParent(employeeId, ctgId, parentInfoId);
+	@Path("find/getTabDetail/{employeeId}/{categoryId}/{infoId}")
+	public List<Object> getTabDetail(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
+			@PathParam("infoId") String parentInfoId){
+		return null;
 	}
-	
-
-	/**
-	 * lấy category và danh sách category con của nó
-	 * @param ctgId
-	 * @return
-	 */
-	
-	@POST
-	@Path("find/getCtgAndChildren/{categoryId}")
-	public List<PersonInfoCategory> getCtgAndChildren(@PathParam("categoryId") String ctgId){
-		return this.empPerInfoCategoryFinder.getCtgAndChildren(ctgId);
-	}
-	
+		
 	/**
 	 * lấy item và data list
 	 * @param employeeId
@@ -68,9 +54,9 @@ public class EmpCtgTabChildrenWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("find/getItemInCtgAndChildrenList/{employeeId}/{categoryId}/{parentInfoId}")
-	public EmpPerCtgInfoDto getItemInCtgAndChildrenList(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
-			@PathParam("parentInfoId") String parentInfoId){
-		return this.empPerInfoCategoryFinder.getItemInCtgAndChildrenList(employeeId, ctgId, parentInfoId);
+	@Path("find/getTabSubDetail/{employeeId}/{categoryId}/{subDetailId}")
+	public List<Object> getTabSubDetail(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
+			@PathParam("subDetailId") String parentInfoId){
+		return null;
 	}
 }

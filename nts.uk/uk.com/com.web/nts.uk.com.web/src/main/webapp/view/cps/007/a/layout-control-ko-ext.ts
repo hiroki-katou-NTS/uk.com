@@ -431,7 +431,7 @@ module nts.custombinding {
                                         _items: items && _.filter(items(), function(x, i) { return i > 0}),
                                         __items: items && _.filter(items(), function(x, i) { return i >= 0})
                                     }">
-                               <div data-bind="if: layoutItemType == 0">
+                               <div data-bind="if: layoutItemType == 'ITEM'">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
                                             .filter(function(x) { return [3, 4, 5, 6].indexOf((x.item||{}).dataTypeValue) == -1})
                                             .map(function(x) { return x.itemDefId.replace(/-/g, '') })
@@ -458,7 +458,7 @@ module nts.custombinding {
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: layoutItemType == 1">            
+                                <div data-bind="if: layoutItemType == 'LIST'">            
                                     <div class="item-controls">
                                         <div data-bind="ntsFormLabel: { required: !!_.find(_items, function(x) { return !!x.required }), text: className || '' }"></div>
                                         <div class="multiple-items table-container header-1rows">
@@ -520,7 +520,7 @@ module nts.custombinding {
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: layoutItemType == 2" class="item-sperator">
+                                <div data-bind="if: layoutItemType == 'SeparatorLine'" class="item-sperator">
                                     <hr />
                                 </div>
                                 <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove(cls, event); }">✖</span>
@@ -1212,7 +1212,6 @@ module nts.custombinding {
                         def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
 
                         def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
-
                         def.required = _.has(def, "required") && def.required || !!item.isRequired;
 
                         def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
@@ -1749,9 +1748,9 @@ module nts.custombinding {
 
     // define ITEM_CLASSIFICATION_TYPE
     enum IT_CLA_TYPE {
-        ITEM = 0, // single item
-        LIST = 1, // list item
-        SPER = 2 // line item
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 
     // define ITEM_CATEGORY_TYPE

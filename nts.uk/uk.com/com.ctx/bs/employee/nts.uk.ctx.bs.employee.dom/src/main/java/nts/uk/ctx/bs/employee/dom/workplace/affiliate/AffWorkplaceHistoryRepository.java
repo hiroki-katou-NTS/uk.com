@@ -54,6 +54,11 @@ public interface AffWorkplaceHistoryRepository {
 	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
 			GeneralDate baseDate);
 	/**
+	 * ドメインモデル「所属職場」を新規登録する
+	 * @param domain
+	 */
+	void addAffWorkplaceHistory(AffWorkplaceHistory domain);
+	/**
 	 * ドメインモデル「所属職場」を削除する
 	 * @param domain
 	 */

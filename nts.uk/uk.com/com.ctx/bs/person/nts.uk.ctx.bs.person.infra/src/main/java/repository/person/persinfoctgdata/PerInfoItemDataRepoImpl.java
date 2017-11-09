@@ -45,4 +45,17 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 				.collect(Collectors.toList());
 	}
 
+	private PpemtPerInfoItemData toEntity(PersonInfoItemData domain){
+		return new PpemtPerInfoItemData();
+	}
+	/**
+	 * Add item data
+	 * @param domain
+	 */
+	@Override
+	public void addItemData(PersonInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

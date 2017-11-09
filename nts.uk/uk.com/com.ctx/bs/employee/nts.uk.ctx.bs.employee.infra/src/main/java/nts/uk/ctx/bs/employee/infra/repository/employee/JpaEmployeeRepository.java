@@ -313,7 +313,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return returnStr;
 	}
 
-	// sonnlb
+	// sonnlb code start
 
 	@Override
 	public Boolean isDuplicateEmpCode(String companyId, String employeeCode) {
@@ -328,6 +328,14 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 		return false;
 	}
+	
+	@Override
+	public void addNewEmployee(Employee domain) {
+		this.commandProxy().insert(toEntityEmployee(domain));
+		
+	}
+	
+	//sonnlb code end
 
 	// laitv
 	@Override

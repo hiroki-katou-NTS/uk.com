@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
@@ -51,5 +52,29 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
 				.setParameter("recordId", recordId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void addNewCategoryData(PerInfoCtgData perInfoCtgData) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
 	}
 }

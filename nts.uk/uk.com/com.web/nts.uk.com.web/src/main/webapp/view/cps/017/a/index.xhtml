@@ -175,10 +175,9 @@
 					</div>
 
 					<div class="formlabel">
-						<div class="coll"
-							style="margin-right: 26px;"
+						<div class="coll" style="margin-right: 26px;"
 							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">#{i18n.getText('CPS017_23')}</div>
-						<input style="width: 100px;"
+						<input style="width: 150px;"
 							data-bind="ntsTextEditor: {
 									value: externalCD,
 									constraint: 'listSelection',
@@ -189,60 +188,14 @@
 					</div>
 
 					<div class="distance">
-						<div class="coll"
-							style = "margin-right: 45px;"
+						<div class="coll" style="margin-right: 45px;"
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
 							<label>#{i18n.getText('CPS016_21')}</label>
 						</div>
-						<textarea
-							style="width: 310px; height: 110px; vertical-align: top;"
+						<textarea style="width: 310px; height: 80px; vertical-align: top;"
 							data-bind="ntsMultilineEditor: { value: memoSelection , constraint: 'MemoSelection',required: false}" />
 					</div>
 
-					<!--
-					
-					<div class="formlabel">
-						<div data-bind="ntsFormLabel: {}" class='distane'>
-							<label>#{i18n.getText('CPS017_23')}</label>
-						</div>
-
-					</div>
-
-					
-					
-					<div class="distance">
-
-						<input id="externalCode"
-							data-bind="ntsTextEditor: {
-								value: currentItemSel().current_sel_item_id,
-								required: true,
-								enable: true,
-								immediate: false}" />
-
-					</div>
-
-					
-					
-					<div class="formlabel">
-						<div data-bind="ntsFormLabel: {}" class='distane'>
-							<label>#{i18n.getText('CPS017_25')}</label>
-						</div>
-
-					</div>
-
-					
-					<div class="distance">
-
-						<textarea id="memo"
-							data-bind="ntsMultilineEditor: {
-							value: currentItemSel().current_sel_item_id,
-							enable: true,
-							immediate: false}" />
-
-					</div>
- 			
-
-					 -->
 				</div>
 
 
