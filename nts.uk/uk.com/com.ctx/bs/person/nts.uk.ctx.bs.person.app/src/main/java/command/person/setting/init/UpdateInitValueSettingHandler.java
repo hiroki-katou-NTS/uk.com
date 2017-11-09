@@ -159,7 +159,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								this.itemRepo.update(itemExist.get());
 
 							}
-						} else  {
+						} else if (c.getSelectedRuleCode() > 2) {
 
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
@@ -226,7 +226,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setStringValue(new StringValue(c.getSelectionId()));
 
 							}
-						} else {
+						} else if (c.getSelectedRuleCode() > 2) {
 
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
@@ -314,7 +314,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								this.itemRepo.update(itemExist.get());
 
 							}
-						} else  {
+						} else if (c.getSelectedRuleCode() > 2) {
 
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
@@ -386,7 +386,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								this.itemRepo.update(item);
 
 							}
-						} else {
+						} else if (c.getSelectedRuleCode() > 2){
 
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
