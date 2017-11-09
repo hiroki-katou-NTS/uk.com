@@ -162,6 +162,10 @@ public class LayoutFinder {
 	private CopySetItemFinder copySetItemFinder;
 	// sonnlb end
 
+	/**
+	 * @param query
+	 * @return get layout and data of layout with browsing employee
+	 */
 	public EmpMaintLayoutDto getLayout(LayoutQuery query) {
 		// query properties
 		GeneralDate standardDate = GeneralDate.legacyDate(query.getStandardDate());
@@ -189,8 +193,8 @@ public class LayoutFinder {
 		boolean selfBrowsing = browsingEmpId == loginEmployeeId;
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
 		/*
-		 *  for each class-item, check author of person who login with class-item 
-		 *  then, get data for class-item 
+		 * for each class-item, check author of person who login with class-item
+		 * then, get data for class-item
 		 */
 		for (LayoutPersonInfoClsDto classItem : itemClassList) {
 			// if item is separator line, do not check
@@ -203,7 +207,7 @@ public class LayoutFinder {
 						classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
 						authClassItem.getListItemDf());
 				authClassItem.setListItemDf(dataInfoItems);
-				
+
 				PersonInfoCategory perInfoCategory = perInfoCateRepo
 						.getPerInfoCategory(authClassItem.getPersonInfoCategoryID(), contractCode).get();
 				// get data
@@ -227,7 +231,7 @@ public class LayoutFinder {
 	 * @param roleId
 	 * @param item
 	 * @param selfBrowsing
-	 * Target: check author of person who login with class-item 
+	 *            Target: check author of person who login with class-item
 	 * @return
 	 */
 	private boolean validateAuthClassItem(String roleId, LayoutPersonInfoClsDto item, boolean selfBrowsing) {
@@ -253,7 +257,8 @@ public class LayoutFinder {
 	 * @param roleId
 	 * @param selfBrowsing
 	 * @param listItemDef
-	 * Target: check author of person who login with each definition-items in class-item
+	 *            Target: check author of person who login with each
+	 *            definition-items in class-item
 	 * @return
 	 */
 	private List<PerInfoItemDefDto> validateAuthItem(String mainteLayoutId, String perInfocategoryId,
@@ -272,6 +277,7 @@ public class LayoutFinder {
 			}
 		}
 		return dataInfoItems;
+
 	}
 
 	/**
@@ -280,7 +286,7 @@ public class LayoutFinder {
 	 * @param standandDate
 	 * @param personId
 	 * @param employeeId
-	 * Target: get data with definition-items
+	 *            Target: get data with definition-items
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate standandDate, String personId, String employeeId) {
@@ -292,24 +298,28 @@ public class LayoutFinder {
 				case "CS00001":
 					// Person
 					Person person = personRepo.getByPersonId(personId).get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							person);
+					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem, person,
+							null);
 					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
 							perInItemDataRepo.getAllInfoItemByRecordId(personId));
 					break;
 				case "CS00003":
 					// CurrentAddress
-					CurrentAddress currentAddress = currentAddressRepo.get(personId, standandDate);
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							currentAddress);
-					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
-							perInItemDataRepo.getAllInfoItemByRecordId(currentAddress.getCurrentAddressId()));
+					Optional<CurrentAddress> currentAddressOpt = currentAddressRepo.getByPerIdAndStd(personId,
+							standandDate);
+					if (currentAddressOpt.isPresent()) {
+						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
+								currentAddressOpt.get(), null);
+						matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
+								perInItemDataRepo
+										.getAllInfoItemByRecordId(currentAddressOpt.get().getCurrentAddressId()));
+					}
 					break;
 				case "CS00014":
 					// WidowHistory
 					WidowHistory widowHistory = widowHistoryRepo.get();
 					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							widowHistory);
+							widowHistory, null);
 					matchPersDataForSingleClsItem(perInfoCategory.getCategoryCode().v(), authClassItem,
 							perInItemDataRepo.getAllInfoItemByRecordId(widowHistory.getWidowHistoryId()));
 					break;
@@ -338,7 +348,7 @@ public class LayoutFinder {
 				case "CS00002":
 					Employee employee = employeeRepo.getBySid(employeeId).get();
 					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							employee);
+							employee, null);
 					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
 							empInItemDataRepo.getAllInfoItemByRecordId(employeeId));
 					break;
@@ -347,7 +357,7 @@ public class LayoutFinder {
 							standandDate);
 					if (tempAbsc.isPresent()) {
 						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								tempAbsc.get());
+								tempAbsc.get(), null);
 						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
 								empInItemDataRepo.getAllInfoItemByRecordId(tempAbsc.get().getTempAbsenceId()));
 					}
@@ -358,7 +368,7 @@ public class LayoutFinder {
 							standandDate);
 					if (jobTitleMainOpt.isPresent()) {
 						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-								jobTitleMainOpt.get());
+								jobTitleMainOpt.get(), null);
 						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
 								empInItemDataRepo.getAllInfoItemByRecordId(jobTitleMainOpt.get().getJobTitleId()));
 					}
@@ -368,27 +378,31 @@ public class LayoutFinder {
 					AssignedWorkplace assignedWorkplace = assWorkPlaceRepo
 							.getByEmpIdAndStandDate(employeeId, standandDate).get();
 					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							assignedWorkplace);
+							assignedWorkplace, null);
 					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
 							empInItemDataRepo.getAllInfoItemByRecordId(assignedWorkplace.getAssignedWorkplaceId()));
 					break;
 				case "CS00011":
 					// Affiliation Department
-					AffiliationDepartment affDepartment = affDepartmentRepo
-							.getByEmpIdAndStandDate(employeeId, standandDate).get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							affDepartment);
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-							empInItemDataRepo.getAllInfoItemByRecordId(affDepartment.getDepartmentId()));
+					Optional<AffiliationDepartment> affDepartmentOpt = affDepartmentRepo
+							.getByEmpIdAndStandDate(employeeId, standandDate);
+					if (affDepartmentOpt.isPresent()) {
+						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
+								affDepartmentOpt.get(), null);
+						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
+								empInItemDataRepo.getAllInfoItemByRecordId(affDepartmentOpt.get().getDepartmentId()));
+					}
 					break;
 				case "CS00012":
 					// Sub Job Position
-					SubJobPosition subJobPosition = subJobPosRepo.getByEmpIdAndStandDate(employeeId, standandDate)
-							.get();
-					ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
-							subJobPosition);
-					matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
-							empInItemDataRepo.getAllInfoItemByRecordId(subJobPosition.getAffiDeptId()));
+					Optional<SubJobPosition> subJobPositionOpt = subJobPosRepo.getByEmpIdAndStandDate(employeeId,
+							standandDate);
+					if (subJobPositionOpt.isPresent()) {
+						ItemDefinitionFactory.matchInformation(perInfoCategory.getCategoryCode().v(), authClassItem,
+								subJobPositionOpt.get(), null);
+						matchEmpDataForDefItems(perInfoCategory.getCategoryCode().v(), authClassItem,
+								empInItemDataRepo.getAllInfoItemByRecordId(subJobPositionOpt.get().getAffiDeptId()));
+					}
 					break;
 				}
 			} else {
@@ -418,7 +432,7 @@ public class LayoutFinder {
 	 * @param standandDate
 	 * @param personId
 	 * @param employeeId
-	 * Target: get data with definition-items
+	 *            Target: get data with definition-items
 	 */
 	private void getDataforListItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
 			GeneralDate standandDate, String personId, String employeeId) {
@@ -477,8 +491,8 @@ public class LayoutFinder {
 	 * @param categoryCode
 	 * @param authClassItem
 	 * @param personId
-	 * @return
-	 * Target: get OPTIONAL data with definition-items for item which have type is LIST
+	 * @return Target: get OPTIONAL data with definition-items for item which
+	 *         have type is LIST
 	 */
 	private Map<String, List<LayoutPersonInfoValueDto>> getPersDataOptionalForListClsItem(String categoryCode,
 			LayoutPersonInfoClsDto authClassItem, String personId) {
@@ -523,8 +537,7 @@ public class LayoutFinder {
 	/**
 	 * @param mapFixData
 	 * @param mapOptionData
-	 * @return
-	 * Target: map data of fixed items with optional items 
+	 * @return Target: map data of fixed items with optional items
 	 */
 	private List<Object> mapFixDataWithOptionData(Map<String, List<LayoutPersonInfoValueDto>> mapFixData,
 			Map<String, List<LayoutPersonInfoValueDto>> mapOptionData) {
@@ -545,8 +558,7 @@ public class LayoutFinder {
 	 * @param categoryCode
 	 * @param authClassItem
 	 * @param employeeId
-	 * @return
-	 * Target
+	 * @return Target
 	 */
 	private Map<String, List<LayoutPersonInfoValueDto>> getEmpDataForListClsItem(String categoryCode,
 			LayoutPersonInfoClsDto authClassItem, String employeeId) {
@@ -592,7 +604,7 @@ public class LayoutFinder {
 	 * @param authClassItem
 	 * @param personId
 	 * @param standandDate
-	 * Target: get data with history case. Person case
+	 *            Target: get data with history case. Person case
 	 */
 	private void getPersDataHistoryType(String categoryCode, String perInfoCategoryId,
 			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate standandDate) {
@@ -631,7 +643,7 @@ public class LayoutFinder {
 	 * @param authClassItem
 	 * @param personId
 	 * @param standandDate
-	 * Target: get data with history case. Employee case
+	 *            Target: get data with history case. Employee case
 	 */
 	private void getEmpDataHistoryType(String categoryCode, String perInfoCategoryId,
 			LayoutPersonInfoClsDto authClassItem, String personId, GeneralDate standandDate) {
@@ -668,7 +680,7 @@ public class LayoutFinder {
 	 * @param categoryCode
 	 * @param authClassItem
 	 * @param dataItems
-	 * Target: map optional data with definition item. Person case
+	 *            Target: map optional data with definition item. Person case
 	 */
 	private void matchPersDataForSingleClsItem(String categoryCode, LayoutPersonInfoClsDto authClassItem,
 			List<PersonInfoItemData> dataItems) {
@@ -700,7 +712,7 @@ public class LayoutFinder {
 	 * @param categoryCode
 	 * @param authClassItem
 	 * @param dataItems
-	 * Target: map optional data with definition item. employee case
+	 *            Target: map optional data with definition item. employee case
 	 */
 	private void matchEmpDataForDefItems(String categoryCode, LayoutPersonInfoClsDto authClassItem,
 			List<EmpInfoItemData> dataItems) {
@@ -728,8 +740,13 @@ public class LayoutFinder {
 
 	}
 
-	// sonnlb code
+	// sonnlb code start
 
+	/**
+	 * get Layout Dto by create type 
+	 * @param command : command from client push to webservice
+	 * @return NewLayoutDto
+	 */
 	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
 
 		Optional<NewLayout> layout = repo.getLayout();
@@ -745,10 +762,10 @@ public class LayoutFinder {
 
 		if (command.getCreateType() != 3) {
 
-			List<SettingItemDto> allItemData = loadAllItemByCreateType(command.getCreateType(),
+			List<SettingItemDto> layoutItemList = loadAllItemByCreateType(command.getCreateType(),
 					command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
 
-			if (allItemData.isEmpty()) {
+			if (layoutItemList.isEmpty()) {
 
 				return null;
 
@@ -759,7 +776,7 @@ public class LayoutFinder {
 				switch (layoutType) {
 				case ITEM: // item
 
-					List<Object> itemValues = createItemValues(itemCls.getListItemDf(), allItemData);
+					List<Object> itemValues = createItemValueList(itemCls.getListItemDf(), layoutItemList);
 
 					itemCls.setItems(itemValues);
 
@@ -785,11 +802,17 @@ public class LayoutFinder {
 
 	}
 
-	private List<Object> createItemValues(List<PerInfoItemDefDto> listItemDf, List<SettingItemDto> allItemData) {
+	/**
+	 * create item list from each item layout list and value from dataSourceList
+	 * @param dataSourceList : datasource List
+	 * @param layoutItemList : itemList need set value
+	 * @return itemList as List<Object>
+	 */
+	private List<Object> createItemValueList(List<PerInfoItemDefDto> dataSourceList, List<SettingItemDto> layoutItemList) {
 		List<Object> itemValueList = new ArrayList<Object>();
-		for (PerInfoItemDefDto itemDf : listItemDf) {
+		for (PerInfoItemDefDto itemDf : dataSourceList) {
 
-			SettingItemDto item = findItem(allItemData, itemDf);
+			SettingItemDto item = findItemFromList(layoutItemList, itemDf);
 
 			if (item != null) {
 				// because is single item
@@ -800,7 +823,7 @@ public class LayoutFinder {
 				itemValueList.add(value);
 			} else {
 				// remove itemDf not found
-				listItemDf.remove(itemDf);
+				layoutItemList.remove(itemDf);
 
 			}
 
@@ -808,12 +831,26 @@ public class LayoutFinder {
 		return itemValueList;
 	}
 
-	private SettingItemDto findItem(List<SettingItemDto> allItemData, PerInfoItemDefDto itemDf) {
+	/**
+	 * get item from list when same itemcode and categoryId
+	 * @param itemDataList list source
+	 * @param item condiction
+	 * @return SettingItemDto
+	 */
+	private SettingItemDto findItemFromList(List<SettingItemDto> itemDataList, PerInfoItemDefDto item) {
 
-		return allItemData.stream().filter(i -> i.getItemCode().equals(itemDf.getItemCode())
-				&& i.getPerInfoCtgId().equals(itemDf.getPerInfoCtgId())).findFirst().orElse(null);
+		return itemDataList.stream().filter(i -> i.getItemCode().equals(item.getItemCode())
+				&& i.getPerInfoCtgId().equals(item.getPerInfoCtgId())).findFirst().orElse(null);
 	}
 
+	/**
+	 * load All SettingItemDto in database by createType
+	 * @param createType : type client need create data
+	 * @param initSettingId : settingId need find item in
+	 * @param baseDate : date need find
+	 * @param employeeCopyId : id of employee copy 
+	 * @return SettingItemDto List
+	 */
 	public List<SettingItemDto> loadAllItemByCreateType(int createType, String initSettingId, GeneralDate baseDate,
 			String employeeCopyId) {
 		// get all Data

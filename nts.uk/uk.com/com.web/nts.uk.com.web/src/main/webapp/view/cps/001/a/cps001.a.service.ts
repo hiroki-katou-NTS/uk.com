@@ -8,7 +8,8 @@ module cps001.a.service {
             getDetails: "ctx/bs/person/maintenance/findOne/{0}"
         },
         category: {
-            'getData': 'bs/employee/category/getAll/{0}'
+            'getData': 'bs/employee/category/getAll/{0}',
+            'getTabInfo': 'bs/employee/category/tabchildren/find/getTabDetail/{0}/{1}/{2}', //{employeeId}/{categoryId}/{infoId} 
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'

@@ -1,5 +1,6 @@
 package command.person.setting.selectionitem.selection;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionRepository;
 
@@ -41,18 +44,23 @@ public class RemoveHistoryCommandHandler extends CommandHandler<RemoveHistoryCom
 		// liem tra domain: co 1history ko the xoa dc:履歴が1件のみの場合削除できない#Msg_57
 		Optional<PerInfoHistorySelection> optCheckExitByHistId = this.perInfoHistSeleRepo
 				.getAllHistoryByHistId(command.getHistId());
-		if (optCheckExitByHistId.isPresent()) {
+		if (!optCheckExitByHistId.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_57"));
 		}
 
 		// Xoa domain: history
 		this.perInfoHistSeleRepo.remove(getHistId);
 
-		// Xoa domain: SelectionS
-		this.selectionRepo.remove(getHistId);
-
+		// Xoa Selection:
+		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(getHistId);
+		selectionList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionID()));
+		
 		// Xoa domain: Selection Order
-		this.selectionOrderRepo.remove(getHistId);
+		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(getHistId);
+		orderList.stream().forEach(x -> this.selectionOrderRepo.remove(x.getSelectionID()));
+
+		
+		
 	}
 
 }

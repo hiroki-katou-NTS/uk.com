@@ -18,7 +18,8 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="cps001.a.style.css" />
-			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -35,7 +36,10 @@
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }">#{i18n.getText('CPS001_8')}</a>
 			</div>
-			<div id="contents-area" class="cf" data-bind="let: { text: nts.uk.resource.getText, age: function(birthday) { return moment.duration(moment().diff(moment(birthday))).years() } }">
+			<div id="contents-area" class="cf"
+				data-bind="let: { 
+						text: nts.uk.resource.getText
+					}">
 				<div id="ccgcomponent"></div>
 				<div class="left-area">
 					<div class="bg-green caret-right caret-background"
@@ -97,7 +101,8 @@
 							</div>
 						</div>
 						<div class="categorytab">
-							<div class="form-group search-box" data-bind="let: { cat: currentCategory()} ">
+							<div class="form-group search-box"
+								data-bind="let: { cat: currentCategory()} ">
 								<button type="button">#{i18n.getText('CPS001_27')}</button>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
@@ -123,7 +128,10 @@
 					</div>
 				</div>
 				<div class="right-area"
-					data-bind="let: { _pers: person(), _emp: employee() }">
+					data-bind="let: { 
+							_pers: person(), 
+							_emp: employee()
+						}">
 					<div class="top-right-area cf">
 						<div class="avatar-group">
 							<div class="active-panel" data-bind="click: chooseAvatar">
@@ -145,15 +153,18 @@
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_12')}</td>
-											<td>
+											<td
+												data-bind="let: {
+														age: function(birthday) { 
+															return moment.duration(moment().diff(moment(birthday))).years(); 
+														}
+													}">
 												<div class="info first">
-													<span
-														data-bind="text: age(_pers.birthDate())"></span>
+													<span data-bind="text: age(_pers.birthDate())"></span><span>歳</span>
 												</div>
 												<div class="info bg-calendar-ym-set">#{i18n.getText('CPS001_13')}</div>
 												<div class="info">
-													<span data-bind="text: _emp.employeeCode"></span>
-													<span>#{i18n.getText('CPS001_19')}</span>
+													<span data-bind="text: age(_pers.birthDate())"></span><span>年</span>
 												</div>
 											</td>
 										</tr>
@@ -183,14 +194,14 @@
 									<button class="btn btn-location" type="button"
 										data-bind="click: pickLocation">#{i18n.getText('CPS001_20')}</button>
 									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook">#{i18n.getText('CPS001_21')}</button>
+										data-bind="click: uploadebook">#{i18n.getText('CPS001_19')}</button>
 								</div>
 								<div class="column">
 									<button class="btn btn-print" type="button">#{i18n.getText('CPS001_17')}</button>
 								</div>
 							</div>
 							<div class="active-panel">
-								<a class="btn-goout">#{i18n.getText('CPS001_17')}</a>
+								<a class="btn-goout">出向に来ています</a>
 							</div>
 						</div>
 					</div>
@@ -218,9 +229,10 @@
 							<div class="title">category</div>
 							<div
 								data-bind="template: { 
-									name: 'simple-layout', 
+									name: 'cat-with-child', 
 									data: {
-										items: currentLayout().listItemClsDto
+										currentTabCategory: currentTabCategory,
+										listItemClsDto: ko.observableArray([])
 								 	}
 								}"></div>
 						</div>
@@ -331,6 +343,45 @@
 					editAble: 2 }"></div>
 			</script>
 			<script type="text/html" id="cat-with-child">
+				<div id="category-tab"
+					data-bind="ntsTabPanel: {
+							dataSource: [
+								{
+									id: 'cat1', 
+									title: text('CPS001_23'), 
+									content: '.cat1', 
+									enable: ko.observable(true), 
+									visible: ko.observable(true)
+								},
+								{
+									id: 'cat2', 
+									title: text('CPS001_24'), 
+									content: '.cat2', 
+									enable: ko.observable(true), 
+									visible: ko.observable(true)
+								}],
+							active: $data.currentTabCategory
+							}">
+					<div class="cat1">
+							<div
+								data-bind="template: { 
+									name: 'simple-layout', 
+									data: {
+										items: $data.listItemClsDto
+								 	}
+								}"></div>
+					</div>
+					<div class="cat2">
+
+							<div
+								data-bind="template: { 
+									name: 'simple-layout', 
+									data: {
+										items: $data.listItemClsDto
+								 	}
+								}"></div>
+					</div>
+				</div>
 			</script>
 			<script type="text/html" id="cat-with-history">
 			</script>

@@ -63,14 +63,21 @@ module cps001.a.vm {
 
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
 
+        // for employee info.
         listEmployee: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
         employee: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ employeeId: '', workplaceId: '' }));
 
+        // for case: layout
         listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         currentLayout: KnockoutObservable<Layout> = ko.observable(new Layout());
 
+        // for case: combobox
         listCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<Category> = ko.observable(new Category({ id: '' }));
+        
+        // for case: category with childs
+        listTabCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
+        currentTabCategory: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this,
@@ -113,6 +120,7 @@ module cps001.a.vm {
                     service.getPerson(x).done((data: IPersonInfo) => {
                         if (data) {
                             person.personId(data.personId);
+                            person.birthDate(data.birthDate);
                             person.fullName(data.personNameGroup && data.personNameGroup.personName || '');
                         }
                     });
@@ -148,7 +156,7 @@ module cps001.a.vm {
                             x.items = ko.observableArray([]);
 
                             // kiểm tra kiểu item
-                            if (x.layoutItemType == 0) {
+                            if (x.layoutItemType == 'ITEM') {
                                 if (x.listItemDf && x.listItemDf[0]) {
                                     _.each(x.listItemDf, m => {
                                         x.items.push({
@@ -360,7 +368,7 @@ module cps001.a.vm {
         code: KnockoutObservable<string> = ko.observable('');
         avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
         fullName: KnockoutObservable<string> = ko.observable('');
-        //birthDate
+        birthDate: KnockoutObservable<Date> = ko.observable(undefined);
         constructor(param: IPersonInfo) {
             let self = this;
 

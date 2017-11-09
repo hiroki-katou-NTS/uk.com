@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.app.find.layout;
 import java.util.List;
 import java.util.Map;
 
+import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoValueDto;
 import find.person.info.item.PerInfoItemDefDto;
@@ -25,15 +26,14 @@ import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
  * @author danpv
  * 
  *         Class lưu trữ cấu trúc đề mapping ItemDefinition và các Object Domain
- *         dành cho việc chuyển data từ server đến client
- *         File tham khảo
+ *         dành cho việc chuyển data từ server đến client File tham khảo
  *         \\192.168.50.4\share\500_新構想開発\03_概要設計\01_概要設計書\04_共通\CPS_個人情報\個人情報定義\項目定義-説明書.xlsx
  *
  */
 public class ItemDefinitionFactory {
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			CurrentAddress currentAddress) {
+			CurrentAddress currentAddress, ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
 			switch (itemDef.getItemCode()) {
@@ -86,13 +86,14 @@ public class ItemDefinitionFactory {
 				break;
 			}
 			if (data != null) {
-				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+				authClassItem.getItems()
+						.add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data, actionRole));
 			}
 		}
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			List<CurrentAddress> listCurrentAddress) {
+			List<CurrentAddress> listCurrentAddress, ActionRole actionRole) {
 		for (int i = 0; i < listCurrentAddress.size(); i++) {
 			for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 				Object data = null;
@@ -146,7 +147,8 @@ public class ItemDefinitionFactory {
 					break;
 				}
 				if (data != null) {
-					authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+					authClassItem.getItems()
+							.add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data, actionRole));
 				}
 			}
 		}
@@ -154,7 +156,8 @@ public class ItemDefinitionFactory {
 
 	// vinhpx: start
 	// person
-	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Person person) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Person person,
+			ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
 			switch (itemDef.getItemCode()) {
@@ -236,12 +239,14 @@ public class ItemDefinitionFactory {
 				break;
 			}
 			if (data != null) {
-				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+				authClassItem.getItems()
+						.add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data, actionRole));
 			}
 		}
 	}
 
-	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Family family) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Family family,
+			ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
 			switch (itemDef.getItemCode()) {
@@ -315,13 +320,15 @@ public class ItemDefinitionFactory {
 				break;
 			}
 			if (data != null) {
-				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+				authClassItem.getItems()
+						.add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data, actionRole));
 			}
 		}
 	}
 	// vinhpx: end
 
-	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Employee employee) {
+	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem, Employee employee,
+			ActionRole actionRole) {
 		for (PerInfoItemDefDto itemDef : authClassItem.getListItemDf()) {
 			Object data = null;
 			switch (itemDef.getItemCode()) {
@@ -361,41 +368,42 @@ public class ItemDefinitionFactory {
 				break;
 			}
 			if (data != null) {
-				authClassItem.getItems().add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data));
+				authClassItem.getItems()
+						.add(LayoutPersonInfoValueDto.initData(categoryCode, itemDef, data, actionRole));
 			}
 		}
 
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			TemporaryAbsence leaveHoliday) {
+			TemporaryAbsence leaveHoliday, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			JobTitleMain jobTitleMain) {
+			JobTitleMain jobTitleMain, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			AssignedWorkplace assignedWorkplace) {
+			AssignedWorkplace assignedWorkplace, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			AffiliationDepartment affDepartment) {
+			AffiliationDepartment affDepartment, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			SubJobPosition subJobPosition) {
+			SubJobPosition subJobPosition, ActionRole actionRole) {
 	}
 
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
-			WidowHistory widowHistory) {
+			WidowHistory widowHistory, ActionRole actionRole) {
 	}
-	
-	public static Map<String, List<LayoutPersonInfoValueDto>> matchCurrentAddress(LayoutPersonInfoClsDto personInfoClsDto,
-			List<CurrentAddress> currentAddress) {
+
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchCurrentAddress(
+			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<CurrentAddress> currentAddress) {
 		return null;
 	}
-	
+
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchWidowHistory(LayoutPersonInfoClsDto personInfoClsDto,
 			List<WidowHistory> lstWidowHistory) {
 		return null;
@@ -406,14 +414,44 @@ public class ItemDefinitionFactory {
 		return null;
 	}
 
-	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
-			List<Family> families) {
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,List<Family> families) {
 		return null;
 	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamily(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<Family> families) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchWidowHistory(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<WidowHistory> widowHistory) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchPersonEmergencyContact(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<PersonEmergencyContact> personEmergencyContact) {
+		return null;
+	}
+
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchsubJobPoses(LayoutPersonInfoClsDto authClassItem,
 			List<SubJobPosition> subJobPoses) {
 		return null;
 	}
 
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
+			LayoutPersonInfoClsDto personInfoClsDto, List<TemporaryAbsence> temporaryAbsence) {
+		return null;
+	}
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
+			LayoutPersonInfoClsDto personInfoClsDto,ActionRole actionRole, List<TemporaryAbsence> temporaryAbsence) {
+		return null;
+	}
+	
+	
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchJobTitleMain(
+			LayoutPersonInfoClsDto personInfoClsDto,ActionRole actionRole, List<JobTitleMain> jobTitleMain) {
+		return null;
+	}
 }

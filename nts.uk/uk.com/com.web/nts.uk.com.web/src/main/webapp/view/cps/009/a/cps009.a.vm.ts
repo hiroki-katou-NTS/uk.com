@@ -400,8 +400,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         lstItem.push(item.selectionItemId);
                     }
                 });
-                //                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
-                //                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
                 let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
                 let lstFilter = [];
                 self.currentCategory().itemList([]);
@@ -438,7 +436,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return false
             }
             //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectedCode() != 1) {
+            if (objItem.selectionItemRefType != 1) {
                 return false;
             }
             return true;
