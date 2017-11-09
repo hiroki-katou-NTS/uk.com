@@ -19,6 +19,6 @@ public class LayoutQuery {
 	
 	private String browsingEmpId;
 	
-	private Date standandDate;
+	private Date standardDate;
 
 }
