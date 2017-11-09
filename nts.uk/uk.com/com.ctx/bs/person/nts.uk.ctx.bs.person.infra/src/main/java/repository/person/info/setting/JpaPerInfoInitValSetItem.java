@@ -23,12 +23,6 @@ import nts.uk.ctx.bs.person.dom.person.setting.init.item.StringValue;
 @Stateless
 public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoInitValueSetItemRepository {
 
-//	private final String CHECK_ITEM_IS_EXITED = "SELECT a.ppemtPerInfoItemPK.perInfoItemDefId from PpemtPerInfoItem a"
-//			+ " INNER JOIN PpemtPerInfoItemOrder b"
-//			+ " ON a.ppemtPerInfoItemPK.perInfoItemDefId = b.ppemtPerInfoItemPK.perInfoItemDefId "
-//			+ " AND a.perInfoCtgId = b.perInfoCtgId " + " WHERE a.abolitionAtr = 0"
-//			+ " AND a.perInfoCtgId =:perInfoCtgId" + " ORDER BY b.disporder";
-
 	private final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			+ " ITEM.requiredAtr, "
 			+ " SE.settingItemPk.settingId, SE.refMethodAtr, SE.saveDataType, SE.stringValue, SE.intValue, SE.dateValue,"
@@ -42,8 +36,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			// cái này dùng để validate thằng timpoint trên màn hình 22 , 23
 			+ " CM.timepointItemMin , CM.timepointItemMax, "
 			// cái này dùng để validate thằng numberItem trên màn hình 24 , 25
-			+ " CM.numericItemMin, CM.numericItemMax"
-
+			+ " CM.numericItemMin, CM.numericItemMax,"
+			+ "  CASE WHEN SE.settingItemPk.perInfoItemDefId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig"
+			
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd"
 
@@ -56,9 +51,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 			+ " LEFT JOIN PpemtPersonInitValueSettingItem SE"
 			+ " ON CTG.ppemtPerInfoCtgPK.perInfoCtgId = SE.settingItemPk.perInfoCtgId"
+			
 			+ " AND SE.settingItemPk.settingId =:settingId "
 			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
-			+ " AND (SE.settingItemPk.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId OR SE.settingItemPk.perInfoItemDefId IS NULL)"
+			+ " AND (SE.settingItemPk.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId  OR SE.settingItemPk.perInfoItemDefId IS NULL)"
 			+ " ORDER BY E.disporder";
 
 	// SONNLB
@@ -245,8 +241,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId) {
-		return this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
+		List<PerInfoInitValueSetItem> item =  this.queryProxy().query(SEL_ALL_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
 				.setParameter("settingId", settingId).getList(c -> toDomain(c));
+		return item;
 
 	}
 
@@ -365,7 +362,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	@Override
 	public void addItem(PerInfoInitValueSetItem item) {
 		this.commandProxy().insert(toEntity(item));
-		this.getEntityManager().flush();
+
 	}
 
 	@Override
