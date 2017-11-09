@@ -18,7 +18,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="cps001.a.style.css" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -102,10 +102,10 @@
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
 										options: listCategory,
-										optionsValue: 'id',
 										visibleItemsCount: 5,
 										value: cat.id,
 										optionsText: 'categoryName',
+										optionsValue: 'personInfoCategoryID',
 										editable: false,
 										enable: true,
 										columns: [{ prop: 'categoryName', length: 10 }]}"></div>
