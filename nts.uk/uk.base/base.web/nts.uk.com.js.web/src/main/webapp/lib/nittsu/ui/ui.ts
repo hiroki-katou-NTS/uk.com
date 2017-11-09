@@ -613,24 +613,30 @@ module nts.uk.ui {
         }
         
         export function bundledErrors(errors) {
+            var then = $.noop;
             let id = util.randomId();
-            $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
-            let container = $("body").find("#" + id);
-            container.append(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>エラー内容</th>
-                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/>    </table> </div>
-                    <div id='functions-area-bottom'/>`);
-            let errorBody = container.find("tbody");
+            let container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), 
+                functionArea = $("<div id='functions-area-bottom'/>"),
+                errorBoard = $(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>エラー内容</th>
+                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
+                closeButton = $("<button class='ntsButton ntsClose large'/>");
+            
+            let errorBody = errorBoard.find("tbody");
             if($.isArray(errors["errors"])) {
                  _.forEach(errors["errors"], function(error, idx: number){ 
                     addError(errorBody, error, idx + 1);  
                  });   
             } else {
-                addError(errorBody, errors, 1);
+                return alertError(errors);
             }
+                       
+            closeButton.appendTo(functionArea);
+            functionArea.appendTo(container);
+            errorBoard.appendTo(container);
+            container.appendTo($("body")); 
             
-            let functionArea = container.find("#functions-area-bottom");
-            functionArea.append("<button class='ntsButton ntsClose large'/>");
-            container.dialog({
+            setTimeout(function() {
+                container.dialog({ 
                     title: "エラー一覧",   
                     dialogClass: "no-close-btn",
                     modal: false,
@@ -639,16 +645,24 @@ module nts.uk.ui {
                     maxHeight: 500,
                     closeOnEscape: false,
                     open: function() {
-                        container.find("#error-board").css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
-                        container.find("#functions-area-bottom").css({"left": "0px"});
-                        functionArea.find(".ntsClose").text("閉じる").click(function(evt){
+                        errorBoard.css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
+                        functionArea.css({"left": "0px"});
+                        closeButton.text("閉じる").click(function(evt){
                             container.dialog("destroy");  
                             container.remove();
+                            then();
                         });   
                     },
                     close: function(event) {
                     }
                 });
+            }, 0);
+            
+            return {
+                then: function(callback) {
+                    then = callback;
+                }
+            };
         };
     }
 

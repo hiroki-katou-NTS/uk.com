@@ -4193,40 +4193,49 @@ var nts;
                     row.appendTo(errorBody);
                 }
                 function bundledErrors(errors) {
+                    var then = $.noop;
                     var id = uk.util.randomId();
-                    $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
-                    var container = $("body").find("#" + id);
-                    container.append("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>\u30A8\u30E9\u30FC\u5185\u5BB9</th>\n                    <th style='display: none;'/>    <th style='width: 150px;'>\u30A8\u30E9\u30FC\u30B3\u30FC\u30C9</th>   </tr>   </thead>    <tbody/>    </table> </div>\n                    <div id='functions-area-bottom'/>");
-                    var errorBody = container.find("tbody");
+                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>\u30A8\u30E9\u30FC\u5185\u5BB9</th>\n                    <th style='display: none;'/>    <th style='width: 150px;'>\u30A8\u30E9\u30FC\u30B3\u30FC\u30C9</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
+                    var errorBody = errorBoard.find("tbody");
                     if ($.isArray(errors["errors"])) {
                         _.forEach(errors["errors"], function (error, idx) {
                             addError(errorBody, error, idx + 1);
                         });
                     }
                     else {
-                        addError(errorBody, errors, 1);
+                        return alertError(errors);
                     }
-                    var functionArea = container.find("#functions-area-bottom");
-                    functionArea.append("<button class='ntsButton ntsClose large'/>");
-                    container.dialog({
-                        title: "エラー一覧",
-                        dialogClass: "no-close-btn",
-                        modal: false,
-                        resizable: false,
-                        width: 450,
-                        maxHeight: 500,
-                        closeOnEscape: false,
-                        open: function () {
-                            container.find("#error-board").css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
-                            container.find("#functions-area-bottom").css({ "left": "0px" });
-                            functionArea.find(".ntsClose").text("閉じる").click(function (evt) {
-                                container.dialog("destroy");
-                                container.remove();
-                            });
-                        },
-                        close: function (event) {
+                    closeButton.appendTo(functionArea);
+                    functionArea.appendTo(container);
+                    errorBoard.appendTo(container);
+                    container.appendTo($("body"));
+                    setTimeout(function () {
+                        container.dialog({
+                            title: "エラー一覧",
+                            dialogClass: "no-close-btn",
+                            modal: false,
+                            resizable: false,
+                            width: 450,
+                            maxHeight: 500,
+                            closeOnEscape: false,
+                            open: function () {
+                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                                functionArea.css({ "left": "0px" });
+                                closeButton.text("閉じる").click(function (evt) {
+                                    container.dialog("destroy");
+                                    container.remove();
+                                    then();
+                                });
+                            },
+                            close: function (event) {
+                            }
+                        });
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
                         }
-                    });
+                    };
                 }
                 dialog.bundledErrors = bundledErrors;
                 ;
