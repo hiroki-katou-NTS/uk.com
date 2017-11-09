@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -151,8 +152,13 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 		// create query
 		TypedQuery<KshmtPerLaborCond> query = em.createQuery(cq);
 
-		// exclude select
-		return Optional.of(query.getSingleResult());
+		try {
+			// exclude select
+			return Optional.of(query.getSingleResult());
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
+		
 	}
 
 	/**
