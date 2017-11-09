@@ -13,23 +13,23 @@ import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpIn
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName FROM PpemtEmpInfoItemData id"
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.personInfoCtgId,pc.categoryCd FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtEmpInfoCtgData ic"
 			+ " ON id.ppemtEmpInfoItemDataPk.recordId = ic.ppemtEmpInfoCtgDataPk.recordId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" 
-			+ " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.personInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
-			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd";
-	
+			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd AND pc.cid = :companyId AND ic.employeeId= :employeeId";
+
 	private static final String SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE ic.ppemtEmpInfoCtgDataPk.recordId = :recordId";
+
 	@Override
-	public List<EmpInfoItemData> getAllInfoItem(String categoryCd) {
+	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
-				.setParameter("categoryCd", categoryCd).getList(c -> toDomain(c));
+				.setParameter("categoryCd", categoryCd).setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
@@ -40,16 +40,40 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 		GeneralDate dateValue = GeneralDate.fromString(String.valueOf(entity[7].toString()), "yyyy-MM-dd");
 
-		int isRequired = Integer.parseInt(entity[9] != null ? entity[9].toString() : "0");
+		int isRequired = Integer.parseInt(entity[8] != null ? entity[9].toString() : "0");
 
-		return EmpInfoItemData.createFromJavaType(entity[0].toString(), entity[1].toString(), entity[2].toString(),
-				entity[3].toString(), entity[8].toString(), isRequired, dataStateType, entity[5].toString(), intValue,
-				dateValue);
+		return EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(), entity[1].toString(),
+				entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired, dataStateType,
+				entity[5].toString(), intValue, dateValue);
 	}
-	
+
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
 				.setParameter("recordId", recordId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void addItemData(EmpInfoItemData infoItemData) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void addEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateEmpInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -10,5 +10,7 @@ public interface ErrMessageInfoRepository {
 	 * @return
 	 */
 	List<ErrMessageInfo> getAllErrMessageInfoByEmpID(String empCalAndSumExecLogID);
+	
+	void add(ErrMessageInfo errMessageInfo);
 
 }

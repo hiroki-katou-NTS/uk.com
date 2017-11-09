@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.app.find.init.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,12 +8,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.employee.info.itemdata.EmpInfoItemDataFinder;
+import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
+import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.item.ReferenceMethodType;
@@ -31,65 +34,131 @@ public class InitValueSetItemFinder {
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
 	@Inject
-	private EmpInfoItemDataRepository infoItemDataRepo;
+	private EmpInfoItemDataFinder infoItemDataFinder;
 
 	@Inject
 	private EmployeeRepository empBasicInfoRepo;
 
-	// sonnlb
-	public List<InitValueSettingItemDto> getAllInitItem(String settingId, String categoryCd) {
+	@Inject
+	private AffDepartmentRepository affDepartmentRepo;
 
-		List<InitValueSettingItemDto> resultItemList = new ArrayList<InitValueSettingItemDto>();
+	@Inject
+	private AffWorkplaceHistoryRepository affWorkRepo;
+
+	@Inject
+	private TemporaryAbsenceRepository tempAbsenceRepo;
+
+	// sonnlb
+	public List<SettingItemDto> getAllInitItemByCtgCode(String settingId, String categoryCd, GeneralDate baseDate) {
+
+		List<SettingItemDto> resultItemList = new ArrayList<SettingItemDto>();
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 
 		List<PerInfoInitValueSetItem> initListItem = this.settingItemRepo.getAllInitItem(settingId, categoryCd);
 		resultItemList = initListItem.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList());
-		if (hasItemSameAsLogin(initListItem)) {
+		if (isHaveItemSameAsLogin(initListItem)) {
 
-			switch (categoryCd) {
-			//Employee- 社員基本情報
-			case "CS00002":
-				resultItemList = loadEmployeeInfo(resultItemList, companyId, employeeId);
-				break;
-			// 休職・休業
-			case "CS00008":
-				break;
-			// 職務職位履歴
-			case "CS00009":
-
-				break;
-			// 所属職場
-			case "CS00010":
-
-				break;
-			//AffiliationDepartment- 所属部門
-			case "CS00011":
-
-				break;
-
-			}
-			resultItemList.addAll(loadInfoItemList(categoryCd));
+			resultItemList = loadSettingItems(resultItemList, categoryCd, companyId, employeeId, baseDate);
 
 		}
 		return resultItemList;
 	}
 
-	private List<InitValueSettingItemDto> loadInfoItemList(String categoryCd) {
-		return this.infoItemDataRepo.getAllInfoItem(categoryCd).stream().map(x -> fromInfoItemtoDto(x))
-				.collect(Collectors.toList());
+	public List<SettingItemDto> loadSettingItems(List<SettingItemDto> resultItemList, String categoryCd,
+			String companyId, String employeeId, GeneralDate baseDate) {
+		switch (categoryCd) {
+		// 社員基本情報 - Employee
+		case "CS00002":
+			resultItemList = loadEmployeeInfo(resultItemList, companyId, employeeId);
+			break;
+		// 休職・休業 - TemporaryAbsence
+		case "CS00008":
+			resultItemList = loadTemporaryAbsenceInfo(resultItemList, employeeId, baseDate);
+			break;
+		// 職務職位履歴 - JobTitleHistory
+		case "CS00009":
+			resultItemList = loadJobTitleHistoryInfo(resultItemList, employeeId, baseDate);
+			break;
+		// 所属職場 - AffiliationWorkplaceHistory
+		case "CS00010":
+			resultItemList = loadAffiliationWorkPlaceInfo(resultItemList, employeeId, baseDate);
+			break;
+		// 所属部門 - AffiliationDepartment
+		case "CS00011":
+			resultItemList = loadAffiliationDepartmentInfo(resultItemList, employeeId, baseDate);
+			break;
+		}
+
+		resultItemList.addAll(this.infoItemDataFinder.loadInfoItemDataList(categoryCd, companyId, employeeId));
+
+		return resultItemList;
 	}
 
-	private InitValueSettingItemDto fromInfoItemtoDto(EmpInfoItemData domain) {
+	// load JobTitleHistory start
 
-		return InitValueSettingItemDto.createFromJavaType(domain.getItemCode().v(), domain.getItemName(),
-				domain.getIsRequired().value, domain.getDataState().getDataStateType().value,
-				domain.getDataState().getDateValue(), domain.getDataState().getNumberValue(),
-				domain.getDataState().getStringValue());
+	private List<SettingItemDto> loadJobTitleHistoryInfo(List<SettingItemDto> resultItemList, String employeeId,
+			GeneralDate baseDate) {
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+		//
+		// Optional<JobTitleHistory> optJ =
+		// this.job.getByEmpIdAndStandDate(employeeId, baseDate);
+		// if (opttemAbsence.isPresent()) {
+		//
+		// returnList =
+		// mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(),
+		// initItemList);
+		//
+		// }
+		return returnList;
+
 	}
 
-	private boolean hasItemSameAsLogin(List<PerInfoInitValueSetItem> listItem) {
+	// JobTitleHistory end
+	// TemporaryAbsence start
+
+	private List<SettingItemDto> loadTemporaryAbsenceInfo(List<SettingItemDto> initItemList, String employeeId,
+			GeneralDate baseDate) {
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+
+		Optional<TemporaryAbsence> opttemAbsence = this.tempAbsenceRepo.getBySidAndReferDate(employeeId, baseDate);
+		if (opttemAbsence.isPresent()) {
+
+			returnList = mergeTemporaryAbsenceInfoAndItemDefListToListDto(opttemAbsence.get(), initItemList);
+
+		}
+		return returnList;
+	}
+
+	private List<SettingItemDto> mergeTemporaryAbsenceInfoAndItemDefListToListDto(TemporaryAbsence tempDomain,
+			List<SettingItemDto> resultItemList) {
+		// code item not yet
+		for (SettingItemDto itemDto : resultItemList) {
+			String itemCode = itemDto.getItemCode();
+			switch (itemCode) {
+			case "IS00020":
+				itemDto.setData(tempDomain.getTempAbsenceType().value);
+				break;
+			case "IS00021":
+				itemDto.setData(tempDomain.getStartDate());
+				break;
+			case "IS00022":
+				itemDto.setData(tempDomain.getEndDate());
+				break;
+			case "IS00023":
+				itemDto.setData(tempDomain.getTempAbsenceReason());
+				break;
+			case "IS00024":
+				itemDto.setData(tempDomain.getBirthDate());
+				break;
+			}
+		}
+		return resultItemList;
+	}
+	// TemporaryAbsence end
+
+	private boolean isHaveItemSameAsLogin(List<PerInfoInitValueSetItem> listItem) {
 		if (!listItem.isEmpty()) {
 
 			return listItem.stream().filter(obj -> obj.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
@@ -101,11 +170,12 @@ public class InitValueSetItemFinder {
 
 		}
 	}
+	// load Employee Start
 
-	private List<InitValueSettingItemDto> loadEmployeeInfo(List<InitValueSettingItemDto> initItemList, String companyId,
+	private List<SettingItemDto> loadEmployeeInfo(List<SettingItemDto> initItemList, String companyId,
 			String employeeId) {
 
-		List<InitValueSettingItemDto> returnList = new ArrayList<InitValueSettingItemDto>();
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
 
 		Optional<Employee> empDomain = this.empBasicInfoRepo.findBySid(companyId, employeeId);
 		if (empDomain.isPresent()) {
@@ -115,16 +185,10 @@ public class InitValueSetItemFinder {
 
 	}
 
-	private InitValueSettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
-		return InitValueSettingItemDto.createFromJavaType(domain.getItemCode(), domain.getItemName(),
-				domain.getIsRequired().value, domain.getSaveDataType().value, domain.getDateValue(),
-				domain.getIntValue().v(), domain.getStringValue().v());
-	}
+	private List<SettingItemDto> mergeEmpBasicInfoAndItemDefListToListDto(Employee empDomain,
+			List<SettingItemDto> resultItemList) {
 
-	private List<InitValueSettingItemDto> mergeEmpBasicInfoAndItemDefListToListDto(Employee empDomain,
-			List<InitValueSettingItemDto> resultItemList) {
-
-		for (InitValueSettingItemDto itemDto : resultItemList) {
+		for (SettingItemDto itemDto : resultItemList) {
 			String itemCode = itemDto.getItemCode();
 			switch (itemCode) {
 			case "IS00020":
@@ -160,6 +224,83 @@ public class InitValueSetItemFinder {
 		}
 
 		return resultItemList;
+	}
+
+	// Employee End
+
+	// load AffiliationDepartment start
+
+	private List<SettingItemDto> loadAffiliationDepartmentInfo(List<SettingItemDto> initItemList, String employeeId,
+			GeneralDate baseDate) {
+
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+
+		Optional<AffiliationDepartment> affDomain = this.affDepartmentRepo.getByEmpIdAndStandDate(employeeId, baseDate);
+		if (affDomain.isPresent()) {
+			returnList = mergeAffDepartmentAndItemDefListToListDto(affDomain.get(), initItemList);
+		}
+		return returnList;
+	}
+
+	private List<SettingItemDto> mergeAffDepartmentAndItemDefListToListDto(AffiliationDepartment affDomain,
+			List<SettingItemDto> resultItemList) {
+
+		for (SettingItemDto itemDto : resultItemList) {
+			String itemCode = itemDto.getItemCode();
+			switch (itemCode) {
+			case "IS00020":
+				itemDto.setData(affDomain.getPeriod().start());
+				break;
+			case "IS00021":
+				itemDto.setData(affDomain.getPeriod().end());
+				break;
+			}
+		}
+
+		return resultItemList;
+	}
+
+	// AffiliationDepartment end
+
+	// load Aff WorkPlace start
+	private List<SettingItemDto> loadAffiliationWorkPlaceInfo(List<SettingItemDto> initItemList, String employeeId,
+			GeneralDate baseDate) {
+		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+
+		List<AffWorkplaceHistory> affWorkDomain = this.affWorkRepo.searchWorkplaceHistoryByEmployee(employeeId,
+				baseDate);
+		if (!affWorkDomain.isEmpty()) {
+
+			returnList = mergeAffWorkAndItemDefListToListDto(affWorkDomain.get(affWorkDomain.size() - 1), initItemList);
+
+		}
+		return returnList;
+	}
+
+	private List<SettingItemDto> mergeAffWorkAndItemDefListToListDto(AffWorkplaceHistory affWorkDomain,
+			List<SettingItemDto> resultItemList) {
+		// code item not yet
+		for (SettingItemDto itemDto : resultItemList) {
+			String itemCode = itemDto.getItemCode();
+			switch (itemCode) {
+			case "IS00020":
+				itemDto.setData(affWorkDomain.getPeriod().start());
+				break;
+			case "IS00021":
+				itemDto.setData(affWorkDomain.getPeriod().end());
+				break;
+			}
+		}
+		return resultItemList;
+
+	}
+	// Aff WorkPlace end
+
+	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
+		return SettingItemDto.createFromJavaType(domain.getPerInfoCtgId(), domain.getCtgCode(),
+				domain.getPerInfoItemDefId(), domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
+				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
+				domain.getStringValue().v());
 	}
 
 	// sonnlb

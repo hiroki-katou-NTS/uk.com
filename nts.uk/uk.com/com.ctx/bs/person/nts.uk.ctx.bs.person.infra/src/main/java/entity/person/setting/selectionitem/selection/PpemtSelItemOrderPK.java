@@ -23,6 +23,6 @@ public class PpemtSelItemOrderPK implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_ID")
-	public String selectionIdPK;
+	public String selectionId;
 
 }

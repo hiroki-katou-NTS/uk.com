@@ -5,6 +5,7 @@ package nts.uk.ctx.bs.person.dom.person.setting.init;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.CharType;
 /**
@@ -14,6 +15,7 @@ import nts.arc.primitive.constraint.CharType;
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(4)
+@ZeroPaddedCode
 public class ValueSettingCode  extends StringPrimitiveValue<ValueSettingCode>{
 
 	public ValueSettingCode(String rawValue) {
