@@ -80,5 +80,13 @@ public class AffDepartmentRepoImpl extends JpaRepository implements AffDepartmen
 		// Update table
 		this.commandProxy().update(existItem.get());
 	}
+	/**
+	 * ドメインモデル「所属部門（兼務）」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteAffDepartment(AffiliationDepartment domain) {
+		this.commandProxy().remove(BsymtAffiDepartment.class, domain.getId());
+	}
 
 }
