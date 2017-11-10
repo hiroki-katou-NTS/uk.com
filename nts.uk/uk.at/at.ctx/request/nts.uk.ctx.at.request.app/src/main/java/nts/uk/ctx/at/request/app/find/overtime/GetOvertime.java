@@ -187,6 +187,7 @@ public class GetOvertime {
 			}
 		}
 		// 01-03_残業枠を取得: chua xong
+		result.setAppOvertimeNightFlg(appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value);
 		iOvertimePreProcess.getOvertimeHours(overtimeAtr);
 		
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -314,12 +315,12 @@ public class GetOvertime {
 			for (OvertimeInputDto overtimeInputDto : overtimeInputDtos) {
 				for (OvertimeFrame overtimeFrame : overtimeFrames) {
 					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOtFrameNo()) {
-						overtimeInputDto.setAttendanceName(overtimeFrame.getOvertimeFrameName().toString());
+						overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
 						continue;
 					}
 				}
 			}
-			result.setOverTimeInput(overtimeInputDtos);
+			result.setOverTimeInputs(overtimeInputDtos);
 			result.setOverTimeShiftNight(appOvertime.getOverTimeShiftNight());
 			result.setFlexExessTime(appOvertime.getFlexExessTime());
 		}

@@ -1,9 +1,15 @@
-package nts.uk.ctx.at.request.app.find.overtime.dto;
+package nts.uk.ctx.at.request.app.command.application.overtime;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-public class OvertimeInputDto {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class OvertimeInputCommand {
 	/**
 	 * 会社ID
 	 * companyID
@@ -25,7 +31,7 @@ public class OvertimeInputDto {
 	/**
 	 * 勤怠項目Name
 	 */
-	private String frameName;
+	private String attendanceName;
 	
 	/**
 	 * 開始時間
