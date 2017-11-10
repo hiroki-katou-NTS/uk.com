@@ -32,7 +32,7 @@ public class FlexWorkSetting extends AggregateRoot {
 
 	/** The rest setting. */
 	// 休憩設定
-	private FlexRestSetting restSetting;
+	private FlowWorkRestSetting restSetting;
 
 	/** The offday work time. */
 	// 休日勤務時間帯

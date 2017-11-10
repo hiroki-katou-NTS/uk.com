@@ -9,7 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 
 //流動勤務の休憩設定
 @Getter
-public class FlexRestSetting extends DomainObject{
+public class FlowWorkRestSetting extends DomainObject{
 
 	// 共通の休憩設定
 	private CommonRestSetting commonRestSetting;
