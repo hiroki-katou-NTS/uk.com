@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
@@ -83,6 +84,9 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@Override
 	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
 			GeneralDate endDate) {
+		List<KrcdtEmpExecutionLog> test = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
+				.setParameter("companyID", companyID).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList();
 		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
 				.setParameter("companyID", companyID).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());

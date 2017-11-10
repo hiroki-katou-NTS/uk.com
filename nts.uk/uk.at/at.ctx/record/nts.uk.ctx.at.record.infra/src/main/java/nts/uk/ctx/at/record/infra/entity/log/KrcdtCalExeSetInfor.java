@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCDT_CAL_EXE_SET_INFO")
+@Table(name = "KRCST_CAL_EXE_SET_INFO")
 public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -99,9 +99,21 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 	})
 	public KrcdtExecutionLog executionlog;
 	
-	@ManyToOne
-	@JoinColumn(name="OPERATION_CASE_ID", referencedColumnName="OPERATION_CASE_ID", insertable = false, updatable = false)
-	public KrcstCaseSpecExeContent caseSpecExeContent;
+	@OneToOne
+	@JoinColumn(name="CAL_EXECUTION_SET_INFO_ID", referencedColumnName="MONTHLY_AGG_SET_INFOR_ID", insertable = false, updatable = false, nullable=true)
+	public KrcstCaseSpecExeContent caseSpecExeContentMonthly;
+	
+	@OneToOne
+	@JoinColumn(name="CAL_EXECUTION_SET_INFO_ID", referencedColumnName="REF_APPROVAL_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
+	public KrcstCaseSpecExeContent caseSpecExeContentRef;
+	
+	@OneToOne
+	@JoinColumn(name="CAL_EXECUTION_SET_INFO_ID", referencedColumnName="DAILY_CAL_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
+	public KrcstCaseSpecExeContent caseSpecExeContentCal;
+	
+	@OneToOne
+	@JoinColumn(name="CAL_EXECUTION_SET_INFO_ID", referencedColumnName="DAILY_CREAT_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
+	public KrcstCaseSpecExeContent caseSpecExeContentCreat;
 
 	
 	public KrcdtCalExeSetInfor(KrcdtCalExeSetInforPK krcdtCalExeSetInforPK,int executionContent, int executionType,
