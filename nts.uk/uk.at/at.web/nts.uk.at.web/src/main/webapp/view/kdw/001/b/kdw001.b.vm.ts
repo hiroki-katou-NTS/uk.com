@@ -212,6 +212,24 @@ module nts.uk.at.view.kdw001.b {
             }
 
             opendScreenD() {
+                var self = this;
+
+                if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.MonthCountCheck() == false) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                    return;
+                }
+
+                if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 2 && self.selectedCreatDivisionCode() == 2 && self.calDivisionCheck() == false &&
+                    self.dateDivisionCheck() == false &&
+                    self.reflectEmbossingCheck() == false &&
+                    self.masterInforCheck() == false &&
+                    self.childCareCheck() == false &&
+                    self.closedResetCheck() == false &&
+                    self.workingTimeCheck() == false &&
+                    self.transferTimeCheck() == false) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
+                    return;
+                }
 
                 $("#wizard").ntsWizard("next");
             }
