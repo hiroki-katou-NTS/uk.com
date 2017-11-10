@@ -95,9 +95,9 @@ public class VerticalCalItem extends DomainObject {
 					break;
 					
 				case AMOUNT:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.formulaAmount == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				case NUMBER_OF_PEOPLE:
@@ -107,9 +107,9 @@ public class VerticalCalItem extends DomainObject {
 					break;
 					
 				case NUMBER:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.numerical == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				case AVERAGE_PRICE:
