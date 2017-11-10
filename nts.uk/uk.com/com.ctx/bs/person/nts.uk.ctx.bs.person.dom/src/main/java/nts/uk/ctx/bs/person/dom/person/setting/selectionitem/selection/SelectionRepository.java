@@ -12,6 +12,8 @@ public interface SelectionRepository {
 	void update(Selection selection);
 
 	void remove(String selectionId);
+	
+	//void remowHistory(String selectionId, String histId);
 
 	List<Selection> getAllSelectByHistId(String histId);
 
