@@ -197,11 +197,6 @@ module nts.uk.at.view.kdw001.b {
                     }
                 });
 
-
-
-
-
-
                 //Init checkbox properties
                 self.checked = ko.observable(true);
                 self.enable = ko.observable(true);
@@ -214,20 +209,15 @@ module nts.uk.at.view.kdw001.b {
                 ];
                 self.activeStep = ko.observable(0);
 
-                //Get activeStep value from a screen or c screen
-                __viewContext.transferred.ifPresent(data => {
-                    self.activeStep(data.activeStep);
-                });
-
-                //self.stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
             }
 
             opendScreenD() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 2, "screenName": "B" });
+
+                $("#wizard").ntsWizard("next");
             }
 
             opendScreenC() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 0 });
+                $("#wizard").ntsWizard("prev");
             }
 
             navigateView() {

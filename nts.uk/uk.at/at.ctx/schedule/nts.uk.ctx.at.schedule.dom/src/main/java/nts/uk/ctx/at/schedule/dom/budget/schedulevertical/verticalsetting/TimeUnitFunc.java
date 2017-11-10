@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
@@ -26,4 +27,10 @@ public class TimeUnitFunc {
     
     /* 演算子区分 */
     private OperatorAtr operatorAtr;
+    
+    public static TimeUnitFunc createFromJavatype(String companyId, String verticalCalCd, String verticalCalItemId,
+			int dispOrder, String attendanceItemId, String presetItemId,int operatorAtr) {
+		return new TimeUnitFunc(companyId, verticalCalCd, verticalCalItemId, dispOrder,attendanceItemId,
+				presetItemId, EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class));
+	}
 }

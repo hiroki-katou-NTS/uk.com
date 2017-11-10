@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 単位
+ *
+ */
 @AllArgsConstructor
 public enum Unit {
 	/** 0- 日別 **/

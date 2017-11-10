@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.log;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -66,10 +67,15 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 				.getList(c -> toDomain(c));
 		return data;
 	}
+	
+	@Override
+	public void add(TargetPerson targetPerson) {
+		this.commandProxy().insert(KrcdtEmpExeTarget.toEntity(targetPerson));
+	}
 
 	@Override
 	public void addAll(List<TargetPerson> lstTargetPerson) {
-		this.commandProxy().insertAll(lstTargetPerson);
+		this.commandProxy().insertAll(lstTargetPerson.stream().map(c -> KrcdtEmpExeTarget.toEntity(c)).collect(Collectors.toList()));
 	}
 
 }

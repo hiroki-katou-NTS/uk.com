@@ -48,7 +48,7 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 
 		// 選択項目ID：選択している選択項目ID
 		List<PerInfoHistorySelection> historyList = this.historySelectionRepository
-				.historySelection(getSelectionItemId);
+				.getAllHistoryBySelectionItemId(getSelectionItemId);
 
 		// ドメインモデル「選択肢履歴」を削除する
 		for (PerInfoHistorySelection h : historyList) {

@@ -219,6 +219,7 @@
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
+								name: '#[KAF009_26]',
 								options: reasonCombo,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
@@ -233,7 +234,7 @@
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
 				<textarea
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason()}" />
+					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, constraint: 'AppReason', required : requiredReason(), name: '#[KAF009_29]'}" />
 			</div>
 		</div>
 	</div>

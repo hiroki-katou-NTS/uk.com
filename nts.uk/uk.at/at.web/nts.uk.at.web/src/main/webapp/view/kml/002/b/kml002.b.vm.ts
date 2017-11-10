@@ -43,8 +43,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
             self.verticalInputItem2 = ko.observable(0);
             
             self.operatorItem = ko.observableArray([
-                { operatorCode: 0, operatorName: 'X' },
-                { operatorCode: 1, operatorName: ':' }
+                { operatorCode: 0, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_ADD") },
+                { operatorCode: 1, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_SUBTRACT") },
+                { operatorCode: 2, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_MULTIPLY") },
+                { operatorCode: 3, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_DIVIDE") }
             ]);
             
             self.selectedOperator = ko.observable(0);
@@ -104,10 +106,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
                     verticalCalItemId: data.itemId,
                     settingMethod1: self.settingMethod1(),
                     verticalCalItem1: self.selectedItem1(),
-                    verticalInputItem1: self.verticalInputItem1(),
+                    verticalInputItem1: self.settingMethod1() == 1 ? self.verticalInputItem1() : null,
                     settingMethod2: self.settingMethod2(),
                     verticalCalItem2: self.selectedItem2(),
-                    verticalInputItem2: self.verticalInputItem2(),
+                    verticalInputItem2: self.settingMethod2() == 1 ? self.verticalInputItem2() : null,
                     operatorAtr: self.selectedOperator()
                 };
                 

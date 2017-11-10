@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
@@ -29,4 +30,18 @@ public class FormTimeFunc {
     
     /* 順番 */
     private int dispOrder;
+
+	public static FormTimeFunc createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId,
+			String externalBudgetCd, String attendanceItemId, String presetItemId, int operatorAtr,
+			int dispOrder) {
+		
+		return new FormTimeFunc(companyId, 
+				verticalCalCd, 
+				verticalCalItemId, 
+				externalBudgetCd, 
+				attendanceItemId, 
+				presetItemId,
+				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class), 
+				dispOrder);
+	}
 }

@@ -67,6 +67,8 @@ public interface DailyPerformanceScreenRepo {
 	 **/
 	List<WorkInfoOfDailyPerformanceDto> getListWorkInfoOfDailyPerformance(List<String> lstEmployee, DateRange dateRange);
 
+	
+
 	/** Get list classification of login company */
 	List<String> getListClassification();
 
@@ -81,8 +83,7 @@ public interface DailyPerformanceScreenRepo {
 	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	/** Get Daily performance business type type control */
-	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType,
-			List<Integer> lstAttendanceItem);
+	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType, List<Integer> lstAttendanceItem);
 
 	/** Get list attendance item */
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);

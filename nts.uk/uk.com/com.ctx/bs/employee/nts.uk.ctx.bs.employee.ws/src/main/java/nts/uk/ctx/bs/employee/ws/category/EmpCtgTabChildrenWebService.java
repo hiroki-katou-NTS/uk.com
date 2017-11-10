@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.ws.category;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -8,8 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.find.person.category.EmpPerCtgInfoDto;
 import nts.uk.ctx.bs.employee.app.find.person.category.EmpPerInfoCategoryFinder;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 @Path("bs/employee/category/tabchildren")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,16 +20,43 @@ public class EmpCtgTabChildrenWebService extends WebService{
 	@Inject
 	private EmpPerInfoCategoryFinder empPerInfoCategoryFinder;
 	
-	@POST
-	@Path("find/getCtgAndItemByCtgId/{categoryId}")
-	public EmpPerCtgInfoDto getCtgAndItemByCtgId(@PathParam("categoryId") String ctgId){
-		return this.empPerInfoCategoryFinder.getCtgAndItemByCtgId(ctgId);
-	}
+	/**
+	 * lấy category và item list by category id
+	 * @param ctgId
+	 * @return
+	 */
 	
 	@POST
-	@Path("find/getCtgAndChildrenByParams/{employeeId}/{categoryId}/{parentInfoId}")
-	public EmpPerCtgInfoDto getCtgAndChildrenByParams(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
-			@PathParam("parentInfoId") String parentInfoId){
-		return this.empPerInfoCategoryFinder.getCtgAndItemByParent(employeeId, ctgId, parentInfoId);
+	@Path("find/getCtgTab/{categoryId}")
+	public List<PersonInfoCategory> getCtgTab(@PathParam("categoryId") String ctgId){
+		return null;
+	}
+	
+	/**
+	 * lấy category và data list
+	 * @param employeeId
+	 * @param ctgId
+	 * @param parentInfoId
+	 * @return
+	 */
+	@POST
+	@Path("find/getTabDetail/{employeeId}/{categoryId}/{infoId}")
+	public List<Object> getTabDetail(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
+			@PathParam("infoId") String parentInfoId){
+		return null;
+	}
+		
+	/**
+	 * lấy item và data list
+	 * @param employeeId
+	 * @param ctgId
+	 * @param parentInfoId
+	 * @return
+	 */
+	@POST
+	@Path("find/getTabSubDetail/{employeeId}/{categoryId}/{subDetailId}")
+	public List<Object> getTabSubDetail(@PathParam("employeeId") String employeeId, @PathParam("categoryId") String ctgId,
+			@PathParam("subDetailId") String parentInfoId){
+		return null;
 	}
 }

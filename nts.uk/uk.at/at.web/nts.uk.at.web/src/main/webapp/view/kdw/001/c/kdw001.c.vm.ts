@@ -57,7 +57,7 @@ module nts.uk.at.view.kdw001.c {
                 self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
-
+    
                 this.employeeList = ko.observableArray<UnitModel>([]);
 
                 self.listComponentOption = {
@@ -209,12 +209,7 @@ module nts.uk.at.view.kdw001.c {
               //  }
                // nts.uk.ui.windows.setShared("KDW001_C_LISTEMPID_STARTDATE_ENDDATE", data);
 
-
-                if (self.screenName == "B") {
-                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 1 });
-                } else {
-                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 1 });
-                }
+                $("#wizard").ntsWizard("next");    
             }
 
             start() {

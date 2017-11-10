@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.basic.ws.company.organization.employee;
@@ -16,13 +16,12 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.command.employee.AddEmployeeCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.AddEmployeeCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
-import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeInDesignatedFinder;
-import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeSearchOutput;
-import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.SearchEmpInput;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
@@ -37,7 +36,7 @@ public class EmployeeWebService extends WebService {
 	private EmployeeFinder employeeFinder;
 
 	@Inject
-	private EmployeeInDesignatedFinder empInDesignatedFinder;
+	AddEmployeeCommandHandler addEmpHandler;
 
 	/** The employee query processor. */
 	@Inject
@@ -79,7 +78,7 @@ public class EmployeeWebService extends WebService {
 	public JavaTypeResult<String> getGenerateCardNo(String startLetters) {
 		return new JavaTypeResult<String>(this.employeeFinder.getGenerateCardNo(startLetters));
 	}
-	// sonnlb
+	// sonnlb code start
 
 	@POST
 	@Path("getGenerateEmplCodeAndComId")
@@ -94,7 +93,7 @@ public class EmployeeWebService extends WebService {
 		return this.employeeFinder.validateEmpInfo(empInfo);
 	}
 
-	// sonnlb
+	// sonnlb code end
 	/**
 	 * Search all employee.
 	 *
@@ -198,17 +197,14 @@ public class EmployeeWebService extends WebService {
 	public List<EmployeeSearchListData> searchListData(EmployeeSearchListQuery input) {
 		return this.employeeQueryProcessor.searchEmployees(input);
 	}
-	
-	/**
-	 * Search by workplace list.
-	 *
-	 * @param input the input
-	 * @return the list
-	 */
+
+	// sonnlb start
 	@POST
-	@Path("searchByWorkplaceList")
-	public List<EmployeeSearchOutput> searchByWorkplaceList(SearchEmpInput input) {
-		return this.empInDesignatedFinder.searchEmpByWorkplaceList(input);
+	@Path("addNewEmployee")
+	public void addNewEmployee(AddEmployeeCommand command) {
+		this.addEmpHandler.handle(command);
 	}
+
+	// sonnlb end
 
 }

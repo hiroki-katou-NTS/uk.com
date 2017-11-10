@@ -39,8 +39,19 @@ public class VerticalCalItem extends DomainObject {
  	
  	private int dispOrder;
  	
+ 	// B
+ 	private FormBuilt formBuilt;
+ 	
+ 	// C
+ 	private FormTime formTime;
+ 	
+ 	// D
  	private FormPeople formPeople;
  	
+ 	// E
+ 	private FormulaAmount formulaAmount;
+ 	
+ 	private FormulaNumerical numerical;
  	
  	/**
  	 * author: Hoang Yen
@@ -50,7 +61,11 @@ public class VerticalCalItem extends DomainObject {
  													int calculateAtr, int displayAtr, 
  													int cumulativeAtr, int attributes, 
  													int rounding, int dispOrder, 
- 													FormPeople formPeople){
+ 													FormBuilt formBuilt,
+ 													FormTime formTime,
+ 													FormPeople formPeople,
+ 													FormulaAmount formulaAmount,
+ 													FormulaNumerical numerical){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
@@ -58,46 +73,53 @@ public class VerticalCalItem extends DomainObject {
  				EnumAdaptor.valueOf(attributes, Attributes.class),
  				EnumAdaptor.valueOf(rounding, Rounding.class),
  				dispOrder,
- 				formPeople);
+ 				formBuilt,
+ 				formTime,
+ 				formPeople,
+ 				formulaAmount,
+ 				numerical);
  	}
  	
  	public void validate(int index) {
- 		switch (this.attributes) {
-		case TIME:
-//			if (this.formPeople == null) {
-//				throw new BusinessException("Msg_111", String.valueOf(index));
-//			}
-			break;
-			
-		case AMOUNT:
-//			if (this.formPeople == null) {
-//				throw new BusinessException("Msg_111", String.valueOf(index));
-//			}
-			break;
-			
-		case NUMBER_OF_PEOPLE:
-			if (this.formPeople == null) {
+ 		if(this.calculateAtr == CalculateAtr.FORMULA_SETTING) {
+ 			if (this.formBuilt == null) {
 				throw new BusinessException("Msg_111", String.valueOf(index));
 			}
-			break;
-			
-		case NUMBER:
-//			if (this.formPeople == null) {
-//				throw new BusinessException("Msg_111", String.valueOf(index));
-//			}
-			break;
-			
-		case AVERAGE_PRICE:
-//			if (this.formPeople == null) {
-//				throw new BusinessException("Msg_111", String.valueOf(index));
-//			}
-			break;
-			
-		default:
-//			if (this.formPeople == null) {
-//				throw new BusinessException("Msg_111", String.valueOf(index));
-//			}
-			break;
-		}
+ 		} else {
+ 			switch (this.attributes) {
+				case TIME:
+					if (this.formTime == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
+					break;
+					
+				case AMOUNT:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				case NUMBER_OF_PEOPLE:
+					if (this.formPeople == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
+					break;
+					
+				case NUMBER:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				case AVERAGE_PRICE:
+		//			if (this.formPeople == null) {
+		//				throw new BusinessException("Msg_111", String.valueOf(index));
+		//			}
+					break;
+					
+				default:
+					break;
+			}
+ 		}
  	}
 }

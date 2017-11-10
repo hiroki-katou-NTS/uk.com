@@ -34,7 +34,7 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 		AddSelectionCommand command = context.getCommand();
 
 		// check ton tai selectionCD:
-		List<Selection> checkSelectionCD = this.selectionRepo.geSelectionList(command.getSelectionCD(), command.getHistId());
+		List<Selection> checkSelectionCD = this.selectionRepo.getAllSelectionBySelectionCdAndHistId(command.getSelectionCD(), command.getHistId());
 		if (!checkSelectionCD.equals(checkSelectionCD)) {
 			throw new BusinessException(new RawErrorMessage("Msg_3"));
 		}
@@ -57,7 +57,7 @@ public class AddSelectionCommandHandler extends CommandHandler<AddSelectionComma
 		// Lay selectionID:
 		String histId = context.getCommand().getHistId();
 		//String selectionCd = context.getCommand().getSelectionCD();
-		List<Selection> selectionList = this.selectionRepo.getAllHistorySelection( histId);
+		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId( histId);
 		if (!selectionList.isEmpty()) {
 			//String selectionId = selectionList.get(0).getSelectionID();
 			//List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(selectionId);
