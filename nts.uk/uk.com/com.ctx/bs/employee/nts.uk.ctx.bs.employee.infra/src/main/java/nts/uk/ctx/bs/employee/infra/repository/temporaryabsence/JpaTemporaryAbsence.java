@@ -7,14 +7,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTempAbsenceHist;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTemporaryAbsence;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTemporaryAbsencePK;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsenceHist;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsencePK;
 
 @Stateless
 @Transactional
@@ -105,8 +104,8 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 				domain.getBirthDate(), domain.getMulPregnancySegment());
 	}
 	
-	private BsymtTempAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain){
-		return new BsymtTempAbsenceHist(domain.getDateHistoryItem().identifier(), domain.getDateHistoryItem().start(),
+	private BsymtTemporaryAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain){
+		return new BsymtTemporaryAbsenceHist(domain.getDateHistoryItem().identifier(), domain.getDateHistoryItem().start(),
 				domain.getDateHistoryItem().end());
 	}
 	/**
@@ -124,7 +123,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		entity.multiple = domain.getMulPregnancySegment();
 	}
 	
-	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTempAbsenceHist entity){
+	private void updateEntityBsymtTempAbsenceHist(TemporaryAbsence domain, BsymtTemporaryAbsenceHist entity){
 		entity.historyId = domain.getDateHistoryItem().identifier();
 		entity.strD = domain.getDateHistoryItem().start();
 		entity.endD = domain.getDateHistoryItem().end();
@@ -148,7 +147,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		// Get exist item
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		Optional<BsymtTemporaryAbsence> existItem = this.queryProxy().find(key, BsymtTemporaryAbsence.class);
-		Optional<BsymtTempAbsenceHist> existItemHist = this.queryProxy().find(domain.getDateHistoryItem().identifier(), BsymtTempAbsenceHist.class);
+		Optional<BsymtTemporaryAbsenceHist> existItemHist = this.queryProxy().find(domain.getDateHistoryItem().identifier(), BsymtTemporaryAbsenceHist.class);
 		if (!existItem.isPresent()){
 			return;
 		}
