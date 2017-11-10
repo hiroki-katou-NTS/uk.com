@@ -37,14 +37,14 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             var dfd = $.Deferred();
             service.getImplementationResult().done(function(data) {
                 cosole.log(data);
-                 dfd.resolve(data);
-            });          
+                dfd.resolve(data);
+            });
 
             return dfd.promise();
         }
-          
 
-}
+
+    }
     class ItemModel {
         code: string;
         name: string;
@@ -55,22 +55,23 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         }
     }
 
-class Gridlist {
-    code: string;
-    name: string;
-    description: string;
-    other1: string;
-    other2: string;
-    deletable: boolean;
-    switchValue: boolean;
-    constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-        this.code = code;
-        this.name = name;
-        this.description = description;
-        this.other1 = other1;
-        this.other2 = other2 || other1;
-        this.deletable = deletable;
-        this.switchValue = ((code % 3) + 1).toString();
-    
+    class Gridlist {
+        code: string;
+        name: string;
+        description: string;
+        other1: string;
+        other2: string;
+        deletable: boolean;
+        switchValue: boolean;
+        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
+            this.code = code;
+            this.name = name;
+            this.description = description;
+            this.other1 = other1;
+            this.other2 = other2 || other1;
+            this.deletable = deletable;
+            this.switchValue = ((code % 3) + 1).toString();
+
+        }
     }
-}
+} 
