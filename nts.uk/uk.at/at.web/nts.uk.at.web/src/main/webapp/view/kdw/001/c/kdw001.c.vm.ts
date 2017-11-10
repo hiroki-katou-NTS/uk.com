@@ -1,12 +1,12 @@
 module nts.uk.at.view.kdw001.c {
     import getText = nts.uk.resource.getText;
-    
+
     export module viewmodel {
         export class ScreenModel {
-            
+
             //Declare screenName flag to forward screen B or screen C
             screenName: string;
-            
+
             //Declare kcp005 list properties
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
@@ -37,15 +37,15 @@ module nts.uk.at.view.kdw001.c {
             constructor() {
 
                 var self = this;
-                
+
                 //Get screenName value from a screen
                 __viewContext.transferred.ifPresent(data => {
                     self.screenName = data.screenName;
                 });
-                
+
                 //Init kcp005 properties
                 self.baseDate = ko.observable(new Date());
-                self.selectedCode = ko.observable('2');
+                self.selectedCode = ko.observable(null);
                 self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 self.isShowAlreadySet = ko.observable(false);
                 self.alreadySettingList = ko.observableArray([
@@ -59,7 +59,7 @@ module nts.uk.at.view.kdw001.c {
                 self.isShowSelectAllButton = ko.observable(false);
     
                 this.employeeList = ko.observableArray<UnitModel>([]);
-                
+
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: true,
@@ -74,7 +74,7 @@ module nts.uk.at.view.kdw001.c {
                     isShowSelectAllButton: self.isShowSelectAllButton()
                 };
 
-             
+
 
                 //Init time range input
                 self.enable = ko.observable(true);
@@ -82,7 +82,7 @@ module nts.uk.at.view.kdw001.c {
 
                 let today = new Date;
                 self.dateValue = ko.observable({});
-                self.dateValue().startDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate() + 2);
+                self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
 
                 self.startDateString = ko.observable("");
@@ -168,20 +168,53 @@ module nts.uk.at.view.kdw001.c {
 
 
             }
-            
+
             opendScreenBorJ() {
-//                let self = this;
-//                if(self.screenName == "B"){
-//                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 1});    
-//                }else{
-//                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"activeStep": 1});
-//                }
-                $("#wizard").ntsWizard("next");        
+                let self = this;
+
+                let listEmpSelected = self.listComponentOption.selectedCode();
+                if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                    return;
+                }
+                let startDateS = self.dateValue().startDate.split("/");
+                let endDateS = self.dateValue().endDate.split("/");
+                let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
+                let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
+                let startDate_unixtime = parseInt(startDate.getTime() / 1000);
+                let endDate_unixtime = parseInt(endDate.getTime() / 1000);
+                var timeDifference = endDate_unixtime - startDate_unixtime;
+                var timeDifferenceInHours = timeDifference / 60 / 60;
+                var timeDifferenceInDays = timeDifferenceInHours / 24;
+
+                if (timeDifferenceInDays > 31) {
+                    nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                        alert("Yes");
+                    })
+
+                }
+                
+                
+                
+
+                let monthNow = 11; // thieu thang hien tai cua  domain 締め
+                let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                if (monthStartDate < monthNow) {
+                    nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                    return;
+                }
+                
+               // var data = {
+                //    listEmpId: listEmpSelected, startdate: self.dateValue().startDate, endDate: self.dateValue().endDate
+              //  }
+               // nts.uk.ui.windows.setShared("KDW001_C_LISTEMPID_STARTDATE_ENDDATE", data);
+
+                $("#wizard").ntsWizard("next");    
             }
-            
+
             start() {
                 var self = this;
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent); 
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
 
