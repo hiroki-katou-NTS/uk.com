@@ -17,7 +17,9 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
  * The Class JpaScheduleCreateContentRepository.
  */
 @Stateless
-public class JpaScheduleCreateContentRepository extends JpaRepository implements ScheduleCreateContentRepository{
+public class JpaScheduleCreateContentRepository extends JpaRepository
+		implements
+			ScheduleCreateContentRepository {
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository#findByExecutionId(java.lang.String)
