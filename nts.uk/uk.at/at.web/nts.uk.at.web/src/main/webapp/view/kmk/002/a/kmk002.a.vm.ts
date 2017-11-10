@@ -240,7 +240,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // if has formulas
                     if (self.isFormulaSet()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_506')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_506' }).ifYes(() => {
                             Formula.performanceAtr = value; // param for screen C
 
                             // remove all formulas
@@ -268,7 +268,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // Check whether has formula or calculation result range is set.
                     if (self.isFormulaSet() || self.calcResultRange.isSet()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_573')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_573' }).ifYes(() => {
 
                             // remove all formulas
                             self.removeAllFormulas();
@@ -688,7 +688,7 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
                 if (self.isInUse()) {
-                    nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_113')).ifYes(() => {
+                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_113' }).ifYes(() => {
                         // Remove selected formulas.
                         self.removeSelectedFormulas();
 
@@ -1440,7 +1440,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // Check whether the formula has setting or not
                     if (self.hasSetting()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_192' }).ifYes(() => {
                             // clear the setting
                             self.clearFormulaSetting();
 
@@ -1463,7 +1463,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // Check whether the formula has setting or not
                     if (self.hasSetting()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_126' }).ifYes(() => {
                             // clear the setting
                             self.clearFormulaSetting();
 
