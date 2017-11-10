@@ -151,8 +151,8 @@
 											data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
 									<td style="text-align: center;"><span class="hyperlink"
-										data-bind="click: $parent.openDialogH.bind($parent) "><span
-											data-bind=" text: $parent.numberPerson"></span>人</span></td>
+										data-bind="click: $parent.openDialogH.bind($parent, $data) "><span
+											data-bind=" text: $data.numberPersonErr"></span>人</span></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>

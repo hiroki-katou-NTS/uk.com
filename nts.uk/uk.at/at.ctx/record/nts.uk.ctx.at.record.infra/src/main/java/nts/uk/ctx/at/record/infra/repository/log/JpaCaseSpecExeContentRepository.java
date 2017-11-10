@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.log;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -22,6 +23,13 @@ public class JpaCaseSpecExeContentRepository extends JpaRepository implements Ca
 		Optional<CaseSpecExeContent> data = this.queryProxy().query(SELECT_CASE_BY_CODE,KrcstCaseSpecExeContent.class)
 				.setParameter("caseSpecExeContentID", caseSpecExeContentID)
 				.getSingle(c-> c.toDomain());
+		return data;
+	}
+
+	@Override
+	public List<CaseSpecExeContent> getAllCaseSpecExeContent() {
+		List<CaseSpecExeContent> data = this.queryProxy().query(SELECT_FROM_CASE,KrcstCaseSpecExeContent.class)
+				.getList(c->c.toDomain());
 		return data;
 	}
 	

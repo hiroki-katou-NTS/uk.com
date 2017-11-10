@@ -88,19 +88,25 @@ module nts.uk.at.view.kdw001.b {
                 self.activeStep = ko.observable(0);
                 
                 //Get activeStep value from a screen or c screen
-                __viewContext.transferred.ifPresent(data => {
-                    self.activeStep(data.activeStep);
-                });
+//                __viewContext.transferred.ifPresent(data => {
+//                    self.activeStep(data.activeStep);
+//                });
                 
                 //self.stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
             }
             
             opendScreenD() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 2, "screenName": "B"});
+                //nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 2, "screenName": "B"});
+//                let self = this;
+//                self.activeStep(2);
+                $("#wizard").ntsWizard("next");
             }
             
             opendScreenC() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 0});
+                //nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 0});
+//                let self = this;
+//                self.activeStep(0);
+                $("#wizard").ntsWizard("prev");
             }
             
             navigateView() {

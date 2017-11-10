@@ -18,4 +18,6 @@ public class ComplStateOfExeContentsDto {
 	 * 従業員の実行状況
 	 */
 	private int status;
+	
+	private String statusName;
 }

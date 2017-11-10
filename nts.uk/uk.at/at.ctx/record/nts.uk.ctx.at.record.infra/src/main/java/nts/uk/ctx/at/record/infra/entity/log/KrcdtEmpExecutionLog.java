@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -85,6 +86,7 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	}
 	
 	public EmpCalAndSumExeLog toDomain() {
+		List<ExecutionLog> executionLogs = this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 		return EmpCalAndSumExeLog.createFromJavaType(
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
@@ -95,6 +97,6 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				this.employeeID,
 				this.closureID, 
 				this.caseSpecExeContentID, 
-				this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+				executionLogs);
 	}
 }

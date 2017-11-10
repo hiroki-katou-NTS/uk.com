@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
-import nts.uk.ctx.at.record.app.command.workrecord.log.ExecutionCommandResult;
 import nts.uk.ctx.at.record.app.command.workrecord.log.ExecutionProcessingCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.QueryExecutionStatusCommandHandler;
 import nts.uk.ctx.at.record.app.find.log.dto.ImplementationResultFinder;
@@ -41,7 +40,7 @@ public class ImplementationResultWebService extends WebService{
 	
 	@POST
 	@Path("asyncTask")
-	public ExecutionCommandResult test() {
+	public AsyncTaskInfo test() {
 		return this.handler.handle(new ExecutionProcessingCommand());
 	}
 }
