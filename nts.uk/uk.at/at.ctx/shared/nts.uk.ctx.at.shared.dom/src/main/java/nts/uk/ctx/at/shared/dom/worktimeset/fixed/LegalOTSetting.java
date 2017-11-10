@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.fixed;
 /**
  * The Enum LegalOTSetting.
  */
+// 法定内残業設定
 public enum LegalOTSetting {
 
 	/** The legal internal time. */
@@ -32,9 +33,12 @@ public enum LegalOTSetting {
 	/**
 	 * Instantiates a new legal OT setting.
 	 *
-	 * @param value the value
-	 * @param nameId the name id
-	 * @param description the description
+	 * @param value
+	 *            the value
+	 * @param nameId
+	 *            the name id
+	 * @param description
+	 *            the description
 	 */
 	private LegalOTSetting(int value, String nameId, String description) {
 		this.value = value;
@@ -45,7 +49,8 @@ public enum LegalOTSetting {
 	/**
 	 * Value of.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the legal OT setting
 	 */
 	public static LegalOTSetting valueOf(Integer value) {
@@ -64,6 +69,5 @@ public enum LegalOTSetting {
 		// Not found.
 		return null;
 	}
-	
-	
+
 }

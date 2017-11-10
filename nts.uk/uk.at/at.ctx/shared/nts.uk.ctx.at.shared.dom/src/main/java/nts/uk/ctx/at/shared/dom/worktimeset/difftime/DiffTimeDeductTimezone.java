@@ -5,16 +5,22 @@
 package nts.uk.ctx.at.shared.dom.worktimeset.difftime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
+import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class JoDeductionTime.
+ * The Class DiffTimeDeductTimezone.
+ */
+//時差勤務の控除時間帯
+
+/**
+ * Checks if is update start time.
+ *
+ * @return true, if is update start time
  */
 @Getter
-// 時差勤務の控除時間帯
-public class JogDeductionTime extends DeductionTime {
+public class DiffTimeDeductTimezone extends DomainObject {
 
-	/** The allow change according start time. */
+	/** The is update start time. */
 	// 開始時刻に合わせて時刻を変動させる
-	private Boolean allowChangeAccordingStartTime;
+	private boolean isUpdateStartTime;
 }

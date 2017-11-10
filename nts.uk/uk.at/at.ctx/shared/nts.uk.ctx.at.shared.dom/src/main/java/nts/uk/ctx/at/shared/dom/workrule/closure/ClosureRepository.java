@@ -164,5 +164,15 @@ public interface ClosureRepository {
 	 * @param closureHistory the closure history
 	 */
 	void updateHistory(ClosureHistory closureHistory);
+	
+	
+	/**
+	 * Find history by id and current month.
+	 *
+	 * @param closureIds the closure ids
+	 * @param closureMonths the closure months
+	 * @return the list
+	 */
+	List<ClosureHistory> findHistoryByIdAndCurrentMonth(List<Integer> closureIds , List<Integer> closureMonths);
 
 }

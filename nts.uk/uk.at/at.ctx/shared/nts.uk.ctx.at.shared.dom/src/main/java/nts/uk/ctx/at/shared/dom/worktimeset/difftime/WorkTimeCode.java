@@ -10,13 +10,10 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
-/**
- * The Class EmploymentTimezoneCode.
- */
 @StringMaxLength(3)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode
-public class EmploymentTimezoneCode extends CodePrimitiveValue<EmploymentTimezoneCode> {
+public class WorkTimeCode extends CodePrimitiveValue<WorkTimeCode> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -26,7 +23,7 @@ public class EmploymentTimezoneCode extends CodePrimitiveValue<EmploymentTimezon
 	 *
 	 * @param rawValue the raw value
 	 */
-	public EmploymentTimezoneCode(String rawValue) {
+	public WorkTimeCode(String rawValue) {
 		super(rawValue);
 	}
 

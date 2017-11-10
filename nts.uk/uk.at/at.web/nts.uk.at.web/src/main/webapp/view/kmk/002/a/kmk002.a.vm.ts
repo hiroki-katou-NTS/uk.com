@@ -141,16 +141,16 @@ module nts.uk.at.view.kmk002.a {
             private initDatasource(): void {
                 let self = this;
                 self.usageClsDatasource = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KMK002_15") }, // not used
-                    { code: 1, name: nts.uk.resource.getText("KMK002_14") } // used
+                    { code: 1, name: nts.uk.resource.getText("KMK002_14") }, // used
+                    { code: 0, name: nts.uk.resource.getText("KMK002_15") } // not used
                 ]);
                 self.empConClsDatasource = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KMK002_17") }, // not apply
                     { code: 1, name: nts.uk.resource.getText("KMK002_18") } // apply
                 ]);
                 self.perfClsDatasource = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("KMK002_23") }, // monthly
-                    { code: 1, name: nts.uk.resource.getText("KMK002_22") } // daily
+                    { code: 1, name: nts.uk.resource.getText("KMK002_22") }, // daily
+                    { code: 0, name: nts.uk.resource.getText("KMK002_23") } // monthly
                 ]);
                 self.atrDataSource = [];
             }

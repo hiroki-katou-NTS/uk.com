@@ -20,7 +20,7 @@ public enum FlowFixedRestCalcMethod {
 	
 	/** The stamp whitout refer. */
 	//参照せずに打刻する
-	STAMP_WHITOUT_REFER(1, "Enum_FlowFixedRestCalcMethod_useGoOutTimeToCalc", "参照せずに打刻する");
+	STAMP_WHITOUT_REFER(2, "Enum_FlowFixedRestCalcMethod_useGoOutTimeToCalc", "参照せずに打刻する");
 
 	/** The value. */
 	public final int value;
