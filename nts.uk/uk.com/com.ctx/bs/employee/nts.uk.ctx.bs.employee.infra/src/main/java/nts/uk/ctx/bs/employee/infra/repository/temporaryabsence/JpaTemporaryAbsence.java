@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTemporaryAbsence;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence.BsymtTemporaryAbsencePK;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsencePK;
 
 @Stateless
 public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsenceRepository {
