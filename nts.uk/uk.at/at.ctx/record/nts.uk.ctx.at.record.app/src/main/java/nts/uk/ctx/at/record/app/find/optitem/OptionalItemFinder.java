@@ -62,7 +62,7 @@ public class OptionalItemFinder {
 	 */
 	public OptionalItemDto find(String optionalItemNo) {
 		OptionalItemDto dto = new OptionalItemDto();
-		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo).get();
+		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
 		optionalItem.saveToMemento(dto);
 
 		// Set list formula.

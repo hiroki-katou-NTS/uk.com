@@ -11,7 +11,7 @@
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
-				data-bind="enable: createModeScreenC, click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
+				data-bind="click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
 				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
@@ -29,10 +29,8 @@
 							<span data-bind="text: componentItemName"></span>
 						</td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_7')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_7')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"
@@ -43,10 +41,8 @@
 					<tr>
 						<td class="pull-left"></td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_8')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_8')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"

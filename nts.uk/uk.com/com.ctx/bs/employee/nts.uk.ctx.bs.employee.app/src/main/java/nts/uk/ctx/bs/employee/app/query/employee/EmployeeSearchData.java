@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class EmployeeSearchData.
+ * The Class EmployeeSearchOutput.
  */
 @Getter
 @Setter

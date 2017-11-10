@@ -72,7 +72,7 @@ module demo.a.viewmodel {
         private openDialog() {
             let self = this;
             setShared('CDL002Params', {
-                isMultiSelect: self.isMultiSelect(),
+                isMultiple: self.isMultiSelect(),
                 selecType: self.selectedType(),
                 selectedCodes: self.selectedItem(),
                 showNoSelection: self.isDisplayUnselect(),

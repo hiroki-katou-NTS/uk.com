@@ -16,7 +16,7 @@ module nts.uk.com.view.cdl002.a {
                 var params = getShared('CDL002Params');
                 self.selectedMulEmployment = ko.observableArray([]);
                 self.selectedSelEmployment = ko.observable('');
-                self.isMultiSelect = ko.observable(params.isMultiSelect);
+                self.isMultiSelect = ko.observable(params.isMultiple);
                 if (!self.isMultiSelect() && params.selecType == SelectType.SELECT_ALL) {
                     self.selecType = ko.observable(SelectType.NO_SELECT);
                 } else {

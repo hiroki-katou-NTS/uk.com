@@ -40,11 +40,11 @@ public class ClosureHistory extends DomainObject {
 	// 開始年月: 年月
 	private YearMonth startYearMonth;
 
+	
 	/**
 	 * Instantiates a new closure history.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public ClosureHistory(ClosureHistoryGetMemento memento) {
 		this.closureName = memento.getClosureName();
@@ -58,8 +58,7 @@ public class ClosureHistory extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(ClosureHistorySetMemento memento) {
 		memento.setClosureName(this.closureName);

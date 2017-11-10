@@ -32,9 +32,6 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "WORK_TIMES")
 	public BigDecimal workTimes;
 
-	@Column(name = "YMD")
-	public BigDecimal ymd;
-
 	@Column(name = "WORK_NO")
 	public String workNo;
 	

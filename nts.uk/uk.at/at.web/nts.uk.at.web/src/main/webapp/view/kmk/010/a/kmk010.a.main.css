@@ -189,3 +189,17 @@
 .selectionVaction {
 	width: 96px;
 }
+.tooltip-label {
+	width: 100%;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.tooltip-label-view {
+  background: #ffc;
+  border: solid 1px #b85 !important;
+  padding: 5px;
+  z-index: 120100;
+  border-radius: 0px;
+}

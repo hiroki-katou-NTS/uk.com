@@ -104,45 +104,38 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
 
-		if (!workType.isPresent()) {
+		if (!workTypeOpt.isPresent()) {
 			throw new RuntimeException("NOT FOUND WORK TYPE");
 		}
-		DailyWork dailyWork = workType.get().getDailyWork();
-		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
+		
+		WorkType workType = workTypeOpt.get();
+		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+		
 		// All day
-		if (WorkTypeUnit.OneDay == workTypeUnit) {
-			WorkTypeClassification workTypeClass = dailyWork.getOneDay();
-			if (this.checkType(workTypeClass)) {
+		if (workType.isOneDay()) {
+			if (dailyWork.IsLeaveForADay()) {
 				return WorkStyle.ONE_DAY_REST;
-			} else {
-				return WorkStyle.ONE_DAY_WORK;
-			}
-		}
+			} 
+				
+			return WorkStyle.ONE_DAY_WORK;
+		} 
 
 		// Half day
-		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
-
-			WorkTypeClassification morningType = dailyWork.getMorning();
-			WorkTypeClassification afternoonType = dailyWork.getAfternoon();
-
-			if (this.checkType(morningType)) {
-				if (this.checkType(afternoonType)) {
-					return WorkStyle.ONE_DAY_REST;
-				} else {
-					return WorkStyle.AFTERNOON_WORK;
-				}
-			} else {
-				if (this.checkType(afternoonType)) {
-					return WorkStyle.MORNING_WORK;
-				} else {
-					return WorkStyle.ONE_DAY_WORK;
-				}
-			}
+		if (dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
+			} 
+				
+			return WorkStyle.AFTERNOON_WORK;
 		}
-
-		throw new RuntimeException("NOT FOUND WORK STYLE");
+		
+		if (dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		} 
+		
+		return WorkStyle.ONE_DAY_WORK;
 	}
 
 	@Override

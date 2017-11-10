@@ -13,6 +13,7 @@ import java.util.Optional;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -73,12 +74,12 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRep
 import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -122,7 +123,6 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The cre set repository. */
 	@Inject
 	private PersonalWorkScheduleCreSetRepository creSetRepository;
-	
 	
 	/** The control repository. */
 	@Inject
@@ -248,8 +248,8 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
-
-		// get login user
+		
+		
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
@@ -276,7 +276,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository
 					.findAll(command.getExecutionId());
 
-			this.registerPersonalSchedule(command, domain, scheduleCreators);
+			this.registerPersonalSchedule(command, domain, scheduleCreators, context);
 		}
 
 	}
@@ -289,8 +289,14 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	// 個人スケジュールを登録する
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog, List<ScheduleCreator> scheduleCreators) {
-		scheduleCreators.forEach(domain -> {
+			ScheduleExecutionLog scheduleExecutionLog, List<ScheduleCreator> scheduleCreators,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
+		val asyncTask = context.asAsync();
+		for (ScheduleCreator domain : scheduleCreators) {
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				break;
+			}
 			Optional<ScheduleManagementControl> optionalScheduleManagementControl;
 			optionalScheduleManagementControl = this.controlRepository
 					.findById(domain.getEmployeeId());
@@ -319,12 +325,12 @@ public class ScheduleCreatorExecutionCommandHandler
 			}
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
-			//insert basic schedule
+			// insert basic schedule
 			BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 			commandSave.setConfirmedAtr(this.getConfirmedAtr(true, ConfirmedAtr.CONFIRMED).value);
 			commandSave = toCommandSave(commandSave, domain.getEmployeeId(), "001", "001");
 			this.basicSave.handle(commandSave);
-		});
+		}
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 	}
 	
@@ -526,7 +532,15 @@ public class ScheduleCreatorExecutionCommandHandler
 			Optional<String> optionalWorktypeCode = this.getWorktypeCode(command,
 					optionalBasicWorkSetting.get(), personalWorkScheduleCreSet);
 			if (!this.checkExistError(command, personalWorkScheduleCreSet.getEmployeeId())) {
-				this.getWorktime(command, optionalWorktypeCode.get(), personalWorkScheduleCreSet);
+				Optional<Object> optionalWorkTimeObj = this.getWorktime(command,
+						optionalWorktypeCode.get(), personalWorkScheduleCreSet);
+				if (optionalWorkTimeObj.isPresent()
+						&& optionalWorkTimeObj.get() instanceof String) {
+					this.getScheduleBreakTime(command, optionalWorktypeCode.get(),
+							optionalWorkTimeObj.get().toString());
+					
+					
+				}
 			}
 		}
 	}
@@ -919,7 +933,7 @@ public class ScheduleCreatorExecutionCommandHandler
 				// morning or afternoon
 				return this.getTimeZone(command, worktypeCode, worktimeCode);
 		}
-		return Optional.empty();
+		return Optional.of(worktypeCode);
 
 	}
 	
@@ -1063,50 +1077,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		return this.scWorkplaceAdapter.findWpkIdList(command.getCompanyId(), workplaceId,
 				command.getToDate());
 	}
-	
-	/**
-	 * Gets the basic work setting by wkp ids.
-	 *
-	 * @param command the command
-	 * @param workplaceId the workplace id
-	 * @param workDayAtr the work day atr
-	 * @return the basic work setting by wkp ids
-	 */
-	private Optional<BasicWorkSetting> getBasicWorkSettingByWkpIds(
-			ScheduleCreatorExecutionCommand command, String workplaceId, int workDayAtr) {
-		List<String> workplaceIds = this.findLevelWorkplace(command, workplaceId);
-
-		// loop work place id
-		for (String wkpId : workplaceIds) {
-			Optional<BasicWorkSetting> optional = this.getBasicWorkSettingByWkpId(wkpId,
-					workDayAtr);
-			if (optional.isPresent()) {
-				return optional;
-			}
-		}
-		return Optional.empty();
-	}
-	
-	/**
-	 * Gets the basic work setting by wkp id.
-	 *
-	 * @param workplaceId the workplace id
-	 * @param workDayAtr the work day atr
-	 * @return the basic work setting by wkp id
-	 */
-	
-	private Optional<BasicWorkSetting> getBasicWorkSettingByWkpId(String workplaceId,
-			int workDayAtr) {
-		return this.workplaceBasicWorkRepository.findById(workplaceId).map(setting -> {
-			for (BasicWorkSetting basicWorkSetting : setting.getBasicWorkSetting()) {
-				if (basicWorkSetting.getWorkdayDivision().value == workDayAtr) {
-					return basicWorkSetting;
-				}
-			}
-			return null;
-		});
-	}
-	
+			
 	/**
 	 * To schedule error log.
 	 *
@@ -1135,7 +1106,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			 */
 			@Override
 			public String getErrorContent() {
-				return internationalization.localize(messageId).get();
+				return messageId+" "+internationalization.localize(messageId).get();
 			}
 
 			/**
@@ -1308,7 +1279,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			return basicWorkSetting.getWorktypeCode().v();
 		} else {
 			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(
-					basicWorkSetting.getWorktypeCode().v(), employmentStatus.getLeaveHolidayType());
+					command.getCompanyId(), employmentStatus.getLeaveHolidayType());
 			
 			if (CollectionUtil.isEmpty(worktypeSets)) {
 				this.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
@@ -1376,6 +1347,8 @@ public class ScheduleCreatorExecutionCommandHandler
 			case PERSONAL_WORK_DAILY :
 				worktimeCode = this.convertWorkingHoursPersonalWork(command, basicWorkSetting,
 						personalWorkScheduleCreSet);
+				break;
+				
 			case PERSONAL_DAY_OF_WEEK :
 				worktimeCode = this.convertWorkingHoursPersonalDayofWeek(command, basicWorkSetting,
 						personalWorkScheduleCreSet);
@@ -1780,10 +1753,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	/**
 	 * Gets the schedule break time.
 	 *
-	 * @param worktimeCode the worktime code
+	 * @param worktimeCode the work time code
 	 * @return the schedule break time
 	 */
 	// 休憩予定時間帯を取得する
+	// TO DO
 	private void getScheduleBreakTime(ScheduleCreatorExecutionCommand command, String worktypeCode,
 			String worktimeCode) {
 		if (worktypeCode == null || worktypeCode.equals(DEFAULT_CODE)) {
@@ -1817,7 +1791,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the confirmed atr.
 	 *

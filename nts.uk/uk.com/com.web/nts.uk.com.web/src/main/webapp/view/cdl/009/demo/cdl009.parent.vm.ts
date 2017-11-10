@@ -2,11 +2,11 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
-        selectedItem: KnockoutObservable<any>;
+//        selectedItem: KnockoutObservable<any>;
         isMultiSelect: KnockoutObservable<boolean>;
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
-        referenceDate: KnockoutObservable<Date>;
+//        selectedCode: KnockoutObservable<string>;
+        selectedIds: KnockoutObservableArray<string>;
+        baseDate: KnockoutObservable<Date>;
         target: KnockoutObservable<number>;
 
         selectionOption: KnockoutObservableArray<any>;
@@ -18,19 +18,19 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
-            self.selectedCodes = ko.observableArray(['0000000006', '0000000009']);
-            self.selectedCode = ko.observable('0000000006');
-            self.referenceDate = ko.observable(new Date());
+            self.selectedIds = ko.observableArray(['000000000000000000000000000000000006', '000000000000000000000000000000000009']);
+//            self.selectedCode = ko.observable('000000000000000000000000000000000006');
+            self.baseDate = ko.observable(new Date());
             self.target = ko.observable(TargetClassification.WORKPLACE);
-            self.selectedItem = ko.observable(self.isMultiSelect() ? self.selectedCodes() : self.selectedCode());
-            self.isMultiSelect.subscribe(function(data) {
-                if (!data) {
-                    if (self.selectedType() == SelectType.SELECT_ALL) {
-                        self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
-                    }
-                    self.selectedItem(self.selectedCode());
-                }
-            });
+//            self.selectedItem = ko.observable(self.selectedCodes());
+//            self.isMultiSelect.subscribe(function(data) {
+//                if (!data) {
+//                    if (self.selectedType() == SelectType.SELECT_ALL) {
+//                        self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
+//                    }
+//                    self.selectedItem(self.selectedCode());
+//                }
+//            });
 
 
             self.selectionOption = ko.observableArray([
@@ -56,7 +56,7 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
                 { code: 1, name: 'WorkPlace' },
                 { code: 2, name: 'Department' },
             ]);
-            self.selectedType = ko.observable(1);
+            self.selectedType = ko.observable(SelectType.SELECT_BY_SELECTED_CODE);
             self.selectedTarget = ko.observable(self.target());
             self.selectedType.subscribe(function(data: number) {
                 if (data == SelectType.SELECT_ALL && !self.isMultiSelect()) {
@@ -76,10 +76,15 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
             let self = this;
             // Set Param
             setShared('CDL009Params', {
+                // isMultiSelect For Employee List Kcp005
                 isMultiSelect: self.isMultiSelect(),
+                // selecType For Workplace List Kcp004
                 selecType: self.selectedType(),
-                selectedCodes: self.selectedItem(),
-                referenceDate: self.referenceDate(),
+                // For Workplace List Kcp004
+                selectedIds: self.selectedIds(),
+                // For Workplace List Kcp004
+                baseDate: self.baseDate(),
+                // Workplace or Department
                 target: self.target()
             }, true);
 
@@ -89,7 +94,7 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
                     return;
                 }
                 var output = getShared('CDL009Output');
-                self.selectedItem(output);
+                self.selectedIds(output);
                 self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
             });
         }

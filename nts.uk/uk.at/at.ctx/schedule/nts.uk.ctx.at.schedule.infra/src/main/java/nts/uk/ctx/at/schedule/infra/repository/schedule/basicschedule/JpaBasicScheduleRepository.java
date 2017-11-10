@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.Ks
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee_;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
+import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
 
 /**
@@ -52,8 +54,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	public void insert(BasicSchedule bSchedule) {
 		KscdtBasicSchedule x = toEntity(bSchedule);
 		this.commandProxy().insert(x);
+		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(),
+				bSchedule.getChildCareSchedules());
 	}
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -76,7 +81,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	@Override
 	public void delete(String employeeId, GeneralDate baseDate) {
-		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
+		this.commandProxy().remove(KscdtBasicSchedule.class,
+				new KscdtBasicSchedulePK(employeeId, baseDate));
 	}
 
 	/*
@@ -116,7 +122,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KSCMT_CHILD_CARE_SCH (KscmtChildCareSch SQL)
-		CriteriaQuery<KscdtScheChildCare> cq = criteriaBuilder.createQuery(KscdtScheChildCare.class);
+		CriteriaQuery<KscdtScheChildCare> cq = criteriaBuilder
+				.createQuery(KscdtScheChildCare.class);
 
 		// root data
 		Root<KscdtScheChildCare> root = cq.from(KscdtScheChildCare.class);
@@ -128,19 +135,21 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid),
+				employeeId));
 
 		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd),
+				baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
 		// order by child care number asc
-		cq.orderBy(criteriaBuilder
-				.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.childCareNumber)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheChildCare_.kscdtScheChildCarePK)
+				.get(KscdtScheChildCarePK_.childCareNumber)));
 
 		// create query
 		TypedQuery<KscdtScheChildCare> query = em.createQuery(cq);
@@ -176,18 +185,19 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal employee id
-		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.sid), employeeId));
 
 		// equal year month date base date
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.ymd), baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.ymd), baseDate));
 
 		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
 		// order by no id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.no)));
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KscdtScheFee_.kscdtScheFeePK).get(KscdtScheFeePK_.no)));
 
 		// create query
 		TypedQuery<KscdtScheFee> query = em.createQuery(cq);
@@ -197,6 +207,25 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Insert all child care.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @param childCareSchedules the child care schedules
+	 */
+	private void insertAllChildCare(String employeeId, GeneralDate baseDate,
+			List<ChildCareSchedule> childCareSchedules) {
+		if (CollectionUtil.isEmpty(childCareSchedules)) {
+			return;
+		}
+		List<KscdtScheChildCare> entityChildCares = childCareSchedules.stream().map(domain -> {
+			KscdtScheChildCare entity = new KscdtScheChildCare();
+			domain.saveToMemento(new JpaChildCareScheduleSetMememto(entity, employeeId, baseDate));
+			return entity;
+		}).collect(Collectors.toList());
+		this.commandProxy().insertAll(entityChildCares);
+	}
 	/**
 	 * To domain child care.
 	 *
@@ -259,5 +288,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return new BasicSchedule(new JpaBasicScheduleGetMemento(entity));
 
 	}
+
 
 }

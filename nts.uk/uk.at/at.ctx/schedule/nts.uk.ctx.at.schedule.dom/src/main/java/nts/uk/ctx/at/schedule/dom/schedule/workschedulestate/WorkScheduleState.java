@@ -16,11 +16,11 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class WorkScheduleState extends AggregateRoot {
 	private ScheduleEditState scheduleEditState;
-	private String scheduleItemId;
+	private int scheduleItemId;
 	private GeneralDate ymd;
 	private String sId;
 
-	public static WorkScheduleState createFromJavaType(int scheduleEditState, String scheduleItemId, GeneralDate ymd,
+	public static WorkScheduleState createFromJavaType(int scheduleEditState, int scheduleItemId, GeneralDate ymd,
 			String sId) {
 		return new WorkScheduleState(EnumAdaptor.valueOf(scheduleEditState, ScheduleEditState.class),
 				scheduleItemId, ymd, sId);

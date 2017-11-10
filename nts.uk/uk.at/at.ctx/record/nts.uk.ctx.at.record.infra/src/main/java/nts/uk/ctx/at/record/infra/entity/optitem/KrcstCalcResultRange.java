@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.record.infra.entity.optitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,11 +53,11 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 
 	/** The upper number range. */
 	@Column(name = "UPPER_NUMBER_RANGE")
-	private BigDecimal upperNumberRange;
+	private Double upperNumberRange;
 
 	/** The lower number range. */
 	@Column(name = "LOWER_NUMBER_RANGE")
-	private BigDecimal lowerNumberRange;
+	private Double lowerNumberRange;
 
 	/** The upper amount range. */
 	@Column(name = "UPPER_AMOUNT_RANGE")
