@@ -230,8 +230,15 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
                     return;
                 }
-
-                $("#wizard").ntsWizard("next");
+               
+                if(self.selectedCreatDivisionCode()==2 || self.selectedCalDivisionCode()==2 || self.selectedAggregateClassCode()==2){
+                    nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                         $("#wizard").ntsWizard("next");
+                    });
+                }else{
+                     $("#wizard").ntsWizard("next");
+                }
+                
             }
 
             opendScreenC() {
