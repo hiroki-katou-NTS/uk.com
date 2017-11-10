@@ -39,7 +39,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         constructor() {
             var self = this;
-
+            $("#code-text2").focus();
             self.visibleGrantSingle = ko.observable(false);
             self.visibleGrant = ko.observable(true);
             self.inp_grantMethod = ko.observable(0);
@@ -175,7 +175,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         grantSingle: specialHolidayRes.grantSingle
                     };
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
-
+                   
                 });
                 $("#code-text2").focus();
                 dfd.resolve();
@@ -183,7 +183,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 alert(error.message);
                 dfd.reject(error);
             });
-            $("#code-text2").focus();
             return dfd.promise();
         }
 
@@ -217,8 +216,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             subCondition.useEmployee = Number(subCondition.useEmployee) == 1;
             subCondition.useCls = Number(subCondition.useCls) == 1;
             subCondition.useAge = Number(subCondition.useAge) == 1;
-
-            // TODO--
 
             return subCondition;
         }

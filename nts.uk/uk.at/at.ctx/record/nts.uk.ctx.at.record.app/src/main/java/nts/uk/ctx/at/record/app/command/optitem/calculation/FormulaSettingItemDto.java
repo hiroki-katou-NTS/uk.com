@@ -30,7 +30,6 @@ public class FormulaSettingItemDto implements FormulaSettingItemGetMemento {
 
 	// ===================== Optional ======================= //
 	/** The input value. */
-	// TODO: de bigdecimal co chay ko?
 	private BigDecimal inputValue;
 
 	/** The formula item id. */

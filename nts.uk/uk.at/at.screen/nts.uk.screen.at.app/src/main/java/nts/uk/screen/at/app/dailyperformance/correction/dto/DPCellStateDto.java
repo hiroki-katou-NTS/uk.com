@@ -24,4 +24,8 @@ public class DPCellStateDto {
     
     private List<String> state;
     
+    public void addState(String state) {
+    	this.state.add(state);
+    }
+    
 }

@@ -1,4 +1,8 @@
-.extable .xheader td.color-pink {
+#master-wrapper {
+	overflow-x: hidden;
+}
+
+/* .extable .xheader td.color-pink {
 	background-color: #FFB9B9;
 }
 
@@ -12,14 +16,14 @@
 
 .extable td.text-color-blue {
 	color: blue;
-}
+} */
 
 .text-align-center {
 	text-align: center;
 }
 
 #extable {
-	top: 10px;
+	top: 5px;
 	left: 85px;
 }
 
@@ -84,32 +88,35 @@ table th, table td {
 	padding-bottom: 7px;
 }
 
-.img-icon {
-	margin: -4px -4px 0 -4px;
-	vertical-align: middle;
-}
-
 #top-area div:first-child {
 	height: 20px
 }
 
-#oViewModel {
-	margin-left: 80px;
-	margin-top: 5px;
-	height: 85px
+#oViewModel, #qViewModel {
+	float: left;
+	width: 92%
+}
+
+#group-bt {
+	float: left;
+	width: 8%;
 }
 
 .setting-button {
-	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
-	width: 37px;
-	top: 3px;
+	vertical-align: middle;
+	background: url(../image/image008.png) no-repeat center;
+	background-size: 25px 25px;
+	height: 30px;
+	width: 30px;
 }
 
 .color-button {
-	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
-	width: 37px;
-	top: 3px;
-	margin-left: 30px;
+	vertical-align: middle;
+	background: url(../image/image099.png) no-repeat center;
+	background-size: 25px 25px;
+	height: 30px;
+	width: 30px;
+	margin-left: 45px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
@@ -149,6 +156,7 @@ table th, table td {
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
 	background-color: #F8EFD4 !important;
+	visibility: hidden;
 }
 
 #multi-list {
@@ -156,7 +164,7 @@ table th, table td {
 }
 
 #generally-created, #simulation-explanation, #capture-explanation,
-	#date-time-prev, #date-time-after, #special {
+	#date-time-after, #special {
 	margin-left: 10px;
 }
 
@@ -165,11 +173,6 @@ table th, table td {
 }
 
 #popup-area6 {
-	display: none;
-	z-index: 100;
-	visibility: visible;
-	top: 155px;
-	left: 825px;
 	width: 390px
 }
 
@@ -186,16 +189,11 @@ table th, table td {
 }
 
 #popup-area7>div>button {
-	margin-left: 45px
+	margin-left: 70px
 }
 
 #popup-area9 {
-	display: none;
-	z-index: 100;
-	visibility: visible;
-	top: 155px;
-	left: 710px;
-	width: 460px
+	width: 470px
 }
 
 .square {
@@ -206,71 +204,67 @@ table th, table td {
 }
 
 .popup-div {
-	width: 150px;
+	width: 140px;
 	display: inline-block;
 	margin-bottom: 10px
 }
 
-#color-1 {
-	background-color: #DDDDDD
-}
-
-#color-2 {
-	background-color: #00FFFF
-}
-
-#color-3 {
-	background-color: #99CCFF
-}
-
-#color-4 {
-	background-color: #A2DBA8
-}
-
-#color-5 {
-	background-color: #ECCEFB
-}
-
-#color-6 {
-	background-color: #FEDFE6
+.ml-20 {
+	margin-left: 20px
 }
 
 #color-7 {
-	background-color: #0000FF
+	background-color: #0000ff
 }
 
 #color-8 {
-	background-color: #FF0000
+	background-color: #ff0000
 }
 
 #color-9 {
 	background-color: #008000
 }
 
-#color-10 {
-	background-color: #8BD8FF
+#paste {
+	background: url(../image/image102.png) no-repeat center;
+	background-size: 32px 32px;
+	height: 35px;
+	width: 35px;
 }
 
-#color-11 {
-	background-color: #FABF8F
+#copy {
+	background: url(../image/image104.png) no-repeat center;
+	background-size: 32px 32px;
+	height: 35px;
+	width: 35px;
 }
 
-#color-12 {
-	background-color: #FFFF00
+#undo {
+	margin: 5px 0 0 41px;
+	background: url(../image/image030.png) no-repeat center;
+	background-size: 32px 32px;
+	height: 35px;
+	width: 35px;
 }
 
-#color-13 {
-	background-color: #FFC0CB
+#prevMonth {
+	vertical-align: middle;
+	background: url(../image/image050.png) no-repeat center;
+	background-size: 30px 30px;
+	height: 30px;
+	width: 30px;
 }
 
-#color-14 {
-	background-color: #ACFE2F
+#nextMonth {
+	vertical-align: middle;
+	background: url(../image/image053.png) no-repeat center;
+	background-size: 30px 30px;
+	height: 30px;
+	width: 30px;
 }
 
-#color-15 {
-	background-color: #EF7F7F
-}
-
-#color-16 {
-	background-color: #FEA400
+#contain-view {
+	margin-left: 80px;
+	margin-top: 5px;
+	height: 85px;
 }

@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktimeset.fluid.AttendanceTime;
 
 /**
  * 
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.AttendanceTime;
  *
  */
 @Getter
-public class BreakTimeSheet {
+public class BreakTimeSheet extends DomainObject {
 	
 	//休憩枠NO
 	private BreakFrameNo breakFrameNo;

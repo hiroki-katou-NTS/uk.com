@@ -11,6 +11,7 @@ import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
+import nts.uk.ctx.workflow.pub.agent.RepresenterInformationExport;
 
 @Stateless
 public class AgentPubImpl implements AgentPub {
@@ -24,7 +25,7 @@ public class AgentPubImpl implements AgentPub {
 		return new AgentPubExport(
 				agency.getListApproverAndRepresenterSID().stream().map(x -> new ApproverRepresenterExport(
 						x.getApprover(), 
-						x.getRepresenter())).collect(Collectors.toList()), 
+						new RepresenterInformationExport(x.getRepresenter().getValue()))).collect(Collectors.toList()), 
 				agency.getListRepresenterSID(),
 				agency.isFlag()
 				);

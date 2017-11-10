@@ -46,7 +46,13 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+                self.employmentList($('#empt-list-setting').getDataList());
+                if (self.employmentList().length > 0) {
+                    self.selectedCode(self.employmentList()[0].code);
+                }
+                dfd.resolve();
+            });
             self.getFullWorkTypeList().done(function() {
                 self.getWorkType().done(function() {
                     dfd.resolve();
@@ -55,11 +61,14 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
 
-        getFullWorkTypeList() {
+        getFullWorkTypeList(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.findWorkType().done(function(res) {
-                _.forEach(res, function(item) {
+            service.getAllWorkTypes().done(function(res) {
+                let availabelList = _.filter(res, function(item) {
+                    return item.abolishAtr == 0;
+                });
+                _.forEach(availabelList, function(item) {
                     self.fullWorkTypeList.push({
                         workTypeCode: item.workTypeCode,
                         name: item.name,
@@ -78,12 +87,23 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
+            service.getWorkTypes(self.selectedCode()).done(function(res) {
             self.groups1.removeAll();
             self.groups2.removeAll();
-            service.getWorkTypes(self.selectedCode()).done(function(res) {
                 _.forEach(res, function(item) {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
-                    let group = new WorkTypeGroup(item.no, item.name, item.workTypeList, names.join("、　"), fullWorkTypeCodes);
+                    let comment = '';
+                    if (item.no == 2) {
+                        comment = nts.uk.resource.getText("KDW006_59", ['法定内休日']);
+                    }
+                    if (item.no == 3) {
+                        comment = nts.uk.resource.getText("KDW006_59", ['法定外休日']);
+                    }
+                    if (item.no == 4) {
+                        comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
+                    }
+                    let group = new WorkTypeGroup(item.no, item.name, item.workTypeList, names.join("、　"),
+                        fullWorkTypeCodes, comment);
                     if (group.no < 5) {
                         self.groups1.push(group);
                     } else {
@@ -99,8 +119,15 @@ module nts.uk.at.view.kdw006.g.viewmodel {
 
         saveData() {
             let self = this;
+            nts.uk.ui.block.invisible();
             service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }).fail(() => {
+                nts.uk.ui.block.clear();
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -112,13 +139,15 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         workTypeCodes: string[];
         workTypeName: KnockoutObservable<string>;
         fullWorkTypeCodes: string[];
+        comment: string;
 
-        constructor(no: number, name: string, workTypeCodes: string[], workTypeName: string, fullWorkTypeCodes: string[]) {
+        constructor(no: number, name: string, workTypeCodes: string[], workTypeName: string, fullWorkTypeCodes: string[], comment: string) {
             this.no = no;
             this.name = ko.observable(name);
             this.workTypeCodes = workTypeCodes;
             this.workTypeName = ko.observable(workTypeName);
             this.fullWorkTypeCodes = fullWorkTypeCodes;
+            this.comment = comment;
         }
 
         defaultValue() {
@@ -131,10 +160,21 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             } else {
                 listWorkType = [WorkTypeClass.Holiday, WorkTypeClass.HolidayWork, WorkTypeClass.Shooting];
             }
+            let viewG = __viewContext.viewModel.viewmodelG;
             service.defaultValue(listWorkType).done(function(res) {
-                let workTypeCodes = _.map(res, 'workTypeCode');
-                self.workTypeCodes = workTypeCodes;
-                let names = _(workTypeCodes).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                let workTypeCodess = _.map(res, 'workTypeCode');
+                self.workTypeCodes = workTypeCodess;
+                let fullCodeNameList = ko.toJS(viewG.fullWorkTypeList);
+                let names = [];
+                _.forEach(workTypeCodess, (code) => {
+                    let foundWT = _.find(fullCodeNameList, (codeName) => {
+                        return codeName.workTypeCode === code;
+                    });
+                    if (foundWT) {
+                        names.push(foundWT.name);
+                    }
+                });
+
                 self.workTypeName(names.join("、　"));
             });
         }

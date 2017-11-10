@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -34,7 +35,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeRequestAdapter employeeAdaptor;
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 	
@@ -83,19 +84,20 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 * 1.職場別就業時間帯を取得
 	 */
 	@Override
-	public void getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
+	public List<String> getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
 		List<String> listEmployeeAdaptor = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+		List<String> listWorkTimeCodes = new ArrayList<>();
 		for(String employeeAdaptor : listEmployeeAdaptor) {
-			List<String> listWorkTime = workTimeWorkplaceRepo
+			listWorkTimeCodes = workTimeWorkplaceRepo
 					.getWorkTimeWorkplaceById(companyID, employeeAdaptor);
-			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime);
+			if(listWorkTimeCodes.size()>0) {
+				Collections.sort(listWorkTimeCodes);
 				break;
 			}
+			
 		}
-		
-		
+		return listWorkTimeCodes;
 	}
 
 	@Override

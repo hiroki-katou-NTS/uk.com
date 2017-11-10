@@ -12,6 +12,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 public class TotalItemName extends StringPrimitiveValue<PrimitiveValue<String>>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
+	/** 集計項目名称 **/
 	public TotalItemName(String rawValue){
 		super(rawValue);
 	}

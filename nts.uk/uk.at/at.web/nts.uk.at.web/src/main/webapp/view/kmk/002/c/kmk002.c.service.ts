@@ -1,18 +1,33 @@
 module nts.uk.at.view.kmk002.c {
     export module service {
-        var paths: any = {
-            findByAnyItem: "at/record/businesstype/attendanceItem/linking"
+
+        /**
+        *  Service paths
+        */
+        let paths: any = {
+            findDailyAttdItem: "at/record/businesstype/attendanceItem/daily/findbyanyitem",
+            findMonthlyAttdItem: "at/record/attendanceitem/monthly/findbyanyitem"
         }
 
         /**
-         * call service to get list attendance item
+         * call service to get list daily attendance item.
          */
-        export function findByAnyItem(request: model.AttdItemLinkRequest): JQueryPromise<model.DailyAttendanceItemDto[]> {
-            return nts.uk.request.ajax('at', paths.findByAnyItem, request);
+        export function findDailyAttdItem(request: model.AttdItemLinkRequest): JQueryPromise<model.AttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findDailyAttdItem, request);
         }
 
+        /**
+         * call service to get list monthly attendance item.
+         */
+        export function findMonthlyAttdItem(request: model.AttdItemLinkRequest): JQueryPromise<model.AttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findMonthlyAttdItem, request);
+        }
+
+        /**
+         * Data Model
+         */
         export module model {
-            export interface DailyAttendanceItemDto {
+            export interface AttendanceItemDto {
                 attendanceItemId: number;
                 attendanceItemName: string;
             }

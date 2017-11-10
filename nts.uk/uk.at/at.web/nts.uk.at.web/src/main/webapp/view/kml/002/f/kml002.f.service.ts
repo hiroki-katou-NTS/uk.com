@@ -2,11 +2,13 @@ module nts.uk.at.view.kml002.f.service {
     /**
      *  Service paths
      */
-    var servicePath = {
-        
-    }  
+   var paths: any = {
+            findByAtr: "at/schedule/budget/external/findByAtr"
+        }
     
-    /**
-     *  Find data by codes
-     */
+    export function getByAtr(param){   
+                return nts.uk.request.ajax(paths.findByAtr, param);  
+            }
 }
+    
+

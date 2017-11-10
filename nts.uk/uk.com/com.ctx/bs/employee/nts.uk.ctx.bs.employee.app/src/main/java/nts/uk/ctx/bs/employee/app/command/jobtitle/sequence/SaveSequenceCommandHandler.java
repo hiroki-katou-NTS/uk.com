@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
@@ -49,26 +49,51 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 			return;
 		}
 
-		Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
-				command.getSequenceCode());
+		// Validate
+		this.validate(companyId, command);
 
 		if (command.getIsCreateMode()) {
 			// Add
-			if (opSequenceMaster.isPresent()) {
-				// Throw Exception - Duplicated
-				throw new BusinessException("Msg_3");
-			}
 			final int newOrder = this.repository.findMaxOrder() + 1;
 			command.setOrder(newOrder);
 			this.repository.add(command.toDomain(companyId));
 		} else {
 			// Update
 			// Sequence code + order is not changable
+			Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
+					command.getSequenceCode());
 			SequenceMaster oldDomain = opSequenceMaster.get();
 			command.setOrder(oldDomain.getOrder());
 			command.setSequenceCode(oldDomain.getSequenceCode().v());
 
 			this.repository.update(command.toDomain(companyId));
+		}
+	}
+
+	/**
+	 * Validate.
+	 *
+	 * @param companyId the company id
+	 * @param command the command
+	 */
+	private void validate(String companyId, SaveSequenceCommand command) {
+		boolean isError = false;
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+
+		// Check Sequence Master
+		if (command.getIsCreateMode()) {
+			Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
+					command.getSequenceCode());
+			if (opSequenceMaster.isPresent()) {
+				// Throw Exception - Duplicated
+				isError = true;
+				exceptions.addMessage("Msg_3");
+			}
+		}
+
+		// Has error, throws message
+		if (isError) {
+			exceptions.throwExceptions();
 		}
 	}
 }

@@ -1,58 +1,157 @@
-module nts.uk.com.view.ksu001.n.viewmodel {
-    import error = nts.uk.ui.errors;
-    import text = nts.uk.resource.getText;
-    import close = nts.uk.ui.windows.close;
-    import dialog = nts.uk.ui.dialog;
-    import getShared = nts.uk.ui.windows.getShared;
-    import setShared = nts.uk.ui.windows.setShared;
-    import block = nts.uk.ui.block;
+module nts.uk.at.view.ksu001.n.viewmodel {
 
     export class ViewModel {
         listRank: KnockoutObservableArray<any> = ko.observableArray([]);
+        currentCodeList: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         singleSelectedCode: KnockoutObservable<any> = ko.observable();
-        comboItems = [new ItemModel('1', 'A'),
-            new ItemModel('2', 'B'),
-            new ItemModel('3', 'C')];
-        comboColumns = [{ prop: 'name', length: 8 }];
-        items = _(new Array(10)).map((x, i) => new RankItems(i + 1)).value();
+        comboItems = [];
+        comboColumns = [{ prop: 'name', length: 4 }];
+        listEmployee: Array<any>;
         constructor() {
             let self = this;
-            for (let i = 1; i < 20; i++) {
-                self.listRank.push(new RankItems(i));
-            }
-            self.start();
+            self.listEmployee = nts.uk.ui.windows.getShared('listEmployee');
+            self.comboItems.push(new ItemModel('なし', 'なし'));
+            service.findAllRank().done(function(ranks) {
+                _.forEach(ranks, function(rank) {
+                    self.comboItems.push(new ItemModel(rank.rankCode, rank.rankCode));
+                });
+            });
+            self.currentCodeList = ko.observableArray([]);
+
         }
-        start(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
+        initData(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+
+            let listEmployeeId = _.map(self.listEmployee, 'empId');
+            service.findAllRankSetting(listEmployeeId).done(function(ranksets) {
+                let rankSetarray = [];
+                _.forEach(self.listEmployee, function(employee) {
+                    _.forEach(ranksets, function(rankset) {
+                        if (employee.empId == rankset.sid) {
+                            return employee.rankCode = rankset.rankCode;
+                        }
+                    });
+
+                    rankSetarray.push(new RankItems((employee.rankCode ? employee.rankCode : 'なし'), employee.empName, employee.empId, employee.empCd));
+                });
+                self.listRank(rankSetarray);
+                dfd.resolve();
+            });
             return dfd.promise();
         }
-            /**
-             * Close dialog
-             */
-            closeDialog(): void {
-                nts.uk.ui.windows.close();
+        start(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            self.initData().done(function() {
+                self.initGrid();
+            });
+
+            dfd.resolve();
+            return dfd.promise();
+        }
+        /**
+         * Close dialog
+         */
+        closeDialog(): void {
+            nts.uk.ui.windows.close();
+        }
+        addRankSetting(): void {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            let data = {};
+            data.rankSetCommands = [];
+            let flag = false;
+            _.forEach(self.listRank(), function(value, index) {
+                if (value.rankCode != value.rankCodeOld) {
+                    let rankSet = {};
+                    rankSet.sId = value.employeeId;
+                    if (value.rankCode != 'なし') {
+                        rankSet.rankCode = value.rankCode;
+                    } else {
+                        delete self.listEmployee[index].rankCode;
+                    }
+                    data.rankSetCommands.push(rankSet);
+                    if (value.rankCodeOld != 'なし') {
+                        flag = true;
+                    }
+                }
+            });
+            if (flag == true) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_343" }).ifYes(() => {
+                    service.addRankSetting(data).done(function() {
+                        self.initData().done(function() {
+                            self.initGrid();
+                        });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error.message);
+                    })
+                }).then(function() {
+                    nts.uk.ui.block.clear();
+                });
+            } else {
+                service.addRankSetting(data).done(function() {
+                    self.initData().done(function() {
+                        self.initGrid();
+                    });
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).then(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
+
+        }
+        /**
+         * init grid 
+         */
+        initGrid(): void {
+            let self = this;
+            $("#grid2").ntsGrid({
+                width: '400px',
+                height: '310px',
+                dataSource: self.listRank(),
+                primaryKey: 'employeeCode',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    { headerText: nts.uk.resource.getText("KSU001_1322"), key: 'employeeCode', dataType: 'string', width: '120px' },
+                    { headerText: nts.uk.resource.getText("KSU001_1323"), key: 'rankName', dataType: 'string', width: '150px' },
+                    { headerText: nts.uk.resource.getText("KSU001_1324"), key: 'rankCode', dataType: 'string', width: '100px', ntsControl: 'Combobox' },
+                ],
+                features: [{ name: 'Selection', mode: 'row', multipleSelection: true }],
+                ntsFeatures: [],
+                ntsControls: [
+                    { name: 'Combobox', options: self.comboItems, optionsValue: 'rankCode', optionsText: 'name', columns: self.comboColumns, controlType: 'ComboBox', enable: true }
+                ]
+            });
+        }
     }
 
     export class ItemModel {
-        code: string;
+        rankCode: string;
         name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        constructor(code: string) {
+            this.rankCode = code;
+            this.name = code;
         }
     }
-    export  class RankItems {
+    export class RankItems {
         rankCode: string;
         rankName: string;
-        rank: string;
-        constructor(index:number) {
-            this.rankCode = '00000000'+index;
-            this.rankName = 'ABC';
-            this.rank = String(index % 3 +1) ;
+        employeeId: string;
+        rankCodeOld: string;
+        employeeCode: string;
+        constructor(rankCode: string, rankName: string, employeeId: string, employeeCode: string) {
+            this.rankCode = rankCode;
+            this.rankName = rankName;
+            this.employeeId = employeeId;
+            this.rankCodeOld = rankCode;
+            this.employeeCode = employeeCode;
         }
-    }   
+    }
+
 }

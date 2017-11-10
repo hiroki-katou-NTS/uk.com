@@ -90,8 +90,14 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
-		AffJobTitleHistory affJobTitleHist = this.jobTitleHistoryRepository
-				.findBySid(employeeId, baseDate).get();
+		Optional<AffJobTitleHistory> optAffJobTitleHist = this.jobTitleHistoryRepository
+				.findBySid(employeeId, baseDate);
+
+		if (!optAffJobTitleHist.isPresent()) {
+			return Optional.empty();
+		}
+
+		AffJobTitleHistory affJobTitleHist = optAffJobTitleHist.get();
 
 		Employee employee = this.employeeRepository.getBySid(employeeId).get();
 
@@ -135,8 +141,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.jobTitleName(jobInfo.getJobTitleName().v())
 				.sequenceCode(
 						jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
-				.startDate(jobTitleHistory.getPeriod().start())
-				.endDate(jobTitleHistory.getPeriod().end()).build());
+				.startDate(jobTitleHistory.span().start())
+				.endDate(jobTitleHistory.span().end())
+				.build());
 	}
 
 	/*
@@ -161,8 +168,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					.jobTitleName(jobInfo.getJobTitleName().v())
 					.sequenceCode(jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v()
 							: null)
-					.startDate(jobTitleHistory.getPeriod().start())
-					.endDate(jobTitleHistory.getPeriod().end()).build();
+					.startDate(jobTitleHistory.span().start())
+					.endDate(jobTitleHistory.span().end())
+					.build();
 		}).collect(Collectors.toList());
 	}
 

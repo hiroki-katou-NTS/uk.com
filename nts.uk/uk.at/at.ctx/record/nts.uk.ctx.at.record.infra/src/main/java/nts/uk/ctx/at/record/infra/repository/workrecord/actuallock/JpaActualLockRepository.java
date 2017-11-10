@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.actuallock;
@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
@@ -56,11 +57,9 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		Optional<KrcstActualLock> optional = this.queryProxy().find(
 				new KrcstActualLockPK(actualLock.getCompanyId(), actualLock.getClosureId().value),
 				KrcstActualLock.class);
-		KrcstActualLock entity = null;
+		KrcstActualLock entity = new KrcstActualLock();
 		if (optional.isPresent()) {
 			entity = optional.get();
-		} else {
-			entity = new KrcstActualLock();
 		}
 		actualLock.saveToMemento(new JpaActualLockSetMemento(entity));
 		this.commandProxy().update(entity);
@@ -108,7 +107,46 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		return this.queryProxy().find(new KrcstActualLockPK(companyId, closureId), KrcstActualLock.class)
 				.map(c -> this.toDomain(c));
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository#
+	 * findByListId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<ActualLock> findByListId(String companyId, List<Integer> closureIds) {
+		// check empty closure id 
+		if(CollectionUtil.isEmpty(closureIds)){
+			return new ArrayList<>();
+		}
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder bd = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstActualLock> cq = bd.createQuery(KrcstActualLock.class);
 
+		// Root
+		Root<KrcstActualLock> root = cq.from(KrcstActualLock.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList
+				.add(bd.equal(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.cid), companyId));
+		
+		// in closure id
+		predicateList
+				.add(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.closureId).in(closureIds));
+
+		// Set Where clause to SQL Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Create Query
+		TypedQuery<KrcstActualLock> query = em.createQuery(cq);
+
+		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

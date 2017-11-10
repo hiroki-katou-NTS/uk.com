@@ -83,7 +83,6 @@ module nts.uk.at.view.kaf009.b {
                 let self = this;
                 self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: false,
-                    placeholder: "Placeholder for text editor",
                     width: "500",
                     textalign: "left",
                 }));
@@ -96,6 +95,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             startPage(appId : string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let dfd = $.Deferred();
                 let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
@@ -151,19 +151,24 @@ module nts.uk.at.view.kaf009.b {
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
-                        //self.version = detailData.goBackDirectlyDto.version;
+                        self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
-                        self.workLocationName(detailData.workLocationName1);
+                        self.workLocationName(detailData.workLocationName1 == null ? '' : detailData.workLocationName1);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
                         self.selectedReason(detailData.appReasonId);
                         self.appDate(detailData.appDate);
+                        self.employeeName(detailData.employeeName);
                         //Set Value of control
                         self.setValueControl(detailData.goBackDirectlyDto);
+                        self.selectedGo.subscribe(value => { $("#inpStartTime1").ntsError("clear"); });
+                        self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
+                        self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
+                        self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
                     }).fail(function() {
                         dfd.resolve();
                     });
@@ -176,15 +181,25 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkBeforeUpdate();
                 promiseResult.done((result) => {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        }).fail(function(res: any) {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                location.reload();
+                            });
                         })
+                        .fail(function(res) { 
+                            if(res.optimisticLock == true){
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                                    location.reload();
+                                });    
+                            } else {
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                            }
+                        });
                     }
                 });
             }
@@ -208,16 +223,20 @@ module nts.uk.at.view.kaf009.b {
                         } else if (res.messageId == "Msg_298") {
                             dfd.reject();
                             //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
-                            $('#inpStartTime1').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpStartTime2').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpEndTime1').ntsError('set', { messageId: "Msg_298" });
-                            $('#inpEndTime2').ntsError('set', { messageId: "Msg_298" });
+                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                            if(self.selectedGo2()==1){
+                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                            }
+                            if(self.selectedBack2()==1){
+                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                            }
                         } else{
-                           nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });     
+                           nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
                         }
                     })
                 }
-                return dfd;
+                return dfd.promise();
             }
             
             /**
@@ -272,7 +291,7 @@ module nts.uk.at.view.kaf009.b {
             getCommand() {
                 let self = this; 
                 let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
-                //goBackCommand.version = self.version;
+                goBackCommand.version = self.version;
                 goBackCommand.appID = self.appID();
                 goBackCommand.workTypeCD = self.workTypeCd();
                 goBackCommand.siftCD = self.siftCD();

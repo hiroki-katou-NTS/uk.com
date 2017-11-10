@@ -20,6 +20,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     ];
 
     export class ScreenModel {
+        fixHeaders: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         legendOptions: any;
         //grid user setting
         cursorMoveDirections: KnockoutObservableArray<any> = ko.observableArray([
@@ -50,9 +52,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         textColors: KnockoutObservableArray<any> = ko.observableArray([]);
         lstDate: KnockoutObservableArray<any> = ko.observableArray([]);
         optionalHeader: Array<any> = [];
-        employeeModeHeader: Array<any> = [LIST_FIX_HEADER[0], LIST_FIX_HEADER[1], LIST_FIX_HEADER[2], LIST_FIX_HEADER[3], LIST_FIX_HEADER[4]];
-        dateModeHeader: Array<any> = [LIST_FIX_HEADER[0], LIST_FIX_HEADER[1], LIST_FIX_HEADER[2], LIST_FIX_HEADER[5], LIST_FIX_HEADER[6], LIST_FIX_HEADER[4]];
-        errorModeHeader: Array<any> = [LIST_FIX_HEADER[0], LIST_FIX_HEADER[1], LIST_FIX_HEADER[2], LIST_FIX_HEADER[5], LIST_FIX_HEADER[6], LIST_FIX_HEADER[3], LIST_FIX_HEADER[4]];
+        employeeModeHeader: Array<any> = [];
+        dateModeHeader: Array<any> = [];
+        errorModeHeader: Array<any> = [];
         employeeModeFixCol: Array<any> = [
             { columnKey: 'id', isFixed: true },
             { columnKey: 'state', isFixed: true },
@@ -121,7 +123,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initDateRanger() {
             var self = this;
             self.dateRanger.subscribe((dateRange) => {
-                if (dateRange) {
+                if (dateRange && dateRange.startDate && dateRange.endDate) {
                     self.selectedDate(dateRange.startDate);
                     var elementDate = dateRange.startDate;
                     while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
@@ -159,6 +161,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
+                console.log(data);
+                // Fixed Header
+                self.fixHeaders(data.lstFixedHeader);
+                self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
+                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
+                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
                 self.receiveData(data);
                 self.selectedEmployee(self.lstEmployee()[0].id);
@@ -528,6 +537,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.setHeaderColor();
             self.setColorWeekend();
+            console.log(self.formatDate(self.dailyPerfomanceData()));
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
                 height: '500px',
@@ -550,8 +560,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'Resizing', columnSettings: [{ columnKey: 'id', allowResizing: false, minimumWidth: 0 }] },
                 ],
                 ntsFeatures: self.createNtsFeatures(),
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Image', source: 'img-icon icon-people', controlType: 'Image' }]
+                ntsControls: [
+                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    { name: 'Image', source: 'img-icon icon-people', controlType: 'Image' }
+                ]
             });
         }
 

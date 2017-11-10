@@ -5,14 +5,16 @@
 package nts.uk.ctx.at.record.dom.optitem;
 
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * The Interface OptionalItemRepository.
+ */
 public interface OptionalItemRepository {
 
 	/**
 	 * Update.
 	 *
-	 * @param setting the setting
+	 * @param dom the dom
 	 */
 	void update(OptionalItem dom);
 
@@ -20,10 +22,10 @@ public interface OptionalItemRepository {
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @param year the year
-	 * @return the optional
+	 * @param optionalItemNo the optional item no
+	 * @return the optional item
 	 */
-	Optional<OptionalItem> find(String companyId, String id);
+	OptionalItem find(String companyId, String optionalItemNo);
 
 	/**
 	 * Find all.

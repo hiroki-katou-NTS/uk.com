@@ -16,8 +16,8 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -74,8 +74,7 @@ public class RegisterBasicScheduleCommandHandler
 		}, x -> x));
 
 		for (RegisterBasicScheduleCommand bSchedule : bScheduleCommand) {
-			BasicSchedule basicScheduleObj = BasicSchedule.createFromJavaType(bSchedule.getEmployeeId(),
-					bSchedule.getDate(), bSchedule.getWorkTypeCode(), bSchedule.getWorkTimeCode());
+			BasicSchedule basicScheduleObj = bSchedule.toDomain();
 
 			// Check WorkType
 			WorkType workType = workTypeMap.get(bSchedule.getWorkTypeCode());
@@ -94,8 +93,9 @@ public class RegisterBasicScheduleCommandHandler
 
 			// Check WorkTime
 			WorkTime workTime = workTimeMap.get(bSchedule.getWorkTimeCode());
-			
-			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true) && !("000").equals(bSchedule.getWorkTimeCode())) {
+
+			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
+					&& !("000").equals(bSchedule.getWorkTimeCode())) {
 
 				if (workTime == null) {
 					// Set error to list
@@ -112,10 +112,10 @@ public class RegisterBasicScheduleCommandHandler
 
 			// Check workType-workTime
 			try {
-				if(workTime == null){
+				if (workTime == null) {
 					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
 							bSchedule.getWorkTimeCode());
-				}else{
+				} else {
 					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
 							workTime.getSiftCD().v());
 				}

@@ -48,7 +48,7 @@ public class JobTitle extends AggregateRoot {
 		this.jobTitleHistory = memento.getJobTitleHistory()
 				.stream()
 				// sort by start date desc 
-				.sorted((obj1, obj2) -> obj2.getPeriod().start().compareTo(obj1.getPeriod().start()))
+				.sorted((obj1, obj2) -> obj2.span().start().compareTo(obj1.span().start()))
 				.collect(Collectors.toList());
 	}
 	

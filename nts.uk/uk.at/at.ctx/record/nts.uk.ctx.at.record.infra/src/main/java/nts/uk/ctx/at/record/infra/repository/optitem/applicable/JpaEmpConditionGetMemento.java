@@ -18,20 +18,26 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 
-	/** The Constant FIRST_ITEM_INDEX. */
-	private static final int FIRST_ITEM_INDEX = 0;
-
 	/** The type values. */
 	private List<KrcstApplEmpCon> typeValues;
+
+	/** The company id. */
+	private String companyId;
+
+	/** The opt item no. */
+	private String optItemNo;
 
 	/**
 	 * Instantiates a new jpa emp condition get memento.
 	 *
-	 * @param typeValues
-	 *            the type values
+	 * @param companyId the company id
+	 * @param optionalItemNo the optional item no
+	 * @param typeValues the type values
 	 */
-	public JpaEmpConditionGetMemento(List<KrcstApplEmpCon> typeValues) {
+	public JpaEmpConditionGetMemento(String companyId, String optionalItemNo, List<KrcstApplEmpCon> typeValues) {
 		this.typeValues = typeValues;
+		this.companyId = companyId;
+		this.optItemNo = optionalItemNo;
 	}
 
 	/*
@@ -42,7 +48,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValues.get(FIRST_ITEM_INDEX).getKrcstApplEmpConPK().getCid());
+		return new CompanyId(this.companyId);
 	}
 
 	/*
@@ -53,8 +59,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	 */
 	@Override
 	public OptionalItemNo getOptionalItemNo() {
-		return new OptionalItemNo(
-				this.typeValues.get(FIRST_ITEM_INDEX).getKrcstApplEmpConPK().getOptionalItemNo());
+		return new OptionalItemNo(this.optItemNo);
 	}
 
 	/*
@@ -66,8 +71,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	@Override
 	public List<EmploymentCondition> getEmploymentConditions() {
 		return typeValues.stream()
-				.map(item -> new EmploymentCondition(item.getKrcstApplEmpConPK().getEmpCd(),
-						item.getEmpApplAtr()))
+				.map(item -> new EmploymentCondition(item.getKrcstApplEmpConPK().getEmpCd(), item.getEmpApplAtr()))
 				.collect(Collectors.toList());
 	}
 

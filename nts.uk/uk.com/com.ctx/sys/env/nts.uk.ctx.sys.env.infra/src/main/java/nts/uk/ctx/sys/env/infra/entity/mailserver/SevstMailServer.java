@@ -1,166 +1,133 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.env.infra.entity.mailserver;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class SevstMailServer.
  */
-@Entity
-@Table(name = "SEVST_MAIL_SERVER")
-@XmlRootElement
 @Getter
 @Setter
-public class SevstMailServer implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Column(name = "INS_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date insDate;
-    @Size(max = 4)
-    @Column(name = "INS_CCD")
-    private String insCcd;
-    @Size(max = 12)
-    @Column(name = "INS_SCD")
-    private String insScd;
-    @Size(max = 14)
-    @Column(name = "INS_PG")
-    private String insPg;
-    @Column(name = "UPD_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updDate;
-    @Size(max = 4)
-    @Column(name = "UPD_CCD")
-    private String updCcd;
-    @Size(max = 12)
-    @Column(name = "UPD_SCD")
-    private String updScd;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 14)
-    @Column(name = "UPD_PG")
-    private String updPg;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "USE_AUTH")
-    private short useAuth;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ENCRYPT_METHOD")
-    private short encryptMethod;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "AUTH_METHOD")
-    private short authMethod;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 80)
-    @Column(name = "EMAIL_AUTH")
-    private String emailAuth;
-    @Size(max = 25)
-    @Column(name = "PASSWORD")
-    private String password;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "SMTP_SERVER")
-    private String smtpServer;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SMTP_PORT")
-    private int smtpPort;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "POP_USE")
-    private short popUse;
-    @Size(max = 100)
-    @Column(name = "POP_SERVER")
-    private String popServer;
-    @Column(name = "POP_PORT")
-    private Integer popPort;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IMAP_USE")
-    private short imapUse;
-    @Size(max = 100)
-    @Column(name = "IMAP_SERVER")
-    private String imapServer;
-    @Column(name = "IMAP_PORT")
-    private Integer imapPort;
+@Entity
+@Table(name = "SEVST_MAIL_SERVER")
+public class SevstMailServer extends UkJpaEntity implements Serializable {
 
-    public SevstMailServer() {
-    }
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    public SevstMailServer(String cid) {
-        this.cid = cid;
-    }
+	/** The cid. */
+	@Id
+	@Column(name = "CID")
+	private String cid;
 
-    public SevstMailServer(String cid, String updPg, int exclusVer, short useAuth, short encryptMethod, short authMethod, String emailAuth, String smtpServer, int smtpPort, short popUse, short imapUse) {
-        this.cid = cid;
-        this.updPg = updPg;
-        this.exclusVer = exclusVer;
-        this.useAuth = useAuth;
-        this.encryptMethod = encryptMethod;
-        this.authMethod = authMethod;
-        this.emailAuth = emailAuth;
-        this.smtpServer = smtpServer;
-        this.smtpPort = smtpPort;
-        this.popUse = popUse;
-        this.imapUse = imapUse;
-    }
+	/** The use auth. */
+	@Column(name = "USE_AUTH")
+	private short useAuth;
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        return hash;
-    }
+	/** The encrypt method. */
+	@Column(name = "ENCRYPT_METHOD")
+	private short encryptMethod;
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SevstMailServer)) {
-            return false;
-        }
-        SevstMailServer other = (SevstMailServer) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        return true;
-    }
+	/** The auth method. */
+	@Column(name = "AUTH_METHOD")
+	private short authMethod;
 
-    @Override
-    public String toString() {
-        return "entity.SevstMailServer[ cid=" + cid + " ]";
-    }
-    
+	/** The email auth. */
+	@Column(name = "EMAIL_AUTH")
+	private String emailAuth;
+
+	/** The password. */
+	@Column(name = "PASSWORD")
+	private String password;
+
+	/** The smtp server. */
+	@Column(name = "SMTP_SERVER")
+	private String smtpServer;
+
+	/** The smtp port. */
+	@Column(name = "SMTP_PORT")
+	private int smtpPort;
+
+	/** The pop use. */
+	@Column(name = "POP_USE")
+	private short popUse;
+
+	/** The pop server. */
+	@Column(name = "POP_SERVER")
+	private String popServer;
+
+	/** The pop port. */
+	@Column(name = "POP_PORT")
+	private Integer popPort;
+
+	/** The imap use. */
+	@Column(name = "IMAP_USE")
+	private short imapUse;
+
+	/** The imap server. */
+	@Column(name = "IMAP_SERVER")
+	private String imapServer;
+
+	/** The imap port. */
+	@Column(name = "IMAP_PORT")
+	private Integer imapPort;
+
+	/**
+	 * Instantiates a new sevst mail server.
+	 */
+	public SevstMailServer() {
+		super();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		return hash;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof SevstMailServer)) {
+			return false;
+		}
+		SevstMailServer other = (SevstMailServer) object;
+		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.cid;
+	}
+
 }

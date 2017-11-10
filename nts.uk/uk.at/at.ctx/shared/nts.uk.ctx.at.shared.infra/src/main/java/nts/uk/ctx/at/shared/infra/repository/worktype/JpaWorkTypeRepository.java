@@ -31,6 +31,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
+	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
+			+ " AND a.closeAtr = :closeAtr";
+
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
 
@@ -48,6 +51,19 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
 			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "
 			+ "AND c.kshmtWorkTypeSetPK.workTypeCode =:workTypeCode ";
+	
+	// findWorkType(java.lang.String, java.lang.Integer, java.util.List, java.util.List)
+	private static String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
+	
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = :abolishAtr");
+		builder.append(" AND c.oneDayAtr IN :oneDayAtrs");
+		builder.append(" OR c.morningAtr IN :morningAtrs");
+		builder.append(" OR c.afternoonAtr IN :afternoonAtrs");
+		FIND_WORKTYPE_ALLDAY_AND_HALFDAY = builder.toString();
+	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
@@ -119,7 +135,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("companyId", companyId).setParameter("workTypeCode", workTypeCode)
 				.getList(x -> toDomainWorkTypeSet(x));
 	}
-
+	
+	@Override
+	public List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr) {
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr)
+				.getList(x -> toDomainWorkTypeSet(x));
+	}
 	@Override
 	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 		return this.queryProxy().find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class)
@@ -149,6 +171,23 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
 		return this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KshmtWorkType.class)
 				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#
+	 * findWorkType(java.lang.String, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
+	public List<WorkType> findWorkType(String companyId, int abolishAtr, List<Integer> allDayAtrs, List<Integer> halfAtrs) {
+		return this.queryProxy().query(FIND_WORKTYPE_ALLDAY_AND_HALFDAY, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("oneDayAtr", allDayAtrs)
+				.setParameter("morningAtr", halfAtrs)
+				.setParameter("afternoonAtrs", halfAtrs)
+				.getList(c -> toDomain(c));
 	}
 
 	/**
@@ -193,4 +232,6 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET).setParameter("companyId", companyId)
 				.setParameter("workTypeCode", workTypeCd).executeUpdate();
 	}
+
+	
 }

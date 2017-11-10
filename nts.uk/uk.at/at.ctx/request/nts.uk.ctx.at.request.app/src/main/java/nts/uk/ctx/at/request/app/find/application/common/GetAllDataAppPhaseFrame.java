@@ -10,13 +10,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -44,7 +46,7 @@ public class GetAllDataAppPhaseFrame {
 	private ApproveAcceptedRepository approveAcceptedRepo;
 	
 	@Inject
-	private EmployeeAdapter employeeAdapter;
+	private EmployeeRequestAdapter employeeAdapter;
 	
 	public ApplicationDto getAllDataAppPhaseFrame(String applicationID) {
 		
@@ -59,6 +61,7 @@ public class GetAllDataAppPhaseFrame {
 				.stream().map(appApprovalPhase -> AppApprovalPhaseDto.fromDomain(appApprovalPhase))
 				.collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(listPhaseByAppID)) {
+			Collections.sort(listPhaseByAppID, Comparator.comparing(AppApprovalPhaseDto::getDispOrder));
 			application.setListPhase(listPhaseByAppID);
 		}
 		//duyet list phase

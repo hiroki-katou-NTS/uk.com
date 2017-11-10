@@ -2,14 +2,14 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 
 /**
  * @author loivt
- * 残業申請時間設定ID
+ * 勤怠項目ID
  */
 public enum AttendanceID {
 	
 	/**
 	 * 休憩時間
 	 */
-	BREAKTIME(0),
+	RESTTIME(0),
 	
 	/**
 	 * 残業時間
@@ -19,7 +19,7 @@ public enum AttendanceID {
 	/**
 	 * 休出時間
 	 */
-	RESTTIME(2),
+	BREAKTIME(2),
 	
 	/**
 	 * 加給時間

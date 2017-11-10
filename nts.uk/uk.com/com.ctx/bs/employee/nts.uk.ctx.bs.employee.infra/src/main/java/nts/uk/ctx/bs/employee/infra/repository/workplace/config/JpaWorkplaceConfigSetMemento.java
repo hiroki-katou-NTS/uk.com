@@ -55,7 +55,7 @@ public class JpaWorkplaceConfigSetMemento implements WorkplaceConfigSetMemento {
     @Override
     public void setWkpConfigHistory(List<WorkplaceConfigHistory> lstWkpConfigHistory) {
         Map<String, WorkplaceConfigHistory> mapWkpConfigHist = lstWkpConfigHistory.stream()
-                .collect(Collectors.toMap(item -> ((WorkplaceConfigHistory) item).getHistoryId(), Function.identity()));
+                .collect(Collectors.toMap(item -> ((WorkplaceConfigHistory) item).identifier(), Function.identity()));
         this.lstEntity.forEach(entity -> {
             WorkplaceConfigHistory wkpConfigHist = mapWkpConfigHist.get(entity.getBsymtWkpConfigPK().getHistoryId());
             JpaWorkplaceConfigHistorySetMemento memento = new JpaWorkplaceConfigHistorySetMemento(entity);

@@ -12,11 +12,12 @@ import nts.arc.error.I18NErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
@@ -40,7 +41,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
 	private ApplicationDeadlineRepository appDeadlineRepository;
@@ -71,7 +72,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		
 		// 登録可能期間のチェック(１年以内)(check thời gian có thế đăng ký (trong vong 1 năm)
 		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getEndDate())) {
-			throw new BusinessException("Msg_276");			
+			throw new BusinessException("Msg_276", application.getEndDate().toString(DATE_FORMAT));
 		}
 		
 		// 過去月のチェック(check tháng quá khứ)
@@ -87,15 +88,17 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				1, 
 				application.getApplicationType().value, 
 				application.getApplicationDate());
-		ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
-			throw new BusinessException("Msg_238");
-		} 
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
-			throw new BusinessException("Msg_238");
-		}
-		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
-			throw new BusinessException("Msg_324");
+		if(!CollectionUtil.isEmpty(approvalRootOutputs)){
+			ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
+				throw new BusinessException("Msg_238");
+			} 
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
+				throw new BusinessException("Msg_238");
+			}
+			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
+				throw new BusinessException("Msg_324");
+			}
 		}
 		
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する(Check thời gian hết hạn xin)
@@ -168,7 +171,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			}
 			// システム日付と申請締め切り日を比較する(So sánh ngày hệ thống với ngày chốt)
 			if(GeneralDate.today().afterOrEquals(deadline)) {
-				throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(deadline.toString(DATE_FORMAT)).build())); 
+				throw new BusinessException("Msg_327", deadline.toString(DATE_FORMAT)); 
 			}
 		}	
 	}
@@ -213,18 +216,18 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 						// ループする日と受付制限日と比較する(So sánh ngày loop với ngày giới hạn chấp nhận)
 						GeneralDate limitDay = systemDate.addDays(0 - appTypeDiscreteSetting.getRetrictPreDay().value);
 						if(loopDay.before(limitDay)) {
-							throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(loopDay.toString(DATE_FORMAT)).build()));
+							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						}
 					} else {
 						// ループする日とシステム日付を比較する(So sánh ngày loop và ngày hệ thống)
 						if(loopDay.before(systemDate)){
-							throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(loopDay.toString(DATE_FORMAT)).build()));
+							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						} else if(loopDay.equals(systemDate)){
 							Integer limitTime = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
 							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
 							// システム日時と受付制限日時と比較する(So sánh ngày hệ thống với ngày giới hạn chấp nhận)
 							if(systemTime > limitTime) {
-								throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(loopDay.toString(DATE_FORMAT)).build()));
+								throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 							}
 						}
 					}

@@ -6,6 +6,10 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
+/**
+ * @author loivt
+ * 申請別対象勤務種類
+ */
 @Getter
 @Setter
 @AllArgsConstructor

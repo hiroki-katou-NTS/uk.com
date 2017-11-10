@@ -228,19 +228,10 @@ public class JpaWorkplaceConfigRepository extends JpaRepository
 
 		List<BsymtWkpConfig> lstEntity = new ArrayList<>();
 
-		for (WorkplaceConfigHistory wkpConfigHist : workplaceConfig.getWkpConfigHistory()) {
-			BsymtWkpConfigPK pk = new BsymtWkpConfigPK(companyId, wkpConfigHist.getHistoryId());
+		for (WorkplaceConfigHistory wkpConfigHist : workplaceConfig.items()) {
+			BsymtWkpConfigPK pk = new BsymtWkpConfigPK(companyId, wkpConfigHist.identifier());
 
-			Optional<BsymtWkpConfig> optional = this.queryProxy().find(pk, BsymtWkpConfig.class);
-
-			BsymtWkpConfig entity = null;
-
-			if (!optional.isPresent()) {
-				entity = new BsymtWkpConfig();
-				entity.setBsymtWkpConfigPK(pk);
-			} else {
-				entity = optional.get();
-			}
+			BsymtWkpConfig entity = this.queryProxy().find(pk, BsymtWkpConfig.class).orElse(new BsymtWkpConfig(pk));
 			lstEntity.add(entity);
 		}
 

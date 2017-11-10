@@ -11,6 +11,7 @@ module nts.uk.at.view.kdw006.b {
             viewmodelE: new kdw.e.viewmodel.ScreenModelE(),
             viewmodelG: new kdw.g.viewmodel.ScreenModelG()
         };
+         __viewContext.viewModel.viewmodelB.start();
         __viewContext.bind(__viewContext.viewModel);
 
         // show active tab panel 

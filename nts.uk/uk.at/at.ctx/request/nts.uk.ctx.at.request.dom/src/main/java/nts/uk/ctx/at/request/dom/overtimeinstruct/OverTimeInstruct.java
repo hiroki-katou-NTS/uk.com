@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.dom.overtimeinstruct;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -17,6 +20,7 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class OverTimeInstruct extends AggregateRoot{
 	
 	/**
@@ -24,11 +28,6 @@ public class OverTimeInstruct extends AggregateRoot{
 	 * companyID
 	 */
 	private String companyID;
-	
-	/**
-	 * 申請ID
-	 */
-	private String appID;
 	
 	/**
 	 * 作業内容
@@ -66,5 +65,20 @@ public class OverTimeInstruct extends AggregateRoot{
 	 * 終了時刻
 	 */
 	private AttendanceClock endClock;
-
+	
+	public static OverTimeInstruct createSimpleFromJavaType(String companyID,
+			String workContent,Date inputDate, String targetPerson, Date instructDate,
+			String instructor,String overtimeInstructReason,int overtimeHour,
+			int startClock,int endClock) {
+				return new OverTimeInstruct(companyID,
+						new WorkContent(workContent),
+						GeneralDate.legacyDate(inputDate),
+						targetPerson,
+						GeneralDate.legacyDate(instructDate),
+						instructor,
+						new OvertimeInstructReason(overtimeInstructReason), 
+						new OvertimeHour(overtimeHour), 
+						new AttendanceClock(startClock),
+						new AttendanceClock(endClock));
+	}
 }

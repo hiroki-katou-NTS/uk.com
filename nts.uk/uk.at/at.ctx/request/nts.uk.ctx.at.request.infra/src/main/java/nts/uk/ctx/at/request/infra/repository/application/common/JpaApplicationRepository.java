@@ -2,25 +2,17 @@ package nts.uk.ctx.at.request.infra.repository.application.common;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
-import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
@@ -34,6 +26,12 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private final String SELECT_BY_APPTYPE = SELECT_FROM_APPLICATION + " AND c.applicationType = :applicationType";
 
 	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND c.applicationDate >= :startDate AND c.applicationDate <= :endDate";
+	
+	private final String SELECT_APP = "SELECT c FROM KafdtApplication c "
+			+ "WHERE c.applicantSID = :applicantSID "
+			+ "AND c.applicationDate = :appDate "
+			+ "AND c.prePostAtr = :prePostAtr "
+			+ "AND c.applicationType = :applicationType ";
 
 	/**
 	 * Get ALL application
@@ -89,6 +87,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	public void updateApplication(Application application) {
 		KafdtApplication newEntity = KafdtApplication.toEntity(application);
 		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class).get();
+		updateEntity.version = newEntity.version;
 		updateEntity.appReasonId = newEntity.appReasonId;
 		updateEntity.prePostAtr = newEntity.prePostAtr;
 		updateEntity.inputDate = newEntity.inputDate;
@@ -136,6 +135,17 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.setParameter("endDate", endDate)
 				.getList(c -> c.toDomain());
 		return data;
+	}
+
+	@Override
+	public Optional<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr,
+			int appType) {
+		return this.queryProxy().query(SELECT_APP, KafdtApplication.class)
+				.setParameter("applicantSID", applicantSID)
+				.setParameter("appDate", appDate)
+				.setParameter("prePostAtr", prePostAtr)
+				.setParameter("applicationType", appType)
+				.getSingle(c -> c.toDomain());
 	}
 
 

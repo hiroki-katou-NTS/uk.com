@@ -26,14 +26,15 @@ public class JpaI18NResourcesRepository extends JpaRepository implements I18NRes
 				.setParameter("languageId", languageId)
 				.getList(e -> {
 					val resourceType = I18NResourceType.of(e.resourceType);
+					val content = e.content.replace("\\r", "").replace("\\n", System.getProperty("line.separator"));
 					switch (resourceType) {
 					case MESSAGE:
-						return (T)new MessageResourceItem(e.pk.code, e.content);
+						return (T)new MessageResourceItem(e.pk.code, content);
 					case ITEM_NAME:
-						return (T)new ProgramResourceItem(e.pk.programId, e.pk.code, e.content);
+						return (T)new ProgramResourceItem(e.pk.programId, e.pk.code, content);
 					default:
 						// 明らかにバグ（データ設定ミス）だが、エラーにして処理を停止させるほど深刻ではないので、処理を継続させる
-						return (T)new MessageResourceItem(e.pk.code, e.content);
+						return (T)new MessageResourceItem(e.pk.code, content);
 					}
 				});
 		

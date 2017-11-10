@@ -5,5 +5,8 @@ module nts.uk.at.view.kdw001.j {
 
         //When bind screen done, bind 2 component reference.
         screenModel.cScreenmodel.start();
+        
+        //Call start() function to getlist ケース別実行施内容
+        screenModel.start();
     });
 }

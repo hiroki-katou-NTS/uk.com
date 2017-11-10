@@ -16,7 +16,6 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class TargetPerson extends AggregateRoot{
 
-	
 	/**
 	 * 社員ID
 	 */
@@ -30,4 +29,14 @@ public class TargetPerson extends AggregateRoot{
 	 */
 	private ComplStateOfExeContents state;
 	
+	public static TargetPerson createJavaType(
+			String employeeId,
+			String empCalAndSumExecLogId,
+			ComplStateOfExeContents state
+			){
+		return new TargetPerson(
+				employeeId,
+				empCalAndSumExecLogId,
+				state);
+	}
 }

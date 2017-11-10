@@ -26,7 +26,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	 * @return
 	 */
 	private GoBackDirectly toDomain(KrqdtGoBackDirectly entity) {
-		return new GoBackDirectly(entity.krqdtGoBackDirectlyPK.companyID, 
+		GoBackDirectly goBackDirectly = new GoBackDirectly(entity.krqdtGoBackDirectlyPK.companyID, 
 				entity.krqdtGoBackDirectlyPK.appID,
 				entity.workTypeCD, 
 				entity.siftCD,
@@ -41,6 +41,8 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				entity.workTimeStart2,
 				entity.workTimeEnd2, 
 				entity.workLocationCd2);
+		goBackDirectly.setVersion(entity.version);
+		return goBackDirectly;
 	}
 
 	/**
@@ -52,6 +54,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		entity.krqdtGoBackDirectlyPK = new KrqdtGoBackDirectlyPK();
 		entity.krqdtGoBackDirectlyPK.companyID = domain.getCompanyID();
 		entity.krqdtGoBackDirectlyPK.appID  = domain.getAppID();
+		entity.version = domain.getVersion();
 		entity.workTypeCD = domain.getWorkTypeCD().v();
 		entity.siftCD = domain.getSiftCD().v();
 		entity.workChangeAtr = domain.getWorkChangeAtr().value;
@@ -88,7 +91,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		Optional<KrqdtGoBackDirectly> goBack = this.queryProxy().find(new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()), KrqdtGoBackDirectly.class);
 		if(goBack.isPresent()) {
 			KrqdtGoBackDirectly currentEntity = goBack.get();
-			//currentEntity.setVersion(goBackDirectly.getVersion());
+			currentEntity.setVersion(goBackDirectly.getVersion());
 			currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
 			currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
 			currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().v());
@@ -103,7 +106,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
 				currentEntity.setSiftCD(goBackDirectly.getSiftCD().v());
 			}
-			this.commandProxy().update(toEntity(goBackDirectly));
+			this.commandProxy().update(currentEntity);
 			
 		}
 		

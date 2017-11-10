@@ -11,6 +11,6 @@ import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
  *
  */
 public interface ApprovalAgencyInfoService {
-	ApprovalAgencyInfoOutput getApprovalAgencyInformation(String companyID, List<String> approver);
+	ApprovalAgencyInfoOutput getApprovalAgencyInformation(String companyID, List<String> approverList);
 
 }

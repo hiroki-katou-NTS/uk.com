@@ -22,8 +22,32 @@
 }
 
 .contentB {
-	margin-left: 70px;
+	margin-left: 85px;
 	height: 700px;
+}
+
+.contentC {
+	margin-top: 10px;
+	margin-left: 45px;
+	height: 700px;
+	margin-left: 45px;
+	width: 500px;
+}
+
+.contentD {
+	margin-top: 10px;
+	margin-left: 45px;
+	height: 700px;
+	margin-left: 45px;
+	width: 400px;
+}
+
+.contentE {
+	margin-top: 10px;
+	margin-left: 45px;
+	height: 700px;
+	margin-left: 45px;
+	width: 700px;
 }
 
 .periodCovered {
@@ -33,7 +57,29 @@
 	display: inline-flex;
 	width: 600px;
 }
-.periodChangeValue{
+
+.selectionEmployee {
+	margin-top: 10px;
+	border: 1px solid #ccc !important;
+	border-radius: 5px;
+	padding: 5px;
+	width: 600px;
+	border: 1px solid #ccc !important;
+}
+
+.buttonNext {
+	float: right;
+	margin-top: 25px;
+	margin-right: 45px;
+}
+
+.selectionCase {
+	margin-top: 15px;
+	padding: 10px;
+	background-color: #eaeaea;
+}
+
+.periodChangeValue {
 	margin-left: 15px;
 }
 
@@ -46,7 +92,11 @@
 	margin-left: 15px;
 }
 
-.selectSchedule {
+.selectImplementAtr {
+	margin-left: 15px;
+}
+
+.labelRangeDate {
 	margin-left: 15px;
 }
 
@@ -58,7 +108,27 @@ button.nts-switch-button {
 	margin-top: 15px;
 }
 
-.radioboxProcessClassification {
+.radioboxCaseAll {
+	margin-left: 30px;
+}
+
+.lableCase {
+	margin-left: 60px;
+	margin-top: 20px;
+}
+
+.lableCaseAll {
+	margin-left: 20px;
+	margin-top: 20px;
+	display: inline-flex;
+	width: 100%;
+}
+
+.buttonCase {
+	margin-left: 20px;
+}
+
+.radioboxProcessExecutionAtr {
 	margin-top: 15px;
 	margin-left: 45px;
 }
@@ -93,4 +163,40 @@ button.nts-switch-button {
 
 .nts-wizard>.content>.body {
 	padding: 0;
+}
+
+.buttonBeginNext {
+	float: right;
+	margin-top: 40px;
+}
+
+.buttonBeginPrevious {
+	float: left;
+	margin-top: 40px;
+}
+
+.labelSelection {
+	width: 150px;
+}
+
+.labelContents {
+	background-color: #eaeaea;
+	width: 500px;
+	white-space: pre-line;
+	padding: 5px;
+	max-height: 300px;
+	overflow-y: scroll;
+	position: relative;
+}
+
+.labelCenter {
+	margin-top: 8px;
+}
+
+.rangeLabel {
+	padding: 10px 5px 6px 5px;
+}
+
+.rangeDatePicker {
+	padding-top: 4px;
 }

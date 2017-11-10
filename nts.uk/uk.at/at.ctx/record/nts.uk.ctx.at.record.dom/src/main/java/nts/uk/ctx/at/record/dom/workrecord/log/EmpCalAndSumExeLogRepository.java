@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author tutk
@@ -11,34 +12,56 @@ import nts.arc.time.GeneralDate;
  */
 public interface EmpCalAndSumExeLogRepository {
 	/**
+	 * get all  EmpCalAndSumExeLog by companyID, employeeID
+	 * @param companyID
+	 * @param employeeID
+	 * @return
+	 */
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID);
+	
+	/**
 	 * get all  EmpCalAndSumExeLog
 	 * @param companyID
 	 * @return
 	 */
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID);
+
+	
 	
 	/**
-	 * get EmpCalAndSumExeLog by empCalAndSumExecLogId
-	 * @param companyID
-	 * @param empCalAndSumExecLogId
-	 * @param operationCaseId
-	 * @param employeeId
+	 * get EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID, String operationCaseID,String employeeID);
-	
-	List<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent);	
-	
-	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
+	Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 
+	/**
+	 * KIF 001 3 日別実績の作成処理
+	 * 
+	 * @param empCalAndSumExecLogID
+	 * @param executionContent
+	 * @return
+	 */
+	Optional<EmpCalAndSumExeLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent);
 
+	/**
+	 * KIF 001 4 ログ情報（実行ログ）
+	 * 
+	 * @param empCalAndSumExecLogID
+	 * 
+	 */
+	void updateLogInfo(String empCalAndSumExecLogID);
 
 	/**
 	 * get all EmpCalAndSumExeLog by startDate and endDate
+	 * 
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID,GeneralDate startDate,GeneralDate endDate);
+	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
+			GeneralDate endDate);
+
+	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
 	
 }

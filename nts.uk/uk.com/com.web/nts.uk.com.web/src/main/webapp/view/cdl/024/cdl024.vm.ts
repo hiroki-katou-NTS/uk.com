@@ -1,37 +1,42 @@
 module nts.uk.at.view.cdl024.viewmodel {
     export class ScreenModel {
+        columns: KnockoutObservableArray<any>;
         items: KnockoutObservableArray<IItemModel> = ko.observableArray([]);
         currentCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor() {
-            let self = this,
-                items = self.items,
-                codeList = self.currentCodeList;
+            let self = this;
+            this.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'code', width: 100 },
+                { headerText: '名称', prop: 'name', width: 230, formatter: _.escape }
+            ]); 
         }
 
-        closeDialog(){
-             nts.uk.ui.windows.close();
-        }
-        
-        sendAttribute(){
-            nts.uk.ui.windows.setShared("currentCodeList", this.currentCodeList);
+        closeDialog() {
             nts.uk.ui.windows.close();
-        }    
-        
+        }
+
+        sendAttribute() {
+            nts.uk.ui.windows.setShared("currentCodeList", this.currentCodeList());
+            nts.uk.ui.windows.close();
+        }
+
         startPage(): JQueryPromise<any> {
             let self = this,
                 items = self.items,
-                codeList = self.currentCodeList,
                 dfd = $.Deferred();
 
             items.removeAll();
             service.getAll().done((data: Array<IItemModel>) => {
+                data = _.sortBy(data, ["code"]);
                 items(data);
+                let parameter: InputParam = nts.uk.ui.windows.getShared("CDL024");
+                if (parameter != null && parameter.reasonCD != null) {
+                    self.currentCodeList(parameter.reasonCD);
+                }
                 dfd.resolve();
             });
-            
-            //nts.uk.ui.windows.getShared("companyId");
-            codeList(['A5', 'A7', 'A2']);
+
 
             return dfd.promise();
         }
@@ -40,5 +45,9 @@ module nts.uk.at.view.cdl024.viewmodel {
     export interface IItemModel {
         code: string;
         name: string;
+    }
+    
+    export interface InputParam {
+        reasonCD: Array<string>;
     }
 }

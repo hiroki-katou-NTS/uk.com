@@ -15,8 +15,13 @@ import nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal.DeleteHoriTot
 import nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal.DeleteHoriTotalCategoryCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal.UpdateHoriTotalCategoryCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal.UpdateHoriTotalCategoryCommandHandler;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriCalDaySetDto;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriCalDaySetFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTSetDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCategoryFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.Param;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalItemDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalItemFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalOrderDto;
@@ -30,6 +35,10 @@ public class HoriTotalCategoryWebService extends WebService{
 	private TotalEvalOrderFinder finderOrder;
 	@Inject
 	private TotalEvalItemFinder finderItem;
+	@Inject 
+	private HoriCalDaySetFinder finderSet;
+	@Inject 
+	private HoriTotalCNTFinder finderCNT;
 	@Inject
 	private AddHoriTotalCategoryCommandHandler add;
 	@Inject
@@ -45,6 +54,16 @@ public class HoriTotalCategoryWebService extends WebService{
 	@Path("findAllCate")
 	public List<HoriTotalCategoryDto> finderCate(){
 		return this.finderCate.finder();
+	}
+	
+	/**
+	 * get all hori total cnt set
+	 * @return
+	 */
+	@POST
+	@Path("findAllCNT")
+	public List<HoriTotalCNTSetDto> finderAllCNT(){
+		return this.finderCNT.finderAll();
 	}
 	
 	/**
@@ -69,10 +88,30 @@ public class HoriTotalCategoryWebService extends WebService{
 		return this.finderItem.finder();
 	}
 	
+	/**
+	 * get all hori totalCNTSet item
+	 * @return
+	 */
+	@POST
+	@Path("findCNT")
+	public List<HoriTotalCNTSetDto> finderCNT(Param param){
+		return this.finderCNT.finder(param);
+	}
+	
+	/**
+	 * get all HoriCalDaysSet
+	 * @return
+	 */
+	@POST
+	@Path("findSet")
+	public List<HoriCalDaySetDto> finderSet(){
+		return this.finderSet.finder();
+	}
+	
 	@POST
 	@Path("update")
-	public void update(UpdateHoriTotalCategoryCommand command){
-		this.update.handle(command);
+	public void update(UpdateHoriTotalCategoryCommand aa){
+		this.update.handle(aa);
 	}
 	
 	@POST

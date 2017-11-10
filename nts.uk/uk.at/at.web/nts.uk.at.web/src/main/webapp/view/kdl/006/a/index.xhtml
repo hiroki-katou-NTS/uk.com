@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			
+			<script>
+				var dialogSize = {
+					width : 800,
+					height : 500
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="style.css" />			
+			<com:scriptfile path="kdl006.a.service.js" />
+			<com:scriptfile path="kdl006.a.vm.js" />
+			<com:scriptfile path="kdl006.a.start.js" />
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<div id="functions-area">
+				<button tabindex="2" data-bind="click: save" class="btnStyle top-button">#{i18n.getText('KDL006_2')}</button>
+				<button tabindex="3" data-bind="click: close" class="btnStyle top-button">#{i18n.getText('KDL006_3')}</button>
+			</div>
+				
+			<div id="contents-area">					
+				<table id="grid-list"></table>
+			</div>
+		
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
