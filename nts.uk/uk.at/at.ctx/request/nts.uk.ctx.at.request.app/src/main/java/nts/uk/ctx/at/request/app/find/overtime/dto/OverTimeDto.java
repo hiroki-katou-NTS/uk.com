@@ -139,6 +139,9 @@ public class OverTimeDto {
 	 */
 	private boolean displayDivergenceReasonInput;
 	
+	/**
+	 * appOvertimeNightFlg
+	 */
 	private int appOvertimeNightFlg;
 	
 }

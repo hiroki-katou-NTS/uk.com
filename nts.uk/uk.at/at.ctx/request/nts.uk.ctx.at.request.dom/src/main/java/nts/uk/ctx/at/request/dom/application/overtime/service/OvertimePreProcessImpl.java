@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,6 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -53,6 +53,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -92,6 +94,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	private CPBonusPaySettingRepository cPBonusPaySettingRepository;
 	@Inject
 	private BPSettingRepository bPSettingRepository;
+	@Inject
+	private OvertimeFrameRepository overtimeFrameRepository;
 	@Inject
 	private SpecBPTimesheetRepository specBPTimesheetRepository;
 	
@@ -177,19 +181,21 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getOvertimeHours(int overtimeAtr) {
+	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr,String companyID) {
+		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
 		//早出残業の場合
 		if(overtimeAtr == OverTimeAtr.PREOVERTIME.value){
-			
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID);
 		}
 		//通常残業の場合
 		if(overtimeAtr == OverTimeAtr.REGULAROVERTIME.value){
-			
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID);
 		}
 		//早出残業・通常残業の場合
 		if(overtimeAtr == OverTimeAtr.ALL.value){
-			
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID);
 		}
+		return overtimeFrames;
 	}
 
 	@Override

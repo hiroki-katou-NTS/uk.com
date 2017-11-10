@@ -13,11 +13,17 @@ import nts.uk.ctx.at.shared.infra.entity.employmentrule.hourlate.overtime.overti
 public class OvertimeFrameImpl extends JpaRepository implements OvertimeFrameRepository {
 	private static final String FIND_ALL = "SELECT e FROM KrqdtOvertimeFrame e";
 	private static final String FIND_BY_FRAMENO;
+	private static final String FIND_BY_COMPANYID;
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
 		query.append(" WHERE e.krqdtOvertimeFramePK.otFrameNo IN :frameNo");
 		FIND_BY_FRAMENO = query.toString();
+		
+		query = new StringBuilder();
+		query.append(FIND_ALL);
+		query.append(" Where e.krqdtOvertimeFramePK.cid = :companyID");
+		FIND_BY_COMPANYID = query.toString();
 	}
 	@Override
 	public List<OvertimeFrame> getOvertimeFrameByFrameNo(List<Integer> frameNo) {
@@ -27,6 +33,15 @@ public class OvertimeFrameImpl extends JpaRepository implements OvertimeFrameRep
 				.getList(e -> convertToDomain(e));
 	}
 	
+	
+	
+
+	@Override
+	public List<OvertimeFrame> getOvertimeFrameByCID(String companyID) {
+		
+		return this.queryProxy().query(FIND_BY_COMPANYID,KrqdtOvertimeFrame.class)
+				.setParameter("companyID", companyID).getList(e -> convertToDomain(e));
+	}
 	private OvertimeFrame convertToDomain(KrqdtOvertimeFrame entity){
 		return OvertimeFrame.createSimpleFromJavaType(entity.getKrqdtOvertimeFramePK().getCid(),
 				entity.getKrqdtOvertimeFramePK().getOtFrameNo(),
