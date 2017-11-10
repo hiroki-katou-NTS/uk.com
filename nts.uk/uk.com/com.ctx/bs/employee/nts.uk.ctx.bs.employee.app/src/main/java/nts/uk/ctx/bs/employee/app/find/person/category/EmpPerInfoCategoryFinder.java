@@ -173,6 +173,7 @@ public class EmpPerInfoCategoryFinder {
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
+		
 		//get Employee
 		Employee employee = employeeRepository.findBySid(companyId, employeeId).get();
 		//Get PersonInfoCategory
@@ -210,6 +211,12 @@ public class EmpPerInfoCategoryFinder {
 		return null;
 	}
 	
+	/**
+	 * convert perInfoItemDef domain to Dto
+	 * @param itemDef
+	 * @param dispOrder
+	 * @return
+	 */
 	private PerInfoItemDefDto fromDomain(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
 				ukResouce);
@@ -222,6 +229,12 @@ public class EmpPerInfoCategoryFinder {
 				selectionItemRefTypes);
 	}
 	
+	/**
+	 * create ItemTypeStateDto
+	 * @param itemTypeState
+	 * @return
+	 */
+	
 	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {
@@ -232,6 +245,12 @@ public class EmpPerInfoCategoryFinder {
 			return ItemTypeStateDto.createSetItemDto(setItemDom.getItems());
 		}
 	}
+	
+	/**
+	 * create DataTypeStateDto
+	 * @param dataTypeState
+	 * @return
+	 */
 	private DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
@@ -530,6 +549,21 @@ public class EmpPerInfoCategoryFinder {
 		}
 	}
 	
+	/**
+	 * Set actionRole for each item
+	 * @Steps:
+	 * 		check ctgAuth
+	 * 			if read only then all action role of items are read only
+	 * 			else if edit
+	 * 				each item
+	 * 					if read only then action role is read only
+	 * 					else if edit then action role is edit
+	 * 
+	 * @param empId
+	 * @param ctgId
+	 * @param perInfoItemId
+	 * @return
+	 */
 	private ActionRole getActionRole(String empId, String ctgId, String perInfoItemId){
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();

@@ -1,7 +1,7 @@
-#button36Area{
+#button36Area {
 	margin-top: 3px;
 	display: inline-block;
-    float: left;
+	float: left;
 }
 
 #button6 {
@@ -99,9 +99,14 @@ button {
 	margin-left: 19px;
 }
 
+.ntsRadioBox {
+    display: block;
+    margin-bottom: 10px;
+}
+
 .nts-wizard.vertical>.content {
 	width: 830px;
-	height : 800px;
+	height: 800px;
 	margin: 0 0 0 0;
 	background: none;
 	height: 800px;
@@ -113,7 +118,7 @@ button {
 }
 
 .nts-wizard {
-    width: 1200px;
+	width: 1200px;
 }
 
 #linkButton1 {

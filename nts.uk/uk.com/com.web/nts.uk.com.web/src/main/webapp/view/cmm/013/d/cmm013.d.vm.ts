@@ -40,13 +40,14 @@ module nts.uk.com.view.cmm013.d {
                 nts.uk.ui.block.grayout();
                 service.saveJobTitleHistory(_self.toJSON())
                     .done(() => {
-                        nts.uk.ui.block.clear();
                         nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_ADD_HISTORY, true);
                         _self.close();
                     })
-                    .fail((res: any) => {
-                        nts.uk.ui.block.clear();
+                    .fail((res: any) => {                       
                         _self.showMessageError(res);
+                    })
+                    .always(() => {
+                        nts.uk.ui.block.clear();
                     });
             }
             
@@ -76,8 +77,11 @@ module nts.uk.com.view.cmm013.d {
              * Validate
              */
             private validate(): boolean {
-                let _self = this;               
-                $('#start-date').ntsError('clear');                
+                let _self = this;             
+                  
+                // Clear error
+                nts.uk.ui.errors.clearAll();    
+                            
                 $('#start-date').ntsEditor('validate');               
                 return !$('.nts-input').ntsError('hasError');
             }

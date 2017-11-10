@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence;
+package nts.uk.ctx.bs.employee.infra.entity.temporaryabsence;
 
 import java.io.Serializable;
 
@@ -27,12 +27,8 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 	public String sid;
 
 	@Basic(optional = false)
-	@Column(name = "START_DATE")
-	public GeneralDate startDate;
-
-	@Basic(optional = false)
-	@Column(name = "END_DATE")
-	public GeneralDate endDate;
+	@Column(name = "HIST_ID")
+	public String  histId;
 
 	@Basic(optional = false)
 	@Column(name = "LEAVE_HOLIDAY_ATR")
@@ -56,8 +52,7 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.bsymtTemporaryAbsencePK;
 	}
 
 	public BsymtTemporaryAbsence() {

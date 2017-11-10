@@ -256,3 +256,6 @@ table tr td, table tr th {
 span.caret-background.caret-right.direction-right {
 	position: fixed !important;
 }
+#string{
+	width: 200px !important;
+}

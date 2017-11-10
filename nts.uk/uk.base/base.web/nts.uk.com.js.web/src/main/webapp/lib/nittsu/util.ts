@@ -698,7 +698,7 @@
             if (text) {
                 text = formatCompCustomizeResource(text);
                 text = formatParams(text, params);
-                return text;
+                return text.replace(/\\r\\n/g, '\r\n');
             }
             return code;
         }
@@ -719,7 +719,8 @@
             }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);
-            return message;
+			
+            return message.replace(/\\r\\n/g, '\r\n');
         }
         function formatCompCustomizeResource(message: string) {
             let compDependceParamRegex = /{#(\w*)}/;

@@ -30,9 +30,9 @@ public class SettingInforForDailyCreation extends CalExeSettingInfor {
 	private Optional<PartResetClassification> partResetClassification;
 
 	public SettingInforForDailyCreation(ExecutionContent executionContent, ExecutionType executionType,
-			String calExecutionSetInfoID, String caseSpecExeContentID, DailyRecreateClassification creationType,
+			String calExecutionSetInfoID, DailyRecreateClassification creationType,
 			PartResetClassification partResetClassification) {
-		super(executionContent, executionType, calExecutionSetInfoID, caseSpecExeContentID);
+		super(executionContent, executionType, calExecutionSetInfoID);
 		this.creationType = creationType;
 		this.partResetClassification = Optional.of(partResetClassification);
 	}

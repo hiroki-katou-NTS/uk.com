@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,9 @@ import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 import nts.uk.ctx.bs.employee.app.find.layout.LayoutFinder;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddressRepository;
@@ -23,10 +27,6 @@ import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,12 +54,9 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	private EmpInfoItemDataRepository empInfoItemDataRepo;
 
 	@Inject
-	private PerInfoCtgDataRepository perInfoCtgDataRepo;
+	private EmInfoCtgDataRepository empInfoCtgDataRepo;
 
-	@Inject
-	private PerInfoItemDataRepository perInfoItemDataRepo;
-
-	String dateStringFormat = "ddMMyyyy";
+	private String dateStringFormat = "ddMMyyyy";
 
 	@Override
 	protected void handle(CommandHandlerContext<AddEmployeeCommand> context) {
@@ -80,50 +77,91 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		// 個人基本 1st
 
-		createNewPerson(getAllItemInCategory(dataList, "CS00001"), personId);
+		createNewPerson(getAllItemInCategoryByCode(dataList, "CS00001"), personId, employeeId);
 
 		// 社員基本情報 2nd
 
-		createNewEmployee(getAllItemInCategory(dataList, "CS00002"), personId, employeeId, companyId);
+		createNewEmployee(getAllItemInCategoryByCode(dataList, "CS00002"), personId, employeeId, companyId);
 
 		// 連続履歴
 
-		createCurrentAddress(getAllItemInCategory(dataList, "CS00003"), personId);
+		createCurrentAddress(getAllItemInCategoryByCode(dataList, "CS00003"), personId, employeeId);
 
 		// 家族
 
-		createNewFamily(getAllItemInCategory(dataList, "CS00004"), personId);
+		createNewFamily(getAllItemInCategoryByCode(dataList, "CS00004"), personId, employeeId);
 
 		// 社員情報カテゴリデータ
-//		createOptionalCategoryData();
+
+		// create Optional Category Data;
+
+		// because getItemValueByCode remove all item system required = >
+		// There's only Optinal Item
+		List<List<SettingItemDto>> categoryList = new ArrayList<List<SettingItemDto>>();
+
+		categoryList.stream().forEach(x -> createEmpInfoCategoryData(x, null, personId));
 
 	}
 
-	private List<SettingItemDto> getAllItemInCategory(List<SettingItemDto> sourceList, String categoryCode) {
-		// TODO Auto-generated method stub
+	private List<SettingItemDto> getAllItemInCategoryByCode(List<SettingItemDto> sourceList, String categoryCode) {
 		return sourceList.stream().filter(x -> x.getCategoryCode().equals(categoryCode)).collect(Collectors.toList());
 	}
 
-	private void createPersonInfoCategoryData(List<SettingItemDto> dataList, String recordId, String CtgId,
-			String personId) {
+	// private void createPerInfoCategoryData(List<SettingItemDto> dataList,
+	// String paramRecordId, String personId) {
+	// if (!dataList.isEmpty()) {
+	//
+	// String CtgId = dataList.get(0).getPerInfoCtgId();
+	//
+	// String recordId = paramRecordId == null ? IdentifierUtil.randomUniqueId()
+	// : paramRecordId;
+	//
+	// // add PersonInfoCtgData
+	//
+	// PerInfoCtgData perInfoCtgData = new PerInfoCtgData(recordId, CtgId,
+	// personId);
+	//
+	// this.perInfoCtgDataRepo.addCategoryData(perInfoCtgData);
+	//
+	// // add PersonInfoItemData
+	//
+	// List<PersonInfoItemData> itemList = dataList.stream().map(x ->
+	// toPersonInfoItemData(recordId, x))
+	// .collect(Collectors.toList());
+	//
+	// for (PersonInfoItemData itemData : itemList) {
+	//
+	// this.perInfoItemDataRepo.addItemData(itemData);
+	// }
+	// }
+	// }
 
-		// add PerInfoCtgData
+	private void createEmpInfoCategoryData(List<SettingItemDto> dataList, String recordId, String EmployeeId) {
+		if (!dataList.isEmpty()) {
 
-		PerInfoCtgData perInfoCtgData = new PerInfoCtgData(recordId, CtgId, personId);
+			String CtgId = dataList.get(0).getPerInfoCtgId();
 
-		this.perInfoCtgDataRepo.addCategoryData(perInfoCtgData);
+			// add EmployeeInfoCtgData
 
-		// add PersonInfoItemData
+			EmpInfoCtgData empInfoCtgData = new EmpInfoCtgData(recordId != null ? recordId : CtgId, CtgId, EmployeeId);
 
-		createItemDataList(recordId, dataList);
+			this.empInfoCtgDataRepo.addCategoryData(empInfoCtgData);
 
+			// add PersonInfoItemData
+
+			List<EmpInfoItemData> itemList = dataList.stream().map(x -> toEmployeeInfoItemData(recordId, x))
+					.collect(Collectors.toList());
+
+			for (EmpInfoItemData itemData : itemList) {
+
+				this.empInfoItemDataRepo.addItemData(itemData);
+			}
+		}
 	}
 
-	private void createCurrentAddress(List<SettingItemDto> dataList, String personId) {
+	private void createCurrentAddress(List<SettingItemDto> dataList, String personId, String employeeId) {
 
 		String currentAddressId = IdentifierUtil.randomUniqueId();
-
-		String personInfoCtgId = dataList.get(0).getPerInfoCtgId();
 
 		String countryId = getItemValueByCode(dataList, "IS00044");
 		String postalCode = getItemValueByCode(dataList, "IS00044");
@@ -147,27 +185,46 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.currentAddressRepo.addCurrentAddress(newCurrentAddress);
 
-		if (!dataList.isEmpty()) {
+		// because getItemValueByCode remove all item system required = >
+		// There's only Optinal Item
 
-			createPersonInfoCategoryData(dataList, currentAddressId, personInfoCtgId, personId);
-
-		}
+		createEmpInfoCategoryData(dataList, currentAddressId, employeeId);
 
 	}
 
-	private void createItemDataList(String recordId, List<SettingItemDto> dataList) {
+	private EmpInfoItemData toEmployeeInfoItemData(String recordId, SettingItemDto item) {
 
-		List<PersonInfoItemData> itemList = dataList.stream().map(x -> {
-			return PersonInfoItemData.createFromJavaType(x.getItemDefId(), recordId, 0, "", BigDecimal.TEN,
-					GeneralDate.today());
+		int saveType = item.getSaveData().getSaveDataType().value;
 
-		}).collect(Collectors.toList());
+		String stringValue = item.getValueAsString();
 
-		for (PersonInfoItemData itemData : itemList) {
+		GeneralDate dataValue = GeneralDate.fromString(item.getValueAsString(), dateStringFormat);
 
-			this.perInfoItemDataRepo.addItemData(itemData);
-		}
+		BigDecimal bigDecimalvalue = BigDecimal.valueOf(Integer.parseInt(item.getValueAsString()));
+
+		return EmpInfoItemData.createFromJavaType(item.getItemDefId(), recordId, saveType, stringValue, bigDecimalvalue,
+				dataValue);
+
 	}
+
+	// private PersonInfoItemData toPersonInfoItemData(String recordId,
+	// SettingItemDto item) {
+	//
+	// int saveType = item.getSaveData().getSaveDataType().value;
+	//
+	// String stringValue = item.getValueAsString();
+	//
+	// GeneralDate dataValue = GeneralDate.fromString(item.getValueAsString(),
+	// dateStringFormat);
+	//
+	// BigDecimal bigDecimalvalue =
+	// BigDecimal.valueOf(Integer.parseInt(item.getValueAsString()));
+	//
+	// return PersonInfoItemData.createFromJavaType(item.getItemDefId(),
+	// recordId, saveType, stringValue,
+	// bigDecimalvalue, dataValue);
+	//
+	// }
 
 	private void createNewEmployee(List<SettingItemDto> dataList, String personId, String employeeId,
 			String companyId) {
@@ -182,9 +239,14 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.employeeRepo.addNewEmployee(newEmployee);
 
+		// because getItemValueByCode remove all item system required = >
+		// There's only Optinal Item
+
+		createEmpInfoCategoryData(dataList, employeeId, employeeId);
+
 	}
 
-	private void createNewPerson(List<SettingItemDto> dataList, String personId) {
+	private void createNewPerson(List<SettingItemDto> dataList, String personId, String employeeId) {
 
 		GeneralDate birthDate = GeneralDate.fromString(getItemValueByCode(dataList, "IS00047"), dateStringFormat);
 		int bloodType = Integer.parseInt(getItemValueByCode(dataList, "IS00055"));
@@ -215,9 +277,14 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		this.personRepo.addNewPerson(newPerson);
 
+		// because getItemValueByCode remove all item system required = >
+		// There's only Optinal Item
+
+		createEmpInfoCategoryData(dataList, personId, employeeId);
+
 	}
 
-	private void createNewFamily(List<SettingItemDto> dataList, String personId) {
+	private void createNewFamily(List<SettingItemDto> dataList, String personId, String employeeId) {
 
 		GeneralDate birthday = GeneralDate.fromString(getItemValueByCode(dataList, "IS00047"), dateStringFormat);
 		GeneralDate deadDay = GeneralDate.fromString(getItemValueByCode(dataList, "IS00048"), dateStringFormat);
@@ -244,6 +311,11 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 				togSepDivisionType, workStudentType);
 
 		this.familyRepo.addFamily(newFamily);
+
+		// because getItemValueByCode remove all item system required = >
+		// There's only Optinal Item
+
+		createEmpInfoCategoryData(dataList, familyId, employeeId);
 
 	}
 

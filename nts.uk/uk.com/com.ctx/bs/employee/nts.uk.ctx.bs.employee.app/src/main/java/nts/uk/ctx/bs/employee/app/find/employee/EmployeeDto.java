@@ -17,12 +17,17 @@ public class EmployeeDto {
 	private GeneralDate retirementDate;
 	private GeneralDate joinDate;
 
+	// 入社履歴
+	// calc year of Entire from listHistoryEntire
+	private int yearOfEntire;
+
 	public  static EmployeeDto fromDomain(Employee domain) {
 		return new EmployeeDto(domain.getPId(),
 				domain.getSId(),
 				domain.getSCd().v(),
 				domain.getCompanyMail().v(),
 				domain.getListEntryJobHist().get(0).getRetirementDate(),
-				domain.getListEntryJobHist().get(0).getJoinDate());
+				domain.getListEntryJobHist().get(0).getJoinDate(), 
+				domain.getYearOfEntire());
 	}
 }

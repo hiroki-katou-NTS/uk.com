@@ -5,10 +5,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 所属部門（兼務）

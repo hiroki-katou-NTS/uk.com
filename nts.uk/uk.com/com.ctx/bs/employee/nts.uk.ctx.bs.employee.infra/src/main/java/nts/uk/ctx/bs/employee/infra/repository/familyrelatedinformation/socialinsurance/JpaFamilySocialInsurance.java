@@ -10,7 +10,6 @@ import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.Famil
 import nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance.FamilySocialInsuranceRepository;
 import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.socialinsurance.BsymtFamilySocialInsurance;
 import nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.socialinsurance.BsymtFamilySocialInsurancePK;
-import sun.tools.attach.BsdVirtualMachine;
 
 @Stateless
 public class JpaFamilySocialInsurance extends JpaRepository implements FamilySocialInsuranceRepository{
