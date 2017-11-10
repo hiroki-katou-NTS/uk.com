@@ -212,8 +212,33 @@ module nts.uk.at.view.kdw001.b {
             }
 
             opendScreenD() {
+                var self = this;
 
-                $("#wizard").ntsWizard("next");
+                if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.MonthCountCheck() == false) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                    return;
+                }
+
+                if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 2 && self.selectedCreatDivisionCode() == 2 && self.calDivisionCheck() == false &&
+                    self.dateDivisionCheck() == false &&
+                    self.reflectEmbossingCheck() == false &&
+                    self.masterInforCheck() == false &&
+                    self.childCareCheck() == false &&
+                    self.closedResetCheck() == false &&
+                    self.workingTimeCheck() == false &&
+                    self.transferTimeCheck() == false) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
+                    return;
+                }
+               
+                if(self.selectedCreatDivisionCode()==2 || self.selectedCalDivisionCode()==2 || self.selectedAggregateClassCode()==2){
+                    nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                         $("#wizard").ntsWizard("next");
+                    });
+                }else{
+                     $("#wizard").ntsWizard("next");
+                }
+                
             }
 
             opendScreenC() {

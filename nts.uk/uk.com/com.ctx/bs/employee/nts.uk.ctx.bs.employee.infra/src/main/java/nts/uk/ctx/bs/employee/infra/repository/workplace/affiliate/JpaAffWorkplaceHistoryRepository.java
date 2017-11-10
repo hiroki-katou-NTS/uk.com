@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
+import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -298,6 +300,11 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
 		return new KmnmtAffiliWorkplaceHist(key, domain.getPeriod().end());
 	}
+	
+	private void updateEntity(AffWorkplaceHistory domain, KmnmtAffiliWorkplaceHist entity){	
+		entity.endD = domain.getPeriod().end();
+	}
+	
 	/**
 	 * ドメインモデル「所属職場」を削除する
 	 * @param domain
@@ -315,5 +322,22 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@Override
 	public void addAffWorkplaceHistory(AffWorkplaceHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
+	}
+	/**
+	 * ドメインモデル「所属職場」を取得する
+	 * @param domain
+	 */
+	@Override
+	public void updateAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+		Optional<KmnmtAffiliWorkplaceHist> existItem = this.queryProxy().find(key, KmnmtAffiliWorkplaceHist.class);
+		if (!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
+		
 	}
 }
