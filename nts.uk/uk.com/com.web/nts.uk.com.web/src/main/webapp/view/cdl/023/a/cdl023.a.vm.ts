@@ -10,7 +10,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         lstSelected: KnockoutObservableArray<string>;
         
         targetType: number;
-        
+        itemListSetting: Array<string>;
         baseDate: Date;
         
         constructor() {
@@ -42,6 +42,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             self.code(object.code);
             self.name(object.name);
             self.targetType = object.targetType;
+            self.itemListSetting = object.itemListSetting;
             self.baseDate = object.baseDate;
             
             dfd.resolve();
@@ -67,8 +68,22 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                nts.uk.ui.dialog.alertError({ messageId: "Msg_646" });
                return;
             }
-            nts.uk.ui.windows.setShared("CDL023Output", self.lstSelected());
+            nts.uk.ui.windows.setShared("CDL023Output", self.getSelectedItems());
             nts.uk.ui.windows.close();
+        }
+        
+        /**
+         * getSelectedItems
+         */
+        private getSelectedItems(): Array<string> {
+            let self = this;
+            
+            if (self.isOverride()) {
+                return self.lstSelected();
+            }
+            
+            // if not override, remove items is saved setting.
+            return self.lstSelected().filter(item => self.itemListSetting.indexOf(item) == -1);
         }
         
         /**
