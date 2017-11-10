@@ -125,4 +125,6 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		return this.queryProxy().query(SELECT_ALL_SELECTION_BY_SELECTIONID, PpemtSelection.class)
 				.setParameter("selectionId", selectionId).getList(c -> toDomain(c));
 	}
+
+	
 }

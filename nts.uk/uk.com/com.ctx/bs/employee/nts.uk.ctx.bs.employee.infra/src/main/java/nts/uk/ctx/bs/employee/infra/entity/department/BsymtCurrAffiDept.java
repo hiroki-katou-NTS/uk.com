@@ -49,13 +49,7 @@ public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable {
 	/** The dep id. */
 	@Column(name = "HIST_ID")
 	public String histId;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtCurrAffiDept", orphanRemoval = true)
-	public List<BsymtSubJobPosition> lstBsymtSubJobPosition;
-
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtAssiWorkplaceDept", orphanRemoval = true)
-//	public List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
-
+	
 	@Override
 	protected Object getKey() {
 		return this.affiDeptId;

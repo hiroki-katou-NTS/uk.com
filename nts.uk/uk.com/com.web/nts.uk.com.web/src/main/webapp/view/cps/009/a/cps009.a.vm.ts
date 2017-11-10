@@ -97,7 +97,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
                             selection: obj.selection,
-                            selectionItemRefType : obj.selectionItemRefType,
+                            selectionItemRefType: obj.selectionItemRefType,
                             dateType: obj.dateType,
                             timepointItemMin: obj.timepointItemMin,
                             timepointItemMax: obj.timepointItemMax,
@@ -343,101 +343,157 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 };
-            //            block.invisible();
-            service.update(updateObj).done(function(data) {
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.start(updateObj.settingId);
-                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
-                    self.currentCategory().currentItemId.valueHasMutated();
-                });
+            let isUpdate: boolean = true;
+            let errorList: Array<any> = [];
+            _.each(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
+                if (self.checkError(obj)) {
+                    let errorItem: any = self.listError(obj);
+                    if (!nts.uk.util.isNullOrUndefined(errorItem)) {
+                        errorList.push(errorItem);
 
-                //                block.clear();
-            }).fail(function(res: any) {
-                dialog.alertError({ messageId: res.messageId });
-                //                block.clear();
+                    }
+                    isUpdate = false;
+                }
             });
+
+
+
+
+            block.invisible();
+            if (isUpdate) {
+                service.update(updateObj).done(function(data) {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.initSettingId("");
+                        self.initSettingId.valueHasMutated();
+                        self.start(updateObj.settingId);
+                        self.currentCategory().currentItemId("");
+                        self.currentCategory().currentItemId(updateObj.perInfoCtgId);
+                        self.currentCategory().currentItemId.valueHasMutated();
+                    });
+
+                    block.clear();
+                }).fail(function(res: any) {
+                    dialog.alertError({ messageId: res.messageId });
+                    block.clear();
+                });
+            } else {
+                dialog.alertError(errorList);
+                block.clear();
+
+            }
         }
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
-        historyFilter() {
-            let self = this;
-            //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
-            let lstItem = [];
-            let lstObj = [];
-            service.getAllItemByCtgId(ko.toJS(self.initSettingId()), ko.toJS(self.currentCategory().currentItemId)).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
-                if (item.length > 0) {
-                    let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
-                        primitiveConst(obj);
-                        let param: IPerInfoInitValueSettingItemDto = {
-                            perInfoItemDefId: obj.perInfoItemDefId,
-                            settingId: obj.settingId,
-                            perInfoCtgId: obj.perInfoCtgId,
-                            itemName: obj.itemName,
-                            isRequired: obj.isRequired,
-                            refMethodType: obj.refMethodType,
-                            saveDataType: obj.saveDataType,
-                            stringValue: obj.stringValue,
-                            intValue: obj.intValue,
-                            dateValue: obj.dateValue,
-                            itemType: obj.itemType,
-                            dataType: obj.dataType,
-                            itemCode: obj.itemCode,
-                            ctgCode: obj.ctgCode,
-                            constraint: obj.constraint,
-                            numberIntegerPart: obj.numberIntegerPart,
-                            numberDecimalPart: obj.numberDecimalPart,
-                            timeItemMin: obj.timeItemMin,
-                            timeItemMax: obj.timeItemMax,
-                            selectionItemId: obj.selectionItemId,
-                            selection: obj.selection,
-                            selectionItemRefType : obj.selectionItemRefType,
-                            dateType: obj.dateType,
-                            timepointItemMin: obj.timepointItemMin,
-                            timepointItemMax: obj.timepointItemMax,
-                            dateWithDay: obj.intValue,
-                            numericItemMin: obj.numericItemMin,
-                            numericItemMax: obj.numericItemMax
-                        }
-                        return new PerInfoInitValueSettingItemDto(param);
-                    });
-                    self.lstItemFilter = itemConvert;
-                }
-                let listInit = self.lstItemFilter;
-                _.each(listInit, function(item) {
-                    if (self.checkFilter(item)) {
-                        lstItem.push(item.selectionItemId);
-                        lstObj.push({defId: item.perInfoItemDefId, selId: item.selectionItemId});
-                    }
+        historyFilter_Lan() {
+            let self = this,
+                baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
+                itemSelection: Array<IPerInfoInitValueSettingItemDto> = _.filter(ko.toJS(self.currentCategory().itemList()),
+                    function(item: IPerInfoInitValueSettingItemDto) {
+                        return item.dataType === 6;
+                    }),
+                itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
+                    return obj.selectionItemId;
                 });
-                let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
-                let lstFilter = [];
-                self.currentCategory().itemList([]);
-                if (lstItem.length > 0) {
-                    let param = { lstSelItemId: lstItem, baseDate: baseDate }
-                    service.refHistSel(param).done(function(data) {
-                        console.log(data);
-                        let lstNew = [];
-                        //loc nhung item thoa man dk
-                        _.each(data.lstSelItemId, function(itemId) {
-                            _.each(lstObj, function(obj){
-                                if(obj.selId == itemId){
-                                    lstNew.push(obj);
-                                }
-                            });
-                        });
-                        
-                        _.each(lstNew,function(itemObj){
-                            let item = self.findItem(listInit, itemObj.defId);
-                            if (item != undefined) {
-                                lstFilter.push(item);
+
+            if (itemIdLst.length > 0) {
+                _.each(itemIdLst, function(item) {
+
+                    let itemList: Array<any> = ko.toJS(self.currentCategory().itemList()),
+                        i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
+                            return obj.selectionItemId;
+                        }), item);
+                    if (i > -1) {
+                        service.getAllSelByHistory(item, baseDate).done(function(data: Array<any>) {
+                            if (data) {
+                                self.currentCategory().itemList()[i].selection([]);
+                                self.currentCategory().itemList()[i].selection(data);
+                                self.currentCategory().itemList()[i].selection.valueHasMutated();
                             }
-                        })
-                        //gan lai du lieu moi
-                        self.currentCategory().itemList(lstFilter);
-                        self.currentCategory().itemList.valueHasMutated();
-                    });
+                        });
+                    }
+
+
+                });
+            }
+
+        }
+
+        checkError(itemDto: PerInfoInitValueSettingItemDto): boolean {
+            if (itemDto.selectedRuleCode === 2) {
+                if (itemDto.dataType === 1 || itemDto.dataType === 0) {
+                    let stringValue = $('#string').val();
+                    if (nts.uk.util.isNullOrUndefined(stringValue) || stringValue === "") {
+                        $('#string').focus();
+                        return true;
+                    }
+                } else if (itemDto.dataType === 2) {
+                    let numberValue = $('#number').val();
+                    if (nts.uk.util.isNullOrUndefined(itemDto.numbereditor.value || itemDto.numbereditor.value === 0)) {
+                        $('#number').focus();
+                        return true;
+                    }
+
+                } else if (itemDto.dataType === 3) {
+                    let date = $('#date').val();
+                    if (nts.uk.util.isNullOrUndefined(itemDto.dateValue)) {
+                        $('#date').focus();
+                        return true;
+                    }
+
+                } else if (itemDto.dataType === 4) {
+                    let timeitem = $('#timeItem').val();
+                    if (nts.uk.util.isNullOrUndefined(timeitem)) {
+                        $('#timeItem').focus();
+                        return true;
+                    }
+                } else if (itemDto.dataType === 5) {
+                    let timePoint = $('#timePoint').val();
+                    if (nts.uk.util.isNullOrUndefined(timePoint)) {
+                        $('#timePoint').focus();
+                        return true;
+                    }
+
                 }
-            });
+            }
+            return false;
+
+        }
+
+
+        listError(itemDto: PerInfoInitValueSettingItemDto): any {
+            if (itemDto.selectedRuleCode === 2) {
+                if (itemDto.dataType === 1 || itemDto.dataType === 0) {
+                    let stringValue = $('#string').val();
+                    if (nts.uk.util.isNullOrUndefined(stringValue) || stringValue === "") {
+                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                    }
+                } else if (itemDto.dataType === 2) {
+                    let numberValue = $('#number').val();
+                    if (nts.uk.util.isNullOrUndefined(itemDto.numbereditor.value || itemDto.numbereditor.value === 0)) {
+                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                    }
+
+                } else if (itemDto.dataType === 3) {
+                    let date = $('#date').val();
+                    if (nts.uk.util.isNullOrUndefined(itemDto.dateValue)) {
+                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                    }
+
+                } else if (itemDto.dataType === 4) {
+                    let timeitem = $('#timeItem').val();
+                    if (nts.uk.util.isNullOrUndefined(timeitem)) {
+                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                    }
+                } else if (itemDto.dataType === 5) {
+                    let timePoint = $('#timePoint').val();
+                    if (nts.uk.util.isNullOrUndefined(timePoint)) {
+                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                    }
+
+                }
+            }
+            return {};
+
         }
 
         /**
@@ -830,42 +886,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     readonly: ko.observable(false)
                 };
             }
-
-            //            if (self.selectedRuleCode() === 2) {
-            //                if (params.dataType === 1) {
-            //                    self.stringValue.subscribe(function(value) {
-            //                        if ($("#string").ntsError('hasError')) {
-            //                            $("#string").focus();
-            //                            //                            $('.contents-data').on('focus', '#string', function() {
-            //                            //                                console.log("AA")
-            //                            //                            });
-            //                        }
-            //
-            //                    });
-            //                }
-            //
-            //                if (params.dataType === 2) {
-            //                    self.numbereditor.value.subscribe(function(value) {
-            //                        if ($("#number").ntsError('hasError')) {
-            //                            $("#number").focus();
-            //                            //                             $('.contents-data').on('focus', '#number', function() {
-            //                            //                                console.log("AA")
-            //                            //                            });
-            //                        }
-            //
-            //                    });
-            //
-            //                }
-            //                if (params.dataType === 3 || params.dataType === 4 || params.dataType === 5) {
-            //                    self.dateValue.subscribe(function(value) {
-            //                        if ($("#date").ntsError('hasError')) {
-            //                            $("#date").focus();
-            //                        }
-            //
-            //                    });
-            //                }
-            //
-            //            }
         }
     }
 

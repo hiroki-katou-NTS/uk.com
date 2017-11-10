@@ -302,6 +302,33 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }
         }
 
+        //
+        ReflUnrComp() {
+            //alert("ReflUnrComp!!!");
+            let self = this,
+                currentItem: HistorySelection = self.historySelection(),
+                listHistorySelection: Array<HistorySelection> = self.listHistorySelection();
+
+            currentItem.histId(self.historySelection().histId());
+            command = ko.toJS(currentItem);
+
+            confirm({ messageId: "Msg_532" }).ifYes(() => {
+                service.reflUnrComp(command).done(function() {
+                    self.listHistorySelection.removeAll();
+                    service.getAllPerInfoHistorySelection(self.historySelection().histId()).done((itemList: Array<IHistorySelection>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listHistorySelection.push(x));
+                        }
+                    });
+                    self.listItems.valueHasMutated();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                });
+            }).ifNo(() => {
+                self.listItems.valueHasMutated();
+                return;
+            })
+        }
+
         //ダイアログC画面
         openDialogB() {
             let self = this,
@@ -355,14 +382,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
         }
 
         // load lai history
-//        reloadHistory() {
-//            service.getAllPerInfoHistorySelection(self).done((itemList: Array<IHistorySelection>) => {
-//                if (itemList && itemList.length) {
-//                    itemList.forEach(x => self.listHistorySelection.push(x));
-//                }
-//            });
-//
-//        }
+        //        reloadHistory() {
+        //            service.getAllPerInfoHistorySelection(self).done((itemList: Array<IHistorySelection>) => {
+        //                if (itemList && itemList.length) {
+        //                    itemList.forEach(x => self.listHistorySelection.push(x));
+        //                }
+        //            });
+        //
+        //        }
     }
 
     //SelectionItem

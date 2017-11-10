@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.entity.workplace.assigned;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -22,28 +23,20 @@ public class BsymtAssiWorkplaceHist {
 	
 	@Id
 	/** The end D. */
+	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	public String historyId;
 	
 	/** The end D. */
+	@Basic(optional = false)
 	@Column(name = "START_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate strD;
 	
 	/** The end D. */
+	@Basic(optional = false)
 	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate endD;
 	
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
-	})
-	public BsymtAssiWorkplace bsymtAssiWorkplaceDept;
-	
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
-	})
-	public BsymtAssiWorkplace bsymtAssiWorkplace;
 }
