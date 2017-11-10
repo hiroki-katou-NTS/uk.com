@@ -2,8 +2,6 @@ package nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
-
 /**
  * @author sonnlb
  *
@@ -15,8 +13,6 @@ public interface EmpInfoItemDataRepository {
 	List<EmpInfoItemData> getAllInfoItemByRecordId(String recordId);
 
 	void addItemData(EmpInfoItemData infoItemData);
-	
-	void addEmpInfoItemData(EmpInfoItemData domain);
 	
 	void updateEmpInfoItemData(EmpInfoItemData domain);
 	

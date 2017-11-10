@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.DateValue;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.NumberValue;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.StringValue;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
 
 public class DataState extends AggregateRoot {
 	// 保存データ状態
