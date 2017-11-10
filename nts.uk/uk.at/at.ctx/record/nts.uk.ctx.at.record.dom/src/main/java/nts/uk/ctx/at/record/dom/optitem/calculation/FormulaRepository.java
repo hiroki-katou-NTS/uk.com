@@ -34,4 +34,14 @@ public interface FormulaRepository {
 	 * @return the list
 	 */
 	List<Formula> findByOptItemNo(String companyId, String optItemNo);
+
+	/**
+	 * Find by id.
+	 *
+	 * @param companyId the company id
+	 * @param optItemNo the opt item no
+	 * @param formulaId the formula id
+	 * @return the formula
+	 */
+	Formula findById(String companyId, String optItemNo, String formulaId);
 }

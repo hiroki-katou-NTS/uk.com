@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetting;
 
 /**
@@ -24,7 +25,7 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 
 	/** The opt item repo. */
 	@Inject
-	private OptionalItemRepository optItemRepo;
+	private FormulaRepository formulaRepo;
 
 	/** The Constant MAXIMUM_FORMULA_COUNT. */
 	private static final int MAXIMUM_FORMULA_COUNT = 50;
@@ -75,13 +76,18 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 		FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting();
 		if (formula.getCalcAtr().equals(CalculationAtr.FORMULA_SETTING) && formulaSetting.isBothItemSelect()
 				&& formulaSetting.isOperatorAddOrSub()) {
-			OptionalItem leftItem = this.optItemRepo.find(formula.getCompanyId().v(),
+
+			String comId = formula.getCompanyId().v();
+			String optItemNo = formula.getOptionalItemNo().v();
+
+			// get formula by id
+			Formula leftItem = this.formulaRepo.findById(comId, optItemNo,
 					formulaSetting.getLeftItem().getFormulaItemId().v());
-			OptionalItem rightItem = this.optItemRepo.find(formula.getCompanyId().v(),
+			Formula rightItem = this.formulaRepo.findById(comId, optItemNo,
 					formulaSetting.getRightItem().getFormulaItemId().v());
 
 			// compare left item's attribute vs right item's attribute
-			return leftItem.getOptionalItemAtr().equals(rightItem.getOptionalItemAtr());
+			return leftItem.getFormulaAtr().equals(rightItem.getFormulaAtr());
 		}
 		return true;
 	}
