@@ -14,5 +14,9 @@
         "uk.at/**/*",
 		"uk.com/**/*",
 		"uk.pr/**/*"
-    ]
+    ],
+	"exclude": [
+		"*/**/ksm004.a.vm.ts",
+		"uk.com/**/cmm/018/*"
+	]
 }
