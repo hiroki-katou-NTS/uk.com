@@ -23,8 +23,5 @@ public class KrcdtCalExeSetInforPK implements Serializable {
 	/** 計算実行設定情報 */
 	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
 	public String calExecutionSetInfoID;
-	/**実行内容*/
-	@Column(name = "EXECUTION_CONTENT")
-	public int executionContent;
 
 }

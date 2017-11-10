@@ -1,6 +1,7 @@
 
 package nts.uk.ctx.at.record.dom.workrecord.log;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
  *
  */
 @Getter 
-@AllArgsConstructor
 public class EmpCalAndSumExeLog extends AggregateRoot {
 
 	/**就業計算と集計実行ログID */
@@ -77,7 +77,25 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	 */
 	@Setter
 	private List<ExecutionLog> executionLogs;
+	public void addExecutionLog(ExecutionLog executionLog) {
+		this.executionLogs.add(executionLog);
+	}
 	
+	public EmpCalAndSumExeLog(String empCalAndSumExecLogID, String companyID, YearMonth processingMonth,
+			ExecutedMenu executedMenu, GeneralDate executionDate, ExeStateOfCalAndSum executionStatus,
+			String employeeID, int closureID, String caseSpecExeContentID, List<ExecutionLog> executionLogs) {
+		super();
+		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+		this.companyID = companyID;
+		this.processingMonth = processingMonth;
+		this.executedMenu = executedMenu;
+		this.executionDate = executionDate;
+		this.executionStatus = executionStatus;
+		this.employeeID = employeeID;
+		this.closureID = closureID;
+		this.caseSpecExeContentID = caseSpecExeContentID;
+		this.executionLogs = executionLogs;
+	}
 	
 	public static EmpCalAndSumExeLog createFromJavaType(
 			String empCalAndSumExecLogID,

@@ -57,12 +57,12 @@ module nts.uk.at.view.kdw001.c {
                 self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
-
+    
                 this.employeeList = ko.observableArray<UnitModel>([]);
                 
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: false,
+                    isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -170,12 +170,13 @@ module nts.uk.at.view.kdw001.c {
             }
             
             opendScreenBorJ() {
-                let self = this;
-                if(self.screenName == "B"){
-                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 1});    
-                }else{
-                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"activeStep": 1});
-                }        
+//                let self = this;
+//                if(self.screenName == "B"){
+//                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 1});    
+//                }else{
+//                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"activeStep": 1});
+//                }
+                $("#wizard").ntsWizard("next");        
             }
             
             start() {
