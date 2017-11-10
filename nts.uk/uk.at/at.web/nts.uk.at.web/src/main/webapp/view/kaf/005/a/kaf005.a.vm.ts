@@ -67,10 +67,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         constructor() {
 
-
             let self = this;
-
-
             $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
             $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
             $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
@@ -133,9 +130,26 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.selectedReason2(data.divergenceReasonID);
             self.multilContent2(data.divergenceReasonContent);
 
-            for (let i = 0; i < 11; i++) {
-                self.restTime.push(new common.RestTime(i, null, null));
+            // 休憩時間
+            for(let i = 0;i < 11; i++){
+                 self.restTime.push( new common.RestTime(i,null,null));
+
             }
+            // 残業時間
+            if(data.overTimeInputs != null){
+                for(let i = 0;i < data.overTimeInputs.lenght;i++){
+                    if(data.overTimeInputs[i].attendanceID == 1){
+                        self.overtimeHours.push(new common.OvertimeHour(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
+                    }
+                    if(data.overTimeInputs[i].attendanceID == 2){
+                        self.breakTimes.push(new common.BreakTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
+                    }
+                    if(data.overTimeInputs[i].attendanceID == 3){
+                        self.bonusTimes.push(new common.BonusTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
+                    }
+                }
+            }
+            
         }
         //登録処理
         registerClick() {
