@@ -39,15 +39,22 @@ public class OvertimeImpl extends JpaRepository implements OvertimeRepository {
 		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getOverTimeAtr().value, domain.getWorkTypeCode().v(), domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
-				domain.getWorkClockTo2(), domain.getDivergenceReasonID(), domain.getFlexExessTime(),
+				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
 				domain.getOverTimeShiftNight());
 	}
 
 	private AppOverTime convertToDomain(KrqdtAppOvertime entity) {
 		return AppOverTime.createSimpleFromJavaType(entity.getKrqdtAppOvertimePK().getCid(),
-				entity.getKrqdtAppOvertimePK().getAppId(), entity.getOvertimeAtr(), entity.getWorkTypeCode(),
-				entity.getSiftCode(), entity.getWorkClockFrom1(), entity.getWorkClockTo1(), entity.getWorkClockFrom2(),
-				entity.getWorkClockTo2(), entity.getDivergenceReasonId(), entity.getFlexExcessTime(),
+				entity.getKrqdtAppOvertimePK().getAppId(),
+				entity.getOvertimeAtr(),
+				entity.getWorkTypeCode(),
+				entity.getSiftCode(),
+				entity.getWorkClockFrom1(),
+				entity.getWorkClockTo1(),
+				entity.getWorkClockFrom2(),
+				entity.getWorkClockTo2(),
+				entity.getDivergenceReason(),
+				entity.getFlexExcessTime(), 
 				entity.getOvertimeShiftNight());
 	}
 

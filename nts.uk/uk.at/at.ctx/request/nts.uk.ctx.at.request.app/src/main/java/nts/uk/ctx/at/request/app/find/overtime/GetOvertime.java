@@ -187,6 +187,7 @@ public class GetOvertime {
 			}
 		}
 		// 01-03_残業枠を取得: chua xong
+		result.setAppOvertimeNightFlg(appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value);
 		iOvertimePreProcess.getOvertimeHours(overtimeAtr);
 		
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);

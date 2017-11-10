@@ -82,7 +82,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					}
 				}
 					/*
-					 * ドメインモデル「勤務種類」を取得 anh chinh lam
+					 * ドメインモデル「勤務種類」を取得
 					 */
 				// １日の勤務＝以下に該当するもの
 				//　出勤、休出、振出、連続勤務
@@ -153,11 +153,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 				if(personalLablorCodition.isPresent()){
 					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
 					result.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-					result.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
+					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
 				}else{
 					Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,listWorkTimeCodes.get(0));
 					result.setSiftCode(listWorkTimeCodes.get(0));
-					result.setSiftName(workTime.get().getWorkTimeDisplayName().toString());
+					result.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
 				}
 			}
 		}

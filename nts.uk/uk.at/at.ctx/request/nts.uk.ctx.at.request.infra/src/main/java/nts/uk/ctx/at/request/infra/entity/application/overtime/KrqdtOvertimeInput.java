@@ -37,15 +37,6 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
     
     @Column(name = "APPLICATION_TIME")
     private int applicationTime;
-    
-    @Column(name = "PRE_APPLICATION_TIME")
-    private int preApplicationTime;
-    
-    @Column(name = "INDICATED_TIME")
-    private int indicatedTime;
-    
-    @Column(name = "CALCULATION_TIME")
-    private int calculationTime;
 
 	@Override
 	protected Object getKey() {
