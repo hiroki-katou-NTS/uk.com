@@ -12,8 +12,7 @@
     },
 	 "include": [
         "uk.at/**/*",
-		"uk.com/**/*",
-		"uk.pr/**/*"
+		"uk.com/**/*"
     ],
 	"exclude": [
 		"*/**/ksm004.a.vm.ts",
