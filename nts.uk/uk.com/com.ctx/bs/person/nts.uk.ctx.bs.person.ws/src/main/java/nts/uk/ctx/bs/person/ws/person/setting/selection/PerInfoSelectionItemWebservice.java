@@ -20,6 +20,8 @@ import command.person.setting.selectionitem.selection.AddSelectionHistoryCommand
 import command.person.setting.selectionitem.selection.AddSelectionHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.EditHistoryCommand;
 import command.person.setting.selectionitem.selection.EditHistoryCommandHandler;
+import command.person.setting.selectionitem.selection.ReflUnrCompCommand;
+import command.person.setting.selectionitem.selection.ReflUnrCompCommandHandler;
 import command.person.setting.selectionitem.selection.RemoveHistoryCommand;
 import command.person.setting.selectionitem.selection.RemoveHistoryCommandHandler;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommand;
@@ -84,6 +86,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Delete history:
 	@Inject
 	RemoveHistoryCommandHandler removeHistory;
+
+	// Phan anh cong ty:
+	@Inject
+	ReflUnrCompCommandHandler reflUnrComp;
 
 	@POST
 	@Path("findAll")
@@ -176,5 +182,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("removeHistory")
 	public void RemoveHistory(RemoveHistoryCommand command) {
 		this.removeHistory.handle(command);
+	}
+
+	// Phan anh cong ty:
+	@POST
+	@Path("reflunrcomp")
+	public void ReflUnrComp(ReflUnrCompCommand command) {
+		this.reflUnrComp.handle(command);
 	}
 }
