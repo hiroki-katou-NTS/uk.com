@@ -68,4 +68,5 @@ public class VerticalSettingWebService {
 	public void deleteVerticalCalSet(VerticalSettingCommand command) { 
 		this.deleteVerticalSettingCommandHandler.handle(command);
 	}
+	
 }

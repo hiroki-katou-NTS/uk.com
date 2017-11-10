@@ -58,7 +58,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setScheduleManagementAtr(UseAtr scheduleManagementAtr) {
-		this.entityCondiotion.setSchedMgmtAtr(scheduleManagementAtr.value);
+		this.entityCondiotion.setScheManageAtr(scheduleManagementAtr.value);
 	}
 
 	/*
@@ -70,9 +70,9 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setHolidayAddTimeSet(BreakdownTimeDay holidayAddTimeSet) {
-		this.entityCondiotion.setHdAddOneDay(holidayAddTimeSet.getOneDay().valueAsMinutes());
-		this.entityCondiotion.setHdAddMorning(holidayAddTimeSet.getMorning().valueAsMinutes());
-		this.entityCondiotion.setHdAddAfternoon(holidayAddTimeSet.getAfternoon().valueAsMinutes());
+		this.entityCondiotion.setOneDay(holidayAddTimeSet.getOneDay().valueAsMinutes());
+		this.entityCondiotion.setMorning(holidayAddTimeSet.getMorning().valueAsMinutes());
+		this.entityCondiotion.setAfternoon(holidayAddTimeSet.getAfternoon().valueAsMinutes());
 	}
 
 	/*
@@ -123,16 +123,18 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 		this.entityCondiotion.getKshmtPerLaborCondPK().setSid(employeeId);
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
-	 * PersonalLaborConditionSetMemento#setAutomaticEmbossSetAtr(nts.uk.ctx.at.
-	 * shared.dom.personallaborcondition.UseAtr)
+	 * PersonalLaborConditionSetMemento#setAutoStampSetAtr(nts.uk.ctx.at.shared.
+	 * dom.personallaborcondition.UseAtr)
 	 */
 	@Override
-	public void setAutomaticEmbossSetAtr(UseAtr automaticEmbossSetAtr) {
-		this.entityCondiotion.setAutoEmbossSetAtr(automaticEmbossSetAtr.value);
+	public void setAutoStampSetAtr(UseAtr autoStampSetAtr) {
+		this.entityCondiotion.setAutoStampSetAtr(autoStampSetAtr.value);
+		
 	}
 
 }

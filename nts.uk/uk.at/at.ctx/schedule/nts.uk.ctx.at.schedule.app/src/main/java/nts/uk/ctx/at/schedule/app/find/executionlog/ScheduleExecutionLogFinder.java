@@ -15,8 +15,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
@@ -52,21 +53,28 @@ public class ScheduleExecutionLogFinder {
 	@Inject
 	private SCEmployeeAdapter employeeAdapter;
 	
+	/**
+	 * Find by date.
+	 *
+	 * @param period the period
+	 * @return the list
+	 */
 	public List<ScheduleExecutionLogDto> findByDate(PeriodObject period) {
 		String companyId = AppContexts.user().companyId();
 		if (period == null) {
 			return null;
 		}
-		List<ScheduleExecutionLog> sel = scheduleExecutionLogRepository.find(companyId,period.getStartDate(),period.getEndDate());
+		List<ScheduleExecutionLog> sel = scheduleExecutionLogRepository.find(companyId,
+				period.getStartDate(), period.getEndDate());
 		if (sel == null) {
 			return null;
 		}
 		return sel.stream().map(item -> {
 			ScheduleExecutionLogDto dto = new ScheduleExecutionLogDto();
 			item.saveToMemento(dto);
-			EmployeeDto employee =employeeAdapter.findByEmployeeId(dto.getExecutionEmployeeId());
-			 dto.setEmployeeCode(employee.getEmployeeCode());
-			 dto.setEmployeeName(employee.getEmployeeName());
+			EmployeeDto employee = employeeAdapter.findByEmployeeId(dto.getExecutionEmployeeId());
+			dto.setEmployeeCode(employee.getEmployeeCode());
+			dto.setEmployeeName(employee.getEmployeeName());
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -113,7 +121,8 @@ public class ScheduleExecutionLogFinder {
 			dto.setTotalNumberError(scheduleErrorLogs.size());
 		}
 		if (!CollectionUtil.isEmpty(scheduleCreators)) {
-			dto.setTotalNumberCreated(scheduleCreators.size());
+			dto.setTotalNumberCreated(this.scheduleCreatorRepository.countByStatus(executionId,
+					ExecutionStatus.CREATED.value));
 		}
 		
 		return dto;

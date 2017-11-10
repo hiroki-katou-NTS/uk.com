@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 @Data
 public class WorkScheduleStateDto {
 	private String sId;
-	private String scheduleItemId;
+	private int scheduleItemId;
 	private int scheduleEditState;
 	private GeneralDate date;
 

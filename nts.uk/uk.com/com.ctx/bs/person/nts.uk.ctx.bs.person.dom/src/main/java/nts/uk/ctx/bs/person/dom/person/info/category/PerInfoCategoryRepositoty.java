@@ -42,4 +42,8 @@ public interface PerInfoCategoryRepositoty {
 
 	void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId);
 	// vinhpx: end
+	
+	//laitv
+	DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId);
+	
 }

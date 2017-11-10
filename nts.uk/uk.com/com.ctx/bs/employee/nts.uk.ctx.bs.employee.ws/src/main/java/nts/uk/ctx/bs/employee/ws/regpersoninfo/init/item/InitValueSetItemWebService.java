@@ -10,8 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSetItemFinder;
-import nts.uk.ctx.bs.employee.app.find.init.item.InitValueSettingItemDto;
+import nts.uk.ctx.bs.employee.app.find.init.item.SettingItemDto;
 
 @Path("regpersoninfo/init/item")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,10 +22,10 @@ public class InitValueSetItemWebService extends WebService {
 	private InitValueSetItemFinder finder;
 
 	@POST
-	@Path("findInit/{settingId}/{categoryCd}")
-	public List<InitValueSettingItemDto> getAllInitItem(@PathParam("settingId") String settingId,
-			@PathParam("categoryCd") String categoryCd) {
-		return this.finder.getAllInitItem(settingId, categoryCd);
+	@Path("findInit/{settingId}/{categoryCd}/{baseDate}")
+	public List<SettingItemDto> getAllInitItem(@PathParam("settingId") String settingId,
+			@PathParam("categoryCd") String categoryCd, @PathParam("baseDate") String baseDate) {
+		return this.finder.getAllInitItemByCtgCode(settingId, categoryCd, GeneralDate.fromString(baseDate, "yyyyMMdd"));
 	}
 
 }

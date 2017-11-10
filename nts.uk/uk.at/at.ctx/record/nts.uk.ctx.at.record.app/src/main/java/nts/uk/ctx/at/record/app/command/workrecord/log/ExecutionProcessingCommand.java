@@ -36,6 +36,8 @@ public class ExecutionProcessingCommand {
     private boolean resettingWorkingHours;
     /** 申し送り時間再設定 */
     private boolean resetTimeForAssig;
+    /** 日別計算実施区分 */
+    private boolean dailyCalClass;
     /** 計算区分 */
     private int calClass;
     /** 承認結果反映実施区分 */
@@ -67,4 +69,5 @@ public class ExecutionProcessingCommand {
     private ExecutionContent excutionContent;
 	/** 実行したメニュー */    
     private int executedMenu;
+
 }

@@ -23,8 +23,8 @@ public class WorkInfoOfDailyPerformanceDto {
 		this.ymd = ymd;
 	}
 
-	public String getState() {
-		return EnumAdaptor.valueOf(this.calculationState, CalculationState.class).name();
+	public CalculationState getState() {
+		return EnumAdaptor.valueOf(this.calculationState, CalculationState.class);
 	}
 	
 }
