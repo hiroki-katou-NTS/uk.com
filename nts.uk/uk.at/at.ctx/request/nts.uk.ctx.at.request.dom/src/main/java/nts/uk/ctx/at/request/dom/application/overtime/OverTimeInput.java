@@ -31,7 +31,7 @@ public class OverTimeInput{
 	/**
 	 * 勤怠項目NO
 	 */
-	private int attendanceNo;
+	private int frameNo;
 	/**
 	 * 開始時間
 	 */
@@ -45,11 +45,11 @@ public class OverTimeInput{
 	 */
 	private OvertimeAppPrimitiveTime applicationTime;
 	
-	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int attendanceNo, int startTime, int endTime, int applicationTime){
+	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, int startTime, int endTime, int applicationTime){
 		return new OverTimeInput(companyID,
 				appID,
 				EnumAdaptor.valueOf(attendanceID, AttendanceID.class),
-				attendanceNo,
+				frameNo,
 				new OvertimeAppPrimitiveTime(startTime),
 				new OvertimeAppPrimitiveTime(endTime),
 				new OvertimeAppPrimitiveTime(applicationTime));

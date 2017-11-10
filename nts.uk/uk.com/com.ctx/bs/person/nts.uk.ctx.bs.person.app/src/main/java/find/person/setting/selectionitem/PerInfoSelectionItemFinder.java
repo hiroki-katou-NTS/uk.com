@@ -19,12 +19,12 @@ public class PerInfoSelectionItemFinder {
 
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
 		String contractCode = AppContexts.user().contractCode();
-		return this.perInfoSelectionItemRepo.getAllPerInfoSelectionItem(contractCode).stream()
+		return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCd(contractCode).stream()
 				.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
 	}
 
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {
-		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo.getPerInfoSelectionItem(selectionItemId);
+		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo.getSelectionItemBySelectionItemId(selectionItemId);
 
 		if (!opt.isPresent()) {
 			return null;

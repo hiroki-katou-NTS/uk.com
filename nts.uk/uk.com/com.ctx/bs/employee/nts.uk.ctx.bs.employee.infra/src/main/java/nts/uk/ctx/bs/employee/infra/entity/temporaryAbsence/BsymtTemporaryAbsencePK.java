@@ -7,21 +7,18 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Embeddable
 public class BsymtTemporaryAbsencePK implements Serializable{/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 1L;	
 	
 	@Basic(optional = false)
-	@Column(name="SID")
-	private String sid;
+	@Column(name = "LEAVE_HOLIDAY_ID")
+	public String leaveHolidayId;
 	
 }

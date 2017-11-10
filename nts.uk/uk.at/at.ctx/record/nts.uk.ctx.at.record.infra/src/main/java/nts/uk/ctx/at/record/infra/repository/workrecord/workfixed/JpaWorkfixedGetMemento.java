@@ -78,4 +78,12 @@ public class JpaWorkfixedGetMemento implements WorkFixedGetMemento {
 		GeneralDate result = GeneralDate.legacyDate(this.typeValue.getFixedDate());
 		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento#getCid()
+	 */
+	@Override
+	public String getCid() {
+		return this.typeValue.getKrcstWorkFixedPK().getCid();
+	}
 }

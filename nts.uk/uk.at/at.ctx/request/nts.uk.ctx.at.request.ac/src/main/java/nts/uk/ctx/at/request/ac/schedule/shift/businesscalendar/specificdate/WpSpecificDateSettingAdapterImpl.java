@@ -6,6 +6,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
+import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.WpSpecificDateSettingExport;
+import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.WpSpecificDateSettingPub;
 /**
  * 
  * @author Doan Duy Hung
@@ -15,12 +17,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 public class WpSpecificDateSettingAdapterImpl implements WpSpecificDateSettingAdapter {
 	
 	@Inject
-	private WpSpecificDateSettingAdapter wpSpecificDateSettingAdapter;
+	private WpSpecificDateSettingPub wpSpecificDateSettingPub;
 
 	@Override
 	public WpSpecificDateSettingImport workplaceSpecificDateSettingService(String companyID, String workPlaceID,
 			GeneralDate date) {
-		return wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, workPlaceID, date);
+		WpSpecificDateSettingExport wpSpecificDateSettingExport = wpSpecificDateSettingPub.workplaceSpecificDateSettingService(companyID, workPlaceID, date);
+		return new WpSpecificDateSettingImport(wpSpecificDateSettingExport.getDate(), wpSpecificDateSettingExport.getNumberList());
 	}
 	
 }

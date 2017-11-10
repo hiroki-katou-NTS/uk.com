@@ -420,6 +420,8 @@ module nts.uk.com.view.cmm011.a {
             selectedHierarchyCd: string;
             mapHierarchy: any;
             
+            treeStyle: TreeStyle;
+            
             constructor(parentModel: ScreenModel) {
                 let self = this;
 
@@ -430,7 +432,11 @@ module nts.uk.com.view.cmm011.a {
                 self.treeArray = ko.observableArray([]);
                 
                 self.treeColumns = [];
-
+                self.treeStyle = {
+                    width: 385,
+                    height: 0
+                };
+                
                 // subscribe
                 self.lstWorkplace.subscribe(dataList => {
                     if (!dataList || dataList.length < 1) {
@@ -597,6 +603,9 @@ module nts.uk.com.view.cmm011.a {
                 //  calculate max with column text 
                 let maxSizeNameCol: number = Math.max(self.getMaxSizeOfTextList(self.lstWorkplace()), 250);
                 
+                // calculate height tree
+                self.calHeightTree(maxSizeNameCol);
+                
                 // set properties tree columns
                 self.treeColumns = [
                     { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
@@ -610,6 +619,22 @@ module nts.uk.com.view.cmm011.a {
                 ko.applyBindings(self, $treeGrid[0]);
             }
 
+            /**
+             * calHeightTree
+             */
+            private calHeightTree(widthColText: number) {
+                let self = this;
+                let heightRow = 24, heightScrollX = 0, maxRows = 20, heightHeader = 24;
+
+                // check has scroll-x
+                if (widthColText > self.treeStyle.width) {
+                    heightScrollX = 18;
+                }
+
+                // calculate height tree
+                self.treeStyle.height = heightRow * maxRows + heightHeader + heightScrollX;
+            }
+            
             /**
              * getMaxSizeOfTextList
              */
@@ -823,6 +848,14 @@ module nts.uk.com.view.cmm011.a {
                 });
                 return dfd.promise();
             }
+        }
+        
+        /**
+         * TreeStyle
+         */
+        interface TreeStyle {
+            width: number;
+            height: number;
         }
     }
 }

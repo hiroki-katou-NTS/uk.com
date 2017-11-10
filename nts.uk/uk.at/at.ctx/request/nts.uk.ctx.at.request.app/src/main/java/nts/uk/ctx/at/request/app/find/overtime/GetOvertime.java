@@ -29,10 +29,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
-import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
@@ -40,7 +40,6 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
@@ -138,12 +137,18 @@ public class GetOvertime {
 		return result;
 	}
 	
+	public OverTimeDto getOvertimeByAppID(String appID){
+		OverTimeDto result = new OverTimeDto();
+		return result;
+	}
+	
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID, AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr){
 		//申請日付を取得 : lay thong tin lam them
 				applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
-				OverTimeInstruct overtimeInstruct = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
-				
+				OvertimeInstructInfomation overtimeInstructInfomation = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
+				result.setDisplayOvertimeInstructInforFlg(overtimeInstructInfomation.isDisplayOvertimeInstructInforFlg());
+				result.setOvertimeInstructInformation(overtimeInstructInfomation.getOvertimeInstructInfomation());
 		//01-02_時間外労働を取得: lay lao dong ngoai thoi gian
 		/*
 		 * chưa phải làm
@@ -153,6 +158,7 @@ public class GetOvertime {
 				result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 				applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 				result.setApplication(applicationDto);
+				
 		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		Optional<RequestAppDetailSetting> requestAppDetailSetting = requestOfEachWorkplaceRepository.getRequestDetail(companyID, workplaceID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if (requestAppDetailSetting.isPresent()) {
@@ -169,7 +175,7 @@ public class GetOvertime {
 				SiftType siftType = overtimeService.getSiftType(companyID, employeeID, personalLablorCodition, requestAppDetailSetting);
 				result.setSiftType(siftType);
 				
-				// 01-14_勤務時間取得(lay thoi gian): chua xong
+				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
 				iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting);
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
@@ -188,7 +194,7 @@ public class GetOvertime {
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
-				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate);
+				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType().getSiftCode());
 			}else{
 				result.setDisplayBonusTime(false);
 			}
@@ -297,17 +303,17 @@ public class GetOvertime {
 			for (OverTimeInput overTimeInput : overtimeInputs) {
 				OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceID().value);
-				overtimeInputDto.setAttendanceNo(overTimeInput.getAttendanceNo());
+				overtimeInputDto.setFrameNo(overTimeInput.getFrameNo());
 				overtimeInputDto.setStartTime(overTimeInput.getStartTime().v());
 				overtimeInputDto.setEndTime(overTimeInput.getEndTime().v());
 				overtimeInputDto.setApplicationTime(overTimeInput.getApplicationTime().v());
 				overtimeInputDtos.add(overtimeInputDto);
-				frameNo.add(overTimeInput.getAttendanceNo());
+				frameNo.add(overTimeInput.getFrameNo());
 			}
 			List<OvertimeFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameNo);
 			for (OvertimeInputDto overtimeInputDto : overtimeInputDtos) {
 				for (OvertimeFrame overtimeFrame : overtimeFrames) {
-					if (overtimeInputDto.getAttendanceNo() == overtimeFrame.getOtFrameNo()) {
+					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOtFrameNo()) {
 						overtimeInputDto.setAttendanceName(overtimeFrame.getOvertimeFrameName().toString());
 						continue;
 					}

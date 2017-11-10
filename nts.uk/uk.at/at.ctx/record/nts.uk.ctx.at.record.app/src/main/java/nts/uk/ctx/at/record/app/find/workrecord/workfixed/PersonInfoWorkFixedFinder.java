@@ -23,13 +23,13 @@ public class PersonInfoWorkFixedFinder {
 	/**
 	 * Gets the person info.
 	 *
-	 * @param personId the person id
+	 * @param employeeId the employee id
 	 * @return the person info
 	 */
-	public PersonInfoWorkFixedDto getPersonInfo(String personId) {
-		PersonInfoImportedDto personImportDto = personInfoAdapter.getPersonInfo(personId);
+	public PersonInfoWorkFixedDto getPersonInfo(String employeeId) {
+		PersonInfoImportedDto personImportDto = personInfoAdapter.getPersonInfo(employeeId);
 		PersonInfoWorkFixedDto personInfoWorkFixedDto = PersonInfoWorkFixedDto.builder()
-				.employeeId(personImportDto.getEmployeeName()).employeeName(personImportDto.getEmployeeName()).build();
+				.employeeId(personImportDto.getEmployeeId()).employeeName(personImportDto.getEmployeeName()).build();
 
 		return personInfoWorkFixedDto;
 

@@ -20,7 +20,7 @@ public class OvertimeInputDto {
 	/**
 	 * 勤怠項目NO
 	 */
-	private int attendanceNo;
+	private int frameNo;
 	
 	/**
 	 * 勤怠項目Name

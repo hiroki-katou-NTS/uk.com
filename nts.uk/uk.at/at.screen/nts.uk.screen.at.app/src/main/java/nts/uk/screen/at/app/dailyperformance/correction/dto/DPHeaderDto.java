@@ -3,10 +3,13 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import lombok.AllArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * @author hungnm
@@ -14,7 +17,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class DPHeaderDto {
 
@@ -27,16 +29,28 @@ public class DPHeaderDto {
 	private String width;
 
 	private String color;
+	
+	private String ntsControl;
 
-	private boolean changedByOther;
+	private Boolean changedByOther;
 
-	private boolean changedByYou;
-
-	public DPHeaderDto(String key, String width) {
+	private Boolean changedByYou;
+	
+	private DPHeaderDto(String headerText, String key, String dataType, String width, String color, String ntsControl,
+			Boolean changedByOther, Boolean changedByYou) {
 		super();
+		this.headerText = headerText;
 		this.key = key;
+		this.dataType = dataType;
 		this.width = width;
-		this.dataType = "string";
+		this.color = color;
+		this.ntsControl = ntsControl;
+		this.changedByOther = changedByOther;
+		this.changedByYou = changedByYou;
+	}
+	
+	public static DPHeaderDto createSimpleHeader(String key, String width) {
+		return new DPHeaderDto("", key, "String", width, "", "", false, false);
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
@@ -52,4 +66,16 @@ public class DPHeaderDto {
 		this.color = param.getHeaderBackgroundColor();
 	}
 
+	public static List<DPHeaderDto> GenerateFixedHeader() {
+		List<DPHeaderDto> lstHeader = new ArrayList<>();
+		lstHeader.add(new DPHeaderDto("ID", "id", "String", "30px", "", "Label", true, true));
+		lstHeader.add(new DPHeaderDto("状<br/>態", "state", "String", "30px", "", "Label", true, true));
+		lstHeader.add(new DPHeaderDto("ER/AL", "error", "String", "60px", "", "Label", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), "date", "String", "90px", "", "Label", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_42"), "sign", "boolean", "35px", "", "Checkbox", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_32"), "employeeCode", "String", "120px", "", "Label", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), "employeeName", "String", "190px", "", "Label", true, true));
+		lstHeader.add(new DPHeaderDto("", "picture-person", "String", "35px", "", "Image", true, true));
+		return lstHeader;
+	}
 }

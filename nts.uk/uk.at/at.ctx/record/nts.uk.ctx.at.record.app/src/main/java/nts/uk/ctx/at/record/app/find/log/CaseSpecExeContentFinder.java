@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.app.find.log;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +17,11 @@ public class CaseSpecExeContentFinder {
 	@Inject
 	private CaseSpecExeContentRepository caseSpecExeContentRepo;
 	
+	/**
+	 * get CaseSpecExeContent By Id 
+	 * @param caseSpecExeContentID
+	 * @return
+	 */
 	public CaseSpecExeContentDto getCaseSpecExeContentById(String caseSpecExeContentID ) {
 		
 		Optional<CaseSpecExeContentDto> data = caseSpecExeContentRepo
@@ -22,6 +30,18 @@ public class CaseSpecExeContentFinder {
 			return data.get();
 		}
 		return null;
+	}
+	/**
+	 * get all CaseSpecExeContent
+	 * @return
+	 */
+	public List<CaseSpecExeContentDto> getAllCaseSpecExeContent() {
 		
+		List<CaseSpecExeContentDto> data = caseSpecExeContentRepo
+				.getAllCaseSpecExeContent().stream().map(c->CaseSpecExeContentDto.fromDomain(c)).collect(Collectors.toList());
+		if(data.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return data ;
 	}
 }

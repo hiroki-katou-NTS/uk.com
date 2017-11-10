@@ -56,7 +56,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             
             // validate
             if (!self.validate()) {
-                 nts.uk.ui.dialog.alert("Something fields are requred or wrong.");
+                 nts.uk.ui.dialog.alert("Something fields are required or wrong.");
                 return;
             }
             
@@ -67,7 +67,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 targetType: self.selectedTarget(),
                 baseDate: moment(self.baseDate()).toDate()
             };
-            nts.uk.ui.windows.setShared("ObjectDuplication", object);
+            nts.uk.ui.windows.setShared("CDL023Input", object);
             
             // open dialog
             nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(() => {

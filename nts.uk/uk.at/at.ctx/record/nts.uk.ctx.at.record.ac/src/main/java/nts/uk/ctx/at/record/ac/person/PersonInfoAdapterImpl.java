@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.ac.person;
 
 import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImportedDto;
 
@@ -11,7 +12,7 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	//private IPersonInfoPub IPersonInfoPub;
 
 	@Override
-	public PersonInfoImportedDto getPersonInfo(String sID) {
+	public PersonInfoImportedDto getPersonInfo(String employeeId) {
 //		PersonInfoExport personInfoExport = IPersonInfoPub.getPersonInfo(sID);
 //		PersonInfoImportedDto personInfoImported = PersonInfoImportedDto.builder().employeeId(personInfoExport.getEmployeeId())
 //				.employeeName(personInfoExport.getEmployeeName()).build();

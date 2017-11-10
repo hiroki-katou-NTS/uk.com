@@ -14,13 +14,17 @@ public class ExecutionCommandResult {
     /** 対象期間終了日 */
     private String targetEndDate;
 	
-    public ExecutionCommandResult(String empCalAndSumExecLogID, String periodStartDate, String periodEndDate,
+    private boolean isContinue;
+    	    
+    public ExecutionCommandResult(String empCalAndSumExecLogID,
+    		String periodStartDate, String periodEndDate,
 			String targetEndDate) {
-		super();
 		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
 		this.periodStartDate = periodStartDate;
 		this.periodEndDate = periodEndDate;
 		this.targetEndDate = targetEndDate;
+		this.isContinue = true;
 	}
 
 }
+
