@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		<title>#{i18n.getText('CPS009_1')}</title>
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.time.TimeWithDayAttr
@@ -105,7 +106,7 @@
 										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
 									<!-- A3_014: 履歴参照基準日(History reference date) -->
 									<div id="date" data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-									<button data-bind="click: historyFilter">適用</button>
+									<button data-bind="click: historyFilter_Lan">適用</button>
 								</div>							
 							</div>
 							<div id='sub-left'>									
@@ -176,8 +177,7 @@
 												<input id="string" class="sub-input-units save-error"
 														data-bind="ntsTextEditor: {
 														value: stringValue , 
-														constraint: constraint , 
-														required: true}" />
+														constraint: constraint}" />
 											</com:ko-if> 
 											
 											<!-- number  --> 
@@ -189,7 +189,6 @@
  												 		value: value,
 														constraint: constraint,
 														option: option,
-														required: true,
 														enable: enable,
 														readonly: readonly,
 														immediate: false}" /> 
@@ -202,7 +201,6 @@
  														value: value,
 														constraint: constraint,
 														option: option,
-														required: true,
 														enable: enable,
 														readonly: readonly,
 														immediate: false}" /> 
@@ -218,8 +216,7 @@
 														 data-bind="ntsDatePicker: {
 														 value: dateValue, 
 														 dateFormat: 'YYYY/MM/DD',
-														 valueFormat: 'YYYY/MM/DD',
-														 required: true,}"></div>
+														 valueFormat: 'YYYY/MM/DD'}"></div>
 												</com:ko-if>
 												
 												<!-- date thuộc kiểu tháng năm  --> 
@@ -228,8 +225,7 @@
                    										data-bind="ntsDatePicker: {
 	                   									value: dateValue, 
 	                   									dateFormat: 'YYYY/MM', 
-	                   									valueFormat: 'YYYY/MM',
-	                   									required: true,}"></div>								
+	                   									valueFormat: 'YYYY/MM'}"></div>								
 												</com:ko-if>
 												
 												<!-- date thuộc kiểu  năm  --> 			
@@ -238,8 +234,7 @@
 														data-bind="ntsDatePicker: {
 														value: dateValue, 
 														dateFormat: 'YYYY', 
-														valueFormat: 'YYYY',
-														required: true,}"></div>	
+														valueFormat: 'YYYY'}"></div>	
 												</com:ko-if>																							
 											</com:ko-if> 
 											
@@ -251,8 +246,7 @@
 													constraint: itemCode, 
 													value: dateWithDay, 
 													enable: true, 
-													readonly: false, 
-													required: true }" />
+													readonly: false }" />
 											</com:ko-if>
 											
 											 <!-- timepoint  --> 
@@ -263,8 +257,7 @@
 														constraint: itemCode, 
 														value: dateWithDay, 
 														enable: true, 
-														readonly: false, 
-														required: true }" />
+														readonly: false }" />
 											</com:ko-if>
 											
 											 <!--  list box  -->

@@ -11,8 +11,6 @@ public interface EmInfoCtgDataRepository {
 
 	public void addCategoryData(EmpInfoCtgData empInfoCtgData);
 	
-	void addEmpInfoCtgData(EmpInfoCtgData domain);
-	
 	void updateEmpInfoCtgData(EmpInfoCtgData domain);
 	
 	void deleteEmpInfoCtgData(EmpInfoCtgData domain);

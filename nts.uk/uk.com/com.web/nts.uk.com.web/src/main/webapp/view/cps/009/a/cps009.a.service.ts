@@ -7,7 +7,8 @@ module nts.uk.com.view.cps009.a.service {
         getAllItemByCtgId: "ctx/bs/person/info/setting/init/item/find/{0}/{1}",
         deleteInitVal: "ctx/bs/person/info/setting/init/delete",
         update : "ctx/bs/person/info/setting/init/ctg/update",
-        refHistSel: "ctx/bs/person/info/setting/init/item/referenceHistory"
+        refHistSel: "ctx/bs/person/info/setting/init/item/referenceHistory",
+        filterHisSel : "ctx/bs/person/info/setting/selection/find/{0}/{1}"
     }
     /**
      * Get all init value setting
@@ -49,6 +50,14 @@ module nts.uk.com.view.cps009.a.service {
      */
     export function refHistSel(param) {
         return ajax(paths.refHistSel, param);
+    }
+    
+    
+        /**
+   * Get all init value setting
+   */
+    export function getAllSelByHistory(selectionItemId : string, baseDate : any) {
+        return ajax(format(paths.filterHisSel, selectionItemId, baseDate));
     }
 
 }

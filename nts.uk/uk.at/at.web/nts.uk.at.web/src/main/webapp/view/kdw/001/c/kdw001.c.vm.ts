@@ -57,7 +57,7 @@ module nts.uk.at.view.kdw001.c {
                 self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
-    
+
                 this.employeeList = ko.observableArray<UnitModel>([]);
 
                 self.listComponentOption = {
@@ -189,27 +189,28 @@ module nts.uk.at.view.kdw001.c {
 
                 if (timeDifferenceInDays > 31) {
                     nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                        alert("Yes");
+                        let monthNow = 11; // thieu thang hien tai cua  domain 締め
+                        let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                        if (monthStartDate < monthNow) {
+                            nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                            return;
+                        }
+                        $("#wizard").ntsWizard("next");
+
                     })
 
-                }
-                
-                
-                
+                } else {
+                    let monthNow = 11; // thieu thang hien tai cua  domain 締め
+                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                    if (monthStartDate < monthNow) {
+                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                        return;
+                    }
+                    $("#wizard").ntsWizard("next");
 
-                let monthNow = 11; // thieu thang hien tai cua  domain 締め
-                let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                if (monthStartDate < monthNow) {
-                    nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
-                    return;
                 }
-                
-               // var data = {
-                //    listEmpId: listEmpSelected, startdate: self.dateValue().startDate, endDate: self.dateValue().endDate
-              //  }
-               // nts.uk.ui.windows.setShared("KDW001_C_LISTEMPID_STARTDATE_ENDDATE", data);
 
-                $("#wizard").ntsWizard("next");    
+
             }
 
             start() {

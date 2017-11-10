@@ -22,6 +22,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelItemOrder si";
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
+	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL + " WHERE si.selectionId = :selectionId";
 
 	@Override
 	public void add(SelectionItemOrder selectionItemOrder) {
@@ -38,8 +39,8 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	// Domain:
 	private SelectionItemOrder toDomain(PpemtSelItemOrder entity) {
-		return SelectionItemOrder.selectionItemOrder(entity.selectionIdPK.selectionId, entity.histId,
-				entity.dispOrder, entity.initSelection);
+		return SelectionItemOrder.selectionItemOrder(entity.selectionIdPK.selectionId, entity.histId, entity.dispOrder,
+				entity.initSelection);
 
 	}
 
@@ -50,17 +51,24 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 				domain.getInitSelection().value);
 	}
 
-//	@Override
-//	public List<SelectionItemOrder> getAllOrderItemSelection(String histId) {
-//		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class)
-//				.setParameter("histId", histId).getList(c -> toDomain(c));
-//
-//	}
+	// @Override
+	// public List<SelectionItemOrder> getAllOrderItemSelection(String histId) {
+	// return this.queryProxy().query(SELECT_ALL_HISTORY_ID,
+	// PpemtSelItemOrder.class)
+	// .setParameter("histId", histId).getList(c -> toDomain(c));
+	//
+	// }
 
 	@Override
 	public List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId) {
-		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class)
-				.setParameter("histId", histId).getList(c -> toDomain(c));
+		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class).setParameter("histId", histId)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId) {
+		return this.queryProxy().query(SELECT_ALL_SELECTION_ID, PpemtSelItemOrder.class)
+				.setParameter("selectionId", selectionId).getList(c -> toDomain(c));
 	}
 
 }
