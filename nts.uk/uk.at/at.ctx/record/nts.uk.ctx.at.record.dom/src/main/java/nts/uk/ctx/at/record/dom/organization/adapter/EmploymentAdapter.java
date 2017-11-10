@@ -5,7 +5,10 @@
 package nts.uk.ctx.at.record.dom.organization.adapter;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.EmploymentImported;
 
 /**
@@ -20,4 +23,7 @@ public interface EmploymentAdapter {
 	 * @return the all employment
 	 */
 	List<EmploymentImported> getAllEmployment(String comId);
+	
+	Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
+	
 }

@@ -78,4 +78,22 @@ public class WorkplaceInfoFinder {
 				})
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Find by wkp id and base date.
+	 *
+	 * @param findObj the find obj
+	 * @return the workplace info dto
+	 */
+	public WorkplaceInfoDto findByWkpIdAndBaseDate(WkpInfoFindObject findObj) {
+		// find
+		Optional<WorkplaceInfo> opWkpInfo = wkpInfoRepo.findByWkpId(findObj.getWorkplaceId(), findObj.getBaseDate());
+		// convert to Dto
+		if (opWkpInfo.isPresent()) {
+			WorkplaceInfoDto dto = new WorkplaceInfoDto();
+			opWkpInfo.get().saveToMemento(dto);
+			return dto;
+		}
+		return null;
+	}
 }

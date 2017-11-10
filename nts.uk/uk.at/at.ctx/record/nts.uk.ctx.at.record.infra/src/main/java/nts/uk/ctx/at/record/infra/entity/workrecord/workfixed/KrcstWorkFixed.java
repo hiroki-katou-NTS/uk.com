@@ -1,12 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.workrecord.workfixed;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -14,45 +14,76 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
+ * The Class KrcstWorkFixed.
+ */
+
+/**
+ * Gets the process ym.
  *
- * @author NWS_THANHNC_PC
+ * @return the process ym
  */
 @Getter
+
+/**
+ * Sets the process ym.
+ *
+ * @param processYm the new process ym
+ */
 @Setter
 @Entity
 @Table(name = "KRCST_WORK_FIXED")
 public class KrcstWorkFixed extends UkJpaEntity implements Serializable {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The krcst work fixed PK. */
     @EmbeddedId
     protected KrcstWorkFixedPK krcstWorkFixedPK;
     
+    /** The confirm pid. */
     @Size(max = 36)
     @Column(name = "CONFIRM_PID")
     private String confirmPid;
     
+    /** The confirm cls. */
     @Column(name = "CONFIRM_CLS")
-    private short confirmCls;
-    
+    private int confirmCls;
+     
+    /** The fixed date. */
     @Column(name = "FIXED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fixedDate;
     
+    /** The process ym. */
     @Column(name = "PROCESS_YM")
     private int processYm;
 
+    /**
+     * Instantiates a new krcst work fixed.
+     */
     public KrcstWorkFixed() {
     	super();
     }
 
+    /**
+     * Instantiates a new krcst work fixed.
+     *
+     * @param krcstWorkFixedPK the krcst work fixed PK
+     */
     public KrcstWorkFixed(KrcstWorkFixedPK krcstWorkFixedPK) {
         this.krcstWorkFixedPK = krcstWorkFixedPK;
     }
 
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -60,6 +91,9 @@ public class KrcstWorkFixed extends UkJpaEntity implements Serializable {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -73,6 +107,9 @@ public class KrcstWorkFixed extends UkJpaEntity implements Serializable {
         return true;
     }
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {	
 		return this.krcstWorkFixedPK;

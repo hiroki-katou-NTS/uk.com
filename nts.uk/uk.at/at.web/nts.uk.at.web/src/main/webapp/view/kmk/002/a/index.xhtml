@@ -26,7 +26,7 @@
                </div>
                <div id="contents-area" style="display: none" data-bind="visible: true">
                   <!-- Optional item grid list. -->
-                  <div style="width: 300px; margin-right: 30px; padding: 20px " class="pull-left caret-right caret-background bg-green">
+                  <div class="opt-item-grid-list pull-left caret-right caret-background bg-green">
                      <i class="icon icon-searchbox"></i>
                      <div tabindex="2" data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'tbl-master-list', items: optionalItemHeaders, 
                         selected: selectedCode, selectedKey: 'itemNo', fields: ['itemNo', 'itemName']}"></div>
@@ -43,7 +43,7 @@
                      </table>
                   </div>
                   <!-- Optional Item view model -->
-                  <div id="right-content" class="pull-left" style="width: 69%">
+                  <div class="pull-left opt-item-detail" style="width: 69%">
                      <com:ko tag="with" bind="optionalItem">
                         <table class="control-group">
                            <tr>
