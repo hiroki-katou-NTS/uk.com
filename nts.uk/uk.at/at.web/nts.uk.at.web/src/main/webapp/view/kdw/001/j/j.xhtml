@@ -15,13 +15,13 @@
 				<table id="single-list" data-bind="ntsGridList: {								
 					height: 450,
 					dataSource: items,
-					primaryKey: 'code',
+					primaryKey: 'caseSpecExeContentID',
 					columns: columns2,
 					deleteOptions : {visible : false, deleteField: 'deletable'},
-					features: [{name: 'Switch', optionsValue: 'code', optionsText: 'name'}],
+					features: [{name: 'Switch', optionsValue: 'caseSpecExeContentID', optionsText: 'useCaseName'}],
 					multiple: false,
 					value: currentCode,
-					showNumbering: true,
+					showNumbering: false,
 					rows: 10
 				}"></table>
 			</div>
@@ -32,6 +32,7 @@
 		</div>
 		
 		<div id="panel37" class="panel panel-gray-bg">
+			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>

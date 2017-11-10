@@ -60,10 +60,10 @@ public interface PersonalLaborConditionSetMemento {
 	
 	
 	/**
-	 * Sets the automatic emboss set atr.
+	 * Sets the auto stamp set atr.
 	 *
-	 * @param automaticEmbossSetAtr the new automatic emboss set atr
+	 * @param autoStampSetAtr the new auto stamp set atr
 	 */
-	public void setAutomaticEmbossSetAtr(UseAtr automaticEmbossSetAtr);
+	public void setAutoStampSetAtr(UseAtr autoStampSetAtr);
 
 }

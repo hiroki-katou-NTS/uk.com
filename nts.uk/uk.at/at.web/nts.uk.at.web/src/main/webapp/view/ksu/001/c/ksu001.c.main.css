@@ -53,3 +53,20 @@
 	margin-top: 60px;
 	margin-left: 300px;
 }
+ul.countdown {
+	list-style: none;
+	display: block;
+}
+
+ul.countdown li {
+	display: inline-block;
+}
+#state{
+	margin-left: 20px;
+}
+#number-error{
+	margin-left: 20px;
+}
+#processingState{
+	margin-left:20px
+}

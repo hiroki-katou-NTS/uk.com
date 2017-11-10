@@ -299,7 +299,7 @@ module nts.uk.com.view.cmm018.a {
                 //_____CCG001________
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
-                self.baseDate = ko.observable(new Date());
+                self.baseDate = ko.observable(moment(new Date()).toDate());
                 self.ccgcomponent = {
                    baseDate: self.baseDate,
                    //Show/hide options
@@ -365,7 +365,7 @@ module nts.uk.com.view.cmm018.a {
             openDialogCDL008(){
                 let self = this;
                 block.grayout();
-                setShared('inputCDL008', {baseDate: new Date(), isMultiple: false,selectedCodes: self.workplaceId()});
+                setShared('inputCDL008', {baseDate: moment(new Date()).toDate(), isMultiple: false,selectedCodes: self.workplaceId()});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                     block.clear();
                     let data = getShared('outputCDL008');
@@ -780,7 +780,7 @@ module nts.uk.com.view.cmm018.a {
                             });
                             itemCurrent = self.findHistory(self.idOld());
                         }
-                        let startDate = new Date(data.startDate);
+                        let startDate = moment(data.startDate,'YYYY/MM/DD').toDate();
                         startDate.setDate(startDate.getDate() - 1);
                         let month =  self.checkDate(startDate.getMonth() + 1);
                         let day =  self.checkDate(startDate.getDate());
@@ -2214,7 +2214,7 @@ module nts.uk.com.view.cmm018.a {
                     let data2 = [];
                     let rangeDate = data.startDate + ' ~ ' + self.ENDDATE_LATEST;
                     self.historyStr(rangeDate);
-                    let startDate = new Date(data.startDate);
+                    let startDate = moment(data.startDate,'YYYY/MM/DD').toDate();
                     startDate.setDate(startDate.getDate() - 1);
                     let month =   __viewContext.viewModel.viewmodelA.checkDate(startDate.getMonth() + 1);
                     let day =  __viewContext.viewModel.viewmodelA.checkDate(startDate.getDate());

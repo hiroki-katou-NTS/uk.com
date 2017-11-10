@@ -32,7 +32,7 @@ module nts.uk.ui.jqueryExtentions {
                     formData.append("filename", files[0].name);
                     nts.uk.request.uploadFile(formData, option).done(function(data, textStatus, jqXHR) {
                         // Business Exception
-                        if (data !== undefined && data.businessException) {
+                        if (nts.uk.util.exception.isBusinessError(data)) {
                             if (option.onFail) option.onFail();
                             dfd.reject(data);
                         }

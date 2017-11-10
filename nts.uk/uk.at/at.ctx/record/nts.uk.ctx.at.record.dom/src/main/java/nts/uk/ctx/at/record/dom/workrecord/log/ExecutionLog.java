@@ -87,8 +87,8 @@ public class ExecutionLog {
 	
 	/** 月別集計の設定情報 */
 	private Optional<CalExeSettingInfor> monlyAggregationSetInfo;
-	public void setMonlyAggregationSetInfo(CalExeSettingInfor calExeSettingInfor) {
-		this.monlyAggregationSetInfo = Optional.of(calExeSettingInfor);
+	public void setMonlyAggregationSetInfo(CalExeSettingInfor monlyAggregationSetInfo) {
+		this.monlyAggregationSetInfo = Optional.of(monlyAggregationSetInfo);
 	}
 	
 	public ExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ErrorPresent existenceError,

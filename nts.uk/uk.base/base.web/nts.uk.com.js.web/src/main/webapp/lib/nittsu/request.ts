@@ -182,7 +182,7 @@ module nts.uk.request {
                 'PG-Path': location.current.serialize()
             }
         }).done(function(res) {
-            if (res !== undefined && isErrorToReject(res)) {
+            if (nts.uk.util.exception.isErrorToReject(res)) {
                 dfd.reject(res);
             } else if (res !== undefined && res.commandResult === true) {
                 dfd.resolve(res.value);
@@ -223,7 +223,7 @@ module nts.uk.request {
                 'PG-Path': location.current.serialize()
             },
             success: function(res) {
-                if (res !== undefined && isErrorToReject(res)) {
+                if (nts.uk.util.exception.isErrorToReject(res)) {
                     dfd.reject(res);
                 } else if (res !== undefined && res.commandResult === true) {
                     dfd.resolve(res.value);
@@ -238,10 +238,6 @@ module nts.uk.request {
         });
 
         return dfd.promise();
-    }
-	
-	function isErrorToReject(res) : boolean{
-        return res.businessException || res.optimisticLock;
     }
 	
     export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {

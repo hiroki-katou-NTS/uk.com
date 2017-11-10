@@ -22,11 +22,13 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommandHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.ScEmploymentStatusAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ClassificationDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmploymentStatusDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.WorkplaceDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ClassificationDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.WorkplaceDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
@@ -190,6 +192,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The personal labor condition repository. */
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
+	
+	/** The sc short work time adapter. */
+	@Inject
+	private ScShortWorkTimeAdapter scShortWorkTimeAdapter;
 	
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -421,8 +427,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			// check is use manager
 			if (optionalPersonalLaborCondition.isPresent()
-					&& optionalPersonalLaborCondition.get().getScheduleManagementAtr()
-							.equals(nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr.USE)) {
+					&& optionalPersonalLaborCondition.get().isUseScheduleManagement()) {
 				if (this.createWorkScheduleByBusinessDayCalendaUseManager(command, domain,
 						personalWorkScheduleCreSet)) {
 					return;
@@ -453,7 +458,8 @@ public class ScheduleCreatorExecutionCommandHandler
 		// status employment not equal BEFORE_JOINING (入社前)
 		if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(
-					domain.getExecutionEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
+					personalWorkScheduleCreSet.getEmployeeId(),
+					GeneralDate.legacyDate(command.getToDate()));
 
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
@@ -1163,9 +1169,21 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param baseDate the base date
 	 * @return the status employment
 	 */
-	// アルゴリズム
+	// アルゴリズム (Employment)
 	private EmploymentStatusDto getStatusEmployment(String employeeId, GeneralDate baseDate) {
 		return this.scEmploymentStatusAdapter.getStatusEmployment(employeeId, baseDate);
+	}
+	
+	/**
+	 * Gets the short work time.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the short work time
+	 */
+	// アルゴリズム (WorkTime)
+	private Optional<ShortWorkTimeDto> getShortWorkTime(String employeeId, GeneralDate baseDate) {
+		return this.scShortWorkTimeAdapter.findShortWorkTime(employeeId, baseDate);
 	}
 	
 	/**
@@ -1294,6 +1312,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			
 			if (CollectionUtil.isEmpty(worktypeSets)) {
 				this.addError(command, personalWorkScheduleCreSet.getEmployeeId(), "Msg_601");
+				return DEFAULT_CODE;
 			}
 			return worktypeSets.get(0).getWorkTypeCd().v();
 		}

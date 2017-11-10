@@ -95,6 +95,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             startPage(appId : string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let dfd = $.Deferred();
                 let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
@@ -180,6 +181,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkBeforeUpdate();
                 promiseResult.done((result) => {
@@ -234,7 +236,7 @@ module nts.uk.at.view.kaf009.b {
                         }
                     })
                 }
-                return dfd;
+                return dfd.promise();
             }
             
             /**

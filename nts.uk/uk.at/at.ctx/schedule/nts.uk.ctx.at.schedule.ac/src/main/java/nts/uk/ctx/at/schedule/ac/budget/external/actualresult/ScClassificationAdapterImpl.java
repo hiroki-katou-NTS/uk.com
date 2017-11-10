@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ClassificationDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ClassificationDto;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.context.AppContexts;

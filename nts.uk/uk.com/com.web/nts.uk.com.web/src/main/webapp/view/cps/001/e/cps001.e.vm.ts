@@ -10,7 +10,7 @@ module cps001.e.vm {
 
     export class ViewModel {
 
-        empFileMn: KnockoutObservable<IEmpFileMn>;
+        empFileMn: KnockoutObservable<IEmpFileMn>= ko.observable(<IEmpFileMn>{});
         oldEmpFileMn = {};
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;

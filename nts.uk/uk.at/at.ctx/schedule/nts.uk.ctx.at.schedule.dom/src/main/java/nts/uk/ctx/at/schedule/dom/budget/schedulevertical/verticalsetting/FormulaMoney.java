@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
@@ -20,4 +23,14 @@ public class FormulaMoney {
     
     /* 実績表示区分 */
     private ActualDisplayAtr actualDisplayAtr;
+    
+    private List<MoneyFunc> lstMoney;
+    
+    public static FormulaMoney createFromJavatype(String companyId, String verticalCalCd, String verticalCalItemId,
+			int categoryIndicator, int actualDisplayAtr, List<MoneyFunc> lstMoney) {
+		return new FormulaMoney(companyId, verticalCalCd, verticalCalItemId,
+				EnumAdaptor.valueOf(categoryIndicator, CategoryIndicator.class), 
+				EnumAdaptor.valueOf(actualDisplayAtr, ActualDisplayAtr.class),
+				lstMoney);
+	}
 }

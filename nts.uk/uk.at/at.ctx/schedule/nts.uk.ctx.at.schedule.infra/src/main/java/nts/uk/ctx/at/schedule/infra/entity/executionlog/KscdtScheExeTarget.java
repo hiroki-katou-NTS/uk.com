@@ -69,17 +69,19 @@ public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscdtScheExeTarget)) {
-            return false;
-        }
-        KscdtScheExeTarget other = (KscdtScheExeTarget) object;
-        if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null) || (this.kscdtScheExeTargetPK != null && !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
-            return false;
-        }
-        return true;
-    }
+	public boolean equals(Object object) {
+		// not set
+		if (!(object instanceof KscdtScheExeTarget)) {
+			return false;
+		}
+		KscdtScheExeTarget other = (KscdtScheExeTarget) object;
+		if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null)
+				|| (this.kscdtScheExeTargetPK != null
+						&& !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
+			return false;
+		}
+		return true;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()

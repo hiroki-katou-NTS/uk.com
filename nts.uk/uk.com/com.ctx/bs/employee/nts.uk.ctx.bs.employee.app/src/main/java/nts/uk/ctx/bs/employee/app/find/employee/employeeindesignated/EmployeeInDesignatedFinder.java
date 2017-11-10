@@ -18,8 +18,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsence;
-import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -172,7 +172,7 @@ public class EmployeeInDesignatedFinder {
 		// Output List
 		List<EmployeeInDesignatedDto> empsInDesignated = new ArrayList<>();
 		empIdList.stream().forEach(empId -> {
-			// 在職状態を取得
+			// 在職状態を取�
 			EmploymentStatusDto employmentStatus = this.getStatusOfEmployment(empId,
 					referenceDate);
 			//check if null
@@ -243,7 +243,7 @@ public class EmployeeInDesignatedFinder {
 		} else {// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is not empty
 
 			// Get TemporaryAbsence By employee ID
-			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySid(employeeId, referenceDate);
+			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// Domain TemporaryAbsence is Present
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();

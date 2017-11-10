@@ -14,22 +14,22 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 /**
  * The Class KshmtPerLaborCondPK.
  */
-@Embeddable
 @Getter
 @Setter
+@Embeddable
 public class KshmtPerLaborCondPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The sid. */
-	@Basic(optional = false)
+    @Basic(optional = false)
     @NotNull
     @Column(name = "SID")
     private String sid;
@@ -38,14 +38,14 @@ public class KshmtPerLaborCondPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "START_YMD")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate startYmd;
     
     /** The end ymd. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "END_YMD")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endYmd;
 
     /**
@@ -54,6 +54,7 @@ public class KshmtPerLaborCondPK implements Serializable {
     public KshmtPerLaborCondPK() {
     }
 
+   
 
     /**
      * Instantiates a new kshmt per labor cond PK.
@@ -69,10 +70,11 @@ public class KshmtPerLaborCondPK implements Serializable {
 	}
 
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (sid != null ? sid.hashCode() : 0);
@@ -81,7 +83,9 @@ public class KshmtPerLaborCondPK implements Serializable {
         return hash;
     }
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -90,7 +94,8 @@ public class KshmtPerLaborCondPK implements Serializable {
 			return false;
 		}
 		KshmtPerLaborCondPK other = (KshmtPerLaborCondPK) object;
-		if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
+		if ((this.sid == null && other.sid != null)
+				|| (this.sid != null && !this.sid.equals(other.sid))) {
 			return false;
 		}
 		if ((this.startYmd == null && other.startYmd != null)
@@ -104,12 +109,16 @@ public class KshmtPerLaborCondPK implements Serializable {
 		return true;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KshmtPerLaborCondPK[ sid=" + sid + ", startYmd=" + startYmd + ", endYmd=" + endYmd + " ]";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "entity.KshmtPerLaborCondPK[ sid=" + sid + ", startYmd=" + startYmd + ", endYmd="
+				+ endYmd + " ]";
+	}
+    
     
 }
