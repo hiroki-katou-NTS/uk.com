@@ -59,7 +59,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
         displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
         displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
-        breakInputFieldDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
+        restTimeDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
         
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -68,11 +68,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         constructor() {
             
-            let self = this;
-          
-            self.restTime.push( new common.RestTime("",null,null));
-            self.restTime.push( new common.RestTime("2",null,null));
-            self.restTime.push( new common.RestTime("3",null,null));
+             let self = this;
+
             
             self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,"05:00",null));
             self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
@@ -125,16 +122,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         initData(data: any){
             var self = this;
-            self.displayCaculationTime(data.calculationOverTime ? true : false);
+            self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
+            self.prePostSelected(data.application.prePostAtr);
+            self.displayCaculationTime(data.displayCaculationTime);
             self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
             self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
             self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
             self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
+            self.displayBonusTime(data.displayBonusTime);
+            self.restTimeDisFlg(data.displayRestTime);
             self.employeeName(data.employeeName);
-            self.siftCD(data.siftCode);
-            self.siftName(data.siftName);
-            self.workTypeCd(data.workTypeCd);
-            self.workTypeName(data.workTypeName);
+            self.siftCD(data.siftType.siftCode);
+            self.siftName(data.siftType.siftName);
+            self.workTypeCd(data.workType.workTypeCode);
+            self.workTypeName(data.workType.workTypeName);
             self.timeStart1(data.workClockFrom1);
             self.timeEnd1(data.workClockFrom2); 
             self.timeStart2(data.workClockTo1);
@@ -146,6 +147,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); } ));
             self.selectedReason2(data.divergenceReasonID);
             self.multilContent2(data.divergenceReasonContent);
+           
+            for(let i = 0;i < 11; i++){
+                 self.restTime.push( new common.RestTime(i,null,null));
+            }
         }
         
         register(){

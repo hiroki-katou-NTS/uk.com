@@ -38,7 +38,7 @@ public class OvertimeImpl extends JpaRepository implements OvertimeRepository{
 				entity.getWorkClockTo1(),
 				entity.getWorkClockFrom2(),
 				entity.getWorkClockTo2(),
-				entity.getDivergenceReasonId(),
+				entity.getDivergenceReason(),
 				entity.getFlexExcessTime(), 
 				entity.getOvertimeShiftNight());
 	}

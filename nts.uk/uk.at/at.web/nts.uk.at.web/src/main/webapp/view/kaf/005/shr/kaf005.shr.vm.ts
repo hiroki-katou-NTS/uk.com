@@ -51,11 +51,11 @@ module nts.uk.at.view.kaf005.share {
          * 
          */
         export class ComboReason {
-            reasonName: string;
             reasonId: string;
-            constructor(reasonName: string, reasonId: string) {
-                this.reasonName = reasonName;
+            reasonName: string;
+            constructor(reasonId: string,reasonName: string) {
                 this.reasonId = reasonId;
+                this.reasonName = reasonName;
             }
         }
         /**
