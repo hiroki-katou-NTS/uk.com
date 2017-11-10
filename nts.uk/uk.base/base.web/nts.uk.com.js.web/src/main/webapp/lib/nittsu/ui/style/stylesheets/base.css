@@ -2962,6 +2962,11 @@ button.nts-switch-button[disabled]:hover {
   min-width: 65px;
 }
 
+.nts-searchbbox-wrapper div.input-wrapper {
+	display: inline-block;
+	line-height: 32px;
+}
+
 /*!
  * Datepicker v@VERSION
  * https://github.com/fengyuanchen/datepicker

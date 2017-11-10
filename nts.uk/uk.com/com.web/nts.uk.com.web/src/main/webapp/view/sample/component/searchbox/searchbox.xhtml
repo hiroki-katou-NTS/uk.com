@@ -29,7 +29,7 @@
 						<h2>Overview</h2>						
 						<div class="cf">
 							<h2>ListBox</h2>
-							<div style="width: 422px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
+							<div style="width: 422px" data-bind="ntsSearchBox: {label: 'コード・名称', searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
 							items: items, selectedKey: 'code', fields: ['name', 'code'], mode: 'listbox'}" />																																														
 							<table id="multi-list2" data-bind="ntsListBox: {
 									options: items,
@@ -78,7 +78,7 @@
 							<label data-bind="text: singleSelectedCode()"></label>
 							<hr/>
 							<h2>Multi Selection TreeGrid</h2>
-							<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+							<div style="width: 700px" data-bind="ntsSearchBox: {label: '全部', targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
 									width: 700,
@@ -105,7 +105,7 @@
 <pre><![CDATA[<!--SINGLESELECT HIGHLIGHT MODE EXAMPLE-->
 <div class="cf">
 	<div style="float:left">																					
-		<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
+		<div style="width: 700px" data-bind="ntsSearchBox: {label: 'コード・名称', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
 			searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
 			<h3>Single Selection TreeGrid</h3>
 		<table id="treegrid1"
@@ -212,7 +212,14 @@
 													<b>Type:</b> string<br/>													
 													<i>Description:</i> search mode. Current there are 'highlight' and 'filter'<br/>
 												</td>
-											</tr>									
+											</tr>								
+											<tr>
+												<td>label</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> Show label in left of input text search box. Default: not show<br/>
+												</td>
+											</tr>
 											<tr>
 												<td>placeHolder</td>
 												<td>
