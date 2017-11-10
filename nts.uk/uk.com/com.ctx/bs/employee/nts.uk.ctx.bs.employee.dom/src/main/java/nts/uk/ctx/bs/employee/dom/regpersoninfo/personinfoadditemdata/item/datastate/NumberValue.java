@@ -3,7 +3,7 @@ package nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.data
 import java.math.BigDecimal;
 
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataStateType;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
 
 public class NumberValue extends DataState {
 

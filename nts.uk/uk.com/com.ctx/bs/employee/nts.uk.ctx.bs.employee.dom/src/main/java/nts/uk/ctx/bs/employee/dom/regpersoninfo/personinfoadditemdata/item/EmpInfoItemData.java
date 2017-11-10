@@ -10,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
 
 @NoArgsConstructor
 @Getter
@@ -55,6 +56,15 @@ public class EmpInfoItemData extends AggregateRoot {
 
 		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
 				EnumAdaptor.valueOf(isRequired, IsRequired.class), createDataState(
+						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
+
+	}
+
+	public static EmpInfoItemData createFromJavaType(String perInfoDefId, String recordId, int dataStateType,
+			String stringValue, BigDecimal intValue, GeneralDate dateValue) {
+
+		return new EmpInfoItemData(new ItemCode(""), perInfoDefId, recordId, "", "", "",
+				EnumAdaptor.valueOf(0, IsRequired.class), createDataState(
 						EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue, dateValue));
 
 	}

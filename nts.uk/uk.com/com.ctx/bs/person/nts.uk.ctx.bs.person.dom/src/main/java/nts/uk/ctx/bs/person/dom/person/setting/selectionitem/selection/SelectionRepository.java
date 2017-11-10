@@ -15,13 +15,13 @@ public interface SelectionRepository {
 
 	List<Selection> getAllSelectByHistId(String histId);
 
-	Optional<Selection> getHistSelection(String histId);
+	Optional<Selection> getSelectionByHistId(String histId);
 	
-	Optional<Selection> getCheckBySelectionCD(String selectionCD);
+	Optional<Selection> getSelectionBySelectionCd(String selectionCD);
 	
-	List<String> getAllHist(String histId);
+	List<String> getAllHistId(String histId);
 
-	List<Selection> geSelectionList(String selectionCd, String histId);
+	List<Selection> getAllSelectionBySelectionCdAndHistId(String selectionCd, String histId);
 	
 	//Lanlt
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);

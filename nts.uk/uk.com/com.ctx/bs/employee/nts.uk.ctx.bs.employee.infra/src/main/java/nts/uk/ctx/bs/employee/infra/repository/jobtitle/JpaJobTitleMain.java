@@ -15,21 +15,25 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobTitleMain;
 @Stateless
 public class JpaJobTitleMain extends JpaRepository implements JobTitleMainRepository {
 
-	private static final String SELECT_JOB_TITLE_MAIN_BY_ID = "SELECT j FROM BsymtJobTitleMain j "
-			+ " WHERE j.bsymtJobTitleMainPK.jobTitleId = :jobTitleId";
-
-	private static final String SELECT_BY_EID_STDD = "SELECT j FROM BsymtJobTitleMain j"
-			+ " WHERE j.sId = :employeeId And j.bsymtJobPosMainHist.startDate <= :std And j.bsymtJobPosMainHist.endDate >= :std";
+	private static final String SELECT_NO_WHERE = "SELECT j, h.startDate, h.endDate FROM BsymtJobTitleMain j "
+			+ " INNER JOIN BsymtJobPosMainHist h ON h.histId = j.histId";
 	
-	private static final String GET_ALL_BY_SID = "SELECT c FROM BsymtJobTitleMain c "
-			+ " WHERE c.sId = :sid";
+	private static final String SELECT_JOB_TITLE_MAIN_BY_ID = SELECT_NO_WHERE
+			+ " WHERE j.jobTitleId = :jobTitleId";
 
-	private JobTitleMain toDomain(BsymtJobTitleMain entity) {
-		return JobTitleMain.creatFromJavaType(entity.jobTitleId, entity.sId, entity.histId,
-				entity.bsymtJobPosMainHist.startDate, entity.bsymtJobPosMainHist.endDate);
+	private static final String SELECT_BY_EID_STDD = SELECT_NO_WHERE
+			+ " WHERE j.sId = :employeeId And h.startDate <= :std And h.endDate >= :std";
+	
+	private static final String GET_ALL_BY_SID = SELECT_NO_WHERE
+			+ " WHERE j.sId = :sid";
+
+	private JobTitleMain toDomain(Object[] entity) {
+		return JobTitleMain.creatFromJavaType(String.valueOf(entity[0].toString()), String.valueOf(entity[1].toString()), 
+				String.valueOf(entity[2].toString()),
+				GeneralDate.fromString(entity[3].toString(), "yyyy-MM-dd"), GeneralDate.fromString(entity[4].toString(), "yyyy-MM-dd"));
 	}
 	
-	private List<JobTitleMain> toListJobTitleMain(List<BsymtJobTitleMain> listEntity) {
+	private List<JobTitleMain> toListJobTitleMain(List<Object[]> listEntity) {
 		List<JobTitleMain> lstJobTitleMain = new ArrayList<>();
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
@@ -45,18 +49,17 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 
 	@Override
 	public Optional<JobTitleMain> getJobTitleMainById(String jobTitleMainId) {
-		return this.queryProxy().query(SELECT_JOB_TITLE_MAIN_BY_ID, BsymtJobTitleMain.class)
+		return this.queryProxy().query(SELECT_JOB_TITLE_MAIN_BY_ID, Object[].class)
 				.setParameter("jobTitleId", jobTitleMainId).getSingle(x -> toDomain(x));
 	}
 
 	@Override
 	public Optional<JobTitleMain> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate) {
-		Optional<BsymtJobTitleMain> optData = this.queryProxy().query(SELECT_BY_EID_STDD, BsymtJobTitleMain.class)
+		Optional<Object[]> optData = this.queryProxy().query(SELECT_BY_EID_STDD, Object[].class)
 				.setParameter("employeeId", employeeId).setParameter("std", standandDate).getSingle();
 		if (optData.isPresent()) {
-			BsymtJobTitleMain jtm = optData.get();
-			return Optional.of(JobTitleMain.creatFromJavaType(jtm.jobTitleId, jtm.sId, jtm.histId,
-					jtm.bsymtJobPosMainHist.startDate, jtm.bsymtJobPosMainHist.endDate));
+			Object[] jtm = optData.get();
+			return Optional.of(toDomain(jtm));
 		}
 		return Optional.empty();
 	}
@@ -66,7 +69,7 @@ public class JpaJobTitleMain extends JpaRepository implements JobTitleMainReposi
 	@Override
 	public List<JobTitleMain> getListBiSid(String sid) {
 		
-		List<BsymtJobTitleMain> listEntity = this.queryProxy().query(GET_ALL_BY_SID, BsymtJobTitleMain.class)
+		List<Object[]> listEntity = this.queryProxy().query(GET_ALL_BY_SID, Object[].class)
 				.setParameter("sid", sid)
 				.getList();
 
