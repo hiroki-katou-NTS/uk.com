@@ -38,9 +38,4 @@ public class SettingInforForDailyCreation extends CalExeSettingInfor {
 	}
 
 
-
-	
-	
-	
-
 }

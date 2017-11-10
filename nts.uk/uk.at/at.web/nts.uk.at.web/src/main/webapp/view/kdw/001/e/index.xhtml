@@ -75,13 +75,13 @@
 					<div tabindex="1" id="combo-box"
 						data-bind="ntsComboBox: {
 						options: itemList,
-						optionsValue: 'code',
+						optionsValue: 'value',
 						visibleItemsCount: 5,
 						value: selectedCode,
-						optionsText: 'name',
+						optionsText: 'localizedName',
 						enable: true,
 						columns: [
-							{ prop: 'code', length: 4 },
+							{ prop: 'localizedName', length: 4 }
 						]}"></div>
 					<button tabindex="2">#{i18n.getText('KDW001_31')}</button>
 				</div>

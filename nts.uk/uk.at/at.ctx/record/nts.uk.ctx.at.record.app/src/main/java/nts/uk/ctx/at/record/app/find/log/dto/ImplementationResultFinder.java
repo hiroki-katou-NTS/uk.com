@@ -6,10 +6,16 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 
 /**
  * 
@@ -25,22 +31,27 @@ public class ImplementationResultFinder {
 	@Inject
 	 private TargetPersonRepository targetPersonRepository;
 	
+	@Inject
+	private ErrMessageInfoRepository errMessageInfoRepository;
+	
 	
 	public  ScreenImplementationResultDto getScreenImplementationResult (String empCalAndSumExecLogID ){
 		//Get List EmpCalAndSumExeLog
 		Optional<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Conver to Dto
-		Optional<EmpCalAndSumExeLogDto> listEmpCalAndSumExeLogDto = listEmpCalAndSumExeLog.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
+		Optional<EmpCalAndSumExeLogDto> empCalAndSumExeLogDto = listEmpCalAndSumExeLog.map(c -> EmpCalAndSumExeLogDto.fromDomain(c));
 		//Get List TargetPerson
 		List<TargetPerson> listTargetPerSon  = targetPersonRepository.getByempCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Convert Dto
 		List<TargetPersonDto> listTargetPersonDto = listTargetPerSon.stream().map(c -> TargetPersonDto.fromDomain(c)).collect(Collectors.toList());
-		//Get List ExecutionLog
-				
-		return new ScreenImplementationResultDto(listEmpCalAndSumExeLogDto, listTargetPersonDto ,null);
-		
+		//Get List Enum ComboBox
+		List<EnumConstant> enumComboBox =EnumAdaptor.convertToValueNameList(ExecutionContent.class);
+		//Get List ErrMessageInfo
+		List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
+		//Conver to Dto
+		List<ErrMessageInfoDto> listErrMessageInfoDto = listErrMessageInfo.stream().map(c -> ErrMessageInfoDto.fromDomain(c)).collect(Collectors.toList());
+		 
+		return new ScreenImplementationResultDto(empCalAndSumExeLogDto.get(), listTargetPersonDto ,enumComboBox,listErrMessageInfoDto);		
 		
 	}
-	
-	
 }
