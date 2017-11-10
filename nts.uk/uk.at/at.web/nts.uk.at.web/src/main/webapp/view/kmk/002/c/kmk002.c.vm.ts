@@ -46,6 +46,9 @@ module nts.uk.at.view.kmk002.c {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                // block ui.
+                nts.uk.ui.block.invisible();
+
                 // Get param from parent screen
                 let param: ParamToC = nts.uk.ui.windows.getShared('paramToC');
 
@@ -53,7 +56,9 @@ module nts.uk.at.view.kmk002.c {
                 self.fromDto(param);
 
                 // load attendance items
-                self.loadAttendanceItems(param).done(() => dfd.resolve());
+                self.loadAttendanceItems(param)
+                    .done(() => dfd.resolve())
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.;
 
                 return dfd.promise();
             }
@@ -235,10 +240,10 @@ module nts.uk.at.view.kmk002.c {
             private toSelectDto(data: DailyAttendanceItemDto, method: number): AttendanceItemDto {
                 var operatorText: string = '';
                 if (method == AddSubOperator.ADD) {
-                    operatorText = nts.uk.resource.getText('KMK002_56');
+                    operatorText = nts.uk.resource.getText('Enum_OperatorAtr_ADD');
                 }
                 else {
-                    operatorText = nts.uk.resource.getText('KMK002_57');
+                    operatorText = nts.uk.resource.getText('Enum_OperatorAtr_SUBTRACT');
                 }
                 var dto: AttendanceItemDto = {
                     operator: method,

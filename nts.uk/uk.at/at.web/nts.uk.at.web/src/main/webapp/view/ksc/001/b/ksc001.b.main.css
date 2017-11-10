@@ -185,7 +185,8 @@ button.nts-switch-button {
 	white-space: pre-line;
 	padding: 5px;
 	max-height: 300px;
-	overflow-y: overlay;
+	overflow-y: scroll;
+	position: relative;
 }
 
 .labelCenter {

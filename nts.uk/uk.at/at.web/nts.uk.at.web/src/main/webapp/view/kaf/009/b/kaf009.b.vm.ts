@@ -95,6 +95,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             startPage(appId : string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let dfd = $.Deferred();
                 let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
@@ -155,7 +156,7 @@ module nts.uk.at.view.kaf009.b {
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
                         self.siftName(detailData.workTimeName);
-                        self.workLocationName(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
+                        self.workLocationName(detailData.workLocationName1 == null ? '' : detailData.workLocationName1);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
                         self.multilContent(detailData.appReason);
@@ -180,6 +181,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkBeforeUpdate();
                 promiseResult.done((result) => {
@@ -234,7 +236,7 @@ module nts.uk.at.view.kaf009.b {
                         }
                     })
                 }
-                return dfd;
+                return dfd.promise();
             }
             
             /**

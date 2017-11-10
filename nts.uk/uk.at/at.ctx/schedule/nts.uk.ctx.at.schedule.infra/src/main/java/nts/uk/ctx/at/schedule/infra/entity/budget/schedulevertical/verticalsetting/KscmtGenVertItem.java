@@ -60,6 +60,20 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="genVertItem", orphanRemoval = true)
 	public KscmtGenVertOrder genVertOrder;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemBuilt", orphanRemoval = true)
+	public KscmtFormBuilt formBuilt;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemTime", orphanRemoval = true)
+	public KscmtFormTime formTime;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemPeople", orphanRemoval = true)
+	public KscmtFormPeople formPeople;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
+	public KscstFormulaAmount amount;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
+	public KscstFormulaNumerical numerical;
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
@@ -67,7 +81,7 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 	}
 	
 	public KscmtGenVertItem(KscmtGenVertItemPK kscmtGenVertItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
-			int attributes, int rounding, KscmtGenVertOrder genVertOrder) {
+			int attributes, int rounding, KscmtGenVertOrder genVertOrder, KscmtFormBuilt formBuilt, KscmtFormTime formTime, KscmtFormPeople formPeople, KscstFormulaAmount amount) {
 		this.kscmtGenVertItemPK = kscmtGenVertItemPK;
 		this.itemName = itemName;
 		this.calculateAtr = calculateAtr;
@@ -76,5 +90,9 @@ public class KscmtGenVertItem extends UkJpaEntity implements Serializable {
 		this.attributes = attributes;
 		this.rounding = rounding;
 		this.genVertOrder = genVertOrder;
+		this.formBuilt = formBuilt;
+		this.formTime = formTime;
+		this.formPeople = formPeople;
+		this.amount = amount;
 	}
 }

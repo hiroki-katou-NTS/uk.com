@@ -47,8 +47,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("insert")
-	public void insert(AppStampCmd command){
-		this.registerApplicationStampCommandHandler.handle(command);
+	public List<String> insert(AppStampCmd command){
+		return this.registerApplicationStampCommandHandler.handle(command);
 	}
 	
 	@POST

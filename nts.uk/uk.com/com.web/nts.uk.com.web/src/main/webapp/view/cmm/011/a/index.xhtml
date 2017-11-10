@@ -69,7 +69,8 @@
 							fields: ['name', 'code']}" style="width: 280px;"></div>
 							
 						<table id="single-tree-grid" class="cf" tabindex="8" data-bind="ntsTreeGridView:{
-								width: 385,
+								width: treeStyle.width,
+								height: treeStyle.height,
 								name: '#[CMM011_8]',
 								dataSource: lstWorkplace,
 								value: selectedWpkId,
@@ -78,7 +79,6 @@
 								primaryText: 'nodeText',
 								multiple: false,
 								enable: true,
-								rows: 20,
 								extColumns: treeColumns,
 								showCheckBox: false}">
 						</table>

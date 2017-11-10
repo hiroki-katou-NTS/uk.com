@@ -43,8 +43,14 @@ public class FormulaSetting extends DomainObject {
 		this.operator = memento.getOperatorAtr();
 		this.leftItem = memento.getLeftItem();
 		this.rightItem = memento.getRightItem();
+	}
 
-		// Validate.
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
 		if (this.isBothItemInput()) {
 			throw new BusinessException("Msg_420");
 		}
@@ -58,12 +64,28 @@ public class FormulaSetting extends DomainObject {
 	 *
 	 * @return true, if is both item input
 	 */
-	private boolean isBothItemInput() {
-		if (this.leftItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT
-				&& this.rightItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT) {
-			return true;
-		}
-		return false;
+	public boolean isBothItemInput() {
+		return this.leftItem.getSettingMethod().equals(SettingMethod.NUMERICAL_INPUT)
+				&& this.rightItem.getSettingMethod().equals(SettingMethod.NUMERICAL_INPUT);
+	}
+
+	/**
+	 * Checks if is both item select.
+	 *
+	 * @return true, if is both item select
+	 */
+	public boolean isBothItemSelect() {
+		return this.leftItem.getSettingMethod().equals(SettingMethod.ITEM_SELECTION)
+				&& this.rightItem.getSettingMethod().equals(SettingMethod.ITEM_SELECTION);
+	}
+
+	/**
+	 * Checks if is operator add or sub.
+	 *
+	 * @return true, if is operator add or sub
+	 */
+	public boolean isOperatorAddOrSub() {
+		return this.operator == OperatorAtr.ADD || this.operator == OperatorAtr.SUBTRACT;
 	}
 
 	/**

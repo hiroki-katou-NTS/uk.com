@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.request.app.find.overtime.dto;
 
+import java.util.List;
+
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
 @Data
 public class OverTimeDto {
@@ -21,6 +25,15 @@ public class OverTimeDto {
 	private String appID;
 	
 	/**
+	 * overtimeInstructInformation
+	 */
+	private String overtimeInstructInformation;
+	/**
+	 * displayOvertimeInstructInforFlg
+	 */
+	private boolean displayOvertimeInstructInforFlg;
+	
+	/**
 	 * 申請者
 	 */
 	private String employeeName;
@@ -31,29 +44,21 @@ public class OverTimeDto {
 	/**
 	 * 残業申請時間設定
 	 */
-	private OverTimeInput overTimeInput;
+	private List<OvertimeInputDto> overTimeInput;
 	/**
 	 *  事前事後区分表示 
 	 */
 	private int displayPrePostFlg;
 	/**
-	 * 勤務種類コード
+	 * workType
 	 */
-	private String workTypeCode;
+	private WorkTypeOvertime workType;
 	
 	/**
-	 * 勤務種類名称
+	 * siftType
 	 */
-	private String workTypeName;
-	/**
-	 * 就業時間帯
-	 */
-	private String siftCode;
-	
-	/**
-	 * 就業時間帯名称
-	 */
-	private String siftName;
+	private SiftType siftType;
+
 	/**
 	 * 勤務時間From1
 	 */
@@ -95,5 +100,43 @@ public class OverTimeDto {
 	 * 時刻計算利用
 	 */
 	private boolean displayCaculationTime;
-
+	
+	/**
+	 * 休憩時間取得表示する
+	 */
+	private boolean displayRestTime;
+	
+	/**
+	 * 加給時間を取得
+	 */
+	private boolean displayBonusTime;
+	
+	/**
+	 * applicationReasonDtos
+	 */
+	private List<ApplicationReasonDto> applicationReasonDtos;
+	/**
+	 * typicalReasonDisplayFlg
+	 */
+	private boolean typicalReasonDisplayFlg;
+	
+	/**
+	 * displayAppReasonContentFlg
+	 */
+	private boolean displayAppReasonContentFlg;
+	
+	/**
+	 * divergenceReasonDtos
+	 */
+	private List<DivergenceReasonDto> divergenceReasonDtos;
+	/**
+	 * displayDivergenceReason
+	 */
+	private boolean displayDivergenceReasonForm;
+	
+	/**
+	 * displayDivergenceReasonInput
+	 */
+	private boolean displayDivergenceReasonInput;
+	
 }

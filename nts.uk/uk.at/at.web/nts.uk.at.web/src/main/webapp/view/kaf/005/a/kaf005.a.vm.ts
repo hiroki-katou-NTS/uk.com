@@ -1,12 +1,13 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
     import common = nts.uk.at.view.kaf005.share.common;
+    import service = nts.uk.at.view.kaf005.shr.service;
     export class ScreenModel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
 //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
-        employeeName: KnockoutObservable<string> = ko.observable("Vu Thang Loi");
+        employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
         workState : KnockoutObservable<boolean> = ko.observable(true);;
@@ -14,11 +15,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
         //TIME LINE 1
-        timeStart1: KnockoutObservable<number> = ko.observable(0);
-        timeEnd1: KnockoutObservable<number> = ko.observable(0);   
+        timeStart1: KnockoutObservable<number> = ko.observable(null);
+        timeEnd1: KnockoutObservable<number> = ko.observable(null);   
         //TIME LINE 2
-        timeStart2: KnockoutObservable<number> = ko.observable(0);
-        timeEnd2: KnockoutObservable<number> = ko.observable(0);
+        timeStart2: KnockoutObservable<number> = ko.observable(null);
+        timeEnd2: KnockoutObservable<number> = ko.observable(null);
         //勤務種類
         workTypeCd: KnockoutObservable<string> = ko.observable('');
         workTypeName: KnockoutObservable<string> = ko.observable('');
@@ -31,22 +32,73 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //MultilineEditor
         requiredReason : KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
+        //comboBox 定型理由
+        reasonCombo2: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
+        selectedReason2: KnockoutObservable<string> = ko.observable('');
+        //MultilineEditor
+        requiredReason2 : KnockoutObservable<boolean> = ko.observable(false);
+        multilContent2: KnockoutObservable<string> = ko.observable('');
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
+        //休憩時間
+        restTime: KnockoutObservableArray<common.RestTime> = ko.observableArray([]);
+        //残業時間
+        overtimeHours: KnockoutObservableArray<common.OvertimeHour> = ko.observableArray([]);
+        //休出時間
+        breakTimes: KnockoutObservableArray<common.BreakTime> = ko.observableArray([]);
+        //加給時間
+        bonusTimes: KnockoutObservableArray<common.BonusTime> = ko.observableArray([]);
         //menu-bar 
         enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-        useMulti : KnockoutObservable<boolean> = ko.observable(true);
+        useMulti: KnockoutObservable<boolean> = ko.observable(true);
+        
+        displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
+        displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
+        displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
+        displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
+        breakInputFieldDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
+        
+        typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
+        displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
+        
         constructor() {
+            
             let self = this;
+          
+            self.restTime.push( new common.RestTime("",null,null));
+            self.restTime.push( new common.RestTime("2",null,null));
+            self.restTime.push( new common.RestTime("3",null,null));
+            
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,"05:00",null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
+            
+            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
+            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
+            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
+            
+            self.bonusTimes.push(new common.BonusTime("1","加給時間1",null,null));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間2",null,null));
+            self.bonusTimes.push(new common.BonusTime("1","加給時間3",null,null));
+            
+            $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
+            $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
+            $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
+                    $("#fixed-table").ntsFixedTable({ height: 120 });
                 })    
             })
             
@@ -57,12 +109,49 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            
-            
-            dfd.resolve();
+            service.getOvertimeByUI({
+                url: "",
+                appDate: moment(new Date()).format("YYYY/MM/DD"),
+                uiType: 1        
+            }).done((data) => {
+                self.initData(data);
+                dfd.resolve(data);    
+            }).fail((res) => {
+                dfd.reject(res);     
+            });
             return dfd.promise();
             
         }
+        
+        initData(data: any){
+            var self = this;
+            self.displayCaculationTime(data.calculationOverTime ? true : false);
+            self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
+            self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
+            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
+            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
+            self.employeeName(data.employeeName);
+            self.siftCD(data.siftCode);
+            self.siftName(data.siftName);
+            self.workTypeCd(data.workTypeCd);
+            self.workTypeName(data.workTypeName);
+            self.timeStart1(data.workClockFrom1);
+            self.timeEnd1(data.workClockFrom2); 
+            self.timeStart2(data.workClockTo1);
+            self.timeEnd2(data.workClockTo2); 
+            
+            self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); } ));
+            self.selectedReason(data.application.appReasonID);
+            self.multilContent(data.application.applicationReason);
+            self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); } ));
+            self.selectedReason2(data.divergenceReasonID);
+            self.multilContent2(data.divergenceReasonContent);
+        }
+        
+        register(){
+            console.log("register");        
+        }
+        
         /**
          * KDL003
          */

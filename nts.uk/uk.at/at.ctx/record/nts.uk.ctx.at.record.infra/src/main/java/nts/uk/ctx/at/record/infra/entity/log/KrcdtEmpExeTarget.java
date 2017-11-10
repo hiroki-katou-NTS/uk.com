@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -20,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EMP_EXE_TARGET")
+@Table(name = "KRCDT_EMP_EXE_TARGET")
 public class KrcdtEmpExeTarget extends UkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
@@ -38,5 +39,13 @@ public class KrcdtEmpExeTarget extends UkJpaEntity implements Serializable  {
 	protected Object getKey() {
 		return this.krcdtEmpExeTargetPK;
 	}
-
+	
+	public static KrcdtEmpExeTarget toEntity(TargetPerson domain) {
+		KrcdtEmpExeTarget entity = new KrcdtEmpExeTarget(
+				new KrcdtEmpExeTargetPK(domain.getEmployeeId(), domain.getEmpCalAndSumExecLogId()), 
+				domain.getState().getExecutionContent().value, 
+				domain.getState().getStatus().value);
+		return entity;
+	}
+	
 }

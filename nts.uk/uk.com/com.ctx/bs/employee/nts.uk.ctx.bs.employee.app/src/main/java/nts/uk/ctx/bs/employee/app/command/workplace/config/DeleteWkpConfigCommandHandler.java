@@ -14,13 +14,13 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.service.WkpConfigService;
+import nts.uk.ctx.bs.employee.app.command.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
-import nts.uk.ctx.bs.employee.dom.workplace.service.WorkplaceService;
-import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
+import nts.uk.ctx.bs.employee.dom.workplace.policy.HistoryPolicy;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -66,7 +66,7 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         List<String> lstHistoryId = wkpConfig.items().stream()
                 .map(item -> item.identifier())
                 .collect(Collectors.toList());
-        HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
+        HistoryPolicy.validHistoryLatest(lstHistoryId, command.getHistoryId());
         
         // remove workplace config history
         this.wkpConfigRepo.removeWkpConfigHist(companyId, command.getHistoryId());
@@ -74,7 +74,7 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         // update end date of previous history (below history that is removed)
         int idxPrevHistLatest = 1;
         String prevHistIdLatest = wkpConfig.items().get(idxPrevHistLatest).identifier();
-        this.wkpConfigService.updatePrevHistory(companyId, prevHistIdLatest, HistoryUtil.getMaxDate());
+        this.wkpConfigService.updatePrevHistory(companyId, prevHistIdLatest, HistoryPolicy.getMaxDate());
         
         // find all workplace of history that is removed
         Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = this.wkpConfigInfoRepo.find(companyId,

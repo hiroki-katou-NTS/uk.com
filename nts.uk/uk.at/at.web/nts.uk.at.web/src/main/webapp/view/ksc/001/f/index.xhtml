@@ -21,21 +21,21 @@
 			<com:scriptfile path="ksc001.f.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<div class="contentSchedule">
-					<label class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
+			<div id="contents-area" tabindex="-1">
+				<div class="contentSchedule" tabindex="-1">
+					<label tabindex="-1" class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
 					
 					<table class="tableSchedule" tabindex="-1">
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_49')}</td>
+							<td class="bg-green titleScheduleSetting">#{i18n.getText('KSC001_49')}</td>
 							<td class="valueScheduleSetting" data-bind="text: executionStartDate"></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSC001_50')}</td>
 							<td class="valueScheduleSetting" data-bind="text: executionTotal"></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSC001_50')}</td>
 							<td class="valueScheduleSetting" ><ul class="countdown">
 										<!-- <li><span class="days">00</span>
 											<p class="days_ref">days</p></li>
@@ -51,11 +51,11 @@
 									</ul></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>
+							<td  class="bg-green titleScheduleSetting">#{i18n.getText('KSC001_51')}</td>
 							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLogModel.completionStatus"></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_52')}</td>
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSC001_52')}</td>
 							<td class="valueScheduleSetting" data-bind="text: executionError"></td>
 						</tr>
 					</table>
@@ -63,7 +63,7 @@
 						<label>#{i18n.getText('KSC001_53')}</label>
 						<table tabindex="-1">
 							<tr tabindex="-1">
-								<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_31')}</td>
+								<td class="bg-green titleScheduleSetting">#{i18n.getText('KSC001_31')}</td>
 								<td class="valueScheduleSetting" data-bind="text: periodInfo"></td>
 							</tr>
 						</table>

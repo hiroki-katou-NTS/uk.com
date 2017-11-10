@@ -12,10 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.record.dom.monthlyattendanceitem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -26,6 +24,8 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -62,7 +62,7 @@ public class OptionalItemFinder {
 	 */
 	public OptionalItemDto find(String optionalItemNo) {
 		OptionalItemDto dto = new OptionalItemDto();
-		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo).get();
+		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
 		optionalItem.saveToMemento(dto);
 
 		// Set list formula.

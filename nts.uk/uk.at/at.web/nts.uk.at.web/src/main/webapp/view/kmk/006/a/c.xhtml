@@ -13,12 +13,12 @@
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveWkpAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
-				data-bind=" click: deleteWkpAutoCal">#{i18n.getText('KMK006_26')}</button>
+				data-bind="enable: createModeScreenB, click: deleteWkpAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 		</ui:define>
 		<ui:define name="extended-222">
-			<div id="tree-grid-srcc" style="margin-left: 30px; margin-top: 35px"></div>
+			<div id="tree-grid-srcc" style="margin-left: 10px; margin-top: 35px"></div>
 			<div class="personalEstablishment">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
@@ -28,10 +28,8 @@
 							<span data-bind="text: treeItemName"></span>
 						</td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_7')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_7')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"
@@ -42,10 +40,8 @@
 					<tr>
 						<td class="pull-left"></td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_8')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_8')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"

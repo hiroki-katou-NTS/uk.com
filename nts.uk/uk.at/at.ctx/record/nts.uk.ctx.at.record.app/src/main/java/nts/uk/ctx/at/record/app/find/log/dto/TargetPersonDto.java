@@ -30,7 +30,8 @@ public class TargetPersonDto {
 				domain.getEmpCalAndSumExecLogId(),
 				new ComplStateOfExeContentsDto(
 						domain.getState().getExecutionContent().value,
-						domain.getState().getStatus().value
+						domain.getState().getStatus().value,
+						domain.getState().getStatus().nameId
 					)
 				);
 	}

@@ -1,11 +1,11 @@
 @CHARSET "UTF-8";
 .tab-content-1, .tab-content-2, .tab-content-3 {
-	width: 800px;
+	width: 650px;
 	height: 600px;
 }
 .table-label {
-	width: 800px;
-	margin-left: 30px;
+	width: 650px;
+	margin-left: 20px;
 }
 
 .label-checkbox {
@@ -61,7 +61,9 @@
 	margin-left: 9px;
 	margin-top: 8px;
 }
-
+#nts-component-tree {
+    padding: 20px !important; 
+}
 .bg-dark-green {
 	background-color: #C7F391;
 }
@@ -109,4 +111,12 @@
 
 .personalEstablishment {
 	margin-top: 10px;
+}
+
+.table-label td {
+	margin-bottom: 10px;
+}
+
+.label-middle {
+	padding-top: 7px;
 }

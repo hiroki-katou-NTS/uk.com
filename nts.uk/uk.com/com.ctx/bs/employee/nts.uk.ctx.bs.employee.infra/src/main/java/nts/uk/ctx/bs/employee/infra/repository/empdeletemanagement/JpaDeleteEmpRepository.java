@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpRepository;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpRepository;
 import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagement;
 import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagementPK;
 
