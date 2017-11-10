@@ -423,14 +423,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (itemDto.dataType === 1 || itemDto.dataType === 0) {
                     let stringValue = $('#string').val();
                     if (nts.uk.util.isNullOrUndefined(stringValue) || stringValue === "") {
-                        dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                         $('#string').focus();
                         return true;
                     }
                 } else if (itemDto.dataType === 2) {
                     let numberValue = $('#number').val();
                     if (nts.uk.util.isNullOrUndefined(itemDto.numbereditor.value || itemDto.numbereditor.value === 0)) {
-                        dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                         $('#number').focus();
                         return true;
                     }
@@ -438,7 +436,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 } else if (itemDto.dataType === 3) {
                     let date = $('#date').val();
                     if (nts.uk.util.isNullOrUndefined(itemDto.dateValue)) {
-                        dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                         $('#date').focus();
                         return true;
                     }
@@ -446,14 +443,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 } else if (itemDto.dataType === 4) {
                     let timeitem = $('#timeItem').val();
                     if (nts.uk.util.isNullOrUndefined(timeitem)) {
-                        dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                         $('#timeItem').focus();
                         return true;
                     }
                 } else if (itemDto.dataType === 5) {
                     let timePoint = $('#timePoint').val();
                     if (nts.uk.util.isNullOrUndefined(timePoint)) {
-                        dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                         $('#timePoint').focus();
                         return true;
                     }
@@ -522,11 +517,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         /**
-         * find item by selectItemId
+         * find item by perInfoItemDefId
          */
-        findItem(lstITem: Array<any>, selectItemId: string): PerInfoInitValueSettingItemDto {
+        findItem(lstITem: Array<any>, perInfoItemDefId: string): PerInfoInitValueSettingItemDto {
             return _.find(lstITem, function(obj) {
-                return obj.selectionItemId == selectItemId;
+                return obj.perInfoItemDefId == perInfoItemDefId;
             });
         }
 
@@ -682,7 +677,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // xác định nếu item thuộc kiểu number thì thuộc loại integer hay decimal
         numberDecimalPart: number;
         numberIntegerPart: number;
-
         // timepoint
         timeItemMin?: number;
 
