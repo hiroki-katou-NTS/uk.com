@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageContent;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfo;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfoPK;
 @Stateless
 public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMessageInfoRepository {
 
@@ -34,6 +36,20 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 				);
 	}
 	
+	private KrcdtErrMessageInfo toEntity(ErrMessageInfo errMessageInfo){
+		val entity = new KrcdtErrMessageInfo();
+		
+		entity.krcdtErrMessageInfoPK = new KrcdtErrMessageInfoPK();
+		entity.krcdtErrMessageInfoPK.employeeID = errMessageInfo.getEmployeeID();
+		entity.krcdtErrMessageInfoPK.empCalAndSumExecLogID = errMessageInfo.getEmpCalAndSumExecLogID();
+		entity.krcdtErrMessageInfoPK.resourceID = errMessageInfo.getResourceID().v();
+		entity.disposalDay = errMessageInfo.getDisposalDay();
+		entity.executionContent = errMessageInfo.getExecutionContent().value;
+		entity.messageError = errMessageInfo.getMessageError().v();
+		
+		return entity;
+	}
+	
 	@Override
 	public List<ErrMessageInfo> getAllErrMessageInfoByID(String empCalAndSumExecLogID,int executionContent) {
 		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BYID , KrcdtErrMessageInfo.class)
@@ -49,6 +65,11 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.getList(c -> toDomain(c));
 		return data;
+	}
+
+	@Override
+	public void add(ErrMessageInfo errMessageInfo) {
+		this.commandProxy().insert(toEntity(errMessageInfo));
 	}
 
 }

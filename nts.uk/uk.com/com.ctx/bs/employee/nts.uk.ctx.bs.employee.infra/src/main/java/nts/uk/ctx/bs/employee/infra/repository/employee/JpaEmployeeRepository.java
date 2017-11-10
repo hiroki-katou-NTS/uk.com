@@ -21,7 +21,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpManagement;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
@@ -313,7 +313,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return returnStr;
 	}
 
-	// sonnlb
+	// sonnlb code start
 
 	@Override
 	public Boolean isDuplicateEmpCode(String companyId, String employeeCode) {
@@ -328,6 +328,14 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 		return false;
 	}
+	
+	@Override
+	public void addNewEmployee(Employee domain) {
+		this.commandProxy().insert(toEntityEmployee(domain));
+		
+	}
+	
+	//sonnlb code end
 
 	// laitv
 	@Override

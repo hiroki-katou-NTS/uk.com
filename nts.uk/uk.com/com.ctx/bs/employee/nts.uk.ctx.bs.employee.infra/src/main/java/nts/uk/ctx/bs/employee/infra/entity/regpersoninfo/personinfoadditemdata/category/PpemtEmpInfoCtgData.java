@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+// 社員情報カテゴリデータ
 @Table(name = "PPEMT_EMP_INFO_CTG_DATA")
 public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 
@@ -23,12 +24,14 @@ public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 	@EmbeddedId
 	public PpemtEmpInfoCtgDataPk ppemtEmpInfoCtgDataPk;
 
+	// 個人情報カテゴリID
 	@Basic(optional = false)
 	@Column(name = "PER_INFO_CTG_ID")
 	public String personInfoCtgId;
 
+	// 社員ID
 	@Basic(optional = false)
-	@Column(name = "S_ID")
+	@Column(name = "SID")
 	public String employeeId;
 
 	@Override

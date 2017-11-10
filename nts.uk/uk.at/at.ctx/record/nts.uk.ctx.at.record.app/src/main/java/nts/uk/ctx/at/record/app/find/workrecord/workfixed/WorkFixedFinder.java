@@ -31,9 +31,9 @@ public class WorkFixedFinder {
 	 * @param closureId the closure id
 	 * @return the work fixed finder dto
 	 */
-	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(String workPlaceId, Integer closureId) {
+	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(String workPlaceId, Integer closureId, String cid) {
 
-		Optional<WorkFixed> workFixed = this.workfixedRepository.findByWorkPlaceIdAndClosureId(workPlaceId, closureId);
+		Optional<WorkFixed> workFixed = this.workfixedRepository.findByWorkPlaceIdAndClosureId(workPlaceId, closureId, cid);
 		WorkFixedFinderDto workFixedDto = new WorkFixedFinderDto();
 
 		if (workFixed.isPresent()) {
@@ -53,7 +53,7 @@ public class WorkFixedFinder {
 		
 		return listDto.stream()
 			.map(dto -> {
-				Optional<WorkFixed> workFixed = this.workfixedRepository.findByWorkPlaceIdAndClosureId(dto.getWkpId(), dto.getClosureId());				
+				Optional<WorkFixed> workFixed = this.workfixedRepository.findByWorkPlaceIdAndClosureId(dto.getWkpId(), dto.getClosureId(), dto.getCid());				
 				if (workFixed.isPresent()) {
 					workFixed.get().saveToMemento(dto);
 				}				

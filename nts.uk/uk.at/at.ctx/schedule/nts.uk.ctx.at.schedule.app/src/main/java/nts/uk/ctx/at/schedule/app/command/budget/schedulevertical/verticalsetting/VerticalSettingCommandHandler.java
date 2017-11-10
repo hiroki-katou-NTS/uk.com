@@ -23,15 +23,16 @@ public class VerticalSettingCommandHandler extends CommandHandler<VerticalSettin
 		VerticalSettingCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		VerticalCalSet verticalCalSet = command.toDomain();
-		
 		Optional<VerticalCalSet> data = this.repository.getVerticalCalSetByCode(companyId, command.getVerticalCalCd());
 		
 		if (data.isPresent()) {
 			//throw new BusinessException("Msg_3");
 			// update process
 			repository.updateVerticalCalSet(verticalCalSet);
+			
 		} else {
 			// insert process
+			
 			repository.addVerticalCalSet(verticalCalSet);
 		}
 	}
