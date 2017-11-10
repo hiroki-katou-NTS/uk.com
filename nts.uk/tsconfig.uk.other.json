@@ -3,7 +3,7 @@
 		"target": "ES5",
         "module": "none",
 		"moduleResolution": "Classic",
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "removeComments": false,
         "preserveConstEnums": true,
 		"charset": "utf8",

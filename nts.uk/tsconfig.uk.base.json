@@ -4,7 +4,7 @@
         "module": "none",
 		"moduleResolution": "Classic",
 		"declaration": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "removeComments": false,
         "preserveConstEnums": true,
 		"charset": "utf8",
