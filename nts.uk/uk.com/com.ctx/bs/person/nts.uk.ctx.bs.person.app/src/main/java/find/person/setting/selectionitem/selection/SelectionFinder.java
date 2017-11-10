@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.person.setting.init.item.SelectionInitDto;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
@@ -37,10 +39,10 @@ public class SelectionFinder {
 	// check history ID:
 	public List<SelectionItemOrderDto> getHistIdSelection(String histId) {
 		List<SelectionItemOrderDto> orderList = new ArrayList<SelectionItemOrderDto>();
-		
+
 		// lay selection
 		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
-		
+
 		// kiem tra so luong item lay duoc
 		if (selectionList.isEmpty()) {
 			return orderList;
@@ -72,4 +74,14 @@ public class SelectionFinder {
 
 		// return SelectionDto.fromDomainSelection(optHist.get());
 	}
+
+	// Lanlt
+	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate) {
+        GeneralDate  baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		return this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert).stream()
+				.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+
+	}
+
+	// Lanlt
 }
