@@ -30,7 +30,7 @@ public class CisctI18NResource {
 		switch (resourceType) {
 		case MESSAGE:
 			return new MessageResourceItem(this.pk.systemId, this.pk.resourceId, this.contentRegularBreakline());
-		case PROGRAM_REPORT:
+		case ITEM_NAME:
 			return new ProgramResourceItem(this.pk.systemId, this.pk.classId, this.pk.resourceId, this.contentRegularBreakline());
 		default:
 			// 明らかにバグ（データ設定ミス）だが、エラーにして処理を停止させるほど深刻ではないので、処理を継続させる

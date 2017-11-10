@@ -26,6 +26,6 @@ public class ProgramResourceItem implements I18NResourceItem {
 
 	@Override
 	public I18NResourceType resourceType() {
-		return I18NResourceType.PROGRAM_REPORT;
+		return I18NResourceType.ITEM_NAME;
 	}
 }
