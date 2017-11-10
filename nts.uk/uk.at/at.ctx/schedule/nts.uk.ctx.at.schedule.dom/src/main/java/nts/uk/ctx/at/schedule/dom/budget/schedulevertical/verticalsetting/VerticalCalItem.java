@@ -51,6 +51,7 @@ public class VerticalCalItem extends DomainObject {
  	// E
  	private FormulaAmount formulaAmount;
  	
+ 	// F
  	private FormulaNumerical numerical;
  	
  	/**
