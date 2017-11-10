@@ -101,6 +101,8 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
+	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
+	
 	/**
 	 * convert entity BsymtEmployee to domain Employee
 	 * 
@@ -396,4 +398,11 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return null;
 	}
 
+	@Override
+	public Optional<Employee> getInfoById(String employeeId) {
+		return queryProxy().query(SELECT_EMPLOYEE_BY_EMP_ID, BsymtEmployee.class)
+				.setParameter("employeeId", employeeId)
+				.getSingle()
+				.map(m -> toDomainEmployee(m));
+	}
 }
