@@ -14,6 +14,7 @@ taskArtifacts/
 *.orig
 *.js
 *.launch
-nts.uk/uk.com/com.web/nts.uk.com.web/src/main/webapp/view/cps/002/a/cps002.a.vm.ts
-nts.uk/uk.com/com.web/nts.uk.com.web/src/main/webapp/view/cps/002/a/cps002.a.vm.ts
-nts.uk/uk.com/com.web/nts.uk.com.web/src/main/webapp/view/cps/002/a/cps002.a.vm.ts
+nts.uk/uk.com/gradlew.bat
+nts.uk/uk.com/gradlew
+nts.uk/uk.com/gradle/wrapper/gradle-wrapper.properties
+nts.uk/uk.com/gradle/wrapper/gradle-wrapper.jar

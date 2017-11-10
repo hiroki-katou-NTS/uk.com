@@ -123,29 +123,31 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 				String personID = emp.get().getPId();
 				
 				if (perInfoCategory.get().getIsFixed() == IsFixed.FIXED) {
-					switch (perInfoCategory.get().getCategoryCode().v()) {
-						case "CS00003":
-							CurrentAddress currentAddress = new CurrentAddress();
-							currentAddress.setCurrentAddressId(newId);
-							currentAddress.setPid(personID);
-							// Add data
-							DomainValueFactory.matchInformation(listItem, currentAddress);
-							// Add current address
-							currentAddressRepository.addCurrentAddress(currentAddress);
-							break;
-						case "CS00004":
-							Family family = new Family();
-							family.setFamilyId(newId);
-							family.setPersonId(personID);
-							// Map data
-							DomainValueFactory.matchInformation(listItem, family);
-							// Add family
-							familyRepository.addFamily(family);
-							break;
-						case "CS00014":
-							break;
-						case "CS00015":
-							break;
+					switch (CategoryTypeCode.valueOf(perInfoCategory.get().getCategoryCode().v())) {
+					case CS00003:
+						CurrentAddress currentAddress = new CurrentAddress();
+						currentAddress.setCurrentAddressId(newId);
+						currentAddress.setPid(personID);
+						// Add data
+						DomainValueFactory.matchInformation(listItem, currentAddress);
+						// Add current address
+						currentAddressRepository.addCurrentAddress(currentAddress);
+						break;
+					case CS00004:
+						Family family = new Family();
+						family.setFamilyId(newId);
+						family.setPersonId(personID);
+						// Map data
+						DomainValueFactory.matchInformation(listItem, family);
+						// Add family
+						familyRepository.addFamily(family);
+						break;
+					case CS00014:
+						break;
+					case CS00015:
+						break;
+					default:
+						break;
 					}
 					// ドメインモデル「個人情報カテゴリデータ」を更新する
 					List<PersonInfoItemDefinition> listItemDef = perInfoItemDefRepositoty.getNotFixedPerInfoItemDefByCategoryId(categoryID, contractCode);
@@ -192,15 +194,15 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 				String empID = emp.get().getSId();
 				
 				if (perInfoCategory.get().getIsFixed() == IsFixed.FIXED) {
-					switch (perInfoCategory.get().getCategoryCode().v()) {
-					case "CS00008":
+					switch (CategoryTypeCode.valueOf(perInfoCategory.get().getCategoryCode().v())) {
+					case CS00008:
 						TemporaryAbsence temporaryAbsence = new TemporaryAbsence();
 						temporaryAbsence.setTempAbsenceId(newId);
 						temporaryAbsence.setEmployeeId(empID);
 						DomainValueFactory.matchInformation(listItem, temporaryAbsence);
 						temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
 						break;
-					case "CS00009":
+					case CS00009:
 						JobTitle jobTitle = new JobTitle();
 						jobTitle.setJobTitleId(newId);
 						// Add data
@@ -208,7 +210,7 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						// Add current address
 						jobTitleRepository.add(jobTitle);
 						break;
-					case "CS00010":
+					case CS00010:
 						AffWorkplaceHistory affWorkplaceHistory = new AffWorkplaceHistory();
 //						affWorkplaceHistory.set
 						// Map data
@@ -216,7 +218,7 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						// Add AffWorkplaceHistory
 						affWorkplaceHistoryRepository.addAffWorkplaceHistory(affWorkplaceHistory);
 						break;
-					case "CS00011":
+					case CS00011:
 						AffiliationDepartment affiliationDepartment = new AffiliationDepartment();
 						affiliationDepartment.setDepartmentId(newId);
 						affiliationDepartment.setEmployeeId(empID);
@@ -225,9 +227,9 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						// Add affiliationDepartment
 						affDepartmentRepository.addAffDepartment(affiliationDepartment);
 						break;
-					case "CS00012":
+					case CS00012:
 						break;
-					case "CS00013":
+					case CS00013:
 						SubJobPosition subJob = new SubJobPosition();
 						subJob.setSubJobPosId(newId);
 						// Map data
@@ -235,13 +237,15 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						// Add SubJobPosition
 						subJobPosRepository.addSubJobPosition(subJob);
 						break;
+					default:
+						break;
 				}
 					
 				// 社員情報の任意項目のデータを登録する
 				List<PersonInfoItemDefinition> listItemDef = perInfoItemDefRepositoty.getNotFixedPerInfoItemDefByCategoryId(categoryID, contractCode);
 				if (listItem.size() > 0){
 					// Add emp category data
-					emInfoCtgDataRepository.addEmpInfoCtgData(new EmpInfoCtgData(newId,categoryID,empID));
+					emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(newId,categoryID,empID));
 					// Add item data
 					EmpInfoItemData itemData = null;
 					for (LayoutPersonInfoCommand item : listItem){
@@ -268,7 +272,7 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 						break;
 						}
 						itemData = new EmpInfoItemData(item.getItemDefId(), newId, state);
-						empInfoItemDataRepository.addEmpInfoItemData(itemData);
+						empInfoItemDataRepository.addItemData(itemData);
 					}
 				}
 					
@@ -281,9 +285,9 @@ public class AddCategoryCommandHandler extends CommandHandler<AddCategoryCommand
 	}
 	
 	private DataTypeValue getItemType(List<PersonInfoItemDefinition> listItemDef, String itemCode){
-		PersonInfoItemDefinition itemDef = listItemDef.stream().filter(item-> itemCode.equals(item.getItemCode().v())).findAny().orElse(null);
-		if (itemDef != null){
-			SingleItem item = (SingleItem)itemDef.getItemTypeState();
+		Optional<PersonInfoItemDefinition> itemDef = listItemDef.stream().filter(item-> itemCode.equals(item.getItemCode().v())).findFirst();
+		if (itemDef.isPresent()){
+			SingleItem item = (SingleItem)itemDef.get().getItemTypeState();
 			DataTypeState dataType = item.getDataTypeState();
 			return dataType.getDataTypeValue();
 		}

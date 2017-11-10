@@ -73,4 +73,10 @@ public interface AffWorkplaceHistoryRepository {
 	 * @param domain
 	 */
 	void deleteAffWorkplaceHistory(AffWorkplaceHistory domain);
+	
+	/**
+	 * ドメインモデル「所属職場」を取得する
+	 * @param domain
+	 */
+	void updateAffWorkplaceHistory(AffWorkplaceHistory domain);
 }
