@@ -73,109 +73,111 @@ public class DomainValueFactory {
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, Person person) {
 		PersonNameGroup perNameGroup = new PersonNameGroup();
 		for (LayoutPersonInfoCommand dataInfoItem : listItem) {
-			switch (dataInfoItem.getItemCode()) {
-			case "IS00001":
+			switch (ItemCode.valueOf(dataInfoItem.getItemCode())) {
+			case IS00001:
 				// 個人名グループ．個人名
 				perNameGroup.setPersonName(new PersonName(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00002":
+			case IS00002:
 				// 個人名グループ．個人名カナ
 				perNameGroup.setPersonNameKana(new PersonNameKana(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00003":
+			case IS00003:
 				// 個人名グループ．個人名ローマ字．氏名
 //				perNameGroup.setPersonRomanji(new FullName(dataInfoItem.getValue()));
 //				authClassItem.getDataItems().add(
 //						SaveDataDto.createDataDto(person.getPersonNameGroup().getPersonRomanji().getFullName().v()));
 				break;
-			case "IS00004":
+			case IS00004:
 				// 個人名グループ．個人名ローマ字．氏名カナ
 //				authClassItem.getDataItems().add(person.getPersonNameGroup().getPersonRomanji().getFullNameKana().v());
 				break;
-			case "IS00005":
+			case IS00005:
 				// 個人名グループ．ビジネスネーム
 				perNameGroup.setBusinessName(new BusinessName(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00006":
+			case IS00006:
 				// 個人名グループ．ビジネスネーム．英語
 				perNameGroup.setBusinessEnglishName(new BusinessEnglishName(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00007":
+			case IS00007:
 				// 個人名グループ．ビジネスネーム．その他
 				perNameGroup.setBusinessOtherName(new BusinessOtherName(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00008":
+			case IS00008:
 				// 個人名グループ．個人旧氏名．氏名
 //				perNameGroup.setOldName(oldName);
 //				authClassItem.getDataItems().add(person.getPersonNameGroup().getOldName().getFullName().v());
 				break;
-			case "IS00009":
+			case IS00009:
 				// 個人名グループ．個人旧氏名．氏名カナ
 //				authClassItem.getDataItems().add(person.getPersonNameGroup().getOldName().getFullNameKana().v());
 				break;
-			case "IS00010":
+			case IS00010:
 				// 個人名グループ．個人届出名称．氏名
 //				authClassItem.getDataItems().add(person.getPersonNameGroup().getTodokedeFullName().getFullName().v());
 				break;
-			case "IS00011":
+			case IS00011:
 				// 個人名グループ．個人届出名称．氏名カナ
 //				authClassItem.getDataItems()
 //						.add(person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v());
 				break;
-			case "IS00012":
+			case IS00012:
 				// 個人名グループ．個人届出名称．氏名
 //				authClassItem.getDataItems().add(person.getPersonNameGroup().getTodokedeFullName().getFullName().v());
 				break;
-			case "IS00013":
+			case IS00013:
 				// 個人名グループ．個人届出名称．氏名カナ
 //				authClassItem.getDataItems()
 //						.add(person.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v());
 				break;
-			case "IS00014":
+			case IS00014:
 				// 性別
 				person.setGender(EnumAdaptor.valueOf(convertToInt(dataInfoItem.getValue()), GenderPerson.class));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00015":
+			case IS00015:
 				// 個人携帯
 				person.setPersonMobile(new PersonMobile(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00016":
+			case IS00016:
 				// 個人メールアドレス
 				person.setMailAddress(new PersonMailAddress(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00017":
+			case IS00017:
 				// 趣味
 				person.setHobBy(new Hobby(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00018":
+			case IS00018:
 				// 嗜好
 				person.setTaste(new Taste(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00019":
+			case IS00019:
 				// 国籍
 				person.setCountryId(new Nationality(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
+				break;
+			default:
 				break;
 			}
 			person.setPersonNameGroup(perNameGroup);
@@ -198,8 +200,8 @@ public class DomainValueFactory {
 			GeneralDate startDate = null;
 			GeneralDate endDate = null;
 			
-			switch (dataInfoItem.getItemCode()) {
-			case "IS00029":
+			switch (ItemCode.valueOf(dataInfoItem.getItemCode())) {
+			case IS00029:
 				/*
 				 * 現住所．期間 現住所．期間．開始日 現住所．期間．終了日
 				 */
@@ -208,68 +210,70 @@ public class DomainValueFactory {
 				listItem.remove(dataInfoItem);
 				break;
 			// TODO Pending item code of endDate
-			case "IS00030":
+			case IS00030:
 				// 現住所．郵便番号
 				currentAddress.setPostalCode(new PostalCode(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
 
-			case "IS00031":
+			case IS00031:
 				// 現住所．都道府県
 				currentAddress.setPrefectures(new Prefectures(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00032":
+			case IS00032:
 				// 現住所．国
 				currentAddress.setCountryId(convertToString(dataInfoItem.getValue()));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00033":
+			case IS00033:
 				// 現住所．住所１
 				address1.setAddress1(new PersonAddress1(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00034":
+			case IS00034:
 				// 現住所．住所カナ１
 				address1.setAddressKana1(new PersonAddressKana1(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00035":
+			case IS00035:
 				// 現住所．住所2
 				address2.setAddress2(new PersonAddress2(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00036":
+			case IS00036:
 				// 現住所．住所カナ2
 				address2.setAddressKana2(new PersonAddressKana2(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00037":
+			case IS00037:
 				// 現住所．電話番号
 				currentAddress.setPhoneNumber(new PersonMobile(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00038":
+			case IS00038:
 				// 現住所．住宅状況種別
 				currentAddress.setHomeSituationType(new HomeSituationType(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00039":
+			case IS00039:
 				// 現住所．社宅家賃
 				currentAddress.setHouseRent(new HouseRent(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
 			// TODO Pending item code
+			default:
+				break;
 			}
 			// Address 1
 			currentAddress.setAddress1(address1);
@@ -286,108 +290,110 @@ public class DomainValueFactory {
 	 */
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, Family family) {
 		for(LayoutPersonInfoCommand infoItem: listItem){
-			switch(infoItem.getItemCode()){
-			case "IS00040":
+			switch(ItemCode.valueOf(infoItem.getItemCode())){
+			case IS00040:
 				//氏名
 				family.setFullName(new nts.uk.ctx.bs.person.dom.person.family.FullName(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00041":
+			case IS00041:
 				//氏名カナ
 				family.setFullNameKana(new FullNameKana(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00042":
+			case IS00042:
 				//氏名ローマ字
 				family.setNameRomajiFull(new NameRomajiFull(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00043":
+			case IS00043:
 				//氏名ローマ字カナ
 				family.setNameRomajiFullKana(new NameRomajiFullKana(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00044":
+			case IS00044:
 				//氏名他言語
 				family.setNameMultiLangFull(new NameMultiLangFull(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00045":
+			case IS00045:
 				//氏名他言語カナ
 				family.setNameMultiLangFullKana(new NameMultiLangFullKana(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00046":
+			case IS00046:
 				//届出氏名
 				family.setTokodekeName(new TokodekeName(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00047":
+			case IS00047:
 				//生年月日
 				family.setBirthday(convertToDate(infoItem.getValue()));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00048":
+			case IS00048:
 				//死亡年月日
 				family.setDeadDay(convertToDate(infoItem.getValue()));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00049":
+			case IS00049:
 				//入籍年月日
 				family.setDeadDay(convertToDate(infoItem.getValue()));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;				
-			case "IS00050":
+			case IS00050:
 				//除籍年月日
 				family.setExpelledDate(convertToDate(infoItem.getValue()));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00051":
+			case IS00051:
 				//国籍
 				family.setNationalityId(new CountryId(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00052":
+			case IS00052:
 				//職業
 				family.setOccupationName(new OccupationName(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00053":
+			case IS00053:
 				//続柄
 				family.setRelationship(new RelationShip(convertToString(infoItem.getValue())));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00054":
+			case IS00054:
 				//同居別居区分
 				family.setTogSepDivisionType(EnumAdaptor.valueOf(convertToInt(infoItem.getValue()), TogSepDivisionType.class));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00055":
+			case IS00055:
 				//支援介護区分
 				family.setSupportCareType(EnumAdaptor.valueOf(convertToInt(infoItem.getValue()), SupportCareType.class));
 				// Remove item from list
 				listItem.remove(infoItem);
 				break;
-			case "IS00056":
+			case IS00056:
 				//勤労学生
 				family.setWorkStudentType(EnumAdaptor.valueOf(convertToInt(infoItem.getValue()), WorkStudentType.class) );
 				// Remove item from list
 				listItem.remove(infoItem);
+				break;
+			default:
 				break;
 			}
 		}
@@ -400,50 +406,52 @@ public class DomainValueFactory {
 	public static void matchInformation(List<LayoutPersonInfoCommand> listItem, Employee employee) {
 		JobEntryHistory jobHist = new JobEntryHistory();
 		for (LayoutPersonInfoCommand dataInfoItem : listItem) {
-			switch (dataInfoItem.getItemCode()) {
-			case "IS00020":
+			switch (ItemCode.valueOf(dataInfoItem.getItemCode())) {
+			case IS00020:
 				// 社員．社員コード
 				employee.setSCd(new EmployeeCode(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00021":
+			case IS00021:
 				// 社員．入社年月日
 				jobHist.setJoinDate(convertToDate(dataInfoItem.getValue()));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00022":
+			case IS00022:
 				// 社員．本採用年月日
 				// dataInfoItem.setData(employee);
 				// QA
 				break;
-			case "IS00024":
+			case IS00024:
 				// 社員．会社メールアドレス
 				employee.setCompanyMail(new EmployeeMail(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00025":
+			case IS00025:
 				// 社員．会社携帯メールアドレス
 				employee.setMobileMail(new EmployeeMail(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00026":
+			case IS00026:
 				// 社員．会社携帯電話番号
 				employee.setCompanyMobile(new CompanyMobile(convertToString(dataInfoItem.getValue())));
 				// Remove item from list
 				listItem.remove(dataInfoItem);
 				break;
-			case "IS00027":
+			case IS00027:
 				// 社員．採用区分
 				// dataInfoItem.setData(employee);
 				// QA
 				break;
-			case "IS00028":
+			case IS00028:
 				// 社員．退職年月日
 //				authClassItem.getDataItems().add(employee.getRetirementDate());
+				break;
+			default:
 				break;
 			}
 			// Job history

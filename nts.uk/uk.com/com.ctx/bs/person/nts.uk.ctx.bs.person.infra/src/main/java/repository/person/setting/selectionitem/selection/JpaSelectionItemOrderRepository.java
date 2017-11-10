@@ -58,9 +58,9 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 //	}
 
 	@Override
-	public List<SelectionItemOrder> getAllOrderSelectionByHistId(String histidPK) {
+	public List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId) {
 		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class)
-				.setParameter("histId", histidPK).getList(c -> toDomain(c));
+				.setParameter("histId", histId).getList(c -> toDomain(c));
 	}
 
 }

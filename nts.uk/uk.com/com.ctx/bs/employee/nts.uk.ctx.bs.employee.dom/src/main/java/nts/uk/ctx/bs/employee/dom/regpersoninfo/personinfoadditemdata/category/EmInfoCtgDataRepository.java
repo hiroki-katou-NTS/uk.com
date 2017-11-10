@@ -8,8 +8,8 @@ public interface EmInfoCtgDataRepository {
 	public Optional<EmpInfoCtgData> getEmpInfoCtgDataBySIdAndCtgId(String sId, String ctgId);
 	
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId);
-	
-	void addEmpInfoCtgData(EmpInfoCtgData domain);
+
+	public void addCategoryData(EmpInfoCtgData empInfoCtgData);
 	
 	void updateEmpInfoCtgData(EmpInfoCtgData domain);
 	

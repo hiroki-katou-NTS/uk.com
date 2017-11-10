@@ -76,7 +76,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	}
 
 	@Override
-	public Optional<Selection> getHistSelection(String histId) {
+	public Optional<Selection> getSelectionByHistId(String histId) {
 		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelection.class).setParameter("histId", histId)
 				.getSingle(c -> toDomain(c));
 	}
@@ -91,21 +91,21 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	// check by selectionCD:
 	@Override
-	public Optional<Selection> getCheckBySelectionCD(String selectionCd) {
+	public Optional<Selection> getSelectionBySelectionCd(String selectionCd) {
 
 		return this.queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
 				.setParameter("selectionCd", selectionCd).getSingle(c -> toDomain(c));
 	}
 
 	@Override
-	public List<Selection> geSelectionList(String selectionCd, String histId) {
+	public List<Selection> getAllSelectionBySelectionCdAndHistId(String selectionCd, String histId) {
 		return queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
 				.setParameter("selectionCd", selectionCd).setParameter("histId", histId).getList(c -> toDomain(c));
 
 	}
 
 	@Override
-	public List<String> getAllHist(String histId) {
+	public List<String> getAllHistId(String histId) {
 		return queryProxy().query(SELECT_ALL_HISTORY_ID, String.class).setParameter("histId", histId).getList();
 
 	}

@@ -5,12 +5,15 @@ package repository.person.persinfoctgdata;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import entity.person.personinfoctgdata.PpemtPerInfoItemData;
+import entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
 
@@ -45,16 +48,57 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 				.collect(Collectors.toList());
 	}
 
-	private PpemtPerInfoItemData toEntity(PersonInfoItemData domain){
-		return new PpemtPerInfoItemData();
+	// sonnlb code start
+	private PpemtPerInfoItemData toEntity(PersonInfoItemData domain) {
+
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+
+		String stringValue = domain.getDataState().getStringValue();
+
+		int intValue = domain.getDataState().getNumberValue().intValue();
+
+		GeneralDate dateValue = domain.getDataState().getDateValue();
+
+		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
+				dateValue);
 	}
+	
+	private void updateEntity(PersonInfoItemData domain, PpemtPerInfoItemData entity){
+		entity.saveDataAtr = domain.getDataState().getDataStateType().value;
+		entity.stringVal = domain.getDataState().getStringValue();
+		entity.intVal  = domain.getDataState().getNumberValue().intValue();
+		entity.dateVal = domain.getDataState().getDateValue();
+	}
+
 	/**
 	 * Add item data
+	 * 
 	 * @param domain
 	 */
 	@Override
 	public void addItemData(PersonInfoItemData domain) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insert(toEntity(domain));
+
+	}
+	// sonnlb code end
+
+	@Override
+	public void updateItemData(PersonInfoItemData domain) {
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		Optional<PpemtPerInfoItemData> existItem = this.queryProxy().find(key, PpemtPerInfoItemData.class);
+		if (!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public void deleteItemData(PersonInfoItemData domain) {
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		this.commandProxy().remove(PpemtPerInfoItemData.class, key);
 		
 	}
 

@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.infra.repository.regpersoninfo.personinfoadditemd
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -9,7 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
+import nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.item.PpemtEmpInfoItemData;
+import nts.uk.ctx.bs.employee.infra.entity.regpersoninfo.personinfoadditemdata.item.PpemtEmpInfoItemDataPk;
 
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
@@ -54,27 +56,47 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 				.setParameter("recordId", recordId).getList(c -> toDomain(c));
 	}
 
-	@Override
-	public void addNewCategoryData(PerInfoCtgData perInfoCtgData) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Convert from domain to entity
+	 * @param domain
+	 * @return
+	 */
+	private PpemtEmpInfoItemData toEntiy(EmpInfoItemData domain){
+		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(),domain.getRecordId());
+		String stringValue = domain.getDataState().getStringValue();
+		BigDecimal intValue = domain.getDataState().getNumberValue();
+		GeneralDate dateValue = domain.getDataState().getDateValue();
+		return new PpemtEmpInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue, dateValue);
 	}
-
+	
+	private void updateEntiy(EmpInfoItemData domain, PpemtEmpInfoItemData entity){
+		entity.stringValue = domain.getDataState().getStringValue();
+		entity.intValue = domain.getDataState().getNumberValue();
+		entity.dateValue = domain.getDataState().getDateValue();
+		entity.saveDataType = domain.getDataState().getDataStateType().value;
+	}
 	@Override
-	public void addEmpInfoItemData(EmpInfoItemData domain) {
-		// TODO Auto-generated method stub
-		
+	public void addItemData(EmpInfoItemData domain) {
+		this.commandProxy().insert(toEntiy(domain));
 	}
 
 	@Override
 	public void updateEmpInfoItemData(EmpInfoItemData domain) {
-		// TODO Auto-generated method stub
-		
+		// Get exist item
+		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(),domain.getRecordId());
+		Optional<PpemtEmpInfoItemData> existItem = this.queryProxy().find(key, PpemtEmpInfoItemData.class);
+		if (!existItem.isPresent()){
+			return;
+		}
+		updateEntiy(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
 	}
 
 	@Override
 	public void deleteEmployInfoItemData(EmpInfoItemData domain) {
-		// TODO Auto-generated method stub
+		PpemtEmpInfoItemDataPk key = new PpemtEmpInfoItemDataPk(domain.getPerInfoDefId(),domain.getRecordId());
+		this.commandProxy().remove(PpemtEmpInfoItemData.class, key);
 		
 	}
 }

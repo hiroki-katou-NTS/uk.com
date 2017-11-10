@@ -97,6 +97,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
                             selection: obj.selection,
+                            selectionItemRefType : obj.selectionItemRefType,
                             dateType: obj.dateType,
                             timepointItemMin: obj.timepointItemMin,
                             timepointItemMax: obj.timepointItemMax,
@@ -362,6 +363,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this;
             //list Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件
             let lstItem = [];
+            let lstObj = [];
             service.getAllItemByCtgId(ko.toJS(self.initSettingId()), ko.toJS(self.currentCategory().currentItemId)).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
@@ -387,7 +389,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             timeItemMin: obj.timeItemMin,
                             timeItemMax: obj.timeItemMax,
                             selectionItemId: obj.selectionItemId,
-                            dateType: obj.dateType
+                            selection: obj.selection,
+                            selectionItemRefType : obj.selectionItemRefType,
+                            dateType: obj.dateType,
+                            timepointItemMin: obj.timepointItemMin,
+                            timepointItemMax: obj.timepointItemMax,
+                            dateWithDay: obj.intValue,
+                            numericItemMin: obj.numericItemMin,
+                            numericItemMax: obj.numericItemMax
                         }
                         return new PerInfoInitValueSettingItemDto(param);
                     });
@@ -397,10 +406,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 _.each(listInit, function(item) {
                     if (self.checkFilter(item)) {
                         lstItem.push(item.selectionItemId);
+                        lstObj.push({defId: item.perInfoItemDefId, selId: item.selectionItemId});
                     }
                 });
-                //                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb0');
-                //                lstItem.push('838c2215-bef0-405b-a9c7-e864e5179fb1');
                 let baseDate = moment(self.baseDate()).format('YYYY-MM-DD');
                 let lstFilter = [];
                 self.currentCategory().itemList([]);
@@ -408,13 +416,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     let param = { lstSelItemId: lstItem, baseDate: baseDate }
                     service.refHistSel(param).done(function(data) {
                         console.log(data);
+                        let lstNew = [];
                         //loc nhung item thoa man dk
                         _.each(data.lstSelItemId, function(itemId) {
-                            let item = self.findItem(listInit, itemId);
+                            _.each(lstObj, function(obj){
+                                if(obj.selId == itemId){
+                                    lstNew.push(obj);
+                                }
+                            });
+                        });
+                        
+                        _.each(lstNew,function(itemObj){
+                            let item = self.findItem(listInit, itemObj.defId);
                             if (item != undefined) {
                                 lstFilter.push(item);
                             }
-                        });
+                        })
                         //gan lai du lieu moi
                         self.currentCategory().itemList(lstFilter);
                         self.currentCategory().itemList.valueHasMutated();
@@ -437,18 +454,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 return false
             }
             //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectedCode() != 1) {
+            if (objItem.selectionItemRefType != 1) {
                 return false;
             }
             return true;
         }
 
         /**
-         * find item by selectItemId
+         * find item by perInfoItemDefId
          */
-        findItem(lstITem: Array<any>, selectItemId: string): PerInfoInitValueSettingItemDto {
+        findItem(lstITem: Array<any>, perInfoItemDefId: string): PerInfoInitValueSettingItemDto {
             return _.find(lstITem, function(obj) {
-                return obj.selectionItemId == selectItemId;
+                return obj.perInfoItemDefId == perInfoItemDefId;
             });
         }
 
@@ -604,7 +621,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // xác định nếu item thuộc kiểu number thì thuộc loại integer hay decimal
         numberDecimalPart: number;
         numberIntegerPart: number;
-
         // timepoint
         timeItemMin?: number;
 

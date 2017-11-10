@@ -40,6 +40,7 @@ public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrk
 		return assignedWorkplace;
 	}
 
+	// waiting QA
 	@Override
 	public Optional<AssignedWorkplace> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate) {
 		/*List<BsymtAssiWorkplace> datas = this.queryProxy().query(SELECT_BY_EID, BsymtAssiWorkplace.class).getList();
