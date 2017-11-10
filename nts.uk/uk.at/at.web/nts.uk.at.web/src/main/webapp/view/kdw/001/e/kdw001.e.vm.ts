@@ -73,4 +73,4 @@ class Gridlist {
         this.switchValue = ((code % 3) + 1).toString();
     
     }
-
+}
