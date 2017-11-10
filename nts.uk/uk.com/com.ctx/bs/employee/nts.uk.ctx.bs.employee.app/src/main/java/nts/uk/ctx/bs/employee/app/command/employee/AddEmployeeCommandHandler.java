@@ -77,7 +77,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		// 個人基本 1st
 
-		createNewPerson(getAllItemInCategoryByCode(dataList, "CS00001"), personId);
+		createNewPerson(getAllItemInCategoryByCode(dataList, "CS00001"), personId, employeeId);
 
 		// 社員基本情報 2nd
 
@@ -85,11 +85,11 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 
 		// 連続履歴
 
-		createCurrentAddress(getAllItemInCategoryByCode(dataList, "CS00003"), personId);
+		createCurrentAddress(getAllItemInCategoryByCode(dataList, "CS00003"), personId, employeeId);
 
 		// 家族
 
-		createNewFamily(getAllItemInCategoryByCode(dataList, "CS00004"), personId);
+		createNewFamily(getAllItemInCategoryByCode(dataList, "CS00004"), personId, employeeId);
 
 		// 社員情報カテゴリデータ
 
@@ -136,16 +136,14 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 	// }
 	// }
 
-	private void createEmpInfoCategoryData(List<SettingItemDto> dataList, String paramRecordId, String EmployeeId) {
+	private void createEmpInfoCategoryData(List<SettingItemDto> dataList, String recordId, String EmployeeId) {
 		if (!dataList.isEmpty()) {
 
 			String CtgId = dataList.get(0).getPerInfoCtgId();
 
-			String recordId = paramRecordId == null ? IdentifierUtil.randomUniqueId() : paramRecordId;
-
 			// add EmployeeInfoCtgData
 
-			EmpInfoCtgData empInfoCtgData = new EmpInfoCtgData(recordId, CtgId, EmployeeId);
+			EmpInfoCtgData empInfoCtgData = new EmpInfoCtgData(recordId != null ? recordId : CtgId, CtgId, EmployeeId);
 
 			this.empInfoCtgDataRepo.addCategoryData(empInfoCtgData);
 
@@ -161,7 +159,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		}
 	}
 
-	private void createCurrentAddress(List<SettingItemDto> dataList, String personId) {
+	private void createCurrentAddress(List<SettingItemDto> dataList, String personId, String employeeId) {
 
 		String currentAddressId = IdentifierUtil.randomUniqueId();
 
@@ -190,7 +188,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		// because getItemValueByCode remove all item system required = >
 		// There's only Optinal Item
 
-		createEmpInfoCategoryData(dataList, currentAddressId, personId);
+		createEmpInfoCategoryData(dataList, currentAddressId, employeeId);
 
 	}
 
@@ -244,11 +242,11 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		// because getItemValueByCode remove all item system required = >
 		// There's only Optinal Item
 
-		createEmpInfoCategoryData(dataList, employeeId, personId);
+		createEmpInfoCategoryData(dataList, employeeId, employeeId);
 
 	}
 
-	private void createNewPerson(List<SettingItemDto> dataList, String personId) {
+	private void createNewPerson(List<SettingItemDto> dataList, String personId, String employeeId) {
 
 		GeneralDate birthDate = GeneralDate.fromString(getItemValueByCode(dataList, "IS00047"), dateStringFormat);
 		int bloodType = Integer.parseInt(getItemValueByCode(dataList, "IS00055"));
@@ -282,11 +280,11 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		// because getItemValueByCode remove all item system required = >
 		// There's only Optinal Item
 
-		createEmpInfoCategoryData(dataList, personId, personId);
+		createEmpInfoCategoryData(dataList, personId, employeeId);
 
 	}
 
-	private void createNewFamily(List<SettingItemDto> dataList, String personId) {
+	private void createNewFamily(List<SettingItemDto> dataList, String personId, String employeeId) {
 
 		GeneralDate birthday = GeneralDate.fromString(getItemValueByCode(dataList, "IS00047"), dateStringFormat);
 		GeneralDate deadDay = GeneralDate.fromString(getItemValueByCode(dataList, "IS00048"), dateStringFormat);
@@ -317,7 +315,7 @@ public class AddEmployeeCommandHandler extends CommandHandler<AddEmployeeCommand
 		// because getItemValueByCode remove all item system required = >
 		// There's only Optinal Item
 
-		createEmpInfoCategoryData(dataList, personId, personId);
+		createEmpInfoCategoryData(dataList, familyId, employeeId);
 
 	}
 

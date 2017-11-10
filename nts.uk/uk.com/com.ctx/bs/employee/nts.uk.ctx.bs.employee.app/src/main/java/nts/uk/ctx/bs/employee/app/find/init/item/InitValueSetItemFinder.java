@@ -141,10 +141,10 @@ public class InitValueSetItemFinder {
 				itemDto.setData(tempDomain.getTempAbsenceType().value);
 				break;
 			case "IS00021":
-				itemDto.setData(tempDomain.getStartDate());
+				itemDto.setData(tempDomain.getDateHistoryItem().start());
 				break;
 			case "IS00022":
-				itemDto.setData(tempDomain.getEndDate());
+				itemDto.setData(tempDomain.getDateHistoryItem().end());
 				break;
 			case "IS00023":
 				itemDto.setData(tempDomain.getTempAbsenceReason());
