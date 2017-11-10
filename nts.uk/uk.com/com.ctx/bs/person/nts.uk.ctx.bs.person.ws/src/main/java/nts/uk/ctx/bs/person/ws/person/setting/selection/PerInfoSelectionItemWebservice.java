@@ -26,6 +26,7 @@ import command.person.setting.selectionitem.selection.RemoveSelectionCommand;
 import command.person.setting.selectionitem.selection.RemoveSelectionCommandHandler;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommand;
 import command.person.setting.selectionitem.selection.UpdateSelectionCommandHandler;
+import find.person.setting.init.item.SelectionInitDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
 import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
@@ -35,6 +36,7 @@ import find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import find.person.setting.selectionitem.selection.SelectionItemOrderFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 
 @Path("ctx/bs/person/info/setting/selection")
 @Produces("application/json")
@@ -176,5 +178,13 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("removeHistory")
 	public void RemoveHistory(RemoveHistoryCommand command) {
 		this.removeHistory.handle(command);
+	}
+	
+	
+	// Lanlt
+	@POST
+	@Path("find/{selectionItemId}/{baseDate}")
+	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId, @PathParam("baseDate") String baseDate) {
+		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate );
 	}
 }
