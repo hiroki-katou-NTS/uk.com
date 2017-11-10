@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.temporaryAbsence;
+package nts.uk.ctx.bs.employee.infra.entity.temporaryabsence;
 
 import java.io.Serializable;
 
