@@ -5,18 +5,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
-//        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
+        //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
-        workState : KnockoutObservable<boolean> = ko.observable(true);;
-        typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
+        workState: KnockoutObservable<boolean> = ko.observable(true);;
+        typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
-        timeEnd1: KnockoutObservable<number> = ko.observable(null);   
+        timeEnd1: KnockoutObservable<number> = ko.observable(null);
         //TIME LINE 2
         timeStart2: KnockoutObservable<number> = ko.observable(null);
         timeEnd2: KnockoutObservable<number> = ko.observable(null);
@@ -30,17 +30,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
-        requiredReason : KnockoutObservable<boolean> = ko.observable(false);
+        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
         reasonCombo2: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason2: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
-        requiredReason2 : KnockoutObservable<boolean> = ko.observable(false);
+        requiredReason2: KnockoutObservable<boolean> = ko.observable(false);
         multilContent2: KnockoutObservable<string> = ko.observable('');
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
-        employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
+        employeeID: string = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
         //休憩時間
         restTime: KnockoutObservableArray<common.RestTime> = ko.observableArray([]);
         //残業時間
@@ -50,58 +50,58 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //加給時間
         bonusTimes: KnockoutObservableArray<common.BonusTime> = ko.observableArray([]);
         //menu-bar 
-        enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
+        enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
         displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
-        displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
+        displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
         breakInputFieldDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
-        
+
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         constructor() {
-            
+
             let self = this;
-          
-            self.restTime.push( new common.RestTime("",null,null));
-            self.restTime.push( new common.RestTime("2",null,null));
-            self.restTime.push( new common.RestTime("3",null,null));
-            
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,"05:00",null));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
-            self.overtimeHours.push(new common.OvertimeHour("1","12:00",null,null,null));
-            
-            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
-            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
-            self.breakTimes.push(new common.BreakTime("1","12:00",null,null));
-            
-            self.bonusTimes.push(new common.BonusTime("1","加給時間1",null,null));
-            self.bonusTimes.push(new common.BonusTime("1","加給時間2",null,null));
-            self.bonusTimes.push(new common.BonusTime("1","加給時間3",null,null));
-            
+
+            self.restTime.push(new common.RestTime("", null, null));
+            self.restTime.push(new common.RestTime("2", null, null));
+            self.restTime.push(new common.RestTime("3", null, null));
+
+            self.overtimeHours.push(new common.OvertimeHour("1", "12:00", null, "05:00", null));
+            self.overtimeHours.push(new common.OvertimeHour("1", "12:00", null, null, null));
+            self.overtimeHours.push(new common.OvertimeHour("1", "12:00", null, null, null));
+            self.overtimeHours.push(new common.OvertimeHour("1", "12:00", null, null, null));
+            self.overtimeHours.push(new common.OvertimeHour("1", "12:00", null, null, null));
+            self.overtimeHours.push(new common.OvertimeHour("1", "12:00", null, null, null));
+
+            self.breakTimes.push(new common.BreakTime("1", "12:00", null, null));
+            self.breakTimes.push(new common.BreakTime("1", "12:00", null, null));
+            self.breakTimes.push(new common.BreakTime("1", "12:00", null, null));
+
+            self.bonusTimes.push(new common.BonusTime("1", "加給時間1", null, null));
+            self.bonusTimes.push(new common.BonusTime("1", "加給時間2", null, null));
+            self.bonusTimes.push(new common.BonusTime("1", "加給時間3", null, null));
+
             $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
             $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
             $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
-            self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
+            self.startPage().done(function() {
+                self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format("YYYY/MM/DD")).done(function() {
                     self.approvalSource = self.kaf000_a.approvalList;
                     $("#fixed-table").ntsFixedTable({ height: 120 });
-                })    
+                })
             })
-            
+
         }
         /**
          * 
@@ -112,18 +112,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getOvertimeByUI({
                 url: "",
                 appDate: moment(new Date()).format("YYYY/MM/DD"),
-                uiType: 1        
+                uiType: 1
             }).done((data) => {
                 self.initData(data);
-                dfd.resolve(data);    
+                dfd.resolve(data);
             }).fail((res) => {
-                dfd.reject(res);     
+                dfd.reject(res);
             });
             return dfd.promise();
-            
+
         }
-        
-        initData(data: any){
+
+        initData(data: any) {
             var self = this;
             self.displayCaculationTime(data.calculationOverTime ? true : false);
             self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
@@ -136,22 +136,50 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.workTypeCd(data.workTypeCd);
             self.workTypeName(data.workTypeName);
             self.timeStart1(data.workClockFrom1);
-            self.timeEnd1(data.workClockFrom2); 
+            self.timeEnd1(data.workClockFrom2);
             self.timeStart2(data.workClockTo1);
-            self.timeEnd2(data.workClockTo2); 
-            
-            self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); } ));
+            self.timeEnd2(data.workClockTo2);
+
+            self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
             self.selectedReason(data.application.appReasonID);
             self.multilContent(data.application.applicationReason);
-            self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); } ));
+            self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
             self.selectedReason2(data.divergenceReasonID);
             self.multilContent2(data.divergenceReasonContent);
         }
-        
-        register(){
-            console.log("register");        
+        //登録処理
+        registerClick() {
+            var overtime: Application = {};
+            //2-1.新規画面登録前の処理を実行する
+            //TODO:
+            //登録前エラーチェック
+            //TODO:           
+            //登録処理を実行
+             service.createOvertime(overtime).done((data) => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    location.reload();
+                });
+            }).fail((res) => {
+                if (res.optimisticLock == true) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
+                        location.reload();
+                    });
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+                }
+            });
+            //2-3.新規画面登録後の処理を実行
+            //TODO:
+            //メッセージを表示（Msg_15）
+            //TODO:
+            //  - 送信先リストに項目がいる 
+            //      情報メッセージに（Msg_392）を表示する Display (Msg_392) in information message
+            //  - 送信先リストに項目がない (There are no items in the destination list)
+            //      - 情報メッセージを閉じる Close information message
+            //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
+            //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
         }
-        
+
         /**
          * KDL003
          */
@@ -180,11 +208,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         /**
          * Jump to CMM018 Screen
          */
-        openCMM018(){
+        openCMM018() {
             let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID});  
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
         }
     }
-    
+
 }
 
