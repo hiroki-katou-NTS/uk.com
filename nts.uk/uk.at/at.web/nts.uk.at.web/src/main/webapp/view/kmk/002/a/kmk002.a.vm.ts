@@ -136,6 +136,15 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Get formula name by id
+             */
+            public getFormulaNameById(id: string): string {
+                let self = this;
+                let rs = _.find(self.calcFormulas(), item => item.formulaId == id);
+                return rs ? rs.formulaName() : 'formula not found';
+            }
+
+            /**
              * Initial datasource
              */
             private initDatasource(): void {
@@ -409,7 +418,25 @@ module nts.uk.at.view.kmk002.a {
                 let self = this
                 let lastFormula = _.last(this.calcFormulas());
                 if (lastFormula) {
-                    this.applyFormula(lastFormula.settingResult());
+                    let settingResult = lastFormula.settingResult();
+
+                    // replace symbol = formula name
+                    if (lastFormula.isTypeOfFormulaSetting()) {
+                        let leftItem = lastFormula.formulaSetting.leftItem;
+                        let rightItem = lastFormula.formulaSetting.rightItem;
+                        if (leftItem.settingMethod == 0) {
+                            let symbolVal = this.getSymbolById(leftItem.formulaItemId);
+                            settingResult = _.replace(settingResult, symbolVal,
+                                this.getFormulaNameById(leftItem.formulaItemId));
+                        }
+                        if (rightItem.settingMethod == 0) {
+                            let symbolVal = this.getSymbolById(rightItem.formulaItemId);
+                            settingResult = _.replace(settingResult, symbolVal,
+                                this.getFormulaNameById(rightItem.formulaItemId));
+                        }
+                    }
+
+                    this.applyFormula(settingResult);
                 }
             }
 
@@ -1390,6 +1417,11 @@ module nts.uk.at.view.kmk002.a {
                     // reset flag
                     self.isCheckFromParent = false;
 
+                });
+
+                // event on formula name changed
+                self.formulaName.subscribe(vl => {
+                    self.setApplyFormula();
                 });
 
                 // event on set formula setting or item selection.
