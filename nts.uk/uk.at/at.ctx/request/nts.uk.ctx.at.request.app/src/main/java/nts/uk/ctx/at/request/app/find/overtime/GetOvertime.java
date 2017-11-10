@@ -315,12 +315,12 @@ public class GetOvertime {
 			for (OvertimeInputDto overtimeInputDto : overtimeInputDtos) {
 				for (OvertimeFrame overtimeFrame : overtimeFrames) {
 					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOtFrameNo()) {
-						overtimeInputDto.setAttendanceName(overtimeFrame.getOvertimeFrameName().toString());
+						overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
 						continue;
 					}
 				}
 			}
-			result.setOverTimeInput(overtimeInputDtos);
+			result.setOverTimeInputs(overtimeInputDtos);
 			result.setOverTimeShiftNight(appOvertime.getOverTimeShiftNight());
 			result.setFlexExessTime(appOvertime.getFlexExessTime());
 		}
