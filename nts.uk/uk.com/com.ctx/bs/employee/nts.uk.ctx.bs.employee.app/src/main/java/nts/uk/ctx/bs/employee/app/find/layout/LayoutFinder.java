@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import find.layout.NewLayoutDto;
+import find.layout.classification.ActionRole;
 import find.layout.classification.LayoutPersonInfoClsDto;
 import find.layout.classification.LayoutPersonInfoClsFinder;
 import find.layout.classification.LayoutPersonInfoValueDto;
@@ -244,26 +245,31 @@ public class LayoutFinder {
 			// if item is separator line, do not check
 			if (classItem.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				authItemClasList.add(classItem);
-			} else if (validateAuthClassItem(roleId, classItem, selfBrowsing)) {
-				LayoutPersonInfoClsDto authClassItem = classItem;
-				// check author of each definition in class-item
-				List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(mainteLayoutId,
-						classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
-						authClassItem.getListItemDf());
-				authClassItem.setListItemDf(dataInfoItems);
+			} else {
+				Optional<PersonInfoCategoryAuth> personCategoryAuthOpt = perInfoCtgAuthRepo
+						.getDetailPersonCategoryAuthByPId(roleId, classItem.getPersonInfoCategoryID());
 
-				PersonInfoCategory perInfoCategory = perInfoCateRepo
-						.getPerInfoCategory(authClassItem.getPersonInfoCategoryID(), contractCode).get();
-				// get data
-				if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
-					getDataforSingleItem(perInfoCategory, authClassItem, standardDate, employee.getPId(),
-							employee.getSId());
-				} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
-					getDataforListItem(perInfoCategory, authClassItem, standardDate, employee.getPId(),
-							employee.getSId());
+				if (validateAuthClassItem(personCategoryAuthOpt, selfBrowsing)) {
+					LayoutPersonInfoClsDto authClassItem = classItem;
+					// check author of each definition in class-item
+					List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(mainteLayoutId,
+							classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
+							authClassItem.getListItemDf());
+					authClassItem.setListItemDf(dataInfoItems);
+
+					PersonInfoCategory perInfoCategory = perInfoCateRepo
+							.getPerInfoCategory(authClassItem.getPersonInfoCategoryID(), contractCode).get();
+					// get data
+					if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
+						getDataforSingleItem(perInfoCategory, authClassItem, standardDate, employee.getPId(),
+								employee.getSId());
+					} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
+						getDataforListItem(perInfoCategory, personCategoryAuthOpt.get(), authClassItem, standardDate,
+								employee.getPId(), employee.getSId(), selfBrowsing);
+					}
+
+					authItemClasList.add(authClassItem);
 				}
-
-				authItemClasList.add(authClassItem);
 			}
 		}
 
@@ -278,13 +284,11 @@ public class LayoutFinder {
 	 *            Target: check author of person who login with class-item
 	 * @return
 	 */
-	private boolean validateAuthClassItem(String roleId, LayoutPersonInfoClsDto item, boolean selfBrowsing) {
-		Optional<PersonInfoCategoryAuth> personCategoryAuthOpt = perInfoCtgAuthRepo
-				.getDetailPersonCategoryAuthByPId(roleId, item.getPersonInfoCategoryID());
+	private boolean validateAuthClassItem(Optional<PersonInfoCategoryAuth> personCategoryAuthOpt,
+			boolean selfBrowsing) {
 		if (!personCategoryAuthOpt.isPresent()) {
 			return false;
 		}
-
 		if (selfBrowsing && personCategoryAuthOpt.get().getAllowPersonRef() == PersonInfoPermissionType.YES) {
 			return true;
 		}
@@ -473,13 +477,14 @@ public class LayoutFinder {
 	/**
 	 * @param perInfoCategory
 	 * @param authClassItem
-	 * @param standandDate
+	 * @param standardDate
 	 * @param personId
 	 * @param employeeId
 	 *            Target: get data with definition-items
 	 */
-	private void getDataforListItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto authClassItem,
-			GeneralDate standandDate, String personId, String employeeId) {
+	private void getDataforListItem(PersonInfoCategory perInfoCategory, PersonInfoCategoryAuth personCategoryAuth,
+			LayoutPersonInfoClsDto authClassItem, GeneralDate standardDate, String personId, String employeeId,
+			boolean selfBrowsing) {
 		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED
@@ -528,6 +533,57 @@ public class LayoutFinder {
 						perInfoCategory.getCategoryCode().v(), authClassItem, employeeId);
 				authClassItem.setItems(new ArrayList<>(mapOptionData.values()));
 			}
+		}
+
+		switch (perInfoCategory.getCategoryType()) {
+		case MULTIINFO:
+			
+			break;
+		case CONTINUOUSHISTORY:
+		case NODUPLICATEHISTORY:
+		case DUPLICATEHISTORY:
+		case CONTINUOUS_HISTORY:
+			DateRangeItem dateRangeItem = perInfoCateRepo
+					.getDateRangeItemByCtgId(perInfoCategory.getPersonInfoCategoryId());
+			String startDateId = dateRangeItem.getStartDateItemId();
+			String endDateId = dateRangeItem.getEndDateItemId();
+			List<Object> seigoItemsData = new ArrayList<>();
+			for (Object item : authClassItem.getItems()) {
+				@SuppressWarnings("unchecked")
+				List<LayoutPersonInfoValueDto> rowData = (List<LayoutPersonInfoValueDto>) item;
+				Optional<LayoutPersonInfoValueDto> startDateOpt = rowData.stream()
+						.filter(column -> column.getItemDefId().equals(startDateId)).findFirst();
+				Optional<LayoutPersonInfoValueDto> endDateOpt = rowData.stream()
+						.filter(column -> column.getItemDefId().equals(endDateId)).findFirst();
+
+				if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+					PersonInfoAuthType auth = PersonInfoAuthType.UPDATE;
+					if (standardDate.after((GeneralDate) endDateOpt.get().getValue())) {
+						// past
+						auth = selfBrowsing ? personCategoryAuth.getSelfPastHisAuth()
+								: personCategoryAuth.getOtherPastHisAuth();
+					} else if (standardDate.before((GeneralDate) startDateOpt.get().getValue())) {
+						// future
+						auth = selfBrowsing ? personCategoryAuth.getSelfFutureHisAuth()
+								: personCategoryAuth.getOtherFutureHisAuth();
+					}
+					switch (auth) {
+					case REFERENCE:
+						rowData.forEach(element -> element.setActionRole(ActionRole.VIEW_ONLY));
+						seigoItemsData.add(rowData);
+						break;
+					case UPDATE:
+						rowData.forEach(element -> element.setActionRole(ActionRole.EDIT));
+						seigoItemsData.add(rowData);
+						break;
+					case HIDE:
+						// do NOT add to authItemsData
+						break;
+					}
+				}
+			}
+			authClassItem.setItems(seigoItemsData);
+			break;
 		}
 	}
 
@@ -698,23 +754,18 @@ public class LayoutFinder {
 
 		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
 			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
-			GeneralDate startDate = null;
-			GeneralDate endDate = null;
-			for (EmpInfoItemData dataItem : dataItems) {
-				if (dataItem.getPerInfoDefId() == startDateId) {
-					startDate = dataItem.getDataState().getDateValue();
-				} else if (dataItem.getPerInfoDefId() == endDateId) {
-					endDate = dataItem.getDataState().getDateValue();
+
+			Optional<EmpInfoItemData> startDateOpt = dataItems.stream()
+					.filter(column -> column.getPerInfoDefId().equals(startDateId)).findFirst();
+			Optional<EmpInfoItemData> endDateOpt = dataItems.stream()
+					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
+
+			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+				if (standandDate.after(startDateOpt.get().getDataState().getDateValue())
+						&& standandDate.before(endDateOpt.get().getDataState().getDateValue())) {
+					matchEmpDataForDefItems(categoryCode, authClassItem, dataItems);
+					break;
 				}
-			}
-
-			if (startDate == null || endDate == null) {
-				continue;
-			}
-
-			if (startDate.before(standandDate) && endDate.after(standandDate)) {
-				matchEmpDataForDefItems(categoryCode, authClassItem, dataItems);
-				break;
 			}
 
 		}
