@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.flow;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktimeset.flex.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowWorkRestTimezone;
 
 /**
  * The Class FlowHalfDayWorkTimezone.
