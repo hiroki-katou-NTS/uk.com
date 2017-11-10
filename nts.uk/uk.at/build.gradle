@@ -426,7 +426,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile (group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: '0.7.1')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.8.7')
-		compile (group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.5.2')
+		compile (group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.5.3')
 	}
 }
 
@@ -439,7 +439,7 @@ project (':at.screen:nts.uk.screen.at.infra') {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: '0.7.2')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.8.9')
-		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.5.2')
+		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.5.3')
 	}
 }
 //=========================at:screen↑=====================================
@@ -607,8 +607,8 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.8.4')
 		
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.app', version: '0.5.2')
-		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.5.2')
-		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.5.2')
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.5.3')
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.5.3')
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.5.2')
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pubimp', version: '0.5.2')
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.ac', version: '0.5.2')
