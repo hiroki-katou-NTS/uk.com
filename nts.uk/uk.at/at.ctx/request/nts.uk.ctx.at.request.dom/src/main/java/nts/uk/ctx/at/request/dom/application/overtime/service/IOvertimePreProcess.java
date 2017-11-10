@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 
 /**
  * 01_初期データ取得
@@ -29,7 +30,7 @@ public interface IOvertimePreProcess {
 	 * 01-03_残業枠を取得
 	 * @param overtimeAtr
 	 */
-	public void getOvertimeHours(int overtimeAtr);
+	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr,String companyID);
 	
 	/**
 	 * 01-04_加給時間を取得
