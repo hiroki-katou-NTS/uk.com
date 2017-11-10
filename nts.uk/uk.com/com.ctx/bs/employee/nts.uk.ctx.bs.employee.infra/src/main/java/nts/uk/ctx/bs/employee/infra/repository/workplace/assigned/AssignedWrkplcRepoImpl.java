@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.employee.infra.repository.workplace.assigned;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,16 +24,20 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrkplcRepository {
 
-	private static final String SELECT_ASS_WORKPLACE_BY_ID = "SELECT a from BsymtAssiWorkplace a"
+	private static final String SELECT_ASS_WORKPLACE_BY_ID = "SELECT a.assiWorkplaceId, a.empId, a.workplaceId, "
+			+ " h.historyId, h.strD, h.endD FROM BsymtAssiWorkplaceHist h"
+			+ " JOIN BsymtAssiWorkplace a ON a.histId = h.historyId"
 			+ " WHERE a.bsymtAssiWorkplacePK.assiWorkplaceId = :assiWorkplaceId";
 
 	private static final String SELECT_BY_EID = "select wp from BsymtAssiWorkplace wp" + "where wp.empId = :empId";
 
-	private AssignedWorkplace toDomain(BsymtAssiWorkplace entity) {
-		return new AssignedWorkplace(entity.empId, entity.assiWorkplaceId,
-				entity.lstBsymtAssiWorkplaceHist.stream()
-						.map(x -> new DateHistoryItem(x.getHistoryId(), new DatePeriod(x.getStrD(), x.getEndD())))
-						.collect(Collectors.toList()));
+	private AssignedWorkplace toDomain(List<Object[]> lstEntity) {
+		AssignedWorkplace assignedWorkplace = new AssignedWorkplace(String.valueOf(lstEntity.get(0)[1].toString()), String.valueOf(lstEntity.get(0)[0].toString()), 
+				String.valueOf(lstEntity.get(0)[2].toString()), 
+				lstEntity.stream().map(x -> new DateHistoryItem(x[3].toString(), new DatePeriod(GeneralDate.fromString(String.valueOf(x[4].toString()), "yyyy-MM-dd"), 
+						GeneralDate.fromString(String.valueOf(x[5].toString()), "yyyy-MM-dd"))))
+				.collect(Collectors.toList()));
+		return assignedWorkplace;
 	}
 
 	@Override
@@ -51,10 +56,9 @@ public class AssignedWrkplcRepoImpl extends JpaRepository implements AssignedWrk
 
 	@Override
 	public AssignedWorkplace getAssignedWorkplaceById(String assignedWorkplaceId) {
-		Optional<AssignedWorkplace> assignedWorkplace = this.queryProxy()
-				.query(SELECT_ASS_WORKPLACE_BY_ID, BsymtAssiWorkplace.class)
-				.setParameter("assiWorkplaceId", assignedWorkplaceId).getSingle(x -> toDomain(x));
-		return assignedWorkplace.isPresent() ? assignedWorkplace.get() : null;
+		List<Object[]> lstEntity = this.queryProxy().query(SELECT_ASS_WORKPLACE_BY_ID, Object[].class)
+				.setParameter("assiWorkplaceId", assignedWorkplaceId).getList();
+		return toDomain(lstEntity);
 	}
 
 }

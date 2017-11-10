@@ -35,12 +35,6 @@ public class BsymtJobTitleMain extends JpaEntity{
 	@Column(name = "HIST_ID")
 	public String histId;
 	
-	/** The bsymt job hist. */
-	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({
-			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
-	public BsymtJobPosMainHist bsymtJobPosMainHist;
-
 	@Override
 	protected Object getKey() {
 		return jobTitleId;

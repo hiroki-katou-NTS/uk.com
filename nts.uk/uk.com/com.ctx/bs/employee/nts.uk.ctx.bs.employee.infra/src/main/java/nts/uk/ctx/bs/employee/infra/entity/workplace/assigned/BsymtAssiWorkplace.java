@@ -1,13 +1,11 @@
 package nts.uk.ctx.bs.employee.infra.entity.workplace.assigned;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -29,27 +27,27 @@ public class BsymtAssiWorkplace extends UkJpaEntity implements Serializable {
 
 	/** the assign workplace id */
 	@Id
+	@Basic(optional = false)
 	@Column(name = "ASSI_WORKPLACE_ID")
 	public String assiWorkplaceId;
 
 	/** The emp id. */
+	@Basic(optional = false)
 	@Column(name = "SID")
 	public String empId;
 
 	/** the workplace id */
+	@Basic(optional = false)
 	@Column(name = "WORKPLACE_ID")
 	public String workplaceId;
 
+	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	public String histId;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtAssiWorkplace", orphanRemoval = true)
-	public List<BsymtAssiWorkplaceHist> lstBsymtAssiWorkplaceHist;
-
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.assiWorkplaceId;
 	}
 
 }
