@@ -139,7 +139,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// closureId map with currentmonth
 		Map<Integer, Integer> currentMonthMap =  listClosures.stream().collect(Collectors.toMap(Closure::getClosureId, x -> x.getClosureMonth().getProcessingYm().v()));
 		// ドメインモデル「締め変更履歴」取得
-		this.closureRepository.
+//		this.closureRepository.
 
 		
 
