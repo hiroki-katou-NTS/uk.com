@@ -1,51 +1,50 @@
-package nts.uk.shr.sample.pereg.command.collect;
+package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import nts.gul.reflection.ReflectionUtil;
+import javax.ejb.Stateless;
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.util.TypeLiteral;
+
+import lombok.val;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
-import nts.uk.shr.sample.pereg.command.SampleUpdatePersonBaseCommandHandler;
+import nts.uk.shr.sample.pereg.command.SampleUpdatePersonBaseCommand;
 
-//@Stateless
-public class SamplePeregCommandHandlerCollector implements PeregCommandHandlerCollector {
+@Stateless
+@SuppressWarnings("serial")
+public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerCollector {
 
-	/* BEGIN add handlers */
+	/** Add handlers */
+	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
+			);
 	
-	/* END add handlers */
+	/** Update handlers */
+	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
+			new TypeLiteral<PeregUpdateCommandHandler<SampleUpdatePersonBaseCommand>>(){}
+			);
 	
-	
-	/* BEGIN update handlers */
-	
-	//@Inject
-	private SampleUpdatePersonBaseCommandHandler updatePersonBase; // this is sample, plz remove later
-	
-	/* END update handlers */
-	
-	
-	/* BEGIN delete handlers */
-	
-	/* END delete handlers */
 	
 	
 	@Override
 	public Set<PeregAddCommandHandler<?>> collectAddHandlers() {
-		return Arrays.asList(SamplePeregCommandHandlerCollector.class.getFields()).stream()
-				.map(f -> ReflectionUtil.getFieldValue(f, this))
-				.filter(fv -> fv instanceof PeregAddCommandHandler)
-				.map(fv -> (PeregAddCommandHandler<?>)fv)
+		return ADD_HANDLER_CLASSES.stream()
+				.map(type -> CDI.current().select(type).get())
+				.map(obj -> (PeregAddCommandHandler<?>)obj)
 				.collect(Collectors.toSet());
 	}
 
 	@Override
 	public Set<PeregUpdateCommandHandler<?>> collectUpdateHandlers() {
-		return Arrays.asList(SamplePeregCommandHandlerCollector.class.getFields()).stream()
-				.map(f -> ReflectionUtil.getFieldValue(f, this))
-				.filter(fv -> fv instanceof PeregUpdateCommandHandler)
-				.map(fv -> (PeregUpdateCommandHandler<?>)fv)
+		return UPDATE_HANDLER_CLASSES.stream()
+				.map(type -> CDI.current().select(type).get())
+				.map(obj -> (PeregUpdateCommandHandler<?>)obj)
 				.collect(Collectors.toSet());
 	}
 

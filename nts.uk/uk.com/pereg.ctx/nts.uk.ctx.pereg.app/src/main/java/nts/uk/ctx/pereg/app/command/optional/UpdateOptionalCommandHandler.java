@@ -6,15 +6,18 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommand;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommandHandler;
+import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
+import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommandHandler;
 
 @Stateless
-public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCommand>
-		implements PeregUserDefAddCommandHandler {
+public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpdateCommand>
+		implements PeregUserDefUpdateCommandHandler {
 
 	@Override
-	protected void handle(CommandHandlerContext<PeregUserDefAddCommand> context) {
+	protected void handle(CommandHandlerContext<PeregUserDefUpdateCommand> context) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }
