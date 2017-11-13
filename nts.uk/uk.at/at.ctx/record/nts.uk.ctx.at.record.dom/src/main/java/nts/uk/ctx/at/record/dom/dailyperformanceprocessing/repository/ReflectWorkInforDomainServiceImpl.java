@@ -9,6 +9,10 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
@@ -38,12 +42,23 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
 	
+	@Inject
+	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
+	
+	@Inject
+	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
+	
+	@Inject
+	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
+	
 	@Override
 	public boolean reflectWorkInformation(List<String> employeeIds, DatePeriod periodTime, String empCalAndSumExecLogID,
 			int reCreateAttr) {
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
+		
+		List<WorkInfoOfDailyPerformance> workInfoOfDailyPerformances = new ArrayList<>();
 		
 		// lits day between startDate and endDate
 		List<GeneralDate> listDay = this.getDaysBetween(periodTime.start(), periodTime.end());
@@ -56,13 +71,18 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			this.identificationRepository.deleteByListEmployeeId(employeeIds, listDay);
 			this.timeLeavingOfDailyPerformanceRepository.deleteByListEmployeeId(employeeIds, listDay);
 			this.temporaryTimeOfDailyPerformanceRepository.deleteByListEmployeeId(employeeIds, listDay);
-			
+			this.editStateOfDailyPerformanceRepository.deleteByListEmployeeId(employeeIds, listDay);
+			this.breakTimeOfDailyPerformanceRepository.deleteByListEmployeeId(employeeIds, listDay);
+			this.outingTimeOfDailyPerformanceRepository.deleteByListEmployeeId(employeeIds, listDay);
 		}
 		// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 		else {
-			this.workInformationRepository.findByListEmployeeId(employeeIds, listDay);
+			workInfoOfDailyPerformances = this.workInformationRepository.findByListEmployeeId(employeeIds, listDay);
 		}
 		
+		if (workInfoOfDailyPerformances.isEmpty()) {
+			
+		}
 		
 		
 		return false;
