@@ -21,6 +21,9 @@ public class FormTimeFuncCommand {
     /* 汎用縦計項目ID */
     private String verticalCalItemId;
     
+    /* 順番 */
+    private int dispOrder;
+    
     /* 予定項目ID */
     private String presetItemId;
     
@@ -33,12 +36,9 @@ public class FormTimeFuncCommand {
     /* 演算子区分 */
     private int operatorAtr;
     
-    /* 順番 */
-    private int dispOrder;
-    
-    public FormTimeFunc toDomainFunc(String companyId, String verticalCalCd, String verticalCalItemId, String presetItemId, String attendanceItemId, 
-    		String externalBudgetCd, int operatorAtr, int dispOrder){
-    	return FormTimeFunc.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, presetItemId, attendanceItemId, 
-        		externalBudgetCd, operatorAtr, dispOrder);
+    public FormTimeFunc toDomainFunc(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder, String presetItemId, String attendanceItemId, 
+    		String externalBudgetCd, int operatorAtr){
+    	return FormTimeFunc.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, dispOrder, presetItemId, attendanceItemId, 
+        		externalBudgetCd, operatorAtr);
     }
 }

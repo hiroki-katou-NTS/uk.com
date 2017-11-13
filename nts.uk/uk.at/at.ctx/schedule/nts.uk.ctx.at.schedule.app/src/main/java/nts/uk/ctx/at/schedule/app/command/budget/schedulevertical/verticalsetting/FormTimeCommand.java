@@ -39,12 +39,12 @@ public class FormTimeCommand {
     	List<FormTimeFunc> formFormTimeFuncLst = this.lstFormTimeFunc != null
     			? this.lstFormTimeFunc.stream().map(c -> c.toDomainFunc(companyId, 
 																	c.getVerticalCalCd(), 
-																	c.getVerticalCalItemId(), 
+																	c.getVerticalCalItemId(),
+																	c.getDispOrder(),
 																	c.getPresetItemId(),
 																	c.getAttendanceItemId(),
 																	c.getExternalBudgetCd(),
-																	c.getOperatorAtr(),
-																	c.getDispOrder())).collect(Collectors.toList())
+																	c.getOperatorAtr())).collect(Collectors.toList())
 				: null;
 																	
 		return FormTime.createFromJavaType(companyId, verticalCalCd, verticalCalItemId, categoryIndicator, actualDisplayAtr, formFormTimeFuncLst);

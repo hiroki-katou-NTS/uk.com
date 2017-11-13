@@ -136,7 +136,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             total: self.calculatorItems()[i].total(),
                             rounding: self.calculatorItems()[i].rounding(),
                             fraction: self.calculatorItems()[i].fraction(),
-                            order: self.calculatorItems()[i].order()
+                            order: self.calculatorItems()[i].order(),
+                            formBuilt: self.calculatorItems()[i].formBuilt,
+                            formTime: self.calculatorItems()[i].formTime,
+                            formPeople: self.calculatorItems()[i].formPeople,
+                            amount: self.calculatorItems()[i].amount,
+                            numerical: self.calculatorItems()[i].numerical
                         };
                         
                         items.push(new CalculatorItem(item));
@@ -162,7 +167,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 total: self.calculatorItems()[i].total(),
                                 rounding: self.calculatorItems()[i].rounding(),
                                 fraction: self.calculatorItems()[i].fraction(),
-                                order: self.calculatorItems()[i].order()
+                                order: self.calculatorItems()[i].order(),
+                                formBuilt: self.calculatorItems()[i].formBuilt,
+                                formTime: self.calculatorItems()[i].formTime,
+                                formPeople: self.calculatorItems()[i].formPeople,
+                                amount: self.calculatorItems()[i].amount,
+                                numerical: self.calculatorItems()[i].numerical
                             };
                             
                             items.push(new CalculatorItem(item));
@@ -207,7 +217,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 order: data.verticalCalItems[i].dispOrder,
                                 attrEnable: false,
                                 settingMethodEnable: false,
-                                totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true
+                                totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true,
+                                formBuilt: self.calculatorItems()[i].formBuilt,
+                                formTime: self.calculatorItems()[i].formTime,
+                                formPeople: self.calculatorItems()[i].formPeople,
+                                amount: self.calculatorItems()[i].amount,
+                                numerical: self.calculatorItems()[i].numerical
                             };
 
                             items.push(new CalculatorItem(item));
@@ -309,7 +324,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 order: 1,
                 attrEnable: true,
                 settingMethodEnable: true,
-                totalEnable: true
+                totalEnable: true,
+                formBuilt: null,
+                formTime: null,
+                formPeople: null,
+                amount: null,
+                numerical: null
             };
             
             self.calculatorItems.push(new CalculatorItem(item)); 
@@ -380,11 +400,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     rounding: self.calculatorItems()[i].rounding(),
                     dispOrder: self.calculatorItems()[i].order(),
                     //for B screen
-                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.dataB : null,
+                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.calculatorItems()[i].formBuilt : null,
                     //for C screen
-                    formTime: self.calculatorItems()[i].attribute() == 0 ? self.dataC : null,
+                    formTime: self.calculatorItems()[i].attribute() == 0 ? self.calculatorItems()[i].formTime : null,
                     //for D screen
-                    formPeople: self.calculatorItems()[i].attribute() == 2 ? self.dataD : null,
+                    formPeople: self.calculatorItems()[i].attribute() == 2 ? self.calculatorItems()[i].formPeople : null,
                     //for E screen
                     
                     //for F screen
@@ -399,7 +419,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             if(verticalCalItems.length > 0) {
                 var data = new VerticalSettingDto(code, name, unit, useAtr, assistanceTabulationAtr, verticalCalItems);
             
-                service.addVerticalCalSet(ko.toJS(data)).done(function() {
+                service.addVerticalCalSet(data).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.getData();
                     self.singleSelectedCode(data.verticalCalCd);
@@ -488,7 +508,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 order: self.calculatorItems().length + 1,
                 attrEnable: true,
                 settingMethodEnable: true,
-                totalEnable: true
+                totalEnable: true,
+                formBuilt: null,
+                formTime: null,
+                formPeople: null,
+                amount: null,
+                numerical: null
             };
             
             self.calculatorItems.push(new CalculatorItem(item));
@@ -527,7 +552,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         order: i + 1,
                         attrEnable: self.calculatorItems()[i].attrEnable(),
                         settingMethodEnable: self.calculatorItems()[i].settingMethodEnable(),
-                        totalEnable: self.calculatorItems()[i].totalEnable()
+                        totalEnable: self.calculatorItems()[i].totalEnable(),
+                        formBuilt: self.calculatorItems()[i].formBuilt,
+                        formTime: self.calculatorItems()[i].formTime,
+                        formPeople: self.calculatorItems()[i].formPeople,
+                        amount: self.calculatorItems()[i].amount,
+                        numerical: self.calculatorItems()[i].numerical
                     };
                     
                     selectedItems.push(new CalculatorItem(item));
@@ -551,7 +581,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     order: i + 1,
                     attrEnable: selectedItems[i].attrEnable(),
                     settingMethodEnable: selectedItems[i].settingMethodEnable(),
-                    totalEnable: selectedItems[i].totalEnable()
+                    totalEnable: selectedItems[i].totalEnable(),
+                    formBuilt: selectedItems[i].formBuilt,
+                    formTime: selectedItems[i].formTime,
+                    formPeople: selectedItems[i].formPeople,
+                    amount: selectedItems[i].amount,
+                    numerical: selectedItems[i].numerical
                 };
                 
                 self.calculatorItems.push(new CalculatorItem(newItem));
@@ -764,6 +799,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
         attrEnable: KnockoutObservable<boolean>;
         settingMethodEnable: KnockoutObservable<boolean>;
         totalEnable: KnockoutObservable<boolean>;
+        formBuilt: any;
+        formTime: any;
+        formPeople: any;
+        amount: any;
+        numerical: any;
         
         constructor(param: ICalculatorItem) {
             var self = this;
@@ -848,6 +888,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     ]);
                 }
             });  
+            
+            self.formBuilt = param.formBuilt;
+            self.formTime = param.formTime;
+            self.formPeople = param.formPeople;
+            self.amount = param.amount;
+            self.numerical = param.numerical;
         }
     }
         
@@ -868,5 +914,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
         attrEnable: boolean;
         settingMethodEnable: boolean;
         totalEnable: boolean;
+        formBuilt: any;
+        formTime: any;
+        formPeople: any;
+        amount: any;
+        numerical: any;
     }
 }
