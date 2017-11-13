@@ -1,4 +1,7 @@
+import shareModel = nts.uk.at.view.kdw001.share.model;
+
 module nts.uk.at.view.kdw001.e.viewmodel {
+    
     export class ScreenModel {
         //combo box 
         itemList: KnockoutObservableArray<ComboBox>;
@@ -18,6 +21,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         taskId: KnockoutObservable<string>;
         constructor() {
             var self = this;
+            
             self.executionDate = ko.observable('');
             self.itemList = ko.observableArray([]);
 
@@ -35,6 +39,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.empCalAndSumExecLogID = ko.observable('emp001');
             self.taskId = ko.observable('');
             self.disposalDay = ko.observable('');
+            
         }
 
         startPage(): JQueryPromise<any> {
