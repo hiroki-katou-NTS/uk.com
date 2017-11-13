@@ -23,6 +23,7 @@ public class OvertimeFrameImpl extends JpaRepository implements OvertimeFrameRep
 		query = new StringBuilder();
 		query.append(FIND_ALL);
 		query.append(" Where e.krqdtOvertimeFramePK.cid = :companyID");
+		query.append(" AND e.useAtr = :useAtr");
 		FIND_BY_COMPANYID = query.toString();
 	}
 	@Override
@@ -37,10 +38,13 @@ public class OvertimeFrameImpl extends JpaRepository implements OvertimeFrameRep
 	
 
 	@Override
-	public List<OvertimeFrame> getOvertimeFrameByCID(String companyID) {
+	public List<OvertimeFrame> getOvertimeFrameByCID(String companyID,int useAtr) {
 		
 		return this.queryProxy().query(FIND_BY_COMPANYID,KrqdtOvertimeFrame.class)
-				.setParameter("companyID", companyID).getList(e -> convertToDomain(e));
+				.setParameter("companyID", companyID)
+				.setParameter("useAtr", useAtr)
+				.getList(e -> convertToDomain(e));
+		
 	}
 	private OvertimeFrame convertToDomain(KrqdtOvertimeFrame entity){
 		return OvertimeFrame.createSimpleFromJavaType(entity.getKrqdtOvertimeFramePK().getCid(),

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 
 /**
@@ -31,6 +32,12 @@ public interface IOvertimePreProcess {
 	 * @param overtimeAtr
 	 */
 	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr,String companyID);
+	
+	/**
+	 * @param companyID
+	 * @return
+	 */
+	public List<BreaktimeFrame> getBreaktimeFrame(String companyID);
 	
 	/**
 	 * 01-04_加給時間を取得
@@ -94,13 +101,13 @@ public interface IOvertimePreProcess {
 	 * @param appDate
 	 * @param requestAppDetailSetting
 	 */
-	public void getWorkingHours(String companyID,String employeeID,String appDate,Optional<RequestAppDetailSetting> requestAppDetailSetting);
+	public void getWorkingHours(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting);
 	/**
 	 *  01-17_休憩時間取得
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public boolean getRestTime(Optional<RequestAppDetailSetting> requestAppDetailSetting);
+	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting);
 	
 	
 }

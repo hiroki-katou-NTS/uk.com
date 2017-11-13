@@ -54,6 +54,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
+import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
 
@@ -99,6 +101,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	private OvertimeFrameRepository overtimeFrameRepository;
 	@Inject
 	private SpecBPTimesheetRepository specBPTimesheetRepository;
+	@Inject
+	private BreaktimeFrameRepository breaktimeFrameRep;
 	
 	@Override
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID) {
@@ -158,10 +162,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 
 	@Override
 	public void getWorkingHours(String companyID, String employeeID, String appDate,
-			Optional<RequestAppDetailSetting> requestAppDetailSetting) {
-		if(requestAppDetailSetting.isPresent()){
+			RequestAppDetailSetting requestAppDetailSetting) {
+		if(requestAppDetailSetting != null){
 			if(appDate != null){
-				int atWorkAtr = requestAppDetailSetting.get().getAtworkTimeBeginDisFlg().value;
+				int atWorkAtr = requestAppDetailSetting.getAtworkTimeBeginDisFlg().value;
 				if(atWorkAtr == AtWorkAtr.DISPLAY.value){
 					// team anh lương
 				}
@@ -170,9 +174,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public boolean getRestTime(Optional<RequestAppDetailSetting> requestAppDetailSetting) {
-		if(requestAppDetailSetting.isPresent()){
-			if(requestAppDetailSetting.get().getBreakTimeDisFlg().value == DisplayFlg.DISPLAY.value){
+	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting) {
+		if(requestAppDetailSetting != null){
+			if(requestAppDetailSetting.getBreakTimeDisFlg().value == DisplayFlg.DISPLAY.value){
 				return true;
 			}else{
 				return false;
@@ -186,19 +190,24 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
 		//早出残業の場合
 		if(overtimeAtr == OverTimeAtr.PREOVERTIME.value){
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID,UseAtr.USE.value);
 		}
 		//通常残業の場合
 		if(overtimeAtr == OverTimeAtr.REGULAROVERTIME.value){
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID,UseAtr.USE.value);
 		}
 		//早出残業・通常残業の場合
 		if(overtimeAtr == OverTimeAtr.ALL.value){
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID,UseAtr.USE.value);
 		}
 		return overtimeFrames;
 	}
-
+	@Override
+	public List<BreaktimeFrame> getBreaktimeFrame(String companyID) {
+		
+		return this.breaktimeFrameRep.getBreaktimeFrameByCID(companyID, UseAtr.USE.value);
+	}
+	
 	@Override
 	public Optional<BonusPaySetting> getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
 			String appDate,String companyID,String siftCode) {
@@ -208,7 +217,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
 			if(sWkpHistImport != null){
-				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
+//				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
 			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftCode));
 			if(!workingTimesheetBonusPaySetting.isPresent()){
@@ -304,4 +313,6 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		}
 		return result;
 	}
+
+	
 }

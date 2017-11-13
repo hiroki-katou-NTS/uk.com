@@ -52,11 +52,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public WorkTypeOvertime getWorkType(String companyID, String employeeID,
 			Optional<PersonalLaborCondition> personalLablorCodition,
-			Optional<RequestAppDetailSetting> requestAppDetailSetting) {
+			RequestAppDetailSetting requestAppDetailSetting) {
 		WorkTypeOvertime result = new WorkTypeOvertime();
-		if (requestAppDetailSetting.isPresent()) {
+		if (requestAppDetailSetting != null) {
 			// 時刻計算利用チェック
-			if (requestAppDetailSetting.get().getTimeCalUseAtr().value == UseAtr.USE.value) {
+			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
 				// アルゴリズム「社員所属雇用履歴を取得」を実行する 
 				SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
 				if (sEmpHistImport != null) {
@@ -142,11 +142,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public SiftType getSiftType(String companyID, String employeeID,
 			Optional<PersonalLaborCondition> personalLablorCodition,
-			Optional<RequestAppDetailSetting> requestAppDetailSetting) {
+			RequestAppDetailSetting requestAppDetailSetting) {
 		SiftType result = new SiftType();
-		if (requestAppDetailSetting.isPresent()) {
+		if (requestAppDetailSetting != null) {
 			// 時刻計算利用チェック
-			if (requestAppDetailSetting.get().getTimeCalUseAtr().value == UseAtr.USE.value) {
+			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
 				// 1.職場別就業時間帯を取得
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
 				/*
