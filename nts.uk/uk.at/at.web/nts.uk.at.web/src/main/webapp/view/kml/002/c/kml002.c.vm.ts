@@ -14,11 +14,14 @@ module nts.uk.at.view.kml002.c.viewmodel {
         attrLabel: KnockoutObservable<String>;
         itemNameLabel: KnockoutObservable<String>;
         enableReturn: KnockoutObservable<boolean>;
+        currentData: any;
         
         constructor() {
             var self = this;
             
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            self.currentData = data.formTime;
             
             self.attrLabel = ko.observable(data.attribute);
             self.itemNameLabel = ko.observable(data.itemName);

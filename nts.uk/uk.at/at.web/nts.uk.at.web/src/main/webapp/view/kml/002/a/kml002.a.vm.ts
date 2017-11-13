@@ -218,11 +218,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 attrEnable: false,
                                 settingMethodEnable: false,
                                 totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true,
-                                formBuilt: self.calculatorItems()[i].formBuilt,
-                                formTime: self.calculatorItems()[i].formTime,
-                                formPeople: self.calculatorItems()[i].formPeople,
-                                amount: self.calculatorItems()[i].amount,
-                                numerical: self.calculatorItems()[i].numerical
+                                formBuilt: data.verticalCalItems[0].formBuilt,
+                                formTime: data.verticalCalItems[0].formTime,
+                                formPeople: data.verticalCalItems[0].formPeople,
+                                amount: data.verticalCalItems[0].amount,
+                                numerical: data.verticalCalItems[0].numerical
                             };
 
                             items.push(new CalculatorItem(item));
@@ -400,11 +400,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     rounding: self.calculatorItems()[i].rounding(),
                     dispOrder: self.calculatorItems()[i].order(),
                     //for B screen
-                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.calculatorItems()[i].formBuilt : null,
+                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.dataB : null,
                     //for C screen
-                    formTime: self.calculatorItems()[i].attribute() == 0 ? self.calculatorItems()[i].formTime : null,
+                    formTime: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 0 ? self.dataC : null,
                     //for D screen
-                    formPeople: self.calculatorItems()[i].attribute() == 2 ? self.calculatorItems()[i].formPeople : null,
+                    formPeople: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 2 ? self.dataD : null,
                     //for E screen
                     
                     //for F screen
@@ -650,6 +650,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attrValue = nts.uk.resource.getText("Enum_Avarege_Price");
             }
             
+            // Get all items before current selected item if setting method = 1 to binding for dropdownlist
             var verticalCalItems = new Array<VerticalCalItemDto>();
             var currentItem = _.find(self.calculatorItems(), function(o) { return o.itemCd() == itemCd; });
             
@@ -669,6 +670,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 verticalCalItems.push(item);
             }
             
+            // Get data form db to display on Dialog
+            var dataTranfer = _.find(self.calculatorItems(), function(o) { return o.itemName() == itemName; });
+            
             var data = {
                 verticalCalCd: self.code(),
                 itemId: itemCd,
@@ -676,7 +680,12 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attribute: attrValue,
                 unit : self.unitSelected(),
                 itemName: itemName,
-                verticalItems: verticalCalItems
+                verticalItems: currentItem.settingMethod() == 1 ? verticalCalItems : null,
+                formBuilt: dataTranfer.formBuilt,
+                formTime: dataTranfer.formTime,
+                formPeople: dataTranfer.formPeople,
+                amount: dataTranfer.amount,
+                numerical: dataTranfer.numerical
             };
             
             nts.uk.ui.windows.setShared("KML002_A_DATA", data);
