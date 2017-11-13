@@ -220,7 +220,7 @@ public class GetOvertime {
 		if(overtimeRestAppCommonSet.isPresent()){
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
-				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType().getSiftCode());
+				iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType());
 			}else{
 				result.setDisplayBonusTime(false);
 			}

@@ -210,16 +210,19 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	
 	@Override
 	public Optional<BonusPaySetting> getBonusTime(String employeeID, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,
-			String appDate,String companyID,String siftCode) {
+			String appDate,String companyID,SiftType siftType) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 		if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 			//アルゴリズム「職場の特定日設定を取得する」を実行する (hung lam)
 			if(sWkpHistImport != null){
-//				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
+				WpSpecificDateSettingImport wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
-			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftCode));
+			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = Optional.empty();
+			if(siftType != null){
+				workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyID, new WorkingTimesheetCode(siftType.getSiftCode()));
+			}
 			if(!workingTimesheetBonusPaySetting.isPresent()){
 				Optional<PersonalBonusPaySetting> personalBonusPaySetting =this.pSBonusPaySettingRepository.getPersonalBonusPaySetting(employeeID);
 				
