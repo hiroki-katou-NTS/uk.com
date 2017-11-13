@@ -6,11 +6,17 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import entity.employeeinfo.BsymtEmployee;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @AllArgsConstructor
 @Entity
 @Table(name = "BSYMT_TEMPORARY_ABSENCE")
@@ -49,6 +55,12 @@ public class BsymtTemporaryAbsence extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "MULTIPLE")
 	public int multiple;
+	
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false)
+    })
+	public BsymtEmployee bsymtEmployee;
 
 	@Override
 	protected Object getKey() {
