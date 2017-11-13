@@ -21,12 +21,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeekPK_;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek_;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond_;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySchePK_;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche_;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategoryPK_;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory_;
 
 /**
  * The Class JpaPersonalLaborConditionRepository.
@@ -50,30 +53,29 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 				baseDate);
 		if (optionalEntityCondition.isPresent()) {
 			return Optional.of(this.toDomain(optionalEntityCondition.get(),
-					this.findAllSingleDaySchedule(employeeId, baseDate)));
+					this.findAllDayOfWeek(employeeId, baseDate),
+					this.findAllWorkCategory(employeeId, baseDate)));
 		}
 		return Optional.empty();
 	}
 	
 	/**
-	 * Find all single day schedule.
+	 * Find all day of week.
 	 *
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	private List<KshmtSingleDaySche> findAllSingleDaySchedule(String employeeId,
-			GeneralDate baseDate) {
+	private List<KshmtPerDayOfWeek> findAllDayOfWeek(String employeeId, GeneralDate baseDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_SINGLE_DAY_SCHE (KshmtSingleDaySche SQL)
-		CriteriaQuery<KshmtSingleDaySche> cq = criteriaBuilder
-				.createQuery(KshmtSingleDaySche.class);
+		// call KSHMT_PER_DAY_OF_WEEK (KshmtPerDayOfWeek SQL)
+		CriteriaQuery<KshmtPerDayOfWeek> cq = criteriaBuilder.createQuery(KshmtPerDayOfWeek.class);
 
 		// root data
-		Root<KshmtSingleDaySche> root = cq.from(KshmtSingleDaySche.class);
+		Root<KshmtPerDayOfWeek> root = cq.from(KshmtPerDayOfWeek.class);
 
 		// select root
 		cq.select(root);
@@ -83,24 +85,75 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.sid),
+				root.get(KshmtPerDayOfWeek_.kshmtPerDayOfWeekPK).get(KshmtPerDayOfWeekPK_.sid),
 				employeeId));
 
 		// less than or equal start year month date
-		lstpredicateWhere.add(
-				criteriaBuilder.lessThanOrEqualTo(root.get(KshmtSingleDaySche_.kshmtSingleDaySchePK)
-						.get(KshmtSingleDaySchePK_.startYmd), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KshmtPerDayOfWeek_.kshmtPerDayOfWeekPK).get(KshmtPerDayOfWeekPK_.startYmd),
+				baseDate));
 
 		// greater than or equal end year month date
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root
-				.get(KshmtSingleDaySche_.kshmtSingleDaySchePK).get(KshmtSingleDaySchePK_.endYmd),
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(KshmtPerDayOfWeek_.kshmtPerDayOfWeekPK).get(KshmtPerDayOfWeekPK_.endYmd),
 				baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
 		// create query
-		TypedQuery<KshmtSingleDaySche> query = em.createQuery(cq);
+		TypedQuery<KshmtPerDayOfWeek> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
+	}
+	
+	/**
+	 * Find all work category.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	private List<KshmtPerWorkCategory> findAllWorkCategory(String employeeId,
+			GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSHMT_PER_WORK_CATEGORY (KshmtPerWorkCategory SQL)
+		CriteriaQuery<KshmtPerWorkCategory> cq = criteriaBuilder
+				.createQuery(KshmtPerWorkCategory.class);
+
+		// root data
+		Root<KshmtPerWorkCategory> root = cq.from(KshmtPerWorkCategory.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal employee id
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KshmtPerWorkCategory_.kshmtPerWorkCategoryPK)
+						.get(KshmtPerWorkCategoryPK_.sid), employeeId));
+
+		// less than or equal start year month date
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KshmtPerWorkCategory_.kshmtPerWorkCategoryPK)
+						.get(KshmtPerWorkCategoryPK_.startYmd), baseDate));
+
+		// greater than or equal end year month date
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KshmtPerWorkCategory_.kshmtPerWorkCategoryPK)
+						.get(KshmtPerWorkCategoryPK_.endYmd), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+
+		// create query
+		TypedQuery<KshmtPerWorkCategory> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();
@@ -165,12 +218,15 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 	 * To domain.
 	 *
 	 * @param entityCondition the entity condition
-	 * @param entitySingleDays the entity single days
+	 * @param entityDayOfWeeks the entity day of weeks
+	 * @param entityWorkCategorys the entity work categorys
 	 * @return the personal labor condition
 	 */
 	private PersonalLaborCondition toDomain(KshmtPerLaborCond entityCondition,
-			List<KshmtSingleDaySche> entitySingleDays) {
+			List<KshmtPerDayOfWeek> entityDayOfWeeks,
+			List<KshmtPerWorkCategory> entityWorkCategorys) {
 		return new PersonalLaborCondition(
-				new JpaPersonalLaborConditionGetMemento(entityCondition, entitySingleDays));
+				new JpaPersonalLaborConditionGetMemento(entityCondition, entityDayOfWeeks,
+						entityWorkCategorys));
 	}
 }
