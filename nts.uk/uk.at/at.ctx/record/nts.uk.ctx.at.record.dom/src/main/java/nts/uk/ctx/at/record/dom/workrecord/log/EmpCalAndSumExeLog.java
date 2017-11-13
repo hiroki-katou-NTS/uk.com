@@ -43,6 +43,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	 * 実行したメニュー
 	 * ・選択して実行 ・ケース別実行
 	 */
+	@Setter
 	private ExecutedMenu executedMenu;
 	
 	/**

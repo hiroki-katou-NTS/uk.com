@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -139,15 +140,18 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 
 	public <T> T toDomain() {
 		if (this.executionContent == ExecutionContent.DAILY_CREATION.value) {
-			PartResetClassification partResetClassification = new PartResetClassification(
-					this.masterReconfiguration,
-					this.closedHolidays, 
-					this.resettingWorkingHours, 
-					this.reflectsTheNumberOfFingerprintChecks, 
-					this.specificDateClassificationResetting, 
-					this.resetTimeAssignment, 
-					this.resetTimeChildOrNurseCare, 
-					this.calculationClassificationResetting);
+			Optional<PartResetClassification> partResetClassification = Optional.empty();
+			if (this.creationType == DailyRecreateClassification.PARTLY_MODIFIED.value) {
+				partResetClassification = Optional.of(new PartResetClassification(
+						this.masterReconfiguration,
+						this.closedHolidays, 
+						this.resettingWorkingHours, 
+						this.reflectsTheNumberOfFingerprintChecks, 
+						this.specificDateClassificationResetting, 
+						this.resetTimeAssignment, 
+						this.resetTimeChildOrNurseCare, 
+						this.calculationClassificationResetting));
+			}
 			SettingInforForDailyCreation settingInforForDailyCreation = 
 					new SettingInforForDailyCreation(
 						EnumAdaptor.valueOf(this.executionContent, ExecutionContent.class),

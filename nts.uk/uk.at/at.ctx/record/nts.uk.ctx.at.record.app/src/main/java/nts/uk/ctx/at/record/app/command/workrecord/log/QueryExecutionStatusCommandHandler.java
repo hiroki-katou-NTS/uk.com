@@ -37,32 +37,34 @@ public class QueryExecutionStatusCommandHandler extends AsyncCommandHandler<Exec
 		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
 		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
 		
+		// Set return Metadata
 		ExecutionCommandResult metadata = new ExecutionCommandResult(
 				empCalAndSumExeLog.getEmpCalAndSumExecLogID(), 
 				command.getPeriodStartDate(),
 				command.getPeriodEndDate(),
-				command.getTargetEndDate());		
+				command.getTargetEndDate());
 		dataSetter.setData("processingData", metadata);
 		
-		// Insert TargetPerson
+		// Set return Data
 		List<TargetPerson> listTarget = new ArrayList<TargetPerson>();
 		dataSetter.setData("targetPersons", listTarget);
+		
+		// Insert all TargetPersons
 		for (String employeeID : command.getLstEmployeeID()) {
+			// Handle cancel request
 			if (asyncContext.hasBeenRequestedToCancel()) {
 				asyncContext.finishedAsCancelled();
-				metadata.setContinue(false);
-				dataSetter.updateData("processingData", metadata);
 				break;
 			}
 			
+			// Insert each TargetPersons
 			TargetPerson targetPerson = TargetPerson.createJavaType(
-					/** employeeId */
 					employeeID,
-					/** empCalAndSumExecLogId */
 					empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-					/** state */
 					new ComplStateOfExeContents(ExecutionContent.DAILY_CALCULATION, EmployeeExecutionStatus.INCOMPLETE));
 			targetPersonRepository.add(targetPerson);
+			
+			// Update return Data
 			listTarget.add(targetPerson);
 			dataSetter.updateData("targetPersons", listTarget);
 		}
