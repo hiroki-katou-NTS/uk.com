@@ -30,6 +30,13 @@ module nts.uk.at.view.kmk006.a {
             deleteJobAutoCal: "ctx/at/shared/ot/autocal/job/delete",
             deleteWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/delete",
             deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete",
+            
+            //get detail wkpl
+            detailWkpl: "bs/employee/workplace/info/findDetail"
+        }
+        
+        export function getDetailWkpl(obj: any): JQueryPromise<any> {
+            return nts.uk.request.ajax('com',paths.detailWkpl, obj);
         }
         
         export function findEnumAutoCalAtrOvertime(): JQueryPromise<Array<model.Enum>> {

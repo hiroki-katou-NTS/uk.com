@@ -52,12 +52,6 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	// sonnlb code end
 
 	@Override
-	public void addEmpInfoCtgData(EmpInfoCtgData domain) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void updateEmpInfoCtgData(EmpInfoCtgData domain) {
 		// TODO Auto-generated method stub
 
@@ -68,5 +62,6 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 		// TODO Auto-generated method stub
 
 	}
+
 
 }

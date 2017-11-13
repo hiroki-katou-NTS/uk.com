@@ -343,6 +343,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 					 
 				}
 			});
+		
 			return c;
 		}).collect(Collectors.toList());
 		
@@ -416,11 +417,12 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public boolean isExist(String settingId, String perInfoCtgId) {
-		List<PerInfoInitValueSetItem> itemSetting = this.getAllInitValueItem(perInfoCtgId, settingId);
-		
-		List<PerInfoInitValueSetItem> itemAll = this.getAllItem(settingId, perInfoCtgId);
+		List<PerInfoInitValueSetItem> itemFilter = this.getAllInitValueItem(perInfoCtgId, settingId).stream()
+				.filter(c -> (c.getRefMethodType().value != 1))
+				.collect(Collectors.toList());
 
-		if (itemAll.size() == itemSetting.size() && itemAll.size() > 0) {
+		if (itemFilter.size() > 0) {
+			
 			return true;
 		}
 		return false;

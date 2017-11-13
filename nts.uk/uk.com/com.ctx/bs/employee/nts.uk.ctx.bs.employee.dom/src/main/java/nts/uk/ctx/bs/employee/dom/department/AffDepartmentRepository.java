@@ -24,4 +24,9 @@ public interface AffDepartmentRepository {
 	 * @param domain
 	 */
 	void updateAffDepartment(AffiliationDepartment domain);
+	/**
+	 * ドメインモデル「所属部門（兼務）」を削除する
+	 * @param domain
+	 */
+	void deleteAffDepartment(AffiliationDepartment domain);
 }

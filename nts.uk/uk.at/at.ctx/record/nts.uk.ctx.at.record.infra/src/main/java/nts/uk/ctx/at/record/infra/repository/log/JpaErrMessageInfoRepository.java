@@ -43,8 +43,8 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 		entity.krcdtErrMessageInfoPK.employeeID = errMessageInfo.getEmployeeID();
 		entity.krcdtErrMessageInfoPK.empCalAndSumExecLogID = errMessageInfo.getEmpCalAndSumExecLogID();
 		entity.krcdtErrMessageInfoPK.resourceID = errMessageInfo.getResourceID().v();
-		entity.disposalDay = errMessageInfo.getDisposalDay();
-		entity.executionContent = errMessageInfo.getExecutionContent().value;
+		entity.krcdtErrMessageInfoPK.disposalDay = errMessageInfo.getDisposalDay();
+		entity.krcdtErrMessageInfoPK.executionContent = errMessageInfo.getExecutionContent().value;
 		entity.messageError = errMessageInfo.getMessageError().v();
 		
 		return entity;

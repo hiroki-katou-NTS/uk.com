@@ -216,26 +216,36 @@ module nts.uk.at.view.kmk006.a {
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
                     self.loadWkpAutoCal(codeChanged);
-                    let data = $('#tree-grid-srcc').getDataList();
-                    for (let ent of data) {
-                        if (ent.workplaceId == codeChanged) {
-                            self.treeItemName(ent.name);
-                            self.treeItemCode(ent.code);
-                        }
-                    }
+
+                    nts.uk.ui.block.invisible();
+                    self.treeItemCode($('#tree-grid-srcc').getRowSelected()[0].workplaceCode);
+                    let wkplId: string = $('#component-items-list').getRowSelected()[0].workplaceId;
+                    var params: any = {
+                        "workplaceId": wkplId,
+                        "baseDate"   : self.baseDateTreeList()
+                    };
+                    service.getDetailWkpl(params).done(function(data: any){
+                        nts.uk.ui.block.clear();
+                        self.treeItemName(data.workplaceName);                    
+                    });
+                    
                 });
 
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
                     self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
-                    let data = $('#tree-grid').getDataList();
-                    for (let ent of data) {
-                        if (ent.workplaceId == codeChanged) {
-                            self.treeItemName(ent.name);
-                            self.treeItemCode(ent.code);
-                        }
-                    }
+                    nts.uk.ui.block.invisible();
+                    self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
+                    let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
+                    var params: any = {
+                        "workplaceId": wkplId,
+                        "baseDate"   : self.baseDateTreeList()
+                    };
+                    service.getDetailWkpl(params).done(function(data: any){
+                        nts.uk.ui.block.clear();
+                        self.treeItemName(data.workplaceName);                    
+                    });
                 });
 
                 //subscribe 

@@ -53,4 +53,16 @@ public class WorkplaceInfoWebService extends WebService {
         return this.wkpInfoFinder.findWkpInfoByBaseDate(object.getBaseDate());
     }
 
+    
+    /**
+     * Find by wkp id and base date.
+     *
+     * @param findObj the find obj
+     * @return the workplace info dto
+     */
+    @Path("findDetail")
+    @POST
+    public WorkplaceInfoDto findByWkpIdAndBaseDate(WkpInfoFindObject findObj) {
+        return this.wkpInfoFinder.findByWkpIdAndBaseDate(findObj);
+    }
 }
