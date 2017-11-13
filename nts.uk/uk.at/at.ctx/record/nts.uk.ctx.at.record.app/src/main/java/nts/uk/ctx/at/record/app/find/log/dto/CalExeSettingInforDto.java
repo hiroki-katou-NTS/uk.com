@@ -31,16 +31,13 @@ public class CalExeSettingInforDto {
 	private String executionTypeName;
 	
 	private String calExecutionSetInfoID;
-	//case ID
-	private String caseSpecExeContentID;
 	
 	public static CalExeSettingInforDto fromDomain(CalExeSettingInfor domain) {
 		return new CalExeSettingInforDto(
 				domain.getExecutionContent().value,
 				domain.getExecutionType().value,
 				domain.getExecutionType().nameId,
-				domain.getCalExecutionSetInfoID(),
-				domain.getCaseSpecExeContentID()
+				domain.getCalExecutionSetInfoID()
 				);
 		
 	}

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -42,6 +43,8 @@ public class ClosureFinder {
 	 *
 	 * @return the list
 	 */
+	
+	
 	public List<ClosureFindDto> findAll() {
 
 		// get login user
@@ -56,6 +59,22 @@ public class ClosureFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
+	/**
+	 * get listClosure for log
+	 */
+	
+	public List<ClosureForLogDto> findAllForLog() {
+
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company id
+		String companyId = loginUserContext.companyId();
+
+		return this.repository.findAll(companyId)
+				.stream().map(c -> ClosureForLogDto.fromDomain(c)).collect(Collectors.toList());
+	}
+	
 
 	/**
 	 * Find by id.

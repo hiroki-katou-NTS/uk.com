@@ -18,6 +18,8 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEMT_EMP_INFO_ITEM_DATA")
+// 個人情報項目データ
+
 public class PpemtEmpInfoItemData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -25,17 +27,25 @@ public class PpemtEmpInfoItemData extends JpaEntity implements Serializable {
 	@EmbeddedId
 	public PpemtEmpInfoItemDataPk ppemtEmpInfoItemDataPk;
 
+	// 保存データ状態
+
 	@Basic(optional = false)
 	@Column(name = "SAVE_DATA_ATR")
 	public int saveDataType;
+
+	// 文字列
 
 	@Basic(optional = false)
 	@Column(name = "STRING_VAL")
 	public String stringValue;
 
+	// 数値
+
 	@Basic(optional = false)
 	@Column(name = "INT_VAL")
 	public BigDecimal intValue;
+
+	// 日付
 
 	@Basic(optional = false)
 	@Column(name = "DATE_VAL")

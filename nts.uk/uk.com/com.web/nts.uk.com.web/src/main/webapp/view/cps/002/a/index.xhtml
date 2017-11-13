@@ -20,16 +20,17 @@
 			<com:scriptfile path="cps002.a.service.js" />
 			<com:scriptfile path="cps002.a.vm.js" />
 			<com:scriptfile path="cps002.a.start.js" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click:OpenGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
+				<button data-bind="click:openGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
 			</div>
 
 			<div id="contents-area" class="cf">
 				<div
-					data-bind="visible: currentStep()===1 &amp;&amp; selectedId()===1">
+					data-bind="visible: currentStep()===1 &amp;&amp; createTypeId()===1">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"
@@ -53,7 +54,7 @@
 
 					</div>
 					<div class="contents">
-						<!-- step1 -->
+						<!-- step1 start -->
 						<div class="step-1">
 							<div id="step1_content_top">
 								<div id="step1_content_top_left"
@@ -63,7 +64,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<div
+											<div class="form_step1"
 												data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD'}"></div>
 										</div>
 
@@ -74,10 +75,10 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_104')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input
+											<input class="form_step1"
 												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
 											<button
-												data-bind="click:$parent.OpenEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
+												data-bind="click:$parent.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
@@ -86,7 +87,7 @@
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input
+											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
 											required:true,
@@ -101,9 +102,39 @@
 											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_18')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input data-bind="ntsTextEditor: {value: cardNo}" />
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {value: cardNo}" />
 											<button
-												data-bind="click:$parent.OpenEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_108')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {
+											value: employeeName ,
+											required:true,
+											option: {
+												 width: '163' 
+												 }}" />
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_109')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input class="form_step1"
+												data-bind="ntsTextEditor: {
+											value: employeeName ,
+											required:true,
+											option: {
+												 width: '163',
+												 textmode:'password' 
+												 }}" />
 										</div>
 									</div>
 
@@ -144,7 +175,7 @@
 														options: createTypeList ,
 														optionsValue: 'id' ,
 														optionsText: 'name' ,
-														value: selectedId ,
+														value: createTypeId ,
 														enable: enable
 														       		}">
 										</div>
@@ -152,7 +183,7 @@
 
 									<div class="step1_bot_col2">
 										<div class="div_line">
-											<button data-bind="click:OpenFModal">#{i18n.getText('CPS002_30')}</button>
+											<button data-bind="click:openFModal">#{i18n.getText('CPS002_30')}</button>
 										</div>
 										<div class="div_line">
 											<button data-bind="click:JumpToInitValueSettingPage">#{i18n.getText('CPS002_31')}</button>
@@ -167,17 +198,17 @@
 						</div>
 						<!-- step1 -->
 
-						<!-- step2 -->
+						<!-- step2 end -->
 
 
 
 						<div class="step-2">
 							<div id="step2_content">
 								<div class="div_line">
-									<com:ko-if bind="selectedId()===1">
+									<com:ko-if bind="createTypeId()===1">
 										<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
 									</com:ko-if>
-									<com:ko-if bind="selectedId()===2">
+									<com:ko-if bind="createTypeId()===2">
 										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
 									</com:ko-if>
 								</div>
@@ -195,7 +226,7 @@
 															mode:'igGrid', 
 															comId:'init_list', 
 															items: initValueList , 
-															selected: initValueSelectedCode , 
+															selected: initSettingSelectedCode , 
 															selectedKey: 'itemCode', 
 															fields: ['itemName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
@@ -212,7 +243,7 @@
 																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
 															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
 															multiple: false,
-															value: initValueSelectedCode ,
+															value: initSettingSelectedCode ,
 															rows:15
 														}">
 											</table>
@@ -223,25 +254,31 @@
 								<div class="float_left" id="value_item">
 									<div class="div_line">
 										<div class="step2_col1">
-											<com:ko-if bind="selectedId()===1">
+											<com:ko-if bind="createTypeId()===1">
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_33')}</div>
 											</com:ko-if>
-											<com:ko-if bind="selectedId()===2">
+											<com:ko-if bind="createTypeId()===2">
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_46')}</div>
 											</com:ko-if>
 										</div>
-										<div class="step2_col2" data-bind="with:currentItem">
-											<label class="textLabel"
-												data-bind="text:itemCode + ' ' + itemName"></label>
+										<div class="step2_col2">
+											<com:ko-if bind="createTypeId()===1 ">
+												<label class="textLabel"
+													data-bind="text:copyEmployee().employeeCode + ' ' + copyEmployee().employeeName"></label>
+											</com:ko-if>
+											<com:ko-if bind="createTypeId()===2">
+												<label class="textLabel"
+													data-bind="text:currentInitSetting().itemCode + ' ' + currentInitSetting().itemName"></label>
+											</com:ko-if>
 										</div>
 									</div>
 
 									<div class="div_line">
 										<div class="step2_col1">
-											<com:ko-if bind="selectedId()===1">
+											<com:ko-if bind="createTypeId()===1">
 												<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_34')}</div>
 											</com:ko-if>
-											<com:ko-if bind="selectedId()===2">
+											<com:ko-if bind="createTypeId()===2">
 												<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_47')}</div>
 											</com:ko-if>
 
@@ -265,12 +302,13 @@
 									</div>
 									<div class="div_line">
 										<div id="cover_table">
-											<table id="table_item" data-bind="if:itemList().length>0">
+											<table class="table_item"
+												data-bind="if:itemSettingList().length>0">
 												<tr>
 													<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
 													<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
 												</tr>
-												<tbody data-bind="foreach:itemList">
+												<tbody data-bind="foreach:itemSettingList">
 													<tr>
 														<td
 															data-bind="text: itemName , css:{requiredCell: isRequired  }"></td>
@@ -289,25 +327,58 @@
 								</div>
 							</div>
 						</div>
-						<!-- step2 -->
+						<!-- step2 end -->
 
-						<!-- step3 -->
+						<!-- step3 start -->
 						<div class="step-3">
 							<div class="div_line">
 								<label id="step3_des">#{i18n.getText('CPS002_51')}</label>
 							</div>
 							<div class="div_line">
-								<div class="active-panel">
-									<img src='images/avatar.png' />
+								<div class="step3_col1">
+									<div id="employeeAvatar" data-bind="click:openIModal"></div>
 								</div>
+								<div class="step3_col2">
+									<table class="table_item">
+										<tbody>
+											<tr>
+												<td width="120px" class="bg-green">#{i18n.getText('CPS002_103')}</td>
+												<td width="300px"
+													data-bind="text:nts.uk.time.formatDate(currentEmployee().hireDate(),'yyyy/MM/dd')"></td>
+											</tr>
+											<tr>
+												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
+												<td
+													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+											</tr>
+											<tr>
+												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>
+												<td data-bind="text:currentEmployee().cardNo()"></td>
+											</tr>
+											<tr>
+												<td class="bg-green">#{i18n.getText('CPS002_108')}</td>
+												<td data-bind="text:currentEmployee().employeeCode()"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
 							</div>
 
-							<div class='div_line'>
-								<com:ko-if bind="selectedId()!==3">
+							<!-- layout start -->
+							<div class="div_line" data-bind="with: layout">
+								<div
+									data-bind="ntsLayoutControl: { 
+											data: itemsClassification,
+											editAble: 2 }"></div>
+							</div>
+							<!-- layout end -->
+							<div class='div_line' style="padding-bottom: 20px;">
+								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 								</com:ko-if>
-								<com:ko-if bind="selectedId()===3">
+								<com:ko-if bind="createTypeId()===3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
 								</com:ko-if>
@@ -317,7 +388,7 @@
 							</div>
 
 						</div>
-						<!-- step3 -->
+						<!-- step3 end -->
 						<div class="step-4"></div>
 					</div>
 

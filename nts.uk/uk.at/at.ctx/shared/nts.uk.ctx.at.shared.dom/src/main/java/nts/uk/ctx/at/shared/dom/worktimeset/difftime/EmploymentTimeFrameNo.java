@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.difftime;
 
+//TODO decimal(1)
+//就業時間枠NO
 public class EmploymentTimeFrameNo {
 
 }

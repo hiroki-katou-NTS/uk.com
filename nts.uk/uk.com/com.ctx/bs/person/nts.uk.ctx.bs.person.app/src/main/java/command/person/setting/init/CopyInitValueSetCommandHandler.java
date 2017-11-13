@@ -36,9 +36,6 @@ public class CopyInitValueSetCommandHandler extends CommandHandler<CopyInitValue
 		String valueSetIdSource = data.getIdSource();
 		//複製元のドメインモデル「個人情報初期値設定」を取得する(Lấy Domain Model 「個人情報初期値設定」 của copy nguồn)
 		Optional<PerInfoInitValueSetting> perSet = repoPerSet.getDetailInitValSetting(valueSetIdSource);
-		if(!perSet.isPresent()){
-			throw new BusinessException("Loi");
-		}
 		//複製先のドメインモデル「個人情報初期値設定」を取得する (Lấy Domain Model ドメインモデル「個人情報初期値設定」 của copy đích)
 		Optional<PerInfoInitValueSetting> perSetInput = repoPerSet.getDetailInitValSetting(companyId, codeInput);
 		//複製先のドメインモデル「個人情報初期値設定」が存在するかチェックする (Kiểm tra Domain Model 「個人情報初期値設定」 của copy đích tồn tại hay không)

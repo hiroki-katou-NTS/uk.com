@@ -137,7 +137,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
             // 残業時間
             if(data.overTimeInputs != null){
-                for(let i = 0;i < data.overTimeInputs.lenght;i++){
+                for(let i = 0;i < data.overTimeInputs.length;i++){
                     if(data.overTimeInputs[i].attendanceID == 1){
                         self.overtimeHours.push(new common.OvertimeHour(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
                     }
@@ -148,6 +148,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.bonusTimes.push(new common.BonusTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
                     }
                 }
+            }
+            //
+            if(data.appOvertimeNightFlg == 1){
+                 self.overtimeHours.push(new common.OvertimeHour("overTimeShiftNight",nts.uk.resource.getText("KAF005_64"),"0",null,null));
             }
             
         }

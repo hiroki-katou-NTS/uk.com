@@ -11,6 +11,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class StampReflectTimezone.
  */
+//打刻反映時間帯
 @Getter
 public class StampReflectTimezone extends DomainObject {
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktimeset.difftime.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.WorkTimezoneCommonSet;
 
 /**
@@ -23,7 +24,7 @@ public class FixedWorkSetting extends AggregateRoot {
 
 	/** The work time code. */
 	// 就業時間帯コード
-	private String workTimeCode;
+	private WorkTimeCode workTimeCode;
 
 	/** The offday work timezone. */
 	// 休日勤務時間帯

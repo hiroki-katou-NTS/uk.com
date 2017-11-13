@@ -38,7 +38,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             let dfd = $.Deferred();
 
             // get data shared
-            let object: any = nts.uk.ui.windows.getShared("ObjectDuplication");
+            let object: any = nts.uk.ui.windows.getShared("CDL023Input");
             self.code(object.code);
             self.name(object.name);
             self.targetType = object.targetType;
@@ -52,6 +52,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          * closeDialog
          */
         public closeDialog() {
+            nts.uk.ui.windows.setShared("CDL023Cancel", true);
             nts.uk.ui.windows.close();
         }
 
@@ -60,6 +61,12 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          */
         public execution() {
             let self = this;
+            
+            // check empty selection
+            if (self.lstSelected().length <= 0) {
+               nts.uk.ui.dialog.alertError({ messageId: "Msg_646" });
+               return;
+            }
             nts.uk.ui.windows.setShared("CDL023Output", self.lstSelected());
             nts.uk.ui.windows.close();
         }
@@ -74,39 +81,52 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             // set parameters
             let shareData: any = {};
             shareData.isMultiple = true;
-            shareData.showNoSelection = false;
             shareData.selectedCodes = self.lstSelected();
             
+            // define key share
             let keyInput: string = null;
             let keyOutput: string = null;
+            let keyCancel: string = null;
+            
             switch (self.targetType) {
                 case TargetType.EMPLOYMENT:
                     screenUrl = '/view/cdl/002/a/index.xhtml';
                     keyInput = 'CDL002Params';
                     keyOutput = 'CDL002Output';
+                    keyCancel = 'CDL002Cancel';
+                    
+                    // set parameter
+                    shareData.showNoSelection = false;
                     break;
                 case TargetType.CLASSIFICATION:
                     screenUrl = '/view/cdl/003/a/index.xhtml';
                     keyInput = 'inputCDL003';
                     keyOutput = 'outputCDL003';
+                    keyCancel = 'CDL003Cancel';
+                    
+                    // set parameter
+                    shareData.showNoSelection = false;
                     break;
                 case TargetType.JOB_TITLE:
                     screenUrl = '/view/cdl/004/a/index.xhtml';
                     keyInput = 'inputCDL004';
                     keyOutput = 'outputCDL004';
+                    keyCancel = 'CDL004Cancel';
                     
                     // set data share
                     shareData.baseDate = self.baseDate;
+                    shareData.showNoSelection = false;
                     break;
                 case TargetType.WORKPLACE:
                     screenUrl = '/view/cdl/008/a/index.xhtml';
                     keyInput = 'inputCDL008';
                     keyOutput = 'outputCDL008';
+                    keyCancel = 'CDL008Cancel';
                     
                     // set data share
                     shareData.baseDate = self.baseDate;
                     break;
-                case TargetType.DEPARMENT:
+                case TargetType.DEPARTMENT:
                     screenUrl = '/view/cdl/007/a/index.xhtml';
                     nts.uk.ui.dialog.alert("Not cover.");
                     return;
@@ -114,17 +134,19 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                 case TargetType.WORKPLACE_PERSONAL:
                     screenUrl = '/view/cdl/009/a/index.xhtml';
                     keyInput = 'CDL009Params';
-                    keyOutput = 'outputCDL003';
+                    keyOutput = 'CDL009Output';
+                    keyCancel = 'CDL009Cancel';
                     
                     // set data share
                     shareData.target = 1;
                     shareData.baseDate = self.baseDate;
                     shareData.selectedIds = self.lstSelected();
                     break;
-                case TargetType.DEPARMENT_PERSONAL:
+                case TargetType.DEPARTMENT_PERSONAL:
                     screenUrl = '/view/cdl/009/a/index.xhtml';
                     keyInput = 'CDL009Params';
                     keyOutput = 'CDL009Output';
+                    keyCancel = 'CDL009Cancel';
                     
                     // set data share
                     shareData.target = 2;
@@ -141,8 +163,23 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             
             // open dialog
             nts.uk.ui.windows.sub.modal(screenUrl).onClosed(() => {
+                
+                // check close dialog
+                if (nts.uk.ui.windows.getShared(keyCancel)) {
+                    return;
+                }
+                
                 // get value respond
                 let selectedCode: any = nts.uk.ui.windows.getShared(keyOutput);
+                if (!selectedCode || selectedCode.length <= 0) {
+                    self.lstSelected([]);
+                    return;
+                }
+                
+                // if no override, remove items already setting.
+                if (!self.isOverride()) {
+                    
+                }
                 
                 // set list selection
                 if (Array.isArray(selectedCode)) {
@@ -172,12 +209,12 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         static WORKPLACE = 4;
         
         // 部門
-        static DEPARMENT = 5;
+        static DEPARTMENT = 5;
         
         // 職場個人
         static WORKPLACE_PERSONAL = 6;
         
         // 部門個人
-        static DEPARMENT_PERSONAL = 7;
+        static DEPARTMENT_PERSONAL = 7;
     }
 }

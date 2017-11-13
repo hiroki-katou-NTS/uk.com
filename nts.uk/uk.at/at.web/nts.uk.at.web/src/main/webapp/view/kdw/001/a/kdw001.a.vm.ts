@@ -25,11 +25,13 @@ module nts.uk.at.view.kdw001.a {
             }
 
             opendScreenJC() {
-                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0, "screenName": "J" });
+                //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0, "screenName": "J" });
+                nts.uk.request.jump("/view/kdw/001/j/index.xhtml");
             }
 
             opendScreenBC() {
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 0, "screenName": "B" });
+                //nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 0, "screenName": "B" });
+                nts.uk.request.jump("/view/kdw/001/b/index.xhtml");
             }
         }
 

@@ -17,6 +17,6 @@ public class PpemtHistorySelectionPK implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "HIST_ID")
-	public String histidPK;
+	public String histId;
 
 }

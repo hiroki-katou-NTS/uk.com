@@ -2,54 +2,56 @@ package nts.uk.ctx.bs.employee.infra.entity.jobtitle;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDept;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name="BSYMT_SUB_JOB_POSITION")
 public class BsymtSubJobPosition extends UkJpaEntity implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**the sub job position id*/
-	@EmbeddedId
-	private BsymtSubJobPositionPK bsymtSubJobPositionPK;
+	@Id
+	@Basic(optional = false)
+	@Column(name = "SUB_JOB_POSITION_ID")
+	public String subJobPosId;
 	
 	/** The dep id. */
 	@Column(name = "AFFI_DEPT_ID")
-	private String affiDeptId;
+	public String affiDeptId;
 	
 	/** The dep id. */
 	@Column(name = "JOB_TITLE_ID")
-	private String jobTitleId;
+	public String jobTitleId;
 	
 	/** The str D. */
 	@Column(name = "STR_D")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate strD;
+	public GeneralDate strD;
 
 	/** The end D. */
 	@Column(name = "END_D")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate endD;
+	public GeneralDate endD;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -59,8 +61,7 @@ public class BsymtSubJobPosition extends UkJpaEntity implements Serializable{
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return subJobPosId;
 	}
 
 }

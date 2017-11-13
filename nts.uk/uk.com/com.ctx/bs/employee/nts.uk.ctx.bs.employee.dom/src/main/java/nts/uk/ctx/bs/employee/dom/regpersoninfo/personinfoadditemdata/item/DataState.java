@@ -8,23 +8,24 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.DateValue;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.NumberValue;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.datastate.StringValue;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
 
 public class DataState extends AggregateRoot {
-	
+	// 保存データ状態
 	@Getter
 	protected DataStateType dataStateType;
-	
-	public String getStringValue(){
+
+	public String getStringValue() {
 		StringValue sValue = (StringValue) this;
 		return sValue.value;
 	}
 
-	public GeneralDate getDateValue(){
+	public GeneralDate getDateValue() {
 		DateValue dateValue = (DateValue) this;
 		return dateValue.value;
 	}
-	
-	public BigDecimal getNumberValue(){
+
+	public BigDecimal getNumberValue() {
 		NumberValue numberValue = (NumberValue) this;
 		return numberValue.value;
 	}
@@ -42,6 +43,5 @@ public class DataState extends AggregateRoot {
 	public static DataState createFromNumberValue(BigDecimal value) {
 		return NumberValue.createFromJavaType(value);
 	}
-	
 
 }

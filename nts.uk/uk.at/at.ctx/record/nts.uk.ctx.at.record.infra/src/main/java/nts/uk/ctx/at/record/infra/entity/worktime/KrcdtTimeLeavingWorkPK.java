@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Embeddable
 @AllArgsConstructor
@@ -21,4 +22,6 @@ public class KrcdtTimeLeavingWorkPK implements Serializable {
 	@Column(name = "WORK_NO")
 	public String workNo;
 
+	@Column(name = "YMD")
+	public GeneralDate ymd;
 }
