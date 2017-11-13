@@ -207,4 +207,9 @@ public class EmployeeWebService extends WebService {
 
 	// sonnlb end
 
+	@POST
+	@Path("get-info/{employeeId}")
+	public EmployeeDto getInfo(@PathParam(value = "employeeId") String employeeId) {
+		return employeeFinder.getInfoById(employeeId).orElse(null);
+	}
 }
