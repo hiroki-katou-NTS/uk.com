@@ -136,6 +136,15 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Get formula name by id
+             */
+            public getFormulaNameById(id: string): string {
+                let self = this;
+                let rs = _.find(self.calcFormulas(), item => item.formulaId == id);
+                return rs ? rs.formulaName() : 'formula not found';
+            }
+
+            /**
              * Initial datasource
              */
             private initDatasource(): void {
@@ -231,7 +240,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // if has formulas
                     if (self.isFormulaSet()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_506')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_506' }).ifYes(() => {
                             Formula.performanceAtr = value; // param for screen C
 
                             // remove all formulas
@@ -259,7 +268,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // Check whether has formula or calculation result range is set.
                     if (self.isFormulaSet() || self.calcResultRange.isSet()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_573')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_573' }).ifYes(() => {
 
                             // remove all formulas
                             self.removeAllFormulas();
@@ -409,7 +418,25 @@ module nts.uk.at.view.kmk002.a {
                 let self = this
                 let lastFormula = _.last(this.calcFormulas());
                 if (lastFormula) {
-                    this.applyFormula(lastFormula.settingResult());
+                    let settingResult = lastFormula.settingResult();
+
+                    // replace symbol = formula name
+                    if (lastFormula.isTypeOfFormulaSetting()) {
+                        let leftItem = lastFormula.formulaSetting.leftItem;
+                        let rightItem = lastFormula.formulaSetting.rightItem;
+                        if (leftItem.settingMethod == 0) {
+                            let symbolVal = this.getSymbolById(leftItem.formulaItemId);
+                            settingResult = _.replace(settingResult, symbolVal,
+                                this.getFormulaNameById(leftItem.formulaItemId));
+                        }
+                        if (rightItem.settingMethod == 0) {
+                            let symbolVal = this.getSymbolById(rightItem.formulaItemId);
+                            settingResult = _.replace(settingResult, symbolVal,
+                                this.getFormulaNameById(rightItem.formulaItemId));
+                        }
+                    }
+
+                    this.applyFormula(settingResult);
                 }
             }
 
@@ -661,7 +688,7 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
                 if (self.isInUse()) {
-                    nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_113')).ifYes(() => {
+                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_113' }).ifYes(() => {
                         // Remove selected formulas.
                         self.removeSelectedFormulas();
 
@@ -1392,6 +1419,11 @@ module nts.uk.at.view.kmk002.a {
 
                 });
 
+                // event on formula name changed
+                self.formulaName.subscribe(vl => {
+                    self.setApplyFormula();
+                });
+
                 // event on set formula setting or item selection.
                 self.settingResult.subscribe(vl => {
                     // set apply formula
@@ -1408,7 +1440,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // Check whether the formula has setting or not
                     if (self.hasSetting()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_192' }).ifYes(() => {
                             // clear the setting
                             self.clearFormulaSetting();
 
@@ -1431,7 +1463,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // Check whether the formula has setting or not
                     if (self.hasSetting()) {
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_126' }).ifYes(() => {
                             // clear the setting
                             self.clearFormulaSetting();
 

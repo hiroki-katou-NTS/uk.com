@@ -5,6 +5,7 @@ package repository.person.persinfoctgdata;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -61,6 +62,13 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
 	}
+	
+	private void updateEntity(PersonInfoItemData domain, PpemtPerInfoItemData entity){
+		entity.saveDataAtr = domain.getDataState().getDataStateType().value;
+		entity.stringVal = domain.getDataState().getStringValue();
+		entity.intVal  = domain.getDataState().getNumberValue().intValue();
+		entity.dateVal = domain.getDataState().getDateValue();
+	}
 
 	/**
 	 * Add item data
@@ -73,5 +81,25 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	}
 	// sonnlb code end
+
+	@Override
+	public void updateItemData(PersonInfoItemData domain) {
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		Optional<PpemtPerInfoItemData> existItem = this.queryProxy().find(key, PpemtPerInfoItemData.class);
+		if (!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public void deleteItemData(PersonInfoItemData domain) {
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		this.commandProxy().remove(PpemtPerInfoItemData.class, key);
+		
+	}
 
 }

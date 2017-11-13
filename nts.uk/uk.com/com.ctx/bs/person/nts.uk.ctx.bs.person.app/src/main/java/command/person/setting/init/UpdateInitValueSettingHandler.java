@@ -165,36 +165,41 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
 							this.itemRepo.update(item);
 
+						} else if (c.getSelectedRuleCode() == 1) {
+							Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
+									command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+							if (item_1.isPresent()) {
+								this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
+										command.getSettingId());
+							}
 						}
 
 					} else {
 						if (c.getSelectedRuleCode() == 2) {
 							if (c.getDataType() == 0 || c.getDataType() == 1) {
 								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-										command.getSettingId(), command.getPerInfoCtgId(),
-										2, 1, c.getStringValue());
+										command.getSettingId(), command.getPerInfoCtgId(), 2, 1, c.getStringValue());
 								this.itemRepo.addItem(item);
 
 							} else if (c.getDataType() == 2) {
 								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-										command.getSettingId(), command.getPerInfoCtgId(), 2, 2,
-										c.getNumberValue());
+										command.getSettingId(), command.getPerInfoCtgId(), 2, 2, c.getNumberValue());
 								this.itemRepo.addItem(item);
 
 							} else if (c.getDataType() == 3) {
 								if (c.getDateType() == 1) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
 								} else if (c.getDateType() == 2) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
 
 								} else if (c.getDateType() == 3) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
 
 								}
 								this.itemRepo.addItem(item);
@@ -231,6 +236,14 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
 							this.itemRepo.addItem(item);
+
+						} else if (c.getSelectedRuleCode() == 1) {
+							Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
+									command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+							if (item_1.isPresent()) {
+								this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
+										command.getSettingId());
+							}
 
 						}
 
@@ -275,17 +288,17 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 							} else if (c.getDataType() == 3) {
 								if (c.getDateType() == 1) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
 								} else if (c.getDateType() == 2) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
 
 								} else if (c.getDateType() == 3) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(),2,
-											3, GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
 
 								}
 								this.itemRepo.update(item);
@@ -320,36 +333,41 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
 							this.itemRepo.update(item);
 
+						} else if (c.getSelectedRuleCode() == 1) {
+							Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
+									command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+							if (item_1.isPresent()) {
+								this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
+										command.getSettingId());
+							}
 						}
 
 					} else {
 						if (c.getSelectedRuleCode() == 2) {
 							if (c.getDataType() == 0 || c.getDataType() == 1) {
 								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-										command.getSettingId(), command.getPerInfoCtgId(),
-										2 , 1, c.getStringValue());
+										command.getSettingId(), command.getPerInfoCtgId(), 2, 1, c.getStringValue());
 								this.itemRepo.addItem(item);
 
 							} else if (c.getDataType() == 2) {
 								item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-										command.getSettingId(), command.getPerInfoCtgId(), 2, 2,
-										c.getNumberValue());
+										command.getSettingId(), command.getPerInfoCtgId(), 2, 2, c.getNumberValue());
 								this.itemRepo.addItem(item);
 
 							} else if (c.getDataType() == 3) {
 								if (c.getDateType() == 1) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(),2,
-											3, GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal(), "yyyy/MM/dd"));
 								} else if (c.getDateType() == 2) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal() + "/01", "yyyy/MM/dd"));
 
 								} else if (c.getDateType() == 3) {
 									item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
-											command.getSettingId(), command.getPerInfoCtgId(), 2,
-											3, GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
+											command.getSettingId(), command.getPerInfoCtgId(), 2, 3,
+											GeneralDate.fromString(c.getDateVal() + "/01/01", "yyyy/MM/dd"));
 
 								}
 								this.itemRepo.addItem(item);
@@ -359,8 +377,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
 								item.setPerInfoItemDefId(c.getPerInfoItemDefId());
-								item.setRefMethodType(EnumAdaptor.valueOf(2,
-										ReferenceMethodType.class));
+								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
 								item.setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
 								item.setIntValue(new IntValue(c.getTime()));
 								this.itemRepo.addItem(item);
@@ -370,7 +387,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
 								item.setPerInfoItemDefId(c.getPerInfoItemDefId());
-								item.setRefMethodType(EnumAdaptor.valueOf(2,ReferenceMethodType.class));
+								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
 								item.setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
 								item.setIntValue(new IntValue(c.getTime()));
 								this.itemRepo.addItem(item);
@@ -380,18 +397,25 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
 								item.setPerInfoItemDefId(c.getPerInfoItemDefId());
-								item.setRefMethodType(EnumAdaptor.valueOf(2,ReferenceMethodType.class));
+								item.setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
 								item.setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
 								item.setStringValue(new StringValue(c.getSelectionId()));
 								this.itemRepo.update(item);
 
 							}
-						} else if (c.getSelectedRuleCode() > 2){
+						} else if (c.getSelectedRuleCode() > 2) {
 
 							item = PerInfoInitValueSetItem.convertFromJavaType(c.getPerInfoItemDefId(),
 									command.getSettingId(), command.getPerInfoCtgId(), c.getSelectedRuleCode());
 							this.itemRepo.addItem(item);
 
+						} else if (c.getSelectedRuleCode() == 1) {
+							Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
+									command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+							if (item_1.isPresent()) {
+								this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
+										command.getSettingId());
+							}
 						}
 
 					}

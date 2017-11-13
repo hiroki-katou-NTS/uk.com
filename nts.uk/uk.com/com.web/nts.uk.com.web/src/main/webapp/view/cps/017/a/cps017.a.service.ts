@@ -9,7 +9,8 @@ module nts.uk.com.view.cps017.a.service {
         saveDataSelection: "ctx/bs/person/info/setting/selection/addSelection",
         updateDataSelection: "ctx/bs/person/info/setting/selection/updateSelection",
         removeDataSelection: "ctx/bs/person/info/setting/selection/removeSelection",
-        removeHistory: "ctx/bs/person/info/setting/selection/removeHistory"
+        removeHistory: "ctx/bs/person/info/setting/selection/removeHistory",
+        reflUnrComp: "ctx/bs/person/info/setting/selection/reflunrcomp"
     }
 
     export function getAllSelectionItems() {
@@ -54,6 +55,11 @@ module nts.uk.com.view.cps017.a.service {
     // remoe history:
     export function removeHistory(command) {
         return ajax(paths.removeHistory, command);
+    }
+    
+    // Phan anh den cty:
+    export function reflUnrComp(command) {
+        return ajax(paths.reflUnrComp, command);
     }
 }
 

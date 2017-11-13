@@ -10,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemCode;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
 
 @NoArgsConstructor
 @Getter
