@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,26 +18,28 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KshmtSingleDaySche.
+ * The Class KshmtPerWorkCategory.
  */
+
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_SINGLE_DAY_SCHE")
-public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
+@Table(name = "KSHMT_PER_WORK_CATEGORY")
+public class KshmtPerWorkCategory extends UkJpaEntity implements Serializable {
+
+	 /** The Constant DEFAULT_TIME. */
+    public static final int DEFAULT_TIME = 0;
+    
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The Constant DEFAULT_TIME. */
-    public static final int DEFAULT_TIME = 0;
-    /** The kshmt single day sche PK. */
+    /** The kshmt per work category PK. */
     @EmbeddedId
-    protected KshmtSingleDaySchePK kshmtSingleDaySchePK;
+    protected KshmtPerWorkCategoryPK kshmtPerWorkCategoryPK;
     
     /** The worktype cd. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "WORKTYPE_CD")
     private String worktypeCd;
     
@@ -91,68 +92,58 @@ public class KshmtSingleDaySche extends UkJpaEntity implements Serializable {
     	this.start2 = DEFAULT_TIME;
     	this.end2 = DEFAULT_TIME;
     }
+    
 
     /**
-     * Instantiates a new kshmt single day sche.
+     * Instantiates a new kshmt per work category.
      */
-    public KshmtSingleDaySche() {
+    public KshmtPerWorkCategory() {
     }
 
-    /**
-     * Instantiates a new kshmt single day sche.
-     *
-     * @param kshmtSingleDaySchePK the kshmt single day sche PK
+    
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
      */
-    public KshmtSingleDaySche(KshmtSingleDaySchePK kshmtSingleDaySchePK) {
-        this.kshmtSingleDaySchePK = kshmtSingleDaySchePK;
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (kshmtPerWorkCategoryPK != null ? kshmtPerWorkCategoryPK.hashCode() : 0);
+        return hash;
     }
-
 
     /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
      */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (kshmtSingleDaySchePK != null ? kshmtSingleDaySchePK.hashCode() : 0);
-		return hash;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtSingleDaySche)) {
+    @Override
+    public boolean equals(Object object) {
+		if (!(object instanceof KshmtPerWorkCategory)) {
 			return false;
 		}
-		KshmtSingleDaySche other = (KshmtSingleDaySche) object;
-		if ((this.kshmtSingleDaySchePK == null && other.kshmtSingleDaySchePK != null)
-				|| (this.kshmtSingleDaySchePK != null
-						&& !this.kshmtSingleDaySchePK.equals(other.kshmtSingleDaySchePK))) {
+		KshmtPerWorkCategory other = (KshmtPerWorkCategory) object;
+		if ((this.kshmtPerWorkCategoryPK == null && other.kshmtPerWorkCategoryPK != null)
+				|| (this.kshmtPerWorkCategoryPK != null
+						&& !this.kshmtPerWorkCategoryPK.equals(other.kshmtPerWorkCategoryPK))) {
 			return false;
 		}
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.KshmtSingleDaySche[ kshmtSingleDaySchePK=" + kshmtSingleDaySchePK + " ]";
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "entity.KshmtPerWorkCategory[ kshmtPerWorkCategoryPK=" + kshmtPerWorkCategoryPK + " ]";
+    }
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtSingleDaySchePK;
+		// TODO Auto-generated method stub
+		return null;
 	}
+	
     
 }

@@ -10,20 +10,20 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KshmtSingleDaySchePK_.
+ * The Class KshmtPerDayOfWeekPK_.
  */
-@StaticMetamodel(KshmtSingleDaySchePK.class)
-public class KshmtSingleDaySchePK_ {
+@StaticMetamodel(KshmtPerDayOfWeekPK.class)
+public class KshmtPerDayOfWeekPK_ {
 
 	/** The sid. */
-	public static volatile SingularAttribute<KshmtSingleDaySchePK, String> sid;
+	public static volatile SingularAttribute<KshmtPerDayOfWeekPK, String> sid;
 	
-	/** The pers work atr. */
-	public static volatile SingularAttribute<KshmtSingleDaySchePK, Integer> persWorkAtr;
+	/** The day of week atr. */
+	public static volatile SingularAttribute<KshmtPerDayOfWeekPK, Integer> dayOfWeekAtr;
 	
 	/** The start ymd. */
-	public static volatile SingularAttribute<KshmtSingleDaySchePK, GeneralDate> startYmd;
+	public static volatile SingularAttribute<KshmtPerDayOfWeekPK, GeneralDate> startYmd;
 	
 	/** The end ymd. */
-	public static volatile SingularAttribute<KshmtSingleDaySchePK, GeneralDate> endYmd;
+	public static volatile SingularAttribute<KshmtPerDayOfWeekPK, GeneralDate> endYmd;
 }
