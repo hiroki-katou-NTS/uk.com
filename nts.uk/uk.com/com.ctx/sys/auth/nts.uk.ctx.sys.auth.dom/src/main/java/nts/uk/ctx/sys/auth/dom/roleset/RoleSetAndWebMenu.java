@@ -50,6 +50,5 @@ public class RoleSetAndWebMenu extends AggregateRoot {
 		this.roleSetCd = new RoleSetCode(roleSetCd);
 	}
 	
-	@overide
-	protected void webMenuCd 
+
 }
