@@ -105,14 +105,6 @@ public interface VerticalSettingRepository {
 	List<MoneyFunc> findAllMoneyFunc(String companyId);
 
 	/**
-	 * Find Formula Amount
-	 * @param companyId
-	 * @author phongtq
-	 * @return
-	 */
-	List<FormulaAmount> findAllFormulaAmount(String companyId);
-
-	/**
 	 * Find Formula Time Unit
 	 * @param companyId
 	 * @author phongtq
@@ -161,4 +153,16 @@ public interface VerticalSettingRepository {
 	 * @return
 	 */
 	List<TimeUnitFunc> findAllTimeUnit(String companyId, String verticalCalCd, String verticalCalItemId);
+
+	/**
+	 * Find Formula Amount
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaAmount> findAllFormulaAmount(String companyId, String verticalCalCd, String verticalCalItemId);
+
+	List<FormulaUnitprice> findAllFormulaPrice(String companyId, String verticalCalCd, String verticalCalItemId);
+
+	void insertFromPrice(FormulaUnitprice price);
 }

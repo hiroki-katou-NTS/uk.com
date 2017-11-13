@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTime;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTimeFunc;
 
@@ -15,20 +16,18 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormTi
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FormTimeCommand {
-	/* 会社ID */
-    private String companyId;
-    
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* カテゴリ区分 */
+    /** カテゴリ区分 */
     private int categoryIndicator;
     
-    /* 実績表示区分 */
+    /** 実績表示区分 */
     private int actualDisplayAtr;
     
     private List<FormTimeFuncCommand> lstFormTimeFunc;
