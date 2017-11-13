@@ -46,7 +46,7 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "WORK_NO")
 	public String workNo;
 	
-	@OneToMany(mappedBy="timeLeavingWork", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="daiLeavingWork", cascade = CascadeType.ALL)
 	public List<KrcdtTimeLeavingWork> timeLeavingWorks;
 	
 	@Override
