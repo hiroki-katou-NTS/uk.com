@@ -18,7 +18,9 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -30,6 +32,9 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 	
 	@Inject
 	private IFactoryOvertime factoryOvertime;
+	
+	@Inject
+	private OvertimeService overTimeService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<CreateOvertimeCommand> context) {
@@ -44,11 +49,12 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 		List<AppApprovalPhase> pharseList = getAppApprovalPhaseList(command, companyId, appID);		
 		// Create Application
 		Application appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(), command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(), pharseList);
+		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime();
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(appRoot);
 		
 		//ドメインモデル「残業申請」の登録処理を実行する(INSERT)
-		
+		overTimeService.CreateOvertime(overTimeDomain);
 		
 	}
 	/**

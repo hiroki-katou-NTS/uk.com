@@ -53,12 +53,19 @@ public class CreateOvertimeCommand {
 	/**
 	 * 残業申請.勤務種類コード
 	 */
-	private WorkTypeOvertime workType;
-
+	private String workTypeCode;
+	/**
+	 * 残業申請.勤務種類コード
+	 */
+	//private String workTypeCodeName;
 	/**
 	 * 残業申請.就業時間帯コード
 	 */
-	private SiftType siftType;
+	private String siftTypeCode;
+	/**
+	 * 残業申請.就業時間帯コード
+	 */
+	//private String siftTypeCodeName;
 
 	/**
 	 * 残業申請.勤務開始時刻1
@@ -77,10 +84,26 @@ public class CreateOvertimeCommand {
 	 */
 	private int workClockTo2;
 	/**
-	 * 残業申請時間設定
+	 * 休出時間
+	 * ATTENDANCE_ID = 0
 	 */
-	private List<OvertimeInputCommand> overTimeInput;
-
+	private List<OvertimeInputCommand> breakTimes;
+	
+	/**
+	 *  残業時間
+	 *  ATTENDANCE_ID = 1
+	 */
+	private List<OvertimeInputCommand> overtimeHours;
+	/**
+	 * 加給時間
+	 * ATTENDANCE_ID = 2
+	 */
+	private List<OvertimeInputCommand> restTime;
+	/**
+	 * 加給時間
+	 * ATTENDANCE_ID = 3
+	 */
+	private List<OvertimeInputCommand> bonusTimes;
 	/**
 	 * 残業申請.残業区分
 	 */

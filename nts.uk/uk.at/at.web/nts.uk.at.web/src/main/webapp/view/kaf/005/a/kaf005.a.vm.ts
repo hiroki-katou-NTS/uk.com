@@ -153,9 +153,27 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理
         registerClick() {
-            var overtime: Application = {};
-            //2-1.新規画面登録前の処理を実行する
-            //TODO:
+            let self = this;            
+            var overtime: AppOverTime = {
+            applicationDate: self.appDate(),
+            prePostAtr: self.prePostSelected(),
+            applicantSID: string,
+            applicationReason: self.reasonCombo().reasonName+ "CHAR(13)" + self.multilContent2(),
+            appApprovalPhaseCmds: self.kaf000_a.approvalList,
+            workType: self.workTypeCd(),
+            siftType: self.siftCD(),
+            workClockFrom1: self.timeStart1(),
+            workClockTo1: self.timeEnd1(),
+            workClockFrom2: self.timeStart2(),
+            workClockTo2: self.timeEnd1(),
+            bonusTimes: self.bonusTimes(),
+            overtimeHours: self.overtimeHours(),
+            breakTimes: self.breakTimes(),
+            restTime: self.restTime(),
+            overTimeShiftNight: 100,
+            flexExessTime: 100,
+            divergenceReasonContent: self.reasonCombo2().reasonName + "CHAR(13)" + self.multilContent1()
+            };            
             //登録前エラーチェック
             //TODO:           
             //登録処理を実行

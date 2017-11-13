@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
@@ -35,7 +37,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkTimeRepository workTimeRepository;
-	
+	@Inject
+	private OvertimeRepository overTimeRepository;
 
 	@Override
 	public int checkOvertime(String url) {
@@ -164,7 +167,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return result;
 	}
 
-	
+	@Override
+	public void CreateOvertime(AppOverTime domain){
+		overTimeRepository.Add(domain);
+	}
 
 	
 
