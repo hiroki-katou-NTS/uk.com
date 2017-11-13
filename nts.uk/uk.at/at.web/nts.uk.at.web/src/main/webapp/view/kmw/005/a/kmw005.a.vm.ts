@@ -23,7 +23,9 @@ module nts.uk.at.view.kmw005.a {
                 self.actualLock = new ActualLock();
                 self.actualLockList = ko.observableArray<ActualLockFind>([]);
                 self.actualLock.closureId.subscribe(function(data: number) {
-                    self.bindActualLock(data);
+                    if (data) {
+                        self.bindActualLock(data);
+                    }
                 });
                 self.actualLockColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
@@ -76,6 +78,9 @@ module nts.uk.at.view.kmw005.a {
                     dfd.resolve();
                 }).fail(error => {
                     blockUI.clear();
+                    self.actualLock.closureId(null);
+                    self.actualLock.dailyLockState(0);
+                    self.actualLock.monthlyLockState(0);
                     if (error.messageId == 'Msg_183') {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_183" });
                     } else {
@@ -85,6 +90,7 @@ module nts.uk.at.view.kmw005.a {
                 
                 return dfd.promise();
             }
+            
 
             /**
              * Binding ActualLock By Selected Closure
@@ -120,6 +126,9 @@ module nts.uk.at.view.kmw005.a {
              */
             private saveActualLock(): void {
                 let self = this;
+                if (!self.actualLock.closureId()) {
+                    return;
+                }
                 let command: any = {};
                 command.closureId = self.actualLock.closureId();
                 command.dailyLockState = self.actualLock.dailyLockState();
@@ -162,6 +171,9 @@ module nts.uk.at.view.kmw005.a {
              */
             private openDialog(): void {
                 let self = this;
+                if (!self.actualLock.closureId()) {
+                    return;
+                }
                 let actualLocks = [];
                 actualLocks = self.actualLockList().map(item => {
                     return item.toClosureDto();
@@ -181,7 +193,7 @@ module nts.uk.at.view.kmw005.a {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
-                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 20px; height: 20px; background-size: 20px 20px; margin-left: 20px;")
+                $('.icon-2').attr('style', "background: url('" + iconLink + "'); width: 17.727px; height: 17.727px; background-size: 17.727px 17.727px; margin-left: 23px;")
             }
         }
 
