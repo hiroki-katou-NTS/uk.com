@@ -71,4 +71,10 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 		this.commandProxy().update(existItem.get());
 	}
 
+	@Override
+	public void deleteCategoryData(PerInfoCtgData data) {
+		this.commandProxy().remove(PpemtPerInfoCtgData.class,data.getRecordId());
+		
+	}
+
 }

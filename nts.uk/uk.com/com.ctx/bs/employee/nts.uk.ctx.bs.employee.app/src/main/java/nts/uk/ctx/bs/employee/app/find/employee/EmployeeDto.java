@@ -19,7 +19,7 @@ public class EmployeeDto {
 
 	// 入社履歴
 	// calc year of Entire from listHistoryEntire
-	private int yearOfEntire;
+	private int daysOfEntire;
 
 	public  static EmployeeDto fromDomain(Employee domain) {
 		return new EmployeeDto(domain.getPId(),
@@ -28,6 +28,6 @@ public class EmployeeDto {
 				domain.getCompanyMail().v(),
 				domain.getListEntryJobHist().get(0).getRetirementDate(),
 				domain.getListEntryJobHist().get(0).getJoinDate(), 
-				domain.getYearOfEntire());
+				domain.getDaysOfEntire());
 	}
 }
