@@ -213,7 +213,7 @@ module nts.uk.at.view.kdw001.c {
                             })
 
                         } else {
-                            let monthNow = 11; // thieu thang hien tai cua  domain 締め
+                            let monthNow = data.month; // thieu thang hien tai cua  domain 締め
                             let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
                             if (monthStartDate < monthNow) {
                                 nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');

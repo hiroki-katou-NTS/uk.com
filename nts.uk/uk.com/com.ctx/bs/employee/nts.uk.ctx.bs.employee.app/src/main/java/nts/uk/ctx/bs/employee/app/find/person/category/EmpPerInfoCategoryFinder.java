@@ -68,7 +68,10 @@ import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
+import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoPermissionType;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -141,6 +144,9 @@ public class EmpPerInfoCategoryFinder {
 	@Inject
 	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
 	
+	@Inject 
+	private PersonInfoCategoryAuthRepository personInfoCategoryAuthRepository;
+	
 	@Inject
 	I18NResourcesForUK ukResouce;
 	
@@ -184,19 +190,18 @@ public class EmpPerInfoCategoryFinder {
 						roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(employeeId)));
 		List<PerInfoItemDefDto> lstPerInfoItemDef = new ArrayList<>();
 		for(int i = 0; i < lstDomain.size(); i++)
-			lstPerInfoItemDef.add(fromDomain(lstDomain.get(i), i));
+			lstPerInfoItemDef.add(fromDomain(lstDomain.get(i), i));	
 		
-		
+		//return list
+				List<Object> lstLayoutPerInfoClsDto = new ArrayList<>();
 		if (perInfoCtg.getIsFixed() == IsFixed.FIXED)
 			if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
-				setEmployeeCtgItem(perInfoCtg, lstPerInfoItemDef, employee, infoId);
+				lstLayoutPerInfoClsDto = getEmployeeCtgItem(perInfoCtg, lstPerInfoItemDef, employee, infoId);
 			else
-				setPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employeeId, employee.getPId(), infoId);
+				lstLayoutPerInfoClsDto = getPersonCtgItem(perInfoCtg, lstPerInfoItemDef, employeeId, employee.getPId(), infoId);
 		else{
 			//optional data
-		}
-		//return list
-		List<Object> lstLayoutPerInfoClsDto = new ArrayList<>();
+		}		
 		return lstLayoutPerInfoClsDto;
 	}
 	
@@ -329,11 +334,11 @@ public class EmpPerInfoCategoryFinder {
 	 * @param perInfoCtg
 	 * @param parentInfoId
 	 */
-	private List<Object> setEmployeeCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, Employee employee, String infoId) {
+	private List<Object> getEmployeeCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, Employee employee, String infoId) {
 		List<Object> lstLayoutPersonInfoClsDto = new ArrayList<>();
 		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
 		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
-
+		if(!checkPerInfoCtgAuth(employee.getSId(), perInfoCtg.getPersonInfoCategoryId())) return new ArrayList<>();
 		switch (perInfoCtg.getCategoryCode().v()) {
 		case "CS00002":
 			for(PerInfoItemDefDto item : lstPerInfoItemDef){
@@ -482,12 +487,12 @@ public class EmpPerInfoCategoryFinder {
 	 * @param personId
 	 * @param infoId
 	 */
-	private void setPersonCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, String empId, String personId, String infoId) {
-		List<LayoutPersonInfoClsDto> lstLayoutPersonInfoClsDto = new ArrayList<>();
+	private List<Object> getPersonCtgItem(PersonInfoCategory perInfoCtg, List<PerInfoItemDefDto> lstPerInfoItemDef, String empId, String personId, String infoId) {
+		if(!checkPerInfoCtgAuth(empId, perInfoCtg.getPersonInfoCategoryId())) return new ArrayList<>();
+		List<Object> lstLayoutPersonInfoClsDto = new ArrayList<>();
 		LayoutPersonInfoClsDto layoutPersonInfoClsDto = new LayoutPersonInfoClsDto();
 		layoutPersonInfoClsDto.setListItemDf(lstPerInfoItemDef);
-		switch (perInfoCtg.getCategoryCode().v()) {
-		
+		switch (perInfoCtg.getCategoryCode().v()) {		
 		//person
 		case "CS00001":
 			
@@ -547,6 +552,19 @@ public class EmpPerInfoCategoryFinder {
 			}	
 			break;
 		}
+		return lstLayoutPersonInfoClsDto;
+	}
+	
+	private boolean checkPerInfoCtgAuth(String empId, String ctgId){
+		String loginEmpId = AppContexts.user().employeeId();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		boolean isSelfAuth = empId.equals(loginEmpId);
+		//get perInfoCtgAuth
+		PersonInfoCategoryAuth personInfoCategoryAuth = personInfoCategoryAuthRepository.getDetailPersonCategoryAuthByPId(roleId, ctgId).get();
+		if(isSelfAuth){
+			return personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES;
+		}else
+			return personInfoCategoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES;
 	}
 	
 	/**
@@ -568,6 +586,9 @@ public class EmpPerInfoCategoryFinder {
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
 		boolean isSelfAuth = empId.equals(loginEmpId);
+		
+		
+		
 		if(isSelfAuth)
 			return personInfoItemAuthRepository
 					.getItemDetai(roleId, ctgId, perInfoItemId)

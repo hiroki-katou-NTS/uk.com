@@ -145,6 +145,7 @@ public class EmployeeFinder {
 
 	/**
 	 * Get All Employee temporary deletion
+	 * 
 	 * @return
 	 */
 	public List<EmployeeToDeleteDto> getAllEmployeeInfoToDelete() {
@@ -152,7 +153,7 @@ public class EmployeeFinder {
 		return this.employeeRepository.getAllEmployeeInfoToDelete().stream()
 				.map(item -> EmployeeToDeleteDto.fromDomain(item)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Gets EmployeeInfo to Delete by employeeId.
 	 *
@@ -162,8 +163,12 @@ public class EmployeeFinder {
 	 */
 	public EmployeeToDeleteDetailDto getEmployeeDetailInfoToDelete(String employeeId) {
 
-		EmployeeToDeleteDetailDto s =  this.employeeRepository.getEmployeeDetailToDelete(employeeId)
+		EmployeeToDeleteDetailDto s = this.employeeRepository.getEmployeeDetailToDelete(employeeId)
 				.map(item -> EmployeeToDeleteDetailDto.fromDomain(item)).get();
 		return s;
+	}
+
+	public Optional<EmployeeDto> getInfoById(String employeeId) {
+		return employeeRepository.getBySid(employeeId).map(m -> EmployeeDto.fromDomain(m));
 	}
 }
