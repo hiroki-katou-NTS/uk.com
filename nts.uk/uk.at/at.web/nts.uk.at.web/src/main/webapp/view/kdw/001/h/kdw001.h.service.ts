@@ -10,7 +10,7 @@ module nts.uk.at.view.kdw001.h {
             return nts.uk.request.ajax("at", paths.getAllErrMessageInfoByEmpID + "/" + empCalAndSumExecLogID);
         }
         export function saveAsCsv(data:any): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "personError", domainType: "personerror", languageId: 'jp', reportType: 3 ,data:data});
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "personError", domainType: "personerror", languageId: 'ja', reportType: 3 ,data:data});
         }
     }
 }

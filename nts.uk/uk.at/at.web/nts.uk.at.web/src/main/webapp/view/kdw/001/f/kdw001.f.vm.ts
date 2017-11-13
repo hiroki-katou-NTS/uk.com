@@ -18,10 +18,12 @@ module nts.uk.at.view.kdw001.f {
             empCalAndSumExeLog: KnockoutObservableArray<model.EmpCalAndSumExeLog>;
             //list caseSpecExeContent
             listCaseSpecExeContent : KnockoutObservableArray<model.CaseSpecExeContent>;
+            //listClosure
+            listClosure : KnockoutObservableArray<any>;
 
             constructor() {
                 let self = this;
-                self.nameClosure = " 選択した締め";
+                self.nameClosure = " test";
                 //
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
@@ -40,6 +42,9 @@ module nts.uk.at.view.kdw001.f {
                 self.empCalAndSumExeLog = ko.observableArray([]);
                 //list obj CaseSpecExeContent
                 self.listCaseSpecExeContent =  ko.observableArray([]);
+                //list obj listClosure
+                self.listClosure =  ko.observableArray([]);
+                
 
                 self.columns = [
                     { headerText: getText('KDW001_73'), key: 'executionDate', width: 100 },
@@ -92,7 +97,14 @@ module nts.uk.at.view.kdw001.f {
                             item.executedMenuName = _.find(self.listCaseSpecExeContent(), function(o) { 
                                 return o.caseSpecExeContentID == item.caseSpecExeContentID; }).useCaseName ;  
                         }
-                        //
+                        // get name closure by date
+                        _.find(self.listClosure(), function(o) { 
+                            if (o.closureId == item.closureID) {
+                                item.changeName(_.find(o.listClosureHistoryForLog, (his: any) => {
+                                    return item.processingMonth >= his.startYearMonth && item.processingMonth <= his.endYearMonth;
+                                }).closureName);
+                            }
+                        });
                         temp.push(item);
                     });
                     
@@ -145,6 +157,7 @@ module nts.uk.at.view.kdw001.f {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.getAllClosure().done(function(data){
+                     self.listClosure(data);
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -173,6 +186,10 @@ module nts.uk.at.view.kdw001.f {
                 nts.uk.ui.windows.sub.modal("/view/kdw/001/i/index.xhtml");
             }
             
+            openScreenA() {
+                nts.uk.request.jump("/view/kdw/001/a/index.xhtml");
+            }
+            
         }//end screenModel
     }//end viewmodel
 
@@ -190,6 +207,7 @@ module nts.uk.at.view.kdw001.f {
             executionStatusName : string;
             employeeID: string;
             closureID: number;
+            closureName : string;
             caseSpecExeContentID: string;
             executionLogs: Array<IExecutionLog>;
         }
@@ -229,12 +247,13 @@ module nts.uk.at.view.kdw001.f {
             executionStatusName : string;
             employeeID: string;
             closureID: number;
+            closureName : string;
             caseSpecExeContentID: string;
             executionLogs: Array<ExecutionLog>;
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth%100 + "月度";
+                this.processingMonthName = data.processingMonth%100 + "月度" + data.closureName;
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
@@ -250,11 +269,15 @@ module nts.uk.at.view.kdw001.f {
                 this.executionStatusName = data.executionStatusName;
                 this.employeeID = data.employeeID;
                 this.closureID = data.closureID;
+                this.closureName = data.closureName;
                 this.caseSpecExeContentID = data.caseSpecExeContentID;
                 this.executionLogs = data.executionLogs;
-                 
             }
-
+            
+            public changeName(name: string): void {
+                this.closureName = name;
+                this.processingMonthName = this.processingMonth%100 + "月度     " + name;
+            }
         }//end class EmpCalAndSumExeLog
 
         /**

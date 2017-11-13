@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,13 +23,13 @@ public class PersonErrorListExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
-		List<PersonError> personErrors = (List<PersonError>) query.getData();
+		List<LinkedHashMap<String, String>> personErrors = (List<LinkedHashMap<String, String>>) query.getData();
 		personErrors.forEach(personError -> {
 			Map<String, Object> data = new HashMap<>();
-			data.put("社員コード", personError.getEmployeeID());
-			data.put("名称", personError.getEmployeeID());
-			data.put("処理日", personError.getDisposalDay());
-			data.put("エラー内容内", personError.getDisposalDay());
+			data.put("社員コード", personError.get("employeeID"));
+			data.put("名称", personError.get("empCalAndSumExecLogID"));
+			data.put("処理日", personError.get("disposalDay"));
+			data.put("エラー内容内", personError.get("messageError"));			
 			datas.add(new MasterData(data, null, ""));
 		});
 		return datas;
