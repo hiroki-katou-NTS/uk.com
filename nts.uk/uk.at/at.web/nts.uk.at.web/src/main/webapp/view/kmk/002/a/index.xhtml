@@ -22,7 +22,8 @@
          <ui:define name="content">
             <com:ko tag="with" bind="optionalItemHeader">
                <div id="functions-area">
-                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
+                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
+                  #{i18n.getText('KMK002_1')}</button>
                </div>
                <div id="contents-area" style="display: none" data-bind="visible: true">
                   <!-- Optional item grid list. -->
@@ -55,7 +56,7 @@
                                  name: '#[KMK002_12]',
                                  value: optionalItemName,
                                  constraint: 'OptionalItemName', 
-                                 enable: true, 
+                                 enable: $parent.hasSelected, 
                                  required: true}"/></td>
                            </tr>
                            <tr>
@@ -71,7 +72,7 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: usageAtr,
-                                    enable: true }"></div>
+                                    enable: $parent.hasSelected }"></div>
                               </td>
                               <!-- Calculation ResultRange -->
                               <td>

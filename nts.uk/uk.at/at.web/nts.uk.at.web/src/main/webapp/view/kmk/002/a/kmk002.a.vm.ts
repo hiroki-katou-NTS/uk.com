@@ -803,6 +803,21 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Clear all input value.
+             */
+            public clearAll(): void {
+                let self = this;
+                self.optionalItemNo('');
+                self.optionalItemName('');
+                self.optionalItemAtr(0);
+                self.usageAtr(0);
+                self.empConditionAtr(0);
+                self.performanceAtr(0);
+                self.calcResultRange.resetValue();
+                self.calcFormulas([]);
+            }
+
+            /**
              * Convert list formula dto to view model
              */
             private convertToListFormulaModel(list: Array<FormulaDto>): void {
@@ -1041,11 +1056,13 @@ module nts.uk.at.view.kmk002.a {
             selectedCode: KnockoutObservable<string>;
             optionalItemHeaders: KnockoutObservableArray<OptionalItemHeaderDto>;
             optionalItem: OptionalItem;
+            hasSelected: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
                 self.optionalItemHeaders = ko.observableArray([]);
                 self.optionalItem = new OptionalItem();
+                self.hasSelected = ko.observable(true);
 
                 self.selectedCode = ko.observable('');
                 self.columns = ko.observableArray([
@@ -1102,9 +1119,13 @@ module nts.uk.at.view.kmk002.a {
                     // init selected code subscribe
                     self.selectedCode.subscribe(itemNo => {
                         if (itemNo) {
+                            self.hasSelected(true);
                             self.loadOptionalItemDetail(itemNo);
                             // clear error.
                             $('.nts-editor').ntsError('clear');
+                        } else {
+                            self.optionalItem.clearAll();
+                            self.hasSelected(false);
                         }
                     });
 
