@@ -33,10 +33,17 @@ var nts;
                 return true;
             }
             util.compare = compare;
+            /**
+             * 常にtrueを返す関数が必要になったらこれ
+             */
             function alwaysTrue() {
                 return true;
             }
             util.alwaysTrue = alwaysTrue;
+            /**
+             * function find an item index in array
+             * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
+             */
             function findIndex(arr, value, key) {
                 for (var i = 0; i < arr.length; i++) {
                     var item = arr[i];
@@ -46,9 +53,15 @@ var nts;
                 return -1;
             }
             util.findIndex = findIndex;
+            /** function add item to array, this function is used in combine with visitDfs function
+             * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
+             */
             function addToArray(node, arr) {
                 arr.push(node);
             }
+            /**
+             * DFS algorithm function to iterate over an object with structre like tree
+             */
             function visitDfs(node, func, childField, arr) {
                 if (func) {
                     if (arr)
@@ -62,6 +75,9 @@ var nts;
                 });
             }
             util.visitDfs = visitDfs;
+            /**
+             * return flatern array of array of tree-like objects
+             */
             function flatArray(arr, childField) {
                 var flatArr = [];
                 if (!childField)
@@ -73,7 +89,15 @@ var nts;
                 return flatArr;
             }
             util.flatArray = flatArray;
+            /**
+             * return filtered array
+             * @param {Array} array of items
+             * @param {String} user input
+             * @param {Array} array of fields used to search on
+             * @param {String} if not null, search will perform in flatarray of arr
+             */
             function searchArray(arr, searchTerm, fields, childField) {
+                //if items is empty return empty array
                 if (!arr) {
                     return [];
                 }
@@ -82,9 +106,11 @@ var nts;
                 }
                 var flatArr = flatArray(arr, childField);
                 var filter = searchTerm.toLowerCase();
+                //if filter is empty return all the items
                 if (!filter) {
                     return flatArr;
                 }
+                //filter data
                 var filtered = flatArr.filter(function (item) {
                     var i = fields.length;
                     while (i--) {
@@ -100,6 +126,9 @@ var nts;
                 return filtered;
             }
             util.searchArray = searchArray;
+            /**
+             * SearchBox helper function to jump next search
+             */
             function nextSelectionSearch(selected, arr, selectedKey, isArray) {
                 var current = null;
                 if (isArray) {
@@ -124,14 +153,25 @@ var nts;
                 return undefined;
             }
             util.nextSelectionSearch = nextSelectionSearch;
+            /**
+             * Returns true if the target is null or undefined.
+             */
             function isNullOrUndefined(target) {
                 return target === null || target === undefined;
             }
             util.isNullOrUndefined = isNullOrUndefined;
+            /**
+             * Returns true if the target is null or undefined or blank.
+             * @param  {any} [target] Target need to check
+             * @return {boolean}      True for blank
+             */
             function isNullOrEmpty(target) {
                 return (target === undefined || target === null || target.length == 0);
             }
             util.isNullOrEmpty = isNullOrEmpty;
+            /**
+             * Generate random identifier string (UUIDv4)
+             */
             function randomId() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                     var r = Math.random() * 16 | 0;
@@ -139,10 +179,17 @@ var nts;
                 });
             }
             util.randomId = randomId;
+            /**
+             * Returns true if current window is in frame.
+             */
             function isInFrame() {
                 return window.parent != window;
             }
             util.isInFrame = isInFrame;
+            /**
+             * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
+             * そうでなければ、valueMaybeEmptyを返す。
+             */
             function orDefault(valueMaybeEmpty, defaultValue) {
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
@@ -184,6 +231,9 @@ var nts;
                 return "<span class='constraint-label'>(" + constraintText + ")</span>";
             }
             util.getConstraintLabel = getConstraintLabel;
+            /**
+             * Returns true if expects contains actual.
+             */
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
@@ -195,6 +245,7 @@ var nts;
             ;
             function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
                 var result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
+                //            result = moveToParentIfEmpty(result);
                 return result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -326,6 +377,9 @@ var nts;
                 return TreeObject;
             }());
             util.TreeObject = TreeObject;
+            /**
+             * Like Java Optional
+             */
             var optional;
             (function (optional) {
                 function of(value) {
@@ -535,8 +589,14 @@ var nts;
             return WebStorageWrapper;
         }());
         uk.WebStorageWrapper = WebStorageWrapper;
+        /**
+         * Utilities about jquery deferred
+         */
         var deferred;
         (function (deferred) {
+            /**
+             * Repeats a task with jQuery Deferred
+             */
             function repeat(configurator) {
                 var conf = repeater.createConfiguration();
                 configurator(conf);
@@ -654,6 +714,9 @@ var nts;
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
                     var text_2 = args[parseInt(code)];
+                    //                if(text!=undefined && text.indexOf("#")==0){
+                    //                    text = getText(text.substring(1))
+                    //                }
                     var param = matches[2];
                     if (param !== undefined && formatter !== undefined) {
                         text_2 = uk.time.applyFormat(param.substring(1), text_2, formatter);
@@ -684,6 +747,11 @@ var nts;
         uk.localStorage = new WebStorageWrapper(window.localStorage);
         var characteristics;
         (function (characteristics) {
+            /**
+             * Now, "characteristic data" is saved in Local Storage.
+             * In the future, the data may be saved in DB using Ajax.
+             * So these APIs have jQuery Deferred Interface to support asynchronous.
+             */
             var delayToEmulateAjax = 100;
             function convertObjectToArray(key) {
                 var result = [];
@@ -777,10 +845,16 @@ var nts;
                 allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
                 allHiragana: /^[ぁ-ん　ー ]*$/,
             };
+            /**
+             * 文字列の半角文字数を数える（Unicode用）
+             * @param text 解析対象の文字列
+             */
             function countHalf(text) {
                 var count = 0;
                 for (var i = 0; i < text.length; i++) {
                     var c = text.charCodeAt(i);
+                    // 0x20 ～ 0x80: 半角記号と半角英数字
+                    // 0xff61 ～ 0xff9f: 半角カタカナ
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         count += 1;
                     }
@@ -801,6 +875,8 @@ var nts;
                 for (var i = index; i < text.length; i++) {
                     var c = text.charCodeAt(i);
                     var charLength = 2;
+                    // 0x20 ～ 0x80: 半角記号と半角英数字
+                    // 0xff61 ～ 0xff9f: 半角カタカナ
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         charLength = 1;
                     }
@@ -856,6 +932,11 @@ var nts;
                 return text;
             }
             text_3.hiraganaToKatakana = hiraganaToKatakana;
+            /**
+             * 半角カタカナを全角カタカナに変換
+             *
+             * @param {String} str 変換したい文字列
+             */
             function oneByteKatakanaToTwoByte(text) {
                 var katakanaMap = {
                     'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
@@ -891,6 +972,10 @@ var nts;
                 };
             }
             text_3.anyChar = anyChar;
+            /**
+             * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allHalfNumeric(text) {
                 return {
                     probe: regexp.allHalfNumeric.test(text),
@@ -898,6 +983,10 @@ var nts;
                 };
             }
             text_3.allHalfNumeric = allHalfNumeric;
+            /**
+             * 文字列が半角英字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allHalfAlphabet(text) {
                 return {
                     probe: regexp.allHalfAlphabet.test(text),
@@ -905,6 +994,10 @@ var nts;
                 };
             }
             text_3.allHalfAlphabet = allHalfAlphabet;
+            /**
+             * 文字列が半角英数字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allHalfAlphanumeric(text) {
                 return {
                     probe: regexp.allHalfAlphanumeric.test(text),
@@ -912,6 +1005,10 @@ var nts;
                 };
             }
             text_3.allHalfAlphanumeric = allHalfAlphanumeric;
+            /**
+             * 文字列が半角カナのみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allHalfKatakana(text) {
                 return {
                     probe: regexp.allHalfKatakanaReg.test(text),
@@ -919,6 +1016,10 @@ var nts;
                 };
             }
             text_3.allHalfKatakana = allHalfKatakana;
+            /**
+             * 文字列が全角カナのみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allFullKatakana(text) {
                 return {
                     probe: regexp.allFullKatakanaReg.test(text),
@@ -926,6 +1027,10 @@ var nts;
                 };
             }
             text_3.allFullKatakana = allFullKatakana;
+            /**
+             * 文字列が半角文字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allHalf(text) {
                 return {
                     probe: text.length === countHalf(text),
@@ -933,6 +1038,10 @@ var nts;
                 };
             }
             text_3.allHalf = allHalf;
+            /**
+             * 文字列が平仮名のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allHiragana(text) {
                 return {
                     probe: regexp.allHiragana.test(text),
@@ -940,6 +1049,10 @@ var nts;
                 };
             }
             text_3.allHiragana = allHiragana;
+            /**
+             * 文字列がカタカナのみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
+             */
             function allKatakana(text) {
                 return {
                     probe: regexp.allFullKatakanaReg.test(text),
@@ -947,6 +1060,10 @@ var nts;
                 };
             }
             text_3.allKatakana = allKatakana;
+            /**
+             * Determines if text is half integer
+             * @param text text to check
+             */
             function halfInt(text) {
                 var val = parseFloat(text);
                 var probe = false;
@@ -958,6 +1075,10 @@ var nts;
                 };
             }
             text_3.halfInt = halfInt;
+            /**
+             * 文字列中のHTML記号をサニタイズする
+             * @param text 変換対象の文字列
+             */
             function htmlEncode(text) {
                 var element = document.createElement('pre');
                 if (typeof element.textContent !== 'undefined') {
@@ -969,21 +1090,37 @@ var nts;
                 return element.innerHTML;
             }
             text_3.htmlEncode = htmlEncode;
+            /**
+             * 1文字目のみ小文字に変換する
+             * @param text 変換対象の文字列
+             */
             function toLowerCaseFirst(text) {
                 return text.charAt(0).toLowerCase() + text.slice(1);
             }
             text_3.toLowerCaseFirst = toLowerCaseFirst;
             ;
+            /**
+             * 1文字目のみ大文字に変換する
+             * @param text 変換対象の文字列
+             */
             function toUpperCaseFirst(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1);
             }
             text_3.toUpperCaseFirst = toUpperCaseFirst;
+            /**
+             * Convert lower case text to upper case one
+             * @param text text to convert
+             */
             function toUpperCase(text) {
                 return text.replace(/[a-z]/g, function (c) {
                     return String.fromCharCode(c.charCodeAt(0) - 0x20);
                 });
             }
             text_3.toUpperCase = toUpperCase;
+            /**
+            * 指定された文字列が、null、undefined、Emptyか判定する
+            * @param text 判定対象の文字列
+            */
             function isNullOrEmpty(text) {
                 var result = true;
                 if (text !== null && text !== undefined) {
@@ -993,6 +1130,11 @@ var nts;
                 return result;
             }
             text_3.isNullOrEmpty = isNullOrEmpty;
+            /**
+            * 指定した文字列の各書式項目を、対応するオブジェクトの値と等価のテキストに置換する
+            * @param text 書式文字列
+            * @param args 置換の文字列（配列可）
+            */
             function format(format) {
                 var args = [];
                 for (var _i = 1; _i < arguments.length; _i++) {
@@ -1009,14 +1151,33 @@ var nts;
                 return format.replace(/\{(\w+)\}/g, replaceFunction);
             }
             text_3.format = format;
+            /**
+            * 変換文字列の先頭に、文字数分の指定文字列を追加する
+            * @param text 変換対象の文字列
+            * @param paddingChar 指定文字列
+            * @param length 文字数
+            */
             function padLeft(text, paddingChar, length) {
                 return charPadding(text, paddingChar, true, length);
             }
             text_3.padLeft = padLeft;
+            /**
+            * 変換文字列の末尾に、文字数分の指定文字列を追加する
+            * @param text 変換対象の文字列
+            * @param paddingChar 指定文字列
+            * @param length 文字数
+            */
             function padRight(text, paddingChar, length) {
                 return charPadding(text, paddingChar, false, length);
             }
             text_3.padRight = padRight;
+            /**
+            * 指定した文字列に、指定した文字列数分、指定文字列を追加する
+            * @param text 変換対象の文字列
+            * @param paddingChar 埋める文字列
+            * @param isPadLeft 左埋めフラグ（false：右埋め）
+            * @param length 文字数
+            */
             function charPadding(text, paddingChar, isPadLeft, length) {
                 var result;
                 if (countHalf(paddingChar) !== 1) {
@@ -1064,6 +1225,9 @@ var nts;
                     return findLastContinousIndex(originalString, charSet, fromStart ? (startIndex + charSet.length) : (startIndex - charSet.length), fromStart);
                 }
             }
+            /**
+             * Type of characters
+             */
             var CharType = (function () {
                 function CharType(viewName, width, validator) {
                     this.viewName = viewName;
@@ -1114,6 +1278,10 @@ var nts;
                 return charType;
             }
             text_3.getCharType = getCharType;
+            /**
+             * Format for EmployeeCode
+             * @return {String}  EmployeeCode
+             */
             function formatCode(code, filldirection, fillcharacter, length) {
                 if (filldirection === "left")
                     return padLeft(code, fillcharacter, length);
@@ -1302,6 +1470,7 @@ var nts;
                 }
             };
             function getNumberUnit(unitId) {
+                //TODO: get system language. Default: japanese
                 return units[unitId][systemLanguage];
             }
             text_3.getNumberUnit = getNumberUnit;
@@ -1396,6 +1565,7 @@ var nts;
         })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1527,6 +1697,12 @@ var nts;
                 return new JapanDateMoment(date);
             }
             time_1.dateInJapanEmpire = dateInJapanEmpire;
+            /**
+            * Format by pattern
+            * @param  {number} [seconds]	  Input seconds
+            * @param  {string} [formatOption] Format option
+            * @return {string}				Formatted duration
+            */
             function formatSeconds(seconds, formatOption) {
                 seconds = parseInt(String(seconds));
                 var ss = uk.text.padLeft(String(seconds % 60), '0', 2);
@@ -1534,12 +1710,19 @@ var nts;
                 var mm = uk.text.padLeft(String(minutes % 60), '0', 2);
                 var hours = uk.ntsNumber.trunc(seconds / 60 / 60);
                 var h = String(hours);
+                // TODO: use formatOption
                 return "h:mm:ss"
                     .replace(/h/g, h)
                     .replace(/mm/g, mm)
                     .replace(/ss/g, ss);
             }
             time_1.formatSeconds = formatSeconds;
+            /**
+            * Format date
+            * @param  {Date}   date	 date
+            * @param  {String} [format] format
+            * @return {String}		  formatted date
+            */
             function formatDate(date, format) {
                 if (!format)
                     format = 'yyyy-MM-dd hh:mm:ss.SSS';
@@ -1567,6 +1750,11 @@ var nts;
                 return format;
             }
             time_1.formatDate = formatDate;
+            /**
+            * Format YearMonth
+            * @param  {Number} [yearMonth]	Input Yearmonth
+            * @return {String}				Formatted YearMonth
+            */
             function formatYearMonth(yearMonth) {
                 var result;
                 var num = parseInt(String(yearMonth));
@@ -1576,6 +1764,13 @@ var nts;
                 return result;
             }
             time_1.formatYearMonth = formatYearMonth;
+            /**
+            * Format by pattern
+            * @param  {Date}   [date]		 Input date
+            * @param  {String} [inputFormat]  Input format
+            * @param  {String} [outputFormat] Output format
+            * @return {String}				Formatted date
+            */
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
                 var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
@@ -1756,6 +1951,7 @@ var nts;
                     return ResultParseTimeOfTheDay.failed(nts.uk.resource.getMessage("FND_E_DATE_YMD"));
                 var hour = parseInt(timeOfDay.substring(0, stringLength - 2));
                 var minute = parseInt(timeOfDay.substring(stringLength - 2));
+                //console.log(checkNum.substring(0,stringLength-2));
                 if (hour < 0 || hour > 23)
                     return ResultParseTimeOfTheDay.failed(nts.uk.resource.getMessage("FND_E_DATE_YMD"));
                 if (minute < 0 || minute > 59)
@@ -1962,6 +2158,7 @@ var nts;
                 return nts.uk.util.isNullOrEmpty(formats) ? defaultInputFormat : formats;
             }
             function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
+                // Return local time in UTC
                 if (uk.util.isNullOrUndefined(year)) {
                     var currentDate = new Date();
                     year = currentDate.getUTCFullYear();
@@ -2214,6 +2411,7 @@ var nts;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -2239,6 +2437,7 @@ var nts;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -2330,6 +2529,7 @@ var nts;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -2379,6 +2579,7 @@ var nts;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -2437,6 +2638,7 @@ var nts;
                         function parseString(source) {
                             var foundAttr = cutDayAttrTextIfExists(source);
                             if (foundAttr.found) {
+                                // full text (ex) 翌日2:30
                                 var daysOffset = getDaysOffset(foundAttr.attr);
                                 var parsedAsDuration = minutesBased.duration.parseString(foundAttr.clockPartText);
                                 if (!parsedAsDuration.success) {
@@ -2590,6 +2792,9 @@ var nts;
                 return QueryString;
             }());
             request.QueryString = QueryString;
+            /**
+             * URL and QueryString
+             */
             var Locator = (function () {
                 function Locator(url) {
                     this.rawUrl = url;
@@ -2607,7 +2812,10 @@ var nts;
                     var stack = this.rawUrl.split('/');
                     var parts = relativePath.split('/');
                     var queryStringToAdd = QueryString.parseUrl(relativePath);
+                    // 最後のファイル名は除外
+                    // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
                     stack.pop();
+                    // relativePathの先頭が '/' の場合、それを取り除く
                     if (parts[0] === '') {
                         parts.shift();
                     }
@@ -2875,14 +3083,18 @@ var nts;
         })(request = uk.request || (uk.request = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
     (function (uk) {
         var ui;
         (function (ui) {
+            /** Event to notify document ready to initialize UI. */
             ui.documentReady = $.Callbacks();
+            /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
+            // Kiban ViewModel
             var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
                     this.title = ko.observable('');
@@ -2909,18 +3121,22 @@ var nts;
                     kiban.title(__viewContext.title || 'THIS IS TITLE');
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
+                    // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
+                    //avoid page content overlap header and function area
                     var content_height = 20;
                     if ($("#header").length != 0) {
-                        content_height += 50;
+                        content_height += 50; //header height+ content area botton padding,top padding
                     }
                     if ($("#functions-area").length != 0) {
-                        content_height += 49;
+                        content_height += 49; //top function area height
                     }
                     if ($("#functions-area-bottom").length != 0) {
-                        content_height += 74;
+                        content_height += 74; //bottom function area height
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                    //            if($("#functions-area-bottom").length!=0){
+                    //            }
                 };
                 $(function () {
                     ui.documentReady.fire();
@@ -2932,6 +3148,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -2951,6 +3168,7 @@ var nts;
                             });
                         }
                         else if ($functionsAreaBottom.length > 0) {
+                            // TODO: Defer in case dialog not showing yet. Should fix by using CSS for position, JQuery position is unstable
                             _.defer(function () {
                                 $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
                             });
@@ -2964,6 +3182,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -3010,6 +3229,7 @@ var nts;
                     }
                     DepartmentCodeValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
+                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (util.isNullOrEmpty(inputText)) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3017,9 +3237,11 @@ var nts;
                             }
                         }
                         var validateResult;
+                        // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
                             return result;
+                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
@@ -3076,6 +3298,7 @@ var nts;
                     }
                     WorkplaceCodeValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
+                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (util.isNullOrEmpty(inputText)) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3083,9 +3306,11 @@ var nts;
                             }
                         }
                         var validateResult;
+                        // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
                             return result;
+                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
@@ -3114,6 +3339,7 @@ var nts;
                     }
                     PostCodeValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
+                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (util.isNullOrEmpty(inputText)) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3121,9 +3347,11 @@ var nts;
                             }
                         }
                         var validateResult;
+                        // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
                             return result;
+                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
@@ -3152,6 +3380,7 @@ var nts;
                     }
                     PunchCardNoValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
+                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (util.isNullOrEmpty(inputText)) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3159,9 +3388,11 @@ var nts;
                             }
                         }
                         var validateResult;
+                        // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
                             return result;
+                        // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
@@ -3193,6 +3424,7 @@ var nts;
                     }
                     StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
+                        // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (util.isNullOrEmpty(inputText)) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3200,6 +3432,7 @@ var nts;
                             }
                         }
                         var validateResult;
+                        // Check CharType
                         if (!util.isNullOrUndefined(this.charType)) {
                             if (this.charType.viewName === '半角英数字') {
                                 inputText = uk.text.toUpperCase(inputText);
@@ -3217,6 +3450,7 @@ var nts;
                                 return result;
                             }
                         }
+                        // Check Constraint
                         if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                             var maxLength = this.constraint.maxLength;
                             if (this.constraint.charType == "Any")
@@ -3327,6 +3561,7 @@ var nts;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
+                        // Check required
                         if (util.isNullOrEmpty(inputText) && !util.isNullOrEmpty(this.defaultValue)) {
                             inputText = this.defaultValue;
                         }
@@ -3344,6 +3579,7 @@ var nts;
                             inputText = uk.time.convertJapaneseDateToGlobal(inputText);
                         }
                         var maxStr, minStr;
+                        // Time duration
                         if (this.mode === "time") {
                             var timeParse = uk.time.minutesBased.duration.parseString(inputText);
                             if (timeParse.success) {
@@ -3383,6 +3619,7 @@ var nts;
                             inputText = inputText.substring(1, inputText.length);
                         }
                         var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
+                        // Parse
                         if (parseResult.success) {
                             if (this.valueType === "string")
                                 result.success(parseResult.format());
@@ -3403,6 +3640,7 @@ var nts;
                             result.fail(parseResult.getEmsg(this.name), parseResult.getMsgID());
                             return result;
                         }
+                        // Time clock
                         if (this.outputFormat === "time") {
                             var inputMoment = parseResult.toNumber(this.outputFormat) * (isMinuteTime ? -1 : 1);
                             if (!util.isNullOrUndefined(this.constraint.max)) {
@@ -3441,6 +3679,7 @@ var nts;
                     }
                     TimeWithDayValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
+                        // Check required
                         if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3489,6 +3728,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -3518,6 +3758,7 @@ var nts;
                         this.allResolved.add(function () {
                             _this.hide();
                         });
+                        // Grid
                         this.gridErrors.subscribe(function () {
                             if (_this.gridErrors().length === 0) {
                                 _this.allCellsResolved.fire();
@@ -3544,6 +3785,7 @@ var nts;
                                 error.messageText = error.message;
                             }
                             else {
+                                // Business Exception
                                 if (error.message.message) {
                                     error.messageText = error.message.message;
                                     error.errorCode = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
@@ -3588,6 +3830,7 @@ var nts;
                             return e.$control.is($element);
                         });
                     };
+                    // Grid errors
                     ErrorsViewModel.prototype.addCellError = function (error) {
                         var self = this;
                         var exists = _.filter(this.gridErrors(), function (err) {
@@ -3627,6 +3870,9 @@ var nts;
                     return ErrorHeader;
                 }());
                 errors.ErrorHeader = ErrorHeader;
+                /**
+                 *  Public API
+                **/
                 function errorsViewModel() {
                     return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
                 }
@@ -3660,6 +3906,7 @@ var nts;
                     return errorsViewModel().getErrorByElement($element);
                 }
                 errors.getErrorByElement = getErrorByElement;
+                // Grid errors
                 function addCell(error) {
                     errorsViewModel().addCellError(error);
                 }
@@ -3676,6 +3923,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -3694,6 +3942,9 @@ var nts;
                         $(event.target).dialog('widget').css({ position: 'fixed' });
                     }
                 };
+                /**
+                 * Main or Sub Window(dialog)
+                 */
                 var ScreenWindow = (function () {
                     function ScreenWindow(id, isRoot, parent) {
                         this.globalContext = null;
@@ -3756,6 +4007,7 @@ var nts;
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
                             var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
+                            //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -3774,6 +4026,7 @@ var nts;
                                     }
                                     var $dialogDocument = $(this).parent();
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
+                                    // catch press tab key in close button of dialog.
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode;
                                         if (code.toString() === "9") {
@@ -3788,6 +4041,7 @@ var nts;
                                             }
                                         }
                                     });
+                                    // catch press tab key for component in dialog.
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode;
                                         if (code.toString() === "9") {
@@ -3804,11 +4058,15 @@ var nts;
                                     });
                                 },
                                 beforeClose: function () {
+                                    //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }
                             }).dialog('open');
+                            //remove focus on tab key press on the close button on jquery dialog
                             $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
                             if (_this.parent !== null)
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
+                            //                    var widget= this.$dialog.dialog("widget");
+                            //                    widget.draggable("option","containment",false);
                         });
                         this.globalContext.location.href = path;
                     };
@@ -3843,6 +4101,7 @@ var nts;
                     ScreenWindow.prototype.dispose = function () {
                         var _this = this;
                         _.defer(function () { return _this.onClosedHandler(); });
+                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                         setTimeout(function () {
                             _this.$iframe.remove();
                             _this.$dialog.remove();
@@ -3856,6 +4115,10 @@ var nts;
                     return ScreenWindow;
                 }());
                 windows.ScreenWindow = ScreenWindow;
+                /**
+                 * All ScreenWindows are managed by this container.
+                 * this instance is singleton in one browser-tab.
+                 */
                 var ScreenWindowContainer = (function () {
                     function ScreenWindowContainer() {
                         this.windows = {};
@@ -3864,6 +4127,9 @@ var nts;
                         this.shared = {};
                         this.localShared = {};
                     }
+                    /**
+                     * All dialog object is in MainWindow.
+                     */
                     ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
                         var parentwindow = this.windows[parentId];
                         var subWindow = ScreenWindow.createSubWindow(parentwindow);
@@ -3963,6 +4229,10 @@ var nts;
                 return textId;
             }
             ui_1.localize = localize;
+            /**
+             * Dialog Module
+             * Using for display info or confirm dialog
+             */
             var dialog;
             (function (dialog) {
                 function getMaxZIndex() {
@@ -3980,6 +4250,7 @@ var nts;
                     var $control = $('<div/>').addClass('control').addClass("pre");
                     var text;
                     if (typeof message === "object") {
+                        //business exception
                         if (message.message) {
                             text = message.message;
                             if (message.messageId) {
@@ -4013,6 +4284,7 @@ var nts;
                             $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
                             $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                             $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                            //add header icon if it has
                             if (header && header.icon) {
                                 var $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
                                 $headerContainer.append($("<img>").attr("src", header.icon).addClass("ui-dialog-titlebar-icon"));
@@ -4025,11 +4297,19 @@ var nts;
                             window.parent.$(event.target).remove();
                         }
                     });
+                    //add header text if it has
                     if (header && header.text) {
                         $this.dialog("option", "title", header.text);
                     }
                     return $this;
                 }
+                /**
+                 * Show information dialog.
+                 *
+                 * @param {String}
+                 *			text information text
+                 * @returns handler
+                 */
                 function info(text) {
                     var then = $.noop;
                     var $dialog = window.parent.$('<div/>').hide();
@@ -4081,6 +4361,13 @@ var nts;
                     };
                 }
                 dialog.alertError = alertError;
+                /**
+                 * Show alert dialog.
+                 *
+                 * @param {String}
+                 *			text information text
+                 * @returns handler
+                 */
                 function alert(text) {
                     var then = $.noop;
                     var $dialog = parent.$('<div/>').hide();
@@ -4107,6 +4394,13 @@ var nts;
                 }
                 dialog.alert = alert;
                 ;
+                /**
+                 * Show confirm dialog.
+                 *
+                 * @param {String}
+                 *			text information text
+                 * @returns handler
+                 */
                 function confirm(text) {
                     var handleYes = $.noop;
                     var handleNo = $.noop;
@@ -4137,6 +4431,7 @@ var nts;
                     };
                     setTimeout(function () {
                         var buttons = [];
+                        // yes button
                         buttons.push({
                             text: "はい",
                             "class": "yes large danger",
@@ -4146,6 +4441,7 @@ var nts;
                                 handleThen();
                             }
                         });
+                        // no button
                         if (hasNoButton) {
                             buttons.push({
                                 text: "いいえ",
@@ -4157,6 +4453,7 @@ var nts;
                                 }
                             });
                         }
+                        // cancel button
                         if (hasCancelButton) {
                             buttons.push({
                                 text: "キャンセル",
@@ -4258,6 +4555,7 @@ var nts;
                 confirmSaveEnable(beforeunloadHandler);
             }
             function confirmSaveDialog(dirtyChecker, dialog) {
+                //dialog* any;
                 var beforeunloadHandler = function (e) {
                     if (dirtyChecker.isDirty()) {
                         e.preventDefault();
@@ -4291,6 +4589,10 @@ var nts;
             }
             ui_1.confirmSaveDisable = confirmSaveDisable;
             ;
+            /**
+             * Block UI Module
+             * Using for blocking UI when action in progress
+             */
             var block;
             (function (block) {
                 function invisible() {
@@ -4349,6 +4651,9 @@ var nts;
                 return DirtyChecker;
             }());
             ui_1.DirtyChecker = DirtyChecker;
+            /**
+             * Utilities for IgniteUI
+             */
             var ig;
             (function (ig) {
                 var grid;
@@ -4410,6 +4715,7 @@ var nts;
                 $(function () {
                     $(document).on('mouseenter', '.limited-label', function (e) {
                         var $label = $(e.target);
+                        // Check if contents is overflow
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
                                 .text($label.text())
@@ -4431,6 +4737,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -4453,6 +4760,7 @@ var nts;
                     __extends(TextEditorOption, _super);
                     function TextEditorOption(option) {
                         _super.call(this);
+                        // Default value
                         this.textmode = (option !== undefined && option.textmode !== undefined) ? option.textmode : "text";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
@@ -4468,6 +4776,7 @@ var nts;
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         _super.call(this);
+                        // Default value
                         this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
@@ -4481,6 +4790,7 @@ var nts;
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
                         _super.call(this);
+                        // Default value
                         this.groupseperator = (option !== undefined && option.groupseperator !== undefined) ? option.groupseperator : ",";
                         this.grouplength = (option !== undefined && option.grouplength !== undefined) ? option.grouplength : 0;
                         this.decimalseperator = (option !== undefined && option.decimalseperator !== undefined) ? option.decimalseperator : ".";
@@ -4500,6 +4810,7 @@ var nts;
                     __extends(CurrencyEditorOption, _super);
                     function CurrencyEditorOption(option) {
                         _super.call(this);
+                        // Default value
                         this.groupseperator = (option !== undefined && option.groupseperator !== undefined) ? option.groupseperator : ",";
                         this.grouplength = (option !== undefined && option.grouplength !== undefined) ? option.grouplength : 0;
                         this.decimalseperator = (option !== undefined && option.decimalseperator !== undefined) ? option.decimalseperator : ".";
@@ -4523,6 +4834,7 @@ var nts;
                     __extends(MultilineEditorOption, _super);
                     function MultilineEditorOption(option) {
                         _super.call(this);
+                        // Default value
                         this.resizeable = (option !== undefined && option.resizeable !== undefined) ? option.resizeable : false;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
@@ -4535,6 +4847,7 @@ var nts;
                     __extends(TimeWithDayAttrEditorOption, _super);
                     function TimeWithDayAttrEditorOption(option) {
                         _super.call(this);
+                        // Default value
                         this.timeWithDay = (option !== undefined && option.timeWithDay !== undefined) ? option.timeWithDay : true;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
@@ -4547,6 +4860,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -4555,16 +4869,27 @@ var nts;
         (function (ui_2) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * CheckBox binding handler
+                 */
                 var NtsCheckboxBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsCheckboxBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsCheckboxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var setChecked = data.checked;
                         var textId = data.text;
                         var style = "style-" + (data.style || "normal");
                         var checkBoxText;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
                         var container = $(element);
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
                             container.attr("tabindex", "0");
@@ -4607,17 +4932,24 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var checked = ko.unwrap(data.checked);
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
                         var container = $(element);
                         container.data("enable", enable);
                         container.data("readonly", readonly);
                         var $checkBox = $(element).find("input[type='checkbox']");
+                        // Checked
                         $checkBox.prop("checked", checked);
                         container[checked ? "addClass" : "removeClass"]("checked");
+                        // Enable
                         if (enable === true) {
                             $checkBox.removeAttr("disabled");
                             container.attr("tabindex", container.data("tabindex"));
@@ -4629,6 +4961,9 @@ var nts;
                     };
                     return NtsCheckboxBindingHandler;
                 }());
+                /**
+                 * MultiCheckbox binding handler
+                 */
                 var NtsMultiCheckBoxBindingHandler = (function () {
                     function NtsMultiCheckBoxBindingHandler() {
                     }
@@ -4645,9 +4980,11 @@ var nts;
                         container.data("init", true);
                         container.data("tabindex", container.attr("tabindex"));
                         container.removeAttr("tabindex");
+                        // Default value
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
                     NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var options = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
                         var optionValue = ko.unwrap(data.optionsValue);
@@ -4655,12 +4992,15 @@ var nts;
                         var selectedValue = data.value;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
                         var container = $(element);
                         container.data("readonly", readonly);
+                        // Get option or option[optionValue]
                         var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
                         var selectedValues = JSON.parse(ko.toJSON(data.value));
+                        // Render
                         if (!_.isEqual(container.data("options"), options)) {
                             container.empty();
                             _.forEach(options, function (option) {
@@ -4711,14 +5051,18 @@ var nts;
                                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
                             });
+                            // Save a clone
                             container.data("options", _.cloneDeep(options));
                         }
+                        // Checked  
                         container.find("input[type='checkbox']").prop("checked", function () {
                             var _this = this;
                             return (_.find(selectedValue(), function (value) {
                                 return _.isEqual(JSON.parse(ko.toJSON(value)), $(_this).data("value"));
                             }) !== undefined);
                         });
+                        // Enable
+                        //            if((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)){
                         container.data("enable", _.clone(enable));
                         if (enable === true) {
                             _.forEach(container.find("input[type='checkbox']"), function (checkbox) {
@@ -4741,6 +5085,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -4749,9 +5094,18 @@ var nts;
         (function (ui_3) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * ComboBox binding handler
+                 */
                 var ComboBoxBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function ComboBoxBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var container = $(element);
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
@@ -4766,10 +5120,16 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     ComboBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var self = this;
+                        // Get options. 
                         var options = ko.unwrap(data.options);
+                        // Get options value.
                         var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
                         var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
@@ -4784,15 +5144,19 @@ var nts;
                             else
                                 dropDownAttachedToBody = false;
                         }
+                        // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
+                        // Default values.
                         var distanceColumns = '     ';
-                        var fillCharacter = ' ';
+                        var fillCharacter = ' '; // Character used fill to the columns.
                         var maxWidthCharacter = 15;
+                        // Default value
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                         var getValue = function (item) {
                             return optionValue === null ? item : item[optionValue];
                         };
+                        // Check selected code.
                         if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
                             selectedValue = options.length > 0 ? getValue(options[0]) : '';
                             data.value(selectedValue);
@@ -4803,6 +5167,7 @@ var nts;
                             container.data("options", options.slice());
                             options = options.map(function (option) {
                                 var newOptionText = '';
+                                // Check muti columns.
                                 if (haveColumn) {
                                     _.forEach(columns, function (item, i) {
                                         var prop = option[item.prop];
@@ -4818,6 +5183,7 @@ var nts;
                                 else {
                                     newOptionText = optionText === null ? option : option[optionText];
                                 }
+                                // Add label attr.
                                 option['nts-combo-label'] = newOptionText;
                                 return option;
                             });
@@ -4826,18 +5192,22 @@ var nts;
                         var currentComboMode = container.data("comboMode");
                         var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
                         if (isInitCombo) {
+                            // Delete igCombo.
                             if (container.data("igCombo") != null) {
                                 container.igCombo('destroy');
                                 container.removeClass('ui-state-disabled');
                             }
+                            // Set attribute for multi column.
                             var itemTemplate = undefined;
                             if (haveColumn) {
                                 itemTemplate = '<div class="nts-combo-item">';
                                 _.forEach(columns, function (item, i) {
+                                    // Set item template.
                                     itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
                                 });
                                 itemTemplate += '</div>';
                             }
+                            // Create igCombo.
                             container.igCombo({
                                 dataSource: options,
                                 valueKey: data.optionsValue,
@@ -4877,6 +5247,7 @@ var nts;
                         if (selectedValue !== undefined && selectedValue !== null) {
                             container.igCombo("value", selectedValue);
                         }
+                        // Set width for multi columns.
                         if (haveColumn && (isChangeOptions || isInitCombo)) {
                             var totalWidth = 0;
                             var $dropDownOptions = $(container.igCombo("dropDown"));
@@ -4898,6 +5269,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -4907,8 +5279,14 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var DatePickerBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function DatePickerBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
@@ -4982,6 +5360,7 @@ var nts;
                             $input.addClass(lengthClass);
                             container.append($label);
                         }
+                        // Init Datepicker
                         $input.datepicker({
                             language: 'ja-JP',
                             format: ISOFormat,
@@ -4999,6 +5378,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
+                                // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
                                         $label.text("");
@@ -5019,6 +5399,7 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                             else if (acceptJapaneseCalendar) {
+                                // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
                                         $label.text("");
@@ -5035,6 +5416,7 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                             else if (acceptJapaneseCalendar) {
+                                // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
                                         $label.text("");
@@ -5046,6 +5428,9 @@ var nts;
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         container.data("init", false);
                     };
+                    /**
+                     * Update
+                     */
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
@@ -5069,9 +5454,11 @@ var nts;
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
+                        // Value Binding
                         if (value() !== $input.val()) {
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                // Check equals to avoid multi datepicker with same value
                                 $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
@@ -5080,6 +5467,7 @@ var nts;
                                 $label.text("");
                             }
                         }
+                        // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
                         if (enable !== undefined)
@@ -5104,6 +5492,7 @@ var nts;
                 var DatePickerNormalizer = (function () {
                     function DatePickerNormalizer() {
                         this.fiscalMonth = 1;
+                        // Constants
                         this.NAMESPACE = "datepicker";
                         this.YEARS = "years";
                         this.MONTHS = "months";
@@ -5126,6 +5515,7 @@ var nts;
                         this.YMD_FORMAT = "YYYY/MM/DD";
                         this.DATE_SPLITTER = "/";
                     }
+                    // Use this method to get an instance.
                     DatePickerNormalizer.getInstance = function ($input, $prev, $next) {
                         var instance = new DatePickerNormalizer();
                         instance.$input = $input;
@@ -5213,6 +5603,7 @@ var nts;
                             this.colorLevel = this.MONTHS;
                         else if (this.options.format === this.YMD_FORMAT)
                             this.colorLevel = this.DAYS;
+                        // Only set to colorLevel in initialization.
                         if (this.selectedView === undefined)
                             this.selectedView = this.colorLevel;
                     };
@@ -5220,6 +5611,7 @@ var nts;
                         var _this = this;
                         if (this.cssRanger === undefined)
                             return;
+                        // Year only picker
                         if (this.cssRanger.constructor === Array) {
                             _.each(this.cssRanger, function (cell) { return _this.colorCell(cell, ViewLocation.CURRENT, -1); });
                             return;
@@ -5232,6 +5624,7 @@ var nts;
                         var _this = this;
                         var holder;
                         var handledYear = location === ViewLocation.CURRENT ? this.viewYear : this.viewYear + 1;
+                        // If processing layer is 1 level above leaf layer
                         if (this.colorLevel === this.structure[currentLayer + 1]) {
                             switch (currentLayer) {
                                 case 0:
@@ -5509,12 +5902,14 @@ var nts;
                         }
                         this.$view = this.getView(layer);
                         this.$currentView = this.getView(layer, true);
+                        // Body contents of picker is showing months
                         if (this.selectedView === this.MONTHS) {
                             if (this.viewMonth < this.fiscalMonth)
                                 this.viewYear--;
                             this.fillFiscalMonthsInYear();
                         }
                         this.color();
+                        // Pick time
                         if (this.selectedView === this.MONTHS && this.allowPickMonth()) {
                             if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year)
                                 this.clearPicked();
@@ -5554,7 +5949,7 @@ var nts;
                     DatePickerNormalizer.prototype.onPick = function () {
                         var self = this;
                         this.$input.on(this.EVENT_PICK, function (evt) {
-                            var view = evt.view;
+                            var view = evt.view; // month | year
                             if (view === self.DAY) {
                                 self.date = evt.date.getDate();
                                 self.month = evt.date.getMonth() + 1;
@@ -5583,6 +5978,7 @@ var nts;
                         var self = this;
                         self.month = pickedMonth + 1;
                         self.viewMonth = self.month;
+                        // Fiscal month mode
                         if (self.fiscalMonth !== 1) {
                             self.year = self.month >= self.fiscalMonth ? self.viewYear : (self.viewYear + 1);
                             self.viewYear = self.year;
@@ -5652,6 +6048,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -5660,12 +6057,22 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Dialog binding handler
+                 */
                 var NtsDialogBindingHandler = (function () {
                     function NtsDialogBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsDialogBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
+                    /**
+                     * Update
+                     */
                     NtsDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
@@ -5676,6 +6083,7 @@ var nts;
                         var $dialog = $("<div id='ntsDialog'></div>");
                         if (show == true) {
                             $('body').append($dialog);
+                            // Create Buttons
                             var dialogbuttons = [];
                             var _loop_1 = function(button) {
                                 dialogbuttons.push({
@@ -5688,6 +6096,7 @@ var nts;
                                 var button = buttons_1[_i];
                                 _loop_1(button);
                             }
+                            // Create dialog
                             $dialog.dialog({
                                 title: title,
                                 modal: modal,
@@ -5705,6 +6114,7 @@ var nts;
                             }).text(message);
                         }
                         else {
+                            // Destroy dialog
                             if ($('#ntsDialog').dialog("instance") != null)
                                 $('#ntsDialog').dialog("destroy");
                             $('#ntsDialog').remove();
@@ -5712,10 +6122,17 @@ var nts;
                     };
                     return NtsDialogBindingHandler;
                 }());
+                /**
+                 * Error Dialog binding handler
+                 */
                 var NtsErrorDialogBindingHandler = (function () {
                     function NtsErrorDialogBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsErrorDialogBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
@@ -5725,6 +6142,7 @@ var nts;
                         var buttons = ko.unwrap(option.buttons);
                         var $dialog = $("<div id='ntsErrorDialog'></div>");
                         parent.$('body').append($dialog);
+                        // Create Buttons
                         var dialogbuttons = [];
                         var _loop_2 = function(button) {
                             dialogbuttons.push({
@@ -5737,6 +6155,7 @@ var nts;
                             var button = buttons_2[_i];
                             _loop_2(button);
                         }
+                        // Calculate width
                         var dialogWidth = 40 + 35 + 17;
                         headers.forEach(function (header, index) {
                             if (ko.unwrap(header.visible)) {
@@ -5748,6 +6167,7 @@ var nts;
                                 }
                             }
                         });
+                        // Create dialog
                         $dialog.dialog({
                             title: title,
                             modal: modal,
@@ -5767,19 +6187,26 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsErrorDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
                         var errors = ko.unwrap(data.errors);
                         var headers = ko.unwrap(option.headers);
                         var displayrows = ko.unwrap(option.displayrows);
+                        //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = parent.$("#ntsErrorDialog");
                         if (show == true) {
+                            // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
                             var $errortable = $("<table></table>");
+                            // Header
                             var $header = $("<thead></thead>");
                             var $headerRow_1 = $("<tr></tr>");
                             $headerRow_1.append("<th style='display:none;'></th>");
@@ -5791,8 +6218,10 @@ var nts;
                             });
                             $header.append($headerRow_1);
                             $errortable.append($header);
+                            // Body
                             var $body = $("<tbody></tbody>");
                             errors.forEach(function (error, index) {
+                                // Row
                                 var $row = $("<tr></tr>");
                                 $row.click(function () {
                                     error.$control[0].focus();
@@ -5801,6 +6230,7 @@ var nts;
                                 headers.forEach(function (header) {
                                     if (ko.unwrap(header.visible))
                                         if (error.hasOwnProperty(ko.unwrap(header.name))) {
+                                            // TD
                                             var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>");
                                             $row.append($column);
                                         }
@@ -5809,9 +6239,11 @@ var nts;
                             });
                             $errortable.append($body);
                             $errorboard.append($errortable);
+                            // Errors over maxrows message
                             var $message = $("<div></div>");
                             $dialog.html("");
                             $dialog.append($errorboard).append($message);
+                            //                $dialog.on("dialogresizestop dialogopen", function() {
                             $dialog.on("dialogopen", function () {
                                 var maxrowsHeight = 0;
                                 var index = 0;
@@ -5841,6 +6273,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -5850,6 +6283,9 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
+                /**
+                 * BaseEditor Processor
+                 */
                 var EditorProcessor = (function () {
                     function EditorProcessor() {
                     }
@@ -5889,6 +6325,7 @@ var nts;
                                 value(newText);
                             }
                         });
+                        // Format on blur
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
                                 var formatter = self.getFormatter(data);
@@ -5932,6 +6369,7 @@ var nts;
                         var placeholder = this.editorOption.placeholder;
                         var textalign = this.editorOption.textalign;
                         var width = this.editorOption.width;
+                        // Properties
                         if (enable !== false) {
                             $input.removeAttr('disabled');
                         }
@@ -5956,8 +6394,10 @@ var nts;
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
                             $input.width(width);
+                        // Format value
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
+                        //            $input.trigger("validate");
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
                         return {};
@@ -5970,6 +6410,9 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
+                /**
+                 * TextEditor Processor
+                 */
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
@@ -6000,6 +6443,7 @@ var nts;
                                 }
                             }
                         });
+                        // Format on blur
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
                                 var validator = self.getValidator(data);
@@ -6082,6 +6526,9 @@ var nts;
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
+                /**
+                 * MultilineEditor Processor
+                 */
                 var MultilineEditorProcessor = (function (_super) {
                     __extends(MultilineEditorProcessor, _super);
                     function MultilineEditorProcessor() {
@@ -6109,6 +6556,9 @@ var nts;
                     };
                     return MultilineEditorProcessor;
                 }(EditorProcessor));
+                /**
+                 * NumberEditor Processor
+                 */
                 var NumberEditorProcessor = (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
@@ -6119,7 +6569,10 @@ var nts;
                         $input.focus(function () {
                             if (!$input.attr('readonly')) {
                                 var selectionType = document.getSelection().type;
+                                // Remove separator (comma)
                                 $input.val(data.value());
+                                // If focusing is caused by Tab key, select text
+                                // this code is needed because removing separator deselects.
                                 if (selectionType === 'Range') {
                                     $input.select();
                                 }
@@ -6164,7 +6617,7 @@ var nts;
                         var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
                         $input.css(css);
                         if (width.trim() != "") {
-                            $input.innerWidth(parseInt(width) - 2);
+                            $input.innerWidth(parseInt(width) - 2); //　-　$input.innerWidth() + $input.width()) - ($input.outerWidth() - $input.innerWidth());
                         }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
@@ -6183,6 +6636,9 @@ var nts;
                     };
                     return NumberEditorProcessor;
                 }(EditorProcessor));
+                /**
+                 * TimeEditor Processor
+                 */
                 var TimeEditorProcessor = (function (_super) {
                     __extends(TimeEditorProcessor, _super);
                     function TimeEditorProcessor() {
@@ -6230,6 +6686,9 @@ var nts;
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
+                /**
+                 * TimeWithDayAttrEditor Processor
+                 */
                 var TimeWithDayAttrEditorProcessor = (function (_super) {
                     __extends(TimeWithDayAttrEditorProcessor, _super);
                     function TimeWithDayAttrEditorProcessor() {
@@ -6252,6 +6711,8 @@ var nts;
                             else {
                                 $input.val("");
                             }
+                            // If focusing is caused by Tab key, select text
+                            // this code is needed because removing separator deselects.
                             if (selectionTypeOnFocusing === 'Range') {
                                 $input.select();
                             }
@@ -6265,6 +6726,7 @@ var nts;
                         return new uk.text.TimeWithDayFormatter(option);
                     };
                     TimeWithDayAttrEditorProcessor.prototype.getValidator = function (data) {
+                        //TODO: 
                         var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         name = nts.uk.resource.getControlName(name);
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -6273,73 +6735,128 @@ var nts;
                     };
                     return TimeWithDayAttrEditorProcessor;
                 }(EditorProcessor));
+                /**
+                 * Base Editor
+                 */
                 var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new EditorProcessor().init($(element), valueAccessor());
                     };
+                    /**
+                     * Update
+                     */
                     NtsEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new EditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsEditorBindingHandler;
                 }());
+                /**
+                 * TextEditor
+                 */
                 var NtsTextEditorBindingHandler = (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
                         _super.apply(this, arguments);
                     }
+                    /**
+                     * Init.
+                     */
                     NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TextEditorProcessor().init($(element), valueAccessor());
                     };
+                    /**
+                     * Update
+                     */
                     NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TextEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTextEditorBindingHandler;
                 }(NtsEditorBindingHandler));
+                /**
+                 * NumberEditor
+                 */
                 var NtsNumberEditorBindingHandler = (function () {
                     function NtsNumberEditorBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new NumberEditorProcessor().init($(element), valueAccessor());
                     };
+                    /**
+                     * Update
+                     */
                     NtsNumberEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new NumberEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsNumberEditorBindingHandler;
                 }());
+                /**
+                 * TimeEditor
+                 */
                 var NtsTimeEditorBindingHandler = (function () {
                     function NtsTimeEditorBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TimeEditorProcessor().init($(element), valueAccessor());
                     };
+                    /**
+                     * Update
+                     */
                     NtsTimeEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         new TimeEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTimeEditorBindingHandler;
                 }());
+                /**
+                 * MultilineEditor
+                 */
                 var NtsMultilineEditorBindingHandler = (function (_super) {
                     __extends(NtsMultilineEditorBindingHandler, _super);
                     function NtsMultilineEditorBindingHandler() {
                         _super.apply(this, arguments);
                     }
+                    /**
+                     * Init.
+                     */
                     NtsMultilineEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new MultilineEditorProcessor().init($(element), valueAccessor());
                     };
+                    /**
+                     * Update
+                     */
                     NtsMultilineEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new MultilineEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsMultilineEditorBindingHandler;
                 }(NtsEditorBindingHandler));
+                /**
+                 * TimeWithDayAttr
+                 */
                 var NtsTimeWithDayAttrEditorBindingHandler = (function (_super) {
                     __extends(NtsTimeWithDayAttrEditorBindingHandler, _super);
                     function NtsTimeWithDayAttrEditorBindingHandler() {
                         _super.apply(this, arguments);
                     }
+                    /**
+                     * Init.
+                     */
                     NtsTimeWithDayAttrEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TimeWithDayAttrEditorProcessor().init($(element), valueAccessor());
                     };
+                    /**
+                     * Update
+                     */
                     NtsTimeWithDayAttrEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TimeWithDayAttrEditorProcessor().update($(element), valueAccessor());
                     };
@@ -6354,6 +6871,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6362,9 +6880,15 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * FormLabel
+                 */
                 var NtsFormLabelBindingHandler = (function () {
                     function NtsFormLabelBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var primitiveValue = ko.unwrap(data.constraint);
@@ -6388,6 +6912,9 @@ var nts;
                             $('<i/>').text(constraintText).appendTo($formLabel);
                         }
                     };
+                    /**
+                     * Update
+                     */
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var text = (data.text !== undefined) ? ko.unwrap(data.text) : $(element).find('label').html();
@@ -6401,6 +6928,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6409,6 +6937,9 @@ var nts;
         (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * GridList binding handler
+                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -6433,7 +6964,9 @@ var nts;
                         $grid.data("init", true);
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
+                            // Internet Explorer 6-11
                             var isIE = false || !!document.documentMode;
+                            // Edge 20+
                             var isEdge = !isIE && !!window.StyleMedia;
                             if (isIE || isEdge) {
                                 DIFF_NUMBER = -2;
@@ -6679,6 +7212,7 @@ var nts;
                     };
                     SwapHandler.prototype._createHelper = function (evt, ui) {
                         var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+                        // Set the orders same as on grid
                         selectedRowElms.sort(function (one, two) {
                             return one.index - two.index;
                         });
@@ -6709,6 +7243,7 @@ var nts;
                     };
                     SwapHandler.prototype._beforeStop = function (model, evt, ui) {
                         model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+                        // In case of multiple selections
                         if (ui.helper.hasClass("select-drag")) {
                             var rowsInHelper = ui.helper.find("tr");
                             var rows = rowsInHelper.toArray();
@@ -6821,6 +7356,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6829,18 +7365,32 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * ListBox binding handler
+                 */
                 var ListBoxBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function ListBoxBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     ListBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
+                        // Get options
                         var options = ko.unwrap(data.options);
+                        // Get options value
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
+                        //            var required = ko.unwrap(data.required) || false;
                         var columns = data.columns;
+                        // Container
                         var $element = $(element);
                         var elementId = $element.addClass("listbox-wrapper").attr("id");
                         if (nts.uk.util.isNullOrUndefined($element.attr("tabindex"))) {
@@ -6859,6 +7409,7 @@ var nts;
                         container.data("options", options.slice());
                         container.data("init", true);
                         container.data("enable", enable);
+                        // Create changing event.
                         var changeEvent = new CustomEvent("selectionChange", {
                             detail: {},
                         });
@@ -6924,6 +7475,7 @@ var nts;
                             document.getElementById(elementId).dispatchEvent(changingEvent);
                         });
                         container.bind('selectionchanged', function () {
+                            //                console.log(ui);
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
@@ -6978,9 +7530,15 @@ var nts;
                         $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
                         $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);
                     };
+                    /**
+                     * Update
+                     */
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
+                        // Get options.
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        // Get options value.
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
@@ -6988,6 +7546,7 @@ var nts;
                         var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
                         var rows = data.rows;
+                        // Container.
                         var container = $(element).find(".ntsListBox");
                         var currentSource = container.igGrid('option', 'dataSource');
                         if (container.data("enable") !== enable) {
@@ -7104,6 +7663,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7115,6 +7675,9 @@ var nts;
                 var NtsRadioBoxBindingHandler = (function () {
                     function NtsRadioBoxBindingHandler() {
                     }
+                    /**
+                     * Init
+                     */
                     NtsRadioBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var optionValue = ko.unwrap(data.optionValue);
@@ -7160,15 +7723,21 @@ var nts;
                         radio.attr("name", group).bind('selectionchanged', function () {
                             data.checked(radio.data("value"));
                         });
+                        // Default value
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
+                    /**
+                     * Update
+                     */
                     NtsRadioBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var option = data.option === undefined ? [] : ko.unwrap(data.option);
                         var optionValue = ko.unwrap(data.optionValue);
                         var optionText = ko.unwrap(data.optionText);
                         var selectedValue = data.checked;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
                         var container = $(element);
                         container.data("enable", enable);
                         container.find(".label").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]);
@@ -7178,6 +7747,7 @@ var nts;
                         else {
                             container.find("input[type='radio']").prop("checked", false);
                         }
+                        // Enable
                         if (enable === true) {
                             container.find("input[type='radio']").removeAttr("disabled");
                             container.attr("tabindex", container.data("tabindex"));
@@ -7189,12 +7759,19 @@ var nts;
                             }
                             container.attr("tabindex", "-1");
                         }
+                        //            }
                     };
                     return NtsRadioBoxBindingHandler;
                 }());
+                /**
+                 * RadioBoxGroup binding handler
+                 */
                 var NtsRadioBoxGroupBindingHandler = (function () {
                     function NtsRadioBoxGroupBindingHandler() {
                     }
+                    /**
+                     * Init
+                     */
                     NtsRadioBoxGroupBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var optionValue = ko.unwrap(data.optionsValue);
@@ -7225,6 +7802,7 @@ var nts;
                                     var inputList = _.filter(container.find("input[type='radio']"), function (radio, idx) {
                                         return $(radio).attr("disabled") !== "disabled";
                                     });
+                                    //                        let inputList = container.find("input[type='radio']");
                                     var currentSelect = _.findIndex(inputList, function (item) {
                                         return $(item).is(":checked");
                                     });
@@ -7246,17 +7824,27 @@ var nts;
                                 container.focus();
                             }
                         });
+                        //            container.find(".ntsRadioBox").focus(function (evt, ui){
+                        //                console.log(evt);            
+                        //            });
+                        // Default value
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
+                    /**
+                     * Update
+                     */
                     NtsRadioBoxGroupBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var options = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = data.value;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
                         var container = $(element);
                         container.data("enable", enable);
+                        // Render
                         if (!_.isEqual(container.data("options"), options)) {
                             var radioName = uk.util.randomId();
                             container.empty();
@@ -7264,13 +7852,16 @@ var nts;
                                 var radioBoxLabel = drawRadio(selectedValue, option, radioName, optionValue, option["enable"], optionText, false);
                                 radioBoxLabel.appendTo(container);
                             });
+                            // Save a clone
                             container.data("options", _.cloneDeep(options));
                         }
+                        // Checked
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
                             return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
+                        // Enable
                         if (enable === true) {
                             _.forEach(container.find("input[type='radio']"), function (radio) {
                                 var dataOpion = $(radio).data("option");
@@ -7285,6 +7876,7 @@ var nts;
                             new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
                             container.attr("tabindex", "-1");
                         }
+                        //            }
                     };
                     return NtsRadioBoxGroupBindingHandler;
                 }());
@@ -7320,6 +7912,7 @@ var nts;
                     }
                     radioBox.appendTo(radioBoxLabel);
                     var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
+                    //        if (option[optionText] && option[optionText].length > 0)
                     var label = $("<span class='label'></span>").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]).appendTo(radioBoxLabel);
                     return radioBoxLabel;
                 }
@@ -7329,6 +7922,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7337,6 +7931,9 @@ var nts;
         (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                * SearchBox Binding Handler
+                */
                 var SearchBox = (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
@@ -7436,6 +8033,9 @@ var nts;
                 var NtsSearchBoxBindingHandler = (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var minusWidth = 0;
                         var data = ko.unwrap(valueAccessor());
@@ -7537,6 +8137,8 @@ var nts;
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
+                                        //selected(selectedValue);
+                                        //selected.valueHasMutated();
                                         var source = _.filter(data.items(), function (item) {
                                             return _.find(result_1.options, function (itemFilterd) {
                                                 return itemFilterd[primaryKey] === item[primaryKey];
@@ -7573,6 +8175,7 @@ var nts;
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
                                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(function () {
                                     $input.focus();
+                                    //                        $input.select();
                                 });
                                 return false;
                             }
@@ -7646,6 +8249,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7654,9 +8258,18 @@ var nts;
         (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * SwapList binding handler
+                 */
                 var NtsSwapListBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsSwapListBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var CHECKBOX_WIDTH = 70;
@@ -7673,6 +8286,7 @@ var nts;
                         $swap.attr("tabindex", "-1");
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
+                        //            var selectedValues = ko.unwrap(data.value);
                         var totalWidth = ko.unwrap(data.width);
                         var disableMove = ko.unwrap(data.disableMoveButton);
                         var height = ko.unwrap(data.height);
@@ -7706,7 +8320,7 @@ var nts;
                         var gridHeight = (height - 20);
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
-                        var defaultSearchText = "コード・名称で検索・・・";
+                        var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
@@ -7755,6 +8369,7 @@ var nts;
                         var $grid1 = $swap.find(grid1Id);
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
+                            //                            { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
@@ -7851,6 +8466,9 @@ var nts;
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                     };
+                    /**
+                     * Update
+                     */
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $swap = $(element);
@@ -7877,11 +8495,18 @@ var nts;
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
+                        //            if (!_.isEqual(currentSource, newSources)) {
                         this.swapper.Model.swapParts[0].bindData(newSources.slice());
                         this.swapper.Model.transportBuilder.setFirst(newSources);
+                        //            }
+                        //            if (!_.isEqual(currentSelectedList, newSelectedList)) {
                         this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
                         this.swapper.Model.transportBuilder.setSecond(newSelectedList);
+                        //            }
                     };
+                    /**
+                     * Share swapper b/w init and update
+                     */
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
                         return {
@@ -7943,6 +8568,7 @@ var nts;
                     };
                     SwapHandler.prototype._createHelper = function (evt, ui) {
                         var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+                        // Set the orders same as on grid
                         selectedRowElms.sort(function (one, two) {
                             return one.index - two.index;
                         });
@@ -7976,6 +8602,7 @@ var nts;
                         var destPartId = model.receiver(ui) === "first" ? 0 : 1;
                         model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
                         var max = model.swapParts[destPartId].itemsLimit;
+                        // In case of multiple selections
                         if (ui.helper.hasClass("select-drag") === true) {
                             var rowsInHelper = ui.helper.find("tr");
                             var rows = rowsInHelper.toArray();
@@ -8006,6 +8633,7 @@ var nts;
                                 }
                                 model.swapParts[destPartId].$listControl.find("tbody").children()
                                     .eq(standardIdx - 1).before(rowsBefore).after(rowsAfter);
+                                // Remove rows in source
                                 var sourceRows = model.swapParts[partId].$listControl.find("tbody").children();
                                 for (var index = rowsAfter.length - 1; index >= 0; index--) {
                                     if ($(rows[index]).data("row-idx") === targetIdx)
@@ -8068,7 +8696,7 @@ var nts;
                 }());
                 var SwapPart = (function () {
                     function SwapPart() {
-                        this.searchMode = "highlight";
+                        this.searchMode = "highlight"; // highlight & filter - Default: highlight
                         this.innerDrop = true;
                         this.outerDrop = true;
                     }
@@ -8431,6 +9059,7 @@ var nts;
                     };
                     ListItemTransporter.prototype.moveAllItems = function (src, dest) {
                         dest.push.apply(dest, src);
+                        //            dest.splice(0, 0, src);       
                         _.remove(src);
                     };
                     ListItemTransporter.prototype.determineDirection = function () {
@@ -8483,6 +9112,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8491,9 +9121,18 @@ var nts;
         (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * SwitchButton binding handler
+                 */
                 var NtsSwitchButtonBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsSwitchButtonBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsSwitchButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
@@ -8536,22 +9175,32 @@ var nts;
                                 }
                             }
                         });
+                        // Default value.
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
+                    /**
+                     * Update
+                     */
                     NtsSwitchButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var selectedCssClass = 'selected';
+                        // Get options.
                         var options = ko.unwrap(data.options);
+                        // Get options value.
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container.
                         var container = $(element);
                         container.data("enable", enable);
                         container.addClass("ntsControl switchButton-wrapper");
+                        // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
                             var btnValue = $(btn).data('swbtn');
+                            // Check if btn is contained in options.
                             var foundFlag = _.findIndex(options, function (opt) {
                                 return opt[optionValue] == btnValue;
                             }) != -1;
@@ -8560,13 +9209,16 @@ var nts;
                                 return;
                             }
                         });
+                        // Start binding new state.
                         _.forEach(options, function (opt) {
                             var value = opt[optionValue];
                             var text = opt[optionText];
+                            // Find button.
                             var targetBtn = NtsSwitchButtonBindingHandler.setSelectedClass(container, selectedCssClass, selectedValue, value);
                             if (targetBtn) {
                             }
                             else {
+                                // Recreate
                                 var btn = $('<button>').text(text)
                                     .addClass('nts-switch-button')
                                     .data('swbtn', value)
@@ -8576,6 +9228,7 @@ var nts;
                                     data.value(selectedValue);
                                     $('button', container).removeClass(selectedCssClass);
                                     $(this).addClass(selectedCssClass);
+                                    //                            container.focus();
                                 });
                                 if (selectedValue == value) {
                                     btn.addClass(selectedCssClass);
@@ -8616,6 +9269,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8624,20 +9278,33 @@ var nts;
         (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * TabPanel Binding Handler
+                 */
                 var TabPanelBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function TabPanelBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var tabs = ko.unwrap(data.dataSource);
                         var direction = ko.unwrap(data.direction || "horizontal");
+                        // Container.
                         var container = $(element);
+                        // Create title.
                         container.prepend('<ul></ul>');
                         var titleContainer = container.children('ul');
                         for (var i = 0; i < tabs.length; i++) {
                             var id = tabs[i].id;
                             var title = tabs[i].title;
                             titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
+                            // Wrap content.
                             var content = tabs[i].content;
                             container.children(content).wrap('<div id="' + id + '"></div>');
                         }
@@ -8657,10 +9324,17 @@ var nts;
                             }
                         }).addClass(direction);
                     };
+                    /**
+                     * Update
+                     */
                     TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
+                        // Get tab list.
                         var tabs = ko.unwrap(data.dataSource);
+                        // Container.
                         var container = $(element);
+                        // Select tab.
                         var activeTab = _.find(tabs, function (tab) {
                             return tab.id == data.active();
                         });
@@ -8679,6 +9353,7 @@ var nts;
                                 container.tabs("option", "active", firstIndexActive);
                             }
                         }
+                        // Disable & visible tab.
                         tabs.forEach(function (tab) {
                             if (tab.enable()) {
                                 container.tabs("enable", '#' + tab.id);
@@ -8706,6 +9381,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8714,9 +9390,15 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Panel binding handler
+                 */
                 var NtsPanelBindingHandler = (function () {
                     function NtsPanelBindingHandler() {
                     }
+                    /**
+                     * Init
+                     */
                     NtsPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : null;
@@ -8732,13 +9414,18 @@ var nts;
                             container.append("<i class='icon icon-searchbox'></i>");
                         }
                     };
+                    /**
+                     * Update
+                     */
                     NtsPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : null;
                         var height = (data.height !== undefined) ? ko.unwrap(data.height) : null;
                         var direction = (data.direction !== undefined) ? ko.unwrap(data.direction) : "right";
                         var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : false;
                         var visible = (data.visible !== undefined) ? ko.unwrap(data.visible) : null;
+                        // Container
                         var container = $(element);
                         if (!nts.uk.util.isNullOrEmpty(width))
                             container.width(width);
@@ -8758,6 +9445,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8766,12 +9454,22 @@ var nts;
         (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * TreeGrid binding handler
+                 */
                 var NtsTreeGridViewBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsTreeGridViewBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsTreeGridViewBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var ROW_HEIGHT = 24;
                         var HEADER_HEIGHT = 24;
+                        // Get data.
                         var data = valueAccessor();
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
@@ -8782,6 +9480,7 @@ var nts;
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var rows = ko.unwrap(data.rows);
+                        // Default.
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
                         var height = ko.unwrap(data.height !== undefined ? data.height : 0);
@@ -8851,6 +9550,7 @@ var nts;
                         }
                         $treegrid.data("expand", new ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
+                        // Init ig grid.
                         $treegrid.igTreeGrid({
                             width: width,
                             height: height,
@@ -8876,6 +9576,7 @@ var nts;
                             }, rowsRendered: function (evt, ui) {
                                 $treegrid.data("autoExpanding", true);
                                 var holder = $treegrid.data("expand");
+                                //                    if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
                                 _.forEach(holder.nodes, function (node) {
                                     $treegrid.igTreeGrid("expandRow", node);
                                 });
@@ -8901,6 +9602,7 @@ var nts;
                                         }, 200);
                                     }
                                 }
+                                //                    }
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -8928,36 +9630,47 @@ var nts;
                         });
                         $treegrid.setupSearchScroll("igTreeGrid");
                     };
+                    /**
+                     * Update
+                     */
                     NtsTreeGridViewBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var $treegrid = $(element);
+                        // Update datasource.
                         var originalSource = $(element).igTreeGrid('option', 'dataSource');
                         if (!_.isEqual(originalSource, options)) {
                             $treegrid.igTreeGrid("option", "dataSource", _.cloneDeep(options));
                             $treegrid.igTreeGrid("dataBind");
                         }
+                        // Set multiple data source.
                         var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
                         if ($treegrid.igTreeGridSelection("option", "multipleSelection") !== multiple) {
                             $treegrid.igTreeGridSelection("option", "multipleSelection", multiple);
                         }
+                        // Set show checkbox.
                         var showCheckBox = ko.unwrap(data.showCheckBox != undefined ? data.showCheckBox : true);
                         if ($treegrid.igTreeGridRowSelectors("option", "enableCheckBoxes") !== showCheckBox) {
                             $treegrid.igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
                         }
+                        // Clear selection.
                         if ((selectedValues === null || selectedValues === undefined) && (singleValue === null || singleValue === undefined)) {
                             $treegrid.igTreeGridSelection("clearSelection");
                         }
                         else {
+                            // Compare value.
                             var olds = _.map($treegrid.igTreeGridSelection("selectedRow"), function (row) {
                                 return row.id;
                             });
+                            // Not change, do nothing.
                             if (multiple) {
                                 if (_.isEqual(selectedValues.sort(), olds.sort())) {
                                     return;
                                 }
+                                // Update.
                                 $treegrid.igTreeGridSelection("clearSelection");
                                 selectedValues.forEach(function (val) {
                                     $treegrid.igTreeGridSelection("selectRowById", val);
@@ -9078,6 +9791,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9086,9 +9800,18 @@ var nts;
         (function (ui_11) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * UpDownButton binding handler
+                 */
                 var NtsUpDownBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsUpDownBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsUpDownBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $upDown = $(element);
                         if ($upDown.prop("tagName").toLowerCase() !== "div") {
@@ -9194,8 +9917,12 @@ var nts;
                                     }
                                 });
                                 if (moved) {
+                                    //                        $targetElement.igGrid("virtualScrollTo", 0);
                                     data.targetSource(source);
+                                    //                        $targetElement.igGrid("option", "dataSource", source);
+                                    //                        $targetElement.igGrid("dataBind");
                                     var index = upDown + grouped["group1"][0].index;
+                                    //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                                     _.defer(function () { $targetElement.igGrid("virtualScrollTo", index); });
                                 }
                             }
@@ -9203,6 +9930,7 @@ var nts;
                         var moveTree = function (upDown, $targetElement) {
                             var multiSelectedRaw = $targetElement.igTreeGrid("selectedRows");
                             var singleSelectedRaw = $targetElement.igTreeGrid("selectedRow");
+                            //                var targetSource = ko.unwrap(data.targetSource);
                             var selected;
                             if (multiSelectedRaw !== null) {
                                 if (multiSelectedRaw.length !== 1) {
@@ -9219,6 +9947,7 @@ var nts;
                             if (selected["index"] < 0) {
                                 return;
                             }
+                            //                var targetSource = ko.unwrap(data.targetSource);
                             var source = _.cloneDeep($targetElement.igTreeGrid("option", "dataSource"));
                             var result = findChild(upDown, selected["id"], source, false, false);
                             var moved = result.moved;
@@ -9226,6 +9955,9 @@ var nts;
                             source = result.source;
                             if (moved && changed) {
                                 data.targetSource(source);
+                                //                    $targetElement.igTreeGrid("option", "dataSource", source);
+                                //                    $targetElement.igTreeGrid("dataBind");
+                                //                    data.targetSource(source);
                                 var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                                 if (index !== selected["index"]) {
                                     var scrollTo = _.sumBy(_.filter($target.igTreeGrid("allRows"), function (row) {
@@ -9309,6 +10041,9 @@ var nts;
                         });
                         $upDown.find(".ntsUpDownButton").attr("tabindex", tabIndex);
                     };
+                    /**
+                     * Update
+                     */
                     NtsUpDownBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $upDown = $(element);
                         var elementId = $upDown.attr('id');
@@ -9331,6 +10066,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9339,16 +10075,29 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Wizard binding handler
+                 */
                 var WizardBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function WizardBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     WizardBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
+                        // Get step list
                         var options = ko.unwrap(data.steps);
                         var theme = ko.unwrap(data.theme);
                         var cssClass = "nts-wizard " + "theme-" + theme;
                         var active = ko.isObservable(data.active) ? data.active : ko.observable(data.active || 0);
+                        // Container
                         var container = $(element);
+                        // Create steps
                         for (var i = 0; i < options.length; i++) {
                             var contentClass = ko.unwrap(options[i].content);
                             var htmlStep = container.children('.steps').children(contentClass).html();
@@ -9357,10 +10106,12 @@ var nts;
                             container.append('<div>' + htmlContent + '</div>');
                         }
                         var icon = container.find('.header .image').data('icon');
+                        // Remove html
                         var header = container.children('.header');
                         container.children('.header').remove();
                         container.children('.steps').remove();
                         container.children('.contents').remove();
+                        // Create wizard
                         container.steps({
                             headerTag: "h1",
                             bodyTag: "div",
@@ -9372,9 +10123,11 @@ var nts;
                             autoFocus: false,
                             enableKeyNavigation: false,
                             onStepChanged: function () {
+                                // Remove old class.
                                 container.children('.steps').children('ul').children('li').removeClass('step-current');
                                 container.children('.steps').children('ul').children('li').removeClass('step-prev');
                                 container.children('.steps').children('ul').children('li').removeClass('step-next');
+                                // Add new class.
                                 container.children('.steps').children('ul').children('.done').addClass('disabled');
                                 container.children('.steps').children('ul').children('.current').addClass('step-current');
                                 container.children('.steps').children('ul').children('.done').addClass('step-prev');
@@ -9386,25 +10139,35 @@ var nts;
                                 return true;
                             }
                         }).data("length", options.length);
+                        // Add default class
                         container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
+                        //container.children('.steps').children('ul').children('.first').addClass('begin');
                         container.children('.steps').children('ul').children('.last').addClass('end');
                         container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
                         container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>');
+                        // Remove old class
                         container.children('.steps').children('ul').children('li').removeClass('step-current');
                         container.children('.steps').children('ul').children('li').removeClass('step-prev');
                         container.children('.steps').children('ul').children('li').removeClass('step-next');
+                        // Add new class
                         container.children('.steps').children('ul').children('.current').addClass('step-current');
                         container.children('.steps').children('ul').children('.done').addClass('step-prev');
                         container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                        // Remove content
                         container.find('.actions').hide();
+                        // Add Header
                         container.children('.steps').prepend(header);
                         container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
                     };
+                    /**
+                     * Update
+                     */
                     WizardBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var active = (data.active !== undefined) ? ko.unwrap(data.active) : 0;
+                        // Container
                         var container = $(element);
                         if (container.steps("getCurrentIndex") != active) {
                             container.setStep(active);
@@ -9417,6 +10180,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9428,6 +10192,9 @@ var nts;
                 var NtsLegentButtonBindingHandler = (function () {
                     function NtsLegentButtonBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
@@ -9436,6 +10203,9 @@ var nts;
                             showLegendPanel($container, data);
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsLegentButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
                     return NtsLegentButtonBindingHandler;
@@ -9507,6 +10277,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9541,9 +10312,15 @@ var nts;
         (function (ui_12) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Accordion binding handler
+                 */
                 var NtsCharsetSettingBindingHandler = (function () {
                     function NtsCharsetSettingBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsCharsetSettingBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = (data.value !== undefined) ? ko.unwrap(data.value) : null;
@@ -9580,6 +10357,9 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsCharsetSettingBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = (data.value !== undefined) ? ko.unwrap(data.value) : null;
@@ -9597,6 +10377,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9606,24 +10387,38 @@ var nts;
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
+                    /**
+                     * Create an instance of ContextMenu. Auto call init() method
+                     *
+                     * @constructor
+                     * @param {selector} Jquery selector for elements need to show ContextMenu
+                     * @param {items} List ContextMenuItem for ContextMenu
+                     * @param {enable} (Optinal) Set enable/disable for ContextMenu
+                     */
                     function ContextMenu(selector, items, enable) {
                         this.selector = selector;
                         this.items = items;
                         this.enable = (enable !== undefined) ? enable : true;
                         this.init();
                     }
+                    /**
+                     * Create ContextMenu and bind event in DOM
+                     */
                     ContextMenu.prototype.init = function () {
                         var self = this;
+                        // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
                         $('body .ntsContextMenu').each(function () {
                             if ($(this).data("selector") === self.selector) {
                                 $("body").off("contextmenu", self.selector);
                                 $(this).remove();
                             }
                         });
+                        // Initial
                         self.guid = nts.uk.util.randomId();
                         var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
                         self.createMenuItems($contextMenu);
                         $('body').append($contextMenu);
+                        // Binding contextmenu event
                         $("html").on("contextmenu", self.selector, function (event) {
                             if (self.enable === true) {
                                 event.preventDefault();
@@ -9635,20 +10430,34 @@ var nts;
                                 });
                             }
                         });
+                        // Hiding when click outside
                         $("html").on("mousedown", function (event) {
                             if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                                 $contextMenu.hide();
                             }
                         });
                     };
+                    /**
+                     * Remove and unbind ContextMenu event
+                     */
                     ContextMenu.prototype.destroy = function () {
+                        // Unbind contextmenu event
                         $("html").off("contextmenu", this.selector);
                         $("#" + this.guid).remove();
                     };
+                    /**
+                     * Re-create ContextMenu. Useful when you change various things in ContextMenu.items
+                     */
                     ContextMenu.prototype.refresh = function () {
                         this.destroy();
                         this.init();
                     };
+                    /**
+                     * Get a ContextMenuItem instance
+                     *
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     * @return {any} Return ContextMenuItem if found or undefiend
+                     */
                     ContextMenu.prototype.getItem = function (target) {
                         if (typeof target === "number") {
                             return this.items[target];
@@ -9660,10 +10469,20 @@ var nts;
                             return undefined;
                         }
                     };
+                    /**
+                     * Add an ContextMenuItem instance to ContextMenu
+                     *
+                     * @param {item} An ContextMenuItem instance
+                     */
                     ContextMenu.prototype.addItem = function (item) {
                         this.items.push(item);
                         this.refresh();
                     };
+                    /**
+                     * Remove item with given "key" or index
+                     *
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     */
                     ContextMenu.prototype.removeItem = function (target) {
                         var item = this.getItem(target);
                         if (item !== undefined) {
@@ -9671,14 +10490,31 @@ var nts;
                             this.refresh();
                         }
                     };
+                    /**
+                     * Enable/Disable ContextMenu. If disable right-click will have default behavior
+                     *
+                     * @param {enable} A boolean value set enable/disable
+                     */
                     ContextMenu.prototype.setEnable = function (enable) {
                         this.enable = enable;
                     };
+                    /**
+                     * Enable/Disable item with given "key" or index
+                     *
+                     * @param {enable} A boolean value set enable/disable
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     */
                     ContextMenu.prototype.setEnableItem = function (enable, target) {
                         var item = this.getItem(target);
                         item.enable = enable;
                         this.refresh();
                     };
+                    /**
+                     * Show/Hide item with given "key" or index
+                     *
+                     * @param {enable} A boolean value set visible/hidden
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     */
                     ContextMenu.prototype.setVisibleItem = function (visible, target) {
                         var item = this.getItem(target);
                         item.visible = visible;
@@ -9724,6 +10560,55 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="generic.d.ts/jquery.d.ts"/>
+/// <reference path="generic.d.ts/jquery.steps.d.ts"/>
+/// <reference path="generic.d.ts/igniteui.d.ts"/>
+/// <reference path="generic.d.ts/jqueryui.d.ts"/>
+/// <reference path="generic.d.ts/knockout.d.ts"/>
+/// <reference path="generic.d.ts/knockout.mapping.d.ts"/>
+/// <reference path="generic.d.ts/lodash.d.ts"/>
+/// <reference path="generic.d.ts/moment.d.ts"/>
+/// <reference path="generic.d.ts/require.d.ts"/>
+/// <reference path="ui/viewcontext.d.ts"/>
+/// <reference path="util.ts"/>
+/// <reference path="text.ts"/>
+/// <reference path="number.ts"/>
+/// <reference path="time.ts"/>
+/// <reference path="time/minutesbased/minutesbased.ts"/>
+/// <reference path="time/minutesbased/minutesbased_duration.ts"/>
+/// <reference path="time/minutesbased/minutesbased_clock.ts"/>
+/// <reference path="time/minutesbased/minutesbased_withdayattr.ts"/>
+/// <reference path="request.ts"/>
+/// <reference path="ui/init.ts"/>
+/// <reference path="ui/notify.ts"/>
+/// <reference path="ui/validation.ts"/>
+/// <reference path="ui/errors.ts"/>
+/// <reference path="ui/ui.ts"/>
+/// <reference path="ui/dialog-options.ts"/>
+/// <reference path="ui/textbox-options.ts"/>
+/// <reference path="ui/jquery-ext.ts"/>
+/// <reference path="ui/ko-ext.ts"/>
+/// <reference path="ui/ko-ext/checkbox-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/combobox-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/datepicker-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/dialog-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/editor-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/formlabel-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/gridlist-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/listbox-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/radiobox-ko-ext.ts"/> 
+/// <reference path="ui/ko-ext/searchbox-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/swaplist-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/switch-button-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/tabpanel-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/panel-ko-ext.ts"/> 
+/// <reference path="ui/ko-ext/treegrid-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/updown-button-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
+/// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
+/// <reference path="ui/function-wrap/contextmenu.ts"/> 
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9743,8 +10628,10 @@ var nts;
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         _super.call(this);
+                        // Default value
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
+                        // Add OK Button
                         this.buttons.push({
                             text: "OK",
                             "class": "yes",
@@ -9763,8 +10650,10 @@ var nts;
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         _super.call(this);
+                        // Default value
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
+                        // Add OK Button
                         this.buttons.push({
                             text: "はい",
                             "class": "yes ",
@@ -9775,6 +10664,7 @@ var nts;
                                 ui.dialog("close");
                             }
                         });
+                        // Add Cancel Button
                         this.buttons.push({
                             text: "いいえ",
                             "class": "no ",
@@ -9793,8 +10683,10 @@ var nts;
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         _super.call(this);
+                        // Default value
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
+                        // Add OK Button
                         this.buttons.push({
                             text: "はい",
                             "class": "yes ",
@@ -9805,6 +10697,7 @@ var nts;
                                 ui.dialog("close");
                             }
                         });
+                        // Add Cancel Button
                         this.buttons.push({
                             text: "いいえ",
                             "class": "no ",
@@ -9823,14 +10716,17 @@ var nts;
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         _super.call(this);
+                        // Default value
                         this.headers = (option && option.headers) ? option.headers : [
                             new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
                             new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", 150, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+                        //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
+                        // Add Close Button
                         this.buttons.push({
                             text: "閉じる",
                             "class": "yes ",
@@ -9849,6 +10745,7 @@ var nts;
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         _super.call(this);
+                        // Default value
                         this.headers = (option && option.headers) ? option.headers : [
                             new ui_14.errors.ErrorHeader("tab", "タブ", 90, true),
                             new ui_14.errors.ErrorHeader("location", "エラー箇所", 115, true),
@@ -9856,8 +10753,10 @@ var nts;
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+                        //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
+                        // Add Close Button
                         this.buttons.push({
                             text: "閉じる",
                             "class": "yes ",
@@ -9884,6 +10783,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9946,6 +10846,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -9954,9 +10855,15 @@ var nts;
         (function (ui_15) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Dialog binding handler
+                 */
                 var NtsDateRangePickerBindingHandler = (function () {
                     function NtsDateRangePickerBindingHandler() {
                     }
+                    /**
+                     * Init. sssss
+                     */
                     NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
@@ -10055,6 +10962,7 @@ var nts;
                         $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
                         $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
                         var $input = $container.find(".ntsDatepicker");
+                        // Init Datepicker
                         $input.datepicker({
                             language: 'ja-JP',
                             format: ISOFormat,
@@ -10090,6 +10998,7 @@ var nts;
                                         var currentDate = startDate.date();
                                         var isEndMonth = currentDate === startDate.endOf("months").date();
                                         var isStartMonth = currentDate === 1;
+                                        //                        maxDate = maxDate.add(1, 'year').add(-1, "months");
                                         maxDate = maxDate.date(1).add(1, 'year');
                                         if (isStartMonth) {
                                             maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
@@ -10155,6 +11064,9 @@ var nts;
                         }));
                         $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
+                    /**
+                     * Update
+                     */
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
@@ -10174,6 +11086,7 @@ var nts;
                             var oldStart = $startDate.val();
                             if (startDate !== oldStart) {
                                 if (startDate !== "" && startDate !== "Invalid date") {
+                                    // Check equals to avoid multi datepicker with same value
                                     $startDate.datepicker('setDate', startDate);
                                 }
                                 else {
@@ -10184,6 +11097,7 @@ var nts;
                             var oldEnd = $endDate.val();
                             if (endDate !== oldEnd) {
                                 if (endDate !== "" && endDate !== "Invalid date") {
+                                    // Check equals to avoid multi datepicker with same value
                                     $endDate.datepicker('setDate', endDate);
                                 }
                                 else {
@@ -10209,6 +11123,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10217,9 +11132,15 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * LinkButton
+                 */
                 var NtsLinkButtonBindingHandler = (function () {
                     function NtsLinkButtonBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var jump = ko.unwrap(data.jump);
@@ -10235,6 +11156,9 @@ var nts;
                                 nts.uk.request.jump(jump);
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
                     return NtsLinkButtonBindingHandler;
@@ -10244,6 +11168,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10285,6 +11210,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10293,9 +11219,15 @@ var nts;
         (function (ui_16) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Dialog binding handler
+                 */
                 var NtsColorPickerBindingHandler = (function () {
                     function NtsColorPickerBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsColorPickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
@@ -10361,9 +11293,10 @@ var nts;
                                 var required = $picker.data("required");
                                 $picker.ntsError('clear');
                                 if (!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)) {
-                                    data.value(color.toHexString());
+                                    data.value(color.toHexString()); // #ff0000    
                                 }
                                 else if (required === true) {
+                                    //                        _.defer(() => { 
                                     $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
                                 }
                             }
@@ -10401,6 +11334,9 @@ var nts;
                             $container.find(".sp-preview").width(width - 30);
                         }
                     };
+                    /**
+                     * Update
+                     */
                     NtsColorPickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var tag = $(element).prop("tagName").toLowerCase();
@@ -10434,6 +11370,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10498,6 +11435,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10560,6 +11498,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10612,6 +11551,10 @@ var nts;
                                 $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                                 $grid.igGrid("commit");
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
+                                    //                        let current = $grid.ntsGridList("getSelected");
+                                    //                        if(current !== undefined){
+                                    //                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+                                    //                        }
                                     if (!nts.uk.util.isNullOrUndefined(scrollTop_1) && scrollTop_1 !== 0) {
                                         setTimeout(function () {
                                             $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop_1);
@@ -10655,7 +11598,7 @@ var nts;
                                         }
                                         else {
                                             var index = $(selected["element"]).attr("data-row-idx");
-                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index));
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                         }
                                     }
                                 });
@@ -10755,20 +11698,25 @@ var nts;
                     }
                     function setupDragging($grid) {
                         var dragSelectRange = [];
+                        // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
                         $grid.bind('mousedown', function (e) {
+                            // グリッド内がマウスダウンされていない場合は処理なしで終了
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
                             }
+                            // current grid size
                             var gridVerticalRange = new uk.util.Range($container.offset().top, $container.offset().top + $container.height());
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
                                 rowIndex: ui_17.ig.grid.getRowIndexFrom($(e.target))
                             };
+                            // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
                             var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
+                            // auto scroll while mouse is outside grid
                             var timerAutoScroll = setInterval(function () {
                                 var distance = gridVerticalRange.distanceFrom(mousePos.y);
                                 if (distance === 0) {
@@ -10778,8 +11726,10 @@ var nts;
                                 var currentScrolls = $scroller.scrollTop();
                                 $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                             }, 20);
+                            // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('mousemove.NtsGridListDragging', function (e) {
                                 var newPointedRowIndex = ui_17.ig.grid.getRowIndexFrom($(e.target));
+                                // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
                                 }
@@ -10793,6 +11743,7 @@ var nts;
                                 }
                                 updateSelections();
                             });
+                            // stop dragging
                             $(window).one('mouseup', function (e) {
                                 mousePos = null;
                                 dragSelectRange = [];
@@ -10800,20 +11751,27 @@ var nts;
                                 if ($grid.data("selectUpdated") === true) {
                                     $grid.triggerHandler('selectionchanged');
                                 }
+                                //$grid.triggerHandler('selectionchanged');  
                                 clearInterval(timerAutoScroll);
                                 $grid.data("selectUpdated", false);
                             });
                         });
                         function updateSelections() {
+                            // rowIndex is NaN when mouse is outside grid
                             if (isNaN(mousePos.rowIndex)) {
                                 return;
                             }
+                            // 以前のドラッグ範囲の選択を一旦解除する
+                            // TODO: probably this code has problem of perfomance when select many rows
+                            // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
+                                // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
                                 $grid.igGridSelection('deselectRow', dragSelectRange[i]);
                             }
                             var newDragSelectRange = [];
                             if (dragSelectRange[0] <= mousePos.rowIndex) {
                                 for (var j = dragSelectRange[0]; j <= mousePos.rowIndex; j++) {
+                                    // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
                                     $grid.igGridSelection('selectRow', j);
                                     newDragSelectRange.push(j);
                                 }
@@ -10834,18 +11792,23 @@ var nts;
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
+                        //            $grid.on('mouseup', () => {
+                        //                $grid.triggerHandler('selectionchanged');
+                        //            });
                     }
                     function unsetupDragging($grid) {
                         $grid.unbind('mousedown');
                     }
                     function unsetupSelectingEvents($grid) {
                         $grid.unbind('iggridselectionrowselectionchanged');
+                        //            $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
             })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10854,14 +11817,25 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * CheckBox binding handler
+                 */
                 var NtsFileUploadBindingHandler = (function () {
+                    /**
+                     * Constructor..
+                     */
                     function NtsFileUploadBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var fileName = data.filename;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
+                        // Container
                         var container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
@@ -10896,6 +11870,9 @@ var nts;
                             onfilenameclick($(this).text());
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var fileName = ko.unwrap(data.filename);
@@ -10939,6 +11916,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -10947,9 +11925,13 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Let binding handler
+                 */
                 var NtsLetBindingHandler = (function () {
                     function NtsLetBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            // Make a modified binding context, with extra properties, and apply it to descendant elements
                             ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
                             return { controlsDescendantBindings: true };
                         };
@@ -10962,6 +11944,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -11060,6 +12043,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -11176,6 +12160,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -11184,14 +12169,19 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * HelpButton binding handler
+                 */
                 var NtsHelpButtonBindingHandler = (function () {
                     function NtsHelpButtonBindingHandler() {
                     }
                     NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var image = ko.unwrap(data.image);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var position = ko.unwrap(data.position);
+                        //Position
                         var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
                         var atPositions = position.split(" ");
                         var operator = 1;
@@ -11213,6 +12203,7 @@ var nts;
                             caretPosition = "top";
                             marginDirection = "margin-left";
                         }
+                        // Container
                         $(element).on("click", function () {
                             if ($popup.is(":visible")) {
                                 $popup.hide();
@@ -11237,6 +12228,7 @@ var nts;
                             .append($caret)
                             .append($("<img src='" + uk.request.resolvePath(image) + "' />"))
                             .appendTo($container).hide();
+                        // Click outside event
                         $("html").on("click", function (event) {
                             if (!$container.is(event.target) && $container.has(event.target).length === 0) {
                                 $container.find(".nts-help-button-image").hide();
@@ -11244,8 +12236,10 @@ var nts;
                         });
                     };
                     NtsHelpButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Enable
                         (enable === true) ? $(element).removeAttr("disabled") : $(element).attr("disabled", "disabled");
                     };
                     return NtsHelpButtonBindingHandler;
@@ -11255,6 +12249,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -11290,7 +12285,7 @@ var nts;
                                 if (row) {
                                     var rowScrollTop = row.index * row.element.height();
                                     var scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
-                                    if (isNaN(rowScrollTop)
+                                    if (isNaN(rowScrollTop) // In case virtualization not render row 
                                         || rowScrollTop < scrollContainer.scrollTop()
                                         || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
                                         $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
@@ -11372,6 +12367,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -11386,6 +12382,9 @@ var nts;
                     var dist;
                     (function (dist) {
                         dist.REMOTE = "Remote";
+                        /**
+                         * Query.
+                         */
                         function query(features) {
                             storage = new Local();
                             var store = feature.find(features, feature.STORAGE);
@@ -11399,11 +12398,17 @@ var nts;
                         var Local = (function () {
                             function Local() {
                             }
+                            /**
+                             * Get item.
+                             */
                             Local.prototype.getItem = function (key) {
                                 var dfd = $.Deferred();
                                 dfd.resolve(uk.localStorage.getItem(key));
                                 return dfd.promise();
                             };
+                            /**
+                             * Set item.
+                             */
                             Local.prototype.setItemAsJson = function (key, value) {
                                 var dfd = $.Deferred();
                                 uk.localStorage.setItemAsJson(key, value);
@@ -11418,6 +12423,9 @@ var nts;
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
                             }
+                            /**
+                             * Get item.
+                             */
                             Remote.prototype.getItem = function (key) {
                                 var dfd = $.Deferred();
                                 uk.request.ajax(this.loadPath, { value: key }).done(function (widths) {
@@ -11425,6 +12433,9 @@ var nts;
                                 });
                                 return dfd.promise();
                             };
+                            /**
+                             * Set item.
+                             */
                             Remote.prototype.setItemAsJson = function (key, value) {
                                 var dfd = $.Deferred();
                                 uk.request.ajax(this.savePath, { key: key, columns: value }).done(function (res) {
@@ -11455,6 +12466,7 @@ var nts;
                             });
                         }
                         validation.scanValidators($(self), options.columns);
+                        // Cell color
                         var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
                         $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
@@ -11491,12 +12503,15 @@ var nts;
                                     }
                                 };
                             }
+                            // Have column group
                             if (!uk.util.isNullOrUndefined(column.group)) {
                                 var cols = _.map(column.group, formatColumn);
                                 column.group = cols;
                                 return column;
                             }
+                            // Special column types
                             specialColumn.ifTrue(columnSpecialTypes, column);
+                            // Control types
                             if (column.ntsControl === undefined) {
                                 columnControlTypes[column.key] = ntsControls.TEXTBOX;
                                 return cellFormatter.format(column);
@@ -11516,10 +12531,12 @@ var nts;
                                 return cellFormatter.format(column);
                             }
                             var $self = $(self);
+                            // Format column
                             column.formatter = function (value, rowObj) {
                                 if (uk.util.isNullOrUndefined(rowObj))
                                     return value;
                                 var rowId = rowObj[$self.igGrid("option", "primaryKey")];
+                                // Update
                                 var update = function (val) {
                                     if (!uk.util.isNullOrUndefined($self.data("igGrid"))) {
                                         updating.updateCell($self, rowId, column.key, column.dataType !== 'string' ? val : val.toString());
@@ -11531,10 +12548,12 @@ var nts;
                                         }
                                     }
                                 };
+                                // Delete row
                                 var deleteRow = function () {
                                     if ($self.data("igGrid") !== null)
                                         $self.data("igGridUpdating").deleteRow(rowId);
                                 };
+                                // Get control
                                 var ntsControl = ntsControls.getControl(controlDef.controlType);
                                 var cell = $self.igGrid("cellById", rowId, column.key);
                                 var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
@@ -11571,11 +12590,13 @@ var nts;
                                         }
                                     }
                                     ntsControl.$containedGrid = $self;
+                                    // Cell state color
                                     var c = {
                                         id: rowId,
                                         columnKey: column.key,
                                         element: $gridCell[0]
                                     };
+                                    // Format cell
                                     cellFormatter.style($self, c);
                                     color.rememberDisabled($self, c);
                                 }, 0);
@@ -11588,18 +12609,25 @@ var nts;
                         updating.addFeature(options);
                         options.autoCommit = true;
                         dist.query(options.ntsFeatures);
+                        // Decorate editor border
                         events.onCellClick($(self));
+                        // Copy&Paste
                         copyPaste.ifOn($(self), options);
                         events.afterRendered(options, cbSelectionColumns);
                         columnSize.init($(self), options.columns);
                         ntsControls.bindCbHeaderColumns(options, cbHeaderColumns, cbSelectionColumns);
+                        // Group column key and its control type 
                         $(this).data(internal.CONTROL_TYPES, columnControlTypes);
+                        // Group column key and its special type
                         $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
+                        // Sheet
                         sheet.load.setup($(self), options);
+                        // Common settings
                         settings.build($(self), options);
                         if (!onDemand.initial($(self), options)) {
                             $(this).igGrid(options);
                         }
+                        // Window resize
                         $(window).resize(function () {
                             if (options.autoFitWindow) {
                                 settings.setGridSize($(self));
@@ -11625,6 +12653,9 @@ var nts;
                         feature_1.SHEET = "Sheet";
                         feature_1.DEMAND_LOAD = "LoadOnDemand";
                         feature_1.STORAGE = "Storage";
+                        /**
+                         * Replace feature
+                         */
                         function replaceBy(options, featureName, newFeature) {
                             var replaceId;
                             _.forEach(options.features, function (feature, id) {
@@ -11636,12 +12667,18 @@ var nts;
                             options.features.splice(replaceId, 1, newFeature);
                         }
                         feature_1.replaceBy = replaceBy;
+                        /**
+                         * Check enable
+                         */
                         function isEnable(features, name) {
                             return _.find(features, function (feature) {
                                 return feature.name === name;
                             }) !== undefined;
                         }
                         feature_1.isEnable = isEnable;
+                        /**
+                         * Find feature
+                         */
                         function find(features, name) {
                             return _.find(features, function (feature) {
                                 return feature.name === name;
@@ -11651,6 +12688,9 @@ var nts;
                     })(feature || (feature = {}));
                     var updating;
                     (function (updating) {
+                        /**
+                         * Add feature
+                         */
                         function addFeature(options) {
                             var updateFeature = createUpdateOptions(options);
                             if (!feature.isEnable(options.features, feature.UPDATING)) {
@@ -11661,6 +12701,9 @@ var nts;
                             }
                         }
                         updating.addFeature = addFeature;
+                        /**
+                         * Create update options
+                         */
                         function createUpdateOptions(options) {
                             var updateFeature = { name: feature.UPDATING, enableAddRow: false, enableDeleteRow: false, editMode: 'none' };
                             if (feature.isEnable(options.ntsFeatures, feature.CELL_EDIT)) {
@@ -11670,6 +12713,9 @@ var nts;
                             }
                             return updateFeature;
                         }
+                        /**
+                         * Check control
+                         */
                         function containsNtsControl($target) {
                             var td = $target;
                             if (!$target.prev().is("td"))
@@ -11677,6 +12723,9 @@ var nts;
                             return td.find("div[class*='nts-grid-control']").length > 0;
                         }
                         updating.containsNtsControl = containsNtsControl;
+                        /**
+                         * Edit cell
+                         */
                         function startEditCell(evt, ui) {
                             if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                                 var selectedCell = selection.getSelectedCell($(evt.target));
@@ -11689,6 +12738,9 @@ var nts;
                                 return false;
                             return true;
                         }
+                        /**
+                         * Validate
+                         */
                         function onEditCell(evt, cell) {
                             var $grid = fixedColumns.realGridOf($(evt.currentTarget));
                             if (!utils.isEditMode($grid))
@@ -11706,6 +12758,9 @@ var nts;
                             }
                         }
                         updating.onEditCell = onEditCell;
+                        /**
+                         * Trigger update
+                         */
                         function triggerCellUpdate(evt, cell) {
                             var grid = evt.currentTarget;
                             var $targetGrid = fixedColumns.realGridOf($(grid));
@@ -11722,11 +12777,16 @@ var nts;
                             }
                         }
                         updating.triggerCellUpdate = triggerCellUpdate;
+                        /**
+                         * Start edit
+                         */
                         function startEdit(evt, cell) {
                             var $targetGrid = fixedColumns.realGridOf($(evt.currentTarget));
                             if (!utils.updatable($targetGrid))
                                 return;
                             utils.startEdit($targetGrid, cell);
+                            // Keep text contents if any, otherwise set input value
+                            //                if ($(cell.element).text().trim() !== "") evt.preventDefault();
                             if (!utils.isDeleteKey(evt)) {
                                 setTimeout(function () {
                                     var cellValue;
@@ -11748,6 +12808,7 @@ var nts;
                                         }, 100);
                                         cellValue = numericStr;
                                     }
+                                    // Validate
                                     var validators = $targetGrid.data(validation.VALIDATORS);
                                     var fieldValidator = validators[cell.columnKey];
                                     if (uk.util.isNullOrUndefined(fieldValidator))
@@ -11762,6 +12823,9 @@ var nts;
                             }
                             evt.stopImmediatePropagation();
                         }
+                        /**
+                         * Interrupt manipulations (e.g. cell navigation) on grid if errors occurred (setting needed).
+                         */
                         function beforeFinishEditCell(evt, ui) {
                             var $grid = $(evt.target);
                             var selectedCell = selection.getSelectedCell($grid);
@@ -11776,6 +12840,7 @@ var nts;
                                 if (!uk.util.isNullOrUndefined(origValues)) {
                                     _.forEach(Object.keys(origValues), function (colKey, idx) {
                                         if (idx === 0) {
+                                            // Skip default update
                                             gridUpdate_1._originalValues[colKey] = ui.value;
                                             return false;
                                         }
@@ -11785,18 +12850,26 @@ var nts;
                                     });
                                 }
                             }
+                            // Remove border color of editor
                             var $editorContainer = $(selectedCell.element).find(errors.EDITOR_SELECTOR);
                             if ($editorContainer.length > 0)
                                 $editorContainer.css(errors.NO_ERROR_STL);
                             specialColumn.tryDo($grid, selectedCell, ui.value);
                             return true;
                         }
+                        /**
+                         * Update row and re-render all controls.
+                         * @Obsolete
+                         */
                         function _updateRow($grid, rowId, visibleColumnsMap, updatedRowData) {
                             if (uk.util.isNullOrUndefined(updatedRowData) || Object.keys(updatedRowData).length === 0)
                                 return;
                             $grid.igGridUpdating("updateRow", utils.parseIntIfNumber(rowId, $grid, visibleColumnsMap), updatedRowData);
                         }
                         updating._updateRow = _updateRow;
+                        /**
+                         * Update cell.
+                         */
                         function updateCell($grid, rowId, columnKey, cellValue, allColumnsMap, forceRender) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
@@ -11815,6 +12888,9 @@ var nts;
                             gridUpdate._notifyCellUpdated(rId);
                         }
                         updating.updateCell = updateCell;
+                        /**
+                         * Update row.
+                         */
                         function updateRow($grid, rowId, updatedRowData, allColumnsMap, forceRender) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
@@ -11833,6 +12909,7 @@ var nts;
                                 if (isControl && !forceRender)
                                     return;
                                 var $vCell = renderCell($grid, rId, key, origData);
+                                // Validate
                                 var validators = $grid.data(validation.VALIDATORS);
                                 var fieldValidator = validators[key];
                                 if (uk.util.isNullOrUndefined(fieldValidator))
@@ -11852,6 +12929,9 @@ var nts;
                             gridUpdate._notifyRowUpdated(rId, null);
                         }
                         updating.updateRow = updateRow;
+                        /**
+                         * Render cell
+                         */
                         function renderCell($grid, rowId, columnKey, latestValues) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
@@ -11869,6 +12949,9 @@ var nts;
                     })(updating || (updating = {}));
                     var selection;
                     (function (selection_1) {
+                        /**
+                         * Add feature
+                         */
                         function addFeature(options) {
                             var selection = { name: feature.SELECTION, mode: "cell", multipleSelection: true, wrapAround: false, cellSelectionChanged: selectCellChange };
                             if (!feature.isEnable(options.features, feature.SELECTION)) {
@@ -11879,6 +12962,9 @@ var nts;
                             }
                         }
                         selection_1.addFeature = addFeature;
+                        /**
+                         * Select before
+                         */
                         function selectBefore($grid, enterDirection) {
                             var enter = enterDirection || "right";
                             if (enter === "right")
@@ -11887,6 +12973,9 @@ var nts;
                                 selectAbove($grid);
                         }
                         selection_1.selectBefore = selectBefore;
+                        /**
+                         * Select previous
+                         */
                         function selectPrev($grid) {
                             var selectedCell = getSelectedCell($grid);
                             if (uk.util.isNullOrUndefined(selectedCell))
@@ -11937,6 +13026,9 @@ var nts;
                             }
                         }
                         selection_1.selectPrev = selectPrev;
+                        /**
+                         * Select above
+                         */
                         function selectAbove($grid) {
                             var selectedCell = getSelectedCell($grid);
                             if (uk.util.isNullOrUndefined(selectedCell))
@@ -12012,6 +13104,9 @@ var nts;
                             }
                         }
                         selection_1.selectAbove = selectAbove;
+                        /**
+                         * Select follow
+                         */
                         function selectFollow($grid, enterDirection) {
                             var enter = enterDirection || "right";
                             if (enter === "right")
@@ -12020,6 +13115,9 @@ var nts;
                                 selectBelow($grid);
                         }
                         selection_1.selectFollow = selectFollow;
+                        /**
+                         * Select next
+                         */
                         function selectNext($grid) {
                             var selectedCell = getSelectedCell($grid);
                             if (uk.util.isNullOrUndefined(selectedCell))
@@ -12079,6 +13177,9 @@ var nts;
                                 }
                             }
                         }
+                        /**
+                         * Select below
+                         */
                         function selectBelow($grid) {
                             var selectedCell = getSelectedCell($grid);
                             if (uk.util.isNullOrUndefined(selectedCell))
@@ -12149,6 +13250,9 @@ var nts;
                                 }, 1);
                             }
                         }
+                        /**
+                         * Get selected cell
+                         */
                         function getSelectedCell($grid) {
                             if (!utils.selectable($grid)) {
                                 var $targetGrid = fixedColumns.realGridOf($grid);
@@ -12159,14 +13263,21 @@ var nts;
                             return $grid.igGridSelection("selectedCells")[0] || $grid.data(internal.SELECTED_CELL);
                         }
                         selection_1.getSelectedCell = getSelectedCell;
+                        /**
+                         * Get selected cells
+                         */
                         function getSelectedCells($grid) {
                             return utils.selectable($grid) ? $grid.igGridSelection("selectedCells") : undefined;
                         }
                         selection_1.getSelectedCells = getSelectedCells;
+                        /**
+                         * Select cell
+                         */
                         function selectCell($grid, rowIndex, columnIndex, isFixed) {
                             if (!utils.selectable($grid))
                                 return;
                             $grid.igGridSelection("selectCell", rowIndex, columnIndex, utils.fixable($grid) ? isFixed : undefined);
+                            // Fire cell selection change
                             var ui = { owner: $grid.data("igGridSelection"),
                                 selectedCells: $grid.igGridSelection("selectedCells") };
                             var selectedCells = $grid.igGridSelection("selectedCells");
@@ -12221,6 +13332,9 @@ var nts;
                             }
                         }
                         selection_1.onCellNavigate = onCellNavigate;
+                        /**
+                         * Clear selection
+                         */
                         function clearSelection($grid) {
                             if (utils.selectable($grid)) {
                                 $grid.igGridSelection("clearSelection");
@@ -12242,6 +13356,9 @@ var nts;
                     })(selection || (selection = {}));
                     var columnSize;
                     (function (columnSize) {
+                        /**
+                         * Initialize
+                         */
                         function init($grid, columns) {
                             initValueExists($grid).done(function (res) {
                                 if (res)
@@ -12254,6 +13371,9 @@ var nts;
                             });
                         }
                         columnSize.init = init;
+                        /**
+                         * Flat.
+                         */
                         function flat(col, columnWidths) {
                             if (col.group) {
                                 _.forEach(col.group, function (sCol) {
@@ -12263,6 +13383,9 @@ var nts;
                             }
                             columnWidths[col.key] = parseInt(col.width);
                         }
+                        /**
+                         * Load data
+                         */
                         function load($grid) {
                             var storeKey = getStorageKey($grid);
                             storage.getItem(storeKey).done(function (widths) {
@@ -12280,6 +13403,9 @@ var nts;
                             });
                         }
                         columnSize.load = load;
+                        /**
+                         * Save data
+                         */
                         function save($grid, columnKey, columnWidth) {
                             var storeKey = getStorageKey($grid);
                             if (storage instanceof dist.Local) {
@@ -12301,6 +13427,9 @@ var nts;
                             }
                         }
                         columnSize.save = save;
+                        /**
+                         * Save all data
+                         */
                         function saveAll($grid, widths) {
                             var storeKey = getStorageKey($grid);
                             storage.getItem(storeKey).done(function (columnWidths) {
@@ -12320,6 +13449,9 @@ var nts;
                         function getStorageKey($grid) {
                             return uk.request.location.current.rawUrl + "/" + $grid.attr("id");
                         }
+                        /**
+                         * Load column
+                         */
                         function loadOne($grid, columnKey) {
                             var storeKey = getStorageKey($grid);
                             storage.getItem(storeKey).done(function (widths) {
@@ -12331,6 +13463,9 @@ var nts;
                             });
                         }
                         columnSize.loadOne = loadOne;
+                        /**
+                         * Load fixed columns
+                         */
                         function loadFixedColumns($grid) {
                             var storeKey = getStorageKey($grid);
                             uk.localStorage.getItem(storeKey).ifPresent(function (columns) {
@@ -12345,6 +13480,9 @@ var nts;
                             });
                         }
                         columnSize.loadFixedColumns = loadFixedColumns;
+                        /**
+                         * Set width
+                         */
                         function setWidth($grid, columnKey, width, noCheck) {
                             if (noCheck !== true && uk.util.isNullOrUndefined($grid.data("igGridResizing")))
                                 return;
@@ -12353,6 +13491,9 @@ var nts;
                             }
                             catch (e) { }
                         }
+                        /**
+                         * Set widths
+                         */
                         function setWidths($grid, columns) {
                             if (uk.util.isNullOrUndefined($grid.data("igGridResizing"))
                                 || uk.util.isNullOrUndefined(columns))
@@ -12374,6 +13515,9 @@ var nts;
                         functions.CHECK_ALL = "checkAll";
                         functions.UNCHECK_ALL = "uncheckAll";
                         functions.DESTROY = "destroy";
+                        /**
+                         * Actions
+                         */
                         function ntsAction($grid, method, params) {
                             switch (method) {
                                 case functions.UPDATE_ROW:
@@ -12414,6 +13558,9 @@ var nts;
                             }
                         }
                         functions.ntsAction = ntsAction;
+                        /**
+                         * Update row
+                         */
                         function updateRow($grid, rowId, object, autoCommit) {
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
@@ -12423,6 +13570,9 @@ var nts;
                                     $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                             }
                         }
+                        /**
+                         * Disable controls
+                         */
                         function disableNtsControls($grid, columnKey, controlType) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
@@ -12432,6 +13582,9 @@ var nts;
                                 color.pushDisable($grid, { id: id, columnKey: columnKey });
                             }
                         }
+                        /**
+                         * Enable controls
+                         */
                         function enableNtsControls($grid, columnKey, controlType) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
@@ -12441,6 +13594,9 @@ var nts;
                                 color.popDisable($grid, { id: id, columnKey: columnKey });
                             }
                         }
+                        /**
+                         * Disable control
+                         */
                         function disableNtsControlAt($grid, rowId, columnKey, controlType) {
                             var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
                             var control = ntsControls.getControl(controlType);
@@ -12451,6 +13607,9 @@ var nts;
                                 $(cellContainer).addClass(color.Disable);
                             color.pushDisable($grid, { id: rowId, columnKey: columnKey });
                         }
+                        /**
+                         * Enable control
+                         */
                         function enableNtsControlAt($grid, rowId, columnKey, controlType) {
                             var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
                             var control = ntsControls.getControl(controlType);
@@ -12460,6 +13619,9 @@ var nts;
                             $(cellContainer).removeClass(color.Disable);
                             color.popDisable($grid, { id: rowId, columnKey: columnKey });
                         }
+                        /**
+                         * Check all
+                         */
                         function checkAll($grid, key) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
@@ -12470,6 +13632,9 @@ var nts;
                                 updating.updateCell($grid, id, key, true, undefined, true);
                             }
                         }
+                        /**
+                         * Uncheck all
+                         */
                         function uncheckAll($grid, key) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
@@ -12480,6 +13645,9 @@ var nts;
                                 updating.updateCell($grid, id, key, false, undefined, true);
                             }
                         }
+                        /**
+                         * Destroy
+                         */
                         function destroy($grid) {
                             var $container = $grid.closest(".nts-grid-container");
                             if ($container.length === 0) {
@@ -12504,6 +13672,9 @@ var nts;
                         ntsControls.IMAGE = 'Image';
                         ntsControls.HEIGHT_CONTROL = "27px";
                         ntsControls.COMBO_CLASS = "nts-combo-container";
+                        /**
+                         * Get control
+                         */
                         function getControl(name) {
                             switch (name) {
                                 case ntsControls.CHECKBOX:
@@ -12523,6 +13694,9 @@ var nts;
                             }
                         }
                         ntsControls.getControl = getControl;
+                        /**
+                         * Draw label
+                         */
                         function drawLabel($grid, column, cellFormatter) {
                             column.formatter = function (value, rowObj) {
                                 if (uk.util.isNullOrUndefined(rowObj))
@@ -12549,6 +13723,9 @@ var nts;
                             };
                         }
                         ntsControls.drawLabel = drawLabel;
+                        /**
+                         * Create header checkbox.
+                         */
                         function createHeaderCheckbox(data, key) {
                             var defaultOptions = {
                                 update: $.noop,
@@ -12559,6 +13736,9 @@ var nts;
                             return new CheckBox().draw(options).addClass("nts-grid-header-control-" + key).prop("outerHTML");
                         }
                         ntsControls.createHeaderCheckbox = createHeaderCheckbox;
+                        /**
+                         * Bind cb header columns.
+                         */
                         function bindCbHeaderColumns(options, columns, selectionColumns) {
                             options.headerCellRendered = function (evt, ui) {
                                 var $grid = $(ui.owner.element);
@@ -12729,20 +13909,25 @@ var nts;
                             };
                             ComboBox.prototype.draw = function (data) {
                                 var self = this;
+                                // Default values.
                                 var distanceColumns = '     ';
+                                // Character used fill to the columns.
                                 var fillCharacter = ' ';
                                 var maxWidthCharacter = 15;
                                 var container = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
                                 var columns = data.controlDef.columns;
+                                // Set attribute for multi column.
                                 var itemTemplate = undefined;
                                 var haveColumn = columns && columns.length > 0;
                                 if (haveColumn) {
                                     itemTemplate = '<div class="nts-combo-item">';
                                     _.forEach(columns, function (item, i) {
+                                        // Set item template.
                                         itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
                                     });
                                     itemTemplate += '</div>';
                                 }
+                                // Display full code name
                                 if (data.controlDef.displayMode === "codeName") {
                                     data.controlDef.options = data.controlDef.options.map(function (option) {
                                         var newOptionText = '';
@@ -12790,6 +13975,7 @@ var nts;
                                         var columnKey = classNameParts.pop();
                                         var targetCell = __self.$containedGrid.igGrid("cellById", rowId, columnKey);
                                         var $comboContainer = $(targetCell).find("." + __self.containerClass());
+                                        // Clear error if any
                                         var comboInput = $($comboContainer.find("input")[1]);
                                         comboInput.ntsError("clear");
                                         nts.uk.ui.errors.removeByElement(comboInput);
@@ -12811,12 +13997,15 @@ var nts;
                                                 var columnKey = classNameParts.pop();
                                                 var targetCell = __self.$containedGrid.igGrid("cellById", rowId, columnKey);
                                                 var $comboContainer = $(targetCell).find("." + __self.containerClass());
+                                                // Save selected item
                                                 $comboContainer.data(internal.COMBO_SELECTED, selectedValue_1);
                                             }, 0);
                                         }
                                     }
                                 });
+                                // Save init value
                                 container.data(internal.COMBO_SELECTED, data.initValue);
+                                // Set width for multi columns.
                                 if (haveColumn) {
                                     var totalWidth = 0;
                                     var $dropDownOptions = $(container.igCombo("dropDown"));
@@ -12986,6 +14175,9 @@ var nts;
                             }
                         }
                         specialColumn_1.ifTrue = ifTrue;
+                        /**
+                         * Try column
+                         */
                         function tryDo($grid, cell, pastedText, visibleColumnsMap) {
                             var columnTypes = $grid.data(internal.SPECIAL_COL_TYPES);
                             var specialColumn;
@@ -13062,12 +14254,19 @@ var nts;
                                 selection.addFeature(options);
                                 return new Processor(options);
                             };
+                            /**
+                             * $grid to handle copy paste
+                             * $target to bind events to
+                             */
                             Processor.prototype.chainEvents = function ($grid, $target) {
                                 var self = this;
                                 self.$grid = $grid;
                                 var target = !uk.util.isNullOrUndefined($target) ? $target : $grid;
                                 events.Handler.pull(target).focusInWith(self).ctrlCxpWith(self);
                             };
+                            /**
+                             * Copy
+                             */
                             Processor.prototype.copyHandler = function (cut) {
                                 var selectedCells = selection.getSelectedCells(this.$grid);
                                 var copiedData;
@@ -13094,6 +14293,9 @@ var nts;
                                 document.execCommand("copy");
                                 return selectedCells;
                             };
+                            /**
+                             * Converse structure
+                             */
                             Processor.prototype.converseStructure = function (cells, cut) {
                                 var self = this;
                                 var maxRow = 0;
@@ -13149,6 +14351,9 @@ var nts;
                                 }
                                 return structData;
                             };
+                            /**
+                             * Cut
+                             */
                             Processor.prototype.cutHandler = function () {
                                 var self = this;
                                 var selectedCells = this.copyHandler(true);
@@ -13164,6 +14369,9 @@ var nts;
                                     updating.updateRow(self.$grid, $row.data("id"), updatedRowData);
                                 });
                             };
+                            /**
+                             * Paste
+                             */
                             Processor.prototype.pasteHandler = function (evt) {
                                 if (this.copyMode === CopyMode.SINGLE) {
                                     this.pasteSingleCellHandler(evt);
@@ -13172,6 +14380,9 @@ var nts;
                                     this.pasteRangeHandler(evt);
                                 }
                             };
+                            /**
+                             * Paste single cell
+                             */
                             Processor.prototype.pasteSingleCellHandler = function (evt) {
                                 var self = this;
                                 var cbData = this.getClipboardContent(evt);
@@ -13187,6 +14398,7 @@ var nts;
                                     var updatedRow = {};
                                     var columnsGroup = utils.columnsGroupOfCell(cell, visibleColumnsMap);
                                     var columnKey = columnsGroup[columnIndex].key;
+                                    // When pasted cell is combox
                                     if (utils.isComboBox(self.$grid, cell.columnKey)) {
                                         var copiedValue = ntsControls.comboBox.getCopiedValue(cell, cbData);
                                         if (!uk.util.isNullOrUndefined(copiedValue)) {
@@ -13194,6 +14406,7 @@ var nts;
                                                 ? parseInt(copiedValue) : copiedValue;
                                         }
                                         else {
+                                            // TODO: Handle if texts in item list not map pasted text.
                                             var $combo = cell.element.find(".nts-combo-container");
                                             var $comboInput = $($combo.find("input")[1]);
                                             $comboInput.ntsError("set", "Pasted text not valid");
@@ -13213,6 +14426,9 @@ var nts;
                                     updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow);
                                 });
                             };
+                            /**
+                             * Paste range
+                             */
                             Processor.prototype.pasteRangeHandler = function (evt) {
                                 var cbData = this.getClipboardContent(evt);
                                 if (utils.isEditMode(this.$grid)) {
@@ -13224,6 +14440,9 @@ var nts;
                                     this.pasteInMode === PasteMode.UPDATE ? this.updateWith(cbData) : this.addNew(cbData);
                                 }
                             };
+                            /**
+                             * Get clipboard content
+                             */
                             Processor.prototype.getClipboardContent = function (evt) {
                                 if (window.clipboardData) {
                                     window.event.returnValue = false;
@@ -13233,11 +14452,17 @@ var nts;
                                     return evt.originalEvent.clipboardData.getData("text/plain");
                                 }
                             };
+                            /**
+                             * Process in edit mode
+                             */
                             Processor.prototype.processInEditMode = function (data) {
                                 if (uk.util.isNullOrUndefined(data))
                                     return;
                                 return data.split("\n")[0];
                             };
+                            /**
+                             * Update in edit mode
+                             */
                             Processor.prototype.updateInEditMode = function (data) {
                                 var selectedCell = selection.getSelectedCell(this.$grid);
                                 var rowIndex = selectedCell.rowIndex;
@@ -13250,6 +14475,9 @@ var nts;
                                 var $gridRow = utils.rowAt(selectedCell);
                                 updating.updateRow(this.$grid, $gridRow.data("id"), updateRow);
                             };
+                            /**
+                             * Process
+                             */
                             Processor.prototype.process = function (data) {
                                 var dataRows = _.map(data.split("\n"), function (row) {
                                     return row.split("\t");
@@ -13262,6 +14490,9 @@ var nts;
                                 }
                                 return dataRows;
                             };
+                            /**
+                             * Update
+                             */
                             Processor.prototype.updateWith = function (data) {
                                 var self = this;
                                 if (!utils.selectable(this.$grid) || !utils.updatable(this.$grid))
@@ -13274,6 +14505,7 @@ var nts;
                                 var visibleColumns = utils.visibleColumnsFromMap(visibleColumnsMap);
                                 var columnIndex = selectedCell.index;
                                 var rowIndex = selectedCell.rowIndex;
+                                //                    if (!this.pasteable(columnIndex + data[0].length - visibleColumns.length)) return;
                                 var targetCol = _.find(visibleColumns, function (column) {
                                     return column.key === selectedCell.columnKey;
                                 });
@@ -13291,6 +14523,7 @@ var nts;
                                     var targetIndex = columnIndex;
                                     var targetCell = selectedCell;
                                     var targetColumn = targetCol;
+                                    // Errors
                                     var comboErrors = [];
                                     for (var i = 0; i < row.length; i++) {
                                         var nextColumn = void 0;
@@ -13299,6 +14532,7 @@ var nts;
                                         if ((!uk.util.isNullOrUndefined(row[i]) && row[i].trim() === "null")
                                             || !utils.isPastableControls(self.$grid, columnKey)
                                             || utils.isDisabled(cellElement)) {
+                                            // Go to next column
                                             nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                             targetColumn = nextColumn.options;
                                             targetIndex = nextColumn.index;
@@ -13314,7 +14548,9 @@ var nts;
                                                 rowData[columnKey] = targetColumn.dataType === "number" ? parseInt(copiedValue) : copiedValue;
                                             }
                                             else {
+                                                // TODO: Handle if copied text not match any item in combobox list
                                                 comboErrors.push({ cell: cellElement, content: cellContent });
+                                                // Go to next column
                                                 nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                                 targetColumn = nextColumn.options;
                                                 targetIndex = nextColumn.index;
@@ -13337,6 +14573,7 @@ var nts;
                                                 rowData[columnKey] = row[i];
                                             }
                                         }
+                                        // Go to next column
                                         nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                         targetColumn = nextColumn.options;
                                         targetIndex = nextColumn.index;
@@ -13354,6 +14591,7 @@ var nts;
                             };
                             Processor.prototype.addNew = function (data) {
                                 var self = this;
+                                //                    var visibleColumns = this.getVisibleColumns();
                                 var visibleColumns = null;
                                 if (!this.pasteable(data[0].length - visibleColumns.length))
                                     return;
@@ -13419,7 +14657,11 @@ var nts;
                                     this.onColumnResizing();
                                 }
                             };
+                            /**
+                             * Handle enter direction.
+                             */
                             Handler.prototype.onDirectEnter = function () {
+                                // Enter direction
                                 var direction = new selection.Direction();
                                 if (!direction.to)
                                     direction.to = this.options.enter;
@@ -13427,6 +14669,9 @@ var nts;
                                 this.$grid.data(internal.ENTER_DIRECT, direction);
                                 return this;
                             };
+                            /**
+                             * Handle cell edit.
+                             */
                             Handler.prototype.onCellUpdate = function () {
                                 var self = this;
                                 this.$grid.on(Handler.KEY_DOWN, function (evt) {
@@ -13437,6 +14682,9 @@ var nts;
                                 });
                                 return this;
                             };
+                            /**
+                             * Handle validation.
+                             */
                             Handler.prototype.onCellUpdateKeyUp = function () {
                                 var self = this;
                                 this.$grid.on(Handler.KEY_UP, function (evt) {
@@ -13447,6 +14695,9 @@ var nts;
                                 });
                                 return this;
                             };
+                            /**
+                             * Handle press space key on combobox.
+                             */
                             Handler.prototype.onSpacePress = function () {
                                 var self = this;
                                 self.$grid.on(Handler.KEY_DOWN, function (evt) {
@@ -13462,6 +14713,9 @@ var nts;
                                 });
                                 return this;
                             };
+                            /**
+                             * Support copy paste.
+                             */
                             Handler.prototype.focusInWith = function (processor) {
                                 this.$grid.on(Handler.FOCUS_IN, function (evt) {
                                     if ($("#pasteHelper").length > 0 && $("#copyHelper").length > 0)
@@ -13474,6 +14728,9 @@ var nts;
                                 });
                                 return this;
                             };
+                            /**
+                             * Copy, cut, paste events.
+                             */
                             Handler.prototype.ctrlCxpWith = function (processor) {
                                 this.$grid.on(Handler.KEY_DOWN, function (evt) {
                                     if (evt.ctrlKey && utils.isPasteKey(evt)) {
@@ -13488,6 +14745,9 @@ var nts;
                                 });
                                 return this;
                             };
+                            /**
+                             * Prevent forwarding events in particular cases.
+                             */
                             Handler.prototype.filter = function ($target) {
                                 var self = this;
                                 var $mainGrid = !uk.util.isNullOrUndefined($target) ? $target : self.$grid;
@@ -13521,6 +14781,7 @@ var nts;
                             };
                             Handler.prototype.onColumnResizing = function () {
                                 var self = this;
+                                // Not fired on fixed table but main grid (table)
                                 self.$grid.on(Handler.COLUMN_RESIZING, function (evt, args) {
                                     columnSize.save(self.$grid, args.columnKey, args.desiredWidth);
                                 });
@@ -13541,22 +14802,29 @@ var nts;
                             return Handler;
                         }());
                         events.Handler = Handler;
+                        /**
+                         * Post render process
+                         */
                         function afterRendered(options, cbSelectionColumns) {
                             options.rendered = function (evt, ui) {
                                 var $grid = $(evt.target);
                                 events.Handler.pull($grid, options).turnOn();
                                 $(this).data(internal.CB_SELECTED, cbSelectionColumns);
+                                // Bind events for fixed table part
                                 var $fixedTbl = fixedColumns.getFixedTable($grid);
                                 if ($fixedTbl.length > 0) {
                                     if (feature.isEnable(options.ntsFeatures, feature.COPY_PASTE))
                                         new copyPaste.Processor().chainEvents($grid, $fixedTbl);
                                     events.Handler.pull($fixedTbl, options).turnOn($grid);
                                 }
+                                // Sheet scroll
                                 var sheetConfig = $grid.data(internal.SHEETS);
                                 sheet.onScroll($grid);
                                 if (!uk.util.isNullOrUndefined(sheetConfig) && !uk.util.isNullOrUndefined(sheetConfig.currentPosition)) {
+                                    //                        let displayPos = sheetConfig.displayScrollTop;
                                     $grid.igGrid("virtualScrollTo", sheetConfig.currentPosition);
                                 }
+                                // Set selected cell if any
                                 var selectedCell = $grid.data(internal.SELECTED_CELL);
                                 if (!uk.util.isNullOrUndefined(selectedCell)) {
                                     var fixedColumns_2 = utils.getVisibleFixedColumns($grid);
@@ -13568,15 +14836,21 @@ var nts;
                                         }, 1);
                                     }
                                 }
+                                // Mark errors
                                 errors.mark($grid);
                                 color.styleHeaders($grid, options);
                                 if (options.autoFitWindow) {
+                                    // Resize grid
                                     settings.setGridSize($grid);
                                 }
+                                // Load columns size
                                 columnSize.load($grid);
                             };
                         }
                         events.afterRendered = afterRendered;
+                        /**
+                         * Cell click
+                         */
                         function onCellClick($grid) {
                             $grid.on(Handler.CELL_CLICK, function (evt, ui) {
                                 if (!utils.isEditMode($grid) && errors.any({ element: ui.cellElement })) {
@@ -13683,6 +14957,7 @@ var nts;
                                 columnKey: cell.columnKey,
                                 message: message
                             };
+                            // Error column headers
                             var headers = ko.toJS(ui.errors.errorsViewModel().option.headers);
                             _.forEach(headers, function (header) {
                                 if (uk.util.isNullOrUndefined(record[header.name])
@@ -13758,6 +15033,7 @@ var nts;
                                 return false;
                             if (one.id !== other.id)
                                 return false;
+                            //                if (one.rowIndex !== other.rowIndex) return false;
                             return true;
                         }
                     })(errors || (errors = {}));
@@ -13773,16 +15049,22 @@ var nts;
                         var CellFormatter = (function () {
                             function CellFormatter($grid, features) {
                                 this.$grid = $grid;
+                                // Cell
                                 this.cellStateFeatureDef = feature.find(features, feature.CELL_STATE);
                                 this.setStatesTable(features);
+                                // Row
                                 this.rowDisableFeatureDef = feature.find(features, feature.ROW_STATE);
                                 if (!uk.util.isNullOrUndefined(this.rowDisableFeatureDef)
                                     && !uk.util.isNullOrUndefined(this.rowDisableFeatureDef.rows)) {
                                     this.disableRows = _.groupBy(this.rowDisableFeatureDef.rows, "rowId");
                                 }
+                                // Text color
                                 this.textColorFeatureDef = feature.find(features, feature.TEXT_COLOR);
                                 this.setTextColorsTableMap(features);
                             }
+                            /**
+                             * Set states table
+                             */
                             CellFormatter.prototype.setStatesTable = function (features) {
                                 var _this = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef))
@@ -13798,6 +15080,9 @@ var nts;
                                     });
                                 });
                             };
+                            /**
+                             * Set text colors
+                             */
                             CellFormatter.prototype.setTextColorsTableMap = function (features) {
                                 var _this = this;
                                 if (uk.util.isNullOrUndefined(this.textColorFeatureDef))
@@ -13813,6 +15098,9 @@ var nts;
                                     });
                                 });
                             };
+                            /**
+                             * Format textbox.
+                             */
                             CellFormatter.prototype.format = function (column) {
                                 var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef)
@@ -13837,12 +15125,22 @@ var nts;
                                             rowIndex: $tr.data("rowIdx"),
                                             id: $tr.data("id")
                                         };
+                                        // If cell has error, mark it
                                         errors.markIfError(self.$grid, cell);
+                                        //                            let aColumn = _.find(_self.colorFeatureDef, function(col: any) {
+                                        //                                return col.key === column.key;
+                                        //                            });
+                                        //                            
+                                        //                            if (util.isNullOrUndefined(aColumn)) return;
+                                        //                            let cellColor = aColumn.map(aColumn.parse(value));
+                                        //                            $gridCell.css("background-color", cellColor);
+                                        // Disable row
                                         if (!uk.util.isNullOrUndefined(self.disableRows)) {
                                             var disableRow = self.disableRows[cell.id];
                                             if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable)
                                                 $gridCell.addClass(color.Disable);
                                         }
+                                        // Set cell states
                                         if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
                                             && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(stateName)
                                             && !uk.util.isNullOrUndefined(self.rowStates[cell.id])) {
@@ -13858,6 +15156,9 @@ var nts;
                                 };
                                 return column;
                             };
+                            /**
+                             * Style common controls.
+                             */
                             CellFormatter.prototype.style = function ($grid, cell) {
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef))
                                     return;
@@ -13865,6 +15166,7 @@ var nts;
                                 var columnKeyName = this.cellStateFeatureDef.columnKey;
                                 var stateName = this.cellStateFeatureDef.state;
                                 var statesTable = this.cellStateFeatureDef.states;
+                                // Disable row
                                 var controlType = utils.getControlType($grid, cell.columnKey);
                                 if (!uk.util.isNullOrUndefined(this.disableRows)) {
                                     var disableRow = this.disableRows[cell.id];
@@ -13873,6 +15175,7 @@ var nts;
                                         $grid.ntsGrid(functions.DISABLE_CONTROL, cell.id, cell.columnKey, controlType);
                                     }
                                 }
+                                // Set cell states
                                 if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
                                     && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(stateName)
                                     && !uk.util.isNullOrUndefined(this.rowStates[cell.id])) {
@@ -13887,6 +15190,9 @@ var nts;
                                     });
                                 }
                             };
+                            /**
+                             * Set text color
+                             */
                             CellFormatter.prototype.setTextColor = function ($grid, cell) {
                                 if (uk.util.isNullOrUndefined(this.textColorFeatureDef))
                                     return;
@@ -13911,6 +15217,9 @@ var nts;
                             return CellFormatter;
                         }());
                         color.CellFormatter = CellFormatter;
+                        /**
+                         * Style headers
+                         */
                         function styleHeaders($grid, options) {
                             var headerStyles = feature.find(options.ntsFeatures, feature.HEADER_STYLES);
                             if (uk.util.isNullOrUndefined(headerStyles))
@@ -13918,6 +15227,9 @@ var nts;
                             setHeadersColor($grid, headerStyles.columns);
                         }
                         color.styleHeaders = styleHeaders;
+                        /**
+                         * Set header color
+                         */
                         function setHeadersColor($grid, columns) {
                             var headersTable = $grid.igGrid("headersTable");
                             var fixedHeadersTable = $grid.igGrid("fixedHeadersTable");
@@ -13962,6 +15274,9 @@ var nts;
                                 }
                             });
                         }
+                        /**
+                         * Remember disable
+                         */
                         function rememberDisabled($grid, cell) {
                             var settings = $grid.data(internal.SETTINGS);
                             if (!settings)
@@ -13982,6 +15297,9 @@ var nts;
                             });
                         }
                         color.rememberDisabled = rememberDisabled;
+                        /**
+                         * Push disable
+                         */
                         function pushDisable($grid, cell) {
                             var settings = $grid.data(internal.SETTINGS);
                             if (!settings)
@@ -14005,6 +15323,9 @@ var nts;
                                 settings.disables[cell.id].push(cell.columnKey);
                         }
                         color.pushDisable = pushDisable;
+                        /**
+                         * Pop disable
+                         */
                         function popDisable($grid, cell) {
                             var settings = $grid.data(internal.SETTINGS);
                             if (!settings)
@@ -14027,10 +15348,16 @@ var nts;
                     })(color = ntsGrid.color || (ntsGrid.color = {}));
                     var fixedColumns;
                     (function (fixedColumns) {
+                        /**
+                         * Get fixed table
+                         */
                         function getFixedTable($grid) {
                             return $("#" + $grid.attr("id") + "_fixed");
                         }
                         fixedColumns.getFixedTable = getFixedTable;
+                        /**
+                         * Get real grid
+                         */
                         function realGridOf($grid) {
                             if (utils.isIgGrid($grid))
                                 return $grid;
@@ -14055,6 +15382,9 @@ var nts;
                                 this.currentSheet = currentSheet;
                                 this.sheets = sheets;
                             }
+                            /**
+                             * Load
+                             */
                             Configurator.load = function ($grid, sheetFeature) {
                                 var sheetConfig = $grid.data(internal.SHEETS);
                                 if (uk.util.isNullOrUndefined(sheetConfig)) {
@@ -14081,6 +15411,9 @@ var nts;
                             $scrollContainer.on(events.Handler.SCROLL, scrollListener);
                         }
                         sheet_1.onScroll = onScroll;
+                        /**
+                         * Unused
+                         */
                         function setup($grid, options) {
                             var sheetFeature = feature.find(options.ntsFeatures, feature.SHEET);
                             if (uk.util.isNullOrUndefined(sheetFeature))
@@ -14096,6 +15429,9 @@ var nts;
                             configButtons($grid, sheetFeature.sheets);
                         }
                         sheet_1.setup = setup;
+                        /**
+                         * Unused
+                         */
                         function configButtons($grid, sheets) {
                             var gridWrapper = $("<div class='nts-grid-wrapper'/>");
                             $grid.wrap($("<div class='nts-grid-container'/>")).wrap(gridWrapper);
@@ -14112,6 +15448,7 @@ var nts;
                                     updateCurrentSheet($grid, sheet.name);
                                     utils.showColumns($grid, sheet.columns);
                                     hideOthers($grid);
+                                    // Styles
                                     sheetButtonsWrapper.find("button").css(normalStyles);
                                     $(this).css(selectedStyles);
                                 });
@@ -14130,6 +15467,7 @@ var nts;
                                     displayColumns = sheet.columns;
                                 }
                             });
+                            // Resize displaying columns
                             setTimeout(function () {
                                 _.forEach(displayColumns, function (column) {
                                     columnSize.loadOne($grid, column);
@@ -14137,6 +15475,9 @@ var nts;
                             }, 0);
                         }
                         sheet_1.hideOthers = hideOthers;
+                        /**
+                         * Update current sheet
+                         */
                         function updateCurrentSheet($grid, name) {
                             var sheetMng = $grid.data(internal.SHEETS);
                             if (uk.util.isNullOrUndefined(sheetMng))
@@ -14146,6 +15487,9 @@ var nts;
                         }
                         var load;
                         (function (load) {
+                            /**
+                             * Setup
+                             */
                             function setup($grid, options) {
                                 var sheetFeature = feature.find(options.ntsFeatures, feature.SHEET);
                                 if (uk.util.isNullOrUndefined(sheetFeature))
@@ -14155,6 +15499,7 @@ var nts;
                                 if (!uk.util.isNullOrUndefined($grid.data(internal.GRID_OPTIONS)))
                                     return;
                                 $grid.data(internal.GRID_OPTIONS, _.cloneDeep(options));
+                                // Initial sheet
                                 var sheetMng = $grid.data(internal.SHEETS);
                                 var sheet = _.filter(sheetMng.sheets, function (sheet) {
                                     return sheet.name === sheetMng.currentSheet;
@@ -14163,6 +15508,9 @@ var nts;
                                 options.columns = columns;
                             }
                             load.setup = setup;
+                            /**
+                             * Config buttons
+                             */
                             function configButtons($grid, sheets) {
                                 if ($grid.closest(".nts-grid-container").length > 0)
                                     return;
@@ -14197,11 +15545,15 @@ var nts;
                                             feature.replaceBy(clonedOpts, feature.PAGING, pagingFt);
                                         }
                                         $grid.ntsGrid(clonedOpts);
+                                        // Styles
                                         sheetButtonsWrapper.find("button").css(normalStyles);
                                         $(this).css(selectedStyles);
                                     });
                                 });
                             }
+                            /**
+                             * Get sheet columns
+                             */
                             function getSheetColumns(allColumns, displaySheet, features) {
                                 return _.filter(allColumns, function (column) {
                                     if (column.group !== undefined && _.find(displaySheet.columns, function (col) {
@@ -14242,6 +15594,9 @@ var nts;
                             }
                         }
                         onDemand.hidePageSizeDD = hidePageSizeDD;
+                        /**
+                         * Load keys
+                         */
                         function loadKeys($grid, path) {
                             var dfd = $.Deferred();
                             uk.request.ajax(path).done(function (keys) {
@@ -14255,6 +15610,9 @@ var nts;
                             return dfd.promise();
                         }
                         onDemand.loadKeys = loadKeys;
+                        /**
+                         * Load data
+                         */
                         function loadLazy(path, keys, startIndex, endIndex, dataSource, primaryKey) {
                             var dfd = $.Deferred();
                             uk.request.ajax(path, keys).done(function (data) {
@@ -14274,6 +15632,9 @@ var nts;
                             return dfd.promise();
                         }
                         onDemand.loadLazy = loadLazy;
+                        /**
+                         * Initialize
+                         */
                         function initial($grid, options) {
                             if (!options)
                                 return false;
@@ -14314,6 +15675,9 @@ var nts;
                             return true;
                         }
                         onDemand.initial = initial;
+                        /**
+                         * Bind page change
+                         */
                         function bindPageChange($grid) {
                             $grid.on(events.Handler.PAGE_INDEX_CHANGE, function (evt, ui) {
                                 var newPageIndex = ui.newPageIndex;
@@ -14369,12 +15733,18 @@ var nts;
                     })(onDemand || (onDemand = {}));
                     var settings;
                     (function (settings) {
+                        /**
+                         * Build settings
+                         */
                         function build($grid, options) {
                             var data = {};
                             data.preventEditInError = options.preventEditInError;
                             $grid.data(internal.SETTINGS, data);
                         }
                         settings.build = build;
+                        /**
+                         * Set grid size
+                         */
                         function setGridSize($grid) {
                             var height = window.innerHeight;
                             var width = window.innerWidth;
@@ -14388,6 +15758,7 @@ var nts;
                         internal.CONTROL_TYPES = "ntsControlTypesGroup";
                         internal.COMBO_SELECTED = "ntsComboSelection";
                         internal.CB_SELECTED = "ntsCheckboxSelection";
+                        // Full columns options
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
                         internal.SHEETS = "ntsGridSheets";
@@ -14443,11 +15814,17 @@ var nts;
                             return evt.keyCode === 88;
                         }
                         utils.isCutKey = isCutKey;
+                        /**
+                         * Is error
+                         */
                         function isErrorStatus($grid) {
                             var cell = selection.getSelectedCell($grid);
                             return isEditMode($grid) && errors.any(cell);
                         }
                         utils.isErrorStatus = isErrorStatus;
+                        /**
+                         * Only used in edit mode
+                         */
                         function isNotErrorCell($grid, evt) {
                             var cell = selection.getSelectedCell($grid);
                             var $target = $(evt.target);
@@ -14458,6 +15835,9 @@ var nts;
                                 && errors.any(cell);
                         }
                         utils.isNotErrorCell = isNotErrorCell;
+                        /**
+                         * Is edit mode
+                         */
                         function isEditMode($grid) {
                             return (updatable($grid) && $grid.igGridUpdating("isEditing"));
                         }
@@ -14490,6 +15870,9 @@ var nts;
                             return $cell.hasClass(color.Disable);
                         }
                         utils.disabled = disabled;
+                        /**
+                         * Data type of primary key
+                         */
                         function dataTypeOfPrimaryKey($grid, columnsMap) {
                             if (uk.util.isNullOrUndefined(columnsMap))
                                 return;
@@ -14506,6 +15889,9 @@ var nts;
                             return;
                         }
                         utils.dataTypeOfPrimaryKey = dataTypeOfPrimaryKey;
+                        /**
+                         * Parse number
+                         */
                         function parseIntIfNumber(value, $grid, columnsMap) {
                             if (dataTypeOfPrimaryKey($grid, columnsMap) === "number") {
                                 return parseInt(value);
@@ -14572,6 +15958,9 @@ var nts;
                             return false;
                         }
                         utils.isNtsControl = isNtsControl;
+                        /**
+                         * Get control type
+                         */
                         function getControlType($grid, columnKey) {
                             var columnControlTypes = $grid.data(internal.CONTROL_TYPES);
                             if (uk.util.isNullOrUndefined(columnControlTypes))
@@ -14652,6 +16041,9 @@ var nts;
                             return visibleColumnsMap["undefined"];
                         }
                         utils.getUnfixedColumns = getUnfixedColumns;
+                        /**
+                         * Next column
+                         */
                         function nextColumn(visibleColumnsMap, columnIndex, isFixed) {
                             if (uk.util.isNullOrUndefined(visibleColumnsMap))
                                 return;
@@ -14672,6 +16064,9 @@ var nts;
                             }
                         }
                         utils.nextColumn = nextColumn;
+                        /**
+                         * Next column by key
+                         */
                         function nextColumnByKey(visibleColumnsMap, columnKey, isFixed) {
                             if (uk.util.isNullOrUndefined(visibleColumnsMap))
                                 return;
@@ -14789,6 +16184,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -14827,6 +16223,7 @@ var nts;
                     }
                     function init(control, option) {
                         control.addClass("popup-panel").css("z-index", 100).show();
+                        // Default Setting
                         var defaultoption = {
                             trigger: "",
                             position: {
@@ -14839,18 +16236,21 @@ var nts;
                         };
                         var setting = $.extend({}, defaultoption, option);
                         control.data("option", setting);
+                        // Trigger Element
                         $(setting.trigger).on("click.popup", function (e) {
                             show(control);
                         });
+                        // Dismissible
                         if (setting.dismissible) {
                             $(window).on("mousedown.popup", function (e) {
-                                if (!$(e.target).is(control)
-                                    && control.has(e.target).length === 0
+                                if (!$(e.target).is(control) // Target isn't Popup
+                                    && control.has(e.target).length === 0 // Target isn't Popup's children
                                     && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
                         }
+                        // Show on Start
                         if (setting.showOnStart)
                             show(control);
                         else
@@ -14904,6 +16304,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -14941,6 +16342,7 @@ var nts;
                     };
                     function init(controls) {
                         controls.each(function () {
+                            // UserGuide container
                             var $control = $(this);
                             $control.remove();
                             if (!$control.hasClass("ntsUserGuide"))
@@ -14948,16 +16350,19 @@ var nts;
                             $($control).appendTo($("body")).show();
                             var target = $control.data('target');
                             var direction = $control.data('direction');
+                            // Userguide Information Box
                             $control.children().each(function () {
                                 var $box = $(this);
                                 var boxDirection = $box.data("direction");
                                 $box.addClass("userguide-box caret-" + getReveseDirection(boxDirection) + " caret-overlay");
                             });
+                            // Userguide Overlay
                             var $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
                                 .appendTo($control);
                             $control.hide();
                         });
+                        // Hiding when click outside
                         $("html").on("mouseup keypress", { controls: controls }, hideBinding);
                         return controls;
                     }
@@ -14965,6 +16370,7 @@ var nts;
                         controls.each(function () {
                             $(this).remove();
                         });
+                        // Unbind Hiding when click outside
                         $("html").off("mouseup keypress", hideBinding);
                         return controls;
                     }
@@ -15080,6 +16486,7 @@ var NtsSortableBindingHandler = (function () {
             var self = _this, unwrapped = ko.unwrap(items);
             if (unwrapped) {
                 for (var i = 0; i < index; i++) {
+                    //add one for every destroyed item we find before the targetIndex in the target array
                     if (unwrapped[i] && ko.unwrap(unwrapped[i]._destroy)) {
                         index++;
                     }
@@ -15089,6 +16496,7 @@ var NtsSortableBindingHandler = (function () {
         };
         this.stripTemplateWhitespace = function (element, name) {
             var self = _this, templateSource, templateElement;
+            //process named templates
             if (name) {
                 templateElement = document.getElementById(name);
                 if (templateElement) {
@@ -15097,6 +16505,7 @@ var NtsSortableBindingHandler = (function () {
                 }
             }
             else {
+                //remove leading/trailing non-elements from anonymous templates
                 $(element).contents().each(function () {
                     if (this && this.nodeType !== 1) {
                         element.removeChild(this);
@@ -15106,6 +16515,7 @@ var NtsSortableBindingHandler = (function () {
         };
         this.prepareTemplateOptions = function (valueAccessor, dataName) {
             var self = _this, result = {}, options = ko.unwrap(valueAccessor()) || {}, actualAfterRender;
+            //build our options to pass to the template engine
             if (options.data) {
                 result[dataName] = options.data;
                 result.name = options.template;
@@ -15121,8 +16531,10 @@ var NtsSortableBindingHandler = (function () {
                     result[option] = ko.bindingHandlers['ntsSortable'][option];
                 }
             });
+            //use an afterRender function to add meta-data
             if (dataName === "foreach") {
                 if (result.afterRender) {
+                    //wrap the existing function, if it was passed
                     actualAfterRender = result.afterRender;
                     result.afterRender = function (element, data) {
                         self.addMetaDataAfterRender.call(data, element, data);
@@ -15133,11 +16545,13 @@ var NtsSortableBindingHandler = (function () {
                     result.afterRender = self.addMetaDataAfterRender;
                 }
             }
+            //return options to pass to the template binding
             return result;
         };
         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var self = _this, $element = $(element), value = ko.unwrap(valueAccessor()) || {}, templateOptions = self.prepareTemplateOptions(valueAccessor, "foreach"), sortable = {}, startActual, updateActual;
             self.stripTemplateWhitespace(element, templateOptions.name);
+            //build a new object that has the global options with overrides from the binding
             $.extend(true, sortable, ko.bindingHandlers['ntsSortable']);
             if (value.options && sortable.options) {
                 ko.utils.extend(sortable.options, value.options);
@@ -15151,6 +16565,7 @@ var NtsSortableBindingHandler = (function () {
                 });
             }
             ko.utils.extend(sortable, value);
+            //if allowDrop is an observable or a function, then execute it in a computed observable
             if (sortable.connectClass && (ko.isObservable(sortable.allowDrop) || typeof sortable.allowDrop == "function")) {
                 ko.computed({
                     read: function () {
@@ -15163,11 +16578,14 @@ var NtsSortableBindingHandler = (function () {
             else {
                 ko.utils.toggleDomNodeCssClass(element, sortable.connectClass, sortable.allowDrop);
             }
+            //wrap the template binding
             ko.bindingHandlers.template.init(element, function () {
                 return templateOptions;
             }, allBindingsAccessor, viewModel, bindingContext);
+            //keep a reference to start/update functions that might have been passed in
             startActual = sortable.options.start;
             updateActual = sortable.options.update;
+            //ensure draggable table row cells maintain their width while dragging (unless a helper is provided)
             if (!sortable.options.helper) {
                 sortable.options.helper = function (e, ui) {
                     if (ui.is("tr")) {
@@ -15178,27 +16596,33 @@ var NtsSortableBindingHandler = (function () {
                     return ui;
                 };
             }
+            //initialize sortable binding after template binding has rendered in update function
             var createTimeout = setTimeout(function () {
                 var dragItem;
                 var originalReceive = sortable.options.receive;
                 $element.sortable(ko.utils.extend(sortable.options, {
                     start: function (event, ui) {
+                        //track original index
                         var el = ui.item[0];
                         self.dataSet(el, self.INDEXKEY, ko.utils.arrayIndexOf(ui.item.parent().children(), el));
+                        //make sure that fields have a chance to update model
                         ui.item.find("input:focus").change();
                         if (startActual) {
                             startActual.apply(this, arguments);
                         }
                     },
                     receive: function (event, ui) {
+                        //optionally apply an existing receive handler
                         if (typeof originalReceive === "function") {
                             originalReceive.call(this, event, ui);
                         }
                         dragItem = self.dataGet(ui.item[0], self.DRAGKEY);
                         if (dragItem) {
+                            //copy the model item, if a clone option is provided
                             if (dragItem.clone) {
                                 dragItem = dragItem.clone();
                             }
+                            //configure a handler to potentially manipulate item before drop
                             if (sortable.dragged) {
                                 dragItem = sortable.dragged.call(this, dragItem, event, ui) || dragItem;
                             }
@@ -15210,15 +16634,19 @@ var NtsSortableBindingHandler = (function () {
                             $(el).remove();
                         }
                         dragItem = null;
+                        //make sure that moves only run once, as update fires on multiple containers
                         if (item && (this === parentEl) || (!self.hasNestedSortableFix && $.contains(this, parentEl))) {
+                            //identify parents
                             sourceParent = self.dataGet(el, self.PARENTKEY);
                             sourceIndex = self.dataGet(el, self.INDEXKEY);
                             targetParent = self.dataGet(el.parentNode, self.LISTKEY);
                             targetIndex = ko.utils.arrayIndexOf(ui.item.parent().children(), el);
+                            //take destroyed items into consideration
                             if (!templateOptions.includeDestroyed) {
                                 sourceIndex = self.updateIndexFromDestroyedItems(sourceIndex, sourceParent);
                                 targetIndex = self.updateIndexFromDestroyedItems(targetIndex, targetParent);
                             }
+                            //build up args for the callbacks
                             if (sortable.beforeMove || sortable.afterMove) {
                                 arg = {
                                     item: item,
@@ -15229,65 +16657,84 @@ var NtsSortableBindingHandler = (function () {
                                     targetIndex: targetIndex,
                                     cancelDrop: false
                                 };
+                                //execute the configured callback prior to actually moving items
                                 if (sortable.beforeMove) {
                                     sortable.beforeMove.call(this, arg, event, ui);
                                 }
                             }
+                            //call cancel on the correct list, so KO can take care of DOM manipulation
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
                             else {
                                 $(el).remove();
                             }
+                            //if beforeMove told us to cancel, then we are done
                             if (arg && arg.cancelDrop) {
                                 return;
                             }
+                            //if the strategy option is unset or false, employ the order strategy involving removal and insertion of items
                             if (!sortable.hasOwnProperty("strategyMove") || sortable.strategyMove === false) {
+                                //do the actual move
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         sourceParent.splice(sourceIndex, 1);
+                                        //if using deferred updates plugin, force updates
                                         if (ko['processAllDeferredBindingUpdates']) {
                                             ko['processAllDeferredBindingUpdates']();
                                         }
+                                        //if using deferred updates on knockout 3.4, force updates
                                         if (ko.options && ko.options.deferUpdates) {
                                             ko.tasks.runEarly();
                                         }
                                     }
                                     targetParent.splice(targetIndex, 0, item);
                                 }
+                                //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
                             else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
+                                            // moving from one list to another
                                             sourceParent.splice(sourceIndex, 1);
                                             targetParent.splice(targetIndex, 0, item);
+                                            //rendering is handled by manipulating the observableArray; ignore dropped element
                                             self.dataSet(el, self.ITEMKEY, null);
                                             ui.item.remove();
                                         }
                                         else {
+                                            // moving within same list
                                             var underlyingList = ko.unwrap(sourceParent);
+                                            // notify 'beforeChange' subscribers
                                             if (sourceParent.valueWillMutate) {
                                                 sourceParent.valueWillMutate();
                                             }
+                                            // move from source index ...
                                             underlyingList.splice(sourceIndex, 1);
+                                            // ... to target index
                                             underlyingList.splice(targetIndex, 0, item);
+                                            // notify subscribers
                                             if (sourceParent.valueHasMutated) {
                                                 sourceParent.valueHasMutated();
                                             }
                                         }
                                     }
                                     else {
+                                        // drop new element from outside
                                         targetParent.splice(targetIndex, 0, item);
+                                        //rendering is handled by manipulating the observableArray; ignore dropped element
                                         self.dataSet(el, self.ITEMKEY, null);
                                         ui.item.remove();
                                     }
                                 }
                             }
+                            //if using deferred updates plugin, force updates
                             if (ko['processAllDeferredBindingUpdates']) {
                                 ko['processAllDeferredBindingUpdates']();
                             }
+                            //allow binding to accept a function to execute after moving the item
                             if (sortable.afterMove) {
                                 sortable.afterMove.call(this, arg, event, ui);
                             }
@@ -15298,6 +16745,7 @@ var NtsSortableBindingHandler = (function () {
                     },
                     connectWith: false
                 }));
+                //handle enabling/disabling sorting
                 if (sortable.isEnabled !== undefined) {
                     ko.computed({
                         read: function () {
@@ -15307,11 +16755,14 @@ var NtsSortableBindingHandler = (function () {
                     });
                 }
             }, 0);
+            //handle disposal
             ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                //only call destroy if sortable has been created
                 if ($element.data("ui-sortable") || $element.data("sortable")) {
                     $element.sortable("destroy");
                 }
                 ko.utils.toggleDomNodeCssClass(element, sortable.connectClass, false);
+                //do not create the sortable if the element has been removed from DOM
                 clearTimeout(createTimeout);
             });
             return {
@@ -15320,13 +16771,16 @@ var NtsSortableBindingHandler = (function () {
         };
         this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var self = _this, templateOptions = self.prepareTemplateOptions(valueAccessor, "foreach");
+            //attach meta-data
             self.dataSet(element, self.LISTKEY, templateOptions.foreach);
+            //call template binding's update with correct options
             ko.bindingHandlers['template'].update(element, function () { return templateOptions; }, allBindingsAccessor, viewModel, bindingContext);
         };
     }
     return NtsSortableBindingHandler;
 }());
 ko.bindingHandlers["ntsSortable"] = new NtsSortableBindingHandler();
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -15335,12 +16789,22 @@ var nts;
         (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Tree binding handler
+                 */
                 var NtsTreeDragAndDropBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsTreeDragAndDropBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsTreeDragAndDropBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var ROW_HEIGHT = 30;
                         var HEADER_HEIGHT = 24;
+                        // Get data. 
                         var data = valueAccessor();
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
@@ -15362,6 +16826,10 @@ var nts;
                             height = rows * ROW_HEIGHT;
                         }
                         var $tree = $(element);
+                        //            let template = "{{if ${"+optionsValue+"}.indexOf('1') >= 0}} <img src='http://igniteui.com/images/samples/tree/book.png'>" + 
+                        //                " {{elseif ${"+optionsValue+"}.indexOf('2') >= 0}}<img src='http://igniteui.com/images/samples/tree/coins.png'>" +
+                        //                "{{else}}<img src='http://igniteui.com/images/samples/tree/documents-folder.png'/>{{/if}}${"+optionsValue+"}"
+                        // Init ig grid.
                         $tree.igTree({
                             width: width,
                             height: height,
@@ -15382,6 +16850,7 @@ var nts;
                                 customDropValidation: function (element) {
                                     var dragInfor = $tree.data("dragInfor");
                                     var mousePosition = $tree.data("mousePosition");
+                                    // Validates the drop target
                                     var droppableNode = $(this);
                                     if (droppableNode.prop("tagName").toLowerCase() !== "li") {
                                         droppableNode = droppableNode.closest("li");
@@ -15473,18 +16942,24 @@ var nts;
                         });
                         $tree.setupSearchScroll("igTree");
                     };
+                    /**
+                     * Update
+                     */
                     NtsTreeDragAndDropBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
                         var data = valueAccessor();
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var $tree = $(element);
                         var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
+                        // Update datasource.
                         var originalSource = $tree.igTree('option', 'dataSource').__ds;
                         if (!_.isEqual(originalSource, options)) {
                             $tree.igTree("option", "dataSource", _.cloneDeep(options));
                             $tree.igTree("dataBind");
                         }
+                        // Clear selection.
                         if (nts.uk.util.isNullOrEmpty(selectedValues) && nts.uk.util.isNullOrUndefined(singleValue)) {
                             $tree.ntsTreeDrag("deselectAll");
                             $tree.find("a").removeClass("ui-state-active");
@@ -15513,6 +16988,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -15540,14 +17016,17 @@ var nts;
                 var ADD_ROW = "add-row";
                 var DEL_ROWS = "delete-rows";
                 var H_BTN_HEIGHT = "24px";
+                // Body height setting mode
                 var DYNAMIC = "dynamic";
                 var FIXED = "fixed";
+                // Update mode
                 var COPY_PASTE = "copyPaste";
                 var EDIT = "edit";
                 var STICK = "stick";
                 var Connector = {};
                 var ExTable = (function () {
                     function ExTable($container, options) {
+                        // dynamic or fixed
                         this.bodyHeightSetMode = DYNAMIC;
                         this.windowXOccupation = 0;
                         this.windowYOccupation = 0;
@@ -15664,6 +17143,9 @@ var nts;
                         options.tableClass = BODY_TBL_PRF + part;
                         options.containerClass = BODY_PRF + part;
                     };
+                    /**
+                     * Create.
+                     */
                     ExTable.prototype.create = function () {
                         var self = this;
                         var left = "0px";
@@ -15676,11 +17158,13 @@ var nts;
                         self.bodies = _.filter([self.leftmostContent, self.middleContent, self.detailContent, self.verticalSumContent], function (b) {
                             return !uk.util.isNullOrUndefined(b);
                         });
+                        // Get part widths
                         var widthParts, gridHeight;
                         storage.area.getPartWidths(self.$container).ifPresent(function (parts) {
                             widthParts = JSON.parse(parts);
                             return null;
                         });
+                        // Get grid height
                         storage.tableHeight.get(self.$container).ifPresent(function (height) {
                             gridHeight = JSON.parse(height);
                             return null;
@@ -15742,6 +17226,9 @@ var nts;
                         self.setupCrudArea();
                         self.generalSettings(headerWrappers, bodyWrappers);
                     };
+                    /**
+                     * Create horizontal sums.
+                     */
                     ExTable.prototype.createHorzSums = function () {
                         var self = this;
                         var $detailHeader = self.$container.find("." + HEADER_PRF + DETAIL);
@@ -15751,6 +17238,7 @@ var nts;
                         var sumPosLeft = $detailHeader.css("left");
                         var leftHorzWidth = parseInt(sumPosLeft) - DISTANCE;
                         var $leftSumHeaderWrapper, $leftSumContentWrapper, $sumHeaderWrapper, $sumContentWrapper;
+                        // Items summary
                         if (self.leftHorzSumHeader) {
                             self.leftHorzSumHeader.height = self.horzSumHeaderHeight;
                             self.leftHorzSumHeader.width = leftHorzWidth;
@@ -15771,6 +17259,7 @@ var nts;
                             render.process($leftSumContentWrapper, self.leftHorzSumContent);
                             scroll.bindVertWheel($leftSumContentWrapper);
                         }
+                        // Main summary
                         if (self.horizontalSumHeader) {
                             self.horizontalSumHeader.height = self.horzSumHeaderHeight;
                             self.horizontalSumHeader.width = $detailHeader.width();
@@ -15811,6 +17300,9 @@ var nts;
                             scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper]);
                         }
                     };
+                    /**
+                     * Setup crud area.
+                     */
                     ExTable.prototype.setupCrudArea = function () {
                         var self = this;
                         var updateF = feature.find(self.features, feature.UPDATING);
@@ -15839,9 +17331,22 @@ var nts;
                             self.$container.before($area);
                         }
                     };
+                    /**
+                     * General settings.
+                     */
                     ExTable.prototype.generalSettings = function (headerWrappers, bodyWrappers) {
                         var self = this;
                         self.$container.on(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged);
+                        //            if (self.heightSetter && self.heightSetter.showBodyHeightButton) {
+                        //                
+                        //                let $lastHeader = headerWrappers[headerWrappers.length - 1];
+                        //                let btnPosTop = $lastHeader.height() - parseInt(H_BTN_HEIGHT) - DISTANCE;
+                        //                let btnPosLeft = parseInt($lastHeader.css("left")) + $lastHeader.outerWidth();
+                        //                let $heightSetBtn = $("<button/>").addClass(H_BTN_CLS)
+                        //                    .css({ position: "absolute", height: H_BTN_HEIGHT, top: btnPosTop + "px", left: btnPosLeft + "px" })
+                        //                    .text("H").on(events.CLICK_EVT, self.heightSetter.click);
+                        //                $lastHeader.after($heightSetBtn);
+                        //            }
                         resize.fitWindowWidth(self.$container);
                         $(window).on(events.RESIZE, $.proxy(resize.fitWindowWidth, self, self.$container));
                         var horzSumExists = !uk.util.isNullOrUndefined(self.horizontalSumHeader);
@@ -15900,6 +17405,7 @@ var nts;
                         }
                         storage.area.init(self.$container, headerWrappers);
                         storage.tableHeight.init(self.$container);
+                        // Edit done
                         update.editDone(self.$container);
                         $(document).on(events.CLICK_EVT, function (evt) {
                             update.outsideClick(self.$container, $(evt.target));
@@ -15911,6 +17417,9 @@ var nts;
                             events.trigger(self.$container, events.COMPLETED);
                         }
                     };
+                    /**
+                     * Satisfy prebuild.
+                     */
                     ExTable.prototype.satisfyPrebuild = function () {
                         if (uk.util.isNullOrUndefined(this.$container) || uk.util.isNullOrUndefined(this.headerHeight)
                             || uk.util.isNullOrUndefined(this.bodyHeight) || uk.util.isNullOrUndefined(this.bodyRowHeight)
@@ -15918,6 +17427,9 @@ var nts;
                             return false;
                         return true;
                     };
+                    /**
+                     * Set wrapper width.
+                     */
                     ExTable.prototype.setWrapperWidth = function (options, widthParts) {
                         if (!widthParts)
                             return;
@@ -15934,6 +17446,9 @@ var nts;
                     render.HIGHLIGHT_CLS = "highlight";
                     render.CHILD_CELL_CLS = "child-cell";
                     render.COL_ICON_CLS = "column-icon";
+                    /**
+                     * Process.
+                     */
                     function process($container, options, isUpdate) {
                         var levelStruct = synthesizeHeaders(options);
                         options.levelStruct = levelStruct;
@@ -15949,6 +17464,9 @@ var nts;
                         table($container, options, isUpdate);
                     }
                     render.process = process;
+                    /**
+                     * Group header.
+                     */
                     function groupHeader($container, options, isUpdate) {
                         var $table = $("<table><tbody></tbody></table>").addClass(options.tableClass)
                             .css({ position: "relative", tableLayout: "fixed", width: "100%", borderCollapse: "separate" })
@@ -15968,6 +17486,9 @@ var nts;
                         var painter = new GroupHeaderPainter(options);
                         painter.rows($tbody);
                     }
+                    /**
+                     * Generate column group.
+                     */
                     function generateColGroup($colGroup, columns) {
                         _.forEach(columns, function (col) {
                             if (!uk.util.isNullOrUndefined(col.group)) {
@@ -15980,6 +17501,9 @@ var nts;
                                 $col.hide();
                         });
                     }
+                    /**
+                     * Table.
+                     */
                     function table($container, options, isUpdate) {
                         var $table = $("<table><tbody></tbody></table>").addClass(options.tableClass)
                             .css({ position: "relative", tableLayout: "fixed", width: "100%", borderCollapse: "separate" })
@@ -16010,6 +17534,9 @@ var nts;
                         begin($container, dataSource, options);
                     }
                     render.table = table;
+                    /**
+                     * Begin.
+                     */
                     function begin($container, dataSource, options) {
                         if (options.float) {
                             var cloud = new intan.Cloud($container, dataSource, options);
@@ -16020,6 +17547,9 @@ var nts;
                         normal($container, dataSource, options);
                     }
                     render.begin = begin;
+                    /**
+                     * Normal.
+                     */
                     function normal($container, dataSource, options) {
                         var rowConfig = { css: { height: options.rowHeight } };
                         var headerRowHeightFt;
@@ -16037,6 +17567,9 @@ var nts;
                         });
                     }
                     render.normal = normal;
+                    /**
+                     * Synthesize headers.
+                     */
                     function synthesizeHeaders(options) {
                         var level = {};
                         peelStruct(options.columns, level, 0);
@@ -16053,6 +17586,9 @@ var nts;
                         return level;
                     }
                     render.synthesizeHeaders = synthesizeHeaders;
+                    /**
+                     * Peel struct.
+                     */
                     function peelStruct(columns, level, currentLevel) {
                         var colspan = 0, noGroup = 0;
                         _.forEach(columns, function (col) {
@@ -16098,6 +17634,9 @@ var nts;
                                 this.columnsMap = _.groupBy(options.columns, "key");
                             }
                         }
+                        /**
+                         * Cell.
+                         */
                         Painter.prototype.cell = function (rData, rowIdx, key) {
                             var self = this;
                             var cData = rData[key];
@@ -16174,6 +17713,9 @@ var nts;
                             style.detCell(self.$container, $td, rowIdx, key);
                             return $td;
                         };
+                        /**
+                         * Row.
+                         */
                         Painter.prototype.row = function (data, config, rowIdx) {
                             var self = this;
                             var $tr = $("<tr/>").css(config.css);
@@ -16204,6 +17746,7 @@ var nts;
                                 }
                                 var $cell = self.cell(data, rowIdx, key);
                                 $tr.append($cell);
+                                // Styles
                                 if (!uk.util.isNullOrUndefined(headerCellStyleFt)) {
                                     _.forEach(headerCellStyleFt.decorator, function (colorDef) {
                                         if (key === colorDef.columnKey) {
@@ -16216,7 +17759,6 @@ var nts;
                                     });
                                 }
                                 else if (!uk.util.isNullOrUndefined(bodyCellStyleFt)) {
-                                    var count_1 = 0;
                                     _.forEach(bodyCellStyleFt.decorator, function (colorDef) {
                                         if (key === colorDef.columnKey && data[self.options.primaryKey] === colorDef.rowId) {
                                             var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
@@ -16227,8 +17769,6 @@ var nts;
                                                     $child.data("hide", $child.text());
                                                     $child.text("");
                                                 }
-                                                if (++count_1 >= 2)
-                                                    return false;
                                             }
                                             else {
                                                 $cell.addClass(colorDef.clazz);
@@ -16252,6 +17792,9 @@ var nts;
                             style.detColumn(self.$container, $tr, rowIdx);
                             return $tr;
                         };
+                        /**
+                         * Highlight.
+                         */
                         Painter.prototype.jqHighlight = function ($td) {
                             var self = this;
                             if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
@@ -16317,6 +17860,9 @@ var nts;
                                 events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEOUT_COLUMN, colIndex);
                             });
                         };
+                        /**
+                         * Highlight.
+                         */
                         Painter.prototype.highlight = function ($td) {
                             var self = this;
                             if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
@@ -16424,6 +17970,9 @@ var nts;
                             this.levelStruct = options.levelStruct;
                             this.columnsMap = helper.columnsMapFromStruct(this.levelStruct);
                         }
+                        /**
+                         * Cell.
+                         */
                         GroupHeaderPainter.prototype.cell = function (text, rowIdx, cell) {
                             var self = this;
                             var $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + cell.key)
@@ -16451,6 +18000,9 @@ var nts;
                             }
                             return $td;
                         };
+                        /**
+                         * Rows.
+                         */
                         GroupHeaderPainter.prototype.rows = function ($tbody) {
                             var self = this;
                             var css = { height: self.options.rowHeight };
@@ -16492,10 +18044,16 @@ var nts;
                         return GroupHeaderPainter;
                     }(Conditional));
                     render.GroupHeaderPainter = GroupHeaderPainter;
+                    /**
+                     * Extra.
+                     */
                     function extra(className, height) {
                         return $("<tr/>").addClass("extable-" + className).height(height);
                     }
                     render.extra = extra;
+                    /**
+                     * Wrapper styles.
+                     */
                     function wrapperStyles(top, left, width, height) {
                         return {
                             position: "absolute",
@@ -16508,11 +18066,17 @@ var nts;
                         };
                     }
                     render.wrapperStyles = wrapperStyles;
+                    /**
+                     * Create wrapper.
+                     */
                     function createWrapper(top, left, options) {
                         return $("<div/>").data(internal.EX_PART, options.containerClass).addClass(options.containerClass)
                             .css(wrapperStyles(top, left, options.width, options.height));
                     }
                     render.createWrapper = createWrapper;
+                    /**
+                     * Grid cell.
+                     */
                     function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var updateMode = helper.getExTableFromGrid($grid).updateMode;
@@ -16561,6 +18125,9 @@ var nts;
                         return touched;
                     }
                     render.gridCell = gridCell;
+                    /**
+                     * Grid row.
+                     */
                     function gridRow($grid, rowIdx, data, isRestore) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var updateMode = helper.getExTableFromGrid($grid).updateMode;
@@ -16617,6 +18184,9 @@ var nts;
                         });
                     }
                     render.gridRow = gridRow;
+                    /**
+                     * Trace.
+                     */
                     function trace(ds, $cell, rowIdx, key, innerIdx, value) {
                         if (!ds || ds.length === 0)
                             return;
@@ -16650,6 +18220,9 @@ var nts;
                             this.setCellsStyle();
                             this.onScroll();
                         }
+                        /**
+                         * Set cells style.
+                         */
                         Cloud.prototype.setCellsStyle = function () {
                             var self = this;
                             var bodyStylesFt = feature.find(self.options.features, feature.BODY_CELL_STYLE);
@@ -16657,9 +18230,15 @@ var nts;
                                 return;
                             self.$container.data(internal.CELLS_STYLE, bodyStylesFt.decorator);
                         };
+                        /**
+                         * Get cluster no.
+                         */
                         Cloud.prototype.getClusterNo = function () {
                             return Math.floor(this.$container.scrollTop() / (this.clusterHeight - this.blockHeight));
                         };
+                        /**
+                         * Render rows.
+                         */
                         Cloud.prototype.renderRows = function (manual) {
                             var self = this;
                             var clusterNo = self.getClusterNo();
@@ -16698,6 +18277,9 @@ var nts;
                                 self.editCellIn();
                             }
                         };
+                        /**
+                         * OnScroll.
+                         */
                         Cloud.prototype.onScroll = function () {
                             var self = this;
                             self.$container.on(events.SCROLL_EVT, function () {
@@ -16721,6 +18303,9 @@ var nts;
                                 }
                             });
                         };
+                        /**
+                         * Roll to.
+                         */
                         Cloud.prototype.rollTo = function (cell) {
                             var self = this;
                             if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
@@ -16758,6 +18343,9 @@ var nts;
                                 self.$container.scrollLeft(tdPosLeft_2);
                             }
                         };
+                        /**
+                         * Edit cell in.
+                         */
                         Cloud.prototype.editCellIn = function () {
                             var self = this;
                             var $exTable = self.$container.closest("." + NAMESPACE);
@@ -16784,6 +18372,9 @@ var nts;
                                 update.edit($exTable, $childCells.length > 0 ? $($childCells[1]) : $editorCell, editor.land, editor.value, true);
                             }
                         };
+                        /**
+                         * Select cells in.
+                         */
                         Cloud.prototype.selectCellsIn = function () {
                             var self = this;
                             var $exTable = self.$container.closest("." + NAMESPACE);
@@ -16804,6 +18395,9 @@ var nts;
                                 }
                             });
                         };
+                        /**
+                         * Select rows in.
+                         */
                         Cloud.prototype.selectedRowsIn = function () {
                             var self = this;
                             var selectedRows = self.$container.data(internal.SELECTED_ROWS);
@@ -16815,6 +18409,9 @@ var nts;
                                 }
                             }
                         };
+                        /**
+                         * Dirty cells in.
+                         */
                         Cloud.prototype.dirtyCellsIn = function () {
                             var self = this;
                             var $exTable = self.$container.closest("." + NAMESPACE);
@@ -16850,6 +18447,9 @@ var nts;
                                 });
                             }
                         };
+                        /**
+                         * Error cells in.
+                         */
                         Cloud.prototype.errorCellsIn = function () {
                             var self = this;
                             var $exTable = self.$container.closest("." + NAMESPACE);
@@ -16859,6 +18459,9 @@ var nts;
                                 return;
                             self.each(errs, errors.ERROR_CLS);
                         };
+                        /**
+                         * Det cells in.
+                         */
                         Cloud.prototype.detCellsIn = function () {
                             var self = this;
                             var det = self.$container.data(internal.DET);
@@ -16875,6 +18478,9 @@ var nts;
                                 }
                             });
                         };
+                        /**
+                         * Each.
+                         */
                         Cloud.prototype.each = function (items, styler) {
                             var self = this;
                             styler = styler || update.EDITED_CLS;
@@ -16894,6 +18500,9 @@ var nts;
                 var cellHandler;
                 (function (cellHandler) {
                     cellHandler.ROUND_GO = "ex-round-go";
+                    /**
+                     * Get.
+                     */
                     function get(handlerType) {
                         switch (handlerType.toLowerCase()) {
                             case "input":
@@ -16905,6 +18514,9 @@ var nts;
                         }
                     }
                     cellHandler.get = get;
+                    /**
+                     * Cell input.
+                     */
                     function cellInput($cell, options, supplier) {
                         if (uk.util.isNullOrUndefined(options.updateMode) || options.updateMode !== EDIT)
                             return;
@@ -16921,6 +18533,9 @@ var nts;
                         });
                     }
                     cellHandler.cellInput = cellInput;
+                    /**
+                     * Tooltip.
+                     */
                     function tooltip($cell, options, supplier) {
                         var $content = supplier();
                         if (uk.util.isNullOrUndefined($content))
@@ -16928,6 +18543,9 @@ var nts;
                         new widget.Tooltip($cell, { sources: $content });
                     }
                     cellHandler.tooltip = tooltip;
+                    /**
+                     * Round go.
+                     */
                     function roundGo($cell, options, supplier) {
                         if (!supplier || typeof supplier !== "function")
                             return;
@@ -16949,6 +18567,9 @@ var nts;
                         });
                     }
                     cellHandler.roundGo = roundGo;
+                    /**
+                     * rClick.
+                     */
                     function rClick($cell, column, cb) {
                         if (uk.util.isNullOrUndefined(column.rightClick) || typeof column.rightClick !== "function")
                             return;
@@ -16984,6 +18605,9 @@ var nts;
                         return Editor;
                     }());
                     update.Editor = Editor;
+                    /**
+                     * Edit.
+                     */
                     function edit($exTable, $cell, land, value, forced) {
                         var $grid = $exTable.find("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
@@ -17041,6 +18665,7 @@ var nts;
                                 if (cb && _.isFunction(cb)) {
                                     cb();
                                 }
+                                // Update editing cell coord
                                 editor.land = land;
                                 editor.rowIdx = coord.rowIdx;
                                 editor.columnKey = coord.columnKey;
@@ -17085,6 +18710,9 @@ var nts;
                         }
                     }
                     update.edit = edit;
+                    /**
+                     * Editing.
+                     */
                     function editing($exTable, $editor, land) {
                         var $input = $editor.find("input");
                         $input.off(events.KEY_UP);
@@ -17176,6 +18804,9 @@ var nts;
                             }
                         });
                     }
+                    /**
+                     * Trigger stop edit.
+                     */
                     function triggerStopEdit($exTable, $cell, land, value) {
                         if ($cell.length === 0)
                             return;
@@ -17188,6 +18819,9 @@ var nts;
                             return;
                         events.trigger($exTable, events.STOP_EDIT, { land: land, rowIndex: coord.rowIdx, columnKey: coord.columnKey, innerIdx: innerIdx, value: value });
                     }
+                    /**
+                     * Edit done.
+                     */
                     function editDone($exTable) {
                         var $grid = $exTable.find("." + BODY_PRF + DETAIL);
                         var fts = $exTable.data(NAMESPACE).detailContent.features;
@@ -17202,6 +18836,9 @@ var nts;
                         });
                     }
                     update.editDone = editDone;
+                    /**
+                     * Post edit.
+                     */
                     function postEdit($exTable, ui, timeRangerDef) {
                         var $body = !ui.land ? $exTable.find("." + BODY_PRF + DETAIL) : $exTable.find("." + ui.land);
                         var $cell = selection.cellAt($body, ui.rowIndex, ui.columnKey);
@@ -17231,6 +18868,9 @@ var nts;
                         }
                         setText($cell, ui.innerIdx, ui.value);
                     }
+                    /**
+                     * Set text.
+                     */
                     function setText($cell, innerIdx, value) {
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if (!uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1 && $childCells.length > 0) {
@@ -17241,6 +18881,9 @@ var nts;
                         }
                     }
                     update.setText = setText;
+                    /**
+                     * Outside click.
+                     */
                     function outsideClick($exTable, $target, immediate) {
                         if (immediate || !$target.is("." + update.EDITABLE_CLS)) {
                             if ($exTable.data("blockUI.isBlocked") === 1 || errors.occurred($exTable))
@@ -17299,6 +18942,9 @@ var nts;
                         }
                     }
                     update.outsideClick = outsideClick;
+                    /**
+                     * Cell data.
+                     */
                     function cellData($exTable, ui) {
                         var exTable = $exTable.data(NAMESPACE);
                         if (!exTable)
@@ -17357,6 +19003,9 @@ var nts;
                         return null;
                     }
                     update.cellData = cellData;
+                    /**
+                     * Row data.
+                     */
                     function rowData($exTable, rowIdx, data) {
                         var exTable = $exTable.data(NAMESPACE);
                         if (!exTable)
@@ -17370,6 +19019,9 @@ var nts;
                         });
                     }
                     update.rowData = rowData;
+                    /**
+                     * Grid cell.
+                     */
                     function gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -17402,6 +19054,9 @@ var nts;
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore);
                     }
                     update.gridCell = gridCell;
+                    /**
+                     * Grid row.
+                     */
                     function gridRow($grid, rowIdx, data, isRestore) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -17416,6 +19071,9 @@ var nts;
                         render.gridRow($grid, rowIdx, data, isRestore);
                     }
                     update.gridRow = gridRow;
+                    /**
+                     * Grid cell ow.
+                     */
                     function gridCellOw($grid, rowIdx, columnKey, innerIdx, value, txId) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var exTable = $exTable.data(NAMESPACE);
@@ -17454,6 +19112,9 @@ var nts;
                         }
                     }
                     update.gridCellOw = gridCellOw;
+                    /**
+                     * Grid row ow.
+                     */
                     function gridRowOw($grid, rowIdx, data, txId) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var exTable = $exTable.data(NAMESPACE);
@@ -17461,6 +19122,7 @@ var nts;
                         var pk = helper.getPrimaryKey($grid);
                         if (!gen)
                             return;
+                        // Create history
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
@@ -17495,6 +19157,9 @@ var nts;
                         }
                     }
                     update.gridRowOw = gridRowOw;
+                    /**
+                     * Stick grid cell ow.
+                     */
                     function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var exTable = $exTable.data(NAMESPACE);
@@ -17515,6 +19180,9 @@ var nts;
                         }
                     }
                     update.stickGridCellOw = stickGridCellOw;
+                    /**
+                     * Stick grid row ow.
+                     */
                     function stickGridRowOw($grid, rowIdx, data) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var exTable = $exTable.data(NAMESPACE);
@@ -17522,6 +19190,7 @@ var nts;
                         var pk = helper.getPrimaryKey($grid);
                         if (!gen)
                             return;
+                        // Create history
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
@@ -17556,6 +19225,9 @@ var nts;
                         }
                     }
                     update.stickGridRowOw = stickGridRowOw;
+                    /**
+                     * Push history.
+                     */
                     function pushHistory($grid, cells, txId) {
                         var history = $grid.data(internal.COPY_HISTORY);
                         if (!history || history.length === 0) {
@@ -17575,6 +19247,9 @@ var nts;
                         }
                     }
                     update.pushHistory = pushHistory;
+                    /**
+                     * Push edit history.
+                     */
                     function pushEditHistory($grid, cell) {
                         var history = $grid.data(internal.EDIT_HISTORY);
                         if (!history || history.length === 0) {
@@ -17584,6 +19259,9 @@ var nts;
                         history.push(cell);
                     }
                     update.pushEditHistory = pushEditHistory;
+                    /**
+                     * Push stick history.
+                     */
                     function pushStickHistory($grid, cells) {
                         var history = $grid.data(internal.STICK_HISTORY);
                         if (!history || history.length === 0) {
@@ -17593,6 +19271,9 @@ var nts;
                         history.push(cells);
                     }
                     update.pushStickHistory = pushStickHistory;
+                    /**
+                     * Remove stick history.
+                     */
                     function removeStickHistory($grid, cells) {
                         var history = $grid.data(internal.STICK_HISTORY);
                         if (!history || history.length === 0)
@@ -17600,6 +19281,9 @@ var nts;
                         _.remove(history, function (h) { return cells.some(function (c) { return helper.areSameCells(c, h); }); });
                     }
                     update.removeStickHistory = removeStickHistory;
+                    /**
+                     * Insert new row.
+                     */
                     function insertNewRow($container) {
                         var rowIndex;
                         $container.find("div[class*='" + BODY_PRF + "']").filter(function () {
@@ -17633,6 +19317,9 @@ var nts;
                         controls.tick(true, $container.find("." + BODY_PRF + LEFTMOST), false, rowIndex);
                     }
                     update.insertNewRow = insertNewRow;
+                    /**
+                     * Delete rows.
+                     */
                     function deleteRows($container) {
                         var $grid = helper.getLeftmostTable($container);
                         var rows = $grid.data(internal.SELECTED_ROWS);
@@ -17695,6 +19382,9 @@ var nts;
                         });
                     }
                     update.deleteRows = deleteRows;
+                    /**
+                     * Retrack editor.
+                     */
                     function retrackEditor($container, rows) {
                         var count = 0;
                         var editor = $container.data(update.EDITOR);
@@ -17711,6 +19401,9 @@ var nts;
                         if (count > 0)
                             editor.rowIdx = editor.rowIdx - count;
                     }
+                    /**
+                     * Retrack records.
+                     */
                     function retrackRecords($grid, rows, name) {
                         var histories = $grid.data(name);
                         if (!histories)
@@ -17742,6 +19435,9 @@ var nts;
                             each(histories, rows);
                         }
                     }
+                    /**
+                     * Each.
+                     */
                     function each(histories, rows) {
                         var removes = [];
                         _.forEach(histories, function (his, index) {
@@ -17782,6 +19478,9 @@ var nts;
                         function Printer(options) {
                             this.options = options;
                         }
+                        /**
+                         * Hook.
+                         */
                         Printer.prototype.hook = function ($grid) {
                             var self = this;
                             self.$grid = $grid;
@@ -17806,6 +19505,9 @@ var nts;
                                 });
                             });
                         };
+                        /**
+                         * Get op.
+                         */
                         Printer.prototype.getOp = function (evt) {
                             var self = this;
                             if (evt.ctrlKey && helper.isCopyKey(evt)) {
@@ -17817,6 +19519,9 @@ var nts;
                                 self.undo();
                             }
                         };
+                        /**
+                         * Copy.
+                         */
                         Printer.prototype.copy = function (cut) {
                             var self = this;
                             var selectedCells = selection.getSelectedCells(this.$grid);
@@ -17839,6 +19544,9 @@ var nts;
                             document.execCommand("copy");
                             return selectedCells;
                         };
+                        /**
+                         * Convert structure.
+                         */
                         Printer.prototype.converseStructure = function (cells, cut) {
                             var self = this;
                             var maxRow = 0;
@@ -17891,6 +19599,9 @@ var nts;
                             }
                             return structData;
                         };
+                        /**
+                         * Cut.
+                         */
                         Printer.prototype.cut = function () {
                             var self = this;
                             var selectedCells = this.copy(true);
@@ -17903,6 +19614,9 @@ var nts;
                                 update.gridCell(self.$grid, cell.rowIndex, cell.columnKey, -1, value);
                             });
                         };
+                        /**
+                         * Paste.
+                         */
                         Printer.prototype.paste = function (evt) {
                             if (this.mode === Mode.SINGLE) {
                                 this.pasteSingleCell(evt);
@@ -17911,6 +19625,9 @@ var nts;
                                 this.pasteRange(evt);
                             }
                         };
+                        /**
+                         * Paste single cell.
+                         */
                         Printer.prototype.pasteSingleCell = function (evt) {
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
@@ -17921,11 +19638,17 @@ var nts;
                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
                             });
                         };
+                        /**
+                         * Paste range.
+                         */
                         Printer.prototype.pasteRange = function (evt) {
                             var cbData = this.getClipboardContent(evt);
                             cbData = this.process(cbData);
                             this.updateWith(cbData);
                         };
+                        /**
+                         * Process.
+                         */
                         Printer.prototype.process = function (data) {
                             var dataRows = _.map(data.split("\n"), function (row) {
                                 return _.map(row.split("\t"), function (cData) {
@@ -17940,6 +19663,9 @@ var nts;
                             }
                             return dataRows;
                         };
+                        /**
+                         * Update with.
+                         */
                         Printer.prototype.updateWith = function (data) {
                             var self = this;
                             var selectedCell = selection.getSelectedCells(self.$grid)[0];
@@ -17971,6 +19697,9 @@ var nts;
                                 rowIndex++;
                             });
                         };
+                        /**
+                         * Undo.
+                         */
                         Printer.prototype.undo = function () {
                             var self = this;
                             var histories = self.$grid.data(internal.COPY_HISTORY);
@@ -17982,6 +19711,9 @@ var nts;
                                 internal.removeChange(self.$grid, item);
                             });
                         };
+                        /**
+                         * Get clipboard content.
+                         */
                         Printer.prototype.getClipboardContent = function (evt) {
                             if (window.clipboardData) {
                                 window.event.returnValue = false;
@@ -17994,12 +19726,18 @@ var nts;
                         return Printer;
                     }());
                     copy.Printer = Printer;
+                    /**
+                     * On.
+                     */
                     function on($grid, updateMode) {
                         if (updateMode === COPY_PASTE) {
                             new Printer().hook($grid);
                         }
                     }
                     copy.on = on;
+                    /**
+                     * Off.
+                     */
                     function off($grid, updateMode) {
                         if (updateMode !== COPY_PASTE) {
                             $grid.off(events.FOCUS_IN).off(events.KEY_DOWN);
@@ -18022,6 +19760,9 @@ var nts;
                         return Sticker;
                     }());
                     spread.Sticker = Sticker;
+                    /**
+                     * Bind sticker.
+                     */
                     function bindSticker($cell, rowIdx, columnKey, options) {
                         if (options.containerClass !== BODY_PRF + DETAIL || uk.util.isNullOrUndefined(options.updateMode)
                             || options.updateMode !== STICK)
@@ -18042,6 +19783,7 @@ var nts;
                             if (sticker.mode === spread.SINGLE) {
                                 var result = void 0;
                                 if ((result = sticker.validate(rowIdx, columnKey, sticker.data)) !== true) {
+                                    // TODO: show error
                                     result();
                                     return;
                                 }
@@ -18083,6 +19825,9 @@ var nts;
                         };
                         return Result;
                     }());
+                    /**
+                     * Validate.
+                     */
                     function validate($body, $cell, rowIdx, columnKey, innerIdx, value, timeRangerDef) {
                         var vtor = validation.mandate($body, columnKey, innerIdx);
                         var gen = $body.data(internal.TANGI) || $body.data(internal.CANON);
@@ -18129,6 +19874,8 @@ var nts;
                             var $tbl = $body.closest("." + NAMESPACE);
                             if (!isValid) {
                                 errors.add($tbl, $cell, rowIdx, columnKey, innerIdx, value);
+                                //                cellData($exTable, rowIdx, columnKey, innerIdx, value);
+                                //                    update.setText($cell, innerIdx, value);
                                 return Result.fail();
                             }
                             if (errors.any($cell, innerIdx))
@@ -18137,6 +19884,9 @@ var nts;
                         return Result.ok(formatValue);
                     }
                     validation.validate = validate;
+                    /**
+                     * Mandate.
+                     */
                     function mandate($grid, columnKey, innerIdx) {
                         var visibleColumns = helper.getVisibleColumnsOn($grid);
                         var actValid, dataType, max, min, required;
@@ -18164,6 +19914,9 @@ var nts;
                             };
                     }
                     validation.mandate = mandate;
+                    /**
+                     * Which.
+                     */
                     function which(innerIdx, dataType, type) {
                         var actValid;
                         if (dataType && dataType.indexOf(type) !== -1) {
@@ -18181,6 +19934,9 @@ var nts;
                         }
                         return actValid;
                     }
+                    /**
+                     * Check time clock.
+                     */
                     function isTimeClock(time) {
                         if (uk.util.isNullOrUndefined(time))
                             return false;
@@ -18202,6 +19958,9 @@ var nts;
                         return false;
                     }
                     validation.isTimeClock = isTimeClock;
+                    /**
+                     * Check time duration.
+                     */
                     function isTimeDuration(time, max, min) {
                         if (uk.util.isNullOrUndefined(time))
                             return false;
@@ -18229,6 +19988,9 @@ var nts;
                         return true;
                     }
                     validation.isTimeDuration = isTimeDuration;
+                    /**
+                     * Check number.
+                     */
                     function isNumber(value, max, min) {
                         if (!validation.NUMBER_PTN.test(value))
                             return false;
@@ -18238,6 +20000,9 @@ var nts;
                             return false;
                         return true;
                     }
+                    /**
+                     * Compare.
+                     */
                     function compare(one, other) {
                         if (one.hour > other.hour) {
                             return 1;
@@ -18253,6 +20018,9 @@ var nts;
                         }
                         return 0;
                     }
+                    /**
+                     * Parse.
+                     */
                     function parse(time) {
                         if (validation.TIME_PTN.test(time)) {
                             var parts = time.split(validation.TIME_SPLIT);
@@ -18264,6 +20032,9 @@ var nts;
                             };
                         }
                     }
+                    /**
+                     * Format time.
+                     */
                     function formatTime(time) {
                         var minute, hour;
                         if (validation.SHORT_TIME_PTN.test(time)) {
@@ -18289,6 +20060,9 @@ var nts;
                 (function (errors_1) {
                     errors_1.ERROR_CLS = "x-error";
                     errors_1.ERRORS = "errors";
+                    /**
+                     * Add.
+                     */
                     function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
                         if (any($cell, innerIdx))
                             return;
@@ -18309,6 +20083,9 @@ var nts;
                         }
                     }
                     errors_1.add = add;
+                    /**
+                     * Remove.
+                     */
                     function remove($grid, $cell, rowIdx, columnKey, innerIdx) {
                         var errors = $grid.data(errors_1.ERRORS);
                         if (!errors)
@@ -18331,10 +20108,16 @@ var nts;
                         }
                     }
                     errors_1.remove = remove;
+                    /**
+                     * Clear.
+                     */
                     function clear($grid) {
                         $grid.data(errors_1.ERRORS, null);
                     }
                     errors_1.clear = clear;
+                    /**
+                     * Any.
+                     */
                     function any($cell, innerIdx) {
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if (!uk.util.isNullOrUndefined(innerIdx) && $childCells.length > 0) {
@@ -18343,6 +20126,9 @@ var nts;
                         return $cell.hasClass(errors_1.ERROR_CLS);
                     }
                     errors_1.any = any;
+                    /**
+                     * Occurred.
+                     */
                     function occurred($grid) {
                         var errs = $grid.data(errors_1.ERRORS);
                         if (!errs)
@@ -18365,6 +20151,9 @@ var nts;
                         return Cell;
                     }());
                     selection.Cell = Cell;
+                    /**
+                     * Check up.
+                     */
                     function checkUp($exTable) {
                         if ($exTable.data(NAMESPACE).updateMode !== COPY_PASTE)
                             return;
@@ -18395,6 +20184,9 @@ var nts;
                         });
                     }
                     selection.checkUp = checkUp;
+                    /**
+                     * Select range.
+                     */
                     function selectRange($grid, $cell) {
                         if (uk.util.isNullOrUndefined($cell) || $cell.length === 0)
                             return;
@@ -18411,6 +20203,9 @@ var nts;
                             cellInRange($grid, i, lastSelected.columnKey, toCoord.columnKey);
                         }
                     }
+                    /**
+                     * Mark cell.
+                     */
                     function markCell($cell) {
                         if ($cell.is("." + render.CHILD_CELL_CLS)) {
                             $cell.addClass(selection.CELL_SELECTED_CLS);
@@ -18430,6 +20225,9 @@ var nts;
                         return false;
                     }
                     selection.markCell = markCell;
+                    /**
+                     * Select cell.
+                     */
                     function selectCell($grid, $cell, notLast) {
                         if (!markCell($cell))
                             return;
@@ -18438,6 +20236,9 @@ var nts;
                         tickRows($grid.siblings("." + BODY_PRF + LEFTMOST), false);
                     }
                     selection.selectCell = selectCell;
+                    /**
+                     * Add select.
+                     */
                     function addSelect($grid, rowIdx, columnKey, notLast) {
                         var selectedCells = $grid.data(internal.SELECTED_CELLS);
                         if (!notLast)
@@ -18459,6 +20260,9 @@ var nts;
                         }
                     }
                     selection.addSelect = addSelect;
+                    /**
+                     * Clear.
+                     */
                     function clear($grid, rowIdx, columnKey) {
                         var selectedCells = $grid.data(internal.SELECTED_CELLS);
                         if (!selectedCells)
@@ -18490,6 +20294,9 @@ var nts;
                         }
                     }
                     selection.clear = clear;
+                    /**
+                     * Clear all.
+                     */
                     function clearAll($grid) {
                         var selectedCells = $grid.data(internal.SELECTED_CELLS);
                         if (!selectedCells)
@@ -18513,11 +20320,17 @@ var nts;
                         $grid.data(internal.SELECTED_CELLS, null);
                     }
                     selection.clearAll = clearAll;
+                    /**
+                     * Cell at.
+                     */
                     function cellAt($grid, rowIdx, columnKey) {
                         var $row = rowAt($grid, rowIdx);
                         return getCellInRow($grid, $row, columnKey);
                     }
                     selection.cellAt = cellAt;
+                    /**
+                     * Row at.
+                     */
                     function rowAt($grid, rowIdx) {
                         var virt = $grid.data(internal.TANGI);
                         if (!virt)
@@ -18527,11 +20340,17 @@ var nts;
                         return $grid.find("tr:eq(" + (parseInt(rowIdx) - virt.startIndex + 1) + ")");
                     }
                     selection.rowAt = rowAt;
+                    /**
+                     * Cell of.
+                     */
                     function cellOf($grid, rowId, columnKey) {
                         var $row = rowOf($grid, rowId);
                         return getCellInRow($grid, $row, columnKey);
                     }
                     selection.cellOf = cellOf;
+                    /**
+                     * Row of.
+                     */
                     function rowOf($grid, rowId) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -18545,6 +20364,9 @@ var nts;
                         }
                     }
                     selection.rowOf = rowOf;
+                    /**
+                     * Row exists.
+                     */
                     function rowExists($grid, rowIdx) {
                         var virt = $grid.data(internal.TANGI);
                         if (virt && (virt.startIndex > rowIdx || virt.endIndex < rowIdx))
@@ -18552,6 +20374,9 @@ var nts;
                         return true;
                     }
                     selection.rowExists = rowExists;
+                    /**
+                     * Cell in range.
+                     */
                     function cellInRange($grid, rowIdx, startKey, endKey) {
                         var range = [];
                         var $row = rowAt($grid, rowIdx);
@@ -18582,6 +20407,9 @@ var nts;
                         return range;
                     }
                     selection.cellInRange = cellInRange;
+                    /**
+                     * Get cell in row.
+                     */
                     function getCellInRow($grid, $row, columnKey) {
                         if ($row === intan.NULL || !$row)
                             return intan.NULL;
@@ -18601,6 +20429,9 @@ var nts;
                         }).eq(columnIdx);
                     }
                     selection.getCellInRow = getCellInRow;
+                    /**
+                     * Column index range.
+                     */
                     function columnIndexRange($grid, startKey, endKey) {
                         var cloud = $grid.data(internal.TANGI);
                         var canon = $grid.data(internal.CANON);
@@ -18629,6 +20460,9 @@ var nts;
                         };
                     }
                     selection.columnIndexRange = columnIndexRange;
+                    /**
+                     * Get selected cells.
+                     */
                     function getSelectedCells($grid) {
                         var selectedCells = $grid.data(internal.SELECTED_CELLS);
                         var generator = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
@@ -18642,6 +20476,9 @@ var nts;
                         return cells;
                     }
                     selection.getSelectedCells = getSelectedCells;
+                    /**
+                     * Off.
+                     */
                     function off($exTable) {
                         if ($exTable.data(NAMESPACE).updateMode === COPY_PASTE)
                             return;
@@ -18652,10 +20489,16 @@ var nts;
                         $detailContent.off(events.MOUSE_DOWN).off(events.MOUSE_UP).off(events.MOUSE_MOVE);
                     }
                     selection.off = off;
+                    /**
+                     * Focus.
+                     */
                     function focus($grid) {
                         $grid.focus();
                     }
                     selection.focus = focus;
+                    /**
+                     * Focus latest.
+                     */
                     function focusLatest($grid) {
                         var latest = $grid.data(internal.LAST_SELECTED);
                         if (!latest)
@@ -18666,6 +20509,9 @@ var nts;
                         $cell.focus();
                     }
                     selection.focusLatest = focusLatest;
+                    /**
+                     * Select row.
+                     */
                     function selectRow($grid, rowIndex) {
                         var $row = selection.rowAt($grid, rowIndex);
                         if ($row !== intan.NULL && !$row.hasClass(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
@@ -18700,6 +20546,9 @@ var nts;
                         }
                     }
                     selection.selectRow = selectRow;
+                    /**
+                     * Deselect row.
+                     */
                     function deselectRow($grid, rowIndex) {
                         selection.rowAt($grid, rowIndex).removeClass(selection.ROW_SELECTED_CLS);
                         selection.rowAt($grid.siblings("div[class*='" + BODY_PRF + "']").filter(function () {
@@ -18712,6 +20561,9 @@ var nts;
                         selectedRows.count--;
                     }
                     selection.deselectRow = deselectRow;
+                    /**
+                     * Tick rows.
+                     */
                     function tickRows($grid, flag, limit) {
                         var selectedRows = $grid.data(internal.SELECTED_ROWS);
                         if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
@@ -18743,6 +20595,9 @@ var nts;
                             this.$ownerDoc = $($headerTable[0].ownerDocument);
                             this.standardCells = [];
                         }
+                        /**
+                         * Handle.
+                         */
                         ColumnAdjuster.prototype.handle = function () {
                             var self = this;
                             self.$agency = $("<div/>").addClass(resize.AGENCY).css({ position: "relative", width: self.$headerTable.outerWidth() });
@@ -18763,6 +20618,7 @@ var nts;
                                     var $targetCol = $(self.$colGroup[targetColumnIdx]);
                                     var $line = $("<div/>").addClass(resize.LINE).data(resize.RESIZE_COL, $targetCol).css(lineStyles("-3px"));
                                     self.$agency.append($line);
+                                    // Line positions
                                     var height = self.$headerTable.height();
                                     var left = $td.outerWidth() + ($td.offset().left - self.$agency.offset().left);
                                     $line.css({ left: left, height: height });
@@ -18771,6 +20627,9 @@ var nts;
                             });
                             self.$agency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
                         };
+                        /**
+                         * Cursor down.
+                         */
                         ColumnAdjuster.prototype.cursorDown = function (event) {
                             var self = this;
                             if (self.actionDetails) {
@@ -18801,6 +20660,9 @@ var nts;
                             self.$ownerDoc.on(events.MOUSE_UP, $.proxy(self.cursorUp, self));
                             event.preventDefault();
                         };
+                        /**
+                         * Cursor move.
+                         */
                         ColumnAdjuster.prototype.cursorMove = function (event) {
                             var self = this;
                             if (!self.actionDetails)
@@ -18832,6 +20694,9 @@ var nts;
                                 self.setWidth($contentRightCol, rightWidth);
                             }
                         };
+                        /**
+                         * Cursor up.
+                         */
                         ColumnAdjuster.prototype.cursorUp = function (event) {
                             var self = this;
                             self.$ownerDoc.off(events.MOUSE_MOVE);
@@ -18839,9 +20704,15 @@ var nts;
                             self.syncLines();
                             self.actionDetails = null;
                         };
+                        /**
+                         * Set width.
+                         */
                         ColumnAdjuster.prototype.setWidth = function ($col, width) {
                             $col.width(width);
                         };
+                        /**
+                         * Sync lines.
+                         */
                         ColumnAdjuster.prototype.syncLines = function () {
                             var self = this;
                             self.$agency.width(self.$headerTable.width());
@@ -18871,6 +20742,9 @@ var nts;
                                 this.$depDetailBody = $follower.find("." + BODY_PRF + DETAIL);
                             }
                         }
+                        /**
+                         * Handle.
+                         */
                         AreaAdjuster.prototype.handle = function () {
                             var self = this;
                             self.$areaAgency = $("<div/>").addClass(resize.AREA_AGENCY).css({ position: "relative", width: self.$container.width() });
@@ -18880,6 +20754,7 @@ var nts;
                                     return;
                                 var $line = $("<div/>").addClass(resize.AREA_LINE).data(resize.RESIZE_AREA, $wrapper).css(lineStyles("0px"));
                                 self.$areaAgency.append($line);
+                                // Line positions
                                 var height = $wrapper.height() + self.bodyWrappers[index].height();
                                 var left = $wrapper.outerWidth() + ($wrapper.offset().left - self.$areaAgency.offset().left);
                                 $line.css({ left: left, height: height });
@@ -18888,6 +20763,9 @@ var nts;
                             });
                             self.$areaAgency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
                         };
+                        /**
+                         * Cursor down.
+                         */
                         AreaAdjuster.prototype.cursorDown = function (event) {
                             var self = this;
                             if (self.actionDetails) {
@@ -18925,6 +20803,9 @@ var nts;
                             events.trigger(self.$container, events.AREA_RESIZE_STARTED, [$leftArea, $rightArea, leftWidth, rightWidth]);
                             event.preventDefault();
                         };
+                        /**
+                         * Cursor move.
+                         */
                         AreaAdjuster.prototype.cursorMove = function (event) {
                             var self = this;
                             if (!self.actionDetails)
@@ -18933,6 +20814,7 @@ var nts;
                             if (distance === 0)
                                 return;
                             var $bodyLeftArea, $bodyRightArea, leftWidth, rightWidth;
+                            // TODO: Use if here because there may be changes later.
                             if (distance > 0) {
                                 leftWidth = self.actionDetails.widths.left + distance;
                                 rightWidth = self.actionDetails.widths.right - distance;
@@ -18972,6 +20854,9 @@ var nts;
                             self.reflectSumTblsSize(distance, leftWidth, rightWidth, newPosLeft);
                             events.trigger(self.$container, events.AREA_RESIZE, [self.actionDetails.$leftArea, self.actionDetails.$rightArea, leftWidth, rightWidth]);
                         };
+                        /**
+                         * Reflect size.
+                         */
                         AreaAdjuster.prototype.reflectSumTblsSize = function (diff, leftWidth, rightWidth, posLeft) {
                             var self = this;
                             var $leftArea = self.actionDetails.$leftArea;
@@ -19003,6 +20888,9 @@ var nts;
                                 }
                             }
                         };
+                        /**
+                         * Check resize permit.
+                         */
                         AreaAdjuster.prototype.isResizePermit = function (leftWidth, rightWidth) {
                             var self = this;
                             var leftAreaMaxWidth = 0, rightAreaMaxWidth = 0;
@@ -19028,6 +20916,9 @@ var nts;
                             }
                             return true;
                         };
+                        /**
+                         * Cursor up.
+                         */
                         AreaAdjuster.prototype.cursorUp = function (event) {
                             var self = this;
                             if (!self.actionDetails)
@@ -19039,9 +20930,15 @@ var nts;
                                 self.actionDetails.changedWidths.left, self.actionDetails.changedWidths.right]);
                             self.actionDetails = null;
                         };
+                        /**
+                         * Set width.
+                         */
                         AreaAdjuster.prototype.setWidth = function ($wrapper, width) {
                             $wrapper.width(width);
                         };
+                        /**
+                         * Sync lines.
+                         */
                         AreaAdjuster.prototype.syncLines = function () {
                             var self = this;
                             self.$areaAgency.width(self.$container.width());
@@ -19054,12 +20951,21 @@ var nts;
                         return AreaAdjuster;
                     }());
                     resize.AreaAdjuster = AreaAdjuster;
+                    /**
+                     * Get cursorX.
+                     */
                     function getCursorX(event) {
                         return event.pageX;
                     }
+                    /**
+                     * Line styles.
+                     */
                     function lineStyles(marginLeft) {
                         return { position: "absolute", cursor: "ew-resize", width: "4px", zIndex: 2, marginLeft: marginLeft };
                     }
+                    /**
+                     * Fit window height.
+                     */
                     function fitWindowHeight($container, wrappers, horzSumExists) {
                         var height = window.innerHeight - parseInt($container.data(internal.Y_OCCUPY)) - 100;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
@@ -19099,6 +21005,9 @@ var nts;
                         events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
                     }
                     resize.fitWindowHeight = fitWindowHeight;
+                    /**
+                     * Fit window width.
+                     */
                     function fitWindowWidth($container) {
                         var table = $container.data(NAMESPACE);
                         if (table.$commander)
@@ -19135,6 +21044,9 @@ var nts;
                         }
                     }
                     resize.fitWindowWidth = fitWindowWidth;
+                    /**
+                     * Sync detail area line.
+                     */
                     function syncDetailAreaLine($container, $detailHeader, $detailBody) {
                         var $agency = $container.find("." + resize.AREA_AGENCY);
                         if ($agency.length === 0)
@@ -19150,6 +21062,9 @@ var nts;
                         });
                         $agency.find("div:eq(" + index + ")").css({ left: left, height: height });
                     }
+                    /**
+                     * Reposition horzSum.
+                     */
                     function repositionHorzSum($container, $horzSumHeader, $horzSumBody) {
                         $horzSumHeader = $horzSumHeader || $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
                         $horzSumBody = $horzSumBody || $container.find("." + BODY_PRF + HORIZONTAL_SUM);
@@ -19162,6 +21077,9 @@ var nts;
                         $horzSumBody.css("top", bodyTop);
                     }
                     resize.repositionHorzSum = repositionHorzSum;
+                    /**
+                     * Reposition vertSum.
+                     */
                     function repositionVertSum($container, $vertSumHeader, $vertSumContent) {
                         $vertSumHeader = $vertSumHeader || $container.find("." + HEADER_PRF + VERTICAL_SUM);
                         $vertSumContent = $vertSumContent || $container.find("." + BODY_PRF + VERTICAL_SUM);
@@ -19172,6 +21090,9 @@ var nts;
                         $vertSumContent.css("left", vertSumLeft);
                     }
                     resize.repositionVertSum = repositionVertSum;
+                    /**
+                     * Set height.
+                     */
                     function setHeight($container, height) {
                         $container.find("div[class*='" + BODY_PRF + "']").each(function () {
                             if ($(this).hasClass(BODY_PRF + HORIZONTAL_SUM) || $(this).hasClass(BODY_PRF + LEFT_HORZ_SUM))
@@ -19181,11 +21102,17 @@ var nts;
                         events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
                     }
                     resize.setHeight = setHeight;
+                    /**
+                     * On area complete.
+                     */
                     function onAreaComplete(event, $leftArea, $rightArea, leftWidth, rightWidth) {
                         var self = this;
                         saveSizes(self.$container, $leftArea, $rightArea, leftWidth, rightWidth);
                     }
                     resize.onAreaComplete = onAreaComplete;
+                    /**
+                     * Save sizes.
+                     */
                     function saveSizes($container, $leftArea, $rightArea, leftWidth, rightWidth) {
                         if ($leftArea) {
                             storage.area.save($container, $leftArea.data(internal.EX_PART), leftWidth);
@@ -19195,6 +21122,9 @@ var nts;
                         }
                     }
                     resize.saveSizes = saveSizes;
+                    /**
+                     * On body height changed.
+                     */
                     function onBodyHeightChanged(event, height) {
                         var $container = $(event.target);
                         storage.tableHeight.save($container, height);
@@ -19209,15 +21139,24 @@ var nts;
                     var Store = (function () {
                         function Store() {
                         }
+                        /**
+                         * Check value exists.
+                         */
                         Store.prototype.initValueExists = function ($container) {
                             var self = this;
                             var storeKey = self.getStorageKey($container);
                             var value = uk.localStorage.getItem(storeKey);
                             return value.isPresent();
                         };
+                        /**
+                         * Get store item.
+                         */
                         Store.prototype.getStoreItem = function ($container, item) {
                             return uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/" + item;
                         };
+                        /**
+                         * Get value.
+                         */
                         Store.prototype.getValue = function ($container) {
                             var storeKey = this.getStorageKey($container);
                             return uk.localStorage.getItem(storeKey);
@@ -19237,6 +21176,9 @@ var nts;
                             return Cache;
                         }(Store));
                         var cache = new Cache();
+                        /**
+                         * Init.
+                         */
                         function init($container, parts) {
                             if (cache.initValueExists($container)) {
                                 return;
@@ -19249,6 +21191,9 @@ var nts;
                             saveAll($container, partWidths);
                         }
                         area.init = init;
+                        /**
+                         * Load.
+                         */
                         function load($container) {
                             var storeKey = cache.getStorageKey($container);
                             uk.localStorage.getItem(storeKey).ifPresent(function (parts) {
@@ -19258,6 +21203,9 @@ var nts;
                             });
                         }
                         area.load = load;
+                        /**
+                         * Save.
+                         */
                         function save($container, keyClass, partWidth) {
                             var storeKey = cache.getStorageKey($container);
                             var partsWidth = uk.localStorage.getItem(storeKey);
@@ -19272,6 +21220,9 @@ var nts;
                             uk.localStorage.setItemAsJson(storeKey, widths);
                         }
                         area.save = save;
+                        /**
+                         * Save all.
+                         */
                         function saveAll($container, widths) {
                             var storeKey = cache.getStorageKey($container);
                             var partWidths = uk.localStorage.getItem(storeKey);
@@ -19279,16 +21230,25 @@ var nts;
                                 uk.localStorage.setItemAsJson(storeKey, widths);
                             }
                         }
+                        /**
+                         * Get part widths.
+                         */
                         function getPartWidths($container) {
                             return cache.getValue($container);
                         }
                         area.getPartWidths = getPartWidths;
+                        /**
+                         * Set widths.
+                         */
                         function setWidths($container, parts) {
                             var partKeys = Object.keys(parts);
                             _.forEach(partKeys, function (keyClass, index) {
                                 setWidth($container, keyClass, parts[keyClass]);
                             });
                         }
+                        /**
+                         * Set width.
+                         */
                         function setWidth($container, keyClass, width) {
                             $container.find("." + keyClass).width(width);
                             $container.find("." + Connector[keyClass]).width(width);
@@ -19307,6 +21267,9 @@ var nts;
                             return Cache2;
                         }(Store));
                         var cache = new Cache2();
+                        /**
+                         * Init.
+                         */
                         function init($container) {
                             if (cache.initValueExists($container)) {
                                 return;
@@ -19317,6 +21280,9 @@ var nts;
                             save($container, $($bodies[0]).height());
                         }
                         tableHeight.init = init;
+                        /**
+                         * Load.
+                         */
                         function load($container) {
                             var storeKey = cache.getStorageKey($container);
                             uk.localStorage.getItem(storeKey).ifPresent(function (height) {
@@ -19326,10 +21292,16 @@ var nts;
                             });
                         }
                         tableHeight.load = load;
+                        /**
+                         * Get.
+                         */
                         function get($container) {
                             return cache.getValue($container);
                         }
                         tableHeight.get = get;
+                        /**
+                         * Save.
+                         */
                         function save($container, height) {
                             var storeKey = cache.getStorageKey($container);
                             uk.localStorage.setItemAsJson(storeKey, height);
@@ -19341,11 +21313,15 @@ var nts;
                 (function (scroll) {
                     scroll.SCROLL_SYNCING = "scroll-syncing";
                     scroll.VERT_SCROLL_SYNCING = "vert-scroll-syncing";
+                    /**
+                     * Bind vertWheel.
+                     */
                     function bindVertWheel($container) {
                         $container.on(events.MOUSE_WHEEL, function (event) {
                             var delta = event.originalEvent.wheelDeltaY;
                             var direction = delta > 0 ? -1 : 1;
                             var value = $container.scrollTop() + event.originalEvent.deltaY;
+                            //                $container.stop().animate({ scrollTop: value }, 10);
                             $container.scrollTop(value);
                             event.preventDefault();
                             event.stopImmediatePropagation();
@@ -19355,11 +21331,17 @@ var nts;
                         }
                     }
                     scroll.bindVertWheel = bindVertWheel;
+                    /**
+                     * Unbind vertWheel.
+                     */
                     function unbindVertWheel($container) {
                         $container.off(events.MOUSE_WHEEL);
                         $container.css("overflow-y", "scroll");
                     }
                     scroll.unbindVertWheel = unbindVertWheel;
+                    /**
+                     * Sync scrolls.
+                     */
                     function syncDoubDirHorizontalScrolls(wrappers) {
                         _.forEach(wrappers, function ($main, index) {
                             if (!$main)
@@ -19379,6 +21361,9 @@ var nts;
                         });
                     }
                     scroll.syncDoubDirHorizontalScrolls = syncDoubDirHorizontalScrolls;
+                    /**
+                     * Sync scrolls.
+                     */
                     function syncDoubDirVerticalScrolls(wrappers) {
                         _.forEach(wrappers, function ($main, index) {
                             $main.on(events.SCROLL_EVT, function (event) {
@@ -19396,12 +21381,18 @@ var nts;
                         });
                     }
                     scroll.syncDoubDirVerticalScrolls = syncDoubDirVerticalScrolls;
+                    /**
+                     * Sync scroll.
+                     */
                     function syncHorizontalScroll($headerWrap, $bodyWrap) {
                         $bodyWrap.on(events.SCROLL_EVT, function () {
                             $headerWrap.scrollLeft($bodyWrap.scrollLeft());
                         });
                     }
                     scroll.syncHorizontalScroll = syncHorizontalScroll;
+                    /**
+                     * Sync scroll.
+                     */
                     function syncVerticalScroll($pivotBody, bodyWraps) {
                         $pivotBody.on(events.SCROLL_EVT, function () {
                             _.forEach(bodyWraps, function (body) {
@@ -19417,6 +21408,9 @@ var nts;
                     controls.LINK_CLS = "x-link";
                     controls.CHECKED_KEY = "xCheckbox";
                     controls.CHECKBOX_COL_WIDTH = 40;
+                    /**
+                     * Check.
+                     */
                     function check($td, column, data, action) {
                         if (!uk.util.isNullOrUndefined(column.control)) {
                             switch (column.control) {
@@ -19429,12 +21423,18 @@ var nts;
                         }
                     }
                     controls.check = check;
+                    /**
+                     * Add checkbox def.
+                     */
                     function addCheckBoxDef(arr) {
                         _.forEach(arr, function (opt) {
                             opt.columns.unshift({ key: controls.CHECKED_KEY, headerText: controls.CHECKED_KEY, width: controls.CHECKBOX_COL_WIDTH + "px" });
                         });
                     }
                     controls.addCheckBoxDef = addCheckBoxDef;
+                    /**
+                     * Create checkbox.
+                     */
                     function createCheckBox($grid, ui) {
                         var checkBoxText;
                         var $wrapper = $("<div/>").addClass("nts-checkbox-container").on(events.CLICK_EVT, function (e) {
@@ -19463,10 +21463,16 @@ var nts;
                         return $wrapper;
                     }
                     controls.createCheckBox = createCheckBox;
+                    /**
+                     * Checkbox cell styles.
+                     */
                     function checkBoxCellStyles() {
                         return { padding: "1px 1px", textAlign: "center" };
                     }
                     controls.checkBoxCellStyles = checkBoxCellStyles;
+                    /**
+                     * Tick.
+                     */
                     function tick(checked, $grid, isHeader, rowIdx) {
                         var $checkBox;
                         var ds = internal.getDataSource($grid);
@@ -19561,10 +21567,16 @@ var nts;
                     events.MOUSEIN_COLUMN = "extablemouseincolumn";
                     events.MOUSEOUT_COLUMN = "extablemousoutcolumn";
                     events.COMPLETED = "extablecompleted";
+                    /**
+                     * Trigger.
+                     */
                     function trigger($target, eventName, args) {
                         $target.trigger($.Event(eventName), args);
                     }
                     events.trigger = trigger;
+                    /**
+                     * On modify.
+                     */
                     function onModify($exTable) {
                         $exTable.on(events.CELL_UPDATED, function (evt, ui) {
                             var exTable = $exTable.data(NAMESPACE);
@@ -19596,6 +21608,9 @@ var nts;
                         });
                     }
                     events.onModify = onModify;
+                    /**
+                     * Push change.
+                     */
                     function pushChange(exTable, rowIdx, cell) {
                         var modifies = exTable.modifications;
                         if (!modifies) {
@@ -19620,6 +21635,9 @@ var nts;
                             modifies[rowIdx].push(cell);
                         }
                     }
+                    /**
+                     * Create row ui.
+                     */
                     function createRowUi(rowIdx, data) {
                         return {
                             rowIndex: rowIdx,
@@ -19637,12 +21655,18 @@ var nts;
                     feature_2.BODY_CELL_STYLE = "BodyCellStyle";
                     feature_2.COLUMN_RESIZE = "ColumnResize";
                     feature_2.TIME_RANGE = "TimeRange";
+                    /**
+                     * Is enable.
+                     */
                     function isEnable(features, name) {
                         return _.find(features, function (feature) {
                             return feature.name === name;
                         }) !== undefined;
                     }
                     feature_2.isEnable = isEnable;
+                    /**
+                     * Find.
+                     */
                     function find(features, name) {
                         return _.find(features, function (feature) {
                             return feature.name === name;
@@ -19674,6 +21698,9 @@ var nts;
                         return Cell;
                     }());
                     style.Cell = Cell;
+                    /**
+                     * Det column.
+                     */
                     function detColumn($grid, $row, rowIdx) {
                         var $tbl = $grid.closest("." + NAMESPACE);
                         var detOpt = $tbl.data(NAMESPACE).determination;
@@ -19766,6 +21793,9 @@ var nts;
                         });
                     }
                     style.detColumn = detColumn;
+                    /**
+                     * Det cell.
+                     */
                     function detCell($grid, $cell, rowIdx, columnKey) {
                         var $tbl = $grid.closest("." + NAMESPACE);
                         var detOpt = $tbl.data(NAMESPACE).determination;
@@ -19802,6 +21832,7 @@ var nts;
                                             helper.stripCellsWith(style.DET_CLS, $targetRow.find("td").filter(function () {
                                                 return $(this).css("display") !== "none";
                                             }));
+                                            //                                det[coord.rowIdx] = [];
                                             delete det[coord.rowIdx];
                                             return;
                                         }
@@ -19846,6 +21877,9 @@ var nts;
                         }
                     }
                     style.detCell = detCell;
+                    /**
+                     * On det single cell.
+                     */
                     function onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey) {
                         if (!evt.ctrlKey || !helper.isDetable($cell))
                             return;
@@ -19938,6 +21972,12 @@ var nts;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
                                 break;
+                            case "lockCell":
+                                lockCell(self, params[0], params[1]);
+                                break;
+                            case "unlockCell":
+                                unlockCell(self, params[0], params[1]);
+                                break;
                             case "popupValue":
                                 returnPopupValue(self, params[0]);
                                 break;
@@ -19967,6 +22007,9 @@ var nts;
                                 break;
                         }
                     };
+                    /**
+                     * Change grid height mode.
+                     */
                     function changeGridHeightMode($container, mode) {
                         if (mode === DYNAMIC) {
                             var bodyWrappers_1 = [], horzSumExists_1 = false;
@@ -19983,6 +22026,9 @@ var nts;
                             $(window).off(events.RESIZE, resize.fitWindowHeight);
                         }
                     }
+                    /**
+                     * Hide horzSum.
+                     */
                     function hideHorzSum($container) {
                         $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).hide();
                         $container.find("." + BODY_PRF + LEFT_HORZ_SUM).hide();
@@ -19990,6 +22036,9 @@ var nts;
                         $container.find("." + BODY_PRF + HORIZONTAL_SUM).hide();
                         resize.fitWindowHeight($container, undefined, false);
                     }
+                    /**
+                     * Show horzSum.
+                     */
                     function showHorzSum($container) {
                         $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).show();
                         $container.find("." + BODY_PRF + LEFT_HORZ_SUM).show();
@@ -19997,12 +22046,18 @@ var nts;
                         $container.find("." + BODY_PRF + HORIZONTAL_SUM).show();
                         resize.fitWindowHeight($container, undefined, true);
                     }
+                    /**
+                     * Hide vertSum.
+                     */
                     function hideVertSum($container) {
                         $container.find("." + HEADER_PRF + VERTICAL_SUM).hide();
                         $container.find("." + BODY_PRF + VERTICAL_SUM).hide();
                         resize.fitWindowWidth($container);
                         scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL));
                     }
+                    /**
+                     * Show vertSum.
+                     */
                     function showVertSum($container) {
                         var $vertSumBody = $container.find("." + BODY_PRF + VERTICAL_SUM);
                         var $detailBody = $container.find("." + BODY_PRF + DETAIL);
@@ -20012,6 +22067,9 @@ var nts;
                         scroll.bindVertWheel($detailBody);
                         $vertSumBody.scrollTop($detailBody.scrollTop());
                     }
+                    /**
+                     * Update table.
+                     */
                     function updateTable($container, name, header, body, keepStates) {
                         switch (name) {
                             case "leftmost":
@@ -20034,6 +22092,9 @@ var nts;
                                 break;
                         }
                     }
+                    /**
+                     * Update leftmost.
+                     */
                     function updateLeftmost($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
@@ -20052,6 +22113,9 @@ var nts;
                             render.process($body, exTable.leftmostContent, true);
                         }
                     }
+                    /**
+                     * Update middle.
+                     */
                     function updateMiddle($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
@@ -20070,6 +22134,9 @@ var nts;
                             render.process($body, exTable.middleContent, true);
                         }
                     }
+                    /**
+                     * Update detail.
+                     */
                     function updateDetail($container, header, body, keepStates) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
@@ -20090,6 +22157,9 @@ var nts;
                             render.process($body, exTable.detailContent, true);
                         }
                     }
+                    /**
+                     * Update vertSum.
+                     */
                     function updateVertSum($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
@@ -20108,6 +22178,9 @@ var nts;
                             render.process($body, exTable.verticalSumContent, true);
                         }
                     }
+                    /**
+                     * Update leftHorzSum.
+                     */
                     function updateLeftHorzSum($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
@@ -20126,6 +22199,9 @@ var nts;
                             render.process($body, exTable.leftHorzSumContent, true);
                         }
                     }
+                    /**
+                     * Update horzSum.
+                     */
                     function updateHorzSum($container, header, body) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
@@ -20144,6 +22220,9 @@ var nts;
                             render.process($body, exTable.horizontalSumContent, true);
                         }
                     }
+                    /**
+                     * Set update mode.
+                     */
                     function setUpdateMode($container, mode) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
@@ -20162,6 +22241,9 @@ var nts;
                         selection.off($container);
                         copy.off($grid, mode);
                     }
+                    /**
+                     * Set view mode.
+                     */
                     function setViewMode($container, mode) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
@@ -20172,14 +22254,23 @@ var nts;
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                     }
+                    /**
+                     * Set paste overwrite.
+                     */
                     function setPasteOverWrite($container, overwrite) {
                         var exTable = $container.data(NAMESPACE);
                         exTable.pasteOverWrite = overwrite;
                     }
+                    /**
+                     * Set stick overwrite.
+                     */
                     function setStickOverWrite($container, overwrite) {
                         var exTable = $container.data(NAMESPACE);
                         exTable.stickOverWrite = overwrite;
                     }
+                    /**
+                     * Set stick mode.
+                     */
                     function setStickMode($container, mode) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var sticker = $grid.data(internal.STICKER);
@@ -20192,6 +22283,9 @@ var nts;
                             sticker.mode = mode;
                         }
                     }
+                    /**
+                     * Set stick data.
+                     */
                     function setStickData($container, data) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var sticker = $grid.data(internal.STICKER);
@@ -20203,6 +22297,9 @@ var nts;
                             sticker.data = data;
                         }
                     }
+                    /**
+                     * Set stick validate.
+                     */
                     function setStickValidate($container, validate) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var sticker = $grid.data(internal.STICKER);
@@ -20215,6 +22312,9 @@ var nts;
                             sticker.validate = validate;
                         }
                     }
+                    /**
+                     * Undo stick.
+                     */
                     function undoStick($container) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var histories = $grid.data(internal.STICK_HISTORY);
@@ -20226,6 +22326,9 @@ var nts;
                             internal.removeChange($grid, i);
                         });
                     }
+                    /**
+                     * Clear histories.
+                     */
                     function clearHistories($container, type) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var histType;
@@ -20242,6 +22345,84 @@ var nts;
                         }
                         $grid.data(histType, null);
                     }
+                    /**
+                     * Lock cell.
+                     */
+                    function lockCell($container, rowId, columnKey) {
+                        var $table = helper.getMainTable($container);
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var locks = $table.data(internal.DET);
+                        var found = -1;
+                        if (locks && locks[i] && locks[i].length > 0) {
+                            _.forEach(locks[i], function (c, j) {
+                                if (c === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found === -1) {
+                            var $cell = selection.cellAt($table, i, columnKey);
+                            if (!locks) {
+                                locks = {};
+                                locks[i] = [columnKey];
+                                $table.data(internal.DET, locks);
+                            }
+                            else if (locks && !locks[i]) {
+                                locks[i] = [columnKey];
+                            }
+                            else
+                                locks[i].push(columnKey);
+                            helper.markCellWith(style.DET_CLS, $cell);
+                        }
+                    }
+                    /**
+                     * Unlock cell.
+                     */
+                    function unlockCell($container, rowId, columnKey) {
+                        var $table = helper.getMainTable($container);
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var locks = $table.data(internal.DET);
+                        var found = -1;
+                        if (locks && locks[i] && locks[i].length > 0) {
+                            _.forEach(locks[i], function (c, j) {
+                                if (c === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found > -1) {
+                            var $cell = selection.cellAt($table, i, columnKey);
+                            locks[i].splice(found, 1);
+                            if (locks[i].length === 0)
+                                delete locks[i];
+                            helper.stripCellWith(style.DET_CLS, $cell);
+                        }
+                    }
+                    /**
+                     * Return popup value.
+                     */
                     function returnPopupValue($container, value) {
                         var header = helper.getMainHeader($container).find("table:first");
                         if (!header)
@@ -20251,6 +22432,9 @@ var nts;
                             return;
                         events.trigger($pu, events.POPUP_INPUT_END, { value: value });
                     }
+                    /**
+                     * Get data source.
+                     */
                     function getDataSource($container, name) {
                         switch (name) {
                             case "leftmost":
@@ -20267,29 +22451,44 @@ var nts;
                                 return helper.getPartialDataSource($container, HORIZONTAL_SUM);
                         }
                     }
+                    /**
+                     * Get cell by index.
+                     */
                     function getCellByIndex($container, rowIndex, columnKey) {
                         var $tbl = helper.getMainTable($container);
                         if ($tbl.length === 0)
                             return;
                         return selection.cellAt($tbl, rowIndex, columnKey);
                     }
+                    /**
+                     * Get cell by Id.
+                     */
                     function getCellById($container, rowId, columnKey) {
                         var $tbl = helper.getMainTable($container);
                         if ($tbl.length === 0)
                             return;
                         return selection.cellOf($tbl, rowId, columnKey);
                     }
+                    /**
+                     * Get updated cells.
+                     */
                     function getUpdatedCells($container) {
                         var data = $container.data(NAMESPACE).modifications;
                         if (!data)
                             return [];
                         return helper.valuesArray(data);
                     }
+                    /**
+                     * Round retreat.
+                     */
                     function roundRetreat($container, value) {
                         if (!value)
                             return;
                         events.trigger($container, events.ROUND_RETREAT, value);
                     }
+                    /**
+                     * Set cell value.
+                     */
                     function setCellValue($container, name, rowId, columnKey, value) {
                         switch (name) {
                             case LEFT_TBL:
@@ -20303,6 +22502,9 @@ var nts;
                                 break;
                         }
                     }
+                    /**
+                     * Set cell value by index.
+                     */
                     function setCellValueByIndex($container, name, rowIdx, columnKey, value) {
                         switch (name) {
                             case LEFT_TBL:
@@ -20316,6 +22518,9 @@ var nts;
                                 break;
                         }
                     }
+                    /**
+                     * Set value.
+                     */
                     function setValue($container, selector, rowId, columnKey, value) {
                         var $grid = $container.find("." + selector);
                         if ($grid.length === 0)
@@ -20335,6 +22540,9 @@ var nts;
                             refreshCell($grid, rowId, columnKey, value);
                         }
                     }
+                    /**
+                     * Set value by index.
+                     */
                     function setValueByIndex($container, selector, rowIdx, columnKey, value) {
                         var $grid = $container.find("." + selector);
                         if ($grid.length === 0)
@@ -20353,6 +22561,9 @@ var nts;
                             refreshCellByIndex($grid, rowIdx, columnKey, value);
                         }
                     }
+                    /**
+                     * Refresh cell.
+                     */
                     function refreshCell($grid, rowId, columnKey, value) {
                         var $c = selection.cellOf($grid, rowId, columnKey);
                         if ($c === intan.NULL || !$c)
@@ -20368,6 +22579,9 @@ var nts;
                         }
                         $c.text(value);
                     }
+                    /**
+                     * Refresh cell by index.
+                     */
                     function refreshCellByIndex($grid, rowIdx, columnKey, value) {
                         var $c = selection.cellAt($grid, rowIdx, columnKey);
                         if ($c === intan.NULL || !$c)
@@ -20380,6 +22594,9 @@ var nts;
                         }
                         $c.text(value);
                     }
+                    /**
+                     * Set row Id.
+                     */
                     function setRowId($container, rowIndex, value) {
                         $container.find("div[class*='" + BODY_PRF + "']").filter(function () {
                             return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
@@ -20423,10 +22640,16 @@ var nts;
                     internal.NUMBER = "number";
                     internal.DT_SEPARATOR = "/";
                     internal.COLUMN_IN = "column-in";
+                    /**
+                     * Get gem.
+                     */
                     function getGem($grid) {
                         return $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                     }
                     internal.getGem = getGem;
+                    /**
+                     * Get data source.
+                     */
                     function getDataSource($grid) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -20434,6 +22657,9 @@ var nts;
                         return gen.dataSource;
                     }
                     internal.getDataSource = getDataSource;
+                    /**
+                     * Remove change.
+                     */
                     function removeChange($grid, cell) {
                         var origDs = helper.getOrigDS($grid);
                         var exTable = helper.getExTableFromGrid($grid);
@@ -20453,6 +22679,9 @@ var nts;
                         exTable.modifications[cell.rowIndex].splice(index, 1);
                     }
                     internal.removeChange = removeChange;
+                    /**
+                     * Clear states.
+                     */
                     function clearStates($grid) {
                         $grid.data(internal.SELECTED_CELLS, null);
                         $grid.data(internal.LAST_SELECTED, null);
@@ -20468,58 +22697,97 @@ var nts;
                 })(internal || (internal = {}));
                 var helper;
                 (function (helper) {
+                    /**
+                     * Get scroll width.
+                     */
                     function getScrollWidth() {
                         var $outer = $('<div>').css({ visibility: 'hidden', width: 100, overflow: 'scroll' }).appendTo('body'), widthWithScroll = $('<div>').css({ width: '100%' }).appendTo($outer).outerWidth();
                         $outer.remove();
                         return 100 - widthWithScroll;
                     }
                     helper.getScrollWidth = getScrollWidth;
+                    /**
+                     * Get table.
+                     */
                     function getTable($exTable, name) {
                         return $exTable.find("." + name);
                     }
                     helper.getTable = getTable;
+                    /**
+                     * Get main header.
+                     */
                     function getMainHeader($exTable) {
                         return $exTable.find("." + HEADER_PRF + DETAIL);
                     }
                     helper.getMainHeader = getMainHeader;
+                    /**
+                     * Get main table.
+                     */
                     function getMainTable($exTable) {
                         return $exTable.find("." + BODY_PRF + DETAIL);
                     }
                     helper.getMainTable = getMainTable;
+                    /**
+                     * Get leftmost table.
+                     */
                     function getLeftmostTable($exTable) {
                         return $exTable.find("." + BODY_PRF + LEFTMOST);
                     }
                     helper.getLeftmostTable = getLeftmostTable;
+                    /**
+                     * Get exTable from grid.
+                     */
                     function getExTableFromGrid($grid) {
                         return $grid.closest("." + NAMESPACE).data(NAMESPACE);
                     }
                     helper.getExTableFromGrid = getExTableFromGrid;
+                    /**
+                     * Get visible columns.
+                     */
                     function getVisibleColumnsOn($grid) {
                         return ($grid.data(internal.TANGI) || $grid.data(internal.CANON)).painter.visibleColumns;
                     }
                     helper.getVisibleColumnsOn = getVisibleColumnsOn;
+                    /**
+                     * Get visible columns.
+                     */
                     function getVisibleColumns(options) {
                         var visibleColumns = [];
                         filterColumns(options.columns, visibleColumns, []);
                         return visibleColumns;
                     }
                     helper.getVisibleColumns = getVisibleColumns;
+                    /**
+                     * Get origDS.
+                     */
                     function getOrigDS($grid) {
                         return ($grid.data(internal.TANGI) || $grid.data(internal.CANON))._origDs;
                     }
                     helper.getOrigDS = getOrigDS;
+                    /**
+                     * Get data source.
+                     */
                     function getDataSource($grid) {
                         return ($grid.data(internal.TANGI) || $grid.data(internal.CANON)).dataSource;
                     }
                     helper.getDataSource = getDataSource;
+                    /**
+                     * Get clonedDs.
+                     */
                     function getClonedDs($grid) {
                         return _.cloneDeep(getDataSource($grid));
                     }
                     helper.getClonedDs = getClonedDs;
+                    /**
+                     * Get primary key.
+                     */
                     function getPrimaryKey($grid) {
                         return ($grid.data(internal.TANGI) || $grid.data(internal.CANON)).primaryKey;
                     }
                     helper.getPrimaryKey = getPrimaryKey;
+                    /**
+                     * Classify columns.
+                     */
                     function classifyColumns(options) {
                         var visibleColumns = [];
                         var hiddenColumns = [];
@@ -20530,6 +22798,9 @@ var nts;
                         };
                     }
                     helper.classifyColumns = classifyColumns;
+                    /**
+                     * Filter columns.
+                     */
                     function filterColumns(columns, visibleColumns, hiddenColumns) {
                         _.forEach(columns, function (col) {
                             if (!uk.util.isNullOrUndefined(col.visible) && col.visible === false) {
@@ -20544,10 +22815,16 @@ var nts;
                             }
                         });
                     }
+                    /**
+                     * Get columns map.
+                     */
                     function getColumnsMap(columns) {
                         return _.groupBy(columns, "key");
                     }
                     helper.getColumnsMap = getColumnsMap;
+                    /**
+                     * Get columns map from struct.
+                     */
                     function columnsMapFromStruct(levelStruct) {
                         var map = {};
                         _.forEach(Object.keys(levelStruct), function (nth) {
@@ -20560,6 +22837,9 @@ var nts;
                         return map;
                     }
                     helper.columnsMapFromStruct = columnsMapFromStruct;
+                    /**
+                     * Get partial data source.
+                     */
                     function getPartialDataSource($table, name) {
                         return {
                             header: getClonedDs($table.find("." + HEADER_PRF + name)),
@@ -20567,6 +22847,9 @@ var nts;
                         };
                     }
                     helper.getPartialDataSource = getPartialDataSource;
+                    /**
+                     * Make connector.
+                     */
                     function makeConnector() {
                         Connector[HEADER_PRF + LEFTMOST] = BODY_PRF + LEFTMOST;
                         Connector[HEADER_PRF + MIDDLE] = BODY_PRF + MIDDLE;
@@ -20575,26 +22858,44 @@ var nts;
                         Connector[HEADER_PRF + HORIZONTAL_SUM] = BODY_PRF + HORIZONTAL_SUM;
                     }
                     helper.makeConnector = makeConnector;
+                    /**
+                     * Get class of header.
+                     */
                     function getClassOfHeader($part) {
                         return $part.data(internal.EX_PART);
                     }
                     helper.getClassOfHeader = getClassOfHeader;
+                    /**
+                     * Is paste key.
+                     */
                     function isPasteKey(evt) {
                         return evt.keyCode === 86;
                     }
                     helper.isPasteKey = isPasteKey;
+                    /**
+                     * Is copy key.
+                     */
                     function isCopyKey(evt) {
                         return evt.keyCode === 67;
                     }
                     helper.isCopyKey = isCopyKey;
+                    /**
+                     * Is cut key.
+                     */
                     function isCutKey(evt) {
                         return evt.keyCode === 88;
                     }
                     helper.isCutKey = isCutKey;
+                    /**
+                     * Is undo key.
+                     */
                     function isUndoKey(evt) {
                         return evt.keyCode === 90;
                     }
                     helper.isUndoKey = isUndoKey;
+                    /**
+                     * Get cell coord.
+                     */
                     function getCellCoord($cell) {
                         if ($cell.length === 0)
                             return;
@@ -20614,6 +22915,9 @@ var nts;
                         };
                     }
                     helper.getCellCoord = getCellCoord;
+                    /**
+                     * Get display column index.
+                     */
                     function getDisplayColumnIndex($grid, key) {
                         var generator = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         var visibleColumns = generator.painter.visibleColumns;
@@ -20627,6 +22931,9 @@ var nts;
                         return index;
                     }
                     helper.getDisplayColumnIndex = getDisplayColumnIndex;
+                    /**
+                     * Get row index.
+                     */
                     function getRowIndex($grid, rowId) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -20641,6 +22948,9 @@ var nts;
                         return -1;
                     }
                     helper.getRowIndex = getRowIndex;
+                    /**
+                     * Grid visible columns.
+                     */
                     function gridVisibleColumns($grid) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -20648,6 +22958,9 @@ var nts;
                         return gen.painter.visibleColumns;
                     }
                     helper.gridVisibleColumns = gridVisibleColumns;
+                    /**
+                     * Grid columns map.
+                     */
                     function gridColumnsMap($grid) {
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
                         if (!gen)
@@ -20655,6 +22968,9 @@ var nts;
                         return gen.painter.columnsMap;
                     }
                     helper.gridColumnsMap = gridColumnsMap;
+                    /**
+                     * Mark cell.
+                     */
                     function markCellWith(clazz, $cell, nth, value) {
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if ($cell.is("td") && $childCells.length > 0) {
@@ -20673,6 +22989,9 @@ var nts;
                             $cell.text(value);
                     }
                     helper.markCellWith = markCellWith;
+                    /**
+                     * Strip cell.
+                     */
                     function stripCellWith(clazz, $cell, nth) {
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if ($cell.is("td") && $childCells.length > 0) {
@@ -20686,18 +23005,27 @@ var nts;
                         $cell.removeClass(clazz);
                     }
                     helper.stripCellWith = stripCellWith;
+                    /**
+                     * Mark cells.
+                     */
                     function markCellsWith(clazz, $cells) {
                         $cells.each(function () {
                             markCellWith(clazz, $(this));
                         });
                     }
                     helper.markCellsWith = markCellsWith;
+                    /**
+                     * Strip cells.
+                     */
                     function stripCellsWith(clazz, $cells) {
                         $cells.each(function () {
                             stripCellWith(clazz, $(this));
                         });
                     }
                     helper.stripCellsWith = stripCellsWith;
+                    /**
+                     * Is detable.
+                     */
                     function isDetable($cell) {
                         var children = $cell.children("." + render.CHILD_CELL_CLS);
                         return !($cell.is("." + style.HIDDEN_CLS) || $cell.is("." + style.SEAL_CLS)
@@ -20706,6 +23034,9 @@ var nts;
                                     || $(children[0]).is("." + style.SEAL_CLS))));
                     }
                     helper.isDetable = isDetable;
+                    /**
+                     * Column index.
+                     */
                     function indexOf(columnKey, visibleColumns) {
                         var index = -1;
                         _.forEach(visibleColumns, function (column, i) {
@@ -20717,12 +23048,18 @@ var nts;
                         return index;
                     }
                     helper.indexOf = indexOf;
+                    /**
+                     * Next column key.
+                     */
                     function nextKeyOf(columnIndex, visibleColumns) {
                         if (columnIndex >= visibleColumns.length - 1)
                             return;
                         return visibleColumns[columnIndex + 1].key;
                     }
                     helper.nextKeyOf = nextKeyOf;
+                    /**
+                     * Next cell.
+                     */
                     function nextCellOf($grid, cell) {
                         var key, rowIndex, innerIdx;
                         var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
@@ -20765,6 +23102,9 @@ var nts;
                         return new selection.Cell(rowIndex, key, undefined, innerIdx);
                     }
                     helper.nextCellOf = nextCellOf;
+                    /**
+                     * Call.
+                     */
                     function call(fn) {
                         var args = [];
                         for (var _i = 1; _i < arguments.length; _i++) {
@@ -20775,10 +23115,16 @@ var nts;
                         };
                     }
                     helper.call = call;
+                    /**
+                     * Check br.
+                     */
                     function containsBr(text) {
                         return text && text.indexOf("<br/>") > -1;
                     }
                     helper.containsBr = containsBr;
+                    /**
+                     * Compare cells.
+                     */
                     function areSameCells(one, other) {
                         if (parseInt(one.rowIndex) !== parseInt(other.rowIndex)
                             || one.columnKey !== other.columnKey
@@ -20787,6 +23133,9 @@ var nts;
                         return true;
                     }
                     helper.areSameCells = areSameCells;
+                    /**
+                     * Is det cell.
+                     */
                     function isDetCell($grid, rowIdx, key) {
                         var $cell = selection.cellAt($grid, rowIdx, key);
                         var $childCells = $cell.children("." + render.CHILD_CELL_CLS);
@@ -20794,6 +23143,9 @@ var nts;
                             || ($childCells.length > 0 && $($childCells[0]).is("." + style.DET_CLS));
                     }
                     helper.isDetCell = isDetCell;
+                    /**
+                     * Is xcell.
+                     */
                     function isXCell($grid, rowId, key) {
                         var clazz = [];
                         for (var _i = 3; _i < arguments.length; _i++) {
@@ -20808,6 +23160,9 @@ var nts;
                         return result !== undefined;
                     }
                     helper.isXCell = isXCell;
+                    /**
+                     * Is xcell shown.
+                     */
                     function isXCellShown($grid, rowIdx, key) {
                         var clazz = [];
                         for (var _i = 3; _i < arguments.length; _i++) {
@@ -20826,6 +23181,9 @@ var nts;
                         return returnVal;
                     }
                     helper.isXCellShown = isXCellShown;
+                    /**
+                     * Values array.
+                     */
                     function valuesArray(obj) {
                         var values = [];
                         _.forEach(Object.keys(obj), function (k, i) {
@@ -20834,10 +23192,16 @@ var nts;
                         return values;
                     }
                     helper.valuesArray = valuesArray;
+                    /**
+                     * String value.
+                     */
                     function stringValue(val) {
                         return _.isObject(val) ? JSON.stringify(val) : val;
                     }
                     helper.stringValue = stringValue;
+                    /**
+                     * Get cell data.
+                     */
                     function getCellData(data) {
                         try {
                             return JSON.parse(data);
@@ -20847,6 +23211,9 @@ var nts;
                         }
                     }
                     helper.getCellData = getCellData;
+                    /**
+                     * Is equal.
+                     */
                     function isEqual(one, two) {
                         if (_.isObject(one) && _.isObject(two)) {
                             return _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
@@ -20854,6 +23221,9 @@ var nts;
                         return _.isEqual(one, two);
                     }
                     helper.isEqual = isEqual;
+                    /**
+                     * Block.
+                     */
                     function block($exTable) {
                         $exTable.block({
                             message: null,
@@ -20865,10 +23235,16 @@ var nts;
                         });
                     }
                     helper.block = block;
+                    /**
+                     * Unblock.
+                     */
                     function unblock($exTable) {
                         $exTable.unblock();
                     }
                     helper.unblock = unblock;
+                    /**
+                     * Highlight column.
+                     */
                     function highlightColumn($container, columnIndex) {
                         var grid = $container[0].querySelector("." + BODY_PRF + DETAIL);
                         var header = $container[0].querySelector("." + HEADER_PRF + DETAIL);
@@ -20886,6 +23262,9 @@ var nts;
                         });
                     }
                     helper.highlightColumn = highlightColumn;
+                    /**
+                     * Unhighlight column.
+                     */
                     function unHighlightColumn($container, columnIndex) {
                         var grid = $container[0].querySelector("." + BODY_PRF + DETAIL);
                         var header = $container[0].querySelector("." + HEADER_PRF + DETAIL);
@@ -20893,6 +23272,9 @@ var nts;
                         unHighlightGrid(header, columnIndex);
                     }
                     helper.unHighlightColumn = unHighlightColumn;
+                    /**
+                     * Unhighlight grid.
+                     */
                     function unHighlightGrid(grid, columnIndex) {
                         if (!grid)
                             return;
@@ -20904,6 +23286,9 @@ var nts;
                         });
                     }
                     helper.unHighlightGrid = unHighlightGrid;
+                    /**
+                     * First sibling.
+                     */
                     function firstSibling(node, clazz) {
                         var parent = node.parentElement;
                         if (!parent)
@@ -20916,6 +23301,9 @@ var nts;
                         }
                     }
                     helper.firstSibling = firstSibling;
+                    /**
+                     * Class siblings.
+                     */
                     function classSiblings(node, partialClass) {
                         var parent = node.parentElement;
                         if (!parent)
@@ -20935,6 +23323,9 @@ var nts;
                         return results;
                     }
                     helper.classSiblings = classSiblings;
+                    /**
+                     * Consume siblings.
+                     */
                     function consumeSiblings(node, op) {
                         var parent = node.parentElement;
                         if (!parent)
@@ -20947,6 +23338,9 @@ var nts;
                         }
                     }
                     helper.consumeSiblings = consumeSiblings;
+                    /**
+                     * Closest.
+                     */
                     function closest(el, selector) {
                         var matches;
                         ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
@@ -20966,6 +23360,9 @@ var nts;
                         }
                     }
                     helper.closest = closest;
+                    /**
+                     * Add class.
+                     */
                     function addClass(node, clazz) {
                         if (node && node.constructor !== HTMLCollection) {
                             node.classList.add(clazz);
@@ -20978,6 +23375,9 @@ var nts;
                         }
                     }
                     helper.addClass = addClass;
+                    /**
+                     * Remove class.
+                     */
                     function removeClass(node, clazz) {
                         if (node && node.constructor !== HTMLCollection) {
                             node.classList.remove(clazz);
@@ -20990,10 +23390,16 @@ var nts;
                         }
                     }
                     helper.removeClass = removeClass;
+                    /**
+                     * Has class.
+                     */
                     function hasClass(node, clazz) {
                         return node.classList.contains(clazz);
                     }
                     helper.hasClass = hasClass;
+                    /**
+                     * Index.
+                     */
                     function indexInParent(node) {
                         var parent = node.parentElement;
                         if (!parent)
@@ -21020,15 +23426,24 @@ var nts;
                     widget.MENU_ITEM_CLS = "menu-item";
                     widget.MENU_ICON_CLS = "menu-icon";
                     widget.DISABLED_CLS = "disabled";
+                    /**
+                     * Widget.
+                     */
                     var XWidget = (function () {
                         function XWidget($selector) {
                             this.$selector = $selector;
                         }
+                        /**
+                         * Get table.
+                         */
                         XWidget.prototype.getTable = function () {
                             this.$table = this.$selector.closest("table");
                         };
                         return XWidget;
                     }());
+                    /**
+                     * Tooltip.
+                     */
                     var Tooltip = (function (_super) {
                         __extends(Tooltip, _super);
                         function Tooltip($selector, options) {
@@ -21040,6 +23455,9 @@ var nts;
                             };
                             this.initialize();
                         }
+                        /**
+                         * Initialize.
+                         */
                         Tooltip.prototype.initialize = function () {
                             var self = this;
                             $.extend(true, self.options, self.defaultOpts);
@@ -21069,12 +23487,18 @@ var nts;
                         return Tooltip;
                     }(XWidget));
                     widget.Tooltip = Tooltip;
+                    /**
+                     * Popup.
+                     */
                     var Popup = (function (_super) {
                         __extends(Popup, _super);
                         function Popup($selector) {
                             _super.call(this, $selector);
                             this.initialize();
                         }
+                        /**
+                         * Initialize.
+                         */
                         Popup.prototype.initialize = function () {
                             var self = this;
                             self.$selector.on(events.MOUSE_DOWN, function (evt) {
@@ -21086,12 +23510,18 @@ var nts;
                         };
                         return Popup;
                     }(XWidget));
+                    /**
+                     * Context menu.
+                     */
                     var ContextMenu = (function (_super) {
                         __extends(ContextMenu, _super);
                         function ContextMenu($selector, items) {
                             _super.call(this, $selector);
                             this.items = items;
                         }
+                        /**
+                         * Click.
+                         */
                         ContextMenu.prototype.click = function (evt) {
                             var self = this;
                             var $menu = self.$table.data(internal.CONTEXT_MENU);
@@ -21117,6 +23547,9 @@ var nts;
                             evt.stopPropagation();
                             hideIfOutside($menu);
                         };
+                        /**
+                         * Create item.
+                         */
                         ContextMenu.prototype.createItem = function ($menu, item) {
                             if (item.id === widget.PARTITION_CLS) {
                                 $("<li/>").addClass(widget.MENU_ITEM_CLS + " " + widget.PARTITION_CLS).appendTo($menu);
@@ -21139,6 +23572,9 @@ var nts;
                         return ContextMenu;
                     }(Popup));
                     widget.ContextMenu = ContextMenu;
+                    /**
+                     * Menu item.
+                     */
                     var MenuItem = (function () {
                         function MenuItem(text, selectHandler, disabled, icon) {
                             this.text = text;
@@ -21149,6 +23585,9 @@ var nts;
                         return MenuItem;
                     }());
                     widget.MenuItem = MenuItem;
+                    /**
+                     * Popup panel.
+                     */
                     var PopupPanel = (function (_super) {
                         __extends(PopupPanel, _super);
                         function PopupPanel($selector, $panel, position) {
@@ -21156,6 +23595,9 @@ var nts;
                             this.$panel = $panel;
                             this.position = position;
                         }
+                        /**
+                         * Click.
+                         */
                         PopupPanel.prototype.click = function (evt) {
                             var self = this;
                             var $pu = self.$table.data(internal.POPUP);
@@ -21179,6 +23621,9 @@ var nts;
                             evt.stopPropagation();
                             hideIfOutside($pu);
                         };
+                        /**
+                         * Add listener.
+                         */
                         PopupPanel.prototype.addListener = function ($pu, $t) {
                             var self = this;
                             $pu.off(events.POPUP_INPUT_END);
@@ -21195,6 +23640,9 @@ var nts;
                                 }
                             });
                         };
+                        /**
+                         * Get position.
+                         */
                         PopupPanel.prototype.getPosition = function ($pu, pos, my) {
                             if (my === "top left") {
                                 return { top: pos.pageY - $pu.outerHeight(), left: pos.pageX - $pu.outerWidth() };
@@ -21212,6 +23660,9 @@ var nts;
                         return PopupPanel;
                     }(Popup));
                     widget.PopupPanel = PopupPanel;
+                    /**
+                     * Bind.
+                     */
                     function bind($row, rowIdx, headerPopupFt) {
                         var wType;
                         if (!headerPopupFt)
@@ -21235,6 +23686,9 @@ var nts;
                         return wType;
                     }
                     widget.bind = bind;
+                    /**
+                     * Hide.
+                     */
                     function hideIfOutside($w) {
                         $(document).on(events.MOUSE_DOWN, function (evt) {
                             if (outsideOf($w, evt.target)) {
@@ -21245,12 +23699,18 @@ var nts;
                             return !$container.is(target) && $container.has(target).length === 0;
                         };
                     }
+                    /**
+                     * Offset.
+                     */
                     function eventPageOffset(evt, isFixed) {
                         var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
                         var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                         return isFixed ? { pageX: evt.pageX - scrollLeft, pageY: evt.pageY - scrollTop }
                             : { pageX: evt.pageX, pageY: evt.pageY };
                     }
+                    /**
+                     * Class.
+                     */
                     function cssClass(options) {
                         var css = options.showBelow ? 'bottom' : 'top';
                         css += '-';
@@ -21263,6 +23723,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -21271,9 +23732,15 @@ var nts;
         (function (ui_23) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Dialog binding handler
+                 */
                 var NtsMonthDaysBindingHandler = (function () {
                     function NtsMonthDaysBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsMonthDaysBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
@@ -21325,6 +23792,9 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsMonthDaysBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
@@ -21362,6 +23832,9 @@ var nts;
                     NtsMonthDaysBindingHandler.getDaysInMonth = function (month) {
                         var daysInMonth = moment(month, "MM").daysInMonth();
                         if (daysInMonth !== NaN) {
+                            //                if (month === 2){
+                            //                    daysInMonth++;        
+                            //                }
                             var days = [];
                             while (days.length < daysInMonth) {
                                 days.push({ text: days.length + 1, value: days.length + 1 });
@@ -21377,6 +23850,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -21447,6 +23921,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -21566,6 +24041,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -21574,9 +24050,15 @@ var nts;
         (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Dialog binding handler
+                 */
                 var NtsImageEditorBindingHandler = (function () {
                     function NtsImageEditorBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsImageEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
@@ -21614,6 +24096,9 @@ var nts;
                         $element.find(".image-holder").width(width).height(height);
                         return { 'controlsDescendantBindings': true };
                     };
+                    /**
+                     * Update
+                     */
                     NtsImageEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor(), $element = $(element), confirm = $(element).data('checkbox'), $checkbox = $element.find('.comfirm-checkbox');
                         if (!nts.uk.util.isNullOrEmpty($checkbox)) {
@@ -21716,7 +24201,11 @@ var nts;
                                     highlight: false,
                                     zoomable: zoomble,
                                     crop: function (e) {
+                                        //                            console.log(e);
                                     }, cropstart: function (e) {
+                                        //                            e.preventDefault();
+                                        //                            console.log(e);
+                                        //                            return croppable;
                                     }
                                 };
                                 jQuery.extend(option, customOption);
@@ -21793,15 +24282,19 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.getXRequest = function () {
                         if (typeof XDomainRequest != "undefined") {
+                            // IE8
                             return new XDomainRequest();
                         }
                         else if (typeof XMLHttpRequest != "undefined") {
+                            // firefox 他
                             return new XMLHttpRequest();
                         }
                         else if (window.ActiveXObject) {
+                            // IE 7 以前
                             return new ActiveXObject("Microsoft.XMLHTTP");
                         }
                         else {
+                            // 未対応ブラウザ
                             return null;
                         }
                     };
@@ -21906,6 +24399,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -21914,14 +24408,25 @@ var nts;
         (function (ui_25) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * CheckBox binding handler
+                 */
                 var NtsFunctionPanelBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsFunctionPanelBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsFunctionPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
                         var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
                         var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
+                        // Container
                         var container = $(element);
                         if (nts.uk.util.isNullOrEmpty(container.attr("id"))) {
                             container.attr("id", nts.uk.util.randomId());
@@ -21955,13 +24460,18 @@ var nts;
                             });
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsFunctionPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
                         var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
                         var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
+                        // Container
                         var container = $(element);
                         var itemAreas = container.find('.function-items');
                         var headerLink = container.find('.header-link');
@@ -21989,6 +24499,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -22014,12 +24525,15 @@ var nts;
                             var $input = $(this);
                             document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
                         });
+                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        //            $editor.trigger("validate");
                     }
                 })(ntsEditor || (ntsEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -22154,6 +24668,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -22176,6 +24691,7 @@ var nts;
                         if (fileInput !== undefined) {
                             var files = fileInput.files;
                             if (files.length > 0) {
+                                // Check file is deleted on Chrome
                                 if (files[0].size == 0) {
                                     dfd.reject({ message: nts.uk.resource.getMessage("Msg_158"), messageId: "Msg_158" });
                                     return dfd.promise();
@@ -22185,6 +24701,7 @@ var nts;
                                 formData.append("userfile", files[0]);
                                 formData.append("filename", files[0].name);
                                 nts.uk.request.uploadFile(formData, option).done(function (data, textStatus, jqXHR) {
+                                    // Business Exception
                                     if (nts.uk.util.exception.isBusinessError(data)) {
                                         if (option.onFail)
                                             option.onFail();
@@ -22196,6 +24713,7 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // Client Exception
                                     dfd.reject({ message: "Please check your network", messageId: "0" });
                                 });
                             }
@@ -22213,6 +24731,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -22221,9 +24740,15 @@ var nts;
         (function (ui_26) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * Accordion binding handler
+                 */
                 var NtsAccordionBindingHandler = (function () {
                     function NtsAccordionBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsAccordionBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
@@ -22268,6 +24793,9 @@ var nts;
                             }
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsAccordionBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
