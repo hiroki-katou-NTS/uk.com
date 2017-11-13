@@ -53,7 +53,10 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          * closeDialog
          */
         public closeDialog() {
+            // respond data
             nts.uk.ui.windows.setShared("CDL023Cancel", true);
+            
+            // close dialog
             nts.uk.ui.windows.close();
         }
 
@@ -68,7 +71,11 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                nts.uk.ui.dialog.alertError({ messageId: "Msg_646" });
                return;
             }
+            
+            // respond data
             nts.uk.ui.windows.setShared("CDL023Output", self.getSelectedItems());
+            
+            // close dialog
             nts.uk.ui.windows.close();
         }
         
@@ -78,6 +85,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         private getSelectedItems(): Array<string> {
             let self = this;
             
+            // if is override, return list selected
             if (self.isOverride()) {
                 return self.lstSelected();
             }
@@ -96,7 +104,6 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             // set parameters
             let shareData: any = {};
             shareData.isMultiple = true;
-            shareData.selectedCodes = self.lstSelected();
             
             // define key share
             let keyInput: string = null;
@@ -112,6 +119,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     
                     // set parameter
                     shareData.showNoSelection = false;
+                    shareData.selectedCodes = self.lstSelected();
                     break;
                 case TargetType.CLASSIFICATION:
                     screenUrl = '/view/cdl/003/a/index.xhtml';
@@ -121,6 +129,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     
                     // set parameter
                     shareData.showNoSelection = false;
+                    shareData.selectedCodes = self.lstSelected();
                     break;
                 case TargetType.JOB_TITLE:
                     screenUrl = '/view/cdl/004/a/index.xhtml';
@@ -131,6 +140,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     // set data share
                     shareData.baseDate = self.baseDate;
                     shareData.showNoSelection = false;
+                    shareData.selectedCodes = self.lstSelected();
                     break;
                 case TargetType.WORKPLACE:
                     screenUrl = '/view/cdl/008/a/index.xhtml';
@@ -140,6 +150,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     
                     // set data share
                     shareData.baseDate = self.baseDate;
+                    shareData.selectedCodes = self.lstSelected();
                     break;
                 case TargetType.DEPARTMENT:
                     screenUrl = '/view/cdl/007/a/index.xhtml';
@@ -153,7 +164,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL009Cancel';
                     
                     // set data share
-                    shareData.target = 1;
+                    shareData.target = TargetPersonalType.WORKPLACE;
                     shareData.baseDate = self.baseDate;
                     shareData.selectedIds = self.lstSelected();
                     break;
@@ -164,7 +175,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL009Cancel';
                     
                     // set data share
-                    shareData.target = 2;
+                    shareData.target = TargetPersonalType.DEPARTMENT;
                     shareData.baseDate = self.baseDate;
                     shareData.selectedIds = self.lstSelected();
                     break;
@@ -189,11 +200,6 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                 if (!selectedCode || selectedCode.length <= 0) {
                     self.lstSelected([]);
                     return;
-                }
-                
-                // if no override, remove items already setting.
-                if (!self.isOverride()) {
-                    
                 }
                 
                 // set list selection
@@ -231,5 +237,17 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         
         // 部門個人
         static DEPARTMENT_PERSONAL = 7;
+    }
+    
+    /**
+     * TargetPersonalType
+     */
+    class TargetPersonalType {
+        
+        // 職場個人
+        static WORKPLACE = 1;
+        
+        //  部門個人
+        static DEPARTMENT = 2;
     }
 }
