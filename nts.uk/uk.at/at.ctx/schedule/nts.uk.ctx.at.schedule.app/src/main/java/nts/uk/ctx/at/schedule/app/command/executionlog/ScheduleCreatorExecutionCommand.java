@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 
 /**
@@ -27,8 +26,14 @@ public class ScheduleCreatorExecutionCommand {
 	private String companyId;
 	
 	/** The to date. */
-	private Date toDate;
+	private GeneralDate toDate;
 	
 	/** The content. */
 	private ScheduleCreateContent content;
+	
+	/** The is confirm. */
+	private Boolean isConfirm; 
+	
+	/** The is delete befor insert. */
+	private Boolean isDeleteBeforInsert;
 }
