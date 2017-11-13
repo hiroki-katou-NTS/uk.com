@@ -29,8 +29,15 @@
                   <!-- Optional item grid list. -->
                   <div class="opt-item-grid-list pull-left caret-right caret-background bg-green">
                      <i class="icon icon-searchbox"></i>
-                     <div tabindex="2" data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'tbl-master-list', items: optionalItemHeaders, 
-                        selected: selectedCode, selectedKey: 'itemNo', fields: ['itemNo', 'itemName']}"></div>
+                     <div tabindex="2" data-bind="ntsSearchBox: {
+                        label: nts.uk.resource.getText('KMK002_2'),
+                        targetKey: 'itemNo',
+                        mode:'igGrid',
+                        comId:'tbl-master-list',
+                        items: optionalItemHeaders,
+                        selected: selectedCode,
+                        selectedKey: 'itemNo',
+                        fields: ['itemNo', 'itemName']}"></div>
                      <table tabindex="4" id="tbl-master-list"
                         data-bind="ntsGridList: {
                         name: '#[KMK002_6]',
