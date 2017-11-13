@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.company.dom.company.primitive;
+package nts.uk.ctx.sys.env.dom.useatr;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

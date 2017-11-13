@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.company.dom.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.company.dom.company.primitive.ComNameKana;
@@ -22,7 +23,8 @@ public class CompanyInforNew extends AggregateRoot{
 
 	/** The company id. */
 	// 会社ID
-	private CompanyId companyId;
+	@Setter
+	private String companyId;
 
 	/** The start month. */
 	// 期首月
@@ -51,6 +53,10 @@ public class CompanyInforNew extends AggregateRoot{
 	private String taxNum;
 	private AddInfor addInfor;
 	
+	public void createCompanyId(String companyCode, String contractCd){
+		this.setCompanyId("contractCd" + "-" + "companyCode");
+	}
+	
 	public static CompanyInforNew createFromJavaType(String companyCode, String companyName, 
 			String companyId, int startMonth, int isAbolition,
 			String repname, String repost, 
@@ -58,7 +64,7 @@ public class CompanyInforNew extends AggregateRoot{
 			String contractCd, String taxNum, AddInfor addInfor) {
 				return new CompanyInforNew(new CompanyCode(companyCode), 
 				new CompanyName(companyName), 
-				new CompanyId(companyId),
+				companyId,
 				EnumAdaptor.valueOf(startMonth, StartMonthAtr.class),
 				EnumAdaptor.valueOf(isAbolition, IsAbolition.class),
 				new RepName(repname),

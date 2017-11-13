@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.company.dom.company.primitive;
+package nts.uk.ctx.bs.employee.dom.workplace.differinfor;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

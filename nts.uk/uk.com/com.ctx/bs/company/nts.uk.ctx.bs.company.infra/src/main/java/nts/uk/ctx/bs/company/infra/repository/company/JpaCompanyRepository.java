@@ -46,7 +46,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	private final String SELECT_COM_CD = SELECT_COM + " AND c.bcmmtCompanyInforPK.companyCode = :companyCode AND c.bcmmtCompanyInforPK.contractCd = :contractCd";
 	// bcmmt add infor
 	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
-	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId";
+	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
 
 	/**
 	 * @param entity
@@ -138,7 +138,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 */
 	private static BcmmtCompanyInfor toEntityCom(CompanyInforNew domain) {
 		val entity = new BcmmtCompanyInfor();
-		entity.bcmmtCompanyInforPK = new BcmmtCompanyInforPK(domain.getCompanyId().v(), domain.getCompanyCode().v(),
+		entity.bcmmtCompanyInforPK = new BcmmtCompanyInforPK(domain.getCompanyId(), domain.getCompanyCode().v(),
 				domain.getContractCd().v());
 		entity.repname = domain.getRepname().v();
 		entity.repost = domain.getRepost().v();
@@ -230,8 +230,12 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * find Address author: Hoang Yen
 	 */
 	@Override
-	public List<AddInfor> findAdd() {
-		return this.queryProxy().query(SELECT_ADD_NO_WHERE, BcmmtAddInfor.class).getList(c -> toDomainAdd(c));
+	public List<AddInfor> findAdd(String companyId, String companyCode, String contractCd) {
+		return this.queryProxy().query(SELECT_ADD_NO_WHERE, BcmmtAddInfor.class)
+								.setParameter("companyId", companyId)
+								.setParameter("companyCode", companyCode)
+								.setParameter("contractCd", contractCd)
+				.getList(c -> toDomainAdd(c));
 	}
 
 	/**
@@ -258,4 +262,5 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		BcmmtAddInfor entity = toEntityAdd(addInfor);
 		this.commandProxy().insert(entity);
 	}
+
 }

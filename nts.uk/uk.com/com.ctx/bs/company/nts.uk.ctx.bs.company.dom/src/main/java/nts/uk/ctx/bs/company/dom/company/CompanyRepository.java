@@ -45,7 +45,7 @@ public interface CompanyRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	List<AddInfor> findAdd();
+	List<AddInfor> findAdd(String companyId, String companyCode, String contractCd);
 	
 	/** 
 	 * update a company
