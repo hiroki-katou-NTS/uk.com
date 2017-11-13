@@ -186,9 +186,9 @@ module nts.uk.at.view.kaf005.share {
             workClockFrom2: number
             workClockTo2: number
             bonusTimes: Array<any>
-            bonusTimes: Array<any>
-            bonusTimes: Array<any>
-            bonusTimes: Array<any>
+            breakTimes: Array<any>
+            overtimeHours: Array<any>
+            restTime: Array<any>
             overtimeAtr: number
             overTimeShiftNight: number
             flexExessTime: number

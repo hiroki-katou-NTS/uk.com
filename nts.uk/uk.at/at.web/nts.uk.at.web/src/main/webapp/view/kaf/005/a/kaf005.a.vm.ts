@@ -157,12 +157,24 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         //登録処理
         registerClick() {
-            let self = this;            
-            var overtime: AppOverTime = {
+            let self = this,
+            appReason: string,
+            divergenceReason: string;     
+            appReason =self.selectedReason();     
+            divergenceReason = self.selectedReason2(); 
+            if(!nts.uk.util.isNullOrUndefined(self.multilContent()))
+            {
+                appReason = appReason + "CHAR(13)" + self.multilContent();
+            }
+            if(!nts.uk.util.isNullOrUndefined(self.multilContent2()))
+            {
+                divergenceReason = divergenceReason + "CHAR(13)" + self.multilContent2();
+            }
+            let overtime: AppOverTime = {
             applicationDate: self.appDate(),
             prePostAtr: self.prePostSelected(),
-            applicantSID: string,
-            applicationReason: self.reasonCombo().reasonName+ "CHAR(13)" + self.multilContent2(),
+            applicantSID: self.employeeID,
+            applicationReason: appReason,
             appApprovalPhaseCmds: self.kaf000_a.approvalList,
             workType: self.workTypeCd(),
             siftType: self.siftCD(),
@@ -176,7 +188,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             restTime: self.restTime(),
             overTimeShiftNight: 100,
             flexExessTime: 100,
-            divergenceReasonContent: self.reasonCombo2().reasonName + "CHAR(13)" + self.multilContent1()
+            divergenceReasonContent: divergenceReason
             };            
             //登録前エラーチェック
             //TODO:           
