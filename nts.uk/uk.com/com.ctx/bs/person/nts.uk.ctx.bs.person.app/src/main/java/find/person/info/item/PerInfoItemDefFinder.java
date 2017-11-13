@@ -2,6 +2,7 @@ package find.person.info.item;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -133,6 +134,24 @@ public class PerInfoItemDefFinder {
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
+	
+	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCatgoryId(String perInfoCtgId) {
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+				.filter(e -> e.getItemParentCode().equals(""))
+				.collect(Collectors.toList());
+		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
+		return mappingItemAndOrder(itemDefs, itemOrders);
+	};
+	
+	public PerInfoItemDefDto getPerInfoItemDefByItemDefId(String perInfoItemDefId) {
+		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).orElse(null);
+		int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(itemDef.getPerInfoCategoryId(),
+				itemDef.getPerInfoItemDefId());
+		return mappingFromDomaintoDto(itemDef, dispOrder);
+	}
+	
 
 	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(String perInfoItemDefId) {
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep

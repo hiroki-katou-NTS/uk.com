@@ -2,7 +2,7 @@ package nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.data
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataState;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.DataStateType;
+import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataStateType;
 
 public class DateValue extends DataState {
 

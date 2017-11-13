@@ -10,7 +10,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository  {
@@ -42,9 +41,6 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			+ " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
 	
-	/**
-	 * Get getEmpCalAndSumExeLogMaxByEmp by companyID and EmployeeID and empCalAndSumExecLogID DESC
-	 */
 	@Override
 	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID) {
 		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG_BY_EMPLOYEEID,KrcdtEmpExecutionLog.class)
@@ -54,9 +50,6 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		return !data.isEmpty() ? Optional.of(data.get(0)) : Optional.empty();
 	}
 	
-	/**
-	 * get all EmpCalAndSumExeLog
-	 */
 	@Override
 	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID ) {
 		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG, KrcdtEmpExecutionLog.class)
@@ -80,10 +73,6 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).executeUpdate();
 	}
 
-	/**
-	 * Get EmpCalAndSumExeLog by empCalAndSumExecLogID
-	 */
-
 	@Override
 	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
 		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
@@ -91,9 +80,6 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		return data;
 	}
 
-	/**
-	 * get all EmpCalAndSumExeLog by date
-	 */
 	@Override
 	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
 			GeneralDate endDate) {
@@ -101,5 +87,10 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 				.setParameter("companyID", companyID).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
 		return data;
+	}
+
+	@Override
+	public void add(EmpCalAndSumExeLog empCalAndSumExeLog) {
+		this.commandProxy().insert(KrcdtEmpExecutionLog.toEntity(empCalAndSumExeLog));
 	}
 }

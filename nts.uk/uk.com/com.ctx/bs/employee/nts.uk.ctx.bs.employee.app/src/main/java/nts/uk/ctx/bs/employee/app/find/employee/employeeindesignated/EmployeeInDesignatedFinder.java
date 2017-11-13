@@ -18,8 +18,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsence;
-import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -116,27 +116,30 @@ public class EmployeeInDesignatedFinder {
 		employeeList.stream().forEach(employee -> {
 			// Get Person by personId
 			Person person = personList.stream().filter(p -> {
-				return employee.getPId() == p.getPersonId();
-			}).findFirst().get();
+				return employee.getPId().equals(p.getPersonId());
+			}).findFirst().orElse(null);
 			
 			// Get AffWorkplaceHistory
 			AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
-				return employee.getSId() == aff.getEmployeeId();
-			}).findFirst().get();
+				return employee.getSId().equals(aff.getEmployeeId());
+			}).findFirst().orElse(null);
 			
 			// Get WorkplaceInfo
 			WorkplaceInfo wkpInfo = workplaceInfoList.stream().filter(wkp -> {
 				return affWkpHist.getWorkplaceId().v() == wkp.getWorkplaceId();
-			}).findFirst().get();
+			}).findFirst().orElse(null);
 			
 			// Employee Data
 			EmployeeSearchOutput empData = EmployeeSearchOutput.builder()
 					.employeeId(employee.getSId())
-					.employeeCode(employee.getSCd().v())
-					.employeeName(person.getPersonNameGroup().getPersonName().v())
+					.employeeCode((employee.getSCd() == null) ? null : employee.getSCd().v())
+					.employeeName((person.getPersonNameGroup().getPersonName() == null)
+									? null : person.getPersonNameGroup().getPersonName().v())
 					.workplaceId(affWkpHist.getWorkplaceId().v())
-					.workplaceCode(wkpInfo.getWorkplaceCode().v())
-					.workplaceName(wkpInfo.getWorkplaceName().v())
+					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
+							: wkpInfo.getWorkplaceCode().v())
+					.workplaceName((wkpInfo == null) || (wkpInfo.getWorkplaceName() == null) ? null
+							: wkpInfo.getWorkplaceName().v())
 					.build();
 			
 			// Add Employee to output Data
@@ -245,7 +248,7 @@ public class EmployeeInDesignatedFinder {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySid(employeeId, referenceDate);
+			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// tốn tại domain 
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();

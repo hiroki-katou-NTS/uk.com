@@ -62,4 +62,21 @@ public interface AffWorkplaceHistoryRepository {
 	 * @return the by workplace ID
 	 */
 	public List<AffWorkplaceHistory> getByWorkplaceID(String workplaceId, GeneralDate baseDate);
+	
+	/**
+	 * ドメインモデル「所属職場」を新規登録する
+	 * @param domain
+	 */
+	void addAffWorkplaceHistory(AffWorkplaceHistory domain);
+	/**
+	 * ドメインモデル「所属職場」を削除する
+	 * @param domain
+	 */
+	void deleteAffWorkplaceHistory(AffWorkplaceHistory domain);
+	
+	/**
+	 * ドメインモデル「所属職場」を取得する
+	 * @param domain
+	 */
+	void updateAffWorkplaceHistory(AffWorkplaceHistory domain);
 }

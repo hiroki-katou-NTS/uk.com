@@ -8,13 +8,13 @@ module cps001.d.vm {
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
-        empFileMn: KnockoutObservable<IEmpFileMn>;
+        empFileMn: KnockoutObservable<IEmpFileMn> = ko.observable(<IEmpFileMn>{});
         oldEmpFileMn = {};
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;
         
         constructor(){  
-            let self = this;         
+            let self = this;          
         }
         start(){
             let self = this,

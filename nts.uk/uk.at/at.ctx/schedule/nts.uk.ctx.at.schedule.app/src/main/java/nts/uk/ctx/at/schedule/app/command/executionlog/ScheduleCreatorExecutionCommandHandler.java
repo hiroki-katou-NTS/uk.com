@@ -271,7 +271,9 @@ public class ScheduleCreatorExecutionCommandHandler
 			Optional<ScheduleCreateContent> optionalContent = this.contentRepository
 					.findByExecutionId(command.getExecutionId());
 
-			command.setContent(optionalContent.get());
+			if (optionalContent.isPresent()) {
+				command.setContent(optionalContent.get());
+			}
 
 			List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository
 					.findAll(command.getExecutionId());

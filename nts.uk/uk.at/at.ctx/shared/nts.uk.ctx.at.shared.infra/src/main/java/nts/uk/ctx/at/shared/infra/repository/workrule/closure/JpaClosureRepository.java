@@ -721,6 +721,67 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#
+	 * findHistoryByIdAndCurrentMonth(java.util.List, java.util.List)
+	 */
+	@Override
+	public List<ClosureHistory> findHistoryByIdAndCurrentMonth(List<Integer> closureIds, List<Integer> closureMonths) {
+
+		// check empty list
+		if (CollectionUtil.isEmpty(closureMonths) || CollectionUtil.isEmpty(closureIds)) {
+			return new ArrayList<>();
+		}
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE_HIST (KclmtClosureHist SQL)
+		CriteriaQuery<KclmtClosureHist> cq = criteriaBuilder.createQuery(KclmtClosureHist.class);
+
+		// root data
+		Root<KclmtClosureHist> root = cq.from(KclmtClosureHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// closure id in
+		lstpredicateWhere
+				.add(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId).in(closureIds));
+
+		Predicate predicateOrFull = null;
+
+		for (Integer month : closureMonths) {
+			Predicate predicateStart = criteriaBuilder.greaterThanOrEqualTo(
+					root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.strYM), month);
+			Predicate predicateEnd = criteriaBuilder.lessThanOrEqualTo(root.get(KclmtClosureHist_.endYM), month);
+			Predicate predicate = criteriaBuilder.and(predicateStart, predicateEnd);
+			if (predicateOrFull == null) {
+				predicateOrFull = predicate;
+			} else {
+				predicateOrFull = criteriaBuilder.or(predicateOrFull, predicate);
+			}
+		}
+
+		lstpredicateWhere.add(predicateOrFull);
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		cq.orderBy(criteriaBuilder.desc(root.get(KclmtClosureHist_.endYM)));
+
+		// create query
+		TypedQuery<KclmtClosureHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+	}
 
 }

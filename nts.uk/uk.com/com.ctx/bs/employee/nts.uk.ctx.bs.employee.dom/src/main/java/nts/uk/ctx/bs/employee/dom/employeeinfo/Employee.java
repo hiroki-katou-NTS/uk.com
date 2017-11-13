@@ -1,6 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
-import java.util.Arrays;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -47,12 +47,6 @@ public class Employee extends AggregateRoot {
 				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null);
 	}
 
-	public static List<String> getItemCodes() {
-
-		return Arrays.asList("IS00020", "IS00021", "IS00022", "IS00024", "IS00025", "IS00026", "IS00027", "IS00028");
-
-	}
-
 	public GeneralDate getJoinDate() {
 		GeneralDate joinDate = listEntryJobHist.get(0).getJoinDate();
 		for (JobEntryHistory jobHis : listEntryJobHist) {
@@ -71,5 +65,18 @@ public class Employee extends AggregateRoot {
 			}
 		}
 		return retirementDate;
+	}
+
+	// calculate year of entire in current company
+	public int getYearOfEntire() {
+		if (listEntryJobHist.isEmpty()) {
+			return 0;
+		}
+
+		int days = listEntryJobHist.stream()
+				.map(m -> ChronoUnit.DAYS.between(m.getJoinDate().localDate(), m.getAdoptDate().localDate()))
+				.mapToInt(m -> Math.abs(m.intValue())).sum();
+
+		return days / 365 + (days % 365 == 0 ? 0 : 1);
 	}
 }

@@ -31,11 +31,11 @@ public class PpemtSelItemOrder extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "HIST_ID")
-	public String histidPK;
+	public String histId;
 
 	@Basic(optional = false)
 	@Column(name = "DISPORDER")
-	public int disPorder;
+	public int dispOrder;
 
 	@Basic(optional = false)
 	@Column(name = "INIT_SELECTION")

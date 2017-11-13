@@ -8,7 +8,7 @@ module nts.uk.at.view.ksu001.d {
                 new BoxModel(2, nts.uk.resource.getText("KSU001_80"))
             ]);
             selectedId: KnockoutObservable<number> = ko.observable(1);
-            checked: KnockoutObservable<boolean> = ko.observable(true);
+            checked: KnockoutObservable<boolean> = ko.observable(false);
             text = nts.uk.resource.getText("KSU001_82");
             listEmployee = getShared("dataForScreenD").empItems;
             //KCP005
@@ -51,15 +51,17 @@ module nts.uk.at.view.ksu001.d {
                     maxRows: 15
                 };
 
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
+                    $('#component-items-list').focusComponent();
+                });
             }
             /**
              * decision
              */
             decision(): void {
-                
+
                 let self = this;
-                
+
                 if (!self.multiSelectedCode() || self.multiSelectedCode().size === 0) {
                     nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_499'));
                     return;
@@ -74,7 +76,7 @@ module nts.uk.at.view.ksu001.d {
                 });
                 let employees = _.filter(self.listEmployee, (v) => _.includes(self.multiSelectedCode(), v.empCd));
                 let employeeIds = _.map(employees, 'empId');
-                let confirmedAtr = (self.selectedId()==1)? 1 : 0 ;
+                let confirmedAtr = (self.selectedId() == 1) ? 1 : 0;
                 let checkedHandler = self.checked();
                 let command = {
                     employeeIds: employeeIds,
@@ -82,12 +84,12 @@ module nts.uk.at.view.ksu001.d {
                     confirmedAtr: confirmedAtr,
                     checkedHandler: checkedHandler
                 };
-                
+
                 service.updateBasicSchedule(command).done(() => {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.windows.close();
                 });
-                
+
             }
 
             /**

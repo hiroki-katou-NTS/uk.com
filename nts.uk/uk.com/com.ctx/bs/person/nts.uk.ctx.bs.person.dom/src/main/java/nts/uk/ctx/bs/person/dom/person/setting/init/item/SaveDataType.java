@@ -20,5 +20,5 @@ public enum SaveDataType {
 	/** (日付): */
 	DATE(3);
 
-	public final int value;
+	public final Integer value;
 }

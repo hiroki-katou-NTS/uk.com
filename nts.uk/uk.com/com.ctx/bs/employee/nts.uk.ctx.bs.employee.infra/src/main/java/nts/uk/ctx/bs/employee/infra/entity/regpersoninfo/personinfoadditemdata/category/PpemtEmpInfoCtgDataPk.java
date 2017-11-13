@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class PpemtEmpInfoCtgDataPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	// レコードID
 	@Basic(optional = false)
 	@Column(name = "RECORD_ID")
 	public String recordId;

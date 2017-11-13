@@ -25,6 +25,15 @@ public class OverTimeDto {
 	private String appID;
 	
 	/**
+	 * overtimeInstructInformation
+	 */
+	private String overtimeInstructInformation;
+	/**
+	 * displayOvertimeInstructInforFlg
+	 */
+	private boolean displayOvertimeInstructInforFlg;
+	
+	/**
 	 * 申請者
 	 */
 	private String employeeName;
