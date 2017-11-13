@@ -16,4 +16,12 @@ public class TimeActualStamp {
 	private WorkStamp stamp;
 	
 	private int numberOfReflectionStamp;
+
+	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
+		super();
+		this.actualStamp = actualStamp;
+		this.stamp = stamp;
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
+	}
+	
 }
