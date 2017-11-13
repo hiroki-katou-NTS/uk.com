@@ -5,6 +5,8 @@ module nts.uk.at.view.kdw001.a {
 
             //shime list.
             closureList: Array<Closure>;
+            
+            closureID: any;
 
             constructor() {
 
@@ -18,6 +20,12 @@ module nts.uk.at.view.kdw001.a {
                     });
                     self.closureList = items;
                 });
+                
+                service.getMaxClosure().done((data)=>{
+                 self.closureID =  data.closureID;
+                });
+                
+                
             }
 
             opendScreenF() {
@@ -25,13 +33,15 @@ module nts.uk.at.view.kdw001.a {
             }
 
             opendScreenJC() {
+                let self = this;
                 //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0, "screenName": "J" });
-                nts.uk.request.jump("/view/kdw/001/j/index.xhtml");
+                nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"closureID":self.closureID});
             }
 
             opendScreenBC() {
+                let self = this;
                 //nts.uk.request.jump("/view/kdw/001/b/index.xhtml", { "activeStep": 0, "screenName": "B" });
-                nts.uk.request.jump("/view/kdw/001/b/index.xhtml");
+                nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"closureID":self.closureID});
             }
         }
 
