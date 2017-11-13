@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.overtime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -162,10 +163,11 @@ public class GetOvertime {
 				applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 				result.setApplication(applicationDto);
 				
-		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
-		List<RequestAppDetailSetting> requestAppDetailSetting = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-		if(requestAppDetailSetting != null){
-			
+//		String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
+		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
+		if(requestAppDetailSettings != null){
+			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
+			if(requestAppDetailSetting != null){
 				// 時刻計算利用チェック
 				if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
 					result.setDisplayCaculationTime(true);
@@ -189,7 +191,7 @@ public class GetOvertime {
 				}else{
 					result.setDisplayCaculationTime(false);
 				}
-		
+			}
 		}
 		
 		// 01-03_残業枠を取得: chua xong
