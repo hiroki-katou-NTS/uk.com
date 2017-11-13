@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -14,6 +13,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultEmployeeDomainService {
 	
-	int createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTimes,int reCreateAttr, String empCalAndSumExecLogID);
+	List<ClosureIdLockDto> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTimes,int reCreateAttr, String empCalAndSumExecLogID);
 
 }
