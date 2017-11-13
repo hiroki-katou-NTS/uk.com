@@ -5,23 +5,27 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-
+/**
+ * 金額計算式
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class FormulaMoney {
-	/* 会社ID */
+	/** 会社ID **/
     private String companyId;
     
-    /*コード*/
+    /**コード**/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID **/
     private String verticalCalItemId;
     
-    /*カテゴリ区分 */
+    /**カテゴリ区分 **/
     private CategoryIndicator categoryIndicator;
     
-    /* 実績表示区分 */
+    /** 実績表示区分 */
     private ActualDisplayAtr actualDisplayAtr;
     
     private List<MoneyFunc> lstMoney;

@@ -17,7 +17,7 @@ module nts.uk.at.view.kml002.e.service {
     }  
     
     export interface BaseItemsDto {
-        id: number,
+        id: any,
         itemId: string,
         itemName: string,
         itemType: number,

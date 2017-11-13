@@ -5,24 +5,25 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaMoney;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.MoneyFunc;
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FormulaMoneyCommand {
-	/* 会社ID */
-    private String companyId;
+
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /*カテゴリ区分 */
+    /**カテゴリ区分 */
     private int categoryIndicator;
     
-    /* 実績表示区分 */
+    /** 実績表示区分 */
     private int actualDisplayAtr;
     
     private List<MoneyFuncCommand> lstMoney;

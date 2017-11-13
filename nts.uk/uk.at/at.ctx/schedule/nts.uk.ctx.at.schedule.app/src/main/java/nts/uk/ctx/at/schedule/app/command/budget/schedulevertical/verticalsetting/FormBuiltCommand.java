@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormBuilt;
 
 /**
@@ -13,33 +14,32 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormBu
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FormBuiltCommand {
-	/* 会社ID */
-    private String companyId;
-    
-    /*コード*/
+
+	/**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String verticalCalItemId;
     
-    /* 設定方法 */
+    /** 設定方法 */
     private int settingMethod1;
     
     private int verticalCalItem1;
     
-    /* 縦計入力項目 */
+    /** 縦計入力項目 */
     private BigDecimal verticalInputItem1;
     
-    /* 設定方法 */
+    /** 設定方法 */
     private int settingMethod2;
     
     private int verticalCalItem2;
     
-    /* 縦計入力項目 */
+    /** 縦計入力項目 */
     private BigDecimal verticalInputItem2;
     
-    /* 演算子区分 */
+    /** 演算子区分 */
     private int operatorAtr;
     
     public FormBuilt toDomainFormBuilt(String companyId, String verticalCalCd, String verticalCalItemId){

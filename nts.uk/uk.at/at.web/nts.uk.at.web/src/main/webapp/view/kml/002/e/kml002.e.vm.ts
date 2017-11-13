@@ -278,14 +278,14 @@ module nts.uk.at.view.kml002.e.viewmodel {
         submit() {
             var self = this;
             var data = {
-                dataList : self.rightItems(),
-                dataAmount : self.rightItemsAmount(),
-                calMethodAtr : self.selectedMethod(),
-                roundingTime : self.roundingCd(),
-                roundingAtr : self.selectedProcessing(),
-                unitPrice : self.uPCd(),
-                actualDisplayAtrAmount : self.checked(),
-                actualDisplayAtr : self.checkedAmount(),
+                dataList: self.rightItems(),
+                dataAmount: self.rightItemsAmount(),
+                calMethodAtr: self.selectedMethod(),
+                roundingTime: self.roundingCd(),
+                roundingAtr: self.selectedProcessing(),
+                unitPrice: self.uPCd(),
+                actualDisplayAtrAmount: self.checked(),
+                actualDisplayAtr: self.checkedAmount(),
                 categoryIndicator: self.catCode()
             }
             nts.uk.ui.windows.setShared("KML002_E_DATA", data);
@@ -293,7 +293,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
 
         cancel() {
             var self = this;
-             nts.uk.ui.windows.close(); 
+            nts.uk.ui.windows.close();
 
         }
         getData(): JQueryPromise<any> {
@@ -310,7 +310,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
             }
             service.getByAtr(param).done((lst) => {
                 let sortedData = _.orderBy(lst, ['externalBudgetCode'], ['asc']);
-                _.map(sortedData, function(item) {
+                _.map(sortedData, function(item: any) {
                     array.push({
                         id: i,
                         code: item.externalBudgetCode,
@@ -340,7 +340,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: data.attributeId,
                 budgetAtr: data.attributeId,
-                unitAtr: 0
+                unitAtr: UseAtr.DO_NOT_USE
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];
@@ -375,15 +375,15 @@ module nts.uk.at.view.kml002.e.viewmodel {
         displayItemsRule(allItems: any, category: number, display: boolean) {
             let self = this;
             let temp = [];
-            if(category == 0 && display) {
+            if (category == CategoryIndicator.EXTERNAL_BUDGET_RECORD_ITEMS && display) {
                 self.items(_.filter(allItems, ['itemType', GrantPeriodicMethod.SCHEDULE]));
-            } else if (category == 0 && !display) {
+            } else if (category == CategoryIndicator.EXTERNAL_BUDGET_RECORD_ITEMS && !display) {
                 self.items(_.filter(allItems, function(item: ItemModel) {
                     return item.itemType == GrantPeriodicMethod.DAILY || item.itemType == GrantPeriodicMethod.SCHEDULE;
                 }));
-            } 
+            }
         }
-        
+
         displayItemsRuleAmount(allItemAmount: any, display: boolean) {
             let self = this;
             let temp = [];
@@ -393,9 +393,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
             } else {
                 self.itemsAmount(_.filter(allItemAmount, function(item: ItemModel) {
                     return item.itemType == GrantPeriodicMethod.DAILY
-                     || item.itemType == GrantPeriodicMethod.SCHEDULE;
+                        || item.itemType == GrantPeriodicMethod.SCHEDULE;
                 }));
-            } 
+            }
         }
 
 
@@ -593,8 +593,8 @@ module nts.uk.at.view.kml002.e.viewmodel {
         code: string;
         operatorAtr: string;
         name: string;
-        id: number
-        constructor(code: string, operatorAtr: string, name: string, id: number) {
+        id: any
+        constructor(code: string, operatorAtr: string, name: string, id: any) {
             this.code = code;
             this.operatorAtr = operatorAtr;
             this.name = name;
@@ -608,7 +608,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
         roundingAtr?: number;
         unitPrice?: number;
         actualDisplayAtr?: number;
-        
+
 
     }
 
@@ -627,4 +627,55 @@ module nts.uk.at.view.kml002.e.viewmodel {
         SCHEDULE = 5
     }
 
+    export enum CategoryIndicator {
+        /* 0- 外部予算実績項目 */
+        EXTERNAL_BUDGET_RECORD_ITEMS = 0,
+        /* 1- 勤怠項目 */
+        ATTENDANCE_ITEM
+    }
+
+    export enum UseAtr {
+        /** 0- 利用しない **/
+        DO_NOT_USE = 0,
+        /** 1- 利用する **/
+        USE
+    }
+
+    export enum CalMethodAtr {
+        /** 0- 金額項目 **/
+        AMOUNT_ITEM = 0,
+        /** 1- 時間項目×単価 **/
+        TIME_ITEM_X_UNIT_PRICE
+    }
+    export enum RoundingTime {
+        /** 0- 1分 **/
+        ONE_MINUTE = 0,
+        /** 1- 5分 **/
+        FIVE_MINS = 1,
+        /** 2- 6分 **/
+        SIX_MINS = 2,
+        /** 3- 10分 **/
+        TEN_MINS = 3,
+        /** 4- 15分 **/
+        FIFTEEN_MINS = 4,
+        /** 4- 20分 **/
+        TWENTY_MINS = 5,
+        /** 4- 30分 **/
+        THIRTY_MINS = 6,
+        /** 4- 60分 **/
+        SIXTY_MINS = 7
+    }
+    export enum UnitPrice {
+
+        /** 0- 単価0 **/
+        UNIT_PRICE_1 = 0,
+        /** 1- 単価2 **/
+        UNIT_PRICE_2 = 1,
+        /** 2- 単価3 **/
+        UNIT_PRICE_3 = 2,
+        /** 3- 契約単価 **/
+        CONTRACT = 3,
+        /** 4-基準単価 **/
+        STANDARD = 4
+    }
 }

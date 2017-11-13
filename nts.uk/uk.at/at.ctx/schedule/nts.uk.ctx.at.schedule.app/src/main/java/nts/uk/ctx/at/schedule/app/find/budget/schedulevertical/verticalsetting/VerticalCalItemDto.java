@@ -9,33 +9,34 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Vertic
 @AllArgsConstructor
 @Data
 public class VerticalCalItemDto {
-	/* 会社ID */
+	/** 会社ID */
     private String companyId;
     
-    /*コード*/
+    /**コード*/
     private String verticalCalCd;
     
-    /* 汎用縦計項目ID */
+    /** 汎用縦計項目ID */
     private String itemId;
     
-    /* 項目名 */
+    /** 項目名 */
     private String itemName;
     
-    /* 計算区分 */
+    /** 計算区分 */
     private int calculateAtr;
     
-    /* 表示区分 */
+    /** 表示区分 */
     private int displayAtr;
     
-    /* 累計区分 */
+    /** 累計区分 */
     private int cumulativeAtr;
     
-    /* 属性 */
+    /** 属性 */
     private int attributes;
     
-    // 端数処理
+    /**端数処理 */
  	private int rounding;
  	
+ 	/** 順番 */
  	private int dispOrder;
  	
  	// B

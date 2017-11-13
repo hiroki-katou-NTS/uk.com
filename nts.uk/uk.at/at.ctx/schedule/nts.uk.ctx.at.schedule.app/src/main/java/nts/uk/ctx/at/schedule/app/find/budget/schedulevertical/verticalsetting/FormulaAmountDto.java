@@ -9,15 +9,16 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.Formul
 @AllArgsConstructor
 @Data
 public class FormulaAmountDto {
-	/* 会社ID */
+	/** 会社ID */
 	private String companyId;
 
-	/* コード */
+	/** コード */
 	private String verticalCalCd;
 
-	/* 計算式 */
+	/** 計算式 */
 	private String verticalCalItemId;
 
+	/** 計算方法区分 */
 	private int calMethodAtr;
 	
 	private FormulaMoneyDto moneyFunc;

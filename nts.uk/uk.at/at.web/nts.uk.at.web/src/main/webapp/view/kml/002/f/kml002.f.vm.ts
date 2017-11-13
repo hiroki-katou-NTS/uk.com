@@ -138,7 +138,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
             }
             service.getByAtr(param).done((lst) => {  
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
-                _.map(sortedData, function(item){
+                _.map(sortedData, function(item: any){
                     array.push({
                         id: i,
                         code: item.externalBudgetCode,
@@ -166,14 +166,14 @@ module nts.uk.at.view.kml002.f.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             } else {
                 _.forEach(self.currentCodeList(), function(item){
-                    var item = _.find(self.items(), function(o) { return o.code == Number(item); });
+                    var items = _.find(self.items(), function(o) { return o.code == item; });
                     
                     let i = self.rightItems().length;
                     
                     self.rightItems.push({
                         code: i.toString(),
                         operatorAtr: nts.uk.resource.getText("KML002_37"),
-                        name: item.name,    
+                        name: items.name,    
                     });
                     
                     i = i + 1;
@@ -197,14 +197,14 @@ module nts.uk.at.view.kml002.f.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             } else {
                 _.forEach(self.currentCodeList(), function(item){
-                    var item = _.find(self.items(), function(o) { return o.code == Number(item); });
+                    var items = _.find(self.items(), function(o) { return o.code == item; });
                     
                     let i = self.rightItems().length;
                     
                     self.rightItems.push({
                         code: i.toString(),
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
-                        name: item.name,    
+                        name: items.name,    
                     });
                     
                     i = i + 1;
@@ -267,7 +267,7 @@ module nts.uk.at.view.kml002.f.viewmodel {
         constructor(code: string, name: string, itemType: number) {
             this.code = code;
             this.name = name;  
-            this.itemType = itemType;  
+            this.itemType = itemType;
         }
     } 
     
