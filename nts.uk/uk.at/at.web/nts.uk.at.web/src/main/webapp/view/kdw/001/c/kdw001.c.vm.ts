@@ -34,6 +34,7 @@ module nts.uk.at.view.kdw001.c {
             baseDate: KnockoutObservable<Date>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
+
             constructor() {
 
                 var self = this;
@@ -85,18 +86,26 @@ module nts.uk.at.view.kdw001.c {
                 self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
 
-                self.startDateString = ko.observable("");
-                self.endDateString = ko.observable("");
+                var closureID = __viewContext.transferred.value.closureID;
+                service.findPeriodById(closureID).done((data) => {
+                    self.dateValue().startDate = data.startDate.toString();
+                    self.dateValue().endDate = data.endDate.toString();
+                }).always(() => {
+                    self.startDateString = ko.observable("");
+                    self.endDateString = ko.observable("");
 
-                self.startDateString.subscribe(function(value) {
-                    self.dateValue().startDate = value;
-                    self.dateValue.valueHasMutated();
+                    self.startDateString.subscribe(function(value) {
+                        self.dateValue().startDate = value;
+                        self.dateValue.valueHasMutated();
+                    });
+
+                    self.endDateString.subscribe(function(value) {
+                        self.dateValue().endDate = value;
+                        self.dateValue.valueHasMutated();
+                    });
+
                 });
 
-                self.endDateString.subscribe(function(value) {
-                    self.dateValue().endDate = value;
-                    self.dateValue.valueHasMutated();
-                });
 
                 //Init employee filter component
                 self.selectedEmployee = ko.observableArray([]);
@@ -172,43 +181,54 @@ module nts.uk.at.view.kdw001.c {
             opendScreenBorJ() {
                 let self = this;
 
-                let listEmpSelected = self.listComponentOption.selectedCode();
-                if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
-                    return;
-                }
-                let startDateS = self.dateValue().startDate.split("/");
-                let endDateS = self.dateValue().endDate.split("/");
-                let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
-                let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
-                let startDate_unixtime = parseInt(startDate.getTime() / 1000);
-                let endDate_unixtime = parseInt(endDate.getTime() / 1000);
-                var timeDifference = endDate_unixtime - startDate_unixtime;
-                var timeDifferenceInHours = timeDifference / 60 / 60;
-                var timeDifferenceInDays = timeDifferenceInHours / 24;
+                var closureID = __viewContext.transferred.value.closureID;
+                service.findById(closureID).done((data) => {
 
-                if (timeDifferenceInDays > 31) {
-                    nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                        let monthNow = 11; // thieu thang hien tai cua  domain 締め
-                        let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                        if (monthStartDate < monthNow) {
-                            nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                    if (data) {
+                        let listEmpSelected = self.listComponentOption.selectedCode();
+                        if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
                             return;
                         }
-                        $("#wizard").ntsWizard("next");
+                        let startDateS = self.dateValue().startDate.split("/");
+                        let endDateS = self.dateValue().endDate.split("/");
+                        let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
+                        let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
+                        let startDate_unixtime = parseInt(startDate.getTime() / 1000);
+                        let endDate_unixtime = parseInt(endDate.getTime() / 1000);
+                        var timeDifference = endDate_unixtime - startDate_unixtime;
+                        var timeDifferenceInHours = timeDifference / 60 / 60;
+                        var timeDifferenceInDays = timeDifferenceInHours / 24;
 
-                    })
+                        if (timeDifferenceInDays > 31) {
+                            nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                                let monthNow = data.month;
+                                let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                                if (monthStartDate < monthNow) {
+                                    nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                    return;
+                                }
+                                $("#wizard").ntsWizard("next");
 
-                } else {
-                    let monthNow = 11; // thieu thang hien tai cua  domain 締め
-                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                    if (monthStartDate < monthNow) {
-                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
-                        return;
+                            })
+
+                        } else {
+                            let monthNow = 11; // thieu thang hien tai cua  domain 締め
+                            let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                            if (monthStartDate < monthNow) {
+                                nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                return;
+                            }
+                            $("#wizard").ntsWizard("next");
+
+                        }
                     }
-                    $("#wizard").ntsWizard("next");
 
-                }
+
+                });
+
+
+
 
 
             }
