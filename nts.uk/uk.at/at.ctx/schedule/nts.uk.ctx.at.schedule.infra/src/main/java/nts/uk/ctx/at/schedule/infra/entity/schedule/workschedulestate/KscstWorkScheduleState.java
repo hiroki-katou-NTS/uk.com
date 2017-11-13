@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -29,12 +28,9 @@ public class KscstWorkScheduleState extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	public KscstWorkScheduleStatePK kscstWorkScheduleStatePK; 
 	
-	@Column(name ="SCHEDULE_EDIT_STATE")
+	@Column(name = "SCHEDULE_EDIT_STATE")
 	public int scheduleEditState;
 	
-	@Column(name = "YMD")
-	public GeneralDate date;
-
 	@Override
 	protected Object getKey() {
 		return this.kscstWorkScheduleStatePK;

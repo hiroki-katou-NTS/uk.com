@@ -1,11 +1,11 @@
 @CHARSET "UTF-8";
 .tab-content-1, .tab-content-2, .tab-content-3 {
-	width: 700px;
+	width: 650px;
 	height: 600px;
 }
 .table-label {
-	width: 770px;
-	margin-left: 30px;
+	width: 650px;
+	margin-left: 20px;
 }
 
 .label-checkbox {
@@ -111,4 +111,12 @@
 
 .personalEstablishment {
 	margin-top: 10px;
+}
+
+.table-label td {
+	margin-bottom: 10px;
+}
+
+.label-middle {
+	padding-top: 7px;
 }

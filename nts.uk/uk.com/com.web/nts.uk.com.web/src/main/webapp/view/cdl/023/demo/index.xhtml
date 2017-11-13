@@ -16,8 +16,15 @@
 			<com:scriptfile path="cdl023.demo.vm.js" />
 			
 			<style>
+				#content table {
+					width: 850px;
+				}
 				#content table td {
 					padding: 10px;
+				}
+				.ntsRadioBox {
+					display: inline-block;
+					width: 94px;
 				}
 			</style>
 		</ui:define>
@@ -28,11 +35,12 @@
 				<div id="side-menu" class="cf"></div>
 				
 				<div id="content" class="cf">
-					<button data-bind="click: openDialog">Test CDL023</button>
+					<h1>CDL023 複写ダイアログ Copy Dialog</h1><hr/>
+					<h2>Overview</h2>
 					
 					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Parameters:</h4>
 					<table>
-						<col width="100"></col>
+						<col width="50"></col>
 						<col width="200"></col>
 						<tr>
 							<td>複写元コード</td>
@@ -50,7 +58,27 @@
 								enable: true,
 								readonly: false}" /></td>
 						</tr>
+						<tr>
+							<td>選択対象区分</td>
+							<td><div data-bind="ntsRadioBoxGroup: {
+									options: targetList,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: selectedTarget,
+									enable: true}"></div>
+							</td>
+						</tr>
+						<com:ko tag="if" bind="enableBaseDate">
+							<tr>
+								<td>基準日</td>
+								<td><div id="base-date"
+										data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+								</td>
+							</tr>
+						</com:ko>
 					</table>
+					
+					<button style="margin-top: 10px;" data-bind="click: openDialog">Open CDL023 dialog</button>
 					
 					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Return value:</h4>
 					<table>
@@ -61,6 +89,45 @@
 							<td><div data-bind="text: valueReturn"></div></td>
 						</tr>
 					</table>
+					
+					<h2 style="margin-top: 50px;">Guide</h2>
+					<pre><![CDATA[// Model Transfer
+interface IObjectDuplication {
+    code: string;
+    name: string;
+    targetType: TargetType;
+    baseDate?: Date; // needed when target type: 職場 or 部門 or 職場個人 or 部門個人
+}
+
+class TargetType {
+    // 雇用
+    static EMPLOYMENT = 1;
+    // 分類
+    static CLASSIFICATION = 2;
+    // 職位
+    static JOB_TITLE = 3;
+    // 職場
+    static WORKPLACE = 4;
+    // 部門
+    static DEPARTMENT = 5;
+    // 職場個人
+    static WORKPLACE_PERSONAL = 6;
+    // 部門個人
+    static DEPARTMENT_PERSONAL = 7;
+}
+
+// create object has data type IObjectDuplication and use:
+nts.uk.ui.windows.setShared("CDL023Input", object);
+
+// open dialog
+nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(() => {
+    // show data respond
+    let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+});
+
+// check has close dialog
+nts.uk.ui.windows.setShared("CDL023Cancel", true);
+]]></pre>
 				</div>
 			</div>
 		</ui:define>

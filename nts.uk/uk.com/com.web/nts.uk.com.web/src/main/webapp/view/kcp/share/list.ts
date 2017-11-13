@@ -571,7 +571,7 @@ module kcp.share.list {
         
         public getItemNameForBaseDate(): string {
             if (this.hasBaseDate) {
-                return '#[KCP003_2 ]'
+                return '#[KCP003_2]'
             }
             return '';
         }

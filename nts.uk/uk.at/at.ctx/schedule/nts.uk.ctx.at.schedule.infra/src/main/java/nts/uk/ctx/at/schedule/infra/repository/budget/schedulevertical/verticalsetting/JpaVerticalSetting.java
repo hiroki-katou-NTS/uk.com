@@ -535,11 +535,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		FormTimeFunc domain = FormTimeFunc.createFromJavaType(entity.kscmtFormTimeFuncPK.companyId, 
 				entity.kscmtFormTimeFuncPK.verticalCalCd, 
 				entity.kscmtFormTimeFuncPK.verticalCalItemId, 
+				entity.kscmtFormTimeFuncPK.dispOrder,
 				entity.externalBudgetCd, 
 				entity.attendanceItemId, 
 				entity.presetItemId,
-				entity.operatorAtr,
-				entity.dispOrder);
+				entity.operatorAtr);
 		return domain;
 	}
 
@@ -659,12 +659,11 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		val entity = new KscmtFormTimeFunc();
 		
 		entity.kscmtFormTimeFuncPK = new KscmtFormTimeFuncPK(item.getCompanyId(), item.getVerticalCalCd(),
-				item.getVerticalCalItemId());
+				item.getVerticalCalItemId(), item.getDispOrder());
 		entity.externalBudgetCd = item.getExternalBudgetCd();
 		entity.attendanceItemId = item.getAttendanceItemId();
 		entity.presetItemId = item.getPresetItemId();
 		entity.operatorAtr = item.getOperatorAtr().value;
-		entity.dispOrder = item.getDispOrder();
 		
 		return entity;
 	}

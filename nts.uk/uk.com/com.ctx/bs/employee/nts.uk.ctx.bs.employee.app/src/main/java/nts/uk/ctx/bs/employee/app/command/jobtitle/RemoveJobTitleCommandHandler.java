@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -62,10 +62,12 @@ public class RemoveJobTitleCommandHandler extends CommandHandler<RemoveJobTitleC
 		// Compare date
 		GeneralDate endDate = command.getEndDate();
 		GeneralDate historyStartDate = lastestHistory.span().start();
-		if (endDate.before(historyStartDate)) {
-			throw new BusinessException("Msg_467");
-		} 
-		else if (endDate.equals(historyStartDate)) {
+		
+		// Validate
+		this.validate(endDate, historyStartDate);
+		
+		// Remove data
+		if (endDate.equals(historyStartDate)) {
 			// Remove JobTitle lastest history + JobTitle associated info
 			this.jobTitleRepository.removeHistory(companyId, command.getJobTitleId(), lastestHistory.identifier());
 			this.jobTitleInfoRepository.remove(companyId, command.getJobTitleId(), lastestHistory.identifier());
@@ -73,6 +75,28 @@ public class RemoveJobTitleCommandHandler extends CommandHandler<RemoveJobTitleC
 		else {
 			// Update JobTitle lastest history
 			this.jobTitleHistoryService.updateLastestHistory(companyId, command.getJobTitleId(), endDate);
+		}
+	}
+	
+	/**
+	 * Validate.
+	 *
+	 * @param endDate the end date
+	 * @param historyStartDate the history start date
+	 */
+	private void validate(GeneralDate endDate, GeneralDate historyStartDate) {
+		boolean isError = false;
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+
+		if (endDate.before(historyStartDate)) {
+			// Throw Exception - Sequence has been registered to a JobTitle
+			isError = true;
+			exceptions.addMessage("Msg_467");
+		}
+
+		// Has error, throws message
+		if (isError) {
+			exceptions.throwExceptions();
 		}
 	}
 }

@@ -49,7 +49,7 @@ module nts.uk.at.view.kmw005.a {
             }
 
             /**
-             * start page
+             * Start page
              */
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -58,7 +58,8 @@ module nts.uk.at.view.kmw005.a {
                 service.findAllActualLock().done(function(data) {
                     blockUI.clear();
                     var dataRes: ActualLockFind[] = [];
-                    for (var item: ActualLockFinderDto of data) {
+                    
+                    _.forEach(data, function(item: ActualLockFinderDto) {
                         var actualLock: ActualLockFind = new ActualLockFind();
                         actualLock.closureId = item.closureId;
                         actualLock.closureName = item.closureName;
@@ -68,7 +69,8 @@ module nts.uk.at.view.kmw005.a {
                         actualLock.endDate = item.endDate;
                         actualLock.period = item.startDate + " ~ " + item.endDate;
                         dataRes.push(actualLock);
-                    }
+                    })
+                    
                     self.actualLockList(dataRes);
                     self.actualLock.closureId(data[0].closureId);
                     dfd.resolve();
@@ -85,7 +87,7 @@ module nts.uk.at.view.kmw005.a {
             }
 
             /**
-             * Bind ActualLock
+             * Binding ActualLock By Selected Closure
              */
             private bindActualLock(closureId: number): void {
                 let self = this;
@@ -103,7 +105,7 @@ module nts.uk.at.view.kmw005.a {
 
 
             /**
-             * collectActualLockData 
+             * Collect ActualLockData 
              */
             private collectActualLockData(): void {
                 let self = this;
@@ -114,7 +116,7 @@ module nts.uk.at.view.kmw005.a {
             }
             
             /**
-             * Save ActualLock
+             * Save ActualLock when press Register
              */
             private saveActualLock(): void {
                 let self = this;
@@ -132,11 +134,9 @@ module nts.uk.at.view.kmw005.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
                     
-                    // Reload Page
-                    blockUI.invisible();
                     service.findAllActualLock().done(function(data) {
                         var dataRes: ActualLockFind[] = [];
-                        for (var item: ActualLockFinderDto of data) {
+                        _.forEach(data, function(item: ActualLockFinderDto) {
                             var actualLock: ActualLockFind = new ActualLockFind();
                             actualLock.closureId = item.closureId;
                             actualLock.closureName = item.closureName;
@@ -146,11 +146,11 @@ module nts.uk.at.view.kmw005.a {
                             actualLock.endDate = item.endDate;
                             actualLock.period = item.startDate + " ~ " + item.endDate;
                             dataRes.push(actualLock);
-                        }
+                        })
+                        
                         self.actualLockList(dataRes);
                         self.addLockIcon();
                     })
-                    blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
                 });
@@ -158,7 +158,7 @@ module nts.uk.at.view.kmw005.a {
             
 
             /**
-             * Open Dialog B
+             * Open Dialog: Confirm ActualLock 
              */
             private openDialog(): void {
                 let self = this;
@@ -175,10 +175,9 @@ module nts.uk.at.view.kmw005.a {
             }
 
             /**
-             * Add LockIcon
+             * Add LockIcon to columns DailyLock, MonthlyLock.
              */
             private addLockIcon() {
-                // Add icon to column already setting.
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
@@ -195,32 +194,16 @@ module nts.uk.at.view.kmw005.a {
             return '';
         }
 
-        //        function lockIcon1 (isLock: string) {
-        //            if (isLock == '1') {
-        //                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-2"></i></div>';
-        //            }
-        //         return '';
-        //        }
-        
-        
-
         /**
          * class ActualLockFind
          */
         export class ActualLockFind {
-            /** The closure id. */
             closureId: number;
-            /** dailyLockState. */
             dailyLockState: number;
-
             monthlyLockState: number;
-
             closureName: string;
-
             startDate: string;
-
             endDate: string;
-
             period: string;
 
             constructor() {
@@ -232,7 +215,7 @@ module nts.uk.at.view.kmw005.a {
                 this.endDate = '';
                 this.period = '';
             }
-            
+            // convert to ClosureDto
             public toClosureDto(): ClosureDto {
                 return new ClosureDto (this.closureId, this.closureName);
             }

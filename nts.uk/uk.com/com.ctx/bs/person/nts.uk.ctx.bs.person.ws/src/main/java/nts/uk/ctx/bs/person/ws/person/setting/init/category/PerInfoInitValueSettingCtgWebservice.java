@@ -12,7 +12,7 @@ import command.person.setting.init.UpdateInitValueSettingCommand;
 import command.person.setting.init.UpdateInitValueSettingHandler;
 import find.person.setting.init.PerInfoInitValueSettingFinder;
 import find.person.setting.init.PerInitValueSettingDto;
-import find.person.setting.init.category.InitCtgDto;
+import find.person.setting.init.category.SettingCtgDto;
 import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.arc.layer.ws.WebService;
 
@@ -46,7 +46,7 @@ public class PerInfoInitValueSettingCtgWebservice extends WebService {
 
 	@POST
 	@Path("findAllBySetId/{settingId}")
-	public List<InitCtgDto> getAllCategoryBySetId(@PathParam("settingId") String settingId) {
+	public List<SettingCtgDto> getAllCategoryBySetId(@PathParam("settingId") String settingId) {
 		return this.cgtFinder.getAllCategoryBySetId(settingId);
 	}
 

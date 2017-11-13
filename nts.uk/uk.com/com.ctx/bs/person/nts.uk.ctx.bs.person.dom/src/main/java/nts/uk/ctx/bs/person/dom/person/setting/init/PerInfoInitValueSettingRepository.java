@@ -47,6 +47,13 @@ public interface PerInfoInitValueSettingRepository {
 	 * @param domain
 	 */
 	void update(PerInfoInitValueSetting domain);
+	
+	/**
+	 * update name of PerInfoInitValueSetting
+	 * @param settingId
+	 * @param settingName
+	 */
+	void updateName(String settingId, String settingName);
 
 	/**
 	 * insert PerInfoInitValueSetting

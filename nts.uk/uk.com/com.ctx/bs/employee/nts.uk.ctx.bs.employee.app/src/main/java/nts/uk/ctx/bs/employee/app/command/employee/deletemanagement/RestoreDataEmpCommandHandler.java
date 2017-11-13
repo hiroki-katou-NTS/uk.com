@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpRepository;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;

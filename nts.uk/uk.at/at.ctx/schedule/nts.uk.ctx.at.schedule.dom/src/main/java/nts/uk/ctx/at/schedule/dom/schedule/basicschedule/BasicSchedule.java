@@ -109,16 +109,14 @@ public class BasicSchedule extends AggregateRoot {
 	}
 
 	/**
-	 * Save to memento.
+	 * Creates the from java type.
 	 *
-	 * @param sId
-	 *            the s id
-	 * @param date
-	 *            the date
-	 * @param workTypeCode
-	 *            the work type code
-	 * @param workTimeCode
-	 *            the work time code
+	 * @param sId the s id
+	 * @param date the date
+	 * @param workTypeCode the work type code
+	 * @param workTimeCode the work time code
+	 * @param confirmedAtr the confirmed atr
+	 * @param workDayAtr the work day atr
 	 * @return the basic schedule
 	 */
 	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCode,
@@ -131,8 +129,7 @@ public class BasicSchedule extends AggregateRoot {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(BasicScheduleSetMemento memento) {
 		memento.setEmployeeId(this.employeeId);

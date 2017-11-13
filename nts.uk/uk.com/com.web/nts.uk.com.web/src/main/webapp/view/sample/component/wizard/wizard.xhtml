@@ -64,15 +64,15 @@
 										}"></table>
 									</div>
 									<div class="step-3">
-										<h3>Multi Selection</h3>
-										<table id="single-list" data-bind="ntsGridList: {
-												height: 320,
-												options: items,
-												optionsValue: 'code',
-												columns: columns,
-												multiple: false,
-												value: currentCode
-										}"></table>
+										<div id="inputSelectImplementAtr" tabindex="1" class="selectImplementAtr" data-bind="ntsSwitchButton: {
+							 					options: [{id: '1', name: 'Test 1'}, {id: '2', name: 'Test 2'}],
+							 					optionsValue: 'id',
+							 					optionsText: 'name',
+												name: '#[KSC001_81]',
+												value: ko.observable('1'),
+							 					required: true,
+							 					enable: true }"> 
+											</div>
 									</div>
 									<div class="step-4">
 										<div id="list-box" data-bind="ntsListBox: {

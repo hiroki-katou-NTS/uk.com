@@ -40,13 +40,14 @@ module nts.uk.com.view.cmm013.d {
                 nts.uk.ui.block.grayout();
                 service.saveJobTitleHistory(_self.toJSON())
                     .done(() => {
-                        nts.uk.ui.block.clear();
                         nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_ADD_HISTORY, true);
                         _self.close();
                     })
-                    .fail((res: any) => {
+                    .fail((res: any) => {                       
+                        _self.showMessageError(res);
+                    })
+                    .always(() => {
                         nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
                     });
             }
             
@@ -76,8 +77,11 @@ module nts.uk.com.view.cmm013.d {
              * Validate
              */
             private validate(): boolean {
-                let _self = this;               
-                $('#start-date').ntsError('clear');                
+                let _self = this;             
+                  
+                // Clear error
+                nts.uk.ui.errors.clearAll();    
+                            
                 $('#start-date').ntsEditor('validate');               
                 return !$('.nts-input').ntsError('hasError');
             }
@@ -85,9 +89,19 @@ module nts.uk.com.view.cmm013.d {
             /**
              * Show Error Message
              */
-            private showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
-            }           
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }        
         }
     }    
 }

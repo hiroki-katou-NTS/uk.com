@@ -15,8 +15,8 @@ import javax.ws.rs.Produces;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeFinder;
-import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
+import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 
 /**
  * 

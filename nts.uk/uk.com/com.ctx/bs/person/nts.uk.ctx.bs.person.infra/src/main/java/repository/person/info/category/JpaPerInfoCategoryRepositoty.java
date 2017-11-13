@@ -84,7 +84,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " AND ca.categoryName LIKE CONCAT('%', :categoryName, '%') ORDER BY po.disporder";
 
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
-			+ " WHERE e.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	
+	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtDateRangeItem d"
+			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
 	
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -277,8 +280,15 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId) {
-		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).getSingleOrNull();
-		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+		Optional<PpemtDateRangeItem> itemOpt = this.queryProxy()
+				.query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).setParameter("perInfoCtgId", perInfoCtgId)
+				.getSingle();
+		if (!itemOpt.isPresent()) {
+			return null;
+		}
+		PpemtDateRangeItem item = itemOpt.get();
+		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+				item.endDateItemId, item.dateRangeItemId);
 	}
 
 	@Override
@@ -289,11 +299,17 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 					});
 	}
+
+	@Override
+	public DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId) {
+		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtDateRangeItem.class).setParameter("perInfoCtgId", perInfoCtgId).getSingleOrNull();
+		DateRangeItem s = DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId, item.endDateItemId, item.dateRangeItemId);
+		return s;
+	}
 	
 	
 	// vinhpx: end
 
-	
 
 
 }

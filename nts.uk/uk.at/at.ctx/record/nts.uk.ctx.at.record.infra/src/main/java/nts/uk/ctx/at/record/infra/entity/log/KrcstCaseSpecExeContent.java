@@ -51,11 +51,11 @@ public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable
 		val domain = CaseSpecExeContent.createFromJavaType(this.krcstCaseSpecExeContentPK.caseSpecExeContentID,
 				this.orderNumber, this.useCaseName);
 		for (KrcdtCalExeSetInfor calExeSetInfor : lstCalExeSetInfor) {
-			if (calExeSetInfor.krcdtCalExeSetInforPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
+			if (calExeSetInfor.executionContent == ExecutionContent.DAILY_CREATION.value) {
 				domain.setDailyCreationSetInfo(Optional.of(calExeSetInfor.toDomain()));
-			} else if (calExeSetInfor.krcdtCalExeSetInforPK.executionContent == ExecutionContent.DAILY_CALCULATION.value) {
+			} else if (calExeSetInfor.executionContent == ExecutionContent.DAILY_CALCULATION.value) {
 				domain.setDailyCalSetInfo(Optional.of(calExeSetInfor.toDomain()));
-			} else if (calExeSetInfor.krcdtCalExeSetInforPK.executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT.value) {
+			} else if (calExeSetInfor.executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT.value) {
 				domain.setReflectApprovalSetInfo(Optional.of(calExeSetInfor.toDomain()));
 			} else {
 				domain.setMonlyAggregationSetInfo(Optional.of(calExeSetInfor.toDomain()));

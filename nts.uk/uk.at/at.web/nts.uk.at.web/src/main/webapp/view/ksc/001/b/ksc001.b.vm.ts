@@ -240,14 +240,14 @@ module nts.uk.at.view.ksc001.b {
             /**
              * function next wizard by on click button 
              */
-            private next(): void {
-                $('#wizard').ntsWizard("next");
+            private next(): JQueryPromise<void> {
+                return $('#wizard').ntsWizard("next");
             }
             /**
              * function previous wizard by on click button 
              */
-            private previous(): void {
-                $('#wizard').ntsWizard("prev");
+            private previous(): JQueryPromise<void> {
+               return $('#wizard').ntsWizard("prev");
             }
             /**
              * function convert string to Date
@@ -316,8 +316,9 @@ module nts.uk.at.view.ksc001.b {
                     var user: UserInfoDto = self.getUserLogin();
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data){
                         self.updatePersonalScheduleData(data);
-                        self.next();
-                        $('#inputSelectImplementAtr').focus();
+                        self.next().done(function() {
+                            $('#inputSelectImplementAtr').focus();
+                        });
                     }).fail(function(error){
                         console.log(error);   
                     });
@@ -400,17 +401,20 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageC(): void {
                 var self = this;
-                self.next();
-                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
-                    //build string for Screen E
-                    self.buildString();
-                    //goto screen E
-                    self.next();
-                    $('#buttonFinishPageE').focus();
-                }
-                else {
-                    $('#inputCheckReCreateBox').focus();
-                }
+                self.next().done(function() {
+                    if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
+                        //build string for Screen E
+                        self.buildString();
+                        //goto screen E
+                        self.next().done(function() {
+                            $('#buttonFinishPageE').focus();
+                        });
+                    }
+                    else {
+                        $('#inputCreateMethodAtr').focus();
+                    }
+                });
+                
             }
             /**
              * function previous page by selection employee goto page (D)
@@ -475,8 +479,9 @@ module nts.uk.at.view.ksc001.b {
             private openDialogPageE(): void {
                 var self = this;
                 self.buildString();
-                self.next();
-                $('#buttonFinishPageE').focus();
+                self.next().done(function() {
+                    $('#buttonFinishPageE').focus();
+                });
             }
             /**
              * function previous page by selection employee goto page (E)

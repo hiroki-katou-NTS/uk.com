@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.FormulaAmount;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +24,19 @@ public class FormulaAmountDto {
 	private FormulaMoneyDto moneyFunc;
 	
 	private FormulaTimeUnitDto timeUnit;
+
+	public static FormulaAmountDto fromDomain(FormulaAmount domain) {
+		FormulaMoneyDto money = FormulaMoneyDto.fromDomain(domain.getMoneyFunc());
+		FormulaTimeUnitDto time = FormulaTimeUnitDto.fromDomain(domain.getTimeUnit());
+		
+		return new FormulaAmountDto(
+				domain.getCompanyId(),
+				domain.getVerticalCalCd(),
+				domain.getVerticalCalItemId(),
+				domain.getCalMethodAtr().value,
+				money,
+				time
+			);
+	}
 	
 }

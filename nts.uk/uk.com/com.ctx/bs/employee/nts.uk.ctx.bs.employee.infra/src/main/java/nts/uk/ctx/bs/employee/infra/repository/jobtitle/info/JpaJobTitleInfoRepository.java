@@ -289,7 +289,10 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		cq.where(listPredicate.toArray(new Predicate[] {}));
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
-
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} 
+		
 		return Optional.of(new JobTitleInfo(new JpaJobTitleInfoGetMemento(result.get(0))));
 	}
 }

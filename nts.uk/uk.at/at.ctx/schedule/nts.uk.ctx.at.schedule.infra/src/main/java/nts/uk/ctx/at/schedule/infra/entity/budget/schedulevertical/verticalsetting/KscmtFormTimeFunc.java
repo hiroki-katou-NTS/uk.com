@@ -41,14 +41,12 @@ public class KscmtFormTimeFunc extends UkJpaEntity implements Serializable {
 	@Column(name = "OPERATOR_ATR")
 	public int operatorAtr;
 	
-	/* 順番 */
-	@Column(name = "DISPORDER")
-	public int dispOrder;
+	
 	
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_FORM_TIME.CID", insertable = false, updatable = false),
-		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "KSCMT_FORM_TIME.VERTICAL_CAL_CD", insertable = false, updatable = false),
-		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "KSCMT_FORM_TIME.VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false)
 	})
 	public KscmtFormTime kscmtFormTime;
 	

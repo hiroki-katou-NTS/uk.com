@@ -28,8 +28,7 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 	/**
 	 * Instantiates a new jpa personal work category get memento.
 	 *
-	 * @param entitys
-	 *            the entitys
+	 * @param entitys the entitys
 	 */
 	public JpaPersonalWorkCategoryGetMemento(List<KshmtSingleDaySche> entitys) {
 		this.entitys = entitys;

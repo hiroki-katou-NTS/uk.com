@@ -13,5 +13,7 @@ public interface SelectionItemOrderRepository {
 
 	void remove(String selectionItemOrder);
 	
-	List<SelectionItemOrder> getAllOrderItemSelection(String selectedId);
+	List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId);
+	
+	List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId);
 }

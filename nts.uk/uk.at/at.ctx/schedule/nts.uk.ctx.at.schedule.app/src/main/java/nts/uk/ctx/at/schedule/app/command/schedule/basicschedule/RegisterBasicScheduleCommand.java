@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.schedule.basicschedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,67 +26,67 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
  *
  */
 @Data
-public class RegisterBasicScheduleCommand{
+public class RegisterBasicScheduleCommand {
 	private String employeeId;
 	private GeneralDate date;
 	private String workTypeCode;
 	private String workTimeCode;
 	private int confirmedAtr;
 	private int workDayAtr;
-	
+
 	/**
 	 * To domain.
 	 *
 	 * @return the basic schedule
 	 */
-	public BasicSchedule toDomain(){
+	public BasicSchedule toDomain() {
 		return new BasicSchedule(new BasicScheduleGetMemento() {
-			
+
 			@Override
 			public String getWorkTypeCode() {
 				return workTypeCode;
 			}
-			
+
 			@Override
 			public String getWorkTimeCode() {
 				return workTimeCode;
 			}
-			
+
 			@Override
 			public List<WorkScheduleTimeZone> getWorkScheduleTimeZones() {
-				return null;
+				return new ArrayList<>();
 			}
-			
+
 			@Override
 			public Optional<WorkScheduleTime> getWorkScheduleTime() {
-				return null;
+				return Optional.empty();
 			}
-			
+
 			@Override
 			public List<WorkSchedulePersonFee> getWorkSchedulePersonFees() {
-				return null;
+				return new ArrayList<>();
 			}
-			
+
 			@Override
 			public List<WorkScheduleBreak> getWorkScheduleBreaks() {
-				return null;
+				return new ArrayList<>();
 			}
-			
+
 			@Override
 			public WorkdayDivision getWorkDayAtr() {
 				return WorkdayDivision.valuesOf(workDayAtr);
 			}
-			
+
 			@Override
 			public String getEmployeeId() {
 				return employeeId;
 			}
-			
+
 			@Override
 			public GeneralDate getDate() {
 				return date;
 			}
-			
+
 			@Override
 			public ConfirmedAtr getConfirmedAtr() {
 				return ConfirmedAtr.valueOf(confirmedAtr);
@@ -93,7 +94,7 @@ public class RegisterBasicScheduleCommand{
 
 			@Override
 			public List<ChildCareSchedule> getChildCareSchedules() {
-				return null;
+				return new ArrayList<>();
 			}
 		});
 	}

@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.WorkClock;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonContent;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AppOverTime extends AggregateRoot{
 	
 	/**
@@ -39,7 +42,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * 残業申請時間設定
 	 */
-	private OverTimeInput overTimeInput;
+	private List<OverTimeInput> overTimeInput;
 	/**
 	 * 勤務種類コード
 	 */
@@ -76,6 +79,59 @@ public class AppOverTime extends AggregateRoot{
 	 * 就業時間外深夜時間
 	 */
 	private int overTimeShiftNight;
+	
+	public AppOverTime(String companyID,
+						String appID,
+						int overTimeAtr,
+						String workTypeCode, 
+						String siftCode, 
+						int workClockFrom1,
+						int workClockTo1,
+						int workClockFrom2,
+						int workClockTo2,
+						String divergenceReasonID,
+						int flexExessTime,
+						int overTimeShiftNight){
+		this.companyID = companyID;
+		this.appID = appID;
+		this.overTimeAtr = EnumAdaptor.valueOf(overTimeAtr, OverTimeAtr.class);
+		this.workTypeCode = new WorkTypeCode(workTypeCode);
+		this.siftCode = new SiftCode(siftCode);
+		this.workClockFrom1 = workClockFrom1;
+		this.workClockTo1 = workClockTo1;
+		this.workClockFrom2 = workClockFrom2;
+		this.workClockTo2 = workClockTo2;
+		this.divergenceReasonID = divergenceReasonID;
+		this.flexExessTime = flexExessTime;
+		this.overTimeShiftNight = overTimeShiftNight;
+	}
+	
+	public static AppOverTime createSimpleFromJavaType(String companyID,
+														String appID, 
+														int overTimeAtr,
+														String workTypeCode, 
+														String siftCode, 
+														int workClockFrom1,
+														int workClockTo1,
+														int workClockFrom2,
+														int workClockTo2,
+														String divergenceReasonID,
+														int flexExessTime,
+														int overTimeShiftNight ){
+		return new AppOverTime(companyID,
+								appID,
+								overTimeAtr,
+								workTypeCode,
+								siftCode,
+								workClockFrom1, 
+								workClockTo1,
+								workClockFrom2,
+								workClockTo2, 
+								divergenceReasonID, 
+								flexExessTime,
+								overTimeShiftNight);
+		
+	}
 	
 	
 }

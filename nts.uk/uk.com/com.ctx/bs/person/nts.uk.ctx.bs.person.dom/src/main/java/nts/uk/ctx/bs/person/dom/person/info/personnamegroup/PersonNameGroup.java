@@ -2,12 +2,14 @@ package nts.uk.ctx.bs.person.dom.person.info.personnamegroup;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class PersonNameGroup {
 
 	/** ビジネスネーム -BusinessName */
@@ -43,6 +45,11 @@ public class PersonNameGroup {
 		this.personName = personName;
 	}
 	
+	public PersonNameGroup(PersonName personName, BusinessName businessName) {
+		super();
+		this.personName = personName;
+		this.businessName = businessName;
+	}
 	
 	
 	

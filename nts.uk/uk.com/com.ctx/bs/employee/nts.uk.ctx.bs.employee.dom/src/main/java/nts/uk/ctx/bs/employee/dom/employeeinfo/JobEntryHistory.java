@@ -4,6 +4,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.time.GeneralDate;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class JobEntryHistory extends ValueObject {
 
 	/** The CompanyId */

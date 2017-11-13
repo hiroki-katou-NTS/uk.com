@@ -38,8 +38,49 @@ public class VerticalCalItemDto {
  	
  	/** 順番 */
  	private int dispOrder;
+ 	
+ 	// B
+  	private FormBuiltDto formBuilt;
+  	
+  	// C
+  	private FormTimeDto formTime;
+  	
+  	// D
+  	private FormPeopleDto formPeople;
+  	
+  	// E
+  	private FormulaAmountDto formulaAmount;
+  	
+  	// F
+  	private FormulaNumericalDto numerical;
 
 	public static VerticalCalItemDto fromDomain(VerticalCalItem domain) {
+		FormBuiltDto formBuiltDto = null;
+		FormTimeDto formTimeDto = null;
+		FormPeopleDto formPeopleDto = null;
+		FormulaAmountDto formulaAmountDto = null;
+		FormulaNumericalDto numericalDto = null;
+		
+		if(domain.getFormBuilt() != null) {
+			formBuiltDto =  FormBuiltDto.fromDomain(domain.getFormBuilt());
+		}
+		
+		if(domain.getFormTime() != null) {
+			formTimeDto =  FormTimeDto.fromDomain(domain.getFormTime());
+		}
+		
+		if(domain.getFormPeople() != null) {
+			formPeopleDto =  FormPeopleDto.fromDomain(domain.getFormPeople());
+		}
+		
+		if(domain.getFormulaAmount() != null) {
+			formulaAmountDto =  FormulaAmountDto.fromDomain(domain.getFormulaAmount());
+		}
+		
+		if(domain.getNumerical() != null) {
+			numericalDto =  FormulaNumericalDto.fromDomain(domain.getNumerical());
+		}
+		
 		return new VerticalCalItemDto(
 				domain.getCompanyId(),
 				domain.getVerticalCalCd(),
@@ -50,7 +91,12 @@ public class VerticalCalItemDto {
 				domain.getCumulativeAtr().value,
 				domain.getAttributes().value,
 				domain.getRounding().value,
-				domain.getDispOrder()
+				domain.getDispOrder(),
+				formBuiltDto,
+				formTimeDto,
+				formPeopleDto,
+				formulaAmountDto,
+				numericalDto
 			);
 	}
 }

@@ -67,20 +67,19 @@ module nts.uk.com.view.cmm013.f {
                 // Load sequence data list
                 nts.uk.ui.block.grayout();
                 _self.loadSequenceList()
-                    .done((data: SequenceMaster[]) => {  
-                        nts.uk.ui.block.clear();   
-                        if (data && data.length > 0) {
-                            // Update mode
-                            _self.createMode(false);
-                            _self.items(data);
-                            _self.currentCode(data[0].sequenceCode);
-                        } else {
-                            // Create mode
-                            _self.createMode(true);                           
-                        }                                                 
-                        dfd.resolve();
+                    .done((data: SequenceMaster[]) => {   
+                        // Update mode
+                        _self.createMode(false);
+                        _self.items(data);
+                        _self.currentCode(data[0].sequenceCode);                                            
                     })
                     .fail((res: any) => {
+                        // Create mode
+                        _self.createMode(true);      
+                        _self.items([]);      
+                    })
+                    .always(() => {
+                        dfd.resolve();
                         nts.uk.ui.block.clear();
                     });
                 
@@ -151,7 +150,6 @@ module nts.uk.com.view.cmm013.f {
                         nts.uk.ui.block.grayout();
                         service.removeSequenceMaster(new SequenceMasterRemoveCommand(_self.sequenceCode()))
                             .done((data: any) => {
-                                nts.uk.ui.block.clear();
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                     _self.loadSequenceList()
                                         .done((dataList: SequenceMaster[]) => {                        
@@ -177,8 +175,10 @@ module nts.uk.com.view.cmm013.f {
                                 });                                     
                             })
                             .fail((res: any) => {
-                                nts.uk.ui.block.clear();
-                                _self.showBundledErrorMessage(res);
+                                _self.showMessageError(res);
+                            })
+                            .always(() => {
+                                nts.uk.ui.block.clear();    
                             }); 
                     }).ifNo(() => { 
                         // Nothing happen
@@ -201,7 +201,7 @@ module nts.uk.com.view.cmm013.f {
                         dfd.resolve(data);
                     })
                     .fail((res: any) => {
-                        dfd.fail(res);
+                        dfd.reject(res);
                     });
                 return dfd.promise();
             }
@@ -248,7 +248,7 @@ module nts.uk.com.view.cmm013.f {
                             }
                         })
                         .fail((res: any) => {
-                            _self.showBundledErrorMessage(res);
+                            _self.showMessageError(res);
                         });                                   
                 } else {
                     // No Sequence has been choosed, switch to create mode
@@ -262,8 +262,8 @@ module nts.uk.com.view.cmm013.f {
             private validate(): any {
                 let _self = this;
 
-                $('#sequence-code').ntsError('clear');
-                $('#sequence-name').ntsError('clear');
+                // Clear error
+                nts.uk.ui.errors.clearAll();    
 
                 $('#sequence-code').ntsEditor('validate');
                 $('#sequence-name').ntsEditor('validate');
@@ -280,7 +280,6 @@ module nts.uk.com.view.cmm013.f {
                 nts.uk.ui.block.grayout();
                 service.saveSequenceMaster(command)
                     .done((data: any) => {   
-                        nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             _self.loadSequenceList()
                                 .done((dataList: SequenceMaster[]) => {                        
@@ -302,16 +301,28 @@ module nts.uk.com.view.cmm013.f {
                         });                              
                     })
                     .fail((res: any) => {
-                        nts.uk.ui.block.clear();
-                        _self.showBundledErrorMessage(res);
+                        _self.showMessageError(res);
+                    })
+                    .always(() => {
+                        nts.uk.ui.block.clear();    
                     });       
             }           
                        
             /**
              * Show message error
              */
-            public showBundledErrorMessage(res: any): void {
-                nts.uk.ui.dialog.bundledErrors(res); 
+            public showMessageError(res: any): void {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.messageId)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
         }
     }    

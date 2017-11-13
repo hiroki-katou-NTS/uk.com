@@ -17,7 +17,7 @@ public interface WorkfixedRepository {
  	 * @param workPlaceId the work place id
  	 * @param closureId the closure id
  	 */
- 	void remove(String workPlaceId, Integer closureId); 
+ 	void remove(String workPlaceId, Integer closureId, String cid); 
 	 
 	 /**
  	 * Adds the.
@@ -33,7 +33,7 @@ public interface WorkfixedRepository {
  	 * @param closureId the closure id
  	 * @return the optional
  	 */
- 	Optional<WorkFixed> findByWorkPlaceIdAndClosureId(String workPlaceId, Integer closureId);
+ 	Optional<WorkFixed> findByWorkPlaceIdAndClosureId(String workPlaceId, Integer closureId, String cid);
 	 
 	 /**
  	 * Update.
