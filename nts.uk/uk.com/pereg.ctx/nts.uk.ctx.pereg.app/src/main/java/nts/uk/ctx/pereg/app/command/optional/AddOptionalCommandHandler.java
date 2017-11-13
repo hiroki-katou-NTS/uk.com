@@ -1,11 +1,14 @@
-package nts.uk.shr.sample.pereg.command.userdef;
+package nts.uk.ctx.pereg.app.command.optional;
+
+import javax.ejb.Stateless;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommand;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommandHandler;
 
-public class SampleUserDefAddCommandHandler extends CommandHandler<PeregUserDefAddCommand>
+@Stateless
+public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCommand>
 		implements PeregUserDefAddCommandHandler {
 
 	@Override
