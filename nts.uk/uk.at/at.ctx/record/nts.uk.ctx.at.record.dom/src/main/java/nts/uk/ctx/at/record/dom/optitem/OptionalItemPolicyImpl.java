@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetting;
 
 /**
@@ -22,10 +20,6 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetting;
  */
 @Stateless
 public class OptionalItemPolicyImpl implements OptionalItemPolicy {
-
-	/** The opt item repo. */
-	@Inject
-	private FormulaRepository formulaRepo;
 
 	/** The Constant MAXIMUM_FORMULA_COUNT. */
 	private static final int MAXIMUM_FORMULA_COUNT = 50;
@@ -46,7 +40,7 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 			throw new BusinessException("Msg_508");
 		}
 		formulas.forEach(formula -> {
-			if (!this.isFormulaSettingValid(formula)) {
+			if (!this.isFormulaSettingValid(formula, formulas)) {
 				throw new BusinessException("Msg_114");
 			}
 		});
@@ -72,19 +66,19 @@ public class OptionalItemPolicyImpl implements OptionalItemPolicy {
 	 * @param formula the formula
 	 * @return true, if is formula setting valid
 	 */
-	private boolean isFormulaSettingValid(Formula formula) {
+	private boolean isFormulaSettingValid(Formula formula, List<Formula> formulas) {
 		FormulaSetting formulaSetting = formula.getCalcFormulaSetting().getFormulaSetting();
+
 		if (formula.getCalcAtr().equals(CalculationAtr.FORMULA_SETTING) && formulaSetting.isBothItemSelect()
 				&& formulaSetting.isOperatorAddOrSub()) {
 
-			String comId = formula.getCompanyId().v();
-			String optItemNo = formula.getOptionalItemNo().v();
-
 			// get formula by id
-			Formula leftItem = this.formulaRepo.findById(comId, optItemNo,
-					formulaSetting.getLeftItem().getFormulaItemId().v());
-			Formula rightItem = this.formulaRepo.findById(comId, optItemNo,
-					formulaSetting.getRightItem().getFormulaItemId().v());
+			Formula leftItem = formulas.stream()
+					.filter(item -> item.getFormulaId().equals(formulaSetting.getLeftItem().getFormulaItemId()))
+					.findFirst().get();
+			Formula rightItem = formulas.stream()
+					.filter(item -> item.getFormulaId().equals(formulaSetting.getRightItem().getFormulaItemId()))
+					.findFirst().get();
 
 			// compare left item's attribute vs right item's attribute
 			return leftItem.getFormulaAtr().equals(rightItem.getFormulaAtr());
