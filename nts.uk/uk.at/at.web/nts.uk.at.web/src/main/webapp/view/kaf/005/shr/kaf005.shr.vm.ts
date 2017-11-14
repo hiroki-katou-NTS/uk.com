@@ -214,6 +214,20 @@ module nts.uk.at.view.kaf005.share {
                 this.endTime = ko.observable(endTime);
             }
         }
+        export class overtimeWork {
+            yearMonth: KnockoutObservable<string>;
+            limitTime: KnockoutObservable<string>;
+            actualTime: KnockoutObservable<string>;
+            appTime: KnockoutObservable<string>;
+            totalTime: KnockoutObservable<string>;
+            constructor(yearMonth: string, limitTime: string, actualTime: string, appTime: string,  totalTime: string) {
+                this.yearMonth = ko.observable(yearMonth);
+                this.limitTime = ko.observable(limitTime);
+                this.actualTime = ko.observable(actualTime);
+                this.appTime = ko.observable(appTime);
+                this.totalTime = ko.observable(totalTime);
+            }
+        }
         export class OvertimeHour {
             overtimeID: KnockoutObservable<string>;
             overtimeName: KnockoutObservable<string>;
