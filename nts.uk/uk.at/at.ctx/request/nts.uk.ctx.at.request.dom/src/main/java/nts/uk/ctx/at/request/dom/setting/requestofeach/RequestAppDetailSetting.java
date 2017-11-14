@@ -78,8 +78,14 @@ public class RequestAppDetailSetting extends DomainObject {
 	 * 時間入力利用区分
 	 */
 	public UseAtr timeInputUseAtr;
-	
+	/**
+	 * 指示が必須
+	 */
 	public SettingFlg requiredInstructionFlg; 
+	/**
+	 * 指示利用設定
+	 */
+	public InstructionUseSetting instructionUseSetting;
 	
 	public static RequestAppDetailSetting createSimpleFromJavaType(String companyId,
 			int appType,
@@ -96,7 +102,10 @@ public class RequestAppDetailSetting extends DomainObject {
 			int goOutTimeBeginDisFlg,
 			int timeCalUseAtr,
 			int timeInputUseAtr,
-			int requiredInstructionFlg) {
+			int requiredInstructionFlg,
+			int instructionAtr,
+			String instructionRemarks,
+			int instructionUseDivision) {
 				return new RequestAppDetailSetting(companyId, 
 						EnumAdaptor.valueOf(appType, ApplicationType.class),
 						new Memo(memo),
@@ -112,7 +121,10 @@ public class RequestAppDetailSetting extends DomainObject {
 						EnumAdaptor.valueOf(goOutTimeBeginDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(timeCalUseAtr, UseAtr.class),
 						EnumAdaptor.valueOf(timeInputUseAtr, UseAtr.class),
-						EnumAdaptor.valueOf(requiredInstructionFlg, SettingFlg.class));
+						EnumAdaptor.valueOf(requiredInstructionFlg, SettingFlg.class),
+						new InstructionUseSetting(EnumAdaptor.valueOf(instructionAtr, UseAtr.class),
+								new Memo(instructionRemarks), 
+								EnumAdaptor.valueOf(instructionUseDivision, UseAtr.class)));
 		
 	}
 	
