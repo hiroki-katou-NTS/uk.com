@@ -14,16 +14,16 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySchePK;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeekPK;
 
 /**
  * The Class JpaSingleDayScheduleGetMemento.
  */
-public class JpaSingleDayScheduleGetMemento implements SingleDayScheduleGetMemento{
+public class JpaSingleDayScheduleDayOfGetMemento implements SingleDayScheduleGetMemento{
 	
 	/** The entity. */
-	private KshmtSingleDaySche entity;
+	private KshmtPerDayOfWeek entity;
 	
 	/** The Constant DEFAULT_WORK_TIME_CODE. */
 	public static final String DEFAULT_WORK_TIME_CODE = "000"; 
@@ -35,9 +35,9 @@ public class JpaSingleDayScheduleGetMemento implements SingleDayScheduleGetMemen
 	 *
 	 * @param entity the entity
 	 */
-	public JpaSingleDayScheduleGetMemento(KshmtSingleDaySche entity) {
-		if(entity.getKshmtSingleDaySchePK() == null){
-			entity.setKshmtSingleDaySchePK(new KshmtSingleDaySchePK());
+	public JpaSingleDayScheduleDayOfGetMemento(KshmtPerDayOfWeek entity) {
+		if (entity.getKshmtPerDayOfWeekPK() == null) {
+			entity.setKshmtPerDayOfWeekPK(new KshmtPerDayOfWeekPK());
 		}
 		this.entity = entity;
 	}

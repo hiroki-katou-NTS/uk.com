@@ -12,8 +12,9 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionGetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -24,19 +25,24 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	/** The entity. */
 	private KshmtPerLaborCond entityCondition;
 	
-	/** The entity single days. */
-	private List<KshmtSingleDaySche> entitySingleDays ;
+	/** The entity day of weeks. */
+	private List<KshmtPerDayOfWeek> entityDayOfWeeks ;
+	
+	/** The entity work categorys. */
+	private List<KshmtPerWorkCategory> entityWorkCategorys ;
 
 	/**
 	 * Instantiates a new jpa personal labor condition get memento.
 	 *
 	 * @param entityCondition the entity condition
-	 * @param entitySingleDays the entity single days
+	 * @param entityDayOfWeeks the entity day of weeks
 	 */
 	public JpaPersonalLaborConditionGetMemento(KshmtPerLaborCond entityCondition,
-			List<KshmtSingleDaySche> entitySingleDays) {
+			List<KshmtPerDayOfWeek> entityDayOfWeeks,
+			List<KshmtPerWorkCategory> entityWorkCategorys) {
 		this.entityCondition = entityCondition;
-		this.entitySingleDays = entitySingleDays;
+		this.entityDayOfWeeks = entityDayOfWeeks;
+		this.entityWorkCategorys = entityWorkCategorys;
 	}
 
 	/*
@@ -72,7 +78,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
 		return new PersonalWorkCategory(
-				new JpaPersonalWorkCategoryGetMemento(this.entitySingleDays));
+				new JpaPersonalWorkCategoryGetMemento(this.entityWorkCategorys));
 	}
 
 	/*
@@ -83,7 +89,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public PersonalDayOfWeek getWorkDayOfWeek() {
-		return new PersonalDayOfWeek(new JpaPersonalDayOfWeekGetMemento(this.entitySingleDays));
+		return new PersonalDayOfWeek(new JpaPersonalDayOfWeekGetMemento(this.entityDayOfWeeks));
 	}
 
 	/*
