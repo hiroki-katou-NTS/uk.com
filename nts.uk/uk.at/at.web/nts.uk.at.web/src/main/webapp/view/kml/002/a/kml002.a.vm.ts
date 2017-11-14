@@ -391,12 +391,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var verticalCalItems = new Array<VerticalCalItemDto>();
             
             for(var i = 0; i < self.calculatorItems().length; i++) {
-                var dataB = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
-                var dataC = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
-                var dataD = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
-                var dataE = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
-                var dataF = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
-                var dataG = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                var dataB = self.dataB == null ? self.calculatorItems()[i].formBuilt : self.dataB;
+                var dataC = self.dataC == null ? self.calculatorItems()[i].formTime : self.dataC;
+                var dataD = self.dataD == null ? self.calculatorItems()[i].formPeople : self.dataD;
                 
                 var item = {
                     verticalCalCd: code,
