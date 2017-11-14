@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WorkFixedSaveCommandHandler.
  */
 @Stateless
-public class SaveWorkFixedCommandHandler extends CommandHandler<WorkFixedCommand> {
+public class SaveWorkFixedCommandHandler extends CommandHandler<SaveWorkFixedCommand> {
 
 	/** The repository. */
 	@Inject
@@ -35,35 +35,35 @@ public class SaveWorkFixedCommandHandler extends CommandHandler<WorkFixedCommand
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<WorkFixedCommand> context) {
+	protected void handle(CommandHandlerContext<SaveWorkFixedCommand> context) {
 
-		// Get PersonId
+		// Get Person Id
 		String personId = AppContexts.user().personId();
 
+		// Get Company Id
+		String companyId = AppContexts.user().companyId();
+		
 		// Get command
-		WorkFixedCommand command = context.getCommand();
+		SaveWorkFixedCommand command = context.getCommand();
 
 		// Set PersonId and FixedDate to WorkFixed command
-		WorkFixed workFixed = command.toDomain(personId, GeneralDate.today());
+		WorkFixed workFixed = new WorkFixed();
+		if (Integer.valueOf(ConfirmClsStatus.Pending.value).equals(command.getConfirmClsStatus())) {
+			// Remove FixedDate and PersonId if status = Pending (unchecked)
+			workFixed = command.toDomain(companyId, null, null);
+		} else {
+			workFixed = command.toDomain(companyId, personId, GeneralDate.today());
+		}		
 
 		// Find exist WorkFixed
 		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(),
-				command.getClosureId(), command.getCid());
-
-		// Save new WorkFixed
-		if (ConfirmClsStatus.Confirm.value == command.getConfirmClsStatus().intValue()) {
-			if (opWorkFixed.isPresent()) {
-				this.repository.update(workFixed);
-				return;
-			}
-			this.repository.add(workFixed);
-		}
-		// Update WorkFixed
-		else {
-			if (!opWorkFixed.isPresent()) {
-				return;
-			}
+				command.getClosureId(), companyId);
+		
+		// Save/Update new WorkFixed
+		if (opWorkFixed.isPresent()) {
 			this.repository.update(workFixed);
+			return;
 		}
+		this.repository.add(workFixed);
 	}
 }

@@ -46,6 +46,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND c.bsymtEmployeePk.sId IN :employeeIds ";
+	
+	public final String SELECT_BY_LIST_EMP_ID_2 = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId IN :employeeIds ";
+	
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 
@@ -101,6 +104,8 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
+	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
+	
 	/**
 	 * convert entity BsymtEmployee to domain Employee
 	 * 
@@ -395,5 +400,31 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/* for requestList No.126
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository#GetByListEmployeeId(java.util.List)
+	 */
+	@Override
+	public List<Employee> getByListEmployeeId(List<String> employeeIds) {
+		
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID_2, BsymtEmployee.class)
+				.setParameter("employeeIds", employeeIds).getList();
+		return toListEmployee(listEmpEntity);
+	}
+	
 
+	
+
+
+	@Override
+	public Optional<Employee> getInfoById(String employeeId) {
+		return queryProxy().query(SELECT_EMPLOYEE_BY_EMP_ID, BsymtEmployee.class)
+				.setParameter("employeeId", employeeId)
+				.getSingle()
+				.map(m -> toDomainEmployee(m));
+	}
 }
