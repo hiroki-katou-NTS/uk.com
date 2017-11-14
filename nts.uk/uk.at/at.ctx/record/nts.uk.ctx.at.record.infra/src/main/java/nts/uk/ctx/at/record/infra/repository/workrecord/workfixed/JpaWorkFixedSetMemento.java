@@ -36,8 +36,6 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	@Override
 	public void setClosureId(Integer closureId) {
 		this.typedValue.getKrcstWorkFixedPK().setClosureId(closureId);
-		
-
 	}
 
 	/* (non-Javadoc)
@@ -45,6 +43,9 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	 */
 	@Override
 	public void setConfirmPId(String confirmPid) {
+		if (confirmPid == null) {
+			return;
+		}
 		this.typedValue.setConfirmPid(confirmPid);
 	}
 
@@ -69,6 +70,9 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	 */
 	@Override
 	public void setFixedDate(GeneralDate fixedDate) {
+		if (fixedDate == null) {
+			return;
+		}
 		this.typedValue.setFixedDate(fixedDate.date());
 	}
 

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.deleteempmanagement.DeleteEmpManagement;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 /**
@@ -143,4 +142,17 @@ public interface EmployeeRepository {
 	void addNewEmployee(Employee newEmployee);
 	
 	//sonnlb code end
+	
+
+	/**
+	 * Gets the list Employee by list employeeIds.
+	 *
+	 * @param employeeIds
+	 *            the employee ids
+	 * @return the list person by list employee
+	 */
+	List<Employee> getByListEmployeeId(List<String> employeeIds);
+
+	Optional<Employee> getInfoById(String employeeId);
+
 }

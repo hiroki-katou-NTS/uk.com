@@ -84,7 +84,7 @@ public class ComAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalOvertimeSetting getNormalOTTime() {
-			return this.command.getNormalOTTime().toDomain(companyId);
+			return this.command.getNormalOTTime().toDomain();
 		}
 
 		/*
@@ -95,7 +95,7 @@ public class ComAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalFlexOvertimeSetting getFlexOTTime() {
-			return this.command.getFlexOTTime().toDomain(companyId);
+			return this.command.getFlexOTTime().toDomain();
 		}
 
 		/*
@@ -106,7 +106,7 @@ public class ComAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalRestTimeSetting getRestTime() {
-			return this.command.getRestTime().toDomain(companyId);
+			return this.command.getRestTime().toDomain();
 		}
 	}
 }
