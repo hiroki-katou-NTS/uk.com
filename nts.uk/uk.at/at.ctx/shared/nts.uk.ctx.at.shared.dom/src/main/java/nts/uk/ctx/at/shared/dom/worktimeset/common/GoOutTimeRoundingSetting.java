@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
  * @return the rounding setting
  */
 @Getter
-public class GoOutTimeRoundingSetting {
+public class GoOutTimeRoundingSetting extends DomainObject {
 
 	/** The rounding method. */
 	//丸め方法

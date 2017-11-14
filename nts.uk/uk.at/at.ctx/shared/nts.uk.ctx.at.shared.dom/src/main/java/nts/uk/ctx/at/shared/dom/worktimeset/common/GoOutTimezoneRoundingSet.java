@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class GoOutTimezoneRoundingSet.
@@ -23,7 +24,7 @@ import lombok.Getter;
  * @return the OT timezone
  */
 @Getter
-public class GoOutTimezoneRoundingSet {
+public class GoOutTimezoneRoundingSet extends DomainObject {
 	
 	/** The pub hol work timezone. */
 	//休日出勤時間帯

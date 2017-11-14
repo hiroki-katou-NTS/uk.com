@@ -5,13 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class GoOutTypeRoundingSet.
  */
 //外出種類別丸め設定
 @Getter
-public class GoOutTypeRoundingSet {
+public class GoOutTypeRoundingSet extends DomainObject {
 
 	/** The offical use compen go out. */
 	//公用、有償外出
