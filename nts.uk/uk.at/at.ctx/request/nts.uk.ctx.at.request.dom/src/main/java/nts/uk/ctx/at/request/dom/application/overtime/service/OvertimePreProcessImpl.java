@@ -104,21 +104,22 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	@Inject
 	private BreaktimeFrameRepository breaktimeFrameRep;
 	
+	
 	@Override
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput,String appDate,String employeeID) {
 		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
 		if(appCommonSettingOutput != null){
-			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getUserAtr().value;
+			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0).getInstructionUseSetting().getInstructionUseDivision().value;
 			if(useAtr == UseAtr.USE.value){
 				if(appDate != null){
 					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
 					OverTimeInstruct overtimeInstruct = overtimeInstructRepository.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
 					if(overtimeInstruct != null){
 						overtimeInstructInformation.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() 
-								+" "+ overtimeInstruct.getStartClock()
-								+"~"+ overtimeInstruct.getEndClock() 
-								+" "+ overtimeInstruct.getTargetPerson()
-								+" ("+ overtimeInstruct.getInstructor() + ")");
+								+" "+ convert(overtimeInstruct.getStartClock().v())
+								+"~"+ convert(overtimeInstruct.getEndClock().v()) 
+								+" "+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson())
+								+" ("+employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
 					}
 				}
 			}else{
@@ -317,5 +318,24 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		return result;
 	}
 
+	@Override
+	public void getResultContentActual(int prePostAtr) {
+		// TODO Auto-generated method stub
+		if(PrePostAtr.POSTERIOR.value == prePostAtr){
+			
+		}
+	}
+	private String convert(int minute){
+		String hourminute ="";
+		if(minute == -1){
+			return null;
+		}else if (minute == 0) {
+			return hourminute = "00:00";
+		}else{
+			int hour = minute/60;
+			int minutes = minute%60;
+			return hourminute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+		}
+	}
 	
 }

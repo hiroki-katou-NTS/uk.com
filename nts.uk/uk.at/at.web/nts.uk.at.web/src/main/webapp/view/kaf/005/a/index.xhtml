@@ -37,9 +37,18 @@
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->
+				<div style ="background-color: #f8efd4;">	
+					<table> 
+						<tr style ="background-color: #f8efd4;" data-bind = "enable: instructInforFlag">
+							<!-- KAF005_20 -->
+							<td class ="message-td">#{i18n.getText('KAF005_20')}</td>
+							<td data-bind="text:instructInfor" ></td>
+						</tr>
+					</table>
 					<div data-bind="with: kaf000_a" class="">
 						<ui:include src="../../000/a/index1.xhtml" />
 					</div>
+				</div>	
 					<!-- Main -->
 					<div class="mainScreen container cf" data-bind="">
 						<ui:include src="../cm/index.xhtml"></ui:include>

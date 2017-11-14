@@ -78,8 +78,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplicationID());
 		KrqdtAppStamp krqdtAppStamp = optional.get();
 		krqdtAppStamp.version = appStamp.getVersion();
-		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
-		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getAppReasonID();
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v();
 		switch(appStamp.getStampRequestMode()) {
 			case STAMP_GO_OUT_PERMIT: 
 				for(int i=0;i<appStamp.getAppStampGoOutPermits().size();i++){
