@@ -8,11 +8,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(10)
-public class ShortComName extends StringPrimitiveValue<ShortComName>{
+public class ABName extends StringPrimitiveValue<ABName>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	/** 会社略名 **/
-	public ShortComName(String rawValue){
+	public ABName(String rawValue){
 		super(rawValue);
 	}
 }

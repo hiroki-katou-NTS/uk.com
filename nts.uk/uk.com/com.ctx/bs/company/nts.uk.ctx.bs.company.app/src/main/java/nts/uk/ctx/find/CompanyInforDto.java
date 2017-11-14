@@ -36,7 +36,7 @@ public class CompanyInforDto {
 	private String repname;
 	
 	/** 代表者職位 */
-	private String repost;
+	private String repJob;
 	
 	/** 会社名カナ */
 	private String comNameKana;

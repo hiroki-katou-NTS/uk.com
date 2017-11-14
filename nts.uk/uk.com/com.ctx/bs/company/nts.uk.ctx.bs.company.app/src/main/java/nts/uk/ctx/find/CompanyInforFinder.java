@@ -51,11 +51,11 @@ public class CompanyInforFinder {
 							.stream()
 							.map(x -> {
 								return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
-															x.getCompanyId().v(), x.getStartMonth().value,
+															x.getCompanyId(), x.getStartMonth().value,
 															x.getIsAbolition().value, x.getRepname().v(),
-															x.getRepost().v(), x.getComNameKana().v(),
+															x.getRepjob().v(), x.getComNameKana().v(),
 															x.getShortComName().v(), contractCd, 
-															x.getTaxNum(), fromDomainAdd(x.getAddInfor()));
+															x.getTaxNo(), fromDomainAdd(x.getAddInfor()));
 							}).collect(Collectors.toList());
 	}
 }

@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import nts.uk.ctx.bs.company.dom.company.CompanyCode;
+import nts.uk.ctx.bs.company.dom.company.CCD;
 import nts.uk.ctx.bs.company.dom.company.CompanyGetMemento;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
-import nts.uk.ctx.bs.company.dom.company.CompanyName;
+import nts.uk.ctx.bs.company.dom.company.Name;
 import nts.uk.ctx.bs.company.dom.company.StartMonth;
 import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 
@@ -30,8 +30,8 @@ public class JpaCompanyGetMemento implements CompanyGetMemento {
 	 * @return the company code
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.company.getCcd());
+	public CCD getCompanyCode() {
+		return new CCD(this.company.getCcd());
 	}
 
 	/**
@@ -56,8 +56,8 @@ public class JpaCompanyGetMemento implements CompanyGetMemento {
 
 
 	@Override
-	public CompanyName getCompanyName() {
-		return new CompanyName(this.company.getCompanyName());
+	public Name getCompanyName() {
+		return new Name(this.company.getCompanyName());
 	}
 
 }

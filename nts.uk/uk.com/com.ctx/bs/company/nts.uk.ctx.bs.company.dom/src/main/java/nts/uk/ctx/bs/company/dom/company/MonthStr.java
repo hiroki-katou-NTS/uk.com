@@ -5,7 +5,7 @@ package nts.uk.ctx.bs.company.dom.company;
  * @author yennth
  *
  */
-public enum StartMonthAtr {
+public enum MonthStr {
 	one(1, "1月"),
 	two(2, "2月"),
 	three(3, "3月"),
@@ -20,7 +20,7 @@ public enum StartMonthAtr {
 	twelve(12, "12月");
 	public final int value;
 	public String month;
-	private StartMonthAtr (int value, String month){
+	private MonthStr (int value, String month){
 		this.value = value;
 		this.month = month;
 	}

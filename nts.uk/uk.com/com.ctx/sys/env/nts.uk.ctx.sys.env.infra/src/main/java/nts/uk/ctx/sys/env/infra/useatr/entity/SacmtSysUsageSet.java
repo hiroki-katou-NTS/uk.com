@@ -14,22 +14,22 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_SYS_USA_SET")
+@Table(name = "SEVST_SYSTEM_USE_SET")
 public class SacmtSysUsageSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public SacmtSysUsageSetPK sacmtSysUsageSetPK;
 	/** 人事システム */
-	@Column(name = "PERSONNEL_SYS")
-	public int personnelSystem;
+	@Column(name = "JINJI_ATR")
+	public int jinji;
 	
 	/** 就業システム */
-	@Column(name = "EMP_SYS")
-	public int employmentSys;
+	@Column(name = "SHUGYO_ATR")
+	public int shugyo;
 	
 	/** 給与システム */
-	@Column(name = "PAY_SYS")
-	public int payrollSys;
+	@Column(name = "KYUYO_ATR")
+	public int kyuyo;
 
 	@Override
 	protected Object getKey() {

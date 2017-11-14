@@ -46,7 +46,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	private final String SELECT_COM_CD = SELECT_COM + " AND c.bcmmtCompanyInforPK.companyCode = :companyCode AND c.bcmmtCompanyInforPK.contractCd = :contractCd";
 	// bcmmt add infor
 	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
-	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId";
+	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
 
 	/**
 	 * @param entity
@@ -113,7 +113,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		CompanyInforNew domain = CompanyInforNew.createFromJavaType(entity.bcmmtCompanyInforPK.companyCode,
 				entity.companyName, entity.bcmmtCompanyInforPK.companyId, entity.startMonth, entity.isAbolition,
 				entity.repname, entity.repost, entity.comNameKana, entity.shortComName,
-				entity.bcmmtCompanyInforPK.contractCd, entity.taxNum, add);
+				entity.bcmmtCompanyInforPK.contractCd, entity.taxNo, add);
 		return domain;
 	}
 
@@ -138,16 +138,16 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 */
 	private static BcmmtCompanyInfor toEntityCom(CompanyInforNew domain) {
 		val entity = new BcmmtCompanyInfor();
-		entity.bcmmtCompanyInforPK = new BcmmtCompanyInforPK(domain.getCompanyId().v(), domain.getCompanyCode().v(),
+		entity.bcmmtCompanyInforPK = new BcmmtCompanyInforPK(domain.getCompanyId(), domain.getCompanyCode().v(),
 				domain.getContractCd().v());
 		entity.repname = domain.getRepname().v();
-		entity.repost = domain.getRepost().v();
+		entity.repost = domain.getRepjob().v();
 		entity.companyName = domain.getCompanyName().v();
 		entity.comNameKana = domain.getComNameKana().v();
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNum = domain.getTaxNum();
+		entity.taxNo = domain.getTaxNo();
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}
@@ -205,7 +205,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		oldEntity.shortComName = entity.shortComName;
 		oldEntity.isAbolition = entity.isAbolition;
 		oldEntity.startMonth = entity.startMonth;
-		oldEntity.taxNum = entity.taxNum;
+		oldEntity.taxNo = entity.taxNo;
 	}
 
 	/**
@@ -230,8 +230,12 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * find Address author: Hoang Yen
 	 */
 	@Override
-	public List<AddInfor> findAdd() {
-		return this.queryProxy().query(SELECT_ADD_NO_WHERE, BcmmtAddInfor.class).getList(c -> toDomainAdd(c));
+	public List<AddInfor> findAdd(String companyId, String companyCode, String contractCd) {
+		return this.queryProxy().query(SELECT_ADD_NO_WHERE, BcmmtAddInfor.class)
+								.setParameter("companyId", companyId)
+								.setParameter("companyCode", companyCode)
+								.setParameter("contractCd", contractCd)
+				.getList(c -> toDomainAdd(c));
 	}
 
 	/**
@@ -258,4 +262,5 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		BcmmtAddInfor entity = toEntityAdd(addInfor);
 		this.commandProxy().insert(entity);
 	}
+
 }

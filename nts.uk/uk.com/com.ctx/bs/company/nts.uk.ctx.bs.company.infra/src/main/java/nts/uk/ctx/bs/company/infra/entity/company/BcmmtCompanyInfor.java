@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -16,14 +15,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "BCMMT_COM_INFOR")
+@Table(name = "BCMMT_COMPANY")
 public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public BcmmtCompanyInforPK bcmmtCompanyInforPK;
 	
 	/** 会社名 */
-	@Column(name = "COM_NAME")
+	@Column(name = "NAME")
 	public String companyName;
 	
 	/**  期首月 */
@@ -31,7 +30,7 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	public int startMonth;
 	
 	/** 廃止区分 */
-	@Column(name = "ABOLITION")
+	@Column(name = "ABOLITION_ATR")
 	public int isAbolition;
 	
 	/** 代表者名 */
@@ -39,20 +38,20 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	public String repname;
 	
 	/** 代表者職位 */
-	@Column(name ="REP_POS")
+	@Column(name ="REP_JOB")
 	public String repost;
 	
 	/** 会社名カナ */
-	@Column(name = "COM_NAME_KANA")
+	@Column(name = "KNNAME")
 	public String comNameKana;
 	
 	/** 会社名カナ */
-	@Column(name = "SHORT_COM_NAME")
+	@Column(name = "ABNAME")
 	public String shortComName;
 	
 	/** 法人マイナンバー */
-	@Column(name = "TAX_NUM")
-	public String taxNum;
+	@Column(name = "TAX_NO")
+	public String taxNo;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "bcmmtCompanyInfor", orphanRemoval = true)
 	public BcmmtAddInfor bcmmtAddInfor;

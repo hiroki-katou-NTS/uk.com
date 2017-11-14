@@ -2,17 +2,19 @@ package nts.uk.ctx.sys.env.infra.useatr.repository;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.env.dom.useatr.SysUsageRepository;
 import nts.uk.ctx.sys.env.dom.useatr.SysUsageSet;
 import nts.uk.ctx.sys.env.infra.useatr.entity.SacmtSysUsageSet;
 import nts.uk.ctx.sys.env.infra.useatr.entity.SacmtSysUsageSetPK;
-
+@Stateless
 public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepository{
 	// system usage setting
 	private final String SELECT_NO_WHERE = "SELECT c FROM SacmtSysUsageSet c ";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.sacmtSysUsageSetPK.companyId = :companyId";
+	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.sacmtSysUsageSetPK.companyId = :companyId AND c.sacmtSysUsageSetPK.companyCode = :companyCode AND c.sacmtSysUsageSetPK.contractCd = :contractCd";
 	
 	/**
 	 * convert from SacmtSysUsageSet entity to SysUsageSet domain
@@ -21,8 +23,11 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 * author: Hoang Yen
 	 */
 	private static SysUsageSet toDomainSys(SacmtSysUsageSet entity){
-		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyId, entity.personnelSystem,
-															entity.employmentSys, entity.payrollSys);
+		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyId, 
+															entity.sacmtSysUsageSetPK.companyCode,
+															entity.sacmtSysUsageSetPK.contractCd,
+															entity.jinji,
+															entity.shugyo, entity.kyuyo);
 		return domain;
 	}
 	
@@ -34,10 +39,11 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 */
 	private static SacmtSysUsageSet toEntitySys(SysUsageSet domain){
 		val entity = new SacmtSysUsageSet();
-		entity.sacmtSysUsageSetPK = new SacmtSysUsageSetPK(domain.getCompanyId());
-		entity.personnelSystem = domain.getPersonnelSystem().value;
-		entity.employmentSys = domain.getEmploymentSys().value;
-		entity.payrollSys = domain.getPayrollSys().value;
+		entity.sacmtSysUsageSetPK = new SacmtSysUsageSetPK(domain.getCompanyId(), domain.getCompanyCode().v(), 
+															domain.getContractCd().v());
+		entity.jinji = domain.getJinji().value;
+		entity.shugyo = domain.getShugyo().value;
+		entity.kyuyo = domain.getKyuyo().value;
 		return entity;
 	}
 
@@ -48,14 +54,12 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 	 * author: Hoang Yen
 	 */
 	@Override
-	public Optional<SysUsageSet> findUsageSet(String companyId) {
-		SacmtSysUsageSet entity = this.queryProxy().query(SELECT_ITEM, SacmtSysUsageSet.class)
-										.setParameter("companyId", companyId).getSingleOrNull();
-		SysUsageSet sys = new SysUsageSet();
-		if(entity!=null){
-			sys = toDomainSys(entity);
-		}
-		return Optional.of(sys);
+	public Optional<SysUsageSet> findUsageSet(String companyId, String companyCode, String contractCd) {
+		return this.queryProxy().query(SELECT_ITEM, SacmtSysUsageSet.class)
+										.setParameter("companyId", companyId)
+										.setParameter("companyCode", companyCode)
+										.setParameter("contractCd", contractCd)
+										.getSingle(c -> toDomainSys(c));
 	}
 
 	/**
@@ -68,9 +72,9 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 		SacmtSysUsageSet entity = toEntitySys(sysUsageSet);
 		SacmtSysUsageSet oldEntity = this.queryProxy()
 										.find(entity.sacmtSysUsageSetPK, SacmtSysUsageSet.class).get();
-		oldEntity.employmentSys = entity.employmentSys;
-		oldEntity.personnelSystem = entity.personnelSystem;
-		oldEntity.payrollSys = entity.payrollSys;
+		oldEntity.jinji = entity.jinji;
+		oldEntity.shugyo = entity.shugyo;
+		oldEntity.kyuyo = entity.kyuyo;
 	}
 
 	/**
@@ -83,4 +87,15 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 		SacmtSysUsageSet entity = toEntitySys(sysUsageSet);
 		this.commandProxy().insert(entity);
 	}
+
+	/**
+	 * delete a item
+	 * author: Hoang Yen
+	 */
+	@Override
+	public void deleteUsageSet(String companyId, String companyCode, String contractCd) {
+		SacmtSysUsageSetPK sacmtSysUsageSetPK = new SacmtSysUsageSetPK(companyId, companyCode, contractCd);
+		this.commandProxy().remove(SacmtSysUsageSet.class, sacmtSysUsageSetPK);
+	}
+	
 }

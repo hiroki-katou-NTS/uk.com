@@ -20,7 +20,7 @@ public class AddInfor {
 	private CompanyId companyId;
 	
 	// 会社コード
-	private CompanyCode companyCode;
+	private CCD companyCode;
 	
 	/** 契約コード */
 	private ContractCd contractCd;
@@ -46,7 +46,7 @@ public class AddInfor {
 												String add_2, String addKana_1, 
 												String addKana_2, String postCd, 
 												String phoneNum){
-		return new AddInfor(new CompanyId(companyId), new CompanyCode(companyCode),
+		return new AddInfor(new CompanyId(companyId), new CCD(companyCode),
 							new ContractCd(contractCd),
 							new FaxNum(faxNum), new Add_1(add_1),
 							new Add_2(add_2), new Add_Kana_1(addKana_1),

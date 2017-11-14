@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
 @IntegerRange(max = 1, min = 0)
-public enum IsAbolition {
+public enum AbolitionAtr {
 	
 	// 0:廃止しない(not Abolition)
 	NOT_ABOLITION(0),

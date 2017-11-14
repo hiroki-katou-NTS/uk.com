@@ -1,7 +1,5 @@
 package nts.uk.ctx.command;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,11 +12,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class AddCompanyInforCommand {
 	// 会社コード
-	private String companyCode;
+	private String ccd;  
 
 	/** The company code. */
 	// 会社名
-	private String companyName;
+	private String name;
 
 	/** The company id. */
 	// 会社ID
@@ -26,17 +24,17 @@ public class AddCompanyInforCommand {
 
 	/** The start month. */
 	// 期首月
-	private int startMonth;
+	private int month;
 
 	/** The Abolition */
 	// 廃止区分
-	private int isAbolition;
+	private int abolition;
 
 	/** 代表者名 */
 	private String repname;
 	
 	/** 代表者職位 */
-	private String repost;
+	private String repJob;
 	
 	/** 会社名カナ */
 	private String comNameKana;
@@ -48,7 +46,7 @@ public class AddCompanyInforCommand {
 	private String contractCd;
 	
 	/** 法人マイナンバー */
-	private String taxNum;
+	private String taxNo;
 	
 	private AddInforCommand addinfor;
 }
