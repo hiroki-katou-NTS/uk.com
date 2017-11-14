@@ -1,7 +1,7 @@
 import shareModel = nts.uk.at.view.kdw001.share.model;
 
 module nts.uk.at.view.kdw001.e.viewmodel {
-    
+
     export class ScreenModel {
         //combo box 
         itemList: KnockoutObservableArray<ComboBox>;
@@ -21,7 +21,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         taskId: KnockoutObservable<string>;
         constructor() {
             var self = this;
-            
+
             self.executionDate = ko.observable('');
             self.itemList = ko.observableArray([]);
 
@@ -39,12 +39,11 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.empCalAndSumExecLogID = ko.observable('emp001');
             self.taskId = ko.observable('');
             self.disposalDay = ko.observable('');
-            
+
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            let parameter = nts.uk.ui.windows.getShared("KDWL001D");
             let dfd = $.Deferred();
 
             service.getImplementationResult(self.empCalAndSumExecLogID()).done(function(data) {
@@ -58,26 +57,33 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             return dfd.promise();
         }
 
-
-        btnAsyncTask() {
+        executeTask() {
             var self = this;
-            service.asyncTask().done((info) => {
+            let params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
+
+            service.executeTask(params).done((info) => {
+                console.log(info);
                 self.taskId(info.id);
-                nts.uk.deferred.repeat(function(conf) {
-                    return conf
-                        .task(function() {
-                            return nts.uk.request.asyncTask.getInfo(this.taskId).done(function(res) {
-                                console.log(res.status);
-                            });
-                        })
-                        .while(function(info) { return info.pending || info.running; })
-                        .pause(1000);
+                nts.uk.deferred.repeat((conf) => {
+                    return conf.task(() => {
+                        return nts.uk.request.asyncTask.getInfo(self.taskId()).done((res) => {
+                            console.log(res);
+                        });
+                    })
+                    .while((info) => {
+                        return info.pending || info.running;
+                    }).pause(1000);
                 });
             });
-
         }
 
-
+        cancelTask() {
+            
+        }
+        
+        closeDialog() {
+            
+        }
 
     }
     class ComboBox {

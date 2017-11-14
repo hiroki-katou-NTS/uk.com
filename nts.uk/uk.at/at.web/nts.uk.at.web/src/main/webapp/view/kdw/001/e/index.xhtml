@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 1200 };</script>
+			<script>var dialogSize = { width: 800, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -20,7 +20,6 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
 			<div id="contents-area">
 				<div >
 					<table>
@@ -98,7 +97,7 @@
 
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" data-bind = "click : btnAsyncTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="3" data-bind = "click : executeTask">#{i18n.getText('KDW001_39')}</button>
 				<button tabindex="4">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>
