@@ -20,6 +20,8 @@ module nts.uk.at.view.kdw001.f {
             listCaseSpecExeContent : KnockoutObservableArray<model.CaseSpecExeContent>;
             //listClosure
             listClosure : KnockoutObservableArray<any>;
+            //list sid
+            listSid : Array<string>;
 
             constructor() {
                 let self = this;
@@ -44,14 +46,24 @@ module nts.uk.at.view.kdw001.f {
                 self.listCaseSpecExeContent =  ko.observableArray([]);
                 //list obj listClosure
                 self.listClosure =  ko.observableArray([]);
-                
+                //listSid
+                self.listSid = [];
 
                 self.columns = [
                     { headerText: getText('KDW001_73'), key: 'executionDate', width: 100 },
                     { headerText: getText('KDW001_74'), key: 'empCalAndSumExecLogID', width: 120 },
                     { headerText: getText('KDW001_75'), key: 'caseSpecExeContentID', width: 100 },
                     { headerText: getText('KDW001_76'), key: 'processingMonthName', width: 150 },
-                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200 },
+                    //doi mau
+                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200,
+                            formatter: function (executedMenuName, record) {
+                                if(record.isTextRed.toString() === "true"){
+                                    return "<label style='color: red;'> " + executedMenuName + " </label>";       
+                                } else {
+                                    return "<label> " + executedMenuName + " </label>";
+                                }
+                } },
+                    { headerText: '', key: 'isTextRed', width: 1, hidden: true},
                     { headerText: getText('KDW001_78'), key: 'executionStatusName', width: 160 },
                     {
                         headerText: getText('KDW001_79'), key: 'executionStatus', width: 100,
@@ -62,7 +74,7 @@ module nts.uk.at.view.kdw001.f {
             }
 
             /**
-             * functiton start page
+             * functiton start pagea
              */
             startPage(): JQueryPromise<any> {
                 let self = this;
@@ -90,24 +102,46 @@ module nts.uk.at.view.kdw001.f {
                     data = _.orderBy(data, ['executionDate'], ['desc']);
                     let temp = [];
                     _.each(data, (value) => {
+                        self.listSid.push(value.employeeID);
                         
                         let item = new model.EmpCalAndSumExeLog(value);
                         //executedMenuName
                         if( item.executedMenu == 1) {
-                            item.executedMenuName = _.find(self.listCaseSpecExeContent(), function(o) { 
-                                return o.caseSpecExeContentID == item.caseSpecExeContentID; }).useCaseName ;  
+                            item.executedMenuName = _.find(self.listCaseSpecExeContent(), function(caseSpecExeContent) { 
+                                return caseSpecExeContent.caseSpecExeContentID == item.caseSpecExeContentID; }).useCaseName ;  
                         }
-                        // get name closure by date
-                        _.find(self.listClosure(), function(o) { 
-                            if (o.closureId == item.closureID) {
-                                item.changeName(_.find(o.listClosureHistoryForLog, (his: any) => {
-                                    return item.processingMonth >= his.startYearMonth && item.processingMonth <= his.endYearMonth;
+                        // set name closure by date
+                        _.find(self.listClosure(), function(closure) { 
+                            if (closure.closureId == item.closureID) {
+                                item.changeName(_.find(closure.listClosureHistoryForLog, (historyClosure: any) => {
+                                    return item.processingMonth >= historyClosure.startYearMonth && item.processingMonth <= historyClosure.endYearMonth;
                                 }).closureName);
+                            }
+                        });
+                        // set isTextRed
+                        item.changeIsTextRed(false); 
+                        _.find(value.executionLogs, function(executionLog) { 
+                            if(executionLog.executionContent ==0){
+                                if(executionLog.dailyCreationSetInfo.executionType == 1){
+                                    item.changeIsTextRed(true);
+                                }
+                            }else if (executionLog.executionContent ==1){
+                                if(executionLog.dailyCalSetInfo.executionType == 1){
+                                    item.changeIsTextRed(true);     
+                                }
+                            }else if (executionLog.executionContent ==2){
+                                if(executionLog.reflectApprovalSetInfo.executionType == 1){
+                                    item.changeIsTextRed(true);     
+                                }
+                            } else if (executionLog.executionContent ==3){
+                                if(executionLog.monlyAggregationSetInfo.executionType == 1){
+                                    item.changeIsTextRed(true);     
+                                }
                             }
                         });
                         temp.push(item);
                     });
-                    
+                    self.getListPersonInforLog(self.listSid);
                     self.empCalAndSumExeLog(temp);
                     dfd.resolve(data);
                 }).fail(function(res: any) {
@@ -165,6 +199,21 @@ module nts.uk.at.view.kdw001.f {
                 });
                 return dfd.promise();
             }
+            /**
+             * get all person info 
+             */
+            getListPersonInforLog(listSid:Array<string>){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getListPersonInforLog(listSid).done(function(data){
+                    dfd.resolve(data);
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+                
+            }
             
 
             //button search
@@ -210,6 +259,7 @@ module nts.uk.at.view.kdw001.f {
             closureName : string;
             caseSpecExeContentID: string;
             executionLogs: Array<IExecutionLog>;
+            isTextRed : boolean;
         }
 
         export interface IExecutionLog {
@@ -224,6 +274,7 @@ module nts.uk.at.view.kdw001.f {
             reflectApprovalSetInfo : SetInforReflAprResult;
             dailyCreationSetInfo : SettingInforForDailyCreation;
             dailyCalSetInfo : CalExeSettingInfor;
+            monlyAggregationSetInfo : CalExeSettingInfor;
             numberPersonErr : number;
         }
 
@@ -250,6 +301,7 @@ module nts.uk.at.view.kdw001.f {
             closureName : string;
             caseSpecExeContentID: string;
             executionLogs: Array<ExecutionLog>;
+            isTextRed : boolean;
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
@@ -272,11 +324,16 @@ module nts.uk.at.view.kdw001.f {
                 this.closureName = data.closureName;
                 this.caseSpecExeContentID = data.caseSpecExeContentID;
                 this.executionLogs = data.executionLogs;
+                this.isTextRed = data.isTextRed;
             }
             
             public changeName(name: string): void {
                 this.closureName = name;
                 this.processingMonthName = this.processingMonth%100 + "月度     " + name;
+            }
+            
+            public changeIsTextRed(isTextRed: boolean): void {
+                this.isTextRed = isTextRed;
             }
         }//end class EmpCalAndSumExeLog
 
