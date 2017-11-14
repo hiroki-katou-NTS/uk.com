@@ -68,15 +68,13 @@ public class Employee extends AggregateRoot {
 	}
 
 	// calculate year of entire in current company
-	public int getYearOfEntire() {
+	public int getDaysOfEntire() {
 		if (listEntryJobHist.isEmpty()) {
 			return 0;
 		}
 
-		int days = listEntryJobHist.stream()
+		return listEntryJobHist.stream()
 				.map(m -> ChronoUnit.DAYS.between(m.getJoinDate().localDate(), m.getAdoptDate().localDate()))
 				.mapToInt(m -> Math.abs(m.intValue())).sum();
-
-		return days / 365 + (days % 365 == 0 ? 0 : 1);
 	}
 }

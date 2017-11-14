@@ -27,5 +27,10 @@ public interface PerInfoCtgDataRepository {
 	 * @param data
 	 */
 	void updateCategoryData(PerInfoCtgData data);
+	/**
+	 * Delete person info category data
+	 * @param data
+	 */
+	void deleteCategoryData(PerInfoCtgData data);
 
 }

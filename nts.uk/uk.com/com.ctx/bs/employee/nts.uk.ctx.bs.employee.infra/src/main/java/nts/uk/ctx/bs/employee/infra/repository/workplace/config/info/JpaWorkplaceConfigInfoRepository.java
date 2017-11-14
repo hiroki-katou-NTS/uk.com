@@ -152,6 +152,11 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
 
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
@@ -187,6 +192,11 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
 
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
@@ -233,6 +243,11 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
 
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
@@ -316,6 +331,12 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq)
 				.setParameter("prHierarchyCodeParameter", prHierarchyCode).getResultList();
 
+		
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}

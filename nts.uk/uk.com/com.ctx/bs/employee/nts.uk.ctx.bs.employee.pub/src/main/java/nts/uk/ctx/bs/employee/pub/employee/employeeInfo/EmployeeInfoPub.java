@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 
 /**
  * The Interface EmployeePub.
@@ -30,5 +31,14 @@ public interface EmployeeInfoPub {
 	List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
 	
 	
+	
+	
+	/**
+	 * Get List Employee Infomation
+	 * For request No.126
+	 * param : sid : employeeId
+	 *
+	 */
+	List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid);
 
 }

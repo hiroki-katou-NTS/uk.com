@@ -11,16 +11,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.ConfirmClsStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento;
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
+/**
+ * The Class WorkFixedFinderDto.
  */
 @Builder
-
-/**
- * Gets the process date.
- *
- * @return the process date
- */
 @Getter
 public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	
@@ -51,6 +45,9 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	/** The cid. */
     //会社ID
     private String cid;
+    
+    /** The employee name. */
+    private String employeeName;
 	
 	/**
 	 * Instantiates a new work fixed finder dto.
@@ -68,9 +65,11 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	 * @param confirmClsStatus the confirm cls status
 	 * @param fixedDate the fixed date
 	 * @param processDate the process date
+	 * @param cid the cid
+	 * @param employeeName the employee name
 	 */
 	public WorkFixedFinderDto(Integer closureId, String confirmPid, String wkpId, Integer confirmClsStatus,
-			GeneralDate fixedDate, Integer processDate, String cid) {
+			GeneralDate fixedDate, Integer processDate, String cid, String employeeName) {
 		super();
 		this.closureId = closureId;
 		this.confirmPid = confirmPid;
@@ -138,5 +137,13 @@ public class WorkFixedFinderDto implements WorkFixedSetMemento {
 	public void setCid(String cid) {
 		this.cid = cid;
 	}
-		
+	
+	/**
+	 * Sets the employee name.
+	 *
+	 * @param employeeName the new employee name
+	 */
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}	
 }
