@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk003.a.style.css" />
+			<com:scriptfile path="kmk003.a.start.js" />
+			<com:scriptfile path="kmk003.a.service.js" />
+			<com:scriptfile path="kmk003.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button>#{i18n.getText('KMK003_3')}</button>
+				<button class="proceed">#{i18n.getText('KMK003_4')}</button>
+				<button>#{i18n.getText('KMK003_5')}</button>
+				<button class="danger">#{i18n.getText('KMK003_6')}</button>
+			</div>
+			<div id="contents-area" style="display: none"
+				data-bind="visible: true">
+				<div class="caret-right caret-background">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+					<div id="combo-box"
+						data-bind="ntsComboBox: {
+							options: workFormOptions,
+							optionsValue: 'code',
+							visibleItemsCount: 3,
+							value: selectedWorkForm,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"></div>
+					<br />
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
+					<div id="combo-box"
+						data-bind="ntsComboBox: {
+							options: settingMethodOptions,
+							optionsValue: 'code',
+							visibleItemsCount: 3,
+							value: selectedSettingMethod,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 6 },
+							]}"></div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

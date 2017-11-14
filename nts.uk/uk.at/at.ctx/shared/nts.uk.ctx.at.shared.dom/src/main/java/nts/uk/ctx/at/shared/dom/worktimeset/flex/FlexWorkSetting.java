@@ -8,8 +8,9 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.fixed.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.WorkTimezoneCommonSet;
 
 /**
  * The Class FlexWorkSetting.
@@ -32,7 +33,7 @@ public class FlexWorkSetting extends AggregateRoot {
 
 	/** The rest setting. */
 	// 休憩設定
-	private FlexRestSetting restSetting;
+	private FlowWorkRestSetting restSetting;
 
 	/** The offday work time. */
 	// 休日勤務時間帯

@@ -85,7 +85,7 @@
 								<label>#{i18n.getText('CPS009_12')}</label>
 							</div>
 							<!-- A3_002: コード -->
-							<input id="ctgCode"
+							<input id="ctgCode" 
 								data-bind="ntsTextEditor: {
 								name: '#[CPS009_13]',
 								value: currentCategory().settingCode ,
@@ -199,6 +199,7 @@
 											<com:ko-if bind="(dataType() === 0) || (dataType() === 1)">
 												<input id="string" class="sub-input-units save-error"
 														data-bind="ntsTextEditor: {
+														name:  itemName,
 														value: stringValue , 
 														constraint: constraint}" />
 											</com:ko-if> 
@@ -209,6 +210,7 @@
 											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
 												<div data-bind="with: numbereditor">
  												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+ 												 		name:  itemName,
  												 		value: value,
 														constraint: constraint,
 														option: option,
@@ -221,6 +223,7 @@
 											<com:ko-if bind=" ((numbericItem.numberDecimalPart !== 0)) ">
 												<div data-bind="with: numbereditor">
  												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+ 														name:  itemName,
  														value: value,
 														constraint: constraint,
 														option: option,
@@ -237,6 +240,7 @@
 											 	<com:ko-if bind="(dateType === 1)">
 													<div id="date" class="sub-input-units save-error input-units-3 " 
 														 data-bind="ntsDatePicker: {
+														 name:  itemName,
 														 value: dateValue, 
 														 dateFormat: 'YYYY/MM/DD',
 														 valueFormat: 'YYYY/MM/DD'}"></div>
@@ -246,6 +250,7 @@
 											 	<com:ko-if bind="(dateType === 2)">
                    									<div id="date" class="sub-input-units save-error input-units-3 " 
                    										data-bind="ntsDatePicker: {
+	                   									name:  itemName,
 	                   									value: dateValue, 
 	                   									dateFormat: 'YYYY/MM', 
 	                   									valueFormat: 'YYYY/MM'}"></div>								
@@ -255,6 +260,7 @@
 											 	<com:ko-if bind="(dateType === 3)">
 													<div id="date" class="sub-input-units save-error input-units-3 " 
 														data-bind="ntsDatePicker: {
+														name:  itemName,
 														value: dateValue, 
 														dateFormat: 'YYYY', 
 														valueFormat: 'YYYY'}"></div>	
