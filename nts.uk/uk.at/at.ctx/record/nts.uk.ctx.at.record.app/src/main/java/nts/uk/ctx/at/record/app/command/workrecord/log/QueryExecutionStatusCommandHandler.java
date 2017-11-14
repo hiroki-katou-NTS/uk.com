@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.workrecord.log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,63 +9,33 @@ import javax.transaction.Transactional;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 
 @Stateless
 @Transactional
-public class QueryExecutionStatusCommandHandler extends AsyncCommandHandler<ExecutionProcessingCommand> {
-
-	@Inject EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+public class QueryExecutionStatusCommandHandler extends AsyncCommandHandler<ExecutionCommandResult> {
 	
 	@Inject TargetPersonRepository targetPersonRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<ExecutionProcessingCommand> context) {
+	protected void handle(CommandHandlerContext<ExecutionCommandResult> context) {
 		val command = context.getCommand();
 		val asyncContext = context.asAsync();
 		val dataSetter = asyncContext.getDataSetter();
 		
-		// Insert EmpCalAndSumExeLog
-		DefaultExecutionProcessingCommandAssembler empCalAndAggregationAssembler = new DefaultExecutionProcessingCommandAssembler();
-		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
-		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
+		// Get list TargetPerson
+		List<TargetPerson> lstTargetPerson = targetPersonRepository.getByempCalAndSumExecLogID(command.getEmpCalAndSumExecLogID());
 		
-		// Set return Metadata
-		ExecutionCommandResult metadata = new ExecutionCommandResult(
-				empCalAndSumExeLog.getEmpCalAndSumExecLogID(), 
-				command.getPeriodStartDate(),
-				command.getPeriodEndDate(),
-				command.getTargetEndDate());
-		dataSetter.setData("processingData", metadata);
-		
-		// Set return Data
-		List<TargetPerson> listTarget = new ArrayList<TargetPerson>();
-		dataSetter.setData("targetPersons", listTarget);
-		
-		// Insert all TargetPersons
-		for (String employeeID : command.getLstEmployeeID()) {
+		// Process all TargetPersons
+		for (TargetPerson targetPerson : lstTargetPerson) {
 			// Handle cancel request
 			if (asyncContext.hasBeenRequestedToCancel()) {
 				asyncContext.finishedAsCancelled();
 				break;
 			}
 			
-			// Insert each TargetPersons
-			TargetPerson targetPerson = TargetPerson.createJavaType(
-					employeeID,
-					empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-					new ComplStateOfExeContents(ExecutionContent.DAILY_CALCULATION, EmployeeExecutionStatus.INCOMPLETE));
-			targetPersonRepository.add(targetPerson);
-			
-			// Update return Data
-			listTarget.add(targetPerson);
-			dataSetter.updateData("targetPersons", listTarget);
+			// TODO : アルゴリズム「D：bat統括プログラムを起動する」を実行する | Chạy xử lí bat
 		}
 	}
 	

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.log.dto;
+package nts.uk.ctx.at.record.app.find.log;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.uk.ctx.at.record.app.find.log.dto.EmpCalAndSumExeLogDto;
+import nts.uk.ctx.at.record.app.find.log.dto.ErrMessageInfoDto;
+import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
+import nts.uk.ctx.at.record.app.find.log.dto.TargetPersonDto;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
@@ -26,16 +30,16 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 public class ImplementationResultFinder {
 
 	@Inject
-	 private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 
 	@Inject
-	 private TargetPersonRepository targetPersonRepository;
+	private TargetPersonRepository targetPersonRepository;
 	
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	
 	
-	public  ScreenImplementationResultDto getScreenImplementationResult (String empCalAndSumExecLogID ){
+	public ScreenImplementationResultDto getScreenImplementationResult (String empCalAndSumExecLogID ){
 		//Get List EmpCalAndSumExeLog
 		Optional<EmpCalAndSumExeLog> listEmpCalAndSumExeLog = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 		//Conver to Dto

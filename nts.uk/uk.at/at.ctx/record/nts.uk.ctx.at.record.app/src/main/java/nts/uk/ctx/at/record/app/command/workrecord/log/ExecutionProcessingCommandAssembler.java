@@ -29,7 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DefaultExecutionProcessingCommandAssembler {
+public class ExecutionProcessingCommandAssembler {
 
 	@Inject 
 	CaseSpecExeContentRepository caseSpecExeContentRepository;

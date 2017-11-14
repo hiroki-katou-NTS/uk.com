@@ -76,18 +76,16 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 
 	@Override
 	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
-		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
+		Optional<EmpCalAndSumExeLog> data = this.queryProxy()
+				.query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle(c -> c.toDomain());
 		return data;
 	}
 
 	@Override
-	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
-			GeneralDate endDate) {
-		List<KrcdtEmpExecutionLog> test = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
-				.setParameter("companyID", companyID).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).getList();
-		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
+	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate, GeneralDate endDate) {
+		List<EmpCalAndSumExeLog> data = this.queryProxy()
+				.query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
 				.setParameter("companyID", companyID).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
 		return data;
