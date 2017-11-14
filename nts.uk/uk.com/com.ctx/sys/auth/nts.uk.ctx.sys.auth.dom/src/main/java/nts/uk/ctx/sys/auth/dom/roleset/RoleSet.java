@@ -4,9 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.auth.dom.role.Role;
+import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 
 /**
  * ロールセット - Class RoleSet.
@@ -15,11 +22,20 @@ import nts.arc.enums.EnumAdaptor;
 @Getter
 public class RoleSet extends AggregateRoot {
 
+	@Inject
+	private RoleRepository roleRepository;
+	
+	@Inject
+	private DefaultRoleSetRepository defaultRoleSetRepository;
+	
+	@Inject
+	private RoleSetRepository roleSetRepository;
+	
 	/** ロールセットコード. */
 	private RoleSetCode roleSetCd;
 
 	/** 会社ID */
-	private String companyId;
+	private String companyId = "000000000000-0000";
 
 	/** ロールセット名称*/
 	private RoleSetName roleSetName;
@@ -28,22 +44,22 @@ public class RoleSet extends AggregateRoot {
 	private ApprovalAuthority approvalAuthority;
 
 	/** ロールID: オフィスヘルパーロール */
-	private String officeHelperRole;
+	private Optional<Role> officeHelperRole;
 
 	/** ロールID: マイナンバーロール */
-	private String myNumberRole;
+	private Optional<Role> myNumberRole;
 
 	/** ロールID: 人事ロール */
-	private String hRRole;
+	private Optional<Role> hRRole;
 
 	/** ロールID: 個人情報ロール */
-	private String personInfRole;
+	private Optional<Role> personInfRole;
 
 	/** ロールID: 就業ロール */
-	private String employmentRole;
+	private Optional<Role> employmentRole;
 
 	/** ロールID: 給与ロール */
-	private String salaryRole;
+	private Optional<Role> salaryRole;
 
 	/**
 	 * Instantiates a new role set.
@@ -59,16 +75,16 @@ public class RoleSet extends AggregateRoot {
 	 * @param employmentRole
 	 * @param salaryRole
 	 */
-	public RoleSet(RoleSetCode roleSetCd
+	private RoleSet(RoleSetCode roleSetCd
 			, String companyId
 			, RoleSetName roleSetName
 			, ApprovalAuthority approvalAuthority
-			, String officeHelperRole
-			, String myNumberRole
-			, String hRRole
-			, String personInfRole
-			, String employmentRole
-			, String salaryRole
+			, Optional<Role> officeHelperRole
+			, Optional<Role> myNumberRole
+			, Optional<Role> hRRole
+			, Optional<Role> personInfRole
+			, Optional<Role> employmentRole
+			, Optional<Role> salaryRole
 			) {
 		super();
 		this.roleSetCd 			= roleSetCd;
@@ -88,7 +104,7 @@ public class RoleSet extends AggregateRoot {
 	 *
 	 * @return true
 	 */
-	public boolean HasApprovalAuthority() {
+	public boolean hasApprovalAuthority() {
 		return this.approvalAuthority == ApprovalAuthority.HasRight;
 	}
 
@@ -97,14 +113,14 @@ public class RoleSet extends AggregateRoot {
 	 *
 	 * @return true
 	 */
-	public boolean HasntApprovalAuthority() {
+	public boolean hasntApprovalAuthority() {
 		return this.approvalAuthority == ApprovalAuthority.HasntRight;
 	}
 
 	/**
 	 * Remove approval authority
 	 */
-	public void RemoveApprovalAuthority() {
+	public void removeApprovalAuthority() {
 		this.approvalAuthority = ApprovalAuthority.HasntRight;
 	}
 
@@ -122,25 +138,129 @@ public class RoleSet extends AggregateRoot {
 	 * @param employmentRole
 	 * @param salaryRole
 	 */
-	public void create(String roleSetCd
+	public static RoleSet create(String roleSetCd
 			, String companyId
 			, String roleSetName
 			, int approvalAuthority
-			, String officeHelperRole
-			, String myNumberRole
-			, String hRRole
-			, String personInfRole
-			, String employmentRole
-			, String salaryRole) {
-		this.roleSetCd 			= new RoleSetCode(roleSetCd);
-		this.companyId 			= companyId;
-		this.roleSetName 		= new RoleSetName(roleSetName);
-		this.approvalAuthority 	= EnumAdaptor.valueOf(approvalAuthority, ApprovalAuthority.class);
-		this.officeHelperRole 	= officeHelperRole;
-		this.myNumberRole 		= myNumberRole;
-		this.hRRole 			= hRRole;
-		this.personInfRole 		= personInfRole;
-		this.employmentRole 	= employmentRole;
-		this.salaryRole 		= salaryRole;
+			, String officeHelperRoleCd
+			, String myNumberRoleCd
+			, String hRRoleCd
+			, String personInfRoleCd
+			, String employmentRoleCd
+			, String salaryRoleCd) {
+		return new RoleSet(new RoleSetCode(roleSetCd)
+				, companyId
+				, new RoleSetName(roleSetName)
+				, EnumAdaptor.valueOf(approvalAuthority, ApprovalAuthority.class)
+				, getRoleById(officeHelperRoleCd)
+				, getRoleById(myNumberRoleCd)
+				, getRoleById(hRRoleCd)
+				, getRoleById(personInfRoleCd)
+				, getRoleById(employmentRoleCd)
+				,getRoleById(salaryRoleCd)
+				);
+	}
+
+	/**
+	 * Extract Role by Id
+	 * @param roleId
+	 * @return
+	 */
+	private static Optional<Role> getRoleById(String roleId) {
+		//TODO - > why is it list?
+		//return StringUtil.isNullOrEmpty(officeHelperRole, true) ? null : roleRepository.findById(roleId).get(0);
+		return null;
+	}
+
+	public static String getRoleTypeCd(Optional<Role> opRole) {
+		return opRole.isPresent() ? opRole.get().getRoleId() : null;
+	}
+	
+	
+	@Override
+	public void validate() {
+		super.validate();
+		//check duplicate RoleSetCd
+		if (isDublicateRoleSetCd()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_3");
+		}
+		
+		//throw error if there are not any role 
+		if (!hasRole()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_???");
+			bbe.throwExceptions();
+		}
+
+	}
+	
+	/**
+	 * check if there are existed Role Set Code
+	 * @return
+	 */
+	private boolean isDublicateRoleSetCd() {
+		return roleSetRepository.isDuplicateRoleSetCd(this.roleSetCd.v(), this.companyId);
+	}
+	
+	/**
+	 * Check are there any role ?
+	 * @return
+	 */
+	private boolean hasRole() {
+		return this.employmentRole.isPresent()
+				|| this.officeHelperRole.isPresent()
+				|| this.myNumberRole.isPresent()
+				|| this.hRRole.isPresent()
+				|| this.personInfRole.isPresent()
+				|| this.employmentRole.isPresent()
+				|| this.salaryRole.isPresent();
+
+	}
+	
+	/**
+	 * Validate constrains before perform deleting
+	 */
+	public void validateForDelete() {
+		if (isDefault()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_585");
+			bbe.throwExceptions();
+		}
+		if (isGrantedForMember()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_???");
+			bbe.throwExceptions();
+		}
+		if (isGrantedForPosition()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_???");
+			bbe.throwExceptions();
+		}
+		
+	}
+	
+	/**
+	 * Check setting default of Role set
+	 * @return
+	 */
+	private boolean isDefault() {
+		return defaultRoleSetRepository.find(companyId, roleSetCd.v()).isPresent();
+	}
+	
+	/**
+	 * Check if this Role Set is granted for member
+	 * @return
+	 */
+	private boolean isGrantedForMember() {
+		return false;
+	}
+	
+	/**
+	 * Check if this Role Set is granted for Position (manager)
+	 * @return
+	 */
+	private boolean isGrantedForPosition() {
+		return false;
 	}
 }

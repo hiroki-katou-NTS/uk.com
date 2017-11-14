@@ -20,23 +20,31 @@ public interface DefaultRoleSetRepository {
 	 * @return
 	 */
 	Optional<DefaultRoleSet> findByCompanyId(String companyId);
-
+	
+	/**
+	 * Check exist of default role set
+	 * @param companyId
+	 * @param roleSetCd
+	 * @return
+	 */
+	Optional<DefaultRoleSet> find(String companyId, String roleSetCd);
+	
 	/**
 	 * Insert a Default Role Set
 	 * @param domain
 	 */
-	void Insert(DefaultRoleSet domain);
+	void insert(DefaultRoleSet domain);
 	
 	/**
 	 * Update the Default Role Set
 	 * @param domain
 	 */
-	void Update(DefaultRoleSet domain);
+	void update(DefaultRoleSet domain);
 	
 	/**
 	 * Delete the Default Role Set
 	 * @param companyId
 	 */
 	
-	void Delete(String companyId);
+	void delete(String companyId);
 }

@@ -32,16 +32,24 @@ public interface RoleSetRepository {
 	List<RoleSet> findByCompanyId(String companyId);
 	
 	/**
+	 * Check duplicate RoleSetCd within a company id
+	 * @param roleSetCd
+	 * @param companyId
+	 * @return
+	 */
+	boolean isDuplicateRoleSetCd(String roleSetCd, String companyId);
+
+	/**
 	 * Insert a Role Set
 	 * @param domain
 	 */
-	void Insert(RoleSet domain);
+	void insert(RoleSet domain);
 	
 	/**
 	 * Update the Role Set
 	 * @param domain
 	 */
-	void Update(RoleSet domain);
+	void update(RoleSet domain);
 	
 	/**
 	 * Delete the Role Set
@@ -49,5 +57,5 @@ public interface RoleSetRepository {
 	 * @param companyId
 	 */
 	
-	void Delete(String roleSetCd, String companyId);
+	void delete(String roleSetCd, String companyId);
 }

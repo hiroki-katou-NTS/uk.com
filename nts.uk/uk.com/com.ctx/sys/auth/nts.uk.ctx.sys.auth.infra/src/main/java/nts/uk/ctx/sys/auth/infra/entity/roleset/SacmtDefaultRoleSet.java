@@ -42,7 +42,7 @@ public class SacmtDefaultRoleSet extends UkJpaEntity implements Serializable {
 		return defaultRoleSetPK;
 	}
 	
-	public void BuildEntity(SacmtDefaultRoleSetPK defaultRoleSetPK, String roleSetCd) {
+	public void buildEntity(SacmtDefaultRoleSetPK defaultRoleSetPK, String roleSetCd) {
 		this.roleSetCd = roleSetCd;
 	}
 }

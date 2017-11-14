@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
+import javax.inject.Inject;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -14,6 +16,8 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class DefaultRoleSet extends AggregateRoot {
 
+	@Inject
+	private DefaultRoleSetRepository defaultRoleSetRepository;
 	/** 会社ID */
 	private String companyId;
 
@@ -26,7 +30,7 @@ public class DefaultRoleSet extends AggregateRoot {
 	 * @param companyId
 	 * @param roleSetCd
 	 */
-	public DefaultRoleSet(String companyId, RoleSetCode roleSetCd) {
+	private DefaultRoleSet(String companyId, RoleSetCode roleSetCd) {
 		super();
 		this.companyId = companyId;
 		this.roleSetCd = roleSetCd;
@@ -38,8 +42,15 @@ public class DefaultRoleSet extends AggregateRoot {
 	 * @param companyId
 	 * @param roleSetCd
 	 */
-	public void create(String companyId, String roleSetCd) {
-		this.companyId = companyId;
-		this.roleSetCd = new RoleSetCode(roleSetCd);
+	public static DefaultRoleSet create(String companyId, String roleSetCd) {
+		return new DefaultRoleSet(companyId, new RoleSetCode(roleSetCd));
+	}
+	
+	/** 
+	 * check if there are set default role set for the company id
+	 * @return
+	 */
+	public boolean isCompanyHasDefaultRoleSet() {
+		return defaultRoleSetRepository.findByCompanyId(this.companyId).isPresent();
 	}
 }

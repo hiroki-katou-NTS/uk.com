@@ -81,23 +81,23 @@ public class SacmtRoleSet extends UkJpaEntity implements Serializable {
 	 * @param employmentRole
 	 * @param salaryRole
 	 */
-	public void BuildEntity(SacmtRoleSetPK roleSetPK
+	public void buildEntity(SacmtRoleSetPK roleSetPK
 			, String roleSetName
 			, int approvalAuthority
-			, String officeHelperRole
-			, String myNumberRole
-			, String hRRole
-			, String personInfRole
-			, String employmentRole
-			, String salaryRole) {
+			, String officeHelperRoleCd
+			, String myNumberRoleCd
+			, String hRRoleCd
+			, String personInfRoleCd
+			, String employmentRoleCd
+			, String salaryRoleCd) {
 		this.roleSetPK = roleSetPK;
 		this.roleSetName = roleSetName;
 		this.approvalAuthority = approvalAuthority;
-		this.officeHelperRole = officeHelperRole;
-		this.myNumberRole = myNumberRole;
-		this.hRRole = hRRole;
-		this.personInfRole = personInfRole;
-		this.employmentRole = employmentRole;
-		this.salaryRole = salaryRole;
+		this.officeHelperRole = officeHelperRoleCd;
+		this.myNumberRole = myNumberRoleCd;
+		this.hRRole = hRRoleCd;
+		this.personInfRole = personInfRoleCd;
+		this.employmentRole = employmentRoleCd;
+		this.salaryRole = salaryRoleCd;
 	}
 }

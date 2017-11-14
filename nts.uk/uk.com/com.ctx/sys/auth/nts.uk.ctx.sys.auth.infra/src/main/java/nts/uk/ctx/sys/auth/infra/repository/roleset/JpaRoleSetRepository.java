@@ -9,17 +9,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSetName;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetWebMenu;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetWebMenuPK;
 
 /**
  * Class JpaRoleSetRepository implement of RoleSetRepository
@@ -31,12 +25,13 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	private static final String SELECT_All_ROLE_SET_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSet rs"
 			+ " WHERE rs.roleSetPK.companyId = :companyId ";
-			
+
 	private RoleSet toDomain(SacmtRoleSet entity) {
-		return new RoleSet(new RoleSetCode(entity.roleSetPK.roleSetCd)
+	
+		return RoleSet.create(entity.roleSetPK.roleSetCd
 				, entity.roleSetPK.companyId
-				, new RoleSetName(entity.roleSetName)
-				, EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class)
+				, entity.roleSetName
+				, entity.approvalAuthority
 				, entity.officeHelperRole
 				, entity.myNumberRole
 				, entity.hRRole
@@ -51,26 +46,26 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		return new SacmtRoleSet(key
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, domain.getOfficeHelperRole()
-				, domain.getMyNumberRole()
-				, domain.getHRRole()
-				, domain.getPersonInfRole()
-				, domain.getEmploymentRole()
-				, domain.getSalaryRole()
+				, RoleSet.getRoleTypeCd(domain.getOfficeHelperRole())
+				, RoleSet.getRoleTypeCd(domain.getMyNumberRole())
+				, RoleSet.getRoleTypeCd(domain.getHRRole())
+				, RoleSet.getRoleTypeCd(domain.getPersonInfRole())
+				, RoleSet.getRoleTypeCd(domain.getEmploymentRole())
+				, RoleSet.getRoleTypeCd(domain.getSalaryRole())
 				);
 
 	}
 	
 	private SacmtRoleSet toEntiryForUpdate(RoleSet domain, SacmtRoleSet upEntity) {
-		upEntity.BuildEntity(upEntity.roleSetPK
+		upEntity.buildEntity(upEntity.roleSetPK
 				, domain.getRoleSetName().v()
 				, domain.getApprovalAuthority().value
-				, domain.getOfficeHelperRole()
-				, domain.getMyNumberRole()
-				, domain.getHRRole()
-				, domain.getPersonInfRole()
-				, domain.getEmploymentRole()
-				, domain.getSalaryRole());
+				, RoleSet.getRoleTypeCd(domain.getOfficeHelperRole())
+				, RoleSet.getRoleTypeCd(domain.getMyNumberRole())
+				, RoleSet.getRoleTypeCd(domain.getHRRole())
+				, RoleSet.getRoleTypeCd(domain.getPersonInfRole())
+				, RoleSet.getRoleTypeCd(domain.getEmploymentRole())
+				, RoleSet.getRoleTypeCd(domain.getSalaryRole()));
 		return upEntity;
 	}
 
@@ -89,12 +84,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 	}
 
 	@Override
-	public void Insert(RoleSet domain) {
+	public void insert(RoleSet domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void Update(RoleSet domain) {
+	public void update(RoleSet domain) {
 		Optional<SacmtRoleSet> upEntity = this.queryProxy().find(
 				 new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId()),
 				 SacmtRoleSet.class);
@@ -104,9 +99,16 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 	}
 
 	@Override
-	public void Delete(String roleSetCd, String companyId) {
+	public void delete(String roleSetCd, String companyId) {
 		SacmtRoleSetPK pk = new SacmtRoleSetPK(roleSetCd, companyId);
 		this.commandProxy().remove(SacmtRoleSet.class, pk);
+	}
+
+	@Override
+	public boolean isDuplicateRoleSetCd(String roleSetCd, String companyId) {
+		SacmtRoleSetPK pk = new SacmtRoleSetPK(roleSetCd, companyId);
+		return this.queryProxy().find(pk, SacmtRoleSet.class).isPresent();
+		
 	}
 
 }
