@@ -190,6 +190,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 
                 if(value.length > 0){
+                    self.calculatorItems.removeAll();
+                    
                     service.getVerticalCalSetByCode(value).done(function(data) {
                         var items = [];
                         
@@ -389,6 +391,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var verticalCalItems = new Array<VerticalCalItemDto>();
             
             for(var i = 0; i < self.calculatorItems().length; i++) {
+                var dataB = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                var dataC = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                var dataD = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                var dataE = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                var dataF = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                var dataG = self.dataB == null ? self.calculatorItems()[i].formTime.lstFormTimeFunc : null;
+                
                 var item = {
                     verticalCalCd: code,
                     itemId: self.calculatorItems()[i].itemCd(),
@@ -400,11 +409,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     rounding: self.calculatorItems()[i].rounding(),
                     dispOrder: self.calculatorItems()[i].order(),
                     //for B screen
-                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? self.dataB : null,
+                    formBuilt: self.calculatorItems()[i].settingMethod() == 1 ? dataB : null,
                     //for C screen
-                    formTime: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 0 ? self.dataC : null,
+                    formTime: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 0 ? dataC : null,
                     //for D screen
-                    formPeople: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 2 ? self.dataD : null,
+                    formPeople: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 2 ? dataD : null,
                     //for E screen
                     
                     //for F screen

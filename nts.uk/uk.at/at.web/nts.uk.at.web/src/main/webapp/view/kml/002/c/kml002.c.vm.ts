@@ -57,6 +57,40 @@ module nts.uk.at.view.kml002.c.viewmodel {
             
             var devChange = false;
             
+            // Bind data to display on Dialog
+            if(self.currentData != null) {
+                self.catCode(self.currentData.categoryIndicator);
+                self.catCode.valueHasMutated();
+                self.checked(self.currentData.actualDisplayAtr == 0 ? false : true);
+                
+                _.forEach(self.currentData.lstFormTimeFunc, function(item) {
+                    var itemCd = "";
+                    var realCd = "";
+                    
+                    if(item.attendanceItemId != null) {
+                        itemCd = item.attendanceItemId + item.dispOrder;
+                        realCd = item.attendanceItemId
+                    } else if(item.externalBudgetCd != null) {
+                        itemCd = item.externalBudgetCd + item.dispOrder;
+                        realCd = item.externalBudgetCd
+                    } else if(item.presetItemId != null) {
+                        itemCd = item.presetItemId + item.dispOrder;
+                        realCd = item.presetItemId
+                    }  
+                    
+                    var itemData = {
+                        code: itemCd,
+                        trueCode: realCd,
+                        itemType: item.itemType,
+                        operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                        name: "test",
+                        order: item.dispOrder
+                    };
+                    
+                    self.rightItems.push(itemData);
+                });
+            }
+            
             self.checked.subscribe(function(value) {
                 if(!devChange){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => { 
@@ -313,7 +347,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                     externalBudgetCd: self.rightItems()[i].itemType == GrantPeriodicMethod.EXTERNAL ? self.rightItems()[i].trueCode : null,
                     attendanceItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.DAILY ? self.rightItems()[i].trueCode : null,
                     presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
-                    operatorAtr: self.rightItems()[i].operatorAtr == "＋" ? 0 : 1,
+                    operatorAtr: self.rightItems()[i].operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
                     dispOrder: self.rightItems()[i].order
                 };
                 
