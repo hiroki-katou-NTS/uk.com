@@ -16,7 +16,7 @@ module nts.uk.at.view.kdw001.h {
             listPeson: Array<any>;
             listTargetPerson: KnockoutObservableArray<any>;
             listErrMessage: Array<any>;
-            listErrMessageInfo: KnockoutObservableArray<any>;
+            listErrMessageInfo: KnockoutObservableArray<model.ErrMessageInfo>;
             executionContent: number;
 
             constructor() {
@@ -43,7 +43,8 @@ module nts.uk.at.view.kdw001.h {
                     { headerText: getText('KDW001_33'), key: 'employeeID', width: 100 },
                     { headerText: getText('KDW001_35'), key: 'resourceID', width: 100 },
                     { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 },
-                    { headerText: getText('KDW001_37'), key: 'messageError', width: 100 }
+                    { headerText: getText('KDW001_37'), key: 'messageError', width: 100 },
+                    { headerText: '', key: 'GUID', width: 1 ,hirren :true },
                 ]);
             }
             printError(): void {
@@ -75,10 +76,18 @@ module nts.uk.at.view.kdw001.h {
                     let temp = [];
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].executionContent == self.executionContent) {
-                            temp.push(data[i]);
+                            let item  = new model.ErrMessageInfo(
+                                    data[i].employeeID,
+                                    data[i].empCalAndSumExecLogID,
+                                    data[i].resourceID,
+                                    data[i].executionContent,
+                                    data[i].disposalDay,
+                                    data[i].messageError
+                                );
+                            temp.push(item);
                         }
                     }
-                    self.listErrMessageInfo(temp);
+                    self.listErrMessageInfo(_.orderBy(temp, ["employeeID", "disposalDay"], ["asc", "asc"]));
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -86,12 +95,36 @@ module nts.uk.at.view.kdw001.h {
                 });
                 return dfd.promise();
             }
-
             closeDialog(): void {
-
                 nts.uk.ui.windows.close();
-
             }
+            
         }//end screenModel
-    }//end viewmodel    
+        
+    }//end viewmodel
+    
+    export module model{
+        /**
+         * class SetInforReflAprResult 
+         */
+        export class ErrMessageInfo{
+            GUID : string;
+            employeeID: string;
+            empCalAndSumExecLogID : string;
+            resourceID : string;
+            executionContent :number;
+            disposalDay :string;
+            messageError :string;
+            constructor(employeeID: string,empCalAndSumExecLogID : string,resourceID : string,
+            executionContent:number,disposalDay:string,messageError:string){
+                this.employeeID = employeeID;
+                this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+                this.resourceID = resourceID;
+                this.executionContent = executionContent;
+                this.disposalDay = disposalDay;
+                this.messageError = messageError;    
+                this.GUID = nts.uk.util.randomId();
+            }
+        }//end classSetInforReflAprResult
+    }
 }//end module

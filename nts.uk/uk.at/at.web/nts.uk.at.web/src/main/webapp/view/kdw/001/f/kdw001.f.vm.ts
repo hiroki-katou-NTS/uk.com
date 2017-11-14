@@ -25,7 +25,6 @@ module nts.uk.at.view.kdw001.f {
 
             constructor() {
                 let self = this;
-                self.nameClosure = " test";
                 //
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
@@ -206,6 +205,10 @@ module nts.uk.at.view.kdw001.f {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.getListPersonInforLog(listSid).done(function(data){
+//                    _.find(data, function(personInforLog) { 
+//                      
+//                    
+//                    });
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -219,6 +222,9 @@ module nts.uk.at.view.kdw001.f {
             //button search
             search() {
                 let self = this;
+                if(nts.uk.ui.errors.hasError()){
+                    return;
+                    }
                 self.inputEmpCalAndSumByDate(new model.InputEmpCalAndSumByDate(self.dateValue().startDate, self.dateValue().endDate));
                 self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate());
             }
@@ -227,8 +233,8 @@ module nts.uk.at.view.kdw001.f {
             openDialogI() {
                 let self = this;
                 var param = {
-                    nameClosure : self.nameClosure,
-                    empCalAndSumExecLogID : this.currentSelectedRow()
+                    nameClosure : _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).closureName,
+                    empCalAndSumExecLogID : self.currentSelectedRow()
                     
                 };
                 nts.uk.ui.windows.setShared("openI", param);
