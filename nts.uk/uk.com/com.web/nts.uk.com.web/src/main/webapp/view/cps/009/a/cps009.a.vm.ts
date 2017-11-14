@@ -391,7 +391,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
                     function(item: PerInfoInitValueSettingItemDto) {
                         return item.selectedRuleCode() == 2 && item.dataType() == 6 && item.selectionItemRefType == 1;
-                }),
+                    }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return obj.selectionItemId;
                 });
@@ -466,12 +466,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (itemDto.dataType === 1 || itemDto.dataType === 0) {
                     let stringValue = $('#string').val();
                     if (nts.uk.util.isNullOrUndefined(stringValue) || stringValue === "") {
-                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                     }
                 } else if (itemDto.dataType === 2) {
                     let numberValue = $('#number').val();
                     if (nts.uk.util.isNullOrUndefined(itemDto.numbereditor.value || itemDto.numbereditor.value === 0)) {
-                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
                     }
 
                 } else if (itemDto.dataType === 3) {
@@ -817,34 +817,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.dateType = params.dateType || undefined;
 
-            if (params.dataType === 0 || params.dataType === 1) {
+            if (params.dataType === 3 || params.dataType === 4 || params.dataType === 5) {
                 self.listComboItem = ko.observableArray([
                     { code: 1, name: ReferenceMethodType.NOSETTING },
                     { code: 2, name: ReferenceMethodType.FIXEDVALUE },
                     { code: 3, name: ReferenceMethodType.SAMEASLOGIN },
                     { code: 4, name: ReferenceMethodType.SAMEASEMPLOYMENTDATE },
                     { code: 6, name: ReferenceMethodType.SAMEASBIRTHDATE }]);
-            } else if (params.dataType === 2) {
-                self.listComboItem = ko.observableArray([
-                    { code: 1, name: ReferenceMethodType.NOSETTING },
-                    { code: 2, name: ReferenceMethodType.FIXEDVALUE},
-                    { code: 5, name: ReferenceMethodType.SAMEASEMPLOYEECODE }]);
-            } else if (params.dataType === 3) {
-                self.listComboItem = ko.observableArray([
-                    { code: 1, name: ReferenceMethodType.NOSETTING },
-                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
-                    { code: 7, name: ReferenceMethodType.SAMEASNAME }]);
-            } else if (params.dataType === 4) {
-                self.listComboItem = ko.observableArray([
-                    { code: 1, name: ReferenceMethodType.NOSETTING },
-                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
-                    { code: 8, name: ReferenceMethodType.SAMEASKANANAME }]);
-            } else if (params.dataType === 5) {
-                self.listComboItem = ko.observableArray([
-                    { code: 1, name: ReferenceMethodType.NOSETTING },
-                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
-                    { code: 3, name: ReferenceMethodType.SAMEASLOGIN }]);
-            } else if (params.dataType === 6) {
+            } else {
                 self.listComboItem = ko.observableArray([
                     { code: 1, name: ReferenceMethodType.NOSETTING },
                     { code: 2, name: ReferenceMethodType.FIXEDVALUE },
