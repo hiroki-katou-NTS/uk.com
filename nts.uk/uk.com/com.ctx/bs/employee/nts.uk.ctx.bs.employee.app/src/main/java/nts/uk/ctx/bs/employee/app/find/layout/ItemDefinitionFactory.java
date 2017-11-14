@@ -20,6 +20,7 @@ import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
 import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 
 /**
@@ -375,6 +376,7 @@ public class ItemDefinitionFactory {
 
 	}
 
+
 	public static void matchInformation(String categoryCode, LayoutPersonInfoClsDto authClassItem,
 			TemporaryAbsence leaveHoliday, ActionRole actionRole) {
 	}
@@ -400,7 +402,8 @@ public class ItemDefinitionFactory {
 	}
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchCurrentAddress(
-			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<CurrentAddress> currentAddress) {
+			List<LayoutPersonInfoClsDto> listClsDto, ActionRole actionRole, List<CurrentAddress> currentAddress) {
+
 		return null;
 	}
 
@@ -414,25 +417,26 @@ public class ItemDefinitionFactory {
 		return null;
 	}
 
-	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,List<Family> families) {
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamilies(LayoutPersonInfoClsDto authClassItem,
+			List<Family> families) {
 		return null;
 	}
-	
+
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchFamily(LayoutPersonInfoClsDto personInfoClsDto,
 			ActionRole actionRole, List<Family> families) {
 		return null;
 	}
-	
+
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchWidowHistory(LayoutPersonInfoClsDto personInfoClsDto,
 			ActionRole actionRole, List<WidowHistory> widowHistory) {
 		return null;
 	}
-	
-	public static Map<String, List<LayoutPersonInfoValueDto>> matchPersonEmergencyContact(LayoutPersonInfoClsDto personInfoClsDto,
-			ActionRole actionRole, List<PersonEmergencyContact> personEmergencyContact) {
+
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchPersonEmergencyContact(
+			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole,
+			List<PersonEmergencyContact> personEmergencyContact) {
 		return null;
 	}
-
 
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchsubJobPoses(LayoutPersonInfoClsDto authClassItem,
 			List<SubJobPosition> subJobPoses) {
@@ -443,15 +447,14 @@ public class ItemDefinitionFactory {
 			LayoutPersonInfoClsDto personInfoClsDto, List<TemporaryAbsence> temporaryAbsence) {
 		return null;
 	}
-	
+
 	public static Map<String, List<LayoutPersonInfoValueDto>> matchTemporaryAbsence(
-			LayoutPersonInfoClsDto personInfoClsDto,ActionRole actionRole, List<TemporaryAbsence> temporaryAbsence) {
+			LayoutPersonInfoClsDto personInfoClsDto, ActionRole actionRole, List<TemporaryAbsence> temporaryAbsence) {
 		return null;
 	}
-	
-	
-	public static Map<String, List<LayoutPersonInfoValueDto>> matchJobTitleMain(
-			LayoutPersonInfoClsDto personInfoClsDto,ActionRole actionRole, List<JobTitleMain> jobTitleMain) {
+
+	public static Map<String, List<LayoutPersonInfoValueDto>> matchJobTitleMain(LayoutPersonInfoClsDto personInfoClsDto,
+			ActionRole actionRole, List<JobTitleMain> jobTitleMain) {
 		return null;
 	}
 }

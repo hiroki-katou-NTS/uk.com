@@ -80,4 +80,31 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public void insert(Role role) {
+		this.commandProxy().insert(toEntity(role));		
+	}
+
+	@Override
+	public void update(Role role) {
+		this.commandProxy().update(toEntity(role));		
+	}
+	@Override
+	public void remove(String roleId) {		
+		this.commandProxy().remove(SacmtRole.class, roleId);
+	}
+	
+	private SacmtRole  toEntity(Role role){
+		SacmtRole entity = new SacmtRole();
+		entity.setId(role.getRoleId());
+		entity.setCid(role.getCompanyId());
+		entity.setCode(role.getRoleCode().toString());
+		entity.setRoleType(role.getRoleType().value);
+		entity.setReferenceRange(role.getEmployeeReferenceRange().value);
+		entity.setName(role.getName().toString());
+		entity.setContractCode(role.getContractCode().toString());
+		entity.setAssignAtr(role.getAssignAtr().value);
+		return entity;
+	}
+
 }

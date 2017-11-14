@@ -50,7 +50,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 						&& x.getRetirementDate().afterOrEquals(referenceDate)))
 				.collect(Collectors.toList());
 
-		if (listEntryJobHist.size() == 0) {
+		if (listEntryJobHist.isEmpty()) {
 
 			// TH khong co du lieu 「入社履歴」thoa man dieu kien : 入社年月日 joinDate
 			// <=parameter「baseDate」 <= RetirementDate 退職年月日

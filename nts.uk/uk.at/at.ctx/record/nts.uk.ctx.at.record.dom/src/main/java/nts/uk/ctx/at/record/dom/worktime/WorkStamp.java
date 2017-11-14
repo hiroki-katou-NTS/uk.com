@@ -27,4 +27,13 @@ public class WorkStamp extends DomainObject{
 	//打刻元情報
 	private StampSourceInfo stampSourceInfo;
 
+	public WorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
+			StampSourceInfo stampSourceInfo) {
+		super();
+		AfterRoundingTime = afterRoundingTime;
+		this.timeWithDay = timeWithDay;
+		this.locationCode = locationCode;
+		this.stampSourceInfo = stampSourceInfo;
+	}
+
 }

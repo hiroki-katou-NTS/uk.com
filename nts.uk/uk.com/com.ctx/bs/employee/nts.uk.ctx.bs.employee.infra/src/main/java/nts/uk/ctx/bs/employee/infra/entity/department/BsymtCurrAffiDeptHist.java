@@ -36,10 +36,4 @@ public class BsymtCurrAffiDeptHist {
 	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
-	
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
-	})
-	public BsymtCurrAffiDept psymtCurrAffiDept;
 }

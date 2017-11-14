@@ -24,4 +24,21 @@ public interface RoleRepository {
 	 * @return the list
 	 */
 	List<Role> findByListRoleId(String companyId,List<String> lstRoleId);
+	
+	/**
+	 *  insert new role
+	 * @param role
+	 */
+	void insert(Role role);
+	
+	/**
+	 *  update role
+	 * @param role
+	 */
+	void update(Role role);
+	
+	/** remove role 
+	 * @param roleId
+	 */
+	void remove(String roleId);
 }
