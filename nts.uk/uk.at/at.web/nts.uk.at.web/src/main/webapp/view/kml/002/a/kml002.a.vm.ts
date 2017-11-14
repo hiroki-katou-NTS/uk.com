@@ -220,11 +220,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 attrEnable: false,
                                 settingMethodEnable: false,
                                 totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true,
-                                formBuilt: data.verticalCalItems[0].formBuilt,
-                                formTime: data.verticalCalItems[0].formTime,
-                                formPeople: data.verticalCalItems[0].formPeople,
-                                amount: data.verticalCalItems[0].amount,
-                                numerical: data.verticalCalItems[0].numerical
+                                formBuilt: data.verticalCalItems[i].formBuilt,
+                                formTime: data.verticalCalItems[i].formTime,
+                                formPeople: data.verticalCalItems[i].formPeople,
+                                amount: data.verticalCalItems[i].amount,
+                                numerical: data.verticalCalItems[i].numerical
                             };
 
                             items.push(new CalculatorItem(item));
