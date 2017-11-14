@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.log;
+package nts.uk.ctx.at.record.ws.workrecord.log;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
