@@ -73,9 +73,6 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		return Optional.of(temporaryAbsence);
 	}
 
-	/**
-	 * @author xuan vinh
-	 */
 	@Override
 	public Optional<TemporaryAbsence> getByTempAbsenceId(String tempAbsenceId) {
 		return this.queryProxy().query(SELECT_BY_TEMP_ABSENCE_ID, Object[].class)
