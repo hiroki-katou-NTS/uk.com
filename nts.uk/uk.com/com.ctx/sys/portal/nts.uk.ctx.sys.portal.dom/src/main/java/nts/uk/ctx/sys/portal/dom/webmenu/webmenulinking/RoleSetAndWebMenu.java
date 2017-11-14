@@ -4,10 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Getter;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 
@@ -34,31 +31,15 @@ public class RoleSetAndWebMenu extends AggregateRoot {
 	 * @param webMenuCd
 	 * @param roleSetCd
 	 */
-	private RoleSetAndWebMenu(String companyId, WebMenuCode webMenuCd, RoleSetCode roleSetCd) {
+	public RoleSetAndWebMenu(String companyId, String webMenuCd, String roleSetCd) {
 		super();
 		this.companyId = companyId;
-		this.webMenuCd = webMenuCd;
-		this.roleSetCd = roleSetCd;
-	}
-	
-	/**
-	 * Build a default role set domain
-	 *
-	 * @param companyId
-	 * @param webMenuCd
-	 * @param roleSetCd
-	 */
-	public static RoleSetAndWebMenu create(String companyId, String webMenuCd, String roleSetCd) {
-		return new RoleSetAndWebMenu(companyId, new WebMenuCode(webMenuCd), new RoleSetCode(roleSetCd));
+		this.webMenuCd = new WebMenuCode(webMenuCd);
+		this.roleSetCd = new RoleSetCode(roleSetCd);
 	}
 	
 	@Override
 	public void validate() {
 		super.validate();
-		/*if (webMenuCd == null || StringUtils.isNoneBlank(this.webMenuCd.v())) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_853");
-		}
-		*/
 	}
 }

@@ -1,10 +1,7 @@
 package nts.uk.ctx.sys.auth.app.find.roleset;
 
-import java.util.List;
-
 import lombok.Data;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 
 @Data
 public class DefaultRoleSetDto {

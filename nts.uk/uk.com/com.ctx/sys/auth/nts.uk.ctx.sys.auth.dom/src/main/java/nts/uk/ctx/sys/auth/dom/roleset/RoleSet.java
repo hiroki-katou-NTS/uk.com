@@ -173,6 +173,20 @@ public class RoleSet extends AggregateRoot {
 	}
 	
 	/**
+	 * Validate for update
+	 */
+	public void validateForUpdate() {
+		super.validate();
+	
+		//throw error if there are not any role 
+		if (!hasRole()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_???");
+			bbe.throwExceptions();
+		}
+
+	}
+	/**
 	 * Check are there any role ?
 	 * @return
 	 */
@@ -191,22 +205,25 @@ public class RoleSet extends AggregateRoot {
 	 * Validate constrains before perform deleting
 	 */
 	public void validateForDelete() {
-		if (isDefault()) {
-			BundledBusinessException bbe = BundledBusinessException.newInstance();
-			bbe.addMessage("Msg_585");
-			bbe.throwExceptions();
-		}
+		// ロールセット個人別付与で使用されている場合は削除できない
 		if (isGrantedForMember()) {
 			BundledBusinessException bbe = BundledBusinessException.newInstance();
 			bbe.addMessage("Msg_???");
 			bbe.throwExceptions();
 		}
+		// ロールセット職位別付与で使用されている場合は削除できない
 		if (isGrantedForPosition()) {
 			BundledBusinessException bbe = BundledBusinessException.newInstance();
 			bbe.addMessage("Msg_???");
 			bbe.throwExceptions();
 		}
-		
+
+		// ドメインモデル「既定のロールセット」を取得する
+		if (isDefault()) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_585");
+			bbe.throwExceptions();
+		}		
 	}
 	
 	/**

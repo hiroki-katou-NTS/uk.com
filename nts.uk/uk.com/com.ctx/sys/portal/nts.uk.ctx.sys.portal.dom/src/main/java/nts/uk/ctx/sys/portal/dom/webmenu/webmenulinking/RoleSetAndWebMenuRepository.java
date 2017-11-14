@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 既�?�?�ロールセット - Interface DefaultRoleSetRepository
+ * 既�?�?�ロールセット - Interface DefaultRoleSetRepository
  * @author HieuNV
  *
  */
@@ -23,8 +23,16 @@ public interface RoleSetAndWebMenuRepository {
 	 */
 	 Optional<RoleSetAndWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd);
 	 
+	 /**
+	  * Find all by company id and roleSetCode.
+	  * @param companyId
+	  * @param roleSetCd
+	  * @return
+	  */
+	 List<RoleSetAndWebMenu> findByRoleSetCd(String companyId, String roleSetCd);
+	 
 	/**
-	 * Find by Company id.
+	 * Find all by company id.
 	 *
 	 * @param companyId
 	 * @return

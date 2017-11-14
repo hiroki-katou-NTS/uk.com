@@ -10,11 +10,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.sys.auth.dom.role.PersonRole;
-import nts.uk.ctx.sys.auth.dom.role.PersonRoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;

@@ -10,10 +10,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenuRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetCode;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWebMenu;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWebMenuPK;
 
@@ -27,11 +25,15 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 
 	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID = "SELECT rw FROM SacmtRoleSetWebMenu rw"
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId ";
-			
+
+	private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD = "SELECT rw FROM SacmtRoleSetWebMenu rw"
+			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
+			+ " rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
+	
 	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu toDomain(SptmtRoleSetWebMenu entity) {
 		return new RoleSetAndWebMenu(entity.roleSetWebMenuPK.companyId
-				, new WebMenuCode(entity.roleSetWebMenuPK.webMenuCd)
-				, new RoleSetCode(entity.roleSetWebMenuPK.roleSetCd)
+				, entity.roleSetWebMenuPK.webMenuCd
+				, entity.roleSetWebMenuPK.roleSetCd
 				);
 	}
 
@@ -54,6 +56,14 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 	public List<RoleSetAndWebMenu> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID, SptmtRoleSetWebMenu.class)
 				.setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<RoleSetAndWebMenu> findByRoleSetCd(String companyId, String roleSetCd) {
+		return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CD, SptmtRoleSetWebMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("roleSetCd", roleSetCd)
 				.getList(c -> toDomain(c));
 	}
 
@@ -85,4 +95,6 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, webMenuCd, roleSetCd);
 		this.commandProxy().remove(SptmtRoleSetWebMenu.class, pk);
 	}
+
+
 }

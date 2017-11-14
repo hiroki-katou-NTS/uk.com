@@ -22,8 +22,6 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 	@Override
 	protected String handle(CommandHandlerContext<RoleSetCommand> context) {
 		RoleSetCommand command = context.getCommand();
-		String newId = IdentifierUtil.randomUniqueId();
-		String newHistId = IdentifierUtil.randomUniqueId();
 
 		RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
 				, command.getCompanyId()
@@ -52,6 +50,6 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 		// register to web menu link - ドメインモデル「ロールセット別紐付け」を新規登録する
 		// TODO how to call from other context???
 
-		return newId;
+		return command.getRoleSetCd();
 	}
 }
