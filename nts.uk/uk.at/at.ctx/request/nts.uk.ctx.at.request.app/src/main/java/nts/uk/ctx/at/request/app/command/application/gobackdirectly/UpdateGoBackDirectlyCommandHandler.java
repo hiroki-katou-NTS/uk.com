@@ -74,7 +74,6 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 				command.appCommand.getEnteredPersonSID(), 
 				new AppReason(command.appCommand.getReversionReason()), 
 				command.appCommand.getApplicationDate(), 
-				command.appCommand.getAppReasonID(), 
 				new AppReason(command.appCommand.getApplicationReason()), 
 				EnumAdaptor.valueOf(command.appCommand.getApplicationType(),ApplicationType.class), 
 				command.appCommand.getApplicantSID(), 
