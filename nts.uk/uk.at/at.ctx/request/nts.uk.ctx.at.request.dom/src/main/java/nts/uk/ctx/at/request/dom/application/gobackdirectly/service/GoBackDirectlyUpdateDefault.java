@@ -71,7 +71,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				.getApplicationSettingByComID(goBackDirectly.getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(application.getAppReasonID() + application.getApplicationReason().v())) {
+				&& Strings.isBlank(application.getApplicationReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
 		application.setVersion(goBackDirectly.getVersion());

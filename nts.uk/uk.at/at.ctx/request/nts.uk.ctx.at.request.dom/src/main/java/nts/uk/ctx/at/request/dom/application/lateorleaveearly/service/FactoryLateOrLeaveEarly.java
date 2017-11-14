@@ -9,6 +9,6 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 
 public interface FactoryLateOrLeaveEarly {
 
-	LateOrLeaveEarly buildLateOrLeaveEarly(String appID, GeneralDate applicationDate, int prePostAtr, String appReasonID, String applicationReason, List<AppApprovalPhase> listAppApprovalPhase,
+	LateOrLeaveEarly buildLateOrLeaveEarly(String appID, GeneralDate applicationDate, int prePostAtr, String applicationReason, List<AppApprovalPhase> listAppApprovalPhase,
 			int early1, int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2, int late2, int lateTime2);
 }

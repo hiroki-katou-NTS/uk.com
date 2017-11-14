@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -65,7 +64,6 @@ public class BsymtIncomeTax extends UkJpaEntity implements Serializable{
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return this.bsymtIncomeTaxPK;
 	}
 
