@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.infra.repository.role;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,8 +17,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.auth.dom.role.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
 
@@ -79,7 +83,9 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			return new Role(new JpaRoleGetMemento(sacmtRole));
 		}).collect(Collectors.toList());
 	}
-
+	
+	
+	
 	@Override
 	public void insert(Role role) {
 		this.commandProxy().insert(toEntity(role));		
@@ -105,6 +111,18 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		entity.setContractCode(role.getContractCode().toString());
 		entity.setAssignAtr(role.getAssignAtr().value);
 		return entity;
+	}
+
+	@Override
+	public Optional<Role> findByType(String companyId, RoleType roleType) {
+		
+		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ";
+		SacmtRole entity = this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("companyId", companyId).setParameter("roleType", roleType).getSingleOrNull();
+		if (entity != null) {
+			return Optional.of(new Role(new JpaRoleGetMemento(entity)));
+		}
+		return Optional.ofNullable(null);
 	}
 
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.dom.role;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoleRepository {
 	
@@ -41,4 +42,13 @@ public interface RoleRepository {
 	 * @param roleId
 	 */
 	void remove(String roleId);
+	
+	/**
+	 * find by role type
+	 * 
+	 * @param companyId
+	 * @param roleType
+	 * @return Role
+	 */
+	Optional<Role> findByType(String companyId, RoleType roleType);
 }
