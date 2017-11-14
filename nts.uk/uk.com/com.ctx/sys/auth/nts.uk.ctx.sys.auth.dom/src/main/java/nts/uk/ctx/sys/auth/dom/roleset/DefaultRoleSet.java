@@ -30,20 +30,10 @@ public class DefaultRoleSet extends AggregateRoot {
 	 * @param companyId
 	 * @param roleSetCd
 	 */
-	private DefaultRoleSet(String companyId, RoleSetCode roleSetCd) {
+	public DefaultRoleSet(String companyId, String roleSetCd) {
 		super();
 		this.companyId = companyId;
-		this.roleSetCd = roleSetCd;
-	}
-	
-	/**
-	 * Build a default role set domain
-	 *
-	 * @param companyId
-	 * @param roleSetCd
-	 */
-	public static DefaultRoleSet create(String companyId, String roleSetCd) {
-		return new DefaultRoleSet(companyId, new RoleSetCode(roleSetCd));
+		this.roleSetCd = new RoleSetCode(roleSetCd);
 	}
 	
 	/** 

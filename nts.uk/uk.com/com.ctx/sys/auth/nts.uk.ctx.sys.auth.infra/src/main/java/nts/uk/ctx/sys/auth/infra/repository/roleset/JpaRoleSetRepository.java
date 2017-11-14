@@ -5,11 +5,13 @@
 package nts.uk.ctx.sys.auth.infra.repository.roleset;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
@@ -28,10 +30,10 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	private RoleSet toDomain(SacmtRoleSet entity) {
 	
-		return RoleSet.create(entity.roleSetPK.roleSetCd
+		return new RoleSet(entity.roleSetPK.roleSetCd
 				, entity.roleSetPK.companyId
 				, entity.roleSetName
-				, entity.approvalAuthority
+				, EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class)
 				, entity.officeHelperRole
 				, entity.myNumberRole
 				, entity.hRRole

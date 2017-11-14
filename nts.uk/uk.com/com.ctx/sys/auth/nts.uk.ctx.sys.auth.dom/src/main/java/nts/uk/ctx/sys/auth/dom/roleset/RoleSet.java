@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -75,28 +74,27 @@ public class RoleSet extends AggregateRoot {
 	 * @param employmentRole
 	 * @param salaryRole
 	 */
-	private RoleSet(RoleSetCode roleSetCd
+	public RoleSet(String roleSetCd
 			, String companyId
-			, RoleSetName roleSetName
+			, String roleSetName
 			, ApprovalAuthority approvalAuthority
-			, Optional<Role> officeHelperRole
-			, Optional<Role> myNumberRole
-			, Optional<Role> hRRole
-			, Optional<Role> personInfRole
-			, Optional<Role> employmentRole
-			, Optional<Role> salaryRole
-			) {
+			, String officeHelperRoleCd
+			, String myNumberRoleCd
+			, String hRRoleCd
+			, String personInfRoleCd
+			, String employmentRoleCd
+			, String salaryRoleCd) {
 		super();
-		this.roleSetCd 			= roleSetCd;
+		this.roleSetCd 			= new RoleSetCode(roleSetCd);
 		this.companyId 			= companyId;
-		this.roleSetName 		= roleSetName;
+		this.roleSetName 		= new RoleSetName(roleSetName);
 		this.approvalAuthority 	= approvalAuthority;
-		this.officeHelperRole 	= officeHelperRole;
-		this.myNumberRole 		= myNumberRole;
-		this.hRRole 			= hRRole;
-		this.personInfRole 		= personInfRole;
-		this.employmentRole 	= employmentRole;
-		this.salaryRole 		= salaryRole;
+		this.officeHelperRole 	= getRoleById(officeHelperRoleCd);
+		this.myNumberRole 		= getRoleById(myNumberRoleCd);
+		this.hRRole 			= getRoleById(hRRoleCd);
+		this.personInfRole 		= getRoleById(personInfRoleCd);
+		this.employmentRole 	= getRoleById(employmentRoleCd);
+		this.salaryRole 		= getRoleById(salaryRoleCd);
 	}
 	
 	/**
@@ -132,48 +130,11 @@ public class RoleSet extends AggregateRoot {
 	}
 
 	/**
-	 * Build a role set domain
-	 *
-	 * @param roleSetCd
-	 * @param companyId
-	 * @param roleSetName
-	 * @param approvalAuthority
-	 * @param officeHelperRole
-	 * @param myNumberRole
-	 * @param hRRole
-	 * @param personInfRole
-	 * @param employmentRole
-	 * @param salaryRole
-	 */
-	public static RoleSet create(String roleSetCd
-			, String companyId
-			, String roleSetName
-			, boolean approvalAuthority
-			, String officeHelperRoleCd
-			, String myNumberRoleCd
-			, String hRRoleCd
-			, String personInfRoleCd
-			, String employmentRoleCd
-			, String salaryRoleCd) {
-		return new RoleSet(new RoleSetCode(roleSetCd)
-				, companyId
-				, new RoleSetName(roleSetName)
-				, approvalAuthority ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
-				, getRoleById(officeHelperRoleCd)
-				, getRoleById(myNumberRoleCd)
-				, getRoleById(hRRoleCd)
-				, getRoleById(personInfRoleCd)
-				, getRoleById(employmentRoleCd)
-				,getRoleById(salaryRoleCd)
-				);
-	}
-
-	/**
 	 * Extract Role by Id
 	 * @param roleId
 	 * @return
 	 */
-	private static Optional<Role> getRoleById(String roleId) {
+	private Optional<Role> getRoleById(String roleId) {
 		//TODO - > why is it list?
 		//return StringUtil.isNullOrEmpty(officeHelperRole, true) ? null : roleRepository.findById(roleId).get(0);
 		return null;
