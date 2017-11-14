@@ -95,7 +95,7 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		if (optionalPublicHolidayWork.isPresent()) {
 			return optionalPublicHolidayWork.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/*
@@ -111,7 +111,7 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		if (optionalInlawBreakTime.isPresent()) {
 			return optionalInlawBreakTime.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/*
@@ -127,7 +127,7 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		if (optionalOutsideLawBreakTime.isPresent()) {
 			return optionalOutsideLawBreakTime.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/*
@@ -143,7 +143,7 @@ public class JpaPersonalWorkCategoryGetMemento implements PersonalWorkCategoryGe
 		if (optionalHolidayAttendance.isPresent()) {
 			return optionalHolidayAttendance.map(entity -> this.toDomain(entity));
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	/**
