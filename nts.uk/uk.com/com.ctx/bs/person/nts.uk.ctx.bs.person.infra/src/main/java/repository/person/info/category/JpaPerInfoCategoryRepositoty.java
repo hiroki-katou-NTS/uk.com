@@ -89,6 +89,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtDateRangeItem d"
 			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
 	
+	private final static String SELECT_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND ca.categoryCd = :categoryCd"
+			+ " AND ca.cid.perInfoCtgId = :cid";
+	
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -310,6 +317,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	
 	// vinhpx: end
 
+	@Override
+	public Optional<PersonInfoCategory> getPerInfoCategoryByCtgCD(String categoryCD, String companyID) {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_CATEGORY_CD_QUERY, Object[].class)
+				.setParameter("categoryCd", categoryCD).setParameter("cid", companyID).getSingle(c -> {
+					return createDomainFromEntity(c);
+				});
+	}
 
 
 }
