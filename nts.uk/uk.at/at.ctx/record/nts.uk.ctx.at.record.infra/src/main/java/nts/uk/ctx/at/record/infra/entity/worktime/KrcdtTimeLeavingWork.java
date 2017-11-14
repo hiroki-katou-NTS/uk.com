@@ -111,8 +111,13 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDaiLeavingWork daiLeavingWork;
+	
 
-	public KrcdtTimeLeavingWork timeLeavingWork;
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDaiTemporaryTime daiTemporaryTime;
 
 	public KrcdtTimeLeavingWork(KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK, BigDecimal attendanceActualRoudingTime,
 			BigDecimal attendanceActualTime, String attendanceActualPlaceCode, BigDecimal attendanceActualSourceInfo,
@@ -120,8 +125,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 			BigDecimal attendanceStampSourceInfo, BigDecimal attendanceNumberStamp,
 			BigDecimal leaveWorkActualRoundingTime, BigDecimal leaveWorkActualTime, String leaveWorkActualPlaceCode,
 			BigDecimal leaveActualSourceInfo, BigDecimal leaveWorkStampRoundingTime, BigDecimal leaveWorkStampTime,
-			String leaveWorkStampPlaceCode, BigDecimal leaveWorkStampSourceInfo, BigDecimal leaveWorkNumberStamp,
-			KrcdtTimeLeavingWork timeLeavingWork) {
+			String leaveWorkStampPlaceCode, BigDecimal leaveWorkStampSourceInfo, BigDecimal leaveWorkNumberStamp) {
 		super();
 		this.krcdtTimeLeavingWorkPK = krcdtTimeLeavingWorkPK;
 		this.attendanceActualRoudingTime = attendanceActualRoudingTime;
@@ -142,7 +146,6 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		this.leaveWorkStampPlaceCode = leaveWorkStampPlaceCode;
 		this.leaveWorkStampSourceInfo = leaveWorkStampSourceInfo;
 		this.leaveWorkNumberStamp = leaveWorkNumberStamp;
-		this.timeLeavingWork = timeLeavingWork;
 	}
 	
 	public static List<TimeLeavingWork> toDomain(List<KrcdtTimeLeavingWork> krcdtTimeLeavingWorks){

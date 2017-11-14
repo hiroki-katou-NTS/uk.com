@@ -22,14 +22,22 @@
          <ui:define name="content">
             <com:ko tag="with" bind="optionalItemHeader">
                <div id="functions-area">
-                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
+                  <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
+                  #{i18n.getText('KMK002_1')}</button>
                </div>
                <div id="contents-area" style="display: none" data-bind="visible: true">
                   <!-- Optional item grid list. -->
                   <div class="opt-item-grid-list pull-left caret-right caret-background bg-green">
                      <i class="icon icon-searchbox"></i>
-                     <div tabindex="2" data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'tbl-master-list', items: optionalItemHeaders, 
-                        selected: selectedCode, selectedKey: 'itemNo', fields: ['itemNo', 'itemName']}"></div>
+                     <div tabindex="2" data-bind="ntsSearchBox: {
+                        label: nts.uk.resource.getText('KMK002_2'),
+                        targetKey: 'itemNo',
+                        mode:'igGrid',
+                        comId:'tbl-master-list',
+                        items: optionalItemHeaders,
+                        selected: selectedCode,
+                        selectedKey: 'itemNo',
+                        fields: ['itemNo', 'itemName']}"></div>
                      <table tabindex="4" id="tbl-master-list"
                         data-bind="ntsGridList: {
                         name: '#[KMK002_6]',
@@ -55,7 +63,7 @@
                                  name: '#[KMK002_12]',
                                  value: optionalItemName,
                                  constraint: 'OptionalItemName', 
-                                 enable: true, 
+                                 enable: $parent.hasSelected, 
                                  required: true}"/></td>
                            </tr>
                            <tr>
@@ -71,7 +79,7 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: usageAtr,
-                                    enable: true }"></div>
+                                    enable: $parent.hasSelected }"></div>
                               </td>
                               <!-- Calculation ResultRange -->
                               <td>

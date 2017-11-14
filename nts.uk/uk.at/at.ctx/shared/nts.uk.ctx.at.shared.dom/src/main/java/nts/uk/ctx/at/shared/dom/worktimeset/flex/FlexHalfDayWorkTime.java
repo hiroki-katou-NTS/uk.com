@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.flex;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowWorkRestTimezone;
 
 /**
  * The Class FlexHalfDayWorkTime.

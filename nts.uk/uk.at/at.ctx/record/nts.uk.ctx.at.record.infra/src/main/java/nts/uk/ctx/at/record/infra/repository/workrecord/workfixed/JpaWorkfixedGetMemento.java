@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.workfixed;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.ConfirmClsStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento;
@@ -43,6 +45,9 @@ public class JpaWorkfixedGetMemento implements WorkFixedGetMemento {
 	 */
 	@Override
 	public String getConfirmPId() {
+		if (Strings.isEmpty(this.typeValue.getConfirmPid())) {
+			return null;
+		}
 		return this.typeValue.getConfirmPid();
 	}
 
@@ -75,6 +80,9 @@ public class JpaWorkfixedGetMemento implements WorkFixedGetMemento {
 	 */
 	@Override
 	public GeneralDate getFixedDate() {
+		if (this.typeValue.getFixedDate() == null) {
+			return null;
+		}
 		GeneralDate result = GeneralDate.legacyDate(this.typeValue.getFixedDate());
 		return result;
 	}

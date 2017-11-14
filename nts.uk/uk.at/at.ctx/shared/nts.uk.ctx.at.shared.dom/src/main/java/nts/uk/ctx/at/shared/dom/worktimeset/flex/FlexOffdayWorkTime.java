@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.flex;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowWorkRestTimezone;
 
 /**
  * The Class FlexOffdayWorkTime.

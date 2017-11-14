@@ -14,10 +14,6 @@ import lombok.Setter;
  * @return the employee name
  */
 @Getter
-
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
 @Builder
 @Setter
 public class PersonInfoWorkFixedDto {
