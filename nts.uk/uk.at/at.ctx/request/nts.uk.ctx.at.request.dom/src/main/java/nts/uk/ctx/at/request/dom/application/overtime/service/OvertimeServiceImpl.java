@@ -63,7 +63,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					// ドメインモデル「申請別対象勤務種類」を取得
 					List<AppEmployWorkType> employWorkTypes = this.appEmploymentSettingRepository.getEmploymentWorkType(
 							companyID, sEmpHistImport.getEmploymentCode(), ApplicationType.OVER_TIME_APPLICATION.value);
-					if (employWorkTypes != null) {
+					if (employWorkTypes.size() > 0) {
 						// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
 						if(personalLablorCodition.isPresent()){
 							//ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)

@@ -109,5 +109,12 @@ public interface IOvertimePreProcess {
 	 */
 	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting);
 	
+	/**
+	 * 01-18_実績の内容を表示し直す
+	 * @param prePostAtr
+	 * @return
+	 */
+	public void getResultContentActual(int prePostAtr);
+	
 	
 }

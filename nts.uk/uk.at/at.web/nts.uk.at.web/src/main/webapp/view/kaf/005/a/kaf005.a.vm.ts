@@ -64,6 +64,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
+        instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
+        instructInfor : KnockoutObservable <string> = ko.observable('');
 
         constructor() {
 
@@ -129,6 +131,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
             self.selectedReason2(data.divergenceReasonID);
             self.multilContent2(data.divergenceReasonContent);
+            self.instructInforFlag(data.displayOvertimeInstructInforFlg);
+            self.instructInfor(data.overtimeInstructInformation);
 
             // 休憩時間
             for(let i = 0;i < 11; i++){
