@@ -519,21 +519,21 @@ public class EmpPerInfoCategoryFinder {
 			break;
 		case "CS00013":
 			List<SubJobPosition> lstSubJobPos = subJobPosRepository.getSubJobPosByDeptId(infoId);
-			List<LayoutPersonInfoClsDto> subList;
-			for(SubJobPosition subJobPosition : lstSubJobPos){
-				subList = new ArrayList<>();
-				for(PerInfoItemDefDto item : lstPerInfoItemDef){
-					List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
-					//getActionRole ActionRole
-					ActionRole  actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(), item.getId());
-					//mapping item with data
-					LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, actionRole, subJobPosition);			
-					subList.add(objMap);
-				}	
-				lstLayoutPersonInfoClsDto.add(subList);
-			}
-			//set optional data
-			getCtgItemOptionDto(lstLayoutPersonInfoClsDto, recordId, empId);
+//			List<LayoutPersonInfoClsDto> subList;
+//			for(SubJobPosition subJobPosition : lstSubJobPos){
+//				subList = new ArrayList<>();
+//				for(PerInfoItemDefDto item : lstPerInfoItemDef){
+//					List<PerInfoItemDefDto> itemSet = getPerItemSet(item);
+//					//getActionRole ActionRole
+//					ActionRole  actionRole = getActionRole(employee.getSId(), perInfoCtg.getPersonInfoCategoryId(), item.getId());
+//					//mapping item with data
+//					LayoutPersonInfoClsDto objMap = ItemDefFactoryNew.matchInformation(perInfoCtg.getCategoryCode().v(), itemSet, actionRole, subJobPosition);			
+//					subList.add(objMap);
+//				}	
+//				lstLayoutPersonInfoClsDto.add(subList);
+//			}
+//			//set optional data
+//			getCtgItemOptionDto(lstLayoutPersonInfoClsDto, recordId, empId);
 			break;
 		}
 		return lstEmpMaintLayoutDto;
