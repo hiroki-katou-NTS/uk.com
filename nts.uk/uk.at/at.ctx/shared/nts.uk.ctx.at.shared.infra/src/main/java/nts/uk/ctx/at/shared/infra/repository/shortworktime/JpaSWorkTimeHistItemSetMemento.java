@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 import java.util.ArrayList;
 import java.util.List;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemSetMemento;
@@ -74,10 +73,6 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 */
 	@Override
 	public void setLstTimeSlot(List<SChildCareFrame> lstTimeZone) {
-		List<BshmtSchildCareFrame> listWorkType = this.entity.getLstBshmtSchildCareFrame();
-		if (CollectionUtil.isEmpty(listWorkType)) {
-			listWorkType = new ArrayList<>();
-		}
 		List<BshmtSchildCareFrame> newListBshmtSchildCareFrame = new ArrayList<>();
 
 		for (SChildCareFrame schildCareFrame : lstTimeZone) {

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -43,23 +44,18 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 
+	@Inject
+	private ClosureService closureService;
+
 	@Override
-	public int createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime, int reCreateAttr,
+	public List<ClosureIdLockDto> createDailyResultEmployee(List<String> employeeIds, DatePeriod periodTime, int reCreateAttr,
 			String empCalAndSumExecLogID) {
 
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		/**
-		 * 正常終了 : 0
-		 */
-		int endStatus = 0;
-
 		// int days = endDate.day() - startDate.day();
 		// GeneralDate processingDate = startDate;
-		//
-		// // lits day between startDate and endDate
-		// List<GeneralDate> listDay = this.getDaysBetween(startDate, endDate);
 
 		// Imported（就業）「所属雇用履歴」を取得する
 		// TODO - waiting request list
@@ -96,10 +92,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		});
 
 		// アルゴリズム「実績ロックされているか判定する」を実行する
-		// TODO
-		// this.determineActualLocked(companyId, employeeAndClosures);
+		List<ClosureIdLockDto> closureIdLockDtos = this.determineActualLocked(companyId, employeeAndClosures, periodTime);
 
-		return endStatus;
+		return closureIdLockDtos;
 	}
 
 	/**
@@ -111,103 +106,70 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	 * @param closureIds
 	 * @return
 	 */
-	private List<Integer> determineActualLocked(String companyId, List<EmployeeAndClosure> employeeAndClosures) {
+	private List<ClosureIdLockDto> determineActualLocked(String companyId, List<EmployeeAndClosure> employeeAndClosures, DatePeriod periodTime) {
 
 		/**
 		 * ロック : 0 , アンロック : 1
 		 */
-		List<Integer> locks = new ArrayList<>();
+		List<ClosureIdLockDto> locks = new ArrayList<>();
+
+		// lits day between startDate and endDate
+		List<GeneralDate> listDay = this.getDaysBetween(periodTime.start(), periodTime.end());
 
 		// アルゴリズム「当月の期間を算出する」を実行する
 
 		/**
 		 * アルゴリズム「当月の実績ロックの取得」を実行する
 		 */
-		List<Integer> closureIds = employeeAndClosures.stream().map(f -> {return f.getClosureId();}).collect(Collectors.toList());
+		List<Integer> closureIds = employeeAndClosures.stream().map(f -> {
+			return f.getClosureId();
+		}).collect(Collectors.toList());
 		// 全てのドメインモデル「当月の実績ロック」を取得する
 		List<ActualLock> actualLockLists = this.actualLockRepository.findByListId(companyId, closureIds);
-		//実績ロックされているかチェックする
-		List<ActualLock> closureIdLockMaps = actualLockLists.stream()
+
+		List<ActualLock> closureIdUnLockMaps = actualLockLists.stream()
 				.filter(item -> item.getDailyLockState().value == 0).collect(Collectors.toList());
-		
-		List<Integer> closureIdLocks = closureIdLockMaps.stream().map(f -> {return f.getClosureId().value;}).collect(Collectors.toList());
-		
-		// ドメインモデル「締め」を取得する
-		List<Closure> listClosures = this.closureRepository.findByListId(companyId,closureIdLocks);
-		
-		// アルゴリズム「当月の期間を算出する」を実行する	
-		// closureId map with currentmonth
-		Map<Integer, Integer> currentMonthMap =  listClosures.stream().collect(Collectors.toMap(Closure::getClosureId, x -> x.getClosureMonth().getProcessingYm().v()));
-		// ドメインモデル「締め変更履歴」取得
-//		this.closureRepository.
 
-		
+		closureIdUnLockMaps.forEach(f -> {
+			ClosureIdLockDto lockDto = new ClosureIdLockDto(f.getClosureId().value, 0);
+			locks.add(lockDto);
+		});
 
-		Map<Integer, Integer> closureIdLockOrNotMap = new HashMap<>();
+		// 実績ロックされているかチェックする
+		List<ActualLock> closureIdLockMaps = actualLockLists.stream()
+				.filter(item -> item.getDailyLockState().value == 1).collect(Collectors.toList());
 
-		// actualLockLists.stream().filter(f -> {
-		// f.getClosureId()
-		// })
-
-		// /**
-		// * アルゴリズム「特定の日付の締めを取得する」を実行する
-		// */
-		// TODO fake
-		// 期間．開始日を処理日にする (Ngày xử lý = Ngày bắt đầu)
-		GeneralDate processingDate = GeneralDate.today();
-		// TODO fake
-		List<String> employmentCDs = new ArrayList<>();
-
-		// list actual lock has un-locked
-		List<ActualLock> unlockActualLockList = actualLockLists.stream().filter(f -> f.getDailyLockState().value == 0)
-				.collect(Collectors.toList());
-		// Map<ClosureId, ActualLock> unlockedActualLockMap =
-		// actualLockLists.stream()
-		// .filter(f -> f.getDailyLockState().value == 0)
-		// .collect(Collectors.toMap(ActualLock::getClosureId, x -> x));
-
-		// list actual lock has locked
-		List<ActualLock> lockedActualLockList = actualLockLists.stream().filter(f -> f.getDailyLockState().value == 1)
-				.collect(Collectors.toList());
-		// Map<ClosureId, ActualLock> lockedActualLockMap =
-		// actualLockLists.stream()
-		// .filter(f -> f.getDailyLockState().value == 1)
-		// .collect(Collectors.toMap(ActualLock::getClosureId, x -> x));
-
-		/**
-		 * アルゴリズム「当月の期間を算出する」を実行する
-		 */
-		// ドメインモデル「締め変更履歴」取得
-		List<Integer> closeIdLocked = lockedActualLockList.stream().map(f -> {
+		List<Integer> closureIdLocks = closureIdLockMaps.stream().map(f -> {
 			return f.getClosureId().value;
 		}).collect(Collectors.toList());
-		List<Integer> currentMonthLocked = listClosures.stream().map(f -> {
-			return f.getClosureMonth().getProcessingYm().v();
-		}).collect(Collectors.toList());
-		Collections.sort(currentMonthLocked);
 
-		List<ClosureHistory> closureHistories = new ArrayList<>();
-		// = this.closureRepository.findByListClouseId(companyId,
-		// closeIdLocked, currentMonthLocked.get(0),
-		// currentMonthLocked.get(currentMonthLocked.size() - 1));
+		// ドメインモデル「締め」を取得する
+		List<Closure> listClosures = this.closureRepository.findByListId(companyId, closureIdLocks);
 
-		if (!closureHistories.isEmpty()) {
-			Map<ClosureId, ClosureDate> closureDayMap = closureHistories.stream()
-					.collect(Collectors.toMap(ClosureHistory::getClosureId, x -> x.getClosureDate()));
+		// アルゴリズム「当月の期間を算出する」を実行する
+		// closureId map with DatePeriod
+		Map<Integer, DatePeriod> DatePeriodMap = new HashMap<>();
+		// closureId map with current month
+		Map<Integer, YearMonth> currentMonthMap = listClosures.stream()
+				.collect(Collectors.toMap(Closure::getClosureId, x -> x.getClosureMonth().getProcessingYm()));
+		currentMonthMap.forEach((key, value) -> {
+			DatePeriod closurePeriod = this.closureService.getClosurePeriod(key, value);
+			DatePeriodMap.put(key, closurePeriod);
+		});
 
-			Map<ClosureId, YearMonth> startYearMonthMap = closureHistories.stream()
-					.collect(Collectors.toMap(ClosureHistory::getClosureId, x -> x.getStartYearMonth()));
-
-			Map<ClosureId, YearMonth> endYearMonthMap = closureHistories.stream()
-					.collect(Collectors.toMap(ClosureHistory::getClosureId, x -> x.getEndYearMonth()));
-
-			closeIdLocked.forEach(f -> {
-				// if (closureDayMap.get(f).getLastDayOfMonth() ||
-				// !DateUtil.isDateOfMonth(year, month, dayOfMonth)) {
-				//
-				// }
+		// 基準日が当月かチェックする
+		DatePeriodMap.forEach((key, value) -> {
+			listDay.forEach(f -> {
+				if (f.afterOrEquals(value.start()) && f.beforeOrEquals(value.end())) {
+					ClosureIdLockDto lockDto = new ClosureIdLockDto(key, 1);
+					locks.add(lockDto);
+				} else {
+					ClosureIdLockDto lockDto = new ClosureIdLockDto(key, 0);
+					locks.add(lockDto);
+				}
+				;
 			});
-		}
+		});
 
 		return locks;
 	}
@@ -215,7 +177,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
 		List<GeneralDate> daysBetween = new ArrayList<>();
 
-		while (startDate.before(endDate)) {
+		while (startDate.beforeOrEquals(endDate)) {
 			daysBetween.add(startDate);
 			GeneralDate temp = startDate.addDays(1);
 			startDate = temp;

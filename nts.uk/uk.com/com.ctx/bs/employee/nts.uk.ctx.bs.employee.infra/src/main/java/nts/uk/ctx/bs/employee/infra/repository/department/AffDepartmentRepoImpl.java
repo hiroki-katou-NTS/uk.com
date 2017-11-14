@@ -20,8 +20,11 @@ import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartment;
 @Stateless
 public class AffDepartmentRepoImpl extends JpaRepository implements AffDepartmentRepository {
 
-	private static final String SELECT_BY_EID_STD = "select ad from BsymtAffiDepartment sd"
-			+ "where ad.sid = :empId and ad.strD <= :std and ad.endD >= :std";
+	private static final String SELECT_BY_EID_STD = "select ad from BsymtAffiDepartment ad"
+			+ " where ad.sid = :empId and ad.strD <= :std and ad.endD >= :std";
+	
+	private static final String SELECT_BY_ID = "SELECT ad FROM BsymtAffiDepartment ad"
+			+ " WHERE ad.id = :affiDeptId";
 
 	@Override
 	public Optional<AffiliationDepartment> getByEmpIdAndStandDate(String employeeId, GeneralDate standandDate) {
@@ -87,6 +90,18 @@ public class AffDepartmentRepoImpl extends JpaRepository implements AffDepartmen
 	@Override
 	public void deleteAffDepartment(AffiliationDepartment domain) {
 		this.commandProxy().remove(BsymtAffiDepartment.class, domain.getId());
+	}
+
+	@Override
+	public Optional<AffiliationDepartment> getById(String affiDeptId) {
+		Optional<BsymtAffiDepartment> dataOpt = this.queryProxy().query(SELECT_BY_ID, BsymtAffiDepartment.class)
+				.setParameter("affiDeptId", affiDeptId).getSingle();
+		if (dataOpt.isPresent()) {
+			BsymtAffiDepartment ent = dataOpt.get();
+			return Optional.of(AffiliationDepartment.createDmainFromJavaType(ent.getId(), ent.getStrD(), ent.getEndD(),
+					ent.getSid(), ent.getDepId()));
+		}
+		return Optional.empty();
 	}
 
 }
