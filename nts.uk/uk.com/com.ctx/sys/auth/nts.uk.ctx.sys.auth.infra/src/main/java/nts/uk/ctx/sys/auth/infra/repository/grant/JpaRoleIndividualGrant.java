@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.auth.infra.repository.grant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,13 +20,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
-import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrantPK_;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant_;
-import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
-import nts.uk.ctx.sys.auth.infra.repository.role.JpaRoleGetMemento;
 
 @Stateless
 public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndividualGrantRepository {
@@ -86,15 +84,16 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 	}
 
 	@Override
-	public Optional<RoleIndividualGrant> findByRoleId(String roleId) {
+	public List<RoleIndividualGrant> findByRoleId(String roleId) {
+		List<RoleIndividualGrant> result = new ArrayList<RoleIndividualGrant>();
 		
 		String query ="SELECT e FROM SacmtRoleIndiviGrant e WHERE e.roleId = :roleId";
-		SacmtRoleIndiviGrant entity = this.queryProxy().query(query, SacmtRoleIndiviGrant.class)
-				.setParameter("roleId", roleId).getSingleOrNull();
-		if (entity != null) {
-			return Optional.of(new RoleIndividualGrant(new JpaRoleIndiviGrantGetMemento(entity)));
+		List<SacmtRoleIndiviGrant> entities = this.queryProxy().query(query, SacmtRoleIndiviGrant.class)
+				.setParameter("roleId", roleId).getList();
+		if (entities != null && !entities.isEmpty()) {
+			return entities.stream().map(e ->new RoleIndividualGrant(new JpaRoleIndiviGrantGetMemento(e))).collect(Collectors.toList());
 		}
-		return Optional.ofNullable(null);
+		return result;
 	}
 
 }
