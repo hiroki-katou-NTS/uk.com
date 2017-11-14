@@ -139,7 +139,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(data.overTimeInputs != null){
                 for(let i = 0;i < data.overTimeInputs.length;i++){
                     if(data.overTimeInputs[i].attendanceID == 1){
-                        self.overtimeHours.push(new common.OvertimeHour(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
+                        self.overtimeHours.push(new common.OverTimeInput("", "", 1, , "", data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
+                        //self.overtimeHours.push(new common.OvertimeHour(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
                     }
                     if(data.overTimeInputs[i].attendanceID == 2){
                         self.breakTimes.push(new common.BreakTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));

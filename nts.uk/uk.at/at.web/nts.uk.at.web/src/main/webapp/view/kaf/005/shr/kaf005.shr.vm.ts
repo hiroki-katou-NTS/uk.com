@@ -195,14 +195,34 @@ module nts.uk.at.view.kaf005.share {
             divergenceReasonContent: string
         }
         export class OverTimeInput {
-            companyID: string
-            appID: string
-            attendanceID: number
-            frameNo: number
-            attendanceName: string
-            startTime: number
-            endTime: number
-            applicationTime: number
+            companyID: KnockoutObservable<string>
+            appID: KnockoutObservable<string>
+            attendanceID: KnockoutObservable<number>
+            attendanceName: KnockoutObservable<string>
+            frameNo: KnockoutObservable<number>
+            frameName: KnockoutObservable<string>
+            startTime: KnockoutObservable<number>
+            endTime: KnockoutObservable<number>
+            applicationTime: KnockoutObservable<number>
+            constructor(
+                companyID: string,
+                appID: string,
+                attendanceID: number,
+                attendanceName: string,
+                frameNo: number,
+                frameName: string,
+                startTime: number,
+                endTime: number,
+                applicationTime: number) {
+                this.companyID = ko.observable(companyID);
+                this.appID = ko.observable(appID);
+                this.attendanceID = ko.observable(attendanceID);
+                this.attendanceName = ko.observable(attendanceName);
+                this.frameNo = ko.observable(frameNo);
+                this.frameName = ko.observable(frameName);
+                this.startTime = ko.observable(startTime);
+
+            }
         }
         export class RestTime {
             restTimeID: KnockoutObservable<string>;

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -37,9 +38,21 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 	}
 
 	@Override
-	public AppOverTime buildAppOverTime() {
-		// TODO Auto-generated method stub
-		return null;
+	public AppOverTime buildAppOverTime(String companyID,
+			String appID,
+			int overTimeAtr,
+			String workTypeCode, 
+			String siftCode, 
+			int workClockFrom1,
+			int workClockTo1,
+			int workClockFrom2,
+			int workClockTo2,
+			String divergenceReason,
+			int flexExessTime,
+			int overTimeShiftNight, List<OverTimeInput> overtimeInputs) {
+		AppOverTime appOverTime = AppOverTime.createSimpleFromJavaType(companyID, appID, overTimeAtr, workTypeCode, siftCode, workClockFrom1, workClockTo1, workClockFrom2, workClockTo2, divergenceReason, flexExessTime, overTimeShiftNight);
+		appOverTime.setOverTimeInput(overtimeInputs);
+		return appOverTime;
 	}
 
 }

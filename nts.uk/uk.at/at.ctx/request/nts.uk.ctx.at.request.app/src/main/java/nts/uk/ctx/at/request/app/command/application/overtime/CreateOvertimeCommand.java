@@ -5,8 +5,6 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
-import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
 @Getter
 public class CreateOvertimeCommand {
