@@ -8,8 +8,8 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktimeset.difftime.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.WorkTimezoneCommonSet;
 
 /**
  * The Class FixedWorkSetting.

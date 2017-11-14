@@ -17,7 +17,7 @@ import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommandHandler;
 @ApplicationScoped
 public class PeregCommandFacade {
 
-//	@Inject
+	@Inject
 	private PeregCommandHandlerCollector handlerCollector;
 	
 	/** Command handlers to add */
@@ -27,11 +27,11 @@ public class PeregCommandFacade {
 	private Map<String, PeregUpdateCommandHandler<?>> updateHandlers;
 
 	/** this handles command to add data defined by user. */
-//	@Inject
+	@Inject
 	private PeregUserDefAddCommandHandler userDefAdd;
 	
 	/** this handles command to update data defined by user. */
-//	@Inject
+	@Inject
 	private PeregUserDefUpdateCommandHandler userDefUpdate;
 
 	/**

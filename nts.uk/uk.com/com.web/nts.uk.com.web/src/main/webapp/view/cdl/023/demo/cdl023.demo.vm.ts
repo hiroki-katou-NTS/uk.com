@@ -14,6 +14,11 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         baseDate: KnockoutObservable<Date>;
         enableBaseDate: KnockoutObservable<boolean>;
         
+        // list item setting
+        itemSetting: KnockoutObservable<string>;
+        itemList: KnockoutObservableArray<any>;
+        selectedItems: KnockoutObservableArray<string>;
+        
         constructor() {
             let self = this;
             self.code = ko.observable(null);
@@ -21,19 +26,29 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             self.valueReturn = ko.observable(null);
             
             self.targetList = ko.observableArray([
-                {value: 1, name: '雇用'},
-                {value: 2, name: '分類'},
-                {value: 3, name: '職位'},
-                {value: 4, name: '職場'},
-                {value: 5, name: '部門'},
-                {value: 6, name: '職場個人'},
-                {value: 7, name: '部門個人'}
+                {value: TargetType.EMPLOYMENT, name: '雇用'},
+                {value: TargetType.CLASSIFICATION, name: '分類'},
+                {value: TargetType.JOB_TITLE, name: '職位'},
+                {value: TargetType.WORKPLACE, name: '職場'},
+                {value: TargetType.DEPARTMENT, name: '部門'},
+                {value: TargetType.WORKPLACE_PERSONAL, name: '職場個人'},
+                {value: TargetType.DEPARTMENT_PERSONAL, name: '部門個人'}
             ]);
             self.selectedTarget = ko.observable(1);
             
             self.baseDate = ko.observable(moment(new Date()).toDate());
             self.enableBaseDate = ko.computed(() => {
-                return self.selectedTarget() >= 4 && self.selectedTarget() <= 7;
+                return self.isHasBaseDate();
+            });
+            
+            self.itemSetting = ko.observable(null);
+            self.itemList = ko.observableArray([]);
+            self.selectedItems = ko.observableArray([]);
+            
+            // subscribe
+            self.selectedTarget.subscribe(newValue => {
+                self.itemList([]);
+                self.selectedItems([]);
             });
         }
         
@@ -48,6 +63,16 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             return dfd.promise();
         }
 
+        public addItem() {
+            let self = this;
+            
+            // add item
+            self.itemList.push({id: self.itemList().length, name: self.itemSetting()});
+            
+            // reset value
+            self.itemSetting(null);
+        }
+        
         /**
          * closeDialog
          */
@@ -65,6 +90,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 code: self.code(),
                 name: self.name(),
                 targetType: self.selectedTarget(),
+                itemListSetting: self.selectedItems(),
                 baseDate: moment(self.baseDate()).toDate()
             };
             nts.uk.ui.windows.setShared("CDL023Input", object);
@@ -78,6 +104,17 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 }
                 self.valueReturn(lstSelection.join(", "));
             });
+        }
+        
+        /**
+         * isHasBaseDate
+         */
+        private isHasBaseDate(): boolean {
+            let self = this;
+            return self.selectedTarget() == TargetType.WORKPLACE
+                || self.selectedTarget() == TargetType.WORKPLACE_PERSONAL
+                || self.selectedTarget() == TargetType.DEPARTMENT
+                || self.selectedTarget() == TargetType.DEPARTMENT_PERSONAL;
         }
         
         /**
@@ -111,6 +148,34 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         code: string;
         name: string;
         targetType: number;
+        itemListSetting: Array<string>;
         baseDate?: Date;
+    }
+    
+    /**
+     * TargetType
+     */
+    class TargetType {
+        
+        // 雇用
+        static EMPLOYMENT = 1;
+        
+        // 分類
+        static CLASSIFICATION = 2;
+        
+        // 職位
+        static JOB_TITLE = 3;
+        
+        // 職場
+        static WORKPLACE = 4;
+        
+        // 部門
+        static DEPARTMENT = 5;
+        
+        // 職場個人
+        static WORKPLACE_PERSONAL = 6;
+        
+        // 部門個人
+        static DEPARTMENT_PERSONAL = 7;
     }
 }
