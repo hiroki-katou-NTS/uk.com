@@ -19,10 +19,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrantPK_;
 import nts.uk.ctx.sys.auth.infra.entity.grant.SacmtRoleIndiviGrant_;
+import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
+import nts.uk.ctx.sys.auth.infra.repository.role.JpaRoleGetMemento;
 
 @Stateless
 public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndividualGrantRepository {
@@ -80,6 +83,18 @@ public class JpaRoleIndividualGrant extends JpaRepository implements RoleIndivid
 
 		SacmtRoleIndiviGrant sacmtRoleIndiviGrant = em.createQuery(cq).getSingleResult();
 		return Optional.of(new RoleIndividualGrant(new JpaRoleIndiviGrantGetMemento(sacmtRoleIndiviGrant)));
+	}
+
+	@Override
+	public Optional<RoleIndividualGrant> findByRoleId(String roleId) {
+		
+		String query ="SELECT e FROM SacmtRoleIndiviGrant e WHERE e.roleId = :roleId";
+		SacmtRoleIndiviGrant entity = this.queryProxy().query(query, SacmtRoleIndiviGrant.class)
+				.setParameter("roleId", roleId).getSingleOrNull();
+		if (entity != null) {
+			return Optional.of(new RoleIndividualGrant(new JpaRoleIndiviGrantGetMemento(entity)));
+		}
+		return Optional.ofNullable(null);
 	}
 
 }
