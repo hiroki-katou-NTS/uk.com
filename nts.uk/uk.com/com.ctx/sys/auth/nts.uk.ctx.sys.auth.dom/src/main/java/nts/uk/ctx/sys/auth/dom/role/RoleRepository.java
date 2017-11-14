@@ -51,4 +51,12 @@ public interface RoleRepository {
 	 * @return Role
 	 */
 	Optional<Role> findByType(String companyId, RoleType roleType);
+	
+	/**
+	 * find by role type
+	 * 
+	 * @param roleType
+	 * @return Role
+	 */
+	Optional<Role> findByType(RoleType roleType);
 }

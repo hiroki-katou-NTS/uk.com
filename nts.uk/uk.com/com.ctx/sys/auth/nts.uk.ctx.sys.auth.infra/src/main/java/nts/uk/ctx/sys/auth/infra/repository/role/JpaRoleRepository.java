@@ -125,4 +125,14 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		return Optional.ofNullable(null);
 	}
 
+	@Override
+	public Optional<Role> findByType(RoleType roleType) {
+		String query ="SELECT e FROM SacmtRole e WHERE e.roleType = :roleType ORDER BY e.code";
+		SacmtRole entity = this.queryProxy().query(query, SacmtRole.class).setParameter("roleType", roleType).getSingleOrNull();
+		if (entity != null) {
+			return Optional.of(new Role(new JpaRoleGetMemento(entity)));
+		}
+		return Optional.ofNullable(null);
+	}
+
 }
