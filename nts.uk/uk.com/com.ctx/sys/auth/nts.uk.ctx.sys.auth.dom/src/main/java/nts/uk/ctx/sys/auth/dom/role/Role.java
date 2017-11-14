@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.dom.role;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -94,4 +95,21 @@ public class Role extends AggregateRoot {
 		memento.setAssignAtr(this.assignAtr);
 		memento.setCompanyId(this.companyId);
 	}
+		
+	public boolean canInsert(){
+		if(this.roleType == RoleType.SYSTEM_MANAGER) throw new BusinessException("MSG_501");
+		return true;
+	}
+	
+	public boolean canUpdate(){
+		if(this.roleType == RoleType.SYSTEM_MANAGER) throw new BusinessException("MSG_502");
+		return true;
+	}
+	
+	public boolean canDelete(){
+		if(this.roleType == RoleType.SYSTEM_MANAGER) throw new BusinessException("MSG_503");
+		return true;
+	}
+	
+	
 }
