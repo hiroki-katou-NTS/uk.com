@@ -210,7 +210,7 @@ module nts.uk.at.view.kmk002.c {
              */
             private sortLeftTable(): void {
                 let self = this;
-                let sortedList = _.sortBy(self.leftItems(), item => item.attendanceItemId);
+                let sortedList = _.sortBy(self.leftItems(), item => item.attendanceItemDisplayNumber);
                 self.leftItems(sortedList);
             }
 
