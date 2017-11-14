@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.company.dom.company;
+package nts.uk.ctx.bs.employee.dom.workplace.differinfor;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -10,12 +10,12 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  */
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(4)
-public class CompanyCode extends CodePrimitiveValue<CompanyCode>{
+public class Ccd extends CodePrimitiveValue<Ccd>{
 	
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public CompanyCode(String rawValue) {
+	public Ccd(String rawValue) {
 		super(rawValue);
 	}
 

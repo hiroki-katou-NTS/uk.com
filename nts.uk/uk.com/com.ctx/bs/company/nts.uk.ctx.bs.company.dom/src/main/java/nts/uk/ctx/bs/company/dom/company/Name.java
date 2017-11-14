@@ -8,11 +8,11 @@ import nts.arc.primitive.constraint.StringCharType;
  * Name of Company
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
-public class CompanyName extends StringPrimitiveValue<CompanyName>{
+public class Name extends StringPrimitiveValue<Name>{
 	/**	 * serialVersionUID	 */
 	private static final long serialVersionUID = 1L;
 
-	public CompanyName(String rawValue) {
+	public Name(String rawValue) {
 		super(rawValue);
 	}
 

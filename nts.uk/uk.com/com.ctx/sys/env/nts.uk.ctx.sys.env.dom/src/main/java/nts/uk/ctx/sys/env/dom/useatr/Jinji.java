@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum PayrollSys {
+public enum Jinji {
 	/**0:しない。*/
 	NotUse(0),
 	/** 1：する */

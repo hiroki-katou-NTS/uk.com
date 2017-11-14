@@ -24,9 +24,9 @@ public class SysUsageSetFinder {
 		return  this.sysRep.findUsageSet(param.companyId, param.companyCode, contractCd)
 											.map(c -> {
 												return new SysUsageSetDto(param.companyId, param.companyCode, contractCd,
-														c.getPersonnelSystem().value,
-														c.getEmploymentSys().value,
-														c.getPayrollSys().value);
+														c.getJinji().value,
+														c.getShugyo().value,
+														c.getKyuyo().value);
 											});
 	}
 }

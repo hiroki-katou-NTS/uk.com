@@ -21,29 +21,29 @@ public class SysUsageSet extends AggregateRoot{
 	private String companyId;
 	
 	// 会社コード
-	private CompanyCode companyCode;
+	private CCD companyCode;
 	
 	/** 契約コード */
 	private ContractCd contractCd;
 	
 	/** 人事システム **/
-	private PersonnelSystem personnelSystem;
+	private Jinji jinji;
 	/** 就業システム **/
-	private EmploymentSys employmentSys;
+	private ShuGyo shugyo;
 	/** 給与システム **/
-	private PayrollSys payrollSys;
+	private Kyuyo kyuyo;
 	public static SysUsageSet createFromJavaType(String companyId, String companyCd, String contractCd, 
-													int personnelSystem, int employmentSys, int payrollSys){
-		return new SysUsageSet(companyId, new CompanyCode(companyCd),
+													int jinji, int shugyo, int kyuyo){
+		return new SysUsageSet(companyId, new CCD(companyCd),
 								new ContractCd(contractCd),
-							EnumAdaptor.valueOf(personnelSystem, PersonnelSystem.class),
-							EnumAdaptor.valueOf(employmentSys, EmploymentSys.class),
-							EnumAdaptor.valueOf(payrollSys, PayrollSys.class));
+							EnumAdaptor.valueOf(jinji, Jinji.class),
+							EnumAdaptor.valueOf(shugyo, ShuGyo.class),
+							EnumAdaptor.valueOf(kyuyo, Kyuyo.class));
 	}
 	
-	public void createCompanyId(String companyCode, String contractCd){
-		this.setCompanyId("contractCd" + "-" + "companyCode");
-	}
+//	public void createCompanyId(String companyCode, String contractCd){
+//		this.setCompanyId("contractCd" + "-" + "companyCode");
+//	}
 	
 	@Override
 	public void validate(){

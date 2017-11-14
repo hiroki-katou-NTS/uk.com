@@ -29,9 +29,9 @@ public class AddSysUsageSetCommandHandler extends CommandHandler<AddSysUsageSetC
 		}
 		
 		SysUsageSet sysDom = SysUsageSet.createFromJavaType(data.getCompanyId(), data.getCompanyCode(), 
-															contractCd, data.getPersonnelSystem(), 
-															data.getEmploymentSys(), data.getEmploymentSys());
-		sysDom.createCompanyId(sysDom.getCompanyCode().v(), sysDom.getContractCd().v());
+															contractCd, data.getJinji(), 
+															data.getShugyo(), data.getKyuyo());
+//		sysDom.createCompanyId(sysDom.getCompanyCode().v(), sysDom.getContractCd().v());
 		
 		sysRep.insertUsageSet(sysDom);
 	}

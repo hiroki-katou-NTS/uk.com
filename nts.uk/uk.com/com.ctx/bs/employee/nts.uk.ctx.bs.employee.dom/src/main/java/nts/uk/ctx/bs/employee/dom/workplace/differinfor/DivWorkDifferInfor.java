@@ -20,7 +20,7 @@ public class DivWorkDifferInfor extends AggregateRoot{
 	private String companyId;
 	
 	// 会社コード
-	private CompanyCode companyCode;
+	private Ccd companyCode;
 	
 	/** 契約コード */
 	private ContractCd contractCd;
@@ -35,7 +35,7 @@ public class DivWorkDifferInfor extends AggregateRoot{
 	public static DivWorkDifferInfor createFromJavaType(String companyId, String companyCode,
 														String contractCd,
 														int regWorkDiv){
-		return new DivWorkDifferInfor(companyId, new CompanyCode(companyCode),
+		return new DivWorkDifferInfor(companyId, new Ccd(companyCode),
 											new ContractCd(contractCd),
 										EnumAdaptor.valueOf(regWorkDiv, RegWorkDiv.class));
 	}

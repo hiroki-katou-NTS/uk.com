@@ -22,10 +22,10 @@ public class SysUsageSetDto {
 	private String contractCd;
 	
 	/** 人事システム **/
-	private int personnelSystem;
+	private int jinji;
 	/** 就業システム **/
-	private int employmentSys;
+	private int shugyo;
 	/** 給与システム **/
-	private int payrollSys;
+	private int kyuyo;
 	
 }

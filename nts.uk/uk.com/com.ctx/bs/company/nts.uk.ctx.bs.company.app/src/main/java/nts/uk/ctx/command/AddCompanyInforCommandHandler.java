@@ -23,9 +23,9 @@ public class AddCompanyInforCommandHandler extends CommandHandler<AddCompanyInfo
 		AddCompanyInforCommand data = context.getCommand();
 		String contractCd = AppContexts.user().contractCode();
 		AddInfor add = null; 
-		Optional<CompanyInforNew> com = comRep.findComByCode(contractCd, data.getCompanyId(), data.getCompanyCode());
+		Optional<CompanyInforNew> com = comRep.findComByCode(contractCd, data.getCompanyId(), data.getCcd());
 		// company code: 0000
-		if(data.getCompanyCode() == "0000"){
+		if(data.getCcd() == "0000"){
 			throw new BusinessException("Msg_809");
 		}
 		// company existed
@@ -33,14 +33,14 @@ public class AddCompanyInforCommandHandler extends CommandHandler<AddCompanyInfo
 			throw new BusinessException("Msg_3");
 		}
 		if(data.getAddinfor() != null){
-			add = data.getAddinfor().toDomainAdd(contractCd, data.getCompanyId(), data.getCompanyCode());
+			add = data.getAddinfor().toDomainAdd(contractCd, data.getCompanyId(), data.getCcd());
 		}
-		CompanyInforNew company =  CompanyInforNew.createFromJavaType(data.getCompanyCode(), data.getCompanyName(), 
-																		data.getCompanyId(), data.getStartMonth(), 
-																		data.getIsAbolition(), data.getRepname(),
-																		data.getRepost(), data.getComNameKana(), 
+		CompanyInforNew company =  CompanyInforNew.createFromJavaType(data.getCcd(), data.getName(), 
+																		data.getCompanyId(), data.getMonth(), 
+																		data.getAbolition(), data.getRepname(),
+																		data.getRepJob(), data.getComNameKana(), 
 																		data.getShortComName(), contractCd, 
-																		data.getTaxNum(), add);
+																		data.getTaxNo(), add);
 		company.createCompanyId(company.getCompanyCode().v(), company.getContractCd().v());
 		company.validate();
 		comRep.insertCom(company);

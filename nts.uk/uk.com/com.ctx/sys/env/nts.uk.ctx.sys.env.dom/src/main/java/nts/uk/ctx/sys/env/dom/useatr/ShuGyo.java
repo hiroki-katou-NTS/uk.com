@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum EmploymentSys {
+public enum ShuGyo {
 	/**0:しない。*/
 	NotUse(0),
 	/** 1：する */

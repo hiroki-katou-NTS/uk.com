@@ -5,21 +5,21 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.company.dom.company.primitive.ComNameKana;
+import nts.uk.ctx.bs.company.dom.company.primitive.KNName;
 import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
 import nts.uk.ctx.bs.company.dom.company.primitive.RepName;
-import nts.uk.ctx.bs.company.dom.company.primitive.RepPos;
-import nts.uk.ctx.bs.company.dom.company.primitive.ShortComName;
+import nts.uk.ctx.bs.company.dom.company.primitive.RepJob;
+import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
 @Getter
 @AllArgsConstructor
 public class CompanyInforNew extends AggregateRoot{
 	/** The company code. */
 	// 会社コード
-	private CompanyCode companyCode;
+	private CCD companyCode;
 
 	/** The company code. */
 	// 会社名
-	private CompanyName companyName;
+	private Name companyName;
 
 	/** The company id. */
 	// 会社ID
@@ -28,29 +28,29 @@ public class CompanyInforNew extends AggregateRoot{
 
 	/** The start month. */
 	// 期首月
-	private StartMonthAtr startMonth;
+	private MonthStr startMonth;
 
 	/** The Abolition */
 	// 廃止区分
-	private IsAbolition isAbolition;
+	private AbolitionAtr isAbolition;
 
 	/** 代表者名 */
 	private RepName repname;
 	
 	/** 代表者職位 */
-	private RepPos repost;
+	private RepJob repjob;
 	
 	/** 会社名カナ */
-	private ComNameKana comNameKana;
+	private KNName comNameKana;
 	
 	/** 会社略名 */
-	private ShortComName shortComName;
+	private ABName shortComName;
 	
 	/** 契約コード */
 	private ContractCd contractCd;
 	
 	/** 法人マイナンバー */
-	private String taxNum;
+	private String taxNo;
 	private AddInfor addInfor;
 	
 	public void createCompanyId(String companyCode, String contractCd){
@@ -59,18 +59,18 @@ public class CompanyInforNew extends AggregateRoot{
 	
 	public static CompanyInforNew createFromJavaType(String companyCode, String companyName, 
 			String companyId, int startMonth, int isAbolition,
-			String repname, String repost, 
+			String repname, String repjob, 
 			String comNameKana, String shortComName,
 			String contractCd, String taxNum, AddInfor addInfor) {
-				return new CompanyInforNew(new CompanyCode(companyCode), 
-				new CompanyName(companyName), 
+				return new CompanyInforNew(new CCD(companyCode), 
+				new Name(companyName), 
 				companyId,
-				EnumAdaptor.valueOf(startMonth, StartMonthAtr.class),
-				EnumAdaptor.valueOf(isAbolition, IsAbolition.class),
+				EnumAdaptor.valueOf(startMonth, MonthStr.class),
+				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class),
 				new RepName(repname),
-				new RepPos(repost),
-				new ComNameKana(comNameKana),
-				new ShortComName(shortComName),
+				new RepJob(repjob),
+				new KNName(comNameKana),
+				new ABName(shortComName),
 				new ContractCd(contractCd),
 				taxNum, addInfor);
 				}

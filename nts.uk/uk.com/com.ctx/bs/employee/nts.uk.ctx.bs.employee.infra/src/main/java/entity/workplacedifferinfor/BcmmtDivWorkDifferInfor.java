@@ -15,14 +15,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "BCMMT_DIV_WK_DIF_INFOR")
+@Table(name = "BSYMT_DEP_WKP_DIFFERENT")
 public class BcmmtDivWorkDifferInfor extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public BcmmtDivWorkDifferInforPK bcmmtDivWorkDifferInforPK;
 	
 	/** 職場登録区分 */
-	@Column(name = "REGIS_WORK_DIVISION")
+	@Column(name = "WKP_REG_ATR")
 	public int regWorkDiv;
 	
 	@Override

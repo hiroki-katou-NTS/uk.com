@@ -26,8 +26,8 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 		SysUsageSet domain = SysUsageSet.createFromJavaType(entity.sacmtSysUsageSetPK.companyId, 
 															entity.sacmtSysUsageSetPK.companyCode,
 															entity.sacmtSysUsageSetPK.contractCd,
-															entity.personnelSystem,
-															entity.employmentSys, entity.payrollSys);
+															entity.jinji,
+															entity.shugyo, entity.kyuyo);
 		return domain;
 	}
 	
@@ -41,9 +41,9 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 		val entity = new SacmtSysUsageSet();
 		entity.sacmtSysUsageSetPK = new SacmtSysUsageSetPK(domain.getCompanyId(), domain.getCompanyCode().v(), 
 															domain.getContractCd().v());
-		entity.personnelSystem = domain.getPersonnelSystem().value;
-		entity.employmentSys = domain.getEmploymentSys().value;
-		entity.payrollSys = domain.getPayrollSys().value;
+		entity.jinji = domain.getJinji().value;
+		entity.shugyo = domain.getShugyo().value;
+		entity.kyuyo = domain.getKyuyo().value;
 		return entity;
 	}
 
@@ -72,9 +72,9 @@ public class JpaSysUsageRepository extends JpaRepository implements SysUsageRepo
 		SacmtSysUsageSet entity = toEntitySys(sysUsageSet);
 		SacmtSysUsageSet oldEntity = this.queryProxy()
 										.find(entity.sacmtSysUsageSetPK, SacmtSysUsageSet.class).get();
-		oldEntity.employmentSys = entity.employmentSys;
-		oldEntity.personnelSystem = entity.personnelSystem;
-		oldEntity.payrollSys = entity.payrollSys;
+		oldEntity.jinji = entity.jinji;
+		oldEntity.shugyo = entity.shugyo;
+		oldEntity.kyuyo = entity.kyuyo;
 	}
 
 	/**
