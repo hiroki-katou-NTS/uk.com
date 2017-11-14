@@ -428,23 +428,25 @@ module nts.uk.at.view.kmk010.a {
                         nts.uk.ui.windows.setShared('Multiple', true);
                         nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
                             var resId: string[] = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                            var lstDailyAttendanceId: number[] = [];
-                            for (var res of resId) {
-                                if (res && res != '') {
-                                    lstDailyAttendanceId.push(parseInt(res));
-                                }
-                            }
-                            self.attendanceItemIds(lstDailyAttendanceId);
-                            var selectedName: string[] = [];
-                            for (var item of dataAllItem) {
-                                for (var id of lstDailyAttendanceId) {
-                                    if (id == item.attendanceItemId) {
-                                        selectedName.push(item.attendanceItemName);
+                            if (resId && resId.length > 0) {
+                                var lstDailyAttendanceId: number[] = [];
+                                for (var res of resId) {
+                                    if (res && res != '') {
+                                        lstDailyAttendanceId.push(parseInt(res));
                                     }
                                 }
+                                self.attendanceItemIds(lstDailyAttendanceId);
+                                var selectedName: string[] = [];
+                                for (var item of dataAllItem) {
+                                    for (var id of lstDailyAttendanceId) {
+                                        if (id == item.attendanceItemId) {
+                                            selectedName.push(item.attendanceItemName);
+                                        }
+                                    }
+                                }
+                                self.attendanceItemName(selectedName.join(' + '));
+                                service.initTooltip();
                             }
-                            self.attendanceItemName(selectedName.join(' + '));
-                            service.initTooltip();
                         });
                     });
                 }).fail(function(error){
