@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -252,9 +253,16 @@ public class LayoutFinder {
 				if (validateAuthClassItem(personCategoryAuthOpt, selfBrowsing)) {
 					LayoutPersonInfoClsDto authClassItem = classItem;
 					// check author of each definition in class-item
-					List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(mainteLayoutId,
-							classItem.getPersonInfoCategoryID(), contractCode, roleId, selfBrowsing,
-							authClassItem.getListItemDf());
+					List<PersonInfoItemAuth> inforAuthItems = perInfoItemAuthRepo.getAllItemAuth(roleId,
+							classItem.getPersonInfoCategoryID());
+					List<PerInfoItemDefDto> dataInfoItems = validateAuthItem(inforAuthItems, classItem.getListItemDf(),
+							selfBrowsing);
+					// if definition-items is empty, will NOT show this
+					// class-item
+					if (dataInfoItems.isEmpty()) {
+						continue;
+					}
+
 					authClassItem.setListItemDf(dataInfoItems);
 
 					PersonInfoCategory perInfoCategory = perInfoCateRepo
@@ -264,8 +272,8 @@ public class LayoutFinder {
 						getDataforSingleItem(perInfoCategory, authClassItem, standardDate, employee.getPId(),
 								employee.getSId());
 					} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
-						getDataforListItem(perInfoCategory, personCategoryAuthOpt.get(), authClassItem, standardDate,
-								employee.getPId(), employee.getSId(), selfBrowsing);
+						getDataforListItem(perInfoCategory, personCategoryAuthOpt.get(), inforAuthItems, authClassItem,
+								standardDate, employee.getPId(), employee.getSId(), selfBrowsing);
 					}
 
 					authItemClasList.add(authClassItem);
@@ -273,7 +281,20 @@ public class LayoutFinder {
 			}
 		}
 
-		result.setClassificationItems(authItemClasList);
+		List<LayoutPersonInfoClsDto> authItemClasList1 = new ArrayList<>();
+		for (int i = 0; i < authItemClasList.size(); i++) {
+			if (i == 0) {
+				authItemClasList1.add(authItemClasList.get(i));
+			} else {
+				boolean notAcceptElement = authItemClasList.get(i).getLayoutItemType() == LayoutItemType.SeparatorLine
+						&& authItemClasList.get(i - 1).getLayoutItemType() == LayoutItemType.SeparatorLine;
+				if (!notAcceptElement) {
+					authItemClasList1.add(authItemClasList.get(i));
+				}
+			}
+		}
+
+		result.setClassificationItems(authItemClasList1);
 		return result;
 	}
 
@@ -299,20 +320,15 @@ public class LayoutFinder {
 	}
 
 	/**
-	 * @param mainteLayoutId
-	 * @param perInfocategoryId
-	 * @param contractCode
-	 * @param roleId
-	 * @param selfBrowsing
+	 * @param authItems
 	 * @param listItemDef
-	 *            Target: check author of person who login with each
-	 *            definition-items in class-item
-	 * @return
+	 * @param selfBrowsing
+	 * @return Target: check author of person who login with each
+	 *         definition-items in class-item
 	 */
-	private List<PerInfoItemDefDto> validateAuthItem(String mainteLayoutId, String perInfocategoryId,
-			String contractCode, String roleId, boolean selfBrowsing, List<PerInfoItemDefDto> listItemDef) {
+	private List<PerInfoItemDefDto> validateAuthItem(List<PersonInfoItemAuth> authItems,
+			List<PerInfoItemDefDto> listItemDef, boolean selfBrowsing) {
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
-		List<PersonInfoItemAuth> authItems = perInfoItemAuthRepo.getAllItemAuth(roleId, perInfocategoryId);
 		for (PerInfoItemDefDto itemDef : listItemDef) {
 			Optional<PersonInfoItemAuth> authItemOpt = authItems.stream()
 					.filter(p -> p.getPersonItemDefId().equals(itemDef.getId())).findFirst();
@@ -483,8 +499,8 @@ public class LayoutFinder {
 	 *            Target: get data with definition-items
 	 */
 	private void getDataforListItem(PersonInfoCategory perInfoCategory, PersonInfoCategoryAuth personCategoryAuth,
-			LayoutPersonInfoClsDto authClassItem, GeneralDate standardDate, String personId, String employeeId,
-			boolean selfBrowsing) {
+			List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto authClassItem, GeneralDate standardDate,
+			String personId, String employeeId, boolean selfBrowsing) {
 		if (perInfoCategory.getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 				// FIXED
@@ -534,10 +550,25 @@ public class LayoutFinder {
 				authClassItem.setItems(new ArrayList<>(mapOptionData.values()));
 			}
 		}
+		// 一覧表を制御する
+		checkActionRoleWithData(perInfoCategory, personCategoryAuth, inforAuthItems, authClassItem, standardDate,
+				selfBrowsing);
+	}
 
+	private void checkActionRoleWithData(PersonInfoCategory perInfoCategory, PersonInfoCategoryAuth personCategoryAuth,
+			List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto authClassItem, GeneralDate standardDate,
+			boolean selfBrowsing) {
 		switch (perInfoCategory.getCategoryType()) {
 		case MULTIINFO:
-			
+			List<Object> mulSeigoItemsData = new ArrayList<>();
+			for (Object mulItem : authClassItem.getItems()) {
+				@SuppressWarnings("unchecked")
+				List<LayoutPersonInfoValueDto> mulRowData = (List<LayoutPersonInfoValueDto>) mulItem;
+				List<LayoutPersonInfoValueDto> mulActionRoleRowData = checkAndSetActionRole(mulRowData, inforAuthItems,
+						selfBrowsing);
+				mulSeigoItemsData.add(mulActionRoleRowData);
+			}
+			authClassItem.setItems(mulSeigoItemsData);
 			break;
 		case CONTINUOUSHISTORY:
 		case NODUPLICATEHISTORY:
@@ -573,8 +604,9 @@ public class LayoutFinder {
 						seigoItemsData.add(rowData);
 						break;
 					case UPDATE:
-						rowData.forEach(element -> element.setActionRole(ActionRole.EDIT));
-						seigoItemsData.add(rowData);
+						List<LayoutPersonInfoValueDto> actionRoleRowData = checkAndSetActionRole(rowData,
+								inforAuthItems, selfBrowsing);
+						seigoItemsData.add(actionRoleRowData);
 						break;
 					case HIDE:
 						// do NOT add to authItemsData
@@ -584,7 +616,36 @@ public class LayoutFinder {
 			}
 			authClassItem.setItems(seigoItemsData);
 			break;
+		default:
+			break;
 		}
+	}
+
+	private List<LayoutPersonInfoValueDto> checkAndSetActionRole(List<LayoutPersonInfoValueDto> rowData,
+			List<PersonInfoItemAuth> inforAuthItems, boolean selfBrowsing) {
+		List<LayoutPersonInfoValueDto> actionRoleRowData = new ArrayList<>();
+		for (LayoutPersonInfoValueDto element : rowData) {
+			Optional<PersonInfoItemAuth> authItemOpt = inforAuthItems.stream()
+					.filter(authItem -> authItem.getPersonItemDefId().equals(element.getItemDefId())).findFirst();
+			if (authItemOpt.isPresent()) {
+				PersonInfoAuthType auth = selfBrowsing ? authItemOpt.get().getSelfAuth()
+						: authItemOpt.get().getOtherAuth();
+				switch (auth) {
+				case REFERENCE:
+					element.setActionRole(ActionRole.VIEW_ONLY);
+					actionRoleRowData.add(element);
+					break;
+				case UPDATE:
+					element.setActionRole(ActionRole.EDIT);
+					actionRoleRowData.add(element);
+					break;
+				case HIDE:
+					// do NOT add to actionRoleRowData
+					break;
+				}
+			}
+		}
+		return actionRoleRowData;
 	}
 
 	/**

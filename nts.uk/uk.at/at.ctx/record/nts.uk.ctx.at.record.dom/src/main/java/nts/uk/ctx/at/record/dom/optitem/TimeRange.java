@@ -51,10 +51,10 @@ public class TimeRange extends DomainObject {
 	 * @return true, if is invalid range
 	 */
 	public boolean isInvalidRange() {
-		if (this.upperLimit.get().lessThan(this.lowerLimit.get())) {
-			return true;
+		if (this.upperLimit.get().greaterThan(this.lowerLimit.get())) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 }

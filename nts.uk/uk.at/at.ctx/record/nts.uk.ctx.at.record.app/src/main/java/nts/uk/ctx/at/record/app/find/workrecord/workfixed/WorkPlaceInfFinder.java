@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.workrecord.workfixed;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,7 @@ public class WorkPlaceInfFinder {
 	 *            the base date
 	 * @return the work place info dto
 	 */
-	public WorkPlaceInfoDto findWorkPlaceInfo() {
+	public List<WorkPlaceInfoDto> findWorkPlaceInfo() {
 
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -59,23 +60,27 @@ public class WorkPlaceInfFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 
+		List<WorkPlaceInfoDto> result = new ArrayList<>();
+		
 		// get basedate
 		List<Closure> listClosure = this.closureRepository.findAllActive(companyId, UseClassification.UseClass_Use);
 		WorkPlaceInfoDto workPlaceInfoDto = new WorkPlaceInfoDto();
 
-		if (!listClosure.isEmpty()) {
-
-			DatePeriod currentPeriod = this.closureService.getClosurePeriod(listClosure.get(0).getClosureId(),
-					listClosure.get(0).getClosureMonth().getProcessingYm());
-
-			Optional<AffWorkplaceDto> opAffWorkPlaceDto = affWorkplaceAdapter.findBySid(employeeId,
-					currentPeriod.end());
-
-			workPlaceInfoDto = WorkPlaceInfoDto.builder().workplaceId(opAffWorkPlaceDto.get().getWorkplaceId())
-					.workplaceCode(opAffWorkPlaceDto.get().getWorkplaceCode())
-					.workplaceName(opAffWorkPlaceDto.get().getWorkplaceName()).build();
-
+		if (listClosure.isEmpty()) {
+			return result;	
 		}
-		return workPlaceInfoDto;
+		
+		DatePeriod currentPeriod = this.closureService.getClosurePeriod(listClosure.get(0).getClosureId(),
+				listClosure.get(0).getClosureMonth().getProcessingYm());
+
+		Optional<AffWorkplaceDto> opAffWorkPlaceDto = affWorkplaceAdapter.findBySid(employeeId,
+				currentPeriod.end());
+
+		workPlaceInfoDto = WorkPlaceInfoDto.builder().workplaceId(opAffWorkPlaceDto.get().getWorkplaceId())
+				.workplaceCode(opAffWorkPlaceDto.get().getWorkplaceCode())
+				.workplaceName(opAffWorkPlaceDto.get().getWorkplaceName()).build();
+		
+		result.add(workPlaceInfoDto);
+		return result;
 	}
 }

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.difftime;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.worktimeset.fixed.common.TimeRounding;
+import nts.uk.ctx.at.shared.dom.worktimeset.common.TimeRounding;
 
 /**
  * The Class EmTimezoneChangeExtent.

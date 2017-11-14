@@ -42,7 +42,8 @@ module nts.uk.com.view.cmm013.c {
                     })
                     .fail((res: any) => {
                         dfd.reject(res);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_571" }).then(() => {
+                        //nts.uk.ui.dialog.alertError({ messageId: "Msg_571" }).then(() => {
+                        nts.uk.ui.dialog.bundledErrors(res).then(() => {
                             // Load sequence register screen
                             nts.uk.ui.windows.sub.modal('/view/cmm/013/f/index.xhtml').onClosed(() => {
                                 // Reload data after register
@@ -59,7 +60,6 @@ module nts.uk.com.view.cmm013.c {
                                     });
                             });                      
                         });     
-                        //nts.uk.ui.dialog.bundledErrors(res).always(() => console.log("test"));
                     })
                     .always(() => {
                         nts.uk.ui.block.clear();       
