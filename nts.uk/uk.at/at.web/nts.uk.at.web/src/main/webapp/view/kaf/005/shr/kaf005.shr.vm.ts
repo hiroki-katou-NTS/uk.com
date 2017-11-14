@@ -195,26 +195,37 @@ module nts.uk.at.view.kaf005.share {
             divergenceReasonContent: string
         }
         export class OverTimeInput {
-            companyID: string
-            appID: string
-            attendanceID: number
-            frameNo: number
-            attendanceName: string
-            startTime: number
-            endTime: number
-            applicationTime: number
-        }
-        export class RestTime {
-            restTimeID: KnockoutObservable<string>;
-            startTime: KnockoutObservable<number>;
-            endTime: KnockoutObservable<number>;
-            constructor(restTimeID: string, startTime: number, endTime: number) {
-                this.restTimeID = ko.observable(restTimeID);
+            companyID: KnockoutObservable<string>
+            appID: KnockoutObservable<string>
+            attendanceID: KnockoutObservable<number>
+            attendanceName: KnockoutObservable<string>
+            frameNo: KnockoutObservable<number>
+            frameName: KnockoutObservable<string>
+            startTime: KnockoutObservable<number>
+            endTime: KnockoutObservable<number>
+            applicationTime: KnockoutObservable<number>
+            constructor(
+                companyID: string,
+                appID: string,
+                attendanceID: number,
+                attendanceName: string,
+                frameNo: number,
+                frameName: string,
+                startTime: number,
+                endTime: number,
+                applicationTime: number) {
+                this.companyID = ko.observable(companyID);
+                this.appID = ko.observable(appID);
+                this.attendanceID = ko.observable(attendanceID);
+                this.attendanceName = ko.observable(attendanceName);
+                this.frameNo = ko.observable(frameNo);
+                this.frameName = ko.observable(frameName);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
+                this.applicationTime = ko.observable(applicationTime);
             }
-        }
-        export class overtimeWork {
+        }   
+		export class overtimeWork {
             yearMonth: KnockoutObservable<string>;
             limitTime: KnockoutObservable<string>;
             actualTime: KnockoutObservable<string>;
@@ -227,44 +238,7 @@ module nts.uk.at.view.kaf005.share {
                 this.appTime = ko.observable(appTime);
                 this.totalTime = ko.observable(totalTime);
             }
-        }
-        export class OvertimeHour {
-            overtimeID: KnockoutObservable<string>;
-            overtimeName: KnockoutObservable<string>;
-            appTime: KnockoutObservable<string>;
-            preAppTime: KnockoutObservable<string>;
-            caculationTime: KnockoutObservable<string>;
-            constructor(overtimeID: string, overtimeName: string, appTime: string, preAppTime: string, caculationTime: string) {
-                this.overtimeID = ko.observable(overtimeID);
-                this.overtimeName = ko.observable(overtimeName);
-                this.appTime = ko.observable(appTime);
-                this.preAppTime = ko.observable(preAppTime);
-                this.caculationTime = ko.observable(caculationTime);
-            }
-        }
-        export class BreakTime {
-            breakTimeID: KnockoutObservable<string>;
-            breakTimeName: KnockoutObservable<string>;
-            appTime: KnockoutObservable<string>;
-            preAppTime: KnockoutObservable<string>;
-            constructor(breakTimeID: string, breakTimeName: string, appTime: string, preAppTime: string) {
-                this.breakTimeID = ko.observable(breakTimeID);
-                this.breakTimeName = ko.observable(breakTimeName);
-                this.appTime = ko.observable(appTime);
-                this.preAppTime = ko.observable(preAppTime);
-            }
-        }
-        export class BonusTime {
-            bonusTimeID: KnockoutObservable<string>;
-            bonusTimeName: KnockoutObservable<string>;
-            appTime: KnockoutObservable<string>;
-            preAppTime: KnockoutObservable<string>;
-            constructor(bonusTimeID: string, bonusTimeName: string, appTime: string, preAppTime: string) {
-                this.bonusTimeID = ko.observable(bonusTimeID);
-                this.bonusTimeName = ko.observable(bonusTimeName);
-                this.appTime = ko.observable(appTime);
-                this.preAppTime = ko.observable(preAppTime);
-            }
-        }
+        }		
+
     }
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
@@ -35,5 +36,5 @@ public interface OvertimeService {
 	public SiftType getSiftType(String companyID,String employeeID,Optional<PersonalLaborCondition> personalLablorCodition,RequestAppDetailSetting requestAppDetailSetting);
 	
 	
-	void CreateOvertime(AppOverTime domain);
+	void CreateOvertime(AppOverTime domain, Application newApp);
 }

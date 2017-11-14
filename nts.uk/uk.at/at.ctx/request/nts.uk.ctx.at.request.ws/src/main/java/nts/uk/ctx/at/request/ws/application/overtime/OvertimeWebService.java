@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.overtime.GetOvertime;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OverTimeDto;
@@ -18,6 +19,8 @@ public class OvertimeWebService extends WebService{
 
 	@Inject
 	private GetOvertime overtimeFinder;
+	@Inject
+	private CreateOvertimeCommandHandler createHandler;
 	
 	@POST
 	@Path("getOvertimeByUI")
@@ -26,9 +29,9 @@ public class OvertimeWebService extends WebService{
 	}
 	
 	@POST
-	@Path("")
+	@Path("create")
 	public void createOvertime(CreateOvertimeCommand command){
-		
+		createHandler.handle(command);
 	}
 }
 
