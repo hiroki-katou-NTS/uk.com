@@ -42,13 +42,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: string = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
         //休憩時間
-        restTime: KnockoutObservableArray<common.RestTime> = ko.observableArray([]);
+        restTime: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
         //残業時間
-        overtimeHours: KnockoutObservableArray<common.OvertimeHour> = ko.observableArray([]);
+        overtimeHours: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
         //休出時間
-        breakTimes: KnockoutObservableArray<common.BreakTime> = ko.observableArray([]);
+        breakTimes: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
         //加給時間
-        bonusTimes: KnockoutObservableArray<common.BonusTime> = ko.observableArray([]);
+        bonusTimes: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
         //menu-bar 
         enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
@@ -64,8 +64,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
-        instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
-        instructInfor : KnockoutObservable <string> = ko.observable('');
+        instructInforFlag: KnockoutObservable<boolean> = ko.observable(true);
+        instructInfor: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
 
@@ -135,66 +135,66 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.instructInfor(data.overtimeInstructInformation);
 
             // 休憩時間
-            for(let i = 0;i < 11; i++){
-                 self.restTime.push( new common.RestTime(i,null,null));
-
+            for (let i = 0; i < 11; i++) {
+                self.overtimeHours.push(new common.OverTimeInput("", "", 0, "", i, i, "0", 0, null));
             }
             // 残業時間
-            if(data.overTimeInputs != null){
-                for(let i = 0;i < data.overTimeInputs.length;i++){
-                    if(data.overTimeInputs[i].attendanceID == 1){
-                        self.overtimeHours.push(new common.OverTimeInput("", "", 1, , "", data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
+            if (data.overTimeInputs != null) {
+                for (let i = 0; i < data.overTimeInputs.length; i++) {
+                    if (data.overTimeInputs[i].attendanceID == 1) {
+                        self.overtimeHours.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null));
                         //self.overtimeHours.push(new common.OvertimeHour(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime,null));
                     }
-                    if(data.overTimeInputs[i].attendanceID == 2){
-                        self.breakTimes.push(new common.BreakTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
+                    if (data.overTimeInputs[i].attendanceID == 2) {
+                        self.breakTimes.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null));
+                        //self.breakTimes.push(new common.BreakTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
                     }
-                    if(data.overTimeInputs[i].attendanceID == 3){
-                        self.bonusTimes.push(new common.BonusTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
+                    if (data.overTimeInputs[i].attendanceID == 3) {
+                        //self.bonusTimes.push(new common.BonusTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
+                        self.breakTimes.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null));
                     }
                 }
             }
             //
-            if(data.appOvertimeNightFlg == 1){
-                 self.overtimeHours.push(new common.OvertimeHour("overTimeShiftNight",nts.uk.resource.getText("KAF005_64"),"0",null,null));
+            if (data.appOvertimeNightFlg == 1) {
+                //self.overtimeHours.push(new common.OvertimeHour("overTimeShiftNight",nts.uk.resource.getText("KAF005_64"),"0",null,null));
+                self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", "overTimeShiftNight", nts.uk.resource.getText("KAF005_64"), "0", null, null));
             }
-            
+
         }
         //登録処理
         registerClick() {
             let self = this,
-            appReason: string,
-            divergenceReason: string;     
-            appReason =self.selectedReason();     
-            divergenceReason = self.selectedReason2(); 
-            if(!nts.uk.util.isNullOrUndefined(self.multilContent()))
-            {
+                appReason: string,
+                divergenceReason: string;
+            appReason = self.selectedReason();
+            divergenceReason = self.selectedReason2();
+            if (!nts.uk.util.isNullOrUndefined(self.multilContent())) {
                 appReason = appReason + "CHAR(13)" + self.multilContent();
             }
-            if(!nts.uk.util.isNullOrUndefined(self.multilContent2()))
-            {
+            if (!nts.uk.util.isNullOrUndefined(self.multilContent2())) {
                 divergenceReason = divergenceReason + "CHAR(13)" + self.multilContent2();
             }
             let overtime: AppOverTime = {
-            applicationDate: self.appDate(),
-            prePostAtr: self.prePostSelected(),
-            applicantSID: self.employeeID,
-            applicationReason: appReason,
-            appApprovalPhaseCmds: self.kaf000_a.approvalList,
-            workType: self.workTypeCd(),
-            siftType: self.siftCD(),
-            workClockFrom1: self.timeStart1(),
-            workClockTo1: self.timeEnd1(),
-            workClockFrom2: self.timeStart2(),
-            workClockTo2: self.timeEnd1(),
-            bonusTimes: self.bonusTimes(),
-            overtimeHours: self.overtimeHours(),
-            breakTimes: self.breakTimes(),
-            restTime: self.restTime(),
-            overTimeShiftNight: 100,
-            flexExessTime: 100,
-            divergenceReasonContent: divergenceReason
-            };            
+                applicationDate: self.appDate(),
+                prePostAtr: self.prePostSelected(),
+                applicantSID: self.employeeID,
+                applicationReason: appReason,
+                appApprovalPhaseCmds: self.kaf000_a.approvalList,
+                workType: self.workTypeCd(),
+                siftType: self.siftCD(),
+                workClockFrom1: self.timeStart1(),
+                workClockTo1: self.timeEnd1(),
+                workClockFrom2: self.timeStart2(),
+                workClockTo2: self.timeEnd1(),
+                bonusTimes: self.bonusTimes(),
+                overtimeHours: self.overtimeHours(),
+                breakTimes: self.breakTimes(),
+                restTime: self.restTime(),
+                overTimeShiftNight: 100,
+                flexExessTime: 100,
+                divergenceReasonContent: divergenceReason
+            };
             //登録前エラーチェック
             //TODO:           
             //登録処理を実行
