@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.command.executionlog;
+package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.Optional;
 
@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
@@ -73,21 +74,27 @@ public class ScheCreExeBasicScheduleHandler {
 	// TO DO
 	private void getScheduleBreakTime(ScheduleCreatorExecutionCommand command, String worktypeCode,
 			String worktimeCode) {
-		
+
+		// check null or default work type code
 		if (this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktypeCode)) {
 			return;
 		}
 
-		Optional<WorkType> optionalWorktype = this.workTypeRepository
-				.findByPK(command.getCompanyId(), worktypeCode);
+		// find work type by code
+		Optional<WorkType> optionalWorktype = this.workTypeRepository.findByPK(command.getCompanyId(), worktypeCode);
+		
+		// check exits data work type
 		if (optionalWorktype.isPresent()) {
 			WorkType workType = optionalWorktype.get();
 
+			// check holiday of daily work
 			if (this.scheCreExeWorkTimeHandler.checkHolidayWork(workType.getDailyWork())) {
 
-				Optional<WorkTime> optionalWorktime = this.workTimeRepository
-						.findByCode(command.getCompanyId(), worktimeCode);
+				// find work time by code
+				Optional<WorkTime> optionalWorktime = this.workTimeRepository.findByCode(command.getCompanyId(),
+						worktimeCode);
 
+				// check exist data work time
 				if (optionalWorktime.isPresent()) {
 					WorkTime workTime = optionalWorktime.get();
 					if (WorkTimeDailyAtr.Enum_Regular_Work.value == workTime.getWorkTimeDivision()
@@ -105,7 +112,7 @@ public class ScheCreExeBasicScheduleHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the confirmed atr.
 	 *
@@ -148,18 +155,30 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command,
 			String employeeId, String worktypeCode, String workTimeCode) {
+		
+		// get schedule break time
 		this.getScheduleBreakTime(command, worktypeCode, workTimeCode);
+		
+		// get short work time
 		this.getShortWorkTime(employeeId, command.getToDate());
+		
+		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(worktypeCode);
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(GeneralDate.today());
+		
+		// update is confirm
 		commandSave.setConfirmedAtr(
 				this.getConfirmedAtr(command.getIsConfirm(), ConfirmedAtr.CONFIRMED).value);
+		
+		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
 			this.basicScheduleRepository.delete(employeeId, command.getToDate());
 		}
+		
+		// save command
 		this.saveBasicSchedule(commandSave);;
 	}
 	

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.executionlog;
+package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
@@ -31,8 +32,8 @@ public class ScheCreExeErrorLogHandler {
 	 * @param messageId the message id
 	 * @return the schedule error log
 	 */
-	private ScheduleErrorLog toScheduleErrorLog(ScheduleCreatorExecutionCommand command,
-			String employeeId, String messageId) {
+	private ScheduleErrorLog toScheduleErrorLog(ScheduleCreatorExecutionCommand command, String employeeId,
+			String messageId) {
 		return new ScheduleErrorLog(new ScheduleErrorLogGetMemento() {
 
 			/**
@@ -85,11 +86,11 @@ public class ScheCreExeErrorLogHandler {
 	 * @param employeeId the employee id
 	 * @param messageId the message id
 	 */
-	public void addError(ScheduleCreatorExecutionCommand command, String employeeId,
-			String messageId) {
+	public void addError(ScheduleCreatorExecutionCommand command, String employeeId, String messageId) {
+		
+		// check exist error
 		if (!this.checkExistError(command, employeeId)) {
-			this.scheduleErrorLogRepository
-					.add(this.toScheduleErrorLog(command, employeeId, messageId));
+			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId));
 		}
 	}
 	
@@ -102,6 +103,8 @@ public class ScheCreExeErrorLogHandler {
 	public boolean checkExistError(ScheduleCreatorExecutionCommand command, String employeeId) {
 		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository
 				.findByEmployeeId(command.getContent().getExecutionId(), employeeId);
+		
+		// check empty list log error
 		if (CollectionUtil.isEmpty(errorLogs)) {
 			return false;
 		}

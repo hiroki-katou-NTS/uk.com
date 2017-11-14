@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.command.executionlog;
+package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
@@ -260,6 +261,7 @@ public class ScheCreExeWorkTypeHandler {
 				// object return is String
 				if (optionalWorkTimeObj.isPresent()
 						&& optionalWorkTimeObj.get() instanceof String) {
+					// update all basic schedule
 					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 							personalWorkScheduleCreSet.getEmployeeId(), optionalWorktypeCode.get(),
 							optionalWorkTimeObj.get().toString());
@@ -268,6 +270,7 @@ public class ScheCreExeWorkTypeHandler {
 				if (optionalWorkTimeObj.isPresent()
 						&& optionalWorkTimeObj.get() instanceof WorkTimeSet) {
 					WorkTimeSet workTimeSet = (WorkTimeSet) optionalWorkTimeObj.get();
+					// update all basic schedule
 					this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
 							personalWorkScheduleCreSet.getEmployeeId(), optionalWorktypeCode.get(),
 							workTimeSet.getSiftCD());
