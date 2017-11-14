@@ -13,6 +13,15 @@
 					width : 1015,
 					height : 500
 				};
+				
+				$(function() {
+					var currentScreen = nts.uk.ui.windows.getSelf();
+					$(currentScreen.$dialog).resizable({
+						handles: "n,s",
+						alsoResize: "#grid-data-body"
+	                });
+				});
+				
 			</script>
 			
 			<com:scriptfile set="IGNITE" />
