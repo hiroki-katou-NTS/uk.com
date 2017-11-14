@@ -144,4 +144,13 @@ public class OverTimeDto {
 	 */
 	private int appOvertimeNightFlg;
 	
+	/**
+	 * 参照ラベル
+	 */
+	private boolean referencePanelFlg;
+	/**
+	 * 事前申請ラベル
+	 */
+	private boolean preAppPanelFlg;
+	
 }
