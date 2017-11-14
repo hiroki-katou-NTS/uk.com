@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KscstFormulaMoneyPK implements Serializable {
+public class KscstFormMoneyPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/*会社ID*/

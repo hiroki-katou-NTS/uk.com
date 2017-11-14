@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsett
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,30 +18,34 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORMULA_NUMERICAL")
-public class KscstFormulaNumerical extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_FORM_AMOUNT")
+public class KscstFormAmount extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	/* 主キー */
 	@EmbeddedId
-	public KscstFormulaNumericalPK kscstFormulaNumericalPK;
+	public KscstFormAmountPK kscstFormulaAmountPK;
 
-	/* 演算子区分 */
-	@Column(name = "OPERATOR_ATR")
-	public int operatorAtr;
+	/* 属性 */
+	@Column(name = "CAL_METHOD_ATR")
+	public int calMethodAtr;
 	
-	/* 順番 */
-	@Column(name = "DISPORDER")
-	public int dispOrder;
 	@OneToOne
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false) })
 	public KscmtGenVertItem kscmtGenVertItem;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscstFormulaAmount", orphanRemoval = true)
+	public KscstFormMoney moneyFunc;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscstFormulaAmount", orphanRemoval = true)
+	public KscstFormTimeUnit timeUnit;
+
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstFormulaNumericalPK;
+		return kscstFormulaAmountPK;
 	}
 }

@@ -53,7 +53,8 @@ public class VerticalSettingCommand {
 					x.getFormTime() != null ? x.getFormTime().toDomainFormTime(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
 					x.getFormPeople() != null ? x.getFormPeople().toDomainFormPeople(companyId, x.getVerticalCalCd(), x.getItemId()) : null,
 					x.getFormulaAmount() !=null ? x.getFormulaAmount().toDomainFormAmount(companyId, companyId, x.getItemId()) : null,
-					x.getFormulaNumerical() !=null ? x.getFormulaNumerical().toDomainNumerical(companyId, companyId, x.getItemId()) : null);
+					x.getFormulaNumerical() !=null ? x.getFormulaNumerical().toDomainNumerical(companyId, companyId, x.getItemId()) : null,
+					x.getPriceCommand() != null ? x.getPriceCommand().toDomainUnitPrice(companyId, companyId, x.getVerticalCalCd()) : null);
 					
 			domain.validate();
 			domain.validate(x.getDispOrder());

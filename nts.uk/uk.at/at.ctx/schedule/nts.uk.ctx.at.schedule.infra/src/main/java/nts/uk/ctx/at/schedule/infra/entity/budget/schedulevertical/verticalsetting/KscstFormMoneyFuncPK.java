@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KscstFormulaTimeUnitPK implements Serializable {
+public class KscstFormMoneyFuncPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/*会社ID*/
@@ -25,4 +25,8 @@ public class KscstFormulaTimeUnitPK implements Serializable {
 	/* 汎用縦計項目ID */
 	@Column(name = "VERTICAL_CAL_ITEM_ID")
 	public String verticalCalItemId;
+	
+	/* 順番 */
+	@Column(name = "DISPORDER")
+	public int dispOrder;
 }

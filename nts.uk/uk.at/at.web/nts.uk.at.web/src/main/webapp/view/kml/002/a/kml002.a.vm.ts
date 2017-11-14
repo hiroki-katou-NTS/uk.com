@@ -141,7 +141,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             formTime: self.calculatorItems()[i].formTime,
                             formPeople: self.calculatorItems()[i].formPeople,
                             amount: self.calculatorItems()[i].amount,
-                            numerical: self.calculatorItems()[i].numerical
+                            numerical: self.calculatorItems()[i].numerical,
+                            unitPrice: self.calculatorItems()[i].unitPrice
                         };
                         
                         items.push(new CalculatorItem(item));
@@ -172,7 +173,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 formTime: self.calculatorItems()[i].formTime,
                                 formPeople: self.calculatorItems()[i].formPeople,
                                 amount: self.calculatorItems()[i].amount,
-                                numerical: self.calculatorItems()[i].numerical
+                                numerical: self.calculatorItems()[i].numerical,
+                                unitPrice: self.calculatorItems()[i].unitPrice
                             };
                             
                             items.push(new CalculatorItem(item));
@@ -224,7 +226,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                 formTime: data.verticalCalItems[0].formTime,
                                 formPeople: data.verticalCalItems[0].formPeople,
                                 amount: data.verticalCalItems[0].amount,
-                                numerical: data.verticalCalItems[0].numerical
+                                numerical: data.verticalCalItems[0].numerical,
+                                unitPrice: data.verticalCalItems[0].unitPrice
                             };
 
                             items.push(new CalculatorItem(item));
@@ -331,7 +334,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 formTime: null,
                 formPeople: null,
                 amount: null,
-                numerical: null
+                numerical: null,
+                unitPrice: null
             };
             
             self.calculatorItems.push(new CalculatorItem(item)); 
@@ -394,6 +398,9 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 var dataB = self.dataB == null ? self.calculatorItems()[i].formBuilt : self.dataB;
                 var dataC = self.dataC == null ? self.calculatorItems()[i].formTime : self.dataC;
                 var dataD = self.dataD == null ? self.calculatorItems()[i].formPeople : self.dataD;
+                var dataE = self.dataE == null ? self.calculatorItems()[i].amount : self.dataE;
+                var dataF = self.dataF == null ? self.calculatorItems()[i].numerical : self.dataF;
+                var dataG = self.dataG == null ? self.calculatorItems()[i].unitPrice : self.dataG;
                 
                 var item = {
                     verticalCalCd: code,
@@ -412,11 +419,11 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     //for D screen
                     formPeople: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 2 ? dataD : null,
                     //for E screen
-                    
+                    amount: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 1 ? dataE : null,
                     //for F screen
-                    
+                    numerical: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 3 ? dataF : null,
                     //for G screen
-                    
+                    unitPrice: self.calculatorItems()[i].settingMethod() == 0 && self.calculatorItems()[i].attribute() == 4 ? dataG : null
                 };
                 
                 verticalCalItems.push(item);
@@ -519,7 +526,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 formTime: null,
                 formPeople: null,
                 amount: null,
-                numerical: null
+                numerical: null,
+                unitPrice: null
             };
             
             self.calculatorItems.push(new CalculatorItem(item));
@@ -563,7 +571,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         formTime: self.calculatorItems()[i].formTime,
                         formPeople: self.calculatorItems()[i].formPeople,
                         amount: self.calculatorItems()[i].amount,
-                        numerical: self.calculatorItems()[i].numerical
+                        numerical: self.calculatorItems()[i].numerical,
+                        unitPrice: self.calculatorItems()[i].unitPrice
                     };
                     
                     selectedItems.push(new CalculatorItem(item));
@@ -592,7 +601,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     formTime: selectedItems[i].formTime,
                     formPeople: selectedItems[i].formPeople,
                     amount: selectedItems[i].amount,
-                    numerical: selectedItems[i].numerical
+                    numerical: selectedItems[i].numerical,
+                    unitPrice: selectedItems[i].unitPrice
                 };
                 
                 self.calculatorItems.push(new CalculatorItem(newItem));
@@ -691,7 +701,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 formTime: dataTranfer.formTime,
                 formPeople: dataTranfer.formPeople,
                 amount: dataTranfer.amount,
-                numerical: dataTranfer.numerical
+                numerical: dataTranfer.numerical,
+                unitPrice: dataTranfer.unitPrice
             };
             
             nts.uk.ui.windows.setShared("KML002_A_DATA", data);
@@ -819,6 +830,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
         formPeople: any;
         amount: any;
         numerical: any;
+        unitPrice: any;
         
         constructor(param: ICalculatorItem) {
             var self = this;
@@ -909,6 +921,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             self.formPeople = param.formPeople;
             self.amount = param.amount;
             self.numerical = param.numerical;
+            self.unitPrice = param.unitPrice;
         }
     }
         
@@ -934,5 +947,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
         formPeople: any;
         amount: any;
         numerical: any;
+        unitPrice: any;
     }
 }

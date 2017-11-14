@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_MONEY_FUNC")
-public class KscstMoneyFunc extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_FORM_MONEY_FUNC")
+public class KscstFormMoneyFunc extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KscstMoneyFuncPK kscstMoneyFuncPK;
+	public KscstFormMoneyFuncPK kscstMoneyFuncPK;
 
 	/* 外部予算実績項目コード */
 	@Column(name = "EXTERNAL_BUDGET_CD")
@@ -46,7 +46,7 @@ public class KscstMoneyFunc extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscstFormulaMoney kscstFormulaMoney;
+	public KscstFormMoney kscstFormulaMoney;
 
 	@Override
 	protected Object getKey() {

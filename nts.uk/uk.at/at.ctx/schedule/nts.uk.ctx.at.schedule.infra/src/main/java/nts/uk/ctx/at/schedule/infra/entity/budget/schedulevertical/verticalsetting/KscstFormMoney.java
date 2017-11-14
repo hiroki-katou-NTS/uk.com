@@ -20,42 +20,34 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORMULA_TIME_UNIT")
-public class KscstFormulaTimeUnit extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_FORM_MONEY")
+public class KscstFormMoney extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KscstFormulaTimeUnitPK kscstFormulaTimeUnitPK;
+	public KscstFormMoneyPK kscstFormulaMoneyPK;
 
-	/* 丸め区分 */
-	@Column(name = "ROUNDING_TIME")
-	public int roundingTime;
-
-	/* 丸め区分 */
-	@Column(name = "ROUNDING_ATR")
-	public int roundingAtr;
-
-	/* 単価 */
-	@Column(name = "UNIT_PRICE")
-	public int unitPrice;
+	/* カテゴリ区分 */
+	@Column(name = "CATEGORY_INDICATOR")
+	public int categoryIndicator;
 
 	/* 実績表示区分 */
 	@Column(name = "ACTUAL_DISPLAY_ATR")
 	public int actualDisplayAtr;
-	
+
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "VERTICAL_CAL_ITEM_ID", insertable = false, updatable = false) })
-	public KscstFormulaAmount kscstFormulaAmount;
+	public KscstFormAmount kscstFormulaAmount;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstFormulaTimeUnit", orphanRemoval = true)
-	public List<KscstTimeUnitFunc> listTime;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstFormulaMoney", orphanRemoval = true)
+	public List<KscstFormMoneyFunc> listMoney;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscstFormulaTimeUnitPK;
+		return kscstFormulaMoneyPK;
 	}
 }

@@ -54,6 +54,9 @@ public class VerticalCalItem extends DomainObject {
  	// F
  	private FormulaNumerical numerical;
  	
+ 	//G
+ 	private FormulaUnitprice unitprice;
+ 	
  	/**
  	 * author: Hoang Yen
  	 */
@@ -66,7 +69,8 @@ public class VerticalCalItem extends DomainObject {
  													FormTime formTime,
  													FormPeople formPeople,
  													FormulaAmount formulaAmount,
- 													FormulaNumerical numerical){
+ 													FormulaNumerical numerical,
+ 													FormulaUnitprice unitprice){
  		return new VerticalCalItem(companyId, verticalCalCd, itemId, itemName, 
  				EnumAdaptor.valueOf(calculateAtr, CalculateAtr.class), 
  				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), 
@@ -78,7 +82,8 @@ public class VerticalCalItem extends DomainObject {
  				formTime,
  				formPeople,
  				formulaAmount,
- 				numerical);
+ 				numerical,
+ 				unitprice);
  	}
  	
  	public void validate(int index) {
@@ -113,9 +118,9 @@ public class VerticalCalItem extends DomainObject {
 					break;
 					
 				case AVERAGE_PRICE:
-		//			if (this.formPeople == null) {
-		//				throw new BusinessException("Msg_111", String.valueOf(index));
-		//			}
+					if (this.unitprice == null) {
+						throw new BusinessException("Msg_111", String.valueOf(index));
+					}
 					break;
 					
 				default:

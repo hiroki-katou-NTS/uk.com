@@ -289,6 +289,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 categoryIndicator: self.catCode()
             }
             nts.uk.ui.windows.setShared("KML002_E_DATA", data);
+            nts.uk.ui.windows.close();
         }
 
         cancel() {

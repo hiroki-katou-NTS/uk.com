@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +31,12 @@ public class KscstFormulaUnitPrice extends UkJpaEntity implements Serializable {
 	/**単価**/
 	@Column(name = "UNIT_PRICE")
 	public int unitPrice;
-	
+	@OneToOne
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false) })
+	public KscmtGenVertItem kscmtGenVertItem;
 	@Override
 	protected Object getKey() {
 		return kscstFormulaUnitPricePK;
