@@ -116,7 +116,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	@Override
 	public Optional<Role> findByType(String companyId, RoleType roleType) {
 		
-		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ";
+		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.code";
 		SacmtRole entity = this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("companyId", companyId).setParameter("roleType", roleType).getSingleOrNull();
 		if (entity != null) {
