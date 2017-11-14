@@ -120,10 +120,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.displayBonusTime(data.displayBonusTime);
             self.restTimeDisFlg(data.displayRestTime);
             self.employeeName(data.employeeName);
-            self.siftCD(data.siftType.siftCode);
-            self.siftName(data.siftType.siftName);
-            self.workTypeCd(data.workType.workTypeCode);
-            self.workTypeName(data.workType.workTypeName);
+            if(data.siftType != null){
+                self.siftCD(data.siftType.siftCode);
+                self.siftName(data.siftType.siftName);
+            }
+            if(data.workType != null){
+                self.workTypeCd(data.workType.workTypeCode);
+                self.workTypeName(data.workType.workTypeName);
+            }
             self.timeStart1(data.workClockFrom1);
             self.timeEnd1(data.workClockFrom2);
             self.timeStart2(data.workClockTo1);
