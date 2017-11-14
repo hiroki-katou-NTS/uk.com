@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTemporaryAbsence;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -47,9 +46,6 @@ public class BsymtEmployee extends UkJpaEntity implements Serializable {
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="BsymtEmployee", orphanRemoval = true)
 	public List<BsymtJobEntryHistory> listEntryHist;
-
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="BsymtEmployee", orphanRemoval = true)
-	public List<BsymtTemporaryAbsence> listTemporaryAbsenceHist;
 
 	@Override
 	protected Object getKey() {

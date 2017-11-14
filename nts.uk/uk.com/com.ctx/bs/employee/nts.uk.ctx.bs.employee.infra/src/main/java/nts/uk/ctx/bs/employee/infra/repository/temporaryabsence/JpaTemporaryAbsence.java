@@ -101,7 +101,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(), 
 				domain.getTempAbsenceType().value, domain.getTempAbsenceReason(), domain.getFamilyMemberId(), 
-				domain.getBirthDate(), domain.getMulPregnancySegment(), null);
+				domain.getBirthDate(), domain.getMulPregnancySegment());
 	}
 	
 	private BsymtTemporaryAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain){
