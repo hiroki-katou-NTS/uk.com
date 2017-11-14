@@ -145,6 +145,10 @@ public class GetOvertime {
 		OverTimeDto result = new OverTimeDto();
 		return result;
 	}
+	public OverTimeDto findByChangeAppDate(String appID){
+		return null;
+		
+	}
 	
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID, AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr,List<OvertimeInputDto> overTimeInputs){
 		//申請日付を取得 : lay thong tin lam them

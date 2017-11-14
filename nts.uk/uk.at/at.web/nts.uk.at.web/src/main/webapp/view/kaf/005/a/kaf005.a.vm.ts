@@ -64,8 +64,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
-        instructInforFlag: KnockoutObservable<boolean> = ko.observable(true);
-        instructInfor: KnockoutObservable<string> = ko.observable('');
+
+        instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
+        instructInfor : KnockoutObservable <string> = ko.observable('');
+        overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
+        indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
 
@@ -73,6 +76,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
             $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
             $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
+            $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A

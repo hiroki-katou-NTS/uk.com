@@ -330,12 +330,13 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 		if(minute == -1){
 			return null;
 		}else if (minute == 0) {
-			return hourminute = "00:00";
+			hourminute = "00:00";
 		}else{
 			int hour = minute/60;
 			int minutes = minute%60;
-			return hourminute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+			hourminute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
 		}
+		return hourminute;
 	}
 	
 }
