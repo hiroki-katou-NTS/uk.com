@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +17,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkS
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 
 /**
  * The Class JpaBasicScheduleGetMemento.
@@ -92,7 +93,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkScheduleTimeZone> getWorkScheduleTimeZones() {
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)
@@ -100,7 +101,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkScheduleBreak> getWorkScheduleBreaks() {
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)
@@ -108,7 +109,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public Optional<WorkScheduleTime> getWorkScheduleTime() {
-		return null;
+		return Optional.empty();
 	}
 
 	/* (non-Javadoc)
@@ -116,7 +117,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkSchedulePersonFee> getWorkSchedulePersonFees() {
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)
@@ -124,7 +125,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<ChildCareSchedule> getChildCareSchedules() {
-		return null;
+		return new ArrayList<>();
 	}
 
 }
