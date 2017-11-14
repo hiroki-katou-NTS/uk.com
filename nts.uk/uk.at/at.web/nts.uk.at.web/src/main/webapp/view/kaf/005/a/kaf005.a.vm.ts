@@ -97,9 +97,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getOvertimeByUI({
                 url: "",
                 appDate: moment(new Date()).format("YYYY/MM/DD"),
-                uiType: 1
+                uiType: 0
             }).done((data) => {
                 self.initData(data);
+                $("#inputdate").focus();
                 dfd.resolve(data);
             }).fail((res) => {
                 dfd.reject(res);
