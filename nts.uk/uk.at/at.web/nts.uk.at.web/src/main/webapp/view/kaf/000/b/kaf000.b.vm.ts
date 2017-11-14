@@ -21,6 +21,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          * value obj 
          */
         reasonToApprover: KnockoutObservable<string>;
+        reasonAppMess : string = nts.uk.resource.getText('KAF000_1');
+        reasonAppMessDealine : string = nts.uk.resource.getText('KAF000_2');
+        messageDeadlineTop: KnockoutObservable<string> = ko.observable('');
+        messageDeadlineBottom: KnockoutObservable<string> = ko.observable('');
         reasonApp: KnockoutObservable<string>;
         inputCommonData : KnockoutObservable<model.InputCommonData>;
 
@@ -259,6 +263,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }   
                 }
             }
+            //※8
+            if(nts.uk.text.isNullOrEmpty(self.reasonApp())){
+                self.displayButtonControl().displayReturnReasonPanel(false);
+            }else{
+                self.reasonApp(self.reasonAppMess + '　' + self.reasonApp());
+                self.displayButtonControl().displayReturnReasonPanel(true);
+            }
 
         } // end checkDisplayStart
 
@@ -377,6 +388,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
+                self.messageDeadlineTop(self.reasonAppMess + '　' + data.message);
+                self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
             }).fail(function(res: any) {
