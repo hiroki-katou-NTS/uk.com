@@ -28,7 +28,8 @@ module nts.uk.at.view.kmk002.c {
 
                 // data source
                 self.columnsLeft = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemId', width: 50 },
+                    { headerText: '', key: 'attendanceItemId', hidden: true },
+                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'attendanceItemDisplayNumber', width: 50 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'attendanceItemName', width: 100 }
                 ]);
                 self.columnsRight = ko.observableArray([
