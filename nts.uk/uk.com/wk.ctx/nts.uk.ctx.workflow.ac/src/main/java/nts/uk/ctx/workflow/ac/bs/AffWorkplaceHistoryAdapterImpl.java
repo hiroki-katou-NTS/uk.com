@@ -19,7 +19,7 @@ public class AffWorkplaceHistoryAdapterImpl implements AffWorkplaceHistoryAdapte
 	public Optional<AffWorkplaceHistoryImport> findByBaseDate(String employeeId,
 			GeneralDate baseDate) {
 		
-		return null;
+		return Optional.empty();
 	}
 
 }

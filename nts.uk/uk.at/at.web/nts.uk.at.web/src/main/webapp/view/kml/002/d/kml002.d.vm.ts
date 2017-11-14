@@ -49,10 +49,14 @@ module nts.uk.at.view.kml002.d.viewmodel {
                             let foundItem = _.find(self.listBudget(), (item: ItemModel) => {
                                 return item.name ==  nts.uk.resource.getText("KML002_109");
                             });
+                            let search = _.find(self.listBudget(), (item: ItemModel) => {
+                                return item.name ==  nts.uk.resource.getText("KML002_110");
+                            });
                             self.items([]);
                             self.rightItems([]);
                             self.currentCodeList.removeAll();
                             self.items.push(foundItem);
+                            self.items.push(search);
                         }else{
                             self.items(self.listBudget());
                         }
@@ -62,10 +66,14 @@ module nts.uk.at.view.kml002.d.viewmodel {
                         let foundItem = _.find(self.listBudget(), (item: ItemModel) => {
                             return item.name ==  nts.uk.resource.getText("KML002_109");
                         });
+                        let search = _.find(self.listBudget(), (item: ItemModel) => {
+                            return item.name ==  nts.uk.resource.getText("KML002_110");
+                        });
                         self.items([]);
                         self.rightItems([]);
                         self.currentCodeList.removeAll();
                         self.items.push(foundItem);
+                        self.items.push(search);
                     }else{
                         self.items(self.listBudget());
                     }
@@ -126,26 +134,29 @@ module nts.uk.at.view.kml002.d.viewmodel {
             var t0 = performance.now();
             var self = this;
             let array = [];
-            _.forEach(self.rightItems(), function(item){
+            var dataA = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            _.forEach(self.rightItems(), function(item, index){
                 let data = {
-                    id: item.id,
-                    code: item.code,
-                    operatorAtr: 0,
-                    name: item.name,
+                    verticalCalCd: dataA.verticalCalCd,
+                    verticalCalItemId: dataA.itemId,
+                    externalBudgetCd: item.code,
+                    categoryAtr: 1,
+                    operatorAtr: item.operatorAtr,
+                    dispOrder: index,
                 }
-                if(item.operatorAtr == nts.uk.resource.getText("KML002_37")){
-                    data.operatorAtr = 1;     
-                }
+
                 array.push(data);
             });
-            self.rightItems(array);
-            console.log(self.rightItems());
+
             let transfer = {
                 checked: self.checked(),
-                rightItems: self.rightItems(),
+                rightItems: array,
             }
+            
             setSharedD('KML002_D_Budget', transfer);
             nts.uk.ui.windows.close();
+            
             var t1 = performance.now();
             console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
