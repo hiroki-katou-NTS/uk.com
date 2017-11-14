@@ -42,13 +42,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: string = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
         //休憩時間
-        restTime: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
+        restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
-        overtimeHours: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
+        overtimeHours: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //休出時間
-        breakTimes: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
+        breakTimes: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //加給時間
-        bonusTimes: KnockoutObservableArray<common.AppOverTime> = ko.observableArray([]);
+        bonusTimes: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //menu-bar 
         enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);

@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -58,6 +57,8 @@ import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrameRepository;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess{
@@ -103,6 +104,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	private SpecBPTimesheetRepository specBPTimesheetRepository;
 	@Inject
 	private BreaktimeFrameRepository breaktimeFrameRep;
+	@Inject
+	private WorkTimeSetRepository workTimeSetRepository;
 	
 	
 	@Override
@@ -319,10 +322,14 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 	}
 
 	@Override
-	public void getResultContentActual(int prePostAtr) {
+	public void getResultContentActual(int prePostAtr,String siftCode,String companyID) {
 		// TODO Auto-generated method stub
 		if(PrePostAtr.POSTERIOR.value == prePostAtr){
-			
+			Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCode);
+			if(workTimeSet.isPresent()){
+				
+				
+			}
 		}
 	}
 	private String convert(int minute){
