@@ -52,6 +52,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 	protected void handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
+		String applicationReason = appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason();
 		AppStamp appStamp = null;
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
@@ -89,7 +90,6 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
-					appStampCmd.getTitleReason(),
 					new AppReason(appStampCmd.getDetailReason()),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -119,7 +119,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					null,
 					null); 
 				appStamp.setVersion(appStampCmd.getVersion());
-				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampDetailDomainService.appStampUpdate(applicationReason, appStamp, appApprovalPhases);
 				break;
 			case STAMP_ADDITIONAL: 
 				appStamp = new AppStamp(
@@ -130,7 +130,6 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
-					appStampCmd.getTitleReason(),
 					new AppReason(appStampCmd.getDetailReason()),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -162,7 +161,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					null,
 					null);
 				appStamp.setVersion(appStampCmd.getVersion());
-				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampDetailDomainService.appStampUpdate(applicationReason, appStamp, appApprovalPhases);
 				break;
 			case STAMP_CANCEL: 
 				appStamp = new AppStamp(
@@ -173,7 +172,6 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
-					appStampCmd.getTitleReason(),
 					new AppReason(appStampCmd.getDetailReason()),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -199,7 +197,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					).collect(Collectors.toList()),
 					null);
 				appStamp.setVersion(appStampCmd.getVersion());
-				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampDetailDomainService.appStampUpdate(applicationReason, appStamp, appApprovalPhases);
 				break;
 			case STAMP_ONLINE_RECORD: 
 				appStamp = new AppStamp(
@@ -210,7 +208,6 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
-					appStampCmd.getTitleReason(),
 					new AppReason(appStampCmd.getDetailReason()),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -233,7 +230,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
 				appStamp.setVersion(appStampCmd.getVersion());
-				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampDetailDomainService.appStampUpdate(applicationReason, appStamp, appApprovalPhases);
 				break;
 			case OTHER:
 				appStamp = new AppStamp(
@@ -244,7 +241,6 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					appStampCmd.getEnteredPerson(), 
 					new AppReason(""),
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
-					appStampCmd.getTitleReason(),
 					new AppReason(appStampCmd.getDetailReason()),
 					ApplicationType.STAMP_APPLICATION, 
 					appStampCmd.getEmployeeID(),  
@@ -276,7 +272,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					null,
 					null);
 				appStamp.setVersion(appStampCmd.getVersion());
-				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampDetailDomainService.appStampUpdate(applicationReason, appStamp, appApprovalPhases);
 				break;
 			default:
 				break;

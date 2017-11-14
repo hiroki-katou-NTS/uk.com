@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf002.cm {
             application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/DD"),'',moment(new Date()).format("YYYY/MM/DD"),'','','',0));
             inputReasons: KnockoutObservableArray<vmbase.InputReason> = ko.observableArray([new vmbase.InputReason('','')]);
             currentReason: KnockoutObservable<string> = ko.observable('');
+            currentReasonText: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
             detailReasonDisp: KnockoutObservable<number> = ko.observable(0);
             topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
@@ -83,6 +84,7 @@ module nts.uk.at.view.kaf002.cm {
                     self.employeeName(commonSet.employeeName);
                     if(self.inputReasonsDisp() == 1 && self.inputReasons().length != 0){
                         self.currentReason(_.first(self.inputReasons()).id);
+                        self.currentReasonText(_.first(self.inputReasons()).content);
                     }
                 }
                 _.forEach(approvalList, appPhase => {
@@ -97,7 +99,8 @@ module nts.uk.at.view.kaf002.cm {
             
             register(){
                 var self = this;
-                self.application().titleReason(self.currentReason());
+                var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                self.application().titleReason(reasonText.content);
                 switch(self.stampRequestMode()){
                     case 0: self.m1.register(self.application(), self.approvalList);break;    
                     case 1: self.m2.register(self.application(), self.approvalList);break;  
@@ -110,7 +113,8 @@ module nts.uk.at.view.kaf002.cm {
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                self.application().titleReason(self.currentReason());
+                var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                self.application().titleReason(reasonText.content);           
                 switch(self.stampRequestMode()){
                     case 0: self.m1.update(self.application(), approvalList);break;    
                     case 1: self.m2.update(self.application(), approvalList);break;  

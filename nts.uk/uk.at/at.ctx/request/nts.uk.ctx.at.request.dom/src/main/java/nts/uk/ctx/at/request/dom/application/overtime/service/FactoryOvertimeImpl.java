@@ -29,7 +29,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 		// 申請者
 		String applicantSID = AppContexts.user().employeeId();
 		return new Application(companyId, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), GeneralDate.today(),
-				persionId, new AppReason(applicationReason), applicationDate, appReasonID,
+				persionId, new AppReason(applicationReason), applicationDate, 
 				new AppReason(applicationReason), ApplicationType.OVER_TIME_APPLICATION, applicantSID, null, null,
 				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
 				null, null, EnumAdaptor.valueOf(0, ReflectPlanPerState.class),

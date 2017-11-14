@@ -67,7 +67,6 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
         		command.getApplicationDate(),
         		command.getPrePostAtr(),
         		command.getReasonTemp(),
-        		command.getAppReason(),
         		null,
         		command.getEarly1(),
         		command.getEarlyTime1(),

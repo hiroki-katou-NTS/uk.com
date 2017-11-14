@@ -49,7 +49,6 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	public void update(LateOrLeaveEarly lateOrLeaveEarly) {
 		KrqdtAppLateOrLeave newEntity = toEntity(lateOrLeaveEarly);
 		KrqdtAppLateOrLeave updateEntity = this.queryProxy().find(newEntity.krqdtAppLateOrLeavePK, KrqdtAppLateOrLeave.class).get();
-		updateEntity.kafdtApplication.appReasonId = newEntity.kafdtApplication.appReasonId;
 		updateEntity.kafdtApplication.applicationReason = newEntity.kafdtApplication.applicationReason;
 		updateEntity.actualCancelAtr = newEntity.actualCancelAtr;
 		updateEntity.early1 = newEntity.early1;
@@ -86,7 +85,6 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				 applicationEntity.enteredPersonSID,
 				 applicationEntity.reversionReason,
 				 applicationEntity.applicationDate,
-				 applicationEntity.appReasonId,
 				 applicationEntity.applicationReason,
 				 applicationEntity.applicationType,
 				 applicationEntity.applicantSID,
