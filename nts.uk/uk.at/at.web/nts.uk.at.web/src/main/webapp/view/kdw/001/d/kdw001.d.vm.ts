@@ -24,6 +24,7 @@ module nts.uk.at.view.kdw001.d {
             }
             
             opendScreenE() {
+                nts.uk.ui.windows.setShared("KDWL001E", __viewContext["viewmodel"].params);
                 nts.uk.request.jump("/view/kdw/001/e/index.xhtml");
             }
         }

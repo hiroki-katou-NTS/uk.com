@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdw001.c {
     import getText = nts.uk.resource.getText;
-
+    
     export module viewmodel {
         export class ScreenModel {
 
@@ -180,8 +180,7 @@ module nts.uk.at.view.kdw001.c {
 
             opendScreenBorJ() {
                 let self = this;
-
-                var closureID = __viewContext.transferred.value.closureID;
+              var closureID =  __viewContext["viewmodel"].closureID;
                 service.findById(closureID).done((data) => {
 
                     if (data) {
@@ -208,6 +207,12 @@ module nts.uk.at.view.kdw001.c {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
                                 }
+                                
+                                __viewContext["viewmodel"].params.setParamsScreenC({
+                                    lstEmployeeID: listEmpSelected,
+                                    periodStartDate:self.dateValue().startDate,
+                                    periodEndDate: self.dateValue().endDate
+                                });
                                 $("#wizard").ntsWizard("next");
 
                             })
@@ -219,6 +224,11 @@ module nts.uk.at.view.kdw001.c {
                                 nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                 return;
                             }
+                                __viewContext["viewmodel"].params.setParamsScreenC({
+                                    lstEmployeeID: listEmpSelected,
+                                    periodStartDate:self.dateValue().startDate,
+                                    periodEndDate: self.dateValue().endDate
+                                });
                             $("#wizard").ntsWizard("next");
 
                         }

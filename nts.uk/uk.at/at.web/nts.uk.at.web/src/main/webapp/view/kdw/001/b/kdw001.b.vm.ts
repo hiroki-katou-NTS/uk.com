@@ -1,8 +1,11 @@
 module nts.uk.at.view.kdw001.b {
     import getText = nts.uk.resource.getText;
+    import shareModel = nts.uk.at.view.kdw001.share.model;
 
     export module viewmodel {
         export class ScreenModel {
+            params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
+            closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -61,12 +64,9 @@ module nts.uk.at.view.kdw001.b {
             itemRecreateDevision: KnockoutObservableArray<any>;
             selectedRecreateDevision: KnockoutObservable<number>;
 
-            //data from screen C
-            dataC: any;
             constructor() {
                 var self = this;
-                self.dataC = nts.uk.ui.windows.getShared("KDW001_C_LISTEMPID_STARTDATE_ENDDATE");
-                nts.uk.ui.dialog.alert(self.dataC);
+                self.params.setParamsScreenA({closure: self.closureID()});
 
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
@@ -230,15 +230,56 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
                     return;
                 }
-               
-                if(self.selectedCreatDivisionCode()==2 || self.selectedCalDivisionCode()==2 || self.selectedAggregateClassCode()==2){
+
+                if (self.selectedCreatDivisionCode() == 2 || self.selectedCalDivisionCode() == 2 || self.selectedAggregateClassCode() == 2) {
                     nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                         $("#wizard").ntsWizard("next");
+                        self.params.setParamsScreenB({
+                            dailyCreation: self.dailyCreatedCheck(),
+                            creationType: self.selectedCreatDivisionCode(),
+                            resetClass: self.selectedRecreateDevision(),
+                            calClassReset: self.calDivisionCheck(),
+                            masterReconfiguration: self.masterInforCheck(),
+                            specDateClassReset: self.dateDivisionCheck(),
+                            resetTimeForChildOrNurseCare: self.childCareCheck(),
+                            refNumberFingerCheck: self.reflectEmbossingCheck(),
+                            closedHolidays: self.closedResetCheck(),
+                            resettingWorkingHours: self.workingTimeCheck(),
+                            resetTimeForAssig: self.transferTimeCheck(),
+                            dailyCalClass: self.dailyCalCheck(),
+                            calClass: self.selectedCalDivisionCode(),
+                            refApprovalresult: approvalResultCheck(),
+                            refClass: selectedReflectClassCode(),
+                            alsoForciblyReflectEvenIfItIsConfirmed: self.forciblyCommitCheck(),
+                            monthlyAggregation: self.MonthCountCheck(),
+                            summaryClass: self.selectedAggregateClassCode()
+                        });
+
+                        $("#wizard").ntsWizard("next");
                     });
-                }else{
-                     $("#wizard").ntsWizard("next");
+                } else {
+                      self.params.setParamsScreenB({
+                            dailyCreation: self.dailyCreatedCheck(),
+                            creationType: self.selectedCreatDivisionCode(),
+                            resetClass: self.selectedRecreateDevision(),
+                            calClassReset: self.calDivisionCheck(),
+                            masterReconfiguration: self.masterInforCheck(),
+                            specDateClassReset: self.dateDivisionCheck(),
+                            resetTimeForChildOrNurseCare: self.childCareCheck(),
+                            refNumberFingerCheck: self.reflectEmbossingCheck(),
+                            closedHolidays: self.closedResetCheck(),
+                            resettingWorkingHours: self.workingTimeCheck(),
+                            resetTimeForAssig: self.transferTimeCheck(),
+                            dailyCalClass: self.dailyCalCheck(),
+                            calClass: self.selectedCalDivisionCode(),
+                            refApprovalresult: approvalResultCheck(),
+                            refClass: selectedReflectClassCode(),
+                            alsoForciblyReflectEvenIfItIsConfirmed: self.forciblyCommitCheck(),
+                            monthlyAggregation: self.MonthCountCheck(),
+                            summaryClass: self.selectedAggregateClassCode()
+                        });
+                    $("#wizard").ntsWizard("next");
                 }
-                
+
             }
 
             opendScreenC() {

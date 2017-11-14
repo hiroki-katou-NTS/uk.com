@@ -1,8 +1,9 @@
 module nts.uk.at.view.kdw001.j {
     import getText = nts.uk.resource.getText;
-
+    import shareModel = nts.uk.at.view.kdw001.share.model;
     export module viewmodel {
         export class ScreenModel {
+            params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -20,6 +21,8 @@ module nts.uk.at.view.kdw001.j {
 
             constructor() {
                 var self = this;
+                var closureID = __viewContext.transferred.value.closureID;
+                self.params.setParamsScreenA({ closure: closureID });
 
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
@@ -57,7 +60,7 @@ module nts.uk.at.view.kdw001.j {
                         return new CaseSpecExeContent(item);
                     });
                     self.items(items);
-                    
+
                     //Set first select
                     self.currentCode(self.items()[0].caseSpecExeContentID);
                 });
@@ -65,15 +68,19 @@ module nts.uk.at.view.kdw001.j {
 
             opendScreenD() {
                 //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 2, "screenName": "J" });
-//                let self = this;
-//                self.activeStep(2);
+                let self = this;
+                //                self.activeStep(2);
+                self.params.setParamsScreenJ({
+                    caseSpecExeContentID: self.currentCode()
+                });
+
                 $("#wizard").ntsWizard("next");
             }
 
             opendScreenC() {
                 //nts.uk.request.jump("/view/kdw/001/j/index.xhtml", { "activeStep": 0 });
-//                let self = this;
-//                self.activeStep(0);
+                //                let self = this;
+                //                self.activeStep(0);
                 $("#wizard").ntsWizard("prev");
             }
 
