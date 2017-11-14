@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
@@ -32,4 +32,13 @@ public interface CompanyBasicWorkRepository {
 	 * @return the list
 	 */
 	Optional<CompanyBasicWork> findAll(String companyId);
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param companyId the company id
+	 * @param workdayAtr the workday atr
+	 * @return the optional
+	 */
+	Optional<CompanyBasicWork> findById(String companyId, int workdayAtr);
 }

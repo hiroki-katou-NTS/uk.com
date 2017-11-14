@@ -172,7 +172,7 @@ public class EmployeeInDesignatedFinder {
 		// Output List
 		List<EmployeeInDesignatedDto> empsInDesignated = new ArrayList<>();
 		empIdList.stream().forEach(empId -> {
-			// 在職状態を取得
+			// 在職状態を取�
 			EmploymentStatusDto employmentStatus = this.getStatusOfEmployment(empId,
 					referenceDate);
 			//check if null
@@ -214,50 +214,44 @@ public class EmployeeInDesignatedFinder {
 		
 		Employee employee = empOpt.get();
 
-		// kiểm tra listEntryJobHist vói điều kiện baseDate
-		// between(joinDate,RetirementDate)
+		// Filter ListEntryJobHist: JoinDate <= BaseDate <= RetirementDate
 		List<JobEntryHistory> listEntryJobHist = employee.getListEntryJobHist().stream()
 				.filter(x -> (x.getJoinDate().beforeOrEquals(referenceDate)
 						&& x.getRetirementDate().afterOrEquals(referenceDate)))
 				.collect(Collectors.toList());
 
 		if (listEntryJobHist.size() == 0) {
-
-			// TH khong co du lieu 「入社履歴」thoa man dieu kien : 入社年月日 joinDate
-			// <=parameter「baseDate」 <= RetirementDate 退職年月日
-
+			// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is empty
 			List<GeneralDate> listJointDate = new ArrayList<>();
-			// lấy toàn bộ ngày vào cty của employee
-			for (int i = 0; i < listEntryJobHist.size(); i++) {
+			// List Entry Job History
+			for (int i = 0; i < employee.getListEntryJobHist().size(); i++) {
 				listJointDate.add(listEntryJobHist.get(i).getJoinDate());
 			}
-			// lấy ngày vào cty đầu tiên
+			// The First Joining Date
 			GeneralDate firtJointDate = Collections.min(listJointDate);
 
+			// Check if baseDate is before First Joining Date
 			if (referenceDate.before(firtJointDate)) {
-				// nêu ngày vào cty trước ngày baseDate
+				// StatusOfEmployment = BEFORE_JOINING
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
 
 			} else {
-				// trương hop nghi hưu
+				// StatusOfEmployment = RETIREMENT
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
 
 			}
-		} else {
-			// TH co du lieu 「入社履歴」thoa man dieu kien : 入社年月日 joinDate <=parameter「baseDate」
-			// <= RetirementDate 退職年月日
+		} else {// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is not empty
 
-			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
+			// Get TemporaryAbsence By employee ID
 			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
-				// tốn tại domain 
+				// Domain TemporaryAbsence is Present
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();
 				// set LeaveHolidayType 
 				statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
 
+				// Check if TempAbsenceType = TEMP_LEAVE
 				if (temporaryAbsenceDomain.getTempAbsenceType().value == 1) {
-					// trường hợp 休職休業区分＝休職  LeaveHolidayState = TEMP_LEAVE(1)
-					
 					// StatusOfEmployment = LEAVE_OF_ABSENCE
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
 				} else {

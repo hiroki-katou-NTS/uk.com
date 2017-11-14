@@ -2,6 +2,7 @@ package find.layout.classification;
 
 import find.person.info.item.DataTypeStateDto;
 import find.person.info.item.PerInfoItemDefDto;
+
 import find.person.info.item.SingleItemDto;
 import lombok.Data;
 import lombok.NonNull;

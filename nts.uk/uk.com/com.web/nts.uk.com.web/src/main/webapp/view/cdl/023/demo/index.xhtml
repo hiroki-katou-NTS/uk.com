@@ -40,7 +40,7 @@
 					
 					<h4 style="margin-top: 30px;margin-bottom: 10px;font-size: 17px">Parameters:</h4>
 					<table>
-						<col width="50"></col>
+						<col width="70"></col>
 						<col width="200"></col>
 						<tr>
 							<td>複写元コード</td>
@@ -76,6 +76,33 @@
 								</td>
 							</tr>
 						</com:ko>
+						<tr>
+								<td>設定済項目リスト</td>
+								<td>
+									<div>
+										<input data-bind="ntsTextEditor: {
+											value: itemSetting,
+											required: false,
+											enable: true,
+											option: {
+												width: '190px'
+											},
+											readonly: false}"/>
+										<button data-bind="click: addItem">Add item</button>
+									</div>
+									<div id="list-box" data-bind="ntsListBox: {
+										options: itemList,
+										optionsValue: 'name',
+										optionsText: 'name',
+										multiple: true,
+										value: selectedItems,
+										enable: true,
+										rows: 10,
+										columns: [
+											{ key: 'name', length: 19},
+										]}" style="margin-top: 10px;"></div>
+								</td>
+							</tr>
 					</table>
 					
 					<button style="margin-top: 10px;" data-bind="click: openDialog">Open CDL023 dialog</button>
@@ -96,6 +123,7 @@ interface IObjectDuplication {
     code: string;
     name: string;
     targetType: TargetType;
+    itemListSetting: Array<string>;
     baseDate?: Date; // needed when target type: 職場 or 部門 or 職場個人 or 部門個人
 }
 

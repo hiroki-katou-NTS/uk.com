@@ -48,20 +48,28 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
+				<!-- A1_001: button 新規 -->
 				<button id="A1_001" tabindex="1" data-bind="click: openDDialog">#{i18n.getText('CPS009_3')}</button>
+				<!-- A1_002: button 登録 -->
 				<button id="A1_002" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('CPS009_4')}</button>
+				<!-- A1_003: button 複製 -->
 				<button id="A1_003" data-bind="click: openCDialog" tabindex="3">#{i18n.getText('CPS009_5')}</button>
+				<!-- A1_004: button 削除 -->
 				<button id="A1_004" class="danger" data-bind="click: deleteInitValue" tabindex="4">#{i18n.getText('CPS009_6')}</button>
+				<!-- A1_005: link label 個人情報定義へ -->
 				<div class='float-right'>
 					<a class='goout' data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }" tabindex="5">#{i18n.getText('CPS009_7')}</a>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
+					<!-- A2_001: 選択パネル -->
 					<div id="content-left"
 						data-bind="ntsPanel:{width: '260px', height: '407px',direction: 'right', showIcon: false, visible: true}">
+						<!-- A2_002: gridList 初期値設定一覧 -->
 						<table id="category_grid"
-							data-bind="ntsGridList: {	
+							data-bind="ntsGridList: {
+							name: '#[CPS009_9]',	
 							dataSource: initValSettingLst ,
 							primaryKey: 'settingId' ,
 							columns: ctgColums ,
@@ -71,19 +79,23 @@
 						</table>
 					</div>
 					<div id="content-right">
-
 						<div>
+							<!-- A3_001: label コード/名称 -->
 							<div data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}" class='distane'>
 								<label>#{i18n.getText('CPS009_12')}</label>
 							</div>
+							<!-- A3_002: コード -->
 							<input id="ctgCode"
 								data-bind="ntsTextEditor: {
+								name: '#[CPS009_13]',
 								value: currentCategory().settingCode ,
 								constraint: 'ValueSettingCode',
 								enable: false,
 								immediate: false}"></input>
+							<!-- A3_003: 名称 -->
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
+								name: '#[CPS009_14]',
 								value: currentCategory().settingName ,
 								constraint: 'ValueSettingName',
 								enable: true,
@@ -91,8 +103,10 @@
 						</div>
 						<div id='sub-content-right'>
 							<div id="search_his" class='flex valign-center'>
+							<!-- A3_004: カテゴリー検索 -->
 							<div id="search" tabindex="6"
 									data-bind="ntsSearchBox: {
+									name: '#[CPS009_17]',
 									searchMode: 'filter',
 									targetKey: 'perInfoCtgId',
 									mode: 'igGrid', 
@@ -101,15 +115,22 @@
 									selectedKey: 'perInfoCtgId',
 									fields: ['categoryName']}" />
 								<div id="history">
+									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
-									<button
-										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
+									<!-- A3_13: button ヘルプボタン -->
+									<button class="small" data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
 									<!-- A3_014: 履歴参照基準日(History reference date) -->
-									<div id="date" data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-									<button data-bind="click: historyFilter_Lan">適用</button>
+									<div id="date" data-bind="ntsDatePicker: {
+											name: '#[CPS009_19]',
+											value: baseDate, 
+											required: true,
+											dateFormat: 'YYYY/MM/DD'}"></div>
+									<!-- A3_15: button 適用 -->
+									<button data-bind="click: historyFilter_Lan">#{i18n.getText('CPS009_20')}</button>
 								</div>							
 							</div>
-							<div id='sub-left'>									
+							<div id='sub-left'>	
+								<!-- A3_005: list カテゴリ一覧 -->								
 								<table id="item_grid"   
 									data-bind="ntsGridList: {	
 									dataSource: currentCategory().ctgList ,
@@ -120,6 +141,7 @@
 									rows:15 }">
 								</table >
 								<div style=" margin-top: 40px;">
+								<!-- A3_011: label 済マーク説明 -->
 								<span>#{i18n.getText('CPS009_18')}</span>
 								</div>
 							</div>
@@ -127,18 +149,19 @@
 							 <span class="caret-background caret-right direction-right" style="margin-top: 135px;"></span>
 							</div>
 							<div id='sub-right'>
+								<!-- A3_016: table 項目初期値設定表 -->
 								<table class="contents-header">
 								<thead>
 										<tr>
+											<!-- A3_017: header 項目名 -->
 											<td id="COL_1" colspan="2">#{i18n.getText('CPS009_21')}</td>
-
 											<td id="COL_2" colspan="2">
-												<button id="A2_012" data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')}
-												</button>
-												<button id="help"
-													data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }">?</button>
+												<!-- A3_018: button 一括設定ボタン -->
+												<button id="A2_012" class = "small" data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')} </button>
+												<!-- A3_019: help button -->
+												<button id="help" data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }">?</button>
 											</td>
-
+											<!-- A3_020: header 値 -->
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 								</thead>

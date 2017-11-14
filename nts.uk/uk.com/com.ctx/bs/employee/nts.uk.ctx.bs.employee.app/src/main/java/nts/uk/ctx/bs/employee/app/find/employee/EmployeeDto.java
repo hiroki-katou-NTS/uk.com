@@ -1,10 +1,13 @@
 package nts.uk.ctx.bs.employee.app.find.employee;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,15 +22,16 @@ public class EmployeeDto {
 
 	// 入社履歴
 	// calc year of Entire from listHistoryEntire
-	private int yearOfEntire;
+	private int daysOfEntire;
 
-	public  static EmployeeDto fromDomain(Employee domain) {
-		return new EmployeeDto(domain.getPId(),
-				domain.getSId(),
-				domain.getSCd().v(),
-				domain.getCompanyMail().v(),
-				domain.getListEntryJobHist().get(0).getRetirementDate(),
-				domain.getListEntryJobHist().get(0).getJoinDate(), 
-				domain.getYearOfEntire());
+	public static EmployeeDto fromDomain(Employee domain) {
+
+		// get first history for retirement date and join date info
+		List<JobEntryHistory> hists = domain.getListEntryJobHist();
+		JobEntryHistory firstHisJob = hists.size() > 0 ? hists.get(0) : null;
+
+		return new EmployeeDto(domain.getPId(), domain.getSId(), domain.getSCd().v(), domain.getCompanyMail().v(),
+				firstHisJob != null ? firstHisJob.getRetirementDate() : null,
+				firstHisJob != null ? firstHisJob.getJoinDate() : null, domain.getDaysOfEntire());
 	}
 }

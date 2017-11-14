@@ -33,7 +33,7 @@ public class KrcdtIdentificationStatus extends UkJpaEntity implements Serializab
 	public GeneralDate processingYmd;
 	
 	@Column(name = "INDENTIFICATION_YMD")
-	public String indentificationYmd;
+	public GeneralDate indentificationYmd;
 
 	@Override
 	protected Object getKey() {
