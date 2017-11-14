@@ -6368,6 +6368,7 @@ var nts;
                         var isRequired = ko.unwrap(data.required) === true;
                         var isInline = ko.unwrap(data.inline) === true;
                         var isEnable = ko.unwrap(data.enable) !== false;
+                        var cssClass = data.cssClass !== undefined ? ko.unwrap(data.cssClass) : "";
                         var $formLabel = $(element).addClass('form-label');
                         $('<label/>').html($formLabel.html()).appendTo($formLabel.empty());
                         if (!isEnable) {
@@ -6388,8 +6389,11 @@ var nts;
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var text = (data.text !== undefined) ? ko.unwrap(data.text) : $(element).find('label').html();
+                        var cssClass = data.cssClass !== undefined ? ko.unwrap(data.cssClass) : "";
                         var container = $(element);
-                        container.find("label").html(text);
+                        var $label = container.find("label");
+                        $label.removeClass($label.data("cssClass")).addClass(cssClass).html(text);
+                        $label.data("cssClass", cssClass);
                     };
                     return NtsFormLabelBindingHandler;
                 }());
@@ -7434,11 +7438,13 @@ var nts;
                     function NtsSearchBoxBindingHandler() {
                     }
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var minusWidth = 0;
                         var data = ko.unwrap(valueAccessor());
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+                        var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
                         var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -7461,15 +7467,23 @@ var nts;
                         var $container = $(element);
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-                        $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span>");
-                        $container.append("<button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button>");
+                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
+                        $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
+                        if (!nts.uk.util.isNullOrEmpty(label)) {
+                            var $formLabel = $("<div>", { text: label });
+                            $formLabel.prependTo($container);
+                            ko.bindingHandlers["ntsFormLabel"].init($formLabel, function () {
+                                return {};
+                            }, allBindingsAccessor, viewModel, bindingContext);
+                            minusWidth += $formLabel.outerWidth(true);
+                        }
                         var $button = $container.find("button.search-btn");
                         var $input = $container.find("input.ntsSearchBox");
-                        var buttonWidth = $button.outerWidth(true);
+                        minusWidth += $button.outerWidth(true);
                         if (searchMode === "filter") {
                             $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>");
                             var $clearButton = $container.find("button.clear-btn");
-                            buttonWidth += $clearButton.outerWidth(true);
+                            minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
                                 if (component.length === 0) {
                                     component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
@@ -7487,7 +7501,7 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", "検索テキストボックス");
-                        $input.outerWidth($container.outerWidth(true) - buttonWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
@@ -7583,6 +7597,7 @@ var nts;
                         if (enable === false) {
                             $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
                         }
+                        return { 'controlsDescendantBindings': true };
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);
