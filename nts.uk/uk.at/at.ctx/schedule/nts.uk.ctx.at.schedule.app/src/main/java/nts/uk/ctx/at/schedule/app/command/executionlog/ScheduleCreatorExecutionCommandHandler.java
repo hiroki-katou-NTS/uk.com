@@ -5,8 +5,6 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +19,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommandHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
@@ -99,11 +96,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;;
 @Stateful
 public class ScheduleCreatorExecutionCommandHandler
 		extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
-	
-	/** The basic save. */
-	@Inject
-	private BasicScheduleSaveCommandHandler basicSave;
-	
+		
 	/** The basic schedule repository. */
 	@Inject
 	private BasicScheduleRepository basicScheduleRepository;
@@ -257,6 +250,8 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		ScheduleCreatorExecutionCommand command = context.getCommand();
 		command.setCompanyId(companyId);
+		command.setIsConfirm(false);
+		command.setIsDeleteBeforInsert(false);
 
 		Optional<ScheduleExecutionLog> optionalScheduleExecutionLog;
 		optionalScheduleExecutionLog = this.scheduleExecutionLogRepository.findById(companyId,
@@ -327,11 +322,6 @@ public class ScheduleCreatorExecutionCommandHandler
 			}
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
-			// insert basic schedule
-			BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
-			commandSave.setConfirmedAtr(this.getConfirmedAtr(true, ConfirmedAtr.CONFIRMED).value);
-			commandSave = toCommandSave(commandSave, domain.getEmployeeId(), "001", "001");
-			this.basicSave.handle(commandSave);
 		}
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 	}
@@ -347,13 +337,13 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void resetSchedule(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain) {
 		// get to day by start period date
-		command.setToDate(domain.getPeriod().start().date());
+		command.setToDate(domain.getPeriod().start());
 
 		// loop start period date => end period date
-		while (command.getToDate().before(this.nextDay(domain.getPeriod().end().date()))) {
+		while (command.getToDate().before(this.nextDay(domain.getPeriod().end()))) {
 
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-					.find(creator.getEmployeeId(), GeneralDate.legacyDate(command.getToDate()));
+					.find(creator.getEmployeeId(), command.getToDate());
 			if (optionalBasicSchedule.isPresent()
 					&& command.getContent().getReCreateContent().getReCreateAtr()
 							.equals(ReCreateAtr.ONLYUNCONFIRM)
@@ -424,14 +414,14 @@ public class ScheduleCreatorExecutionCommandHandler
 			ScheduleExecutionLog domain, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 
 		// get to day by start period date
-		command.setToDate(domain.getPeriod().start().date());
+		command.setToDate(domain.getPeriod().start());
 
 		// loop start period date => end period date
-		while (command.getToDate().before(this.nextDay(domain.getPeriod().end().date()))) {
+		while (command.getToDate().before(this.nextDay(domain.getPeriod().end()))) {
 
 			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
 					.findById(personalWorkScheduleCreSet.getEmployeeId(),
-							GeneralDate.legacyDate(command.getToDate()));
+							command.getToDate());
 
 			// check is use manager
 			if (optionalPersonalLaborCondition.isPresent()
@@ -456,7 +446,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		// get status employment
 		EmploymentStatusDto employmentStatus = this.getStatusEmployment(
 				personalWorkScheduleCreSet.getEmployeeId(),
-				GeneralDate.legacyDate(command.getToDate()));
+				command.getToDate());
 
 		// status employment equal RETIREMENT (退職)
 		if (employmentStatus.getStatusOfEmployment() == RETIREMENT) {
@@ -467,7 +457,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(
 					personalWorkScheduleCreSet.getEmployeeId(),
-					GeneralDate.legacyDate(command.getToDate()));
+					command.getToDate());
 
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
@@ -475,6 +465,9 @@ public class ScheduleCreatorExecutionCommandHandler
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
 				this.createWorkScheduleByImplementAtr(command, basicSchedule,
 						personalWorkScheduleCreSet);
+			} else {
+				// not exist data basic schedule
+				this.getWorktype(command, personalWorkScheduleCreSet);
 			}
 		}
 		return false;
@@ -538,10 +531,9 @@ public class ScheduleCreatorExecutionCommandHandler
 						optionalWorktypeCode.get(), personalWorkScheduleCreSet);
 				if (optionalWorkTimeObj.isPresent()
 						&& optionalWorkTimeObj.get() instanceof String) {
-					this.getScheduleBreakTime(command, optionalWorktypeCode.get(),
+					this.updateAllDataToCommandSave(command,
+							personalWorkScheduleCreSet.getEmployeeId(), optionalWorktypeCode.get(),
 							optionalWorkTimeObj.get().toString());
-					
-					
 				}
 			}
 		}
@@ -613,7 +605,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		EmploymentStatusDto employmentStatus = this.scEmploymentStatusAdapter.getStatusEmployment(
 				personalWorkScheduleCreSet.getEmployeeId(),
-				GeneralDate.legacyDate(command.getToDate()));
+				command.getToDate());
 
 		// employment status is INCUMBENT 
 		if (employmentStatus.getStatusOfEmployment() == INCUMBENT) {
@@ -655,7 +647,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
 					.findById(personalWorkScheduleCreSet.getEmployeeId(),
-							GeneralDate.legacyDate(command.getToDate()));
+							command.getToDate());
 			if (optionalPersonalLaborCondition.isPresent()) {
 				return optionalPersonalLaborCondition.get().getWorkCategory().getHolidayTime()
 						.getWorkTypeCode().v();
@@ -679,7 +671,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		EmploymentStatusDto employmentStatus = this.scEmploymentStatusAdapter.getStatusEmployment(
 				personalWorkScheduleCreSet.getEmployeeId(),
-				GeneralDate.legacyDate(command.getToDate()));
+				command.getToDate());
 
 		// employment status is 在職
 		if (employmentStatus.getStatusOfEmployment() == INCUMBENT) {
@@ -710,7 +702,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter.findWorkplaceById(
 					personalWorkScheduleCreSet.getEmployeeId(),
-					GeneralDate.legacyDate(command.getToDate()));
+					command.getToDate());
 
 			if (optionalWorkplace.isPresent()) {
 				WorkplaceDto workplaceDto = optionalWorkplace.get();
@@ -728,7 +720,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		{
 			Optional<ClassificationDto> optionalClassification = this.scClassificationAdapter
 					.findByDate(personalWorkScheduleCreSet.getEmployeeId(),
-							GeneralDate.legacyDate(command.getToDate()));
+							command.getToDate());
 			if (optionalClassification.isPresent()) {
 				ClassificationDto classificationDto = optionalClassification.get();
 				return this.getWorkdayDivisionByClass(command,
@@ -756,13 +748,13 @@ public class ScheduleCreatorExecutionCommandHandler
 			String employeeId, String classficationCode) {
 		Optional<CalendarClass> optionalCalendarClass = this.calendarClassRepository
 				.findCalendarClassByDate(command.getCompanyId(), classficationCode,
-						this.toYearMonthDate(GeneralDate.legacyDate(command.getToDate())));
+						this.toYearMonthDate(command.getToDate()));
 		if (optionalCalendarClass.isPresent()) {
 			return Optional.ofNullable(optionalCalendarClass.get().getWorkingDayAtr().value);
 		} else {
 			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 					.findCalendarCompanyByDate(command.getCompanyId(),
-							this.toYearMonthDate(GeneralDate.legacyDate(command.getToDate())));
+							this.toYearMonthDate(command.getToDate()));
 			if (optionalCalendarCompany.isPresent()) {
 				return Optional.ofNullable(optionalCalendarCompany.get().getWorkingDayAtr().value);
 			}
@@ -789,7 +781,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter.findWorkplaceById(
 					personalWorkScheduleCreSet.getEmployeeId(),
-					GeneralDate.legacyDate(command.getToDate()));
+					command.getToDate());
 
 			if (optionalWorkplace.isPresent()) {
 				WorkplaceDto workplaceDto = optionalWorkplace.get();
@@ -809,7 +801,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		else {
 			Optional<ClassificationDto> optionalClass = this.scClassificationAdapter.findByDate(
 					personalWorkScheduleCreSet.getEmployeeId(),
-					GeneralDate.legacyDate(command.getToDate()));
+					command.getToDate());
 			if (optionalClass.isPresent()) {
 				return this.getBasicWorkSettingByClassification(command,
 						personalWorkScheduleCreSet.getEmployeeId(),
@@ -1077,7 +1069,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	private List<String> findLevelWorkplace(ScheduleCreatorExecutionCommand command,
 			String workplaceId) {
 		return this.scWorkplaceAdapter.findWpkIdList(command.getCompanyId(), workplaceId,
-				command.getToDate());
+				command.getToDate().date());
 	}
 			
 	/**
@@ -1129,7 +1121,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			 */
 			@Override
 			public GeneralDate getDate() {
-				return GeneralDate.legacyDate(command.getToDate());
+				return command.getToDate();
 			}
 
 		});
@@ -1163,13 +1155,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * Next day.
 	 *
 	 * @param day the day
-	 * @return the date
+	 * @return the general date
 	 */
-	public Date nextDay(Date day) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		cal.add(Calendar.DAY_OF_MONTH, NEXT_DAY_MONTH); 
-		return cal.getTime();
+	public GeneralDate nextDay(GeneralDate day) {
+		return day.addDays(NEXT_DAY_MONTH);
 	}
 	
 	/**
@@ -1185,7 +1174,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		for (String workplaceId : workplaceIds) {
 			Optional<CalendarWorkplace> optionalCalendarWorkplace = this.calendarWorkPlaceRepository
 					.findCalendarWorkplaceByDate(workplaceId,
-							this.toYearMonthDate(GeneralDate.legacyDate(command.getToDate())));
+							this.toYearMonthDate(command.getToDate()));
 			// check exist data WorkplaceBasicWork
 			if (optionalCalendarWorkplace.isPresent()) {
 				return Optional.of(optionalCalendarWorkplace.get().getWorkingDayAtr().value);
@@ -1194,7 +1183,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 				.findCalendarCompanyByDate(command.getCompanyId(),
-						this.toYearMonthDate(GeneralDate.legacyDate(command.getToDate())));
+						this.toYearMonthDate(command.getToDate()));
 		if (optionalCalendarCompany.isPresent()) {
 			return Optional.of(optionalCalendarCompany.get().getWorkingDayAtr().value);
 		}
@@ -1377,7 +1366,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet, String workTimeCode) {
 		EmploymentStatusDto employmentStatus = this.getStatusEmployment(
 				personalWorkScheduleCreSet.getEmployeeId(),
-				GeneralDate.legacyDate(command.getToDate()));
+				command.getToDate());
 
 		// employment status is INCUMBENT
 		if (employmentStatus.getStatusOfEmployment() == INCUMBENT) {
@@ -1403,7 +1392,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		EmploymentStatusDto employmentStatus = this.getStatusEmployment(
 				personalWorkScheduleCreSet.getEmployeeId(),
-				GeneralDate.legacyDate(command.getToDate()));
+				command.getToDate());
 		// employment status is INCUMBENT
 		if (employmentStatus.getStatusOfEmployment() == INCUMBENT) {
 			return this.getWorkTimeZoneCodeInOffice(command, basicWorkSetting,
@@ -1435,14 +1424,24 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
 					.findById(personalWorkScheduleCreSet.getEmployeeId(),
-							GeneralDate.legacyDate(command.getToDate()));
+							command.getToDate());
+			
+			if (!optionalPersonalLaborCondition.isPresent()) {
+				return DEFAULT_CODE;
+			}
+			PersonalLaborCondition personalLaborCondition = null;
+			if (optionalPersonalLaborCondition.isPresent()) {
+				personalLaborCondition = optionalPersonalLaborCondition.get();
+			}
+			
+			
 			// check holiday work type
 			if (this.checkHolidayWork(worktype.getDailyWork())
 					&& this.checkHolidaySetting(worktype)) {
-				if (this.checkExistWorkTimeCodeBySingleDaySchedule(optionalPersonalLaborCondition
-						.get().getWorkCategory().getPublicHolidayWork())) {
-					return this.getWorkTimeCodeBySingleDaySchedule(optionalPersonalLaborCondition
-							.get().getWorkCategory().getPublicHolidayWork());
+				if (this.checkExistWorkTimeCodeBySingleDaySchedule(
+						personalLaborCondition.getWorkCategory().getPublicHolidayWork())) {
+					return this.getWorkTimeCodeBySingleDaySchedule(
+							personalLaborCondition.getWorkCategory().getPublicHolidayWork());
 				}
 
 				Optional<HolidayAtr> optionalHolidayAtr = this.getHolidayAtrWorkType(worktype);
@@ -1451,50 +1450,46 @@ public class ScheduleCreatorExecutionCommandHandler
 						// case 法定内休日
 						case STATUTORY_HOLIDAYS :
 							if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-									optionalPersonalLaborCondition.get().getWorkCategory()
-											.getInLawBreakTime())) {
-								return this.getWorkTimeCodeBySingleDaySchedule(
-										optionalPersonalLaborCondition.get().getWorkCategory()
-												.getInLawBreakTime());
+									personalLaborCondition.getWorkCategory().getInLawBreakTime())) {
+								return this
+										.getWorkTimeCodeBySingleDaySchedule(personalLaborCondition
+												.getWorkCategory().getInLawBreakTime());
 							}
 
 							break;
 						// case 法定外休日
 						case NON_STATUTORY_HOLIDAYS :
 							if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-									optionalPersonalLaborCondition.get().getWorkCategory()
+									personalLaborCondition.getWorkCategory()
 											.getOutsideLawBreakTime())) {
-								return this.getWorkTimeCodeBySingleDaySchedule(
-										optionalPersonalLaborCondition.get().getWorkCategory()
-												.getOutsideLawBreakTime());
+								return this
+										.getWorkTimeCodeBySingleDaySchedule(personalLaborCondition
+												.getWorkCategory().getOutsideLawBreakTime());
 							}
 							break;
 						// case 祝日
 						default :
 							if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-									optionalPersonalLaborCondition.get().getWorkCategory()
+									personalLaborCondition.getWorkCategory()
 											.getHolidayAttendanceTime())) {
-								return this.getWorkTimeCodeBySingleDaySchedule(
-										optionalPersonalLaborCondition.get().getWorkCategory()
-												.getHolidayAttendanceTime());
+								return this
+										.getWorkTimeCodeBySingleDaySchedule(personalLaborCondition
+												.getWorkCategory().getHolidayAttendanceTime());
 							}
 							break;
 					}
 
 					// default work time code
-					if (optionalPersonalLaborCondition.isPresent()) {
-						return this.getHolidayWorkOfPersonalCondition(
-								optionalPersonalLaborCondition.get());
-					}
+					return this.getHolidayWorkOfPersonalCondition(personalLaborCondition);
 				}
 			} else {
 				if (this.checkDefaultWorkTimeCode(basicWorkSetting)) {
 					return DEFAULT_CODE;
 				}
 
-				if (optionalPersonalLaborCondition.isPresent() && optionalPersonalLaborCondition
-						.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-					return optionalPersonalLaborCondition.get().getWorkCategory().getWeekdayTime()
+				if (personalLaborCondition.getWorkCategory().getWeekdayTime().getWorkTimeCode()
+						.isPresent()) {
+					return personalLaborCondition.getWorkCategory().getWeekdayTime()
 							.getWorkTimeCode().get().v();
 				}
 			}
@@ -1634,7 +1629,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
 				.findById(personalWorkScheduleCreSet.getEmployeeId(),
-						GeneralDate.legacyDate(command.getToDate()));
+						command.getToDate());
 		if (optionalPersonalLaborCondition.isPresent()) {
 			if (this.checkExistWorkTimeCodeBySingleDaySchedule(
 					optionalPersonalLaborCondition.get().getWorkDayOfWeek().getFriday())) {
@@ -1742,7 +1737,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		EmploymentStatusDto employmentStatus = this.getStatusEmployment(
 				personalWorkScheduleCreSet.getEmployeeId(),
-				GeneralDate.legacyDate(command.getToDate()));
+				command.getToDate());
 
 		// employment status is INCUMBENT
 		if (employmentStatus.getStatusOfEmployment() == INCUMBENT) {
@@ -1810,24 +1805,42 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 	}
 	
+
 	/**
-	 * To command save.
+	 * Update all data to command save.
+	 */
+	private void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command,
+			String employeeId, String worktypeCode, String workTimeCode) {
+		this.getScheduleBreakTime(command, worktypeCode, workTimeCode);
+		this.getShortWorkTime(employeeId, command.getToDate());
+		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
+		commandSave.setWorktypeCode(worktypeCode);
+		commandSave.setEmployeeId(employeeId);
+		commandSave.setWorktimeCode(workTimeCode);
+		commandSave.setYmd(GeneralDate.today());
+		commandSave.setConfirmedAtr(
+				this.getConfirmedAtr(command.getIsConfirm(), ConfirmedAtr.CONFIRMED).value);
+		if (command.getIsDeleteBeforInsert()) {
+			this.basicScheduleRepository.delete(employeeId, command.getToDate());
+		}
+		this.saveBasicSchedule(commandSave);;
+	}
+	
+	/**
+	 * Save basic schedule.
 	 *
 	 * @param command the command
-	 * @param employeeId the employee id
-	 * @param worktypeCode the worktype code
-	 * @param worktimeCode the worktime code
-	 * @return the basic schedule save command
 	 */
-	private BasicScheduleSaveCommand toCommandSave(BasicScheduleSaveCommand command,
-			String employeeId, String worktypeCode, String worktimeCode) {
-		command.setWorktypeCode(worktypeCode);
-		command.setEmployeeId(employeeId);
-		command.setWorktimeCode(worktimeCode);
-		command.setYmd(GeneralDate.today());
-		return command;
+	// 勤務予定情報を登録する
+	private void saveBasicSchedule(BasicScheduleSaveCommand command) {
+		Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
+				.find(command.getEmployeeId(), command.getYmd());
+		if (optionalBasicSchedule.isPresent()) {
+			this.basicScheduleRepository.update(command.toDomain());
+		} else {
+			this.basicScheduleRepository.insert(command.toDomain());
+		}
 	}
-
 }
 
 

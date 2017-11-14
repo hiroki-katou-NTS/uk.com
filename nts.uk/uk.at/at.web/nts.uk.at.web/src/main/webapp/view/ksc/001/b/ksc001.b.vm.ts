@@ -267,8 +267,6 @@ module nts.uk.at.view.ksc001.b {
                         startDate: data.startDate,
                         endDate: data.endDate
                     });
-//                    self.periodStartDate(data.startDate);
-//                    self.periodEndDate(data.endDate);
                     dfd.resolve(self);
                 });
                 return dfd.promise();
