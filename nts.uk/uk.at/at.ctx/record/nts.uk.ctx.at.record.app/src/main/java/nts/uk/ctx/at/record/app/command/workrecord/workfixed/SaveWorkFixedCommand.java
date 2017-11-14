@@ -16,10 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedGetMemento;
  */
 @Getter
 @Setter
-public class WorkFixedCommand {
-
-	/** The is save. */
-	private Boolean isSave;
+public class SaveWorkFixedCommand {
 	
 	/** The closure id. */
 	private Integer closureId;
@@ -32,9 +29,6 @@ public class WorkFixedCommand {
 	
 	/** The process date. */
 	private Integer processDate;
-	
-	/** The cid. */
-    private String cid;
     
 	/**
 	 * To domain.
@@ -43,8 +37,8 @@ public class WorkFixedCommand {
 	 * @param fixedDate the fixed date
 	 * @return the work fixed
 	 */
-	public WorkFixed toDomain(String personId, GeneralDate fixedDate) {
-        return new WorkFixed(new WorkFixedGetMementoImpl(personId, fixedDate, this));
+	public WorkFixed toDomain(String companyId, String personId, GeneralDate fixedDate) {
+        return new WorkFixed(new WorkFixedGetMementoImpl(companyId, personId, fixedDate, this));
     }
 	
 	/**
@@ -80,14 +74,14 @@ public class WorkFixedCommand {
 	     * @param fixedDate the fixed date
 	     * @param saveCommand the save command
 	     */
-	    public WorkFixedGetMementoImpl(String personId, GeneralDate fixedDate, WorkFixedCommand saveCommand) {
+	    public WorkFixedGetMementoImpl(String companyId, String personId, GeneralDate fixedDate, SaveWorkFixedCommand saveCommand) {
+	    	this.cid = companyId;
             this.personId = personId;
             this.fixedDate = fixedDate;
             this.closureId = saveCommand.closureId;
             this.wkpId = saveCommand.wkpId;
             this.confirmClsStatus = saveCommand.confirmClsStatus;
             this.processDate = saveCommand.processDate;
-            this.cid = saveCommand.cid;
         }
 
 		/* (non-Javadoc)
