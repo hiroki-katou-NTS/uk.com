@@ -56,9 +56,6 @@ public class Application extends AggregateRoot{
 	 * 申請理由
 	 */
 	@Setter
-	private String appReasonID;
-	
-	@Setter
 	private AppReason applicationReason;
 	/**
 	 * 申請種類
@@ -129,7 +126,6 @@ public class Application extends AggregateRoot{
 			String enteredPersonSID, 
 			String reversionReason, 
 			GeneralDate applicationDate,
-			String appReasonID,
 			String applicationReason, 
 			int applicationType, 
 			String applicantSID,
@@ -152,7 +148,6 @@ public class Application extends AggregateRoot{
 				enteredPersonSID, 
 				new AppReason(reversionReason), 
 				applicationDate, 
-				appReasonID,
 				new AppReason(applicationReason), 
 				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
 				applicantSID, 

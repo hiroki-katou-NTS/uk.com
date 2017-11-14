@@ -50,8 +50,8 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	}
 
 	@Override
-	public void appStampUpdate(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
+	public void appStampUpdate(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		appStampUpdateProcess(appStamp, appApprovalPhases);
 	}

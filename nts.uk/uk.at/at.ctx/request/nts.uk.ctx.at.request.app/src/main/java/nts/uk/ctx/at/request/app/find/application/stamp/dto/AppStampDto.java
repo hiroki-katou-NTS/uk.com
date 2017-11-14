@@ -25,8 +25,6 @@ public class AppStampDto {
     
     private String applicationDate;
     
-    private String titleReason;
-    
     private String detailReason;
     
     private String employeeID;
@@ -51,7 +49,6 @@ public class AppStampDto {
 				appStamp.getInputDate().toString("yyyy/MM/dd"), 
 				appStamp.getEnteredPersonSID(), 
 				appStamp.getApplicationDate().toString("yyyy/MM/dd"), 
-				appStamp.getAppReasonID(), 
 				appStamp.getApplicationReason().v(), 
 				appStamp.getApplicantSID(), 
 				appStamp.getStampRequestMode().value, 

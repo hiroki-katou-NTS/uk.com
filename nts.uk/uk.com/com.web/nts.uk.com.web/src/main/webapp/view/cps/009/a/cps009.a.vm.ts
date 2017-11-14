@@ -35,6 +35,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
 
             self.initSettingId.subscribe(function(value: string) {
+                $('.ntsSearchBox.nts-editor.ntsSearchBox_Component').focus();
                 nts.uk.ui.errors.clearAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
@@ -387,10 +388,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         historyFilter_Lan() {
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
-                itemSelection: Array<IPerInfoInitValueSettingItemDto> = _.filter(ko.toJS(self.currentCategory().itemList()),
-                    function(item: IPerInfoInitValueSettingItemDto) {
-                        return item.dataType === 6;
-                    }),
+                itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
+                    function(item: PerInfoInitValueSettingItemDto) {
+                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && item.selectionItemRefType == 1;
+                }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return obj.selectionItemId;
                 });
@@ -817,31 +818,37 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.dateType = params.dateType || undefined;
 
             if (params.dataType === 0 || params.dataType === 1) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "ログイン者と同じ" },
-                    { code: 4, name: "入力日と同じ" },
-                    { code: 5, name: "システム日付と同じ" }]);
+                self.listComboItem = ko.observableArray([
+                    { code: 1, name: ReferenceMethodType.NOSETTING },
+                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                    { code: 3, name: ReferenceMethodType.SAMEASLOGIN },
+                    { code: 4, name: ReferenceMethodType.SAMEASEMPLOYMENTDATE },
+                    { code: 6, name: ReferenceMethodType.SAMEASBIRTHDATE }]);
             } else if (params.dataType === 2) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "社員コードと同じ" }]);
+                self.listComboItem = ko.observableArray([
+                    { code: 1, name: ReferenceMethodType.NOSETTING },
+                    { code: 2, name: ReferenceMethodType.FIXEDVALUE},
+                    { code: 5, name: ReferenceMethodType.SAMEASEMPLOYEECODE }]);
             } else if (params.dataType === 3) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "氏名と同じ" }]);
+                self.listComboItem = ko.observableArray([
+                    { code: 1, name: ReferenceMethodType.NOSETTING },
+                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                    { code: 7, name: ReferenceMethodType.SAMEASNAME }]);
             } else if (params.dataType === 4) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "氏名（カナ）と同じ" }]);
+                self.listComboItem = ko.observableArray([
+                    { code: 1, name: ReferenceMethodType.NOSETTING },
+                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                    { code: 8, name: ReferenceMethodType.SAMEASKANANAME }]);
             } else if (params.dataType === 5) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "ログイン者と同じ" }]);
+                self.listComboItem = ko.observableArray([
+                    { code: 1, name: ReferenceMethodType.NOSETTING },
+                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                    { code: 3, name: ReferenceMethodType.SAMEASLOGIN }]);
             } else if (params.dataType === 6) {
-                self.listComboItem = ko.observableArray([{ code: 1, name: "設定なし" },
-                    { code: 2, name: "固定値" },
-                    { code: 3, name: "ログイン者と同じ" }]);
+                self.listComboItem = ko.observableArray([
+                    { code: 1, name: ReferenceMethodType.NOSETTING },
+                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                    { code: 3, name: ReferenceMethodType.SAMEASLOGIN }]);
             }
 
 
@@ -922,5 +929,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
             return '';
         return '●';
     }
-
+    export enum ReferenceMethodType {
+        /** (設定なし):1 */
+        NOSETTING = '設定なし',
+        /** 固定値): 2 **/
+        FIXEDVALUE = '固定値',
+        /** (ログイン者と同じ):3 */
+        SAMEASLOGIN = 'ログイン者と同じ',
+        /** (入社日と同じ): 4*/
+        SAMEASEMPLOYMENTDATE = '入社日と同じ',
+        /** (社員コードと同じ):5 */
+        SAMEASEMPLOYEECODE = '社員コードと同じ',
+        /** (システム日付):6 */
+        SAMEASBIRTHDATE = 'システム日付',
+        /** (氏名と同じ ):7 */
+        SAMEASNAME = '氏名と同じ ',
+        /** (氏名（カナ）と同じ):8 */
+        SAMEASKANANAME = '氏名（カナ）と同じ'
+    }
 }
