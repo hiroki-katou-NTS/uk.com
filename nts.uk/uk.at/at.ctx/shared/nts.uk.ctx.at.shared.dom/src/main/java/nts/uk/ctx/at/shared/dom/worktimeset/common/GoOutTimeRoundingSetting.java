@@ -4,29 +4,28 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class WorkTimezoneStampSet.
+ * The Class GoOutTimeRoundingSetting.
  */
-//就業時間帯の打刻設定
+//外出時間の丸め設定
 
 /**
- * Gets the priority set.
+ * Gets the rounding setting.
  *
- * @return the priority set
+ * @return the rounding setting
  */
 @Getter
-public class WorkTimezoneStampSet extends DomainObject{
+public class GoOutTimeRoundingSetting extends DomainObject {
+
+	/** The rounding method. */
+	//丸め方法
+	private GoOutTimeRoundingMethod roundingMethod;
 	
-	/** The rounding set. */
+	/** The rounding setting. */
 	//丸め設定
-	private List<RoundingSet> roundingSet;
-	
-	/** The priority set. */
-	//優先設定
-	private List<PrioritySet> prioritySet;
+	private TimeRoundingSetting roundingSetting;
 }

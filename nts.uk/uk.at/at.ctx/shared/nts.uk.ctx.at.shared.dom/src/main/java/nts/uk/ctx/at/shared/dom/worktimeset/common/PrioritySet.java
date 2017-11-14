@@ -8,17 +8,23 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class RoundingTime.
+ * The Class PrioritySet.
  */
-// 時刻丸め
+//優先設定
+
+/**
+ * Gets the stamp atr.
+ *
+ * @return the stamp atr
+ */
 @Getter
-public class RoundingTime extends DomainObject {
+public class PrioritySet extends DomainObject {
 
-	/** The Font rear section. */
-	// 前後区分
-	private FontRearSection FontRearSection;
-
-	/** The rounding time unit. */
-	// 時刻丸め単位
-	private RoundingTimeUnit roundingTimeUnit;
+	/** The priority atr. */
+	//優先区分
+	private MultiStampTimePiorityAtr priorityAtr;
+	
+	/** The stamp atr. */
+	//打刻区分
+	private StampPiorityAtr stampAtr;
 }

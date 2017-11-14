@@ -16,7 +16,7 @@ public class RoundingSet extends DomainObject {
 	
 	/** The rounding set. */
 	// 時刻丸め
-	private RoundingTime roundingSet;
+	private InstantRounding roundingSet;
 	
 	/** The section. */
 	// 打優丸め区分

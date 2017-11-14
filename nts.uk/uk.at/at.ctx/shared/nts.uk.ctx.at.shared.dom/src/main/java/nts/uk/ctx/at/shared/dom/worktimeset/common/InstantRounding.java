@@ -8,17 +8,17 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class WorkTimezoneGoOutSet.
+ * The Class RoundingTime.
  */
-//就業時間帯の外出設定
+// 時刻丸め
 @Getter
-public class WorkTimezoneGoOutSet extends DomainObject{
-	
-	/** The total rounding set. */
-	//合計丸め設定
-	private TotalRoundingSet totalRoundingSet;
-	
-	/** The diff timezone setting. */
-	//時間帯別設定
-	private GoOutTimezoneRoundingSet diffTimezoneSetting;
+public class InstantRounding extends DomainObject {
+
+	/** The Font rear section. */
+	// 前後区分
+	private FontRearSection FontRearSection;
+
+	/** The rounding time unit. */
+	// 時刻丸め単位
+	private RoundingTimeUnit roundingTimeUnit;
 }
