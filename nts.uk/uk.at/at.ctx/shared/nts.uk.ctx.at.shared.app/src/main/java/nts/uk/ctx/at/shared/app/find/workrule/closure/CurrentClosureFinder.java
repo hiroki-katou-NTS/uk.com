@@ -60,8 +60,12 @@ public class CurrentClosureFinder {
 
 			if (opClosureHistory.isPresent()) {
 				CurrentClosureDto currentClosureDto = CurrentClosureDto.builder()
-						.closureId(opClosureHistory.get().getClosureId().value).startDate(currentPeriod.start())
-						.endDate(currentPeriod.end()).closureName(opClosureHistory.get().getClosureName().v()).build();
+						.closureId(opClosureHistory.get().getClosureId().value)
+						.startDate(currentPeriod.start())
+						.endDate(currentPeriod.end())
+						.closureName(opClosureHistory.get().getClosureName().v())
+						.processingDate(closure.getClosureMonth().getProcessingYm().v())
+						.build();
 				listCurrentClosureDto.add(currentClosureDto);
 			}
 		}

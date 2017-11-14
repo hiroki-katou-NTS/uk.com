@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,6 +13,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		implements OutingTimeOfDailyPerformanceRepository {
 
 	private static final String REMOVE_BY_EMPLOYEE;
+	
+	private static final String DEL_BY_LIST_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -19,12 +23,25 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDaiOutingTime a ");
+		builderString.append("WHERE WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDaiOutingTimePK.ymd IN :ymds ");
+		DEL_BY_LIST_KEY = builderString.toString();
 	}
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+	}
+
+	@Override
+	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
+		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
+		.setParameter("ymds", ymds).executeUpdate();	
 	}
 
 }

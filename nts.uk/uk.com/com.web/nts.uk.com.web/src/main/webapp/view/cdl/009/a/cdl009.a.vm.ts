@@ -2,12 +2,11 @@ module nts.uk.com.view.cdl009.a {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import SelectType = kcp.share.list.SelectType;
     export module viewmodel {
         export class ScreenModel {
             multiSelectedTree: KnockoutObservableArray<string>;
-//            selectedWorkplace: KnockoutObservable<string>;
             isMultiSelect: KnockoutObservable<boolean>;
-            selecType: KnockoutObservable<SelectType>;
             baseDate: KnockoutObservable<Date>;
             target: KnockoutObservable<TargetClassification>;
             treeGrid: any;
@@ -28,33 +27,18 @@ module nts.uk.com.view.cdl009.a {
                 var params = getShared('CDL009Params');
                 self.multiSelectedTree = ko.observableArray([]);
                 self.multiSelectedTree(params.selectedIds ? params.selectedIds : []);
-//                self.selectedWorkplace = ko.observable('');
-                // isMultiSelect For Employee List KCP005
                 self.isMultiSelect = ko.observable(params.isMultiSelect);
-                // Select Type for Workplace List kcp004
-                self.selecType = ko.observable(params.selecType ? params.selecType : SelectType.NO_SELECT);
-//                if (self.isMultiSelect()) {
-//                    self.multiSelectedTree(params.selectedIds ? params.selectedIds : []);
-////                    self.selected = ko.observable(self.multiSelectedTree());
-//                }
-//                else {
-//                    self.selectedWorkplace(params.selectedIds);
-////                    self.selected = ko.observable(self.selectedWorkplace());
-//                }
                 self.baseDate = ko.observable(params.baseDate ? params.baseDate : moment(new Date()).toDate());
                 self.target = ko.observable(params.target ? params.target : TargetClassification.WORKPLACE);
 
                 self.employeeList = ko.observableArray<any>();
-//                self.employeeList.subscribe(function(data) {
-//                    self.listComponentOpt.employeeInputList = data;
-//                });
                 self.selectedEmployeeId = ko.observable('');
                 self.selectedEmps = ko.observableArray([]);
                 // Initial listComponentOption
                 self.treeGrid = {
                     isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectType: self.selecType(),
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     baseDate: self.baseDate,
                     selectedWorkplaceId: self.multiSelectedTree,
                     isShowSelectButton: true,
@@ -103,11 +87,6 @@ module nts.uk.com.view.cdl009.a {
 //                    .then(() => nts.uk.ui.windows.close());
                     return;
                 }
-
-//                if (!self.isMultiSelect() && !self.selectedWorkplace()) {
-//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
-//                    return;
-//                }
 
                 // Search Employees
                 self.findEmployee();
@@ -169,15 +148,6 @@ module nts.uk.com.view.cdl009.a {
              */
             decideData(): void {
                 let self = this;
-//                if (self.isMultiSelect() && self.multiSelectedTree().length == 0) {
-//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
-//                    return;
-//                }
-//                var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
-//                if (!self.isMultiSelect() && !self.selectedWorkplace() && !isNoSelectRowSelected) {
-//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
-//                    return;
-//                }
                 var isNoSelectRowSelected = $("#emp-component").isNoSelectRowSelected();
                 if (self.isMultiSelect()) {
                     if ((!self.selectedEmps() || self.selectedEmps().length == 0)) {
@@ -229,16 +199,6 @@ module nts.uk.com.view.cdl009.a {
         }
 
         /**
-         * class SelectType
-         */
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
-
-        /**
      * Class TargetClassification
      */
         export class TargetClassification {
@@ -246,6 +206,9 @@ module nts.uk.com.view.cdl009.a {
             static DEPARTMENT = 2;
         }
 
+        /**
+         * interface UnitModel
+         */
         export interface UnitModel {
             workplaceId: string;
             code: string;
@@ -257,6 +220,9 @@ module nts.uk.com.view.cdl009.a {
             childs: Array<UnitModel>;
         }
         
+        /**
+         * class EnrollmentStatus
+         */
         export class EnrollmentStatus {
             static INCUMBENT = 1;
             static LEAVE_OF_ABSENCE = 2;

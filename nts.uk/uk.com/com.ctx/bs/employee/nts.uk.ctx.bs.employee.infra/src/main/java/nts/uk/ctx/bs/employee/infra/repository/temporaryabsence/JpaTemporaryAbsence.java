@@ -25,14 +25,14 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 			+ " JOIN BsymtTempAbsenceHist h on c.histId = h.historyId";
 	
 	private static final String SELECT_BY_SID_AND_REFERENCEDATE = SELECT_NO_WHERE
-			+ "WHERE c.sid = :sid"
+			+ " WHERE c.sid = :sid"
 			+ " AND h.startDate <= :referenceDate  AND h.endDate >= :referenceDate ";
 
 	private static final String SELECT_BY_TEMP_ABSENCE_ID = SELECT_NO_WHERE
 			+ " c WHERE c.bsymtTemporaryAbsencePK.leaveHolidayId = :tempAbsenceId";
 	
 	private static final String GETLIST_BY_SID = SELECT_NO_WHERE
-			+ "WHERE c.sid = :sid";
+			+ " WHERE c.sid = :sid";
 
 	private TemporaryAbsence toTemporaryAbsence(Object[] entity) {
 		TemporaryAbsence temporaryAbsence = TemporaryAbsence.createSimpleFromJavaType(
@@ -101,7 +101,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 		BsymtTemporaryAbsencePK key = new BsymtTemporaryAbsencePK(domain.getTempAbsenceId());
 		return new BsymtTemporaryAbsence(key, domain.getEmployeeId(), domain.getDateHistoryItem().identifier(), 
 				domain.getTempAbsenceType().value, domain.getTempAbsenceReason(), domain.getFamilyMemberId(), 
-				domain.getBirthDate(), domain.getMulPregnancySegment(), null);
+				domain.getBirthDate(), domain.getMulPregnancySegment());
 	}
 	
 	private BsymtTemporaryAbsenceHist toEntityTempAbsenceHist(TemporaryAbsence domain){
