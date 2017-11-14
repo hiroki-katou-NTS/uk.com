@@ -118,6 +118,13 @@ public class RoleSet extends AggregateRoot {
 	}
 
 	/**
+	 * set approval authority
+	 */
+	public void setApprovalAuthority() {
+		this.approvalAuthority = ApprovalAuthority.HasRight;
+	}
+
+	/**
 	 * Remove approval authority
 	 */
 	public void removeApprovalAuthority() {
@@ -141,7 +148,7 @@ public class RoleSet extends AggregateRoot {
 	public static RoleSet create(String roleSetCd
 			, String companyId
 			, String roleSetName
-			, int approvalAuthority
+			, boolean approvalAuthority
 			, String officeHelperRoleCd
 			, String myNumberRoleCd
 			, String hRRoleCd
@@ -151,7 +158,7 @@ public class RoleSet extends AggregateRoot {
 		return new RoleSet(new RoleSetCode(roleSetCd)
 				, companyId
 				, new RoleSetName(roleSetName)
-				, EnumAdaptor.valueOf(approvalAuthority, ApprovalAuthority.class)
+				, approvalAuthority ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
 				, getRoleById(officeHelperRoleCd)
 				, getRoleById(myNumberRoleCd)
 				, getRoleById(hRRoleCd)
@@ -180,10 +187,11 @@ public class RoleSet extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		//check duplicate RoleSetCd
+		//check duplicate RoleSetCd - ロールセットコードが重複してはならない
 		if (isDublicateRoleSetCd()) {
 			BundledBusinessException bbe = BundledBusinessException.newInstance();
 			bbe.addMessage("Msg_3");
+			bbe.throwExceptions();
 		}
 		
 		//throw error if there are not any role 
@@ -194,7 +202,7 @@ public class RoleSet extends AggregateRoot {
 		}
 
 	}
-	
+		
 	/**
 	 * check if there are existed Role Set Code
 	 * @return

@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 
@@ -49,5 +52,13 @@ public class RoleSetAndWebMenu extends AggregateRoot {
 		return new RoleSetAndWebMenu(companyId, new WebMenuCode(webMenuCd), new RoleSetCode(roleSetCd));
 	}
 	
-
+	@Override
+	public void validate() {
+		super.validate();
+		/*if (webMenuCd == null || StringUtils.isNoneBlank(this.webMenuCd.v())) {
+			BundledBusinessException bbe = BundledBusinessException.newInstance();
+			bbe.addMessage("Msg_853");
+		}
+		*/
+	}
 }
