@@ -63,7 +63,7 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 		// newBeforeRegister.processBeforeRegister(appRoot);
 
 		// ドメインモデル「残業申請」の登録処理を実行する(INSERT)
-		overTimeService.CreateOvertime(overTimeDomain);
+		overTimeService.CreateOvertime(overTimeDomain, appRoot);
 
 	}
 
@@ -133,6 +133,7 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 	private List<OverTimeInput> getOverTimeInput(List<OvertimeInputCommand> inputCommand, String Cid, String appId,
 			int attendanceId) {
 		return inputCommand.stream()
+				.filter(item -> item.getStartTime() != 0 || item.getEndTime() != 0 || item.getApplicationTime() != 0)
 				.map(item -> OverTimeInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(),
 						item.getStartTime(), item.getEndTime(), item.getApplicationTime()))
 				.collect(Collectors.toList());

@@ -140,7 +140,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
             // 休憩時間
             for (let i = 0; i < 11; i++) {
-                self.overtimeHours.push(new common.OverTimeInput("", "", 0, "", i, i, "0", 0, null));
+                self.restTime.push(new common.OverTimeInput("", "", 0, "", i, i, 0, 0, null));
             }
             // 残業時間
             if (data.overTimeInputs != null) {
@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                     if (data.overTimeInputs[i].attendanceID == 3) {
                         //self.bonusTimes.push(new common.BonusTime(data.overTimeInputs[i].frameNo,data.overTimeInputs[i].frameName,"0",data.overTimeInputs[i].endTime));
-                        self.breakTimes.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null));
+                        self.bonusTimes.push(new common.OverTimeInput("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, data.overTimeInputs[i].frameName, "0", data.overTimeInputs[i].endTime, null));
                     }
                 }
             }
@@ -174,10 +174,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             appReason = self.selectedReason();
             divergenceReason = self.selectedReason2();
             if (!nts.uk.util.isNullOrUndefined(self.multilContent())) {
-                appReason = appReason + "CHAR(13)" + self.multilContent();
+                appReason = appReason + ":" + self.multilContent();
             }
             if (!nts.uk.util.isNullOrUndefined(self.multilContent2())) {
-                divergenceReason = divergenceReason + "CHAR(13)" + self.multilContent2();
+                divergenceReason = divergenceReason + ":" + self.multilContent2();
             }
             let overtime: AppOverTime = {
                 applicationDate: self.appDate(),

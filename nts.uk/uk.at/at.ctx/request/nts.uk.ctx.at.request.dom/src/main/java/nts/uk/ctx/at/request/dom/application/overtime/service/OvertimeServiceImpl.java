@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -39,7 +41,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private WorkTimeRepository workTimeRepository;
 	@Inject
 	private OvertimeRepository overTimeRepository;
-
+	@Inject
+	ApplicationRepository appRepository;
 	@Override
 	public int checkOvertime(String url) {
 		
@@ -168,7 +171,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public void CreateOvertime(AppOverTime domain){
+	public void CreateOvertime(AppOverTime domain, Application newApp){
+		//Register application
+		appRepository.addApplication(newApp);
+		//Register overtime
 		overTimeRepository.Add(domain);
 	}
 
