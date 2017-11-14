@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //
             if (data.appOvertimeNightFlg == 1) {
                 //self.overtimeHours.push(new common.OvertimeHour("overTimeShiftNight",nts.uk.resource.getText("KAF005_64"),"0",null,null));
-                self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", "overTimeShiftNight", nts.uk.resource.getText("KAF005_64"), "0", null, null));
+                self.overtimeHours.push(new common.OverTimeInput("", "", 1, "", 11, nts.uk.resource.getText("KAF005_64"), "0", null, null));
             }
 
         }
@@ -195,10 +195,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 workClockTo1: self.timeEnd1(),
                 workClockFrom2: self.timeStart2(),
                 workClockTo2: self.timeEnd1(),
-                bonusTimes: self.bonusTimes(),
-                overtimeHours: self.overtimeHours(),
-                breakTimes: self.breakTimes(),
-                restTime: self.restTime(),
+                bonusTimes: ko.toJS(self.bonusTimes()),
+                overtimeHours: ko.toJS(self.overtimeHours()),
+                breakTimes: ko.toJS(self.breakTimes()),
+                restTime: ko.toJS(self.restTime()),
                 overTimeShiftNight: 100,
                 flexExessTime: 100,
                 divergenceReasonContent: divergenceReason
