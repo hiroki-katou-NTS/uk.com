@@ -123,6 +123,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess{
 								+"~"+ convert(overtimeInstruct.getEndClock().v()) 
 								+" "+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson())
 								+" ("+employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+					}else{
+						overtimeInstructInformation.setOvertimeInstructInfomation(GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
 					}
 				}
 			}else{
