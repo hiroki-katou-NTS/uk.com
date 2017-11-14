@@ -11,10 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSet;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
 
 /**
  * Class JpaDefaultRoleSetRepository implement of DefaultRoleSetRepository
@@ -29,7 +27,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 			+ " 	  drs.defaultRoleSetPK.roleSetCd = :roleSetCd ";
 	
 	private DefaultRoleSet toDomain(SacmtDefaultRoleSet entity) {
-		return new DefaultRoleSet(entity.defaultRoleSetPK.companyId, new RoleSetCode(entity.roleSetCd));
+		return new DefaultRoleSet(entity.defaultRoleSetPK.companyId, entity.roleSetCd);
 	}
 
 	private SacmtDefaultRoleSet toEntity(DefaultRoleSet domain) {
