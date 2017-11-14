@@ -5,20 +5,19 @@
 package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
- * The Class IntervalTime.
+ * The Class GoOutTypeRoundingSet.
  */
-//インターバル時間
+//外出種類別丸め設定
 @Getter
-public class IntervalTime {
+public class GoOutTypeRoundingSet {
+
+	/** The offical use compen go out. */
+	//公用、有償外出
+	private DeductGoOutRoundingSet officalUseCompenGoOut;
 	
-	/** The interval time. */
-	//インターバル時間
-	private AttendanceTime intervalTime;
-	
-	/** The rounding. */
-	//丸め
-	private TimeRounding rounding;
+	/** The private union go out. */
+	//私用、組合外出
+	private DeductGoOutRoundingSet privateUnionGoOut;
 }
