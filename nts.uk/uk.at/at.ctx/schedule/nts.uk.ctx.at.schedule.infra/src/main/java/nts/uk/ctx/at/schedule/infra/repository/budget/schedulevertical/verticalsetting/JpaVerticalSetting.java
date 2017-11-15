@@ -307,7 +307,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private static FormPeopleFunc toDomainFormPeopleFunc(KscmtFormPeopleFunc entity) {
 		FormPeopleFunc domain = FormPeopleFunc.createFromJavaType(entity.kscmtFormPeopleFuncPK.companyId,
 				entity.kscmtFormPeopleFuncPK.verticalCalCd, entity.kscmtFormPeopleFuncPK.verticalCalItemId,
-				entity.kscmtFormPeopleFuncPK.externalBudgetCd, entity.categoryAtr, entity.categoryAtr,
+				entity.kscmtFormPeopleFuncPK.externalBudgetCd, entity.categoryAtr, entity.operatorAtr,
 				entity.dispOrder);
 		return domain;
 	}

@@ -235,7 +235,9 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.items(_.filter(allItems, function(item: ItemModel) {
                     return item.itemType == GrantPeriodicMethod.DAILY || item.itemType == GrantPeriodicMethod.SCHEDULE;
                 }));
-            }   
+            } else {
+                self.items(_.filter(allItems, ['itemType', GrantPeriodicMethod.EXTERNAL]));
+            }
         }
         
         /**
