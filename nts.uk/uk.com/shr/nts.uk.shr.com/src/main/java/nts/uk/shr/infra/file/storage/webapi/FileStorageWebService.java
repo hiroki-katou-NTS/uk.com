@@ -1,7 +1,6 @@
 package nts.uk.shr.infra.file.storage.webapi;
 
 import java.io.InputStream;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -92,17 +91,27 @@ public class FileStorageWebService {
 	@POST
 	@Path("infor/{fileid}")
 	public StoredFileInfo getFileInfor(@PathParam("fileid") String fileId) {
-		Optional<StoredFileInfo> storagedFileInfor = this.fileInfoRepository.find(fileId);
-		if (!storagedFileInfor.isPresent()) {
-			new RuntimeException("stored file info is not found.");
-		}
-		return storagedFileInfor.get();
+		return this.fileInfoRepository.find(fileId)
+				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
+	}
+	
+	@POST
+	@Path("infor/{fileid}/{entry}")
+	public StoredFileInfo getZipEntryInfo(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName)
+				.orElseThrow(() -> new RuntimeException("File not found."));
 	}
 
 	@POST
 	@Path("isexist/{fileid}")
 	public boolean checkFileExist(@PathParam("fileid") String fileId) {
 		return this.fileInfoRepository.find(fileId).isPresent();
+	}
+	
+	@POST
+	@Path("isexist/{fileid}/{entry}")
+	public boolean zipEntryExists(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName).isPresent();
 	}
 
 }
