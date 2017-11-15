@@ -266,7 +266,7 @@ module nts.uk.at.view.kmk006.a {
                 });
 
                 //subscribe 
-                self.selectedCode.subscribe(function(codeChanged) {
+                self.selectedCode.subscribe(function(codeChanged) {                 
                     self.selectedCurrentJob(codeChanged);
                     self.loadJobAutoCal(codeChanged);
                     let data = $('#component-items-list').getDataList();
@@ -510,6 +510,8 @@ module nts.uk.at.view.kmk006.a {
                     service.getWkpAutoCal(wkpId).done((data) => {
                         if (data) {
                             self.itemWkpAutoCalModel.updateData(data);
+                        } else {
+                            self.itemWkpAutoCalModel.updateData(new WkpAutoCalSettingModel());
                         }
                         if (self.itemWkpAutoCalModel) {
                             // load get all value enum
@@ -538,11 +540,13 @@ module nts.uk.at.view.kmk006.a {
                     //nts.uk.ui.block.grayout();
                     service.getJobAutoCal(jobId).done((data) => {
                         if (data) {
-                            self.itemJobAutoCalModel.updateData(data);
+                            self.itemJobAutoCalModel.updateData(data);                           
+                        } else {
+                            self.itemJobAutoCalModel.updateData(new JobAutoCalSettingModel());
                         }
                         if (self.itemJobAutoCalModel) {
                             // load get all value enum
-                            self.reLoadListEnum(self.itemJobAutoCalModel); 
+                            self.reLoadListEnum(self.itemJobAutoCalModel);
                         }
                         dfd.resolve();
                     }).fail((res) => {
@@ -566,7 +570,9 @@ module nts.uk.at.view.kmk006.a {
                     service.getWkpJobAutoCal(wkpId, jobId).done((data) => {             
                         if (data) {
                             self.itemWkpJobAutoCalModel.updateData(data);
-                        }
+                        } else {
+                            self.itemWkpJobAutoCalModel.updateData(new WkpJobAutoCalSettingModel());
+                        }                       
                         if (self.itemWkpJobAutoCalModel) {
                             // load get all value enum
                             self.reLoadListEnum(self.itemWkpJobAutoCalModel);    
@@ -1052,7 +1058,7 @@ module nts.uk.at.view.kmk006.a {
 
             private clearAllError() {
                 nts.uk.ui.errors.clearAll();
-            }
+            }          
         }
         // exportclass
         export class TreeType {
