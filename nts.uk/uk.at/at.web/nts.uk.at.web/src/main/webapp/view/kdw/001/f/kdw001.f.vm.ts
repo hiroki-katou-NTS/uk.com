@@ -2,6 +2,7 @@ module nts.uk.at.view.kdw001.f {
     import getText = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel {
+            nameClosure : string;
             enable: KnockoutObservable<boolean>;
             required: KnockoutObservable<boolean>;
             dateValue: KnockoutObservable<any>;
@@ -10,14 +11,17 @@ module nts.uk.at.view.kdw001.f {
             //table
             columns: Array<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
-
+    
             //InputEmpCalAndSumByDate
             inputEmpCalAndSumByDate: KnockoutObservable<model.InputEmpCalAndSumByDate>;
-            //obj EmpCalAndSumExeLog 
+            //list obj EmpCalAndSumExeLog 
             empCalAndSumExeLog: KnockoutObservableArray<model.EmpCalAndSumExeLog>;
+            //list caseSpecExeContent
+            listCaseSpecExeContent : KnockoutObservableArray<model.CaseSpecExeContent>;
 
             constructor() {
                 let self = this;
+                self.nameClosure = " 選択した締め";
                 //
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
@@ -32,8 +36,10 @@ module nts.uk.at.view.kdw001.f {
                 //inputEmpCalAndSumByDate (startDate and endDate)
                 self.inputEmpCalAndSumByDate = ko.observable(
                     new model.InputEmpCalAndSumByDate(self.dateValue().startDate, self.dateValue().endDate));
-                //obj EmpCalAndSumExeLog
+                // list obj EmpCalAndSumExeLog
                 self.empCalAndSumExeLog = ko.observableArray([]);
+                //list obj CaseSpecExeContent
+                self.listCaseSpecExeContent =  ko.observableArray([]);
 
                 self.columns = [
                     { headerText: getText('KDW001_73'), key: 'executionDate', width: 100 },
@@ -56,11 +62,12 @@ module nts.uk.at.view.kdw001.f {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                //get all EmpCalAndSumExeLog by date
-                let dfdAllEmpCalAndSumExeLog = self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate());
-
-                $.when(dfdAllEmpCalAndSumExeLog).done((dfdAllEmpCalAndSumExeLogData) => {
-
+                // get all CaseSpecExeContent
+                let dfdAllCaseSpecExeContent = self.getAllCaseSpecExeContent();
+                let dfdAllClosure = self.getAllClosure();
+                $.when(dfdAllCaseSpecExeContent,dfdAllClosure).done((dfdAllCaseSpecExeContentData,dfdAllClosureData) => {
+                     //get all EmpCalAndSumExeLog by date
+                    self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate());
                     dfd.resolve();
                 });
 
@@ -78,8 +85,17 @@ module nts.uk.at.view.kdw001.f {
                     data = _.orderBy(data, ['executionDate'], ['desc']);
                     let temp = [];
                     _.each(data, (value) => {
-                        temp.push(new model.EmpCalAndSumExeLog(value));
+                        
+                        let item = new model.EmpCalAndSumExeLog(value);
+                        //executedMenuName
+                        if( item.executedMenu == 1) {
+                            item.executedMenuName = _.find(self.listCaseSpecExeContent(), function(o) { 
+                                return o.caseSpecExeContentID == item.caseSpecExeContentID; }).useCaseName ;  
+                        }
+                        //
+                        temp.push(item);
                     });
+                    
                     self.empCalAndSumExeLog(temp);
                     dfd.resolve(data);
                 }).fail(function(res: any) {
@@ -88,6 +104,55 @@ module nts.uk.at.view.kdw001.f {
                 });
                 return dfd.promise();
             }//end function getAllEmpCalAndSumExeLog
+            
+            /**
+             * function get all caseSpecExeContent
+             */
+            getAllCaseSpecExeContent(){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getAllCaseSpecExeContent().done(function(data){
+                    self.listCaseSpecExeContent(data);
+                    dfd.resolve(data);
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+            }
+            
+            
+            
+            /**
+             * get caseSpecExeContent by id
+             */
+            getCaseSpecExeContent(caseSpecExeContentID:string){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getCaseSpecExeContentById(caseSpecExeContentID).done(function(data){
+                    dfd.resolve(data);
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+            }
+            
+            /**
+             * get all Closure
+             */
+            getAllClosure(){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getAllClosure().done(function(data){
+                    dfd.resolve(data);
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+            }
+            
 
             //button search
             search() {
@@ -98,10 +163,16 @@ module nts.uk.at.view.kdw001.f {
 
             //open dialog I
             openDialogI() {
-                var empCalAndSumExecLogID = this.currentSelectedRow();
-                nts.uk.ui.windows.setShared("openI", this.currentSelectedRow());
+                let self = this;
+                var param = {
+                    nameClosure : self.nameClosure,
+                    empCalAndSumExecLogID : this.currentSelectedRow()
+                    
+                };
+                nts.uk.ui.windows.setShared("openI", param);
                 nts.uk.ui.windows.sub.modal("/view/kdw/001/i/index.xhtml");
             }
+            
         }//end screenModel
     }//end viewmodel
 
@@ -109,33 +180,33 @@ module nts.uk.at.view.kdw001.f {
     export module model {
         export interface IEmpCalAndSumExeLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
+            processingMonth: number;
+            processingMonthName: string;
             executedMenu: number;
             executedMenuName: string;
             executedMenuJapan: string;
+            executionDate: string;
             executionStatus: number;
             executionStatusName : string;
-            executionDate: string;
-            processingMonth: number;
-            processingMonthName: string;
+            employeeID: string;
             closureID: number;
+            caseSpecExeContentID: string;
             executionLogs: Array<IExecutionLog>;
         }
 
         export interface IExecutionLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
-            executedLogID: string;
-            existenceError: number;
-            executeContenByCaseID: number;
             executionContent: number;
-            executionContentName : string;
-            executionTime: IExecutionTime;
+            executionContentName :string;
+            existenceError: number;
+            executionTime: ExecutionTime;
             processStatus: number;
-            calExeSetInfor: CalExeSettingInfor;
             objectPeriod: ObjectPeriod;
+            calExecutionSetInfoID :string;
+            reflectApprovalSetInfo : SetInforReflAprResult;
+            dailyCreationSetInfo : SettingInforForDailyCreation;
+            dailyCalSetInfo : CalExeSettingInfor;
+            numberPersonErr : number;
         }
 
         export interface IExecutionTime {
@@ -148,27 +219,25 @@ module nts.uk.at.view.kdw001.f {
          */
         export class EmpCalAndSumExeLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
+            processingMonth: number;
+            processingMonthName: string;
             executedMenu: number;
             executedMenuName: string;
             executedMenuJapan: string;
+            executionDate: string;
             executionStatus: number;
             executionStatusName : string;
-            executionDate: string;
-            processingMonth: number;
-            processingMonthName: string;
+            employeeID: string;
             closureID: number;
+            caseSpecExeContentID: string;
             executionLogs: Array<ExecutionLog>;
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
-                this.caseSpecExeContentID = data.caseSpecExeContentID;
-                this.employeeID = data.employeeID;
+                this.processingMonth = data.processingMonth;
+                this.processingMonthName = data.processingMonth%100 + "月度";
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
-                } else {
-                    this.executedMenuName = "domain4";
                 }
 
                 if (data.executedMenu == 0) {
@@ -176,13 +245,14 @@ module nts.uk.at.view.kdw001.f {
                 } else {
                     this.executedMenuJapan = "ケース別実行";
                 }
+                this.executionDate = data.executionDate;
                 this.executionStatus = data.executionStatus;
                 this.executionStatusName = data.executionStatusName;
-                this.executionDate = data.executionDate;
-                this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth + "月度";
+                this.employeeID = data.employeeID;
                 this.closureID = data.closureID;
+                this.caseSpecExeContentID = data.caseSpecExeContentID;
                 this.executionLogs = data.executionLogs;
+                 
             }
 
         }//end class EmpCalAndSumExeLog
@@ -192,32 +262,110 @@ module nts.uk.at.view.kdw001.f {
          */
         export class ExecutionLog {
             empCalAndSumExecLogID: string;
-            caseSpecExeContentID: string;
-            employeeID: string;
-            executedLogID: string;
-            existenceError: number;
-            executeContenByCaseID: number;
             executionContent: number;
             executionContentName :string;
+            existenceError: number;
             executionTime: ExecutionTime;
             processStatus: number;
-            calExeSetInfor: CalExeSettingInfor;
             objectPeriod: ObjectPeriod;
+            calExecutionSetInfoID :string;
+            reflectApprovalSetInfo : SetInforReflAprResult;
+            dailyCreationSetInfo : SettingInforForDailyCreation;
+            dailyCalSetInfo : CalExeSettingInfor;
+            monlyAggregationSetInfo : CalExeSettingInfor;
+            numberPersonErr : number;
             constructor(data: IExecutionLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
-                this.caseSpecExeContentID = data.caseSpecExeContentID;
-                this.employeeID = data.employeeID;
-                this.executedLogID = data.executedLogID;
-                this.existenceError = data.existenceError;
-                this.executeContenByCaseID = data.executeContenByCaseID;
                 this.executionContent = data.executionContent;
-                this.executionContentName = data.executionContentName;
+                this.executionContentName = data.executionContentName;   
+                this.existenceError = data.existenceError;
                 this.executionTime = new ExecutionTime(data.executionTime);
                 this.processStatus = data.processStatus;
-                this.calExeSetInfor = data.calExeSetInfor;
                 this.objectPeriod = data.objectPeriod;
+                this.calExecutionSetInfoID = data.calExecutionSetInfoID;
+                this.reflectApprovalSetInfo = data.reflectApprovalSetInfo;
+                this.dailyCreationSetInfo = data.dailyCreationSetInfo;
+                this.dailyCalSetInfo = data.dailyCalSetInfo;
+                this.monlyAggregationSetInfo = data.monlyAggregationSetInfo;
+                this.numberPersonErr = data.numberPersonErr;
             }
         }//end class ExecutionLog
+        
+        /**
+         * class SetInforReflAprResult 
+         */
+        export class SetInforReflAprResult{
+            executionType: number;
+            executionTypeName : string;
+            forciblyReflect : boolean;
+            constructor(executionType: number,executionTypeName : string,forciblyReflect : boolean){
+                this.executionType = executionType;
+                this.executionTypeName = executionTypeName;
+                this.forciblyReflect = forciblyReflect;    
+            }
+        }//end classSetInforReflAprResult
+        
+        /**
+         * class SettingInforForDailyCreation
+         */
+        export class SettingInforForDailyCreation{
+            executionType: number;
+            executionTypeName : string;
+            creationType : number;
+            partResetClassification : PartResetClassification;
+            constructor(executionType: number,executionTypeName : string,creationType : number,partResetClassification : PartResetClassification){
+                this.executionType = executionType;
+                this.executionTypeName = executionTypeName; 
+                this.creationType = creationType; 
+                this.partResetClassification = partResetClassification; 
+            }
+            
+        }//end class SettingInforForDailyCreation
+        
+        /**
+         * class PartResetClassification
+         */
+        export class PartResetClassification{
+            //マスタ再設定
+            masterReconfiguration : boolean;
+            //休業再設定
+            closedHolidays : boolean ;
+            // 就業時間帯再設定
+            resettingWorkingHours : boolean ;
+            // 打刻のみ再度反映
+            reflectsTheNumberOfFingerprintChecks : boolean ;
+            // 特定日区分再設定
+            specificDateClassificationResetting :  boolean ;
+            // 申し送り時間再設定
+            resetTimeAssignment :  boolean ;
+            // 育児・介護短時間再設定
+            resetTimeChildOrNurseCare : boolean ;
+            // 計算区分再設定
+            calculationClassificationResetting : boolean ;
+            constructor(
+                masterReconfiguration : boolean,
+                closedHolidays : boolean,
+                resettingWorkingHours : boolean ,
+                reflectsTheNumberOfFingerprintChecks : boolean ,
+                specificDateClassificationResetting :  boolean ,
+                resetTimeAssignment :  boolean,
+                resetTimeChildOrNurseCare : boolean,
+                calculationClassificationResetting : boolean ){
+                
+                this.masterReconfiguration = masterReconfiguration;
+                this.closedHolidays = closedHolidays;
+                this.resettingWorkingHours = resettingWorkingHours;
+                this.reflectsTheNumberOfFingerprintChecks = reflectsTheNumberOfFingerprintChecks;
+                this.specificDateClassificationResetting = specificDateClassificationResetting;
+                this.resetTimeAssignment = resetTimeAssignment;
+                this.resetTimeChildOrNurseCare = resetTimeChildOrNurseCare;
+                this.calculationClassificationResetting = calculationClassificationResetting;
+                
+            }
+            
+            
+        }//end class PartResetClassification
+        
         /**
          * class ExecutionTime
          */
@@ -243,11 +391,17 @@ module nts.uk.at.view.kdw001.f {
         export class CalExeSettingInfor {
             executionContent: number;
             executionType: number;
-            executionTypeName : String
-            constructor(executionContent: number, executionType: number,executionTypeName : String) {
+            executionTypeName : string;
+            calExecutionSetInfoID :  string;
+            caseSpecExeContentID : string ;
+            constructor(executionContent: number, executionType: number,executionTypeName : string,
+            calExecutionSetInfoID :  string,
+            caseSpecExeContentID : string ) {
                 this.executionContent = executionContent;
                 this.executionType = executionType;
                 this.executionTypeName = executionTypeName;
+                this.calExecutionSetInfoID = calExecutionSetInfoID;
+                this.caseSpecExeContentID = caseSpecExeContentID;
             }//end class ExecutionTime
         }//end class CalExeSettingInfor
 
@@ -274,6 +428,22 @@ module nts.uk.at.view.kdw001.f {
                 this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
             }
         }//end class InputEmpCalAndSumByDate
+        
+        /**
+         * class CaseSpecExeContent
+         */
+        export class CaseSpecExeContent{
+            caseSpecExeContentID :string;
+            orderNumber : number;
+            useCaseName :string;
+            constructor (caseSpecExeContentID :string,orderNumber : number,useCaseName :string){
+                this.caseSpecExeContentID =caseSpecExeContentID ;
+                this.orderNumber = orderNumber;
+                this.useCaseName = useCaseName;
+                
+            }
+        }//end class CaseSpecExeContent
+        
 
     }//end module model
 

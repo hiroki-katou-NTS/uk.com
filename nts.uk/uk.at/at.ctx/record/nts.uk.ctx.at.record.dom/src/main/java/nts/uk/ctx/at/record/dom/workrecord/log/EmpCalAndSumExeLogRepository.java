@@ -12,8 +12,15 @@ import nts.arc.time.GeneralDate;
  */
 public interface EmpCalAndSumExeLogRepository {
 	/**
-	 * get all EmpCalAndSumExeLog
-	 * 
+	 * get all  EmpCalAndSumExeLog by companyID, employeeID
+	 * @param companyID
+	 * @param employeeID
+	 * @return
+	 */
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID);
+	
+	/**
+	 * get all  EmpCalAndSumExeLog
 	 * @param companyID
 	 * @return
 	 */
@@ -22,7 +29,7 @@ public interface EmpCalAndSumExeLogRepository {
 	
 	
 	/**
-	 * get list EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * get EmpCalAndSumExeLog by empCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
@@ -35,7 +42,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param executionContent
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent);
+	Optional<EmpCalAndSumExeLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent);
 
 	/**
 	 * KIF 001 4 ログ情報（実行ログ）
@@ -55,4 +62,6 @@ public interface EmpCalAndSumExeLogRepository {
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
 			GeneralDate endDate);
 
+	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
+	
 }

@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscdtScheExeTarget.
@@ -23,7 +24,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSCDT_SCHE_EXE_TARGET")
-public class KscdtScheExeTarget implements Serializable {
+public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -68,17 +69,19 @@ public class KscdtScheExeTarget implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KscdtScheExeTarget)) {
-            return false;
-        }
-        KscdtScheExeTarget other = (KscdtScheExeTarget) object;
-        if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null) || (this.kscdtScheExeTargetPK != null && !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
-            return false;
-        }
-        return true;
-    }
+	public boolean equals(Object object) {
+		// not set
+		if (!(object instanceof KscdtScheExeTarget)) {
+			return false;
+		}
+		KscdtScheExeTarget other = (KscdtScheExeTarget) object;
+		if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null)
+				|| (this.kscdtScheExeTargetPK != null
+						&& !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
+			return false;
+		}
+		return true;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -87,6 +90,14 @@ public class KscdtScheExeTarget implements Serializable {
     public String toString() {
         return "entity.KscmtSchCreator[ kscmtSchCreatorPK=" + kscdtScheExeTargetPK + " ]";
     }
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kscdtScheExeTargetPK;
+	}
     
     
 }

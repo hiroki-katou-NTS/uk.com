@@ -9,15 +9,17 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.workrecord.workfixed.WorkFixedCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.workfixed.WorkFixedCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.workfixed.SaveWorkFixedCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.workfixed.SaveWorkFixedCommandHandler;
+import nts.uk.ctx.at.record.app.find.workrecord.workfixed.PersonInfoWorkFixedDto;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.PersonInfoWorkFixedFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinderDto;
+import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkPlaceInfFinder;
+import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkPlaceInfoDto;
 
 
 /**
@@ -27,9 +29,9 @@ import nts.uk.ctx.at.record.app.find.workrecord.workfixed.WorkFixedFinderDto;
 @Produces("application/json")
 public class WorkfixedWebService extends WebService{
 
-	/** The work fixed save command handler. */
+	/** The work fixed command handler. */
 	@Inject
-	private WorkFixedCommandHandler workFixedCommandHandler;
+	private SaveWorkFixedCommandHandler workFixedCommandHandler;
 	
 	/** The person info work fixed finder. */
 	@Inject
@@ -39,16 +41,20 @@ public class WorkfixedWebService extends WebService{
 	@Inject
 	private WorkFixedFinder workFixedFinder;
 	
+	/** The work place inf finder. */
+	@Inject
+	private WorkPlaceInfFinder workPlaceInfFinder;
+	
 	/**
 	 * Gets the person info by person id.
 	 *
-	 * @param personId the person id
+	 * @param personInfoWorkFixedDto the person info work fixed dto
 	 * @return the person info by person id
 	 */
-	@Path("personInfo/{personId}")
+	@Path("personInfo")
 	@POST
-	public void getPersonInfoByPersonId(@PathParam("personId") String personId) {
-		this.personInfoWorkFixedFinder.getPersonInfo(personId);
+	public PersonInfoWorkFixedDto getPersonInfoByPersonId(PersonInfoWorkFixedDto personInfoWorkFixedDto) {		
+		return this.personInfoWorkFixedFinder.getPersonInfo(personInfoWorkFixedDto.getEmployeeId());
 	}
 	
 	/**
@@ -60,7 +66,7 @@ public class WorkfixedWebService extends WebService{
 	@Path("findWorkFixed")
 	@POST
 	public WorkFixedFinderDto findWorkFixedByWkpIdAndClosureId(WorkFixedFinderDto dto) {
-		return this.workFixedFinder.findWorkFixedByWkpIdAndClosureId(dto.getWkpId(), dto.getClosureId());
+		return this.workFixedFinder.findWorkFixedByWkpIdAndClosureId(dto.getWkpId(), dto.getClosureId(), dto.getCid());
 	}
 	
 	/**
@@ -82,8 +88,29 @@ public class WorkfixedWebService extends WebService{
 	 */
 	@Path("save")
 	@POST
-	public void saveWorkFixedInfo(List<WorkFixedCommand> listCommand) {
-		listCommand.stream()
-			.forEach(this.workFixedCommandHandler::handle);
+	public void saveWorkFixedInfo(List<SaveWorkFixedCommand> listCommand) {
+		listCommand.forEach(this.workFixedCommandHandler::handle);
+	}
+	
+	/**
+	 * Find work place info.
+	 *
+	 * @return the list
+	 */
+	@Path("findWkpInfo")
+	@POST
+	public List<WorkPlaceInfoDto> findWorkPlaceInfo() {		
+		return this.workPlaceInfFinder.findWorkPlaceInfo();
+	}
+	
+	/**
+	 * Find current person name.
+	 *
+	 * @return the person info work fixed dto
+	 */
+	@Path("currentPerson")
+	@POST
+	public PersonInfoWorkFixedDto findCurrentPersonName() {
+		return this.workFixedFinder.findCurrentPersonName();
 	}
 }

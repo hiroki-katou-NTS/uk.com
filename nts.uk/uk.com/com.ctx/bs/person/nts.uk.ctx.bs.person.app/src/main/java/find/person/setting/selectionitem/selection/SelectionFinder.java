@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.person.setting.init.item.SelectionInitDto;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
@@ -30,23 +32,23 @@ public class SelectionFinder {
 	// アルゴリズム「選択肢履歴選択時処理」を実行する(Thực thi xử lý chọn 選択肢履歴)
 	public List<SelectionDto> getAllSelection() {
 		String contractCode = AppContexts.user().contractCode();
-		return this.selectionRepo.getAllHistorySelection(contractCode).stream()
+		return this.selectionRepo.getAllSelectByHistId(contractCode).stream()
 				.map(i -> SelectionDto.fromDomainSelection(i)).collect(Collectors.toList());
 	}
 
 	// check history ID:
 	public List<SelectionItemOrderDto> getHistIdSelection(String histId) {
 		List<SelectionItemOrderDto> orderList = new ArrayList<SelectionItemOrderDto>();
-		
+
 		// lay selection
-		List<Selection> selectionList = this.selectionRepo.getAllHistorySelection(histId);
-		
+		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
+
 		// kiem tra so luong item lay duoc
 		if (selectionList.isEmpty()) {
 			return orderList;
 		} else {
 			String getByHisId = selectionList.get(0).getHistId();
-			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderItemSelection(getByHisId);
+			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderSelectionByHistId(getByHisId);
 
 			if (!orderDomainlst.isEmpty()) {
 				orderList = orderDomainlst.stream().map(i -> {
@@ -72,4 +74,14 @@ public class SelectionFinder {
 
 		// return SelectionDto.fromDomainSelection(optHist.get());
 	}
+
+	// Lanlt
+	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate) {
+        GeneralDate  baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
+		return this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert).stream()
+				.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+
+	}
+
+	// Lanlt
 }

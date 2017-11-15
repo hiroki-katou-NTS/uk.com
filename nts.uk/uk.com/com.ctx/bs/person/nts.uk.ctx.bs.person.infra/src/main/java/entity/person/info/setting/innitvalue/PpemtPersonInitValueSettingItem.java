@@ -63,7 +63,9 @@ public class PpemtPersonInitValueSettingItem extends UkJpaEntity implements Seri
 
 			} else if (domain.getSaveDataType().value == 3) {
 
-				this.dateValue = domain.getDateValue().toString();
+				if (domain.getDateValue() != null) {
+					this.dateValue = domain.getDateValue().toString();
+				}
 
 			}
 

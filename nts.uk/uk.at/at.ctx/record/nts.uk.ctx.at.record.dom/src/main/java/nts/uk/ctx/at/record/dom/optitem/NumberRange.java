@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
-import java.math.BigDecimal;
+import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -15,16 +14,17 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 金額範囲
 // 事前条件 : 上限値≧下限値
+
 @Getter
 public class NumberRange extends DomainObject {
 
 	/** The upper limit. */
 	// 上限値
-	private NumberRangeValue upperLimit;
+	private Optional<NumberRangeValue> upperLimit;
 
 	/** The lower limit. */
 	// 下限値
-	private NumberRangeValue lowerLimit;
+	private Optional<NumberRangeValue> lowerLimit;
 
 	/**
 	 * Instantiates a new number range.
@@ -32,19 +32,17 @@ public class NumberRange extends DomainObject {
 	 * @param upperLimit the upper limit
 	 * @param lowerLimit the lower limit
 	 */
-	public NumberRange(BigDecimal upperLimit, BigDecimal lowerLimit) {
+	public NumberRange(Double upperLimit, Double lowerLimit) {
 		super();
-		this.upperLimit = new NumberRangeValue(upperLimit);
-		this.lowerLimit = new NumberRangeValue(lowerLimit);
-	}
-
-	/**
-	 * Validate range.
-	 */
-	public void validateRange() {
-		// Validate
-		if (this.isInvalidRange()) {
-			throw new BusinessException("Msg_574");
+		if (upperLimit == null) {
+			this.upperLimit = Optional.empty();
+		} else {
+			this.upperLimit = Optional.of(new NumberRangeValue(upperLimit));
+		}
+		if (lowerLimit == null) {
+			this.lowerLimit = Optional.empty();
+		} else {
+			this.lowerLimit = Optional.of(new NumberRangeValue(lowerLimit));
 		}
 	}
 
@@ -53,12 +51,11 @@ public class NumberRange extends DomainObject {
 	 *
 	 * @return true, if is invalid range
 	 */
-	private boolean isInvalidRange() {
-		this.validate();
-		if (this.upperLimit.lessThan(this.lowerLimit)) {
-			return true;
+	public boolean isInvalidRange() {
+		if (this.upperLimit.get().greaterThan(this.lowerLimit.get())) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 }

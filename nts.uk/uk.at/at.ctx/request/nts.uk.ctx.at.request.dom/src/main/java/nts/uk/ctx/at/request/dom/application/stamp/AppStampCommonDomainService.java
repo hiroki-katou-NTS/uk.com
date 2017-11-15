@@ -13,7 +13,7 @@ public interface AppStampCommonDomainService {
 	public AppStampSetOutput appStampSet(String companyID); 
 	
 	// 申請理由の生成と検査
-	public void appReasonCheck(String titleReason, String detailReason, AppStamp appStamp);
+	public void appReasonCheck(String applicationReason, AppStamp appStamp);
 	
 	public void validateReason(AppStamp appStamp);
 	

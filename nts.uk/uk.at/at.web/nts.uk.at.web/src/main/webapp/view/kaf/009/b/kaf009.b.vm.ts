@@ -95,6 +95,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             startPage(appId : string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let dfd = $.Deferred();
                 let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
@@ -180,6 +181,7 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkBeforeUpdate();
                 promiseResult.done((result) => {
@@ -234,7 +236,7 @@ module nts.uk.at.view.kaf009.b {
                         }
                     })
                 }
-                return dfd;
+                return dfd.promise();
             }
             
             /**
@@ -305,9 +307,9 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
-                
+                let textReason = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                    self.selectedReason(),
+                    textReason.reasonName,
                     self.prePostSelected(),
                     self.appDate(),
                     self.employeeID,

@@ -13,15 +13,15 @@
 				<div id="items-type1" data-bind="foreach : groups1">
 					<div class="up-part">
 						<span class="no-name-group" data-bind="text: no + ' ' + name()"></span>
-						<button tabindex="6" id="default-value"
-							data-bind="click: defaultValue">#{i18n.getText('KDW006_54')}</button>
+						<button id="default-value"
+							data-bind="attr: {tabindex: no == 1 ? 6 : 20}, click: defaultValue">#{i18n.getText('KDW006_54')}</button>
 					</div>
 					<div class="down-part">
-						<button tabindex="7" id="choose-workType"
-							data-bind="click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+						<button  id="choose-workType"
+							data-bind="attr: {tabindex:  no == 1 ? 7 : 20}, click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
 						<span><input id="work-type-names"
 							data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
-						<button tabindex="8" id="clear-workType" data-bind="click: clear">#{i18n.getText('KDW006_56')}</button>
+						<button id="clear-workType" data-bind="attr: {tabindex:  no == 1 ? 8 : 20}, click: clear">#{i18n.getText('KDW006_56')}</button>
 						<span id="work-type-comment" data-bind="text: comment"></span>
 					</div>
 				</div>
@@ -29,15 +29,15 @@
 				<div id="items-type2" data-bind="foreach : groups2">
 					<div class="up-part">
 						<span class="no-group" data-bind="text: no"></span> <input
-							class="name-group" tabindex="9"
-							data-bind="ntsTextEditor: { constraint: 'ChangeableWorkTypeGroupName', value: name}" />
+							class="name-group" 
+							data-bind="attr: {tabindex:  no == 5 ? 9 : 21}, ntsTextEditor: { name: '#[KDW006_57]',constraint: 'ChangeableWorkTypeGroupName', value: name}" />
 					</div>
 					<div class="down-part">
-						<button id="choose-workType" tabindex="10"
-							data-bind="click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+						<button id="choose-workType" 
+							data-bind="attr: {tabindex:  no == 5 ? 10 : 21}, click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
 						<span><input id="work-type-names"
 							data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
-						<button id="clear-workType" tabindex="11" data-bind="click: clear">#{i18n.getText('KDW006_56')}</button>
+						<button id="clear-workType" data-bind="attr: {tabindex:  no == 5 ? 11 : 21}, click: clear">#{i18n.getText('KDW006_56')}</button>
 					</div>
 				</div>
 			</td>

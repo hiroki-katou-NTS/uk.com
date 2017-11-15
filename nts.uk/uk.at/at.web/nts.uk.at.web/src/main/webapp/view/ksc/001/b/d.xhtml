@@ -6,20 +6,20 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="contentD">
-			<div>
-				<label>#{i18n.getText('KSC001_21')}</label>
+		<div class="contentD" tabindex="-1">
+			<div tabindex="-1">
+				<label tabindex="-1">#{i18n.getText('KSC001_21')}</label>
 			</div>
 			<div class="radioboxCaseAll">
 				<div tabindex="-1" class="radioboxCase">
-					<div tabindex="1" data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPersonalInfo, enable: true, optionText: '#{i18n.getText('KSC001_22')}' }" />
+					<div tabindex="1" data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPersonalInfo, name: '#[KSC001_30]', enable: true, optionText: '#{i18n.getText('KSC001_22')}' }" />
 				</div>
 				<div tabindex="-1" class="radioboxCase">
-					<div tabindex="1"  data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPatternSchedule, enable: true, optionText: '#{i18n.getText('KSC001_23')}' }" /> 
+					<div tabindex="1"  data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPatternSchedule, name: '#[KSC001_30]', enable: true, optionText: '#{i18n.getText('KSC001_23')}' }" /> 
 					<button tabindex="2"  class="buttonCase" data-bind="click: showDialogKDL023, enable: checkCreateMethodAtrPatternSchedule">#{i18n.getText('KSC001_25')}</button>
 				</div>
 				<div tabindex="-1" class="radioboxCase">
-					<div tabindex="1"  data-bind="ntsRadioButton: {checked: checkCreateMethodAtrCopyPastSchedule, enable: true, optionText: '#{i18n.getText('KSC001_24')}' }" />
+					<div tabindex="1"  data-bind="ntsRadioButton: {checked: checkCreateMethodAtrCopyPastSchedule, name: '#[KSC001_30]', enable: true, optionText: '#{i18n.getText('KSC001_24')}' }" />
 				</div>
 			</div>
 			<div class="lableCase" tabindex="-1" >

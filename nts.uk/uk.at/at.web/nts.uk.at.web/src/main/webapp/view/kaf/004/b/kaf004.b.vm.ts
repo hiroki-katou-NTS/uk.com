@@ -109,6 +109,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         
                     prePostAtr = 0;
                 }
+                nts.uk.ui.block.invisible();
+                var reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                
                 let lateOrLeaveEarly: LateOrLeaveEarly = {
                     prePostAtr: prePostAtr, 
                     applicationDate: self.date(),
@@ -121,7 +124,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     lateTime2: self.lateTime2(),
                     early2: self.early2() ? 1 : 0,
                     earlyTime2: self.earlyTime2(),
-                    reasonTemp: self.selectedCode(),
+                    reasonTemp: reasonText.reasonTemp,
                     appReason: self.appreason(),
                     appApprovalPhaseCmds: self.kaf000_a2.approvalList
                 };

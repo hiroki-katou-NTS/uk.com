@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 汎用縦計属性
+ *
+ */
 @AllArgsConstructor
 public enum Attributes {
 	/** 0- 時間 **/

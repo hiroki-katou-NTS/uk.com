@@ -10,9 +10,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum UseAtr {
 	/** 0- 利用しない **/
-	DO_NOT_USE(0),
+	DO_NOT_USE(0, "Enum_UseAtr_NotUse"),
 	/** 1- 利用する **/
-	USE(1);
+	USE(1, "Enum_UseAtr_Use");
 	
 	public final int value;
+	public final String nameId;
 }

@@ -66,9 +66,10 @@ public interface PerInfoInitValueSetItemRepository {
 	 * check category have item list ?
 	 * 
 	 * @param perInfoCtgId
+	 * @param settingId
 	 * @return
 	 */
-	boolean isExist(String perInfoCtgId);
+	boolean isExist(String settingId, String perInfoCtgId);
 
 	/**
 	 * delete all item by settingId
@@ -83,13 +84,13 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param lstItem
 	 */
 	void addAllItem(List<PerInfoInitValueSetItem> lstItem);
-	
+
 	/**
 	 * addItem
+	 * 
 	 * @param item
 	 */
 	void addItem(PerInfoInitValueSetItem item);
-	
-	
+
 	void update(PerInfoInitValueSetItem item);
 }

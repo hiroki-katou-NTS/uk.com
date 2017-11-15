@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -14,7 +13,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 
 /**
  * 実行ログ
@@ -56,38 +54,45 @@ public class ExecutionLog {
 	 */
 	private ObjectPeriod objectPeriod;
 	
-	/**
-	 * 計算実行設定情報ID
-	 */
-	private String calExecutionSetInfoID;
+	/** 計算実行設定情報ID */	
+	public String getCalExecutionSetInfoID() {
+		if (executionContent == ExecutionContent.DAILY_CREATION) {
+			return dailyCreationSetInfo.get().getCalExecutionSetInfoID();
+		} else if (executionContent == ExecutionContent.DAILY_CALCULATION) {
+			return dailyCalSetInfo.get().getCalExecutionSetInfoID();
+		} else if (executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT) {
+			return reflectApprovalSetInfo.get().getCalExecutionSetInfoID();
+		} else {
+			return monlyAggregationSetInfo.get().getCalExecutionSetInfoID();
+		}
+	}
 	
-	/**
-	 * 承認結果反映の設定情報
-	 */
-	@Setter
+	/** 承認結果反映の設定情報 */
 	private Optional<SetInforReflAprResult> reflectApprovalSetInfo;
+	public void setReflectApprovalSetInfo(SetInforReflAprResult reflectApprovalSetInfo) {
+		this.reflectApprovalSetInfo = Optional.of(reflectApprovalSetInfo);
+	}
 	
-	/**
-	 * 日別作成の設定情報
-	 */
-	@Setter
+	/** 日別作成の設定情報 */
 	private Optional<SettingInforForDailyCreation> dailyCreationSetInfo;
-	/**
-	 * 日別計算の設定情報
-	 */
-	@Setter
+	public void setDailyCreationSetInfo(SettingInforForDailyCreation dailyCreationSetInfo) {
+		this.dailyCreationSetInfo = Optional.of(dailyCreationSetInfo);
+	}
+	
+	/** 日別計算の設定情報 */
 	private Optional<CalExeSettingInfor> dailyCalSetInfo;
-	/**
-	 * 月別集計の設定情報
-	 */
-	@Setter
-	private Optional<CalExeSettingInfor>  monlyAggregationSetInfo;
+	public void setDailyCalSetInfo(CalExeSettingInfor dailyCalSetInfo) {
+		this.dailyCalSetInfo = Optional.of(dailyCalSetInfo);
+	}
 	
-	
+	/** 月別集計の設定情報 */
+	private Optional<CalExeSettingInfor> monlyAggregationSetInfo;
+	public void setMonlyAggregationSetInfo(CalExeSettingInfor monlyAggregationSetInfo) {
+		this.monlyAggregationSetInfo = Optional.of(monlyAggregationSetInfo);
+	}
 	
 	public ExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ErrorPresent existenceError,
-			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod,
-			String calExecutionSetInfoID) {
+			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod) {
 		super();
 		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
 		this.executionContent = executionContent;
@@ -95,7 +100,10 @@ public class ExecutionLog {
 		this.executionTime = executionTime;
 		this.processStatus = processStatus;
 		this.objectPeriod = objectPeriod;
-		this.calExecutionSetInfoID = calExecutionSetInfoID;
+		this.reflectApprovalSetInfo = Optional.empty();
+		this.dailyCreationSetInfo =  Optional.empty();
+		this.dailyCalSetInfo =  Optional.empty();
+		this.monlyAggregationSetInfo =  Optional.empty();
 	}
 	
 	public static ExecutionLog createFromJavaType(
@@ -106,22 +114,16 @@ public class ExecutionLog {
 			GeneralDateTime endExecutionTime,
 			int processStatus,
 			GeneralDate startObjectPeriod,
-			GeneralDate endObjectPeriod,
-			String calExecutionSetInfoID
+			GeneralDate endObjectPeriod
 			) {
-		
 		return new ExecutionLog(
 				empCalAndSumExecLogID,
 				EnumAdaptor.valueOf(executionContent,ExecutionContent.class),
 				EnumAdaptor.valueOf(existenceError,ErrorPresent.class),
 				new ExecutionTime(startExecutionTime,endExecutionTime),
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
-
-				new ObjectPeriod(startObjectPeriod,endObjectPeriod),
-				calExecutionSetInfoID
+				new ObjectPeriod(startObjectPeriod,endObjectPeriod)
 				);
-		
 	}
-
-
+	
 }

@@ -88,6 +88,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
+                    nts.uk.ui.block.clear();
                 })    
             })
             
@@ -96,6 +97,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          * 
          */
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             var self = this;
             var dfd = $.Deferred();
             let notInitialSelection = 0; //0:申請時に決める（初期選択：勤務を変更しない）
@@ -228,9 +230,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let dfd = $.Deferred();
             //check before Insert 
             self.checkUse();
-            return dfd;
+            return dfd.promise();
         }
         checkRegister(){
+            nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
             service.checkInsertGoBackDirect(self.getCommand()).done(function(){
@@ -247,6 +250,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         });
                     } else if(res.messageId == "Msg_298"){
                         dfd.reject();
+                        nts.uk.ui.block.clear();
                         //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
                         //khi có so sánh trên server thì gửi thêm vị trí giá trị giờ nhập sai nữa
                         $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
@@ -328,9 +332,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             goBackCommand.workTimeEnd2 = self.timeEnd2();
             goBackCommand.workLocationCD1 = self.workLocationCD();
             goBackCommand.workLocationCD2 = self.workLocationCD2();
-            
+            let textReason = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});
             let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                self.selectedReason(),
+                textReason.reasonName,
                 self.prePostSelected(),
                 self.appDate(),
                 self.employeeID,

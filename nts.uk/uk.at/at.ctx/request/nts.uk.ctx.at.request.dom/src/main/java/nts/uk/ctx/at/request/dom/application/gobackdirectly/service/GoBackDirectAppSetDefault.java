@@ -23,8 +23,8 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -85,7 +85,6 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		
 		if (application.isPresent()) {
 			data.prePostAtr = application.get().getPrePostAtr().value;			
-			data.appReasonId = application.get().getAppReasonID();
 			data.appReason = application.get().getApplicationReason().v();
 			data.appDate = application.get().getApplicationDate().toString("yyyy/MM/dd");
 		}

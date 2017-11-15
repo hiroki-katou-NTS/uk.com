@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
@@ -57,6 +58,9 @@ public class ClosureWs {
 	/** The Constant THREE_MONTH. */
 	public static final int THREE_MONTH = 3;
 	
+	/** The Constant TOTAL_MONTH_OF_YEAR. */
+	public static final int TOTAL_MONTH_OF_YEAR = 12;
+	
 	/**
 	 * Find all.
 	 *
@@ -66,6 +70,16 @@ public class ClosureWs {
 	@Path("findAll")
 	public List<ClosureFindDto> findAll(){
 		return this.finder.findAll();
+	}
+	/**
+	 * Find all for log
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findallforlog")
+	public List<ClosureForLogDto> findAllForLog(){
+		return this.finder.findAllForLog();
 	}
 	
 	
@@ -103,8 +117,10 @@ public class ClosureWs {
 	@Path("checkThreeMonth")
 	public Boolean checkThreeMonth(CheckSaveDto checksave) {
 		DatePeriod period = this.finder.findByIdGetMonthDay(CLOSURE_ID_BEGIN);
-		return (period.start().month() + THREE_MONTH < checksave.getBaseDate().month());
+		return (period.start().yearMonth().v() + THREE_MONTH < checksave.getBaseDate().yearMonth()
+				.v());
 	}
+	
 	
 	/**
 	 * Check month max.
@@ -179,12 +195,10 @@ public class ClosureWs {
 		DayMonthDto beforeClosureDate = new DayMonthDto();
 		DayMonthDto afterClosureDate = new DayMonthDto();
 
-		beforeClosureDate
-				.setBeginDay(dayMonthChange.getBeforeClosureDate().start().toString());
+		beforeClosureDate.setBeginDay(dayMonthChange.getBeforeClosureDate().start().toString());
 		beforeClosureDate.setEndDay(dayMonthChange.getBeforeClosureDate().end().toString());
 
-		afterClosureDate
-				.setBeginDay(dayMonthChange.getAfterClosureDate().start().toString());
+		afterClosureDate.setBeginDay(dayMonthChange.getAfterClosureDate().start().toString());
 		afterClosureDate.setEndDay(dayMonthChange.getAfterClosureDate().end().toString());
 		dto.setBeforeClosureDate(beforeClosureDate);
 		dto.setAfterClosureDate(afterClosureDate);

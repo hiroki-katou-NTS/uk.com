@@ -24,9 +24,9 @@ public class JpaWorkfixedRepository extends JpaRepository implements WorkfixedRe
 	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository#remove(java.lang.String, java.lang.Integer)
 	 */
 	@Override
-	public void remove(String workPlaceId, Integer closureId) {
+	public void remove(String workPlaceId, Integer closureId, String cid) {
 		this.commandProxy().remove(KrcstWorkFixed.class,
-				new KrcstWorkFixedPK(workPlaceId, closureId));
+				new KrcstWorkFixedPK(workPlaceId, closureId, cid));
 		
 	}
 
@@ -44,8 +44,8 @@ public class JpaWorkfixedRepository extends JpaRepository implements WorkfixedRe
 	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository#findByWorkPlaceIdAndClosureId(java.lang.String, java.lang.Integer)
 	 */
 	@Override
-	public Optional<WorkFixed> findByWorkPlaceIdAndClosureId(String workPlaceId, Integer closureId) {
-		Optional<KrcstWorkFixed> optional = this.queryProxy().find(new KrcstWorkFixedPK(workPlaceId, closureId), KrcstWorkFixed.class);
+	public Optional<WorkFixed> findByWorkPlaceIdAndClosureId(String workPlaceId, Integer closureId, String cid) {
+		Optional<KrcstWorkFixed> optional = this.queryProxy().find(new KrcstWorkFixedPK(workPlaceId, closureId, cid), KrcstWorkFixed.class);
 		
 		if (optional.isPresent()) {
 			return Optional.ofNullable(new WorkFixed(new JpaWorkfixedGetMemento(optional.get())));	
@@ -60,7 +60,7 @@ public class JpaWorkfixedRepository extends JpaRepository implements WorkfixedRe
 	@Override
 	public void update(WorkFixed workFixed) {	
 		Optional<KrcstWorkFixed> optional = this.queryProxy().find(
-				new KrcstWorkFixedPK(workFixed.getWkpId(), workFixed.getClosureId()),
+				new KrcstWorkFixedPK(workFixed.getWkpId(), workFixed.getClosureId(), workFixed.getCid()),
 				KrcstWorkFixed.class);
 		KrcstWorkFixed entity = null;
 		if (optional.isPresent()) {
@@ -71,4 +71,6 @@ public class JpaWorkfixedRepository extends JpaRepository implements WorkfixedRe
 		workFixed.saveToMemento(new JpaWorkFixedSetMemento(entity));
 		this.commandProxy().update(entity);	
 	}
+
+	
 }

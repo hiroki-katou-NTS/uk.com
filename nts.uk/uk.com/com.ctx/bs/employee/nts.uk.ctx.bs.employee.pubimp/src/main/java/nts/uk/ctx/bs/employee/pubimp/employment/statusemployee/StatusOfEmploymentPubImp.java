@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsence;
-import nts.uk.ctx.bs.employee.dom.temporaryAbsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
@@ -50,7 +50,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 						&& x.getRetirementDate().afterOrEquals(referenceDate)))
 				.collect(Collectors.toList());
 
-		if (listEntryJobHist.size() == 0) {
+		if (listEntryJobHist.isEmpty()) {
 
 			// TH khong co du lieu 「入社履歴」thoa man dieu kien : 入社年月日 joinDate
 			// <=parameter「baseDate」 <= RetirementDate 退職年月日
@@ -77,7 +77,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 			// <= RetirementDate 退職年月日
 
 			// lấy domain 休職休業 TemporaryAbsence theo employeeId và referenceDate
-			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySid(employeeId, referenceDate);
+			Optional<TemporaryAbsence> temporaryAbsOpt = temporaryAbsenceRepo.getBySidAndReferDate(employeeId, referenceDate);
 			if (temporaryAbsOpt.isPresent()) {
 				// tốn tại domain 
 				TemporaryAbsence temporaryAbsenceDomain = temporaryAbsOpt.get();

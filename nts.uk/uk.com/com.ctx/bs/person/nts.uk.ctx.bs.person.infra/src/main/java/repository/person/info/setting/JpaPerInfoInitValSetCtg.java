@@ -25,7 +25,6 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
-	// sonnlb
 	private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
 			+ " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "
@@ -39,9 +38,8 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	private final String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE  c.settingCtgPk.settingId =:settingId";
-	
-	
-	private final String  SEL_CTG_BY_SETID_CTGID = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
+
+	private final String SEL_CTG_BY_SETID_CTGID = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE  c.settingCtgPk.settingId =:settingId AND c.settingCtgPk.perInfoCtgId =:perInfoCtgId";
 
 	private final String DELETE_BY_SETTING_ID = " DELETE FROM PpemtPersonInitValueSettingCtg c"
@@ -57,7 +55,8 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 		PerInfoInitValueSettingCtg domain = new PerInfoInitValueSettingCtg();
 		domain.setPerInfoCtgId(String.valueOf(entity[0].toString()));
 		domain.setCategoryName(String.valueOf(entity[1].toString()));
-		domain.setSetting(Boolean.valueOf(entity[2].toString()));
+		// chua đc setting
+		domain.setSetting(false);
 		return domain;
 
 	}
@@ -90,8 +89,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	@Override
 	public Optional<PerInfoInitValSetCtg> getDetailInitValSetCtg(String settingId, String perInfoCtgId) {
 		return this.queryProxy().query(SEL_CTG_BY_SETID_CTGID, PpemtPersonInitValueSettingCtg.class)
-				.setParameter("settingId", settingId)
-				.setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("settingId", settingId).setParameter("perInfoCtgId", perInfoCtgId)
 				.getSingle(c -> toDomain(c));
 	}
 

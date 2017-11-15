@@ -16,6 +16,12 @@ import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 @AllArgsConstructor
 public class EmpCalAndSumExeLogDto {
 	
+	
+	/**
+	 * 就業計算と集計実行ログID
+	 */
+	private String empCalAndSumExecLogID;
+	
 	/**
 	 * 会社ID
 	 */
@@ -23,20 +29,9 @@ public class EmpCalAndSumExeLogDto {
 	private String companyID;
 	
 	/**
-	 * ID
+	 * 処理月
 	 */
-	private String empCalAndSumExecLogID;
-
-	/**
-	 * 運用ケース
-	 */
-	private String caseSpecExeContentID;
-	
-	/**
-	 * 実行社員ID
-	 */
-
-	private String employeeID;
+	private Integer processingMonth;
 	
 	/**
 	 * 実行したメニュー
@@ -44,7 +39,11 @@ public class EmpCalAndSumExeLogDto {
 	 */
 	private int executedMenu;
 
-	
+	/**
+	 * 実行日
+	 */
+
+	private GeneralDate executionDate;
 	
 	/**
 	 * 実行状況
@@ -55,22 +54,29 @@ public class EmpCalAndSumExeLogDto {
 	 * 実行状況 Name Japan
 	 */
 	private String executionStatusName;
-
+	
 	/**
-	 * 実行日
+	 * 実行社員ID
 	 */
 
-	private GeneralDate executionDate;
-
-	/**
-	 * 処理月
-	 */
-	private Integer processingMonth;
+	private String employeeID;
 	
 	/**
 	 * 締めID
 	 */
 	private int closureID;
+	
+
+	/**
+	 * 運用ケース
+	 */
+	private String caseSpecExeContentID;	
+	
+	
+
+
+	
+	
 	
 	/**
 	 * 実行ログ
@@ -80,16 +86,16 @@ public class EmpCalAndSumExeLogDto {
 	
 	public static EmpCalAndSumExeLogDto fromDomain(EmpCalAndSumExeLog domain) {
 		return new EmpCalAndSumExeLogDto(
-				domain.getCompanyID(), 
 				domain.getEmpCalAndSumExecLogID(), 
-				domain.getCaseSpecExeContentID(), 
-				domain.getEmployeeID(), 
+				domain.getCompanyID(), 
+				domain.getProcessingMonth().v(), 
 				domain.getExecutedMenu().value, 
+				domain.getExecutionDate(), 
 				domain.getExecutionStatus().value,
 				domain.getExecutionStatus().nameId,
-				domain.getExecutionDate(), 
-				domain.getProcessingMonth().v(), 
-				domain.getClosureID(), 
+				domain.getEmployeeID(),
+				domain.getClosureID(),
+				domain.getCaseSpecExeContentID(),
 				domain.getExecutionLogs().stream().map(c->ExecutionLogDto.fromDomain(c)).collect(Collectors.toList())
 				);
 	}

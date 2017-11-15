@@ -275,33 +275,4 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public List<WorkplaceInfo> findByWkpByCidAndBaseDate(String companyId, GeneralDate baseDate) {
-		// get entity manager
-        EntityManager em = this.getEntityManager();
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-        CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
-        Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
-
-        // select root
-        cq.select(root);
-
-        // add where
-        List<Predicate> lstpredicateWhere = new ArrayList<>();
-        lstpredicateWhere.add(criteriaBuilder
-                .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
-        lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-                root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
-        lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-                root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
-
-        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        
-        return em.createQuery(cq).getResultList().stream()
-                .map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
-                .collect(Collectors.toList());	
-		
-	}   
-
 }

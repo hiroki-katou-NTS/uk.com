@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
+import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +24,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist_;
 
@@ -288,5 +291,53 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
-
+	/**
+	 * Convert from domain to entity
+	 * @param domain
+	 * @return
+	 */
+	private KmnmtAffiliWorkplaceHist toEntity(AffWorkplaceHistory domain){
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+		return new KmnmtAffiliWorkplaceHist(key, domain.getPeriod().end());
+	}
+	
+	private void updateEntity(AffWorkplaceHistory domain, KmnmtAffiliWorkplaceHist entity){	
+		entity.endD = domain.getPeriod().end();
+	}
+	
+	/**
+	 * ドメインモデル「所属職場」を削除する
+	 * @param domain
+	 */
+	@Override
+	public void deleteAffWorkplaceHistory(AffWorkplaceHistory domain){
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+		
+		this.commandProxy().remove(KmnmtAffiliWorkplaceHist.class,key);
+	}
+	/**
+	 * ドメインモデル「所属職場」を新規登録する
+	 * @param domain
+	 */
+	@Override
+	public void addAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+	/**
+	 * ドメインモデル「所属職場」を取得する
+	 * @param domain
+	 */
+	@Override
+	public void updateAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),domain.getWorkplaceId().v(),domain.getPeriod().start());
+		Optional<KmnmtAffiliWorkplaceHist> existItem = this.queryProxy().find(key, KmnmtAffiliWorkplaceHist.class);
+		if (!existItem.isPresent()){
+			return;
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
+		
+	}
 }

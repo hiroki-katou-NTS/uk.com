@@ -52,12 +52,6 @@ module nts.uk.at.view.kml002.c.viewmodel {
             self.checked = ko.observable(true);
             self.enable = ko.observable(true);
             
-            if(self.catCode() === 0) {
-                self.enable(true);
-            } else {
-                self.enable(false);
-            }
-            
             var devChange = false;
             
             self.checked.subscribe(function(value) {
@@ -67,6 +61,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                         
                         self.displayItemsRule(self.allItem(), self.catCode(), value);
                         self.rightItems.removeAll();
+                        $("#treegridItems").ntsGridList('deselectAll');
                     }).ifNo(() => { 
                         devChange = true;
                         
@@ -89,17 +84,22 @@ module nts.uk.at.view.kml002.c.viewmodel {
                         devChange = false;
                         
                         if(value == 0) {
+                            self.enable(true);
                             self.displayItemsRule(self.allItem(), value, self.checked());
                             self.rightItems.removeAll();
                         } else {
+                            self.enable(false);
                             self.items(_.filter(self.allItem(), ['itemType', GrantPeriodicMethod.EXTERNAL]));
                             self.rightItems.removeAll();
                         }
+                        
+                        $("#treegridItems").ntsGridList('deselectAll');
                     }).ifNo(() => { 
                         devChange = true;
                         
                         if(value == 0) {
                             self.catCode(1);
+                            self.enable(false);
                             return;
                         } else {
                             self.catCode(0);
@@ -117,6 +117,12 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.enableReturn(true);
             } else {
                 self.enableReturn(false);
+            }
+            
+            if(self.catCode() === 0) {
+                self.enable(true);
+            } else {
+                self.enable(false);
             }
         }
 
@@ -211,8 +217,11 @@ module nts.uk.at.view.kml002.c.viewmodel {
                     
                     self.rightItems.push({
                         code: i.toString(),
+                        trueCode: item.code.slice(0, -1),
+                        itemType: item.itemType,
                         operatorAtr: nts.uk.resource.getText("KML002_37"),
-                        name: item.name,    
+                        name: item.name,  
+                        order: self.rightItems().length + 1  
                     });
                     
                     i = i + 1;
@@ -236,14 +245,17 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             } else {
                 _.forEach(self.currentCodeList(), function(item){
-                    var item = _.find(self.items(), function(o) { return o.code == Number(item); });
+                    var item = _.find(self.items(), function(o) { return o.code == item.toString(); });
                     
                     let i = self.rightItems().length;
                     
                     self.rightItems.push({
                         code: i.toString(),
+                        trueCode: item.code.slice(0, -1),
+                        itemType: item.itemType,
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
-                        name: item.name,    
+                        name: item.name,
+                        order: self.rightItems().length + 1
                     });
                     
                     i = i + 1;
@@ -287,8 +299,33 @@ module nts.uk.at.view.kml002.c.viewmodel {
          */
         submit() {
             var self = this;
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             
+            var formTimeFunc = [];
             
+            for(var i = 0; i < self.rightItems().length; i++) {
+                var item = {
+                    verticalCalCd: data.verticalCalCd,
+                    verticalCalItemId: data.itemId,
+                    externalBudgetCd: self.rightItems()[i].itemType == GrantPeriodicMethod.EXTERNAL ? self.rightItems()[i].trueCode : null,
+                    attendanceItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.DAILY ? self.rightItems()[i].trueCode : null,
+                    presetItemId: self.rightItems()[i].itemType == GrantPeriodicMethod.SCHEDULE ? self.rightItems()[i].trueCode : null,
+                    operatorAtr: self.rightItems()[i].operatorAtr == "＋" ? 0 : 1,
+                    dispOrder: self.rightItems()[i].order
+                };
+                
+                formTimeFunc.push(item);
+            }
+            
+            var tranferData = {
+                verticalCalCd: data.verticalCalCd,
+                verticalCalItemId: data.itemId,
+                categoryIndicator: self.catCode(),
+                actualDisplayAtr: self.checked() ? 1 : 0,
+                lstFormTimeFunc: formTimeFunc
+            };
+            
+            nts.uk.ui.windows.setShared("KML002_C_DATA", tranferData);
             
             nts.uk.ui.windows.close();
         }
@@ -316,10 +353,12 @@ module nts.uk.at.view.kml002.c.viewmodel {
         code: string;
         operatorAtr: string;
         name: string;
-        constructor(code: string, operatorAtr: string, name: string) {
+        order: number;
+        constructor(code: string, operatorAtr: string, name: string, order: number) {
             this.code = code;
             this.operatorAtr = operatorAtr;
-            this.name = name;       
+            this.name = name;  
+            this.order = order;     
         }
     } 
     

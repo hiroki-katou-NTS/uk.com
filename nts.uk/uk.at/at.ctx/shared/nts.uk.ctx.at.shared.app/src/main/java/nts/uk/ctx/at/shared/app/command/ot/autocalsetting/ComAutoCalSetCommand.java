@@ -14,18 +14,9 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMemento;
 
 /**
- * Sets the rest time.
- *
- * @param restTime
- *            the new rest time
+ * The Class ComAutoCalSetCommand.
  */
 @Setter
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
 public class ComAutoCalSetCommand {
 
@@ -44,8 +35,7 @@ public class ComAutoCalSetCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the com auto cal setting
 	 */
 	public ComAutoCalSetting toDomain(String companyId) {
@@ -66,10 +56,8 @@ public class ComAutoCalSetCommand {
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId
-		 *            the company id
-		 * @param command
-		 *            the command
+		 * @param companyId the company id
+		 * @param command the command
 		 */
 		public DtoGetMemento(String companyId, ComAutoCalSetCommand command) {
 			this.companyId = companyId;
@@ -96,7 +84,7 @@ public class ComAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalOvertimeSetting getNormalOTTime() {
-			return this.command.getNormalOTTime().toDomain(companyId);
+			return this.command.getNormalOTTime().toDomain();
 		}
 
 		/*
@@ -107,7 +95,7 @@ public class ComAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalFlexOvertimeSetting getFlexOTTime() {
-			return this.command.getFlexOTTime().toDomain(companyId);
+			return this.command.getFlexOTTime().toDomain();
 		}
 
 		/*
@@ -118,9 +106,7 @@ public class ComAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalRestTimeSetting getRestTime() {
-			return this.command.getRestTime().toDomain(companyId);
+			return this.command.getRestTime().toDomain();
 		}
-
 	}
-
 }

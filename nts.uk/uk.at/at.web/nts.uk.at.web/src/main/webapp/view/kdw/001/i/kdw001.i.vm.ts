@@ -2,8 +2,6 @@ module nts.uk.at.view.kdw001.i {
     import modelkdw001f = nts.uk.at.view.kdw001.f.model;
     export module viewmodel {
         export class ScreenModel {
-            //table
-            itemList: KnockoutObservableArray<any>;
             //obj ExecutionLog
             empCalAndSumExecLogID: string;
             empCalAndSumExecLog: KnockoutObservable<modelkdw001f.EmpCalAndSumExeLog>;
@@ -17,18 +15,26 @@ module nts.uk.at.view.kdw001.i {
             executionTime : KnockoutObservable<modelkdw001f.ExecutionTime>;
             exeStartTime :  string;
             exeEndTime :  string;
+            //nameclosure
+            nameClosure : string;
             
             processingMonth:number;
             //TargetPerson 
             listTargetPerson: KnockoutObservableArray<model.TargetPerson>;
             listPerson: Array<string>;
             numberPerson: KnockoutObservable<number>;
-
+            numberPersonErr: KnockoutObservable<number>;
+            //InputErrMessageInfoByID
+            inputErrMessageInfoByID :  KnockoutObservable<model.InputErrMessageInfoByID>;
+            listErrMessageInfo :  KnockoutObservableArray<model.ErrMessageInfo>;
             constructor() {
                 let self = this;
                 //table 
-                self.itemList = ko.observableArray([]);
-                self.empCalAndSumExecLogID = nts.uk.ui.windows.getShared("openI");
+                let param = nts.uk.ui.windows.getShared("openI");
+                if(param != null){
+                    self.empCalAndSumExecLogID = param.empCalAndSumExecLogID;
+                    self.nameClosure = param.nameClosure;
+                }
                 self.empCalAndSumExecLog = ko.observable(null);
                 self.processingMonthName = ko.observable('');
                 self.executedMenuJapan = ko.observable('');
@@ -48,29 +54,22 @@ module nts.uk.at.view.kdw001.i {
                 self.listTargetPerson = ko.observableArray([]);
                 self.listPerson = [];
                 self.numberPerson = ko.observable(0);
-
-                for (let i = 1; i <= 5; i++) {
-                    self.itemList.push({
-                        column1: "2016/11/06 10:49:16 (" + i + ")",
-                        column2: "2016/11/06 10:50:16 (" + i + ")",
-                        column3: "00:0" + i + ":00",
-                        column4: "実行内容 " + i,
-                        column5: "実行種別" + i,
-                        column6: "実行詳細内容" + i,
-                        column7: i + i + "人",
-                        column8: i + "人"
-                    });
-                }
+                self.numberPersonErr = ko.observable(0);
+                // inputErrMessageInfoByID
+                self.inputErrMessageInfoByID = ko.observable(null);
+                self.listErrMessageInfo =ko.observableArray([]);
             }
 
             startPage(): JQueryPromise<any> {
 
                 let self = this;
                 let dfd = $.Deferred();
-                let dfdGetEmpCalAndSumExeLog = self.getByEmpCalAndSumExeLogId(self.empCalAndSumExecLogID);
+                
                 let dfdGetListTargetPersonByEmpId = self.getListTargetPersonByEmpId(self.empCalAndSumExecLogID);
-                $.when(dfdGetEmpCalAndSumExeLog, dfdGetListTargetPersonByEmpId).done((dfdGetEmpCalAndSumExeLogData, dfdGetListTargetPersonByEmpIdData) => {
-
+                let dfdGetAllErrMessageInfoByEmpID = self.getAllErrMessageInfoByEmpID(self.empCalAndSumExecLogID);
+                $.when( dfdGetListTargetPersonByEmpId,dfdGetAllErrMessageInfoByEmpID)
+                .done((dfdGetListTargetPersonByEmpIdData,dfdGetAllErrMessageInfoByEmpIDData) => {
+                    self.getByEmpCalAndSumExeLogId(self.empCalAndSumExecLogID);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -82,14 +81,25 @@ module nts.uk.at.view.kdw001.i {
             getByEmpCalAndSumExeLogId(empCalAndSumExeLogId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: Array<modelkdw001f.IEmpCalAndSumExeLog>): any {
-                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data[0]));
+                service.getByEmpCalAndSumExeLogId(empCalAndSumExeLogId).done(function(data: modelkdw001f.IEmpCalAndSumExeLog): any {
+                    self.empCalAndSumExecLog(new modelkdw001f.EmpCalAndSumExeLog(data));
                     self.processingMonthName(self.empCalAndSumExecLog().processingMonthName);
                     self.processingMonth = self.empCalAndSumExecLog().processingMonth;
                     self.executedMenuJapan(self.empCalAndSumExecLog().executedMenuJapan);
                     //date
-                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data[0].executionLogs, ['executionContent'], ['desc']);
+                    let sortData: Array<modelkdw001f.IExecutionLog> = _.sortBy(data.executionLogs, ['executionContent'], ['desc']);
                     self.listExecutionLog(_.map(sortData, (value) => {
+                        let temp = [];
+                        for(let i = 0;i<self.listErrMessageInfo().length;i++){
+                            if(self.listErrMessageInfo()[i].executionContent == value.executionContent){
+                                temp.push(self.listErrMessageInfo()[i]);
+                            }    
+                        }
+                         var numberPersonErr =  _.chain(temp)
+                        .groupBy("employeeID")
+                        .toPairs()
+                        .value();
+                        value.numberPersonErr = numberPersonErr.length;
                         return new modelkdw001f.ExecutionLog(value);
                     }));
                     if (self.listExecutionLog().length > 0) {
@@ -117,10 +127,6 @@ module nts.uk.at.view.kdw001.i {
                 service.getListTargetPersonByEmpId(empCalAndSumExeLogId).done(function(data) {
                     self.listTargetPerson(data);
                     self.numberPerson(self.listTargetPerson().length);
-                    self.listPerson = [];
-                    for(let i =0;i<self.listTargetPerson().length;i++){
-                        self.listPerson.push(self.listTargetPerson()[i].employeeId);
-                    }
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -129,33 +135,70 @@ module nts.uk.at.view.kdw001.i {
                 return dfd.promise();
 
             }//end function getListTargetPersonByEmpId
-
+            
+            /**
+             * getAllErrMessageInfoByEmpID
+             */
+            getAllErrMessageInfoByEmpID(empCalAndSumExeLogId :string){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getAllErrMessageInfoByEmpID(empCalAndSumExeLogId).done(function(data) {
+                    self.listErrMessageInfo(data);
+                    dfd.resolve();
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+            }
             /**
              *open dialog G 
              */
-            openDialogG() {
+            openDialogG(execution : modelkdw001f.ExecutionLog) {
                 let self = this;
-                let temp = self.listPerson;
                 let param = {
                     //・就業計算と集計実行ログID
                     empCalAndSumExecLogID : self.empCalAndSumExecLogID,
-                    //・社員ID（list）
-                    listPerson : self.listPerson,
+                    //・社員ID（list）  ・従業員の実行状況
+                    listTargetPerson : self.listTargetPerson(),
                     //・実行開始日時
+                    executionStartTime : execution.executionTime.startTime,
                     //・対象期間
-                    //・従業員の実行状況
+                    objectPeriod : execution.objectPeriod,
                     //・選択した締め
+                    nameClosue : self.nameClosure,
                     //・処理月
                     processingMonth : self.processingMonth
                 };
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml",param);
+                if(self.listTargetPerson().length>0){
+                    nts.uk.ui.windows.setShared("openG", param);
+                    nts.uk.ui.windows.sub.modal("/view/kdw/001/g/index.xhtml");
+                }
             }
 
             /**
              *open dialog H 
              */
-            openDialogH() {
-                nts.uk.ui.windows.sub.modal("/view/kdw/001/h/index.xhtml");
+            openDialogH(execution : modelkdw001f.ExecutionLog) {
+                let self = this;
+                let param = {
+                    //・就業計算と集計実行ログID
+                    empCalAndSumExecLogID : self.empCalAndSumExecLogID,
+                    //・社員ID（list）  ・従業員の実行状況
+                    listTargetPerson : self.listTargetPerson(), 
+                    //・実行開始日時
+                    executionStartTime : execution.executionTime.startTime,
+                    //・対象期間
+                    objectPeriod : execution.objectPeriod,
+                    //・選択した締め
+                    nameClosue : self.nameClosure,
+                    //・処理月
+                    processingMonth : self.processingMonth
+                };
+                if(execution.numberPersonErr >0){
+                    nts.uk.ui.windows.setShared("openH", param);
+                    nts.uk.ui.windows.sub.modal("/view/kdw/001/h/index.xhtml");
+                }
             }
 
             closeDialog(): void {
@@ -186,11 +229,49 @@ module nts.uk.at.view.kdw001.i {
         export class ComplStateOfExeContents {
             executionContent: number;
             status: number;
-            constructor(executionContent: number, status: number) {
+            statusName : string;
+            constructor(executionContent: number, status: number,statusName : string) {
                 this.executionContent = executionContent;
                 this.status = status;
+                this.statusName = statusName;
             }
         }//end class ComplStateOfExeContents
+        
+        /**
+         * class ErrMessageInfo
+         */
+        export class ErrMessageInfo{
+            employeeID : string;
+            empCalAndSumExecLogID : string;
+            resourceID : string;
+            executionContent :number;
+            disposalDay : string;
+            messageError :string;
+            constructor(employeeID : string,empCalAndSumExecLogID : string,resourceID : string,
+            executionContent :number,disposalDay : string,messageError :string){
+                this.employeeID = employeeID;
+                this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+                this.resourceID = resourceID;
+                this.executionContent = executionContent;
+                this.disposalDay = disposalDay;
+                this.messageError = messageError;
+            }
+        }//end class ErrMessageInfoDto
+        
+        
+        
+         /**
+         * class InputErrMessageInfoByID
+         */
+         export class InputErrMessageInfoByID{
+             empCalAndSumExecLogID : string;
+             executionContent : number;
+             constructor(empCalAndSumExecLogID : string,executionContent : number){
+                 this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+                 this.executionContent = executionContent;
+             } 
+        }//end class InputErrMessageInfoByID
+        
 
     }//end module model
 }//end module

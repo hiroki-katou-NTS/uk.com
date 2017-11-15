@@ -32,7 +32,7 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	private int encryptionMethod;
 	
 	/** The authentication method. */
-	private int authenticationMethod;
+	private int authMethod;
 	
 	/** The email authencation. */
 	private String emailAuthencation;
@@ -85,7 +85,7 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	 */
 	@Override
 	public AuthenticationMethod getAuthenticationMethod() {
-		return AuthenticationMethod.valueOf(this.authenticationMethod);
+		return AuthenticationMethod.valueOf(this.authMethod);
 	}
 
 	/* (non-Javadoc)

@@ -12,6 +12,22 @@ public interface VerticalSettingRepository {
 	List<VerticalCalSet> findAllVerticalCalSet(String companyId);
 	
 	/**
+	 * get all form people
+	 * @param companyId
+	 * @return
+	 * author: Hoang Yen
+	 */
+	List<FormPeople> findAllFormPeople(String companyId);
+	
+	/**
+	 * get all Form People Func
+	 * @param companyId
+	 * @return
+	 * author: Hoang Yen
+	 */
+	List<FormPeopleFunc> findAllFormPeopleFunc(String companyId);
+	
+	/**
 	 * Get Vertical Calculator Setting by Code
 	 * @param companyId
 	 * @param verticalCalCd
@@ -26,10 +42,38 @@ public interface VerticalSettingRepository {
 	void addVerticalCalSet(VerticalCalSet verticalCalSet);
 	
 	/**
+	 * insert a Form People item
+	 * @param formPeople
+	 * author: Hoang Yen
+	 */
+	void insertFormPeople(FormPeople formPeople);
+	
+	/**
+	 * insert list form people func 
+	 * @param formPeopleFunc
+	 * author: Hoang Yen
+	 */
+	void insertFormPeopleFunc(List<FormPeopleFunc> formPeopleFunc);
+	
+	/**
 	 * Update Vertical Calculator Setting  
 	 * @param verticalCalSet
 	 */
 	void updateVerticalCalSet(VerticalCalSet verticalCalSet);
+	
+	/**
+	 * update a Form People item
+	 * @param formPeople
+	 * author: Hoang Yen
+	 */
+	void updateFormPeople(FormPeople formPeople);
+	
+	/**
+	 * update list Form People Func
+	 * @param lstFormPeopleFunc
+	 * author: Hoang Yen
+	 */
+	void updateFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc);
 	
 	/**
 	 * Delete Vertical Calculator Setting  
@@ -37,4 +81,84 @@ public interface VerticalSettingRepository {
 	 * @param verticalCalCd
 	 */
 	void deleteVerticalCalSet(String companyId, String verticalCalCd);
+	
+	/**
+	 * delete a Form People item
+	 * @param formPeople
+	 * author: Hoang Yen
+	 */
+	void deleteFormPeople(FormPeople formPeople);
+	
+	/**
+	 * delete list Form People Func
+	 * @param lstFormPeopleFunc
+	 * author: Hoang Yen
+	 */
+	void deleteFormPeopleFunc(List<FormPeopleFunc> lstFormPeopleFunc);
+
+	/**
+	 * Find Money Func
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
+	List<MoneyFunc> findAllMoneyFunc(String companyId);
+
+	/**
+	 * Find Formula Amount
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaAmount> findAllFormulaAmount(String companyId);
+
+	/**
+	 * Find Formula Time Unit
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaTimeUnit> findAllFormulaTimeUnit(String companyId);
+
+	/**
+	 * Find Formula Nummer
+	 * @param companyId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaNumerical> findAllFormNumber(String companyId);
+
+	/**
+	 * Add Formula Amount
+	 * @param formulaAmount
+	 * @author phongtq
+	 */
+	void insertFromAmount(FormulaAmount formulaAmount);
+
+	/**
+	 * Add Formula Amount
+	 * @param numerical
+	 * @author phongtq
+	 */
+	void insertFromNumerical(FormulaNumerical numerical);
+
+	/**
+	 * Find Formula Money
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @author phongtq
+	 * @return
+	 */
+	List<FormulaMoney> findAllFormulaMoney(String companyId, String verticalCalCd, String verticalCalItemId);
+
+	/**
+	 * Find Time Unit Func 
+	 * @param companyId
+	 * @param verticalCalCd
+	 * @param verticalCalItemId
+	 * @author phongtq 
+	 * @return
+	 */
+	List<TimeUnitFunc> findAllTimeUnit(String companyId, String verticalCalCd, String verticalCalItemId);
 }

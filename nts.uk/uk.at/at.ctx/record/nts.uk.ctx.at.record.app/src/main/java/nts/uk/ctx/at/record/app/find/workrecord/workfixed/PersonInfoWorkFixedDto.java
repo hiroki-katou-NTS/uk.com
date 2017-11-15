@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.workfixed;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Gets the employee name.
@@ -13,11 +14,8 @@ import lombok.Getter;
  * @return the employee name
  */
 @Getter
-
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
 @Builder
+@Setter
 public class PersonInfoWorkFixedDto {
 	
 	/** The employee id. */
@@ -25,4 +23,16 @@ public class PersonInfoWorkFixedDto {
 
 	/** The employee name. */
 	private String employeeName;
+
+	public PersonInfoWorkFixedDto() {
+		super();
+	}
+
+	public PersonInfoWorkFixedDto(String employeeId, String employeeName) {
+		super();
+		this.employeeId = employeeId;
+		this.employeeName = employeeName;
+	}
+	
+	
 }

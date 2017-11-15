@@ -156,9 +156,15 @@ module nts.uk.at.view.kmk002.b {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '', key: 'empCd', dataType: 'string', width: '0px', hidden: true},
-                        { headerText: nts.uk.resource.getText("KMK002_49"), width: '160px', key: 'empName', dataType: 'string'},
-                        { headerText: nts.uk.resource.getText("KMK002_50"), width: '153px', key: 'empApplicableAtr', dataType: 'number', ntsControl: 'SwitchButtons' },
+                        { headerText: '', key: 'empCd', dataType: 'string', width: '0px', hidden: true },
+                        {
+                            headerText: nts.uk.resource.getText("KMK002_49"), width: '160px',
+                            key: 'empName', dataType: 'string'
+                        },
+                        {
+                            headerText: nts.uk.resource.getText("KMK002_50"), width: '153px',
+                            key: 'empApplicableAtr', dataType: 'number', ntsControl: 'SwitchButtons'
+                        },
                     ],
                     features: [],
                     ntsFeatures: [],

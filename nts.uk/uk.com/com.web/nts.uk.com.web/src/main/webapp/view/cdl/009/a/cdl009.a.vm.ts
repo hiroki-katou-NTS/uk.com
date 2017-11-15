@@ -2,49 +2,45 @@ module nts.uk.com.view.cdl009.a {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import SelectType = kcp.share.list.SelectType;
     export module viewmodel {
         export class ScreenModel {
             multiSelectedTree: KnockoutObservableArray<string>;
-            selectedWorkplace: KnockoutObservable<string>;
             isMultiSelect: KnockoutObservable<boolean>;
-            selecType: KnockoutObservable<SelectType>;
-            referenceDate: KnockoutObservable<Date>;
+            baseDate: KnockoutObservable<Date>;
             target: KnockoutObservable<TargetClassification>;
             treeGrid: any;
             listComponentOpt: any;
             employeeList: KnockoutObservableArray<any>;
+            selectedEmployeeId: KnockoutObservable<string>;
+            selectedEmps: KnockoutObservableArray<string>;
             
             isIncumbent: KnockoutObservable<boolean>;
             isLeaveOfAbsence: KnockoutObservable<boolean>;
             isHoliday: KnockoutObservable<boolean>;
             isRetirement: KnockoutObservable<boolean>;
+            
+            enrollmentStatusList: KnockoutObservableArray<number>;
 
             constructor() {
                 let self = this;
                 var params = getShared('CDL009Params');
                 self.multiSelectedTree = ko.observableArray([]);
-                self.selectedWorkplace = ko.observable('');
-                //
+                self.multiSelectedTree(params.selectedIds ? params.selectedIds : []);
                 self.isMultiSelect = ko.observable(params.isMultiSelect);
-                self.selecType = ko.observable(params.selecType ? params.selecType : SelectType.NO_SELECT);
-                if (self.isMultiSelect()) {
-                    self.multiSelectedTree(params.selectedCodes ? params.selectedCodes : []);
-                }
-                else {
-                    self.selectedWorkplace(params.selectedCodes);
-                }
-                self.referenceDate = ko.observable(params.referenceDate ? params.referenceDate : new Date());
+                self.baseDate = ko.observable(params.baseDate ? params.baseDate : moment(new Date()).toDate());
                 self.target = ko.observable(params.target ? params.target : TargetClassification.WORKPLACE);
 
                 self.employeeList = ko.observableArray<any>();
-                
+                self.selectedEmployeeId = ko.observable('');
+                self.selectedEmps = ko.observableArray([]);
                 // Initial listComponentOption
                 self.treeGrid = {
                     isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectType: self.selecType(),
-                    baseDate: self.referenceDate,
-                    selectedCode: null,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    baseDate: self.baseDate,
+                    selectedWorkplaceId: self.multiSelectedTree,
                     isShowSelectButton: true,
                     isDialog: true,
                     maxRows: 12,
@@ -60,35 +56,83 @@ module nts.uk.com.view.cdl009.a {
                     maxRows: 12,
                     tabindex: 3,
                 };
+                // Set SelectedCode to listComponentOpt (Depend on isMultiSelect)
                 if (self.isMultiSelect()) {
-                    self.treeGrid.selectedCode = self.multiSelectedTree;
-                }
-                else {
-                    self.treeGrid.selectedCode = self.selectedWorkplace;
+                    self.listComponentOpt.selectedCode = self.selectedEmps;
+                } else {
+                    self.listComponentOpt.selectedCode = self.selectedEmployeeId;
                 }
                 
-                self.isIncumbent = ko.observable(false);
+                self.enrollmentStatusList = ko.observableArray<number>();
+                self.isIncumbent = ko.observable(true);
                 self.isLeaveOfAbsence = ko.observable(false);
                 self.isHoliday = ko.observable(false);
                 self.isRetirement = ko.observable(false);
+                
             }
 
             /**
-             * Search
+             * Search Employee
              */
             private searchEmp(): void {
                 let self = this;
-                if (self.isMultiSelect() && self.multiSelectedTree().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
+//                console.log(self.multiSelectedTree() + "search");
+                if (!self.multiSelectedTree() || self.multiSelectedTree().length == 0) {
+                    if (self.target() == TargetClassification.WORKPLACE) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_647" });
+                    }
+                    
+//                    .then(() => nts.uk.ui.windows.close());
                     return;
                 }
 
-                if (!self.isMultiSelect() && !self.selectedWorkplace()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
-                    return;
+                // Search Employees
+                self.findEmployee();
+                $('#emp-component').focus();
+            }
+            
+            /**
+             * Find Employee
+             */
+            findEmployee(): JQueryPromise<any> {
+                var self = this,
+                    dfd = $.Deferred();
+                let empStatusList: Array<number> = [];
+                // Enrollment is INCUMBENT
+                if (self.isIncumbent()) {
+                    empStatusList.push(EnrollmentStatus.INCUMBENT);
+                } 
+                // Enrollment is LEAVE_OF_ABSENCE
+                if (self.isLeaveOfAbsence()) {
+                    empStatusList.push(EnrollmentStatus.LEAVE_OF_ABSENCE);
                 }
-
-
+                // Enrollment is HOLIDAY
+                if (self.isHoliday()) {
+                    empStatusList.push(EnrollmentStatus.HOLIDAY);
+                } 
+                // Enrollment is RETIREMENT
+                if (self.isRetirement()) {
+                    empStatusList.push(EnrollmentStatus.RETIREMENT);
+                } 
+                var query = {
+                    workplaceIdList: self.multiSelectedTree(),
+                    referenceDate: self.baseDate(),
+                    empStatus: empStatusList
+                };
+                service.findEmployees(query).done(function(res: Array<service.model.EmployeeResult>) {
+                    // Set Employee List
+                    let empList: Array<any> = [];
+                    res.forEach(item => {
+                        empList.push({ id: item.employeeId, code: item.employeeCode, name: item.employeeName, workplaceName: item.workplaceName });
+                    });
+                    self.employeeList(empList);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    dfd.reject(error);
+                });
+                return dfd.promise();
             }
 
             /**
@@ -100,21 +144,28 @@ module nts.uk.com.view.cdl009.a {
             }
 
             /**
-             * Decide Employment
+             * Decide Employee
              */
             decideData(): void {
                 let self = this;
-                if (self.isMultiSelect() && self.multiSelectedTree().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
-                    return;
+                var isNoSelectRowSelected = $("#emp-component").isNoSelectRowSelected();
+                if (self.isMultiSelect()) {
+                    if ((!self.selectedEmps() || self.selectedEmps().length == 0)) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
+//                        return;
+                    } else {
+                        setShared('CDL009Output', self.selectedEmps());
+                        close();
+                    }
+                    
+                } else if (!self.selectedEmployeeId() && !isNoSelectRowSelected) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
+//                    return;
+                } else {
+                    setShared('CDL009Output', self.selectedEmployeeId());
+                    close();
                 }
-                var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
-                if (!self.isMultiSelect() && !self.selectedWorkplace() && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
-                    return;
-                }
-                setShared('CDL009Output', self.isMultiSelect() ? self.multiSelectedTree() : self.selectedWorkplace());
-                close();
+                
             }
 
             /**
@@ -122,7 +173,7 @@ module nts.uk.com.view.cdl009.a {
              */
             public checkExistWorkplace(code: string, data: any[]): boolean {
                 for (var item of data) {
-                    if (code === item.code) {
+                    if (code === item.workplaceId) {
                         return true;
                     }
                 }
@@ -148,16 +199,6 @@ module nts.uk.com.view.cdl009.a {
         }
 
         /**
-         * class SelectType
-         */
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
-
-        /**
      * Class TargetClassification
      */
         export class TargetClassification {
@@ -165,6 +206,9 @@ module nts.uk.com.view.cdl009.a {
             static DEPARTMENT = 2;
         }
 
+        /**
+         * interface UnitModel
+         */
         export interface UnitModel {
             workplaceId: string;
             code: string;
@@ -174,6 +218,16 @@ module nts.uk.com.view.cdl009.a {
             heirarchyCode: string;
             isAlreadySetting?: boolean;
             childs: Array<UnitModel>;
+        }
+        
+        /**
+         * class EnrollmentStatus
+         */
+        export class EnrollmentStatus {
+            static INCUMBENT = 1;
+            static LEAVE_OF_ABSENCE = 2;
+            static HOLIDAY = 3;
+            static RETIREMENT = 6;
         }
     }
 }

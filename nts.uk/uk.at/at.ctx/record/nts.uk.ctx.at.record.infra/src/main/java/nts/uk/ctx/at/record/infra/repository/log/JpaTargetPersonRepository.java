@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.log;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -60,10 +61,21 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 
 	@Override
 	public List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID) {
+		
 		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID , KrcdtEmpExeTarget.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.getList(c -> toDomain(c));
 		return data;
+	}
+	
+	@Override
+	public void add(TargetPerson targetPerson) {
+		this.commandProxy().insert(KrcdtEmpExeTarget.toEntity(targetPerson));
+	}
+
+	@Override
+	public void addAll(List<TargetPerson> lstTargetPerson) {
+		this.commandProxy().insertAll(lstTargetPerson.stream().map(c -> KrcdtEmpExeTarget.toEntity(c)).collect(Collectors.toList()));
 	}
 
 }

@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.pub.attendanceItemAndFrameLinking.AttendanceItemLinkingPub;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 
 @Stateless
 public class FrameNoFinder implements FrameNoAdapter{
@@ -27,11 +27,8 @@ public class FrameNoFinder implements FrameNoAdapter{
 		}).collect(Collectors.toList());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter#
-	 * getByAnyItem(int)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter#getByAnyItem(int)
 	 */
 	@Override
 	public List<FrameNoAdapterDto> getByAnyItem(int typeOfItem) {

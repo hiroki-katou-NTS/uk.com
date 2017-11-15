@@ -19,4 +19,12 @@ public class TimeLeavingWork extends DomainObject{
 	private TimeActualStamp attendanceStamp;
 	
 	private TimeActualStamp leaveStamp;
+
+	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
+		super();
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+	}
+	
 }

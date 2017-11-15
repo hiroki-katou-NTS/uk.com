@@ -14,19 +14,13 @@ import javax.ejb.Stateless;
 import entity.employeeinfo.BsymtEmployee;
 import entity.employeeinfo.BsymtEmployeePk;
 import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
-import entity.layout.PpemtMaintenanceLayout;
-import entity.layout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
-import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagement;
-import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpManagementPK;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 
 @Stateless
@@ -42,9 +36,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	/*
 	 * public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE +
-	 * " WHERE c.companyId = :companyId" + " AND c.employeeCode =:employeeCode "
-	 * + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
-	 * + " AND d.retireDate >= :entryDate ";
+	 * " WHERE c.companyId = :companyId" + " AND c.employeeCode =:employeeCode " +
+	 * " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate " +
+	 * " AND d.retireDate >= :entryDate ";
 	 */
 
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
@@ -52,6 +46,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND c.bsymtEmployeePk.sId IN :employeeIds ";
+	
+	public final String SELECT_BY_LIST_EMP_ID_2 = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId IN :employeeIds ";
+	
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 
@@ -79,23 +76,21 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
 			+ " WHERE c.companyId = :companyId " + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
 			+ " AND d.retireDate >= :standardDate";
-	
+
 	public final String GET_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
-	
-	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = 
-			" SELECT c.employeeCode, d.personName, a.bsymtDeleteEmpManagementPK.sid "
+
+	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = " SELECT c.employeeCode, d.personName, a.bsymtDeleteEmpManagementPK.sid "
 			+ " FROM BsymtDeleteEmpManagement a "
 			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId ";
-	
-	public final String GET_EMPLOYEE_DETAIL_INFO_TO_DELETE = 
-			" SELECT a.deleteDate, a.reason, c.employeeCode, d.personName "
+
+	public final String GET_EMPLOYEE_DETAIL_INFO_TO_DELETE = " SELECT a.deleteDate, a.reason, c.employeeCode, d.personName "
 			+ " FROM BsymtDeleteEmpManagement a "
 			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId "
 			+ " WHERE a.bsymtDeleteEmpManagementPK.sid = :sid";
-	
+
 	public final String SELECT_BY_SID_CID_SYSTEMDATE = "SELECT c FROM BsymtEmployee c "
 			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
 			+ " WHERE c.companyId = :companyId " + " AND c.personId = :personId"
@@ -109,6 +104,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
+	private final String SELECT_EMPLOYEE_BY_EMP_ID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :employeeId";
 	
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -119,6 +115,11 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	private Employee toDomainEmployee(BsymtEmployee entity) {
 		val domain = Employee.createFromJavaType(entity.companyId, entity.personId, entity.bsymtEmployeePk.sId,
 				entity.employeeCode, entity.companyMail, entity.companyMobileMail, entity.companyMobile);
+		
+		List<JobEntryHistory> lstEntryHistory = entity.listEntryHist.stream()
+				.map(m -> toDomainJobEntryHist(m)).collect(Collectors.toList());
+		
+		domain.setListEntryJobHist(lstEntryHistory);
 		return domain;
 	}
 
@@ -134,7 +135,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				entity.hiringType, entity.retireDate, entity.bsymtJobEntryHistoryPk.entryDate, entity.adoptDate);
 		return domain;
 	}
-	
+
 	private BsymtEmployee toEntityEmployee(Employee domain) {
 		BsymtEmployee entity = new BsymtEmployee();
 		entity.bsymtEmployeePk = new BsymtEmployeePk(domain.getSId().toString());
@@ -146,21 +147,20 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		entity.companyMobileMail = domain.getMobileMail().v();
 		return entity;
 	}
-	
-	// mapping 
-		private PersonInfoCategory createDomainPerInfoCtgFromEntity(Object[] c) {
-			String personInfoCategoryId = String.valueOf(c[0]);
-			String categoryCode = String.valueOf(c[1]);
-			String categoryName = String.valueOf(c[2]);
-			int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
-			String categoryParentCd = (c[4] != null) ? String.valueOf(c[4]) : null;
-			int categoryType = Integer.parseInt(String.valueOf(c[5]));
-			int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
-			int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
-			return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
-					categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
-		}
 
+	// mapping
+	private PersonInfoCategory createDomainPerInfoCtgFromEntity(Object[] c) {
+		String personInfoCategoryId = String.valueOf(c[0]);
+		String categoryCode = String.valueOf(c[1]);
+		String categoryName = String.valueOf(c[2]);
+		int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
+		String categoryParentCd = (c[4] != null) ? String.valueOf(c[4]) : null;
+		int categoryType = Integer.parseInt(String.valueOf(c[5]));
+		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
+		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
+		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
+				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
+	}
 
 	@Override
 	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
@@ -197,8 +197,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
 	 * getAllEmployee(java.lang.String)
 	 */
 	@Override
@@ -213,8 +212,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
 	 * getListPersonByListEmployeeId(java.lang.String, java.util.List)
 	 */
 	@Override
@@ -232,8 +230,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
 	 * findBySid(java.lang.String)
 	 */
 	@Override
@@ -313,14 +310,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return returnStr;
 	}
 
-	// sonnlb
+	// sonnlb code start
 
 	@Override
 	public Boolean isDuplicateEmpCode(String companyId, String employeeCode) {
 		return this.queryProxy().query(CHECK_DUPLICATE_EMPLOYEE_CODE_STRING_QUERY, BsymtEmployee.class)
-				.setParameter("companyId", companyId)
-				.setParameter("employeeCode", employeeCode)
-				.getSingle().isPresent();
+				.setParameter("companyId", companyId).setParameter("employeeCode", employeeCode).getSingle()
+				.isPresent();
 	}
 
 	@Override
@@ -328,6 +324,14 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 		return false;
 	}
+
+	@Override
+	public void addNewEmployee(Employee domain) {
+		this.commandProxy().insert(toEntityEmployee(domain));
+
+	}
+
+	// sonnlb code end
 
 	// laitv
 	@Override
@@ -375,9 +379,8 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		return Optional.of(emp);
 	}
 
-	
 	/**
-	 * case : Employee Selected trùng với employee đang nhập 
+	 * case : Employee Selected trùng với employee đang nhập
 	 */
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCtg(String companyId) {
@@ -386,17 +389,42 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				.setParameter("cid", companyId).getList(c -> {
 					return createDomainPerInfoCtgFromEntity(c);
 				});
-		
+
 	}
 
-	
 	/**
-	 * case : Employee Selected khác với employee đang nhập 
+	 * case : Employee Selected khác với employee đang nhập
 	 */
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/* for requestList No.126
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository#GetByListEmployeeId(java.util.List)
+	 */
+	@Override
+	public List<Employee> getByListEmployeeId(List<String> employeeIds) {
+		
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID_2, BsymtEmployee.class)
+				.setParameter("employeeIds", employeeIds).getList();
+		return toListEmployee(listEmpEntity);
+	}
+	
 
+	
+
+
+	@Override
+	public Optional<Employee> getInfoById(String employeeId) {
+		return queryProxy().query(SELECT_EMPLOYEE_BY_EMP_ID, BsymtEmployee.class)
+				.setParameter("employeeId", employeeId)
+				.getSingle()
+				.map(m -> toDomainEmployee(m));
+	}
 }

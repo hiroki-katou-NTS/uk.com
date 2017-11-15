@@ -48,7 +48,7 @@
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: $parent.viewmodelA.workScheduleSelected,
-						enable: true }"></div>
+						enable: $parent.viewmodelA.workScheduleEnable }"></div>
 				</td>
 			</tr>
 			<tr>
@@ -60,15 +60,15 @@
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: $parent.viewmodelA.unitSelected,
-						enable: true }"></div>
+						enable: $parent.viewmodelA.unitEnable }"></div>
 				</td>
 				<td></td>
 				<td></td>
 				<td></td>
 			</tr>
 			<tr>
-				<td><button data-bind="click: $parent.viewmodelA.addLineBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_14')}</button>
-					<button class="danger" data-bind="click: $parent.viewmodelA.deleteLineBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_15')}</button></td>
+				<td><button data-bind="click: $parent.viewmodelA.addLineBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.addLineEnable">#{i18n.getText('KML002_14')}</button>
+					<button class="danger" data-bind="click: $parent.viewmodelA.deleteLineBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.deleteLineEnable">#{i18n.getText('KML002_15')}</button></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -111,7 +111,7 @@
 							optionsValue: 'attrCode',
 							value: attribute,
 							optionsText: 'attrName',
-							enable: true,
+							enable: attrEnable,
 							columns: [
 								{ prop: 'attrName', length: 10 }
 							]}"></div>
@@ -124,7 +124,7 @@
 							optionsValue: 'methodCode',
 							optionsText: 'methodName',
 							value: settingMethod,
-							enable: true }"></div>
+							enable: settingMethodEnable }"></div>
 					</td>
 					<td class="help-btn-item">
 						<button class="formula-setting-btn" data-bind="click: $parent.openDialog.bind($parent, itemCd(), settingMethod(), attribute(), itemName())"></button>
@@ -147,25 +147,22 @@
 							optionsValue: 'totalCode',
 							value: total,
 							optionsText: 'totalName',
-							enable: true,
+							enable: totalEnable,
 							columns: [
 								{ prop: 'totalName', length: 10 },
 							]}"></div>
 					</td>
 					<td class="rounding-item">
 						<div class="rounding" data-bind="ntsComboBox: {
-							options: $parent.cbxRounding,
+							options: roundingItems,
 							optionsValue: 'roundingCode',
 							value: rounding,
 							optionsText: 'roundingName',
-							enable: true,
-							columns: [
-								{ prop: 'roundingName', length: 10 },
-							]}"></div>
+							enable: true}"></div>
 					</td>
 					<td class="fraction-item">
 						<div class="fraction" data-bind="ntsComboBox: {
-							options: $parent.cbxFraction,
+							options: fractionItems,
 							optionsValue: 'fractionCode',
 							value: fraction,
 							optionsText: 'fractionName',

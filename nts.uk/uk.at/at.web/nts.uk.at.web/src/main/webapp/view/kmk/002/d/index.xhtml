@@ -131,7 +131,11 @@
 										data-bind="ntsNumberEditor: {
 										name: '#[KMK002_67]',
 	                                    value: leftItem.inputValue,
-	                                    constraint: 'InputValue', 
+	                                    constraint: 'InputValue',
+	                                    option: {
+		                                    grouplength: 3,
+		                                    decimallength: 2
+	                                    },
 	                                    enable: leftItem.isInputValue(), 
 	                                    required: true,
 	                                    }"/>
@@ -152,6 +156,11 @@
 										data-bind="ntsNumberEditor: {
 									  	name: '#[KMK002_67]',
 	                                    value: rightItem.inputValue,
+	                                    constraint: 'InputValue',
+	                                    option: {
+		                                    grouplength: 3,
+		                                    decimallength: 2
+	                                    },
 	                                    enable: rightItem.isInputValue(), 
 	                                    required: true}"/>
                                </div>
