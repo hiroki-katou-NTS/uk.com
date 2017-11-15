@@ -4,15 +4,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsence;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddTemporaryAbsenceCommandHandler extends CommandHandler<AddTemporaryAbsenceCommand>
+public class AddTemporaryAbsenceCommandHandler extends CommandHandlerWithResult<AddTemporaryAbsenceCommand,PeregAddCommandResult>
 	implements PeregAddCommandHandler<AddTemporaryAbsenceCommand>{
 
 	@Inject
@@ -29,7 +30,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandler<AddTempora
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<AddTemporaryAbsenceCommand> context) {
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddTemporaryAbsenceCommand> context) {
 		val command = context.getCommand();
 		
 		String newTempID = IdentifierUtil.randomUniqueId();
@@ -40,6 +41,7 @@ public class AddTemporaryAbsenceCommandHandler extends CommandHandler<AddTempora
 				newHistID, command.getStartDate(), command.getEndDate(), command.getTempAbsenceReason(), command.getFamilyMemberId(), command.getBirthDate(), command.getMulPregnancySegment());
 		
 		temporaryAbsenceRepository.addTemporaryAbsence(temporaryAbsence);
+		return new PeregAddCommandResult(newTempID);
 	}
 
 }
