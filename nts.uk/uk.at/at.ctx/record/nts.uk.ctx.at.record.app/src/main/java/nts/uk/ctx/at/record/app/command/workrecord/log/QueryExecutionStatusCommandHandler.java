@@ -16,7 +16,8 @@ import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 @Transactional
 public class QueryExecutionStatusCommandHandler extends AsyncCommandHandler<ExecutionCommandResult> {
 	
-	@Inject TargetPersonRepository targetPersonRepository;
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<ExecutionCommandResult> context) {
@@ -35,8 +36,7 @@ public class QueryExecutionStatusCommandHandler extends AsyncCommandHandler<Exec
 				break;
 			}
 			
-			// TODO : アルゴリズム「D：bat統括プログラムを起動する」を実行する | Chạy xử lí bat
 		}
-	}
+	} 
 	
 }

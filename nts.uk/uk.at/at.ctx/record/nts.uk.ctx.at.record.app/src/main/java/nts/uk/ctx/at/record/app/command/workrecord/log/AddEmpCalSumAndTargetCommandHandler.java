@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
@@ -40,10 +41,12 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		// Insert all TargetPersons
 		List<TargetPerson> lstTargetPerson = new ArrayList<TargetPerson>();
 		for (String employeeID : command.getLstEmployeeID()) {
-			TargetPerson targetPerson = TargetPerson.createJavaType(
-					employeeID,
-					empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-					new ComplStateOfExeContents(ExecutionContent.DAILY_CALCULATION, EmployeeExecutionStatus.INCOMPLETE));
+			List<ComplStateOfExeContents> lstState = new ArrayList<ComplStateOfExeContents>();
+			for (ExecutionLog executionLog : empCalAndSumExeLog.getExecutionLogs()) {
+				ComplStateOfExeContents state = new ComplStateOfExeContents(executionLog.getExecutionContent(), EmployeeExecutionStatus.INCOMPLETE);
+				lstState.add(state);
+			}
+			TargetPerson targetPerson = new TargetPerson(employeeID, empCalAndSumExeLog.getEmpCalAndSumExecLogID(), lstState);
 			lstTargetPerson.add(targetPerson);
 		}
 		targetPersonRepository.addAll(lstTargetPerson);
