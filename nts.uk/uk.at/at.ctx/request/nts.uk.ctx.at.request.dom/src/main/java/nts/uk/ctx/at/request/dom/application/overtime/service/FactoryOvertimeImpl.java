@@ -3,8 +3,6 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.persistence.EnumType;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;

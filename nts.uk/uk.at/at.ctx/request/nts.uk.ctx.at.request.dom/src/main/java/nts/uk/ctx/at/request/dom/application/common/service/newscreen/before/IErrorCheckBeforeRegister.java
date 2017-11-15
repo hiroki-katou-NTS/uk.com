@@ -4,9 +4,10 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 
 /**
  * 登録前エラーチェック
@@ -29,13 +30,12 @@ public interface IErrorCheckBeforeRegister {
 	/**
 	 * 事前申請超過チェック
 	 * @param companyId: 会社ID
-	 * @param refPlan: 実績反映状態
-	 * @param preAppTimeInputs: 事前申請の申請時間(List Time in minute)
-	 * @param afterAppTimeInputs: 事後申請の申請時間(List Time in minute)
+	 * @param refPlan: 申請.実績反映状態
+	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
 	 * 
 	 */
-	int preApplicationExceededCheck(String companyId, ReflectPlanPerState refPlan, List<OvertimeAppPrimitiveTime> preAppTimeInputs, List<OvertimeAppPrimitiveTime> afterAppTimeInputs) ;
+	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDate inputDate, PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs) ;
 	
 	/**
 	 * 実績超過チェック

@@ -32,8 +32,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeCommand> {
 
-	@Inject
-	private NewBeforeRegister newBeforeRegister;
 
 	@Inject
 	private IFactoryOvertime factoryOvertime;
@@ -41,8 +39,6 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 	@Inject
 	private OvertimeService overTimeService;
 
-	@Inject
-	private IErrorCheckBeforeRegister beforeCheck;
 	@Override
 	protected void handle(CommandHandlerContext<CreateOvertimeCommand> context) {
 
@@ -52,8 +48,7 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
-		//
-		String employeeId = AppContexts.user().employeeId();
+		
 		// Phase list
 		List<AppApprovalPhase> pharseList = getAppApprovalPhaseList(command, companyId, appID);
 		// Create Application
@@ -64,14 +59,8 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 				command.getWorkTypeCode(), command.getSiftTypeCode(), command.getWorkClockFrom1(),
 				command.getWorkClockTo1(), command.getWorkClockFrom2(), command.getWorkClockTo2(),
 				command.getDivergenceReasonContent(), command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				getOverTimeInput(command, companyId, appID));
-		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(appRoot);
-		//登録前エラーチェック
-		//	計算ボタン未クリックチェック
-		beforeCheck.calculateButtonCheck(0, companyId, employeeId, 0, ApplicationType.OVER_TIME_APPLICATION, appRoot.getApplicationDate());
-		//	事前申請超過チェック
-		//beforeCheck.preApplicationExceededCheck(companyId, refPlan, preAppTimeInputs, afterAppTimeInputs);
+				getOverTimeInput(command, companyId, appID));		
+		
 		// ドメインモデル「残業申請」の登録処理を実行する(INSERT)
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);
 		
