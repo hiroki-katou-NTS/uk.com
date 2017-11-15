@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.InitValueSetItemFinder;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 
 /**
  * @author sonnlb

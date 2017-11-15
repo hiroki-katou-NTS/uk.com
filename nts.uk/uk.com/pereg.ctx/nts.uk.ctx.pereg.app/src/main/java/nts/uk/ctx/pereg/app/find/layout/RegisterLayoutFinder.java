@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.find.reginfo.layout;
+package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,10 @@ import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
-import nts.uk.ctx.pereg.app.find.reginfo.copysetting.item.CopySetItemFinder;
-import nts.uk.ctx.pereg.app.find.reginfo.copysetting.setting.EmpCopySettingFinder;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.InitValueSetItemFinder;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySetItemFinder;
+import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
+import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 
 /**
  * @author sonnlb

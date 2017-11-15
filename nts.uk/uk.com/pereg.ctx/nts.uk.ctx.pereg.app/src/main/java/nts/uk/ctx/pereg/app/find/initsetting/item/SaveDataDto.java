@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.find.reginfo.initsetting.item;
+package nts.uk.ctx.pereg.app.find.initsetting.item;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;

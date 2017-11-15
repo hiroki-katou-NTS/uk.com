@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.find.reginfo.reghistory;
+package nts.uk.ctx.pereg.app.find.reghistory;
 
 import java.util.Optional;
 

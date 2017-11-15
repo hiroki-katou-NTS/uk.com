@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.find.reginfo.copysetting.item;
+package nts.uk.ctx.pereg.app.find.copysetting.item;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,8 +11,8 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
 import nts.uk.ctx.bs.person.dom.person.setting.copysetting.EmpCopySettingItemRepository;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.InitValueSetItemFinder;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

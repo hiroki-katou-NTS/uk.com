@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.find.reginfo.copysetting.setting;
+package nts.uk.ctx.pereg.app.find.copysetting.setting;
 
 import java.util.ArrayList;
 import java.util.List;

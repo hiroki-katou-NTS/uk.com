@@ -9,8 +9,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
-import nts.uk.ctx.pereg.app.command.reginfo.addemployee.AddEmployeeCommand;
-import nts.uk.ctx.pereg.app.command.reginfo.addemployee.AddEmployeeCommandHandler;
+import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
+import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommandHandler;
 
 public class AddEmployeeWebService extends WebService {
 	@Inject

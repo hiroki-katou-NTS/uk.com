@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.reginfo.addemployee;
+package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.util.List;
 

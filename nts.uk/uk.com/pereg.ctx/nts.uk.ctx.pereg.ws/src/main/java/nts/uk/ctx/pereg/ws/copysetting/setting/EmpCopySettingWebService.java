@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import find.person.setting.init.category.SettingCtgDto;
-import nts.uk.ctx.pereg.app.find.reginfo.copysetting.setting.EmpCopySettingFinder;
+import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 
 /**
  * @author sonnlb

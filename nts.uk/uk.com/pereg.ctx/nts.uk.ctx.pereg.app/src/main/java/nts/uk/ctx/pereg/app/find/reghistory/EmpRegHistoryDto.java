@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.find.reginfo.reghistory;
+package nts.uk.ctx.pereg.app.find.reghistory;
 
 import lombok.Value;
 import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;

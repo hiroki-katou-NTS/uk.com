@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.reginfo.addemployee;
+package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ import nts.uk.ctx.bs.person.dom.person.family.Family;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.pereg.app.find.reginfo.initsetting.item.SettingItemDto;
-import nts.uk.ctx.pereg.app.find.reginfo.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
