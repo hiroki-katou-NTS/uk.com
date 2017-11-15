@@ -144,10 +144,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
             var success = true;
             
             //設定方法が数値入力の場合、縦計入力項目が入力しないといけない。
-            if(self.settingMethod1() == 1 && (self.verticalInputItem1() == null) || self.verticalInputItem1().toString() == "") {
+            if(self.settingMethod1() == 1 && (self.verticalInputItem1() == null)) {
                 success = false;
                 nts.uk.ui.dialog.alert({ messageId: "Msg_419" });
-            } else if(self.settingMethod2() == 1 && (self.verticalInputItem1() == null) || self.verticalInputItem1().toString() == "") {
+            } else if(self.settingMethod2() == 1 && (self.verticalInputItem2() == null)) {
                 success = false;
                 nts.uk.ui.dialog.alert({ messageId: "Msg_419" });
             }

@@ -125,6 +125,13 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 	text-align: center;
 }
 
+.formula-text {
+	width: 240px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .attributes {
 	min-width: 0 !important;
 	width: 95px !important;

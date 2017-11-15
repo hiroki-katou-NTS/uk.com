@@ -66,16 +66,16 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             //A3_10 + A3_11
             self.workSchedule = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_Include") },
-                { code: '1', name: nts.uk.resource.getText("Enum_Exclude") }
+                { code: '0', name: nts.uk.resource.getText("Enum_IncludeAtr_Include") },
+                { code: '1', name: nts.uk.resource.getText("Enum_IncludeAtr_Exclude") }
             ]);
             
             self.workScheduleSelected = ko.observable(0); 
             
             //A3_6 + A3_7
             self.units = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_Daily") },
-                { code: '1', name: nts.uk.resource.getText("Enum_Time_Zone") }
+                { code: '0', name: nts.uk.resource.getText("Enum_Unit_DAILY") },
+                { code: '1', name: nts.uk.resource.getText("Enum_Unit_BY_TIME_ZONE") }
             ]);
             
             self.unitSelected = ko.observable(0); 
@@ -321,7 +321,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attribute: 0,
                 itemName: '',
                 settingMethod: 0,
-                formula: 'A + B + C',
+                formula: '',
                 displayAtr: 0,
                 total: 0,
                 rounding: 0,
@@ -339,6 +339,15 @@ module nts.uk.at.view.kml002.a.viewmodel {
             };
             
             self.calculatorItems.push(new CalculatorItem(item)); 
+        }
+        
+        /**
+         * Formula filter.
+         */
+        formularFilter() {
+            let self = this;
+            
+            
         }
         
         /**
@@ -513,7 +522,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 attribute: 0,
                 itemName: '',
                 settingMethod: 0,
-                formula: 'A + B + C',
+                formula: '',
                 displayAtr: 0,
                 total: 0,
                 rounding: 0,
@@ -688,7 +697,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             
             // Get data form db to display on Dialog
             var dataTranfer = _.find(self.calculatorItems(), function(o) { return o.itemName() == itemName; });
-            
+                        
             var data = {
                 verticalCalCd: self.code(),
                 itemId: itemCd,
@@ -720,15 +729,35 @@ module nts.uk.at.view.kml002.a.viewmodel {
             }
 
             if(settingMethod == 1) {
-                self.passDataToDialogs(itemCd, attribute, itemName);            
-                nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
+                self.passDataToDialogs(itemCd, attribute, itemName);
+                nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {                    
                     self.dataB = nts.uk.ui.windows.getShared("KML002_B_DATA");
+                    
+                    for(var i = 0; i < self.calculatorItems().length; i++){
+                        if(self.dataB == null) {
+                            return;
+                        }
+                        
+                        if(self.calculatorItems()[i].itemCd() == self.dataB.verticalCalItemId) {
+                            self.calculatorItems()[i].formBuilt = self.dataB;
+                        }
+                    }
                 }); 
             } else {
                 if(attribute == 0) {
                     self.passDataToDialogs(itemCd, attribute, itemName);            
                     nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
                         self.dataC = nts.uk.ui.windows.getShared("KML002_C_DATA");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataC == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataC.verticalCalItemId) {
+                                self.calculatorItems()[i].formTime = self.dataC;
+                            }
+                        }
                     }); 
                 } else if(attribute == 1) {
                     self.passDataToDialogs(itemCd, attribute, itemName);
@@ -739,6 +768,16 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.passDataToDialogs(itemCd, attribute, itemName);
                     nts.uk.ui.windows.sub.modal("/view/kml/002/d/index.xhtml").onClosed(() => {
                         self.dataD = nts.uk.ui.windows.getShared("KML002_D_Budget");
+                        
+                        for(var i = 0; i < self.calculatorItems().length; i++){
+                            if(self.dataD == null) {
+                                return;
+                            }
+                            
+                            if(self.calculatorItems()[i].itemCd() == self.dataD.verticalCalItemId) {
+                                self.calculatorItems()[i].formPeople = self.dataD;
+                            }
+                        }
                     }); 
                 } else if(attribute == 3) {
                     self.passDataToDialogs(itemCd, attribute, itemName);

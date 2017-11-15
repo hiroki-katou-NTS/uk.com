@@ -538,9 +538,9 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				entity.kscmtFormTimeFuncPK.verticalCalCd, 
 				entity.kscmtFormTimeFuncPK.verticalCalItemId, 
 				entity.kscmtFormTimeFuncPK.dispOrder,
-				entity.externalBudgetCd, 
-				entity.attendanceItemId, 
 				entity.presetItemId,
+				entity.attendanceItemId, 
+				entity.externalBudgetCd,
 				entity.operatorAtr);
 		return domain;
 	}

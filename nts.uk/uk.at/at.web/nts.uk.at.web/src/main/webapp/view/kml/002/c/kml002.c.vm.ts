@@ -63,32 +63,7 @@ module nts.uk.at.view.kml002.c.viewmodel {
                 self.catCode.valueHasMutated();
                 self.checked(self.currentData.actualDisplayAtr == 0 ? false : true);
                 
-                _.forEach(self.currentData.lstFormTimeFunc, function(item) {
-                    var itemCd = "";
-                    var realCd = "";
-                    
-                    if(item.attendanceItemId != null) {
-                        itemCd = item.attendanceItemId + item.dispOrder;
-                        realCd = item.attendanceItemId
-                    } else if(item.externalBudgetCd != null) {
-                        itemCd = item.externalBudgetCd + item.dispOrder;
-                        realCd = item.externalBudgetCd
-                    } else if(item.presetItemId != null) {
-                        itemCd = item.presetItemId + item.dispOrder;
-                        realCd = item.presetItemId
-                    }  
-                    
-                    var itemData = {
-                        code: itemCd,
-                        trueCode: realCd,
-                        itemType: item.itemType,
-                        operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
-                        name: "test",
-                        order: item.dispOrder
-                    };
-                    
-                    self.rightItems.push(itemData);
-                });
+                self.bindData(self.currentData.lstFormTimeFunc);
             }
             
             self.checked.subscribe(function(value) {
@@ -176,6 +151,8 @@ module nts.uk.at.view.kml002.c.viewmodel {
                     self.displayItemsRule(_.clone(self.allItem()), self.catCode(), self.checked());
                 }
                 
+                self.bindData(self.currentData.lstFormTimeFunc);
+                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);    
@@ -220,6 +197,52 @@ module nts.uk.at.view.kml002.c.viewmodel {
             });
             
             return dfd.promise();
+        }
+        
+        /**
+         * Bind data from DB to dialog.
+         */
+        bindData(lstFormTimeFunc: any) {
+            var self = this;
+            self.rightItems.removeAll();
+            
+            _.forEach(lstFormTimeFunc, function(item) {
+                var itemCd = "";
+                var realCd = "";
+                
+                if(item.attendanceItemId != null) {
+                    itemCd = item.attendanceItemId + item.dispOrder;
+                    realCd = item.attendanceItemId
+                } else if(item.externalBudgetCd != null) {
+                    itemCd = item.externalBudgetCd + item.dispOrder;
+                    realCd = item.externalBudgetCd
+                } else if(item.presetItemId != null) {
+                    itemCd = item.presetItemId + item.dispOrder;
+                    realCd = item.presetItemId
+                }  
+                
+                var getItemByCd = _.find(self.allItem(), function(o) { return o.code.slice(0, -1) == realCd; });
+                var dataType = 0;
+                
+                if(item.presetItemId != null) {
+                    dataType = GrantPeriodicMethod.SCHEDULE;
+                } else if (item.attendanceItemId != null) {
+                    dataType = GrantPeriodicMethod.DAILY;
+                } else if (item.externalBudgetCd != null) {
+                    dataType = GrantPeriodicMethod.EXTERNAL;
+                }
+                
+                var itemData = {
+                    code: itemCd,
+                    trueCode: realCd,
+                    itemType: dataType,
+                    operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                    name: getItemByCd != null ? getItemByCd.name : "",
+                    order: item.dispOrder
+                };
+                
+                self.rightItems.push(itemData);
+            });
         }
         
         /**

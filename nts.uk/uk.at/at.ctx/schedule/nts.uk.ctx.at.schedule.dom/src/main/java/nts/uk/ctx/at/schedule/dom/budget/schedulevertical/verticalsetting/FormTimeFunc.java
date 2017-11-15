@@ -32,15 +32,15 @@ public class FormTimeFunc {
     private OperatorAtr operatorAtr;
     
 	public static FormTimeFunc createFromJavaType(String companyId, String verticalCalCd, String verticalCalItemId, int dispOrder,
-			String externalBudgetCd, String attendanceItemId, String presetItemId, int operatorAtr) {
+			String presetItemId, String attendanceItemId, String externalBudgetCd, int operatorAtr) {
 		
 		return new FormTimeFunc(companyId, 
 				verticalCalCd, 
 				verticalCalItemId, 
 				dispOrder,
-				externalBudgetCd, 
+				presetItemId, 
 				attendanceItemId, 
-				presetItemId,
+				externalBudgetCd,
 				EnumAdaptor.valueOf(operatorAtr, OperatorAtr.class)
 			);
 	}
