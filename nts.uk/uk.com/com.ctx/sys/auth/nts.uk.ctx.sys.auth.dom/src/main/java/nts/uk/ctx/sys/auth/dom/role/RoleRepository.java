@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.auth.dom.role;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RoleRepository {
 	
@@ -50,7 +49,7 @@ public interface RoleRepository {
 	 * @param roleType
 	 * @return Role
 	 */
-	Optional<Role> findByType(String companyId, RoleType roleType);
+	List<Role> findByType(String companyId, RoleType roleType);
 	
 	/**
 	 * find by role type
@@ -58,5 +57,5 @@ public interface RoleRepository {
 	 * @param roleType
 	 * @return Role
 	 */
-	Optional<Role> findByType(RoleType roleType);
+	List<Role> findByType(RoleType roleType);
 }

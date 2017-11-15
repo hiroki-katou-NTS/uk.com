@@ -17,11 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.auth.dom.role.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
 
@@ -114,25 +112,27 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	}
 
 	@Override
-	public Optional<Role> findByType(String companyId, RoleType roleType) {
+	public List<Role> findByType(String companyId, RoleType roleType) {
+		List<Role> result = new ArrayList<>();
 		
 		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.code";
-		SacmtRole entity = this.queryProxy().query(query, SacmtRole.class)
-				.setParameter("companyId", companyId).setParameter("roleType", roleType).getSingleOrNull();
-		if (entity != null) {
-			return Optional.of(new Role(new JpaRoleGetMemento(entity)));
+		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("companyId", companyId).setParameter("roleType", roleType).getList();
+		if (entities != null && entities.size() !=0) {
+			return entities.stream().map(x->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
 		}
-		return Optional.ofNullable(null);
+		return result;
 	}
 
 	@Override
-	public Optional<Role> findByType(RoleType roleType) {
+	public List<Role> findByType(RoleType roleType) {
+		List<Role> result = new ArrayList<>();
 		String query ="SELECT e FROM SacmtRole e WHERE e.roleType = :roleType ORDER BY e.code";
-		SacmtRole entity = this.queryProxy().query(query, SacmtRole.class).setParameter("roleType", roleType).getSingleOrNull();
-		if (entity != null) {
-			return Optional.of(new Role(new JpaRoleGetMemento(entity)));
+		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class).setParameter("roleType", roleType).getList();
+		if (entities != null  && !entities.isEmpty()) {
+			return entities.stream().map(x ->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
 		}
-		return Optional.ofNullable(null);
+		return result;
 	}
 
 }
