@@ -150,9 +150,12 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/b/index.xhtml").onClosed(function() {
-                    self.startPage().done(() => {
-                        service.initTooltip();
-                    });
+                    var isClose: boolean = nts.uk.ui.windows.getShared("isClose");
+                    if (!isClose) {
+                        self.startPage().done(() => {
+                            service.initTooltip();
+                        });
+                    }
                 });
             }
             /**
@@ -162,9 +165,12 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/c/index.xhtml").onClosed(function() {
-                    self.startPage().done(() => {
-                        service.initTooltip();
-                    });
+                    var isClose: boolean = nts.uk.ui.windows.getShared("isClose");
+                    if (!isClose) {
+                        self.startPage().done(() => {
+                            service.initTooltip();
+                        });
+                    }
                 });
             }
 

@@ -143,6 +143,7 @@ module nts.uk.at.view.kmk010.c {
              * function by click button close dialog
              */
            private closeSaveOutsideOTBRDItem(): void {
+               nts.uk.ui.windows.setShared("isClose", true);
                nts.uk.ui.windows.close();
            }
         }
