@@ -4,15 +4,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddAffWorkplaceHistoryCommandHandler extends CommandHandler<AddAffWorkplaceHistoryCommand>
+public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResult<AddAffWorkplaceHistoryCommand,PeregAddCommandResult>
 	implements PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>{
 	
 	@Inject
@@ -29,7 +30,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandler<AddAffW
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAffWorkplaceHistoryCommand> context) {
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddAffWorkplaceHistoryCommand> context) {
 		val command = context.getCommand();
 		
 		String newId = IdentifierUtil.randomUniqueId();
@@ -37,6 +38,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandler<AddAffW
 		AffWorkplaceHistory domain =  AffWorkplaceHistory.createFromJavaType(newId,command.getStartDate(), command.getEndDate(), command.getEmployeeId());
 		
 		affWorkplaceHistoryRepository.addAffWorkplaceHistory(domain);
+		return new PeregAddCommandResult(newId);
 	}
 	
 }
