@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.auth.app.command.person.role;
 
-import java.util.Optional;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -36,8 +36,8 @@ public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleC
 
 	private void insertPersonInfoRole(SavePersonRoleCommand command) {
 		
-		Optional<Role> roleOpt = roleRepo.findByType(RoleType.valueOf(command.getRoleType()));
-		if (roleOpt.isPresent() && roleOpt.get().getRoleCode().toString().equals(command.getRoleCode()))
+		List<Role> roles = roleRepo.findByType(AppContexts.user().companyId(), RoleType.valueOf(command.getRoleType()));
+		if (roles !=null && roles.get(0).getRoleCode().toString().equals(command.getRoleCode()))
 			throw new BusinessException("Msg_3");
 		
 		roleRepo.insert(command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode()));
