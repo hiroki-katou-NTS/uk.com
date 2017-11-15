@@ -24,10 +24,10 @@
 			
 			<div class="valign-center control-group">
 				<div data-bind="if: showScreen() != 'F'" style="display: inline-block; vertical-align: top;">
-					<div data-bind="ntsFormLabel: { required: true}" style="margin-right: 20px; margin-left: -5px;">#{i18n.getText('KAF004_13')}</div>
+					<div data-bind="ntsFormLabel: { required: true}" style="margin-right: 20px;">#{i18n.getText('KAF004_13')}</div>
 				</div>
 				<div data-bind="if: showScreen() == 'F'" style="display: inline-block; vertical-align: top;">
-					<div data-bind="ntsFormLabel: { required: true}" style="margin-right: 20px; margin-left: -5px;">#{i18n.getText('KAF004_40')}</div>
+					<div data-bind="ntsFormLabel: { required: true}" style="margin-right: 20px;">#{i18n.getText('KAF004_40')}</div>
 				</div>
 				<div style="display: inline-block;">
 					<com:ko-if bind="showScreen() == 'F'">
@@ -44,7 +44,7 @@
 						</div>
 					</com:ko-if>
 					<div class="valign-center control-group row4 004e-div"
-						style="margin-top: 15px;margin-left: 20px;">
+						style="margin-top: 15px;margin-left: 15px;">
 						<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 						<input style = "margin-left: 35px;"
 							data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time', name:'#[KAF004_42]'}, visible: isVisibleTimeF" />
@@ -55,7 +55,7 @@
 							data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time', name:'#[KAF004_43]'}, visible: isVisibleTimeF" />
 						<label data-bind="ntsFormLabel: {text: txtearlyTime1}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 30px">1:00</label>
 					</div>
-					<div class="valign-center control-group row4 004e-div" style="margin-left: 20px;" data-bind="if: displayOrder() != 0">
+					<div class="valign-center control-group row4 004e-div" style="margin-left: 15px;" data-bind="if: displayOrder() != 0">
 						<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 						<input class="col1"
 							data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time', name:'#[KAF004_50]'}, visible: isVisibleTimeF" />
