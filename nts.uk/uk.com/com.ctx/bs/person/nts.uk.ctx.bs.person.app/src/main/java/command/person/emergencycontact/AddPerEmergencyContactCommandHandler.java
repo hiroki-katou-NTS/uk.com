@@ -1,0 +1,45 @@
+package command.person.emergencycontact;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import lombok.val;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
+import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
+
+@Stateless
+public class AddPerEmergencyContactCommandHandler extends CommandHandler<AddPerEmergencyContactCommand>
+ 	implements PeregAddCommandHandler<AddPerEmergencyContactCommand>{
+
+	@Inject
+	private PersonEmergencyCtRepository perEmergencyContact;
+	
+	@Override
+	public String targetCategoryId() {
+		return "CS00015";
+	}
+
+	@Override
+	public Class<?> commandClass() {
+		return AddPerEmergencyContactCommand.class;
+	}
+
+	@Override
+	protected void handle(CommandHandlerContext<AddPerEmergencyContactCommand> context) {
+		val command = context.getCommand();
+		// Create new id
+		String newId = IdentifierUtil.randomUniqueId();
+		
+		PersonEmergencyContact emergencyContact = PersonEmergencyContact.createFromJavaType(newId, command.getPid(), command.getPersonName(),
+				command.getPersonMailAddress(), command.getStreetAddressPerson(), command.getPhone(), command.getPriorityEmegencyContact(), command.getRelationShip());
+		
+		// Add person emergency contact
+		
+		perEmergencyContact.addPersonEmergencyContact(emergencyContact);
+	}
+
+}

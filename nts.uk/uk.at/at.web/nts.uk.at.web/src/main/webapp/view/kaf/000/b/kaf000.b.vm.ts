@@ -21,6 +21,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          * value obj 
          */
         reasonToApprover: KnockoutObservable<string>;
+        reasonAppMess : string = nts.uk.resource.getText('KAF000_1');
+        reasonAppMessDealine : string = nts.uk.resource.getText('KAF000_2');
+        messageDeadlineTop: KnockoutObservable<string> = ko.observable('');
+        messageDeadlineBottom: KnockoutObservable<string> = ko.observable('');
         reasonApp: KnockoutObservable<string>;
         inputCommonData : KnockoutObservable<model.InputCommonData>;
 
@@ -259,6 +263,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }   
                 }
             }
+            //※8
+            if(nts.uk.text.isNullOrEmpty(self.reasonApp())){
+                self.displayButtonControl().displayReturnReasonPanel(false);
+            }else{
+                self.reasonApp(self.reasonAppMess + '　' + self.reasonApp());
+                self.displayButtonControl().displayReturnReasonPanel(true);
+            }
 
         } // end checkDisplayStart
 
@@ -266,11 +277,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         checkDisplayAction() {
             let self = this;
             if (self.outputDetailCheck() != null) {
+                //※6    
+                //ドメインモデル「申請」．入力者 == ログイン者社員ID                                                                      
+                //ドメインモデル「申請」．申請者 == ログイン者社員ID                                                                      \
+                if(self.outputDetailCheck().loginInputOrApproval){
+                    self.displayButtonControl().displayRelease(true);    
+                }else{//その以外
+                    self.displayButtonControl().displayRelease(false);
+                }
                 //check 利用者
                 let user = self.outputDetailCheck().user;
                 switch(user){
                     case 1: {
                         // 利用者 = 承認者
+                        
                         // check ステータス
                         let reflectPlanState = self.outputDetailCheck().reflectPlanState;
                         if(reflectPlanState==6||reflectPlanState==5||reflectPlanState==0||reflectPlanState==1){
@@ -359,6 +379,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         }
                     }   
                 } 
+                
             }
         }
 
@@ -367,6 +388,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
+                self.messageDeadlineTop(self.reasonAppMess + '　' + data.message);
+                self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
             }).fail(function(res: any) {
@@ -777,16 +800,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             authorizableFlags: boolean;
             approvalATR: number;
             alternateExpiration: boolean;
+            loginInputOrApproval: boolean;
             constructor(user: number,
                 reflectPlanState: number,
                 authorizableFlags: boolean,
                 approvalATR: number,
-                alternateExpiration: boolean) {
+                alternateExpiration: boolean,
+                loginInputOrApproval: boolean) {
                 this.user = user;
                 this.reflectPlanState = reflectPlanState;
                 this.authorizableFlags = authorizableFlags;
                 this.approvalATR = approvalATR;
                 this.alternateExpiration = alternateExpiration;
+                this.loginInputOrApproval = loginInputOrApproval;
             }
         }//end class DetailedScreenPreBootModeOutput
 

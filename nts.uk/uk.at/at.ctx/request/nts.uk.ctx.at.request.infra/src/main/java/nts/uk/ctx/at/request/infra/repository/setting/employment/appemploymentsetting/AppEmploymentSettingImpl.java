@@ -27,7 +27,7 @@ public class AppEmploymentSettingImpl extends JpaRepository implements AppEmploy
 	@Override
 	public List<AppEmployWorkType> getEmploymentWorkType(String companyID, String employmentCode, int appType) {
 		return this.queryProxy().query(FIND,KrqdtAppEmployWorktype.class)
-				.setParameter("companyID", companyID).setParameter("employeementCode", employmentCode).setParameter("appType", appType).getList(c -> convertToDomain(c));
+				.setParameter("companyID", companyID).setParameter("employmentCode", employmentCode).setParameter("appType", appType).getList(c -> convertToDomain(c));
 	}
 	private AppEmployWorkType convertToDomain(KrqdtAppEmployWorktype entity){
 		return AppEmployWorkType.createSimpleFromJavaType(entity.getKrqdtAppEmployWorktypePK().getCid(),

@@ -126,7 +126,6 @@ public class UpdateApplicationCommand {
 				this.enteredPersonSID,  
 				this.reversionReason,  
 				this.applicationDate,  
-				this.appReasonID,
 				this.applicationReason,  
 				this.applicationType,  
 				this.applicantSID,  

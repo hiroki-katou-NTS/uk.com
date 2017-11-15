@@ -64,8 +64,8 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	}
 
 	@Override
-	public List<String> appStampRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
+	public List<String> appStampRegister(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampRegistration(appStamp, appApprovalPhases);
 	}

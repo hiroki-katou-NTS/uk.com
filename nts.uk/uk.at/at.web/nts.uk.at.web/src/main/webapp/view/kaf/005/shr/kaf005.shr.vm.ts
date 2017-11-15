@@ -8,24 +8,24 @@ module nts.uk.at.view.kaf005.share {
             inputDate: KnockoutObservable<string>; // 入力日
             enteredPerson: KnockoutObservable<string>; // 入力者
             appDate: KnockoutObservable<string>; // 申請日
-            titleReason: KnockoutObservable<string>; 
+            titleReason: KnockoutObservable<string>;
             contentReason: KnockoutObservable<string>;
             employeeID: KnockoutObservable<string>; // 申請者
-            constructor( 
+            constructor(
                 applicationID: string,
                 inputDate: string,
                 enteredPerson: string,
                 appDate: string,
                 titleReason: string,
                 contentReason: string,
-                employeeID: string){
-                    this.applicationID = ko.observable(applicationID);  
-                    this.inputDate = ko.observable(inputDate);
-                    this.enteredPerson = ko.observable(enteredPerson);
-                    this.appDate = ko.observable(appDate);
-                    this.titleReason = ko.observable(titleReason);
-                    this.contentReason = ko.observable(contentReason);
-                    this.employeeID = ko.observable(employeeID);
+                employeeID: string) {
+                this.applicationID = ko.observable(applicationID);
+                this.inputDate = ko.observable(inputDate);
+                this.enteredPerson = ko.observable(enteredPerson);
+                this.appDate = ko.observable(appDate);
+                this.titleReason = ko.observable(titleReason);
+                this.contentReason = ko.observable(contentReason);
+                this.employeeID = ko.observable(employeeID);
             }
         }
         /**
@@ -51,11 +51,11 @@ module nts.uk.at.view.kaf005.share {
          * 
          */
         export class ComboReason {
-            reasonName: string;
             reasonId: string;
-            constructor(reasonName: string, reasonId: string) {
-                this.reasonName = reasonName;
+            reasonName: string;
+            constructor(reasonId: string, reasonName: string) {
                 this.reasonId = reasonId;
+                this.reasonName = reasonName;
             }
         }
         /**
@@ -127,13 +127,13 @@ module nts.uk.at.view.kaf005.share {
             approvalForm: number;
             dispOrder: number;
             approvalATR: number;
-            approvalFrameCmds: Array<ApprovalFrame>;   
-            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>){
+            approvalFrameCmds: Array<ApprovalFrame>;
+            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>) {
                 this.phaseID = phaseID;
                 this.approvalForm = approvalForm;
                 this.dispOrder = dispOrder;
                 this.approvalATR = approvalATR;
-                this.approvalFrameCmds = approvalFrameCmds;     
+                this.approvalFrameCmds = approvalFrameCmds;
             }
         }
         /**
@@ -143,11 +143,11 @@ module nts.uk.at.view.kaf005.share {
             frameID: string;
             dispOrder: number;
             approveAcceptedCmds: Array<ApproveAccepted>;
-            constructor(frameID: string, dispOrder: number, approveAcceptedCmds: Array<ApproveAccepted>){
+            constructor(frameID: string, dispOrder: number, approveAcceptedCmds: Array<ApproveAccepted>) {
                 this.frameID = frameID;
-                this.dispOrder = dispOrder; 
-                this.approveAcceptedCmds = approveAcceptedCmds;   
-            }     
+                this.dispOrder = dispOrder;
+                this.approveAcceptedCmds = approveAcceptedCmds;
+            }
         }
         /**
          * 
@@ -159,69 +159,86 @@ module nts.uk.at.view.kaf005.share {
             confirmATR: number;
             approvalDate: string;
             reason: string;
-            representerSID: string; 
-            constructor(appAcceptedID: string, approverSID: string, approvalATR: number, 
-                confirmATR: number, approvalDate: string, reason: string, representerSID: string){
+            representerSID: string;
+            constructor(appAcceptedID: string, approverSID: string, approvalATR: number,
+                confirmATR: number, approvalDate: string, reason: string, representerSID: string) {
                 this.appAcceptedID = appAcceptedID;
                 this.approverSID = approverSID;
                 this.approvalATR = approvalATR;
                 this.confirmATR = confirmATR;
                 this.approvalDate = approvalDate;
                 this.reason = reason;
-                this.representerSID = representerSID;    
+                this.representerSID = representerSID;
             }
         }
         export class AppOverTime {
-                
+            companyID: string
+            appID: string
+            applicationDate: string
+            prePostAtr: number
+            applicantSID: string
+            applicationReason: string
+            appApprovalPhaseCmds: Array<any>
+            workType: string
+            siftType: string
+            workClockFrom1: number
+            workClockTo1: number
+            workClockFrom2: number
+            workClockTo2: number
+            bonusTimes: Array<any>
+            breakTimes: Array<any>
+            overtimeHours: Array<any>
+            restTime: Array<any>
+            overtimeAtr: number
+            overTimeShiftNight: number
+            flexExessTime: number
+            divergenceReasonContent: string
         }
-        
-        export class RestTime{
-                restTimeID: KnockoutObservable<string>;
-                startTime: KnockoutObservable<number>;
-                endTime: KnockoutObservable<number>;
-            constructor(restTimeID: string, startTime: number, endTime: number){
-                this.restTimeID = ko.observable(restTimeID);
+        export class OverTimeInput {
+            companyID: KnockoutObservable<string>
+            appID: KnockoutObservable<string>
+            attendanceID: KnockoutObservable<number>
+            attendanceName: KnockoutObservable<string>
+            frameNo: KnockoutObservable<number>
+            frameName: KnockoutObservable<string>
+            startTime: KnockoutObservable<number>
+            endTime: KnockoutObservable<number>
+            applicationTime: KnockoutObservable<number>
+            constructor(
+                companyID: string,
+                appID: string,
+                attendanceID: number,
+                attendanceName: string,
+                frameNo: number,
+                frameName: string,
+                startTime: number,
+                endTime: number,
+                applicationTime: number) {
+                this.companyID = ko.observable(companyID);
+                this.appID = ko.observable(appID);
+                this.attendanceID = ko.observable(attendanceID);
+                this.attendanceName = ko.observable(attendanceName);
+                this.frameNo = ko.observable(frameNo);
+                this.frameName = ko.observable(frameName);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
-                }
+                this.applicationTime = ko.observable(applicationTime);
             }
-        export class OvertimeHour{
-            overtimeID: KnockoutObservable<string>;
-            overtimeName: KnockoutObservable<string>;
+        }   
+		export class overtimeWork {
+            yearMonth: KnockoutObservable<string>;
+            limitTime: KnockoutObservable<string>;
+            actualTime: KnockoutObservable<string>;
             appTime: KnockoutObservable<string>;
-            preAppTime: KnockoutObservable<string>;
-            caculationTime: KnockoutObservable<string>;
-            constructor(overtimeID: string, overtimeName: string, appTime: string, preAppTime: string, caculationTime: string){
-                this.overtimeID = ko.observable(overtimeID);
-                this.overtimeName = ko.observable(overtimeName);
+            totalTime: KnockoutObservable<string>;
+            constructor(yearMonth: string, limitTime: string, actualTime: string, appTime: string,  totalTime: string) {
+                this.yearMonth = ko.observable(yearMonth);
+                this.limitTime = ko.observable(limitTime);
+                this.actualTime = ko.observable(actualTime);
                 this.appTime = ko.observable(appTime);
-                this.preAppTime = ko.observable(preAppTime);
-                this.caculationTime = ko.observable(caculationTime);
+                this.totalTime = ko.observable(totalTime);
             }
-        }
-        export class BreakTime{
-            breakTimeID: KnockoutObservable<string>;
-            breakTimeName: KnockoutObservable<string>;
-            appTime: KnockoutObservable<string>;
-            preAppTime: KnockoutObservable<string>;
-            constructor(breakTimeID: string, breakTimeName: string, appTime: string, preAppTime: string){
-                this.breakTimeID = ko.observable(breakTimeID);
-                this.breakTimeName = ko.observable(breakTimeName);
-                this.appTime = ko.observable(appTime);
-                this.preAppTime = ko.observable(preAppTime);
-            }
-        }
-        export class BonusTime{
-            bonusTimeID: KnockoutObservable<string>;
-            bonusTimeName: KnockoutObservable<string>;
-            appTime: KnockoutObservable<string>;
-            preAppTime: KnockoutObservable<string>;
-            constructor(bonusTimeID: string, bonusTimeName: string, appTime: string, preAppTime: string){
-                this.bonusTimeID = ko.observable(bonusTimeID);
-                this.bonusTimeName = ko.observable(bonusTimeName);
-                this.appTime = ko.observable(appTime);
-                this.preAppTime = ko.observable(preAppTime);
-            }
-        }
+        }		
+
     }
 }

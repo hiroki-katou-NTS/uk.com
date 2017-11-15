@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -50,14 +53,18 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     @Column(name = "WORK_CLOCK_TO2")
     private int workClockTo2;
     
-    @Column(name = "DIVERGENCE_REASON_ID")
-    private String divergenceReasonId;
+    @Column(name = "DIVERGENCE_REASON")
+    private String divergenceReason;
     
     @Column(name = "FLEX_EXCESS_TIME")
     private int flexExcessTime;
     
     @Column(name = "OVERTIME_SHIFT_NIGHT")
     private int overtimeShiftNight;
+    
+    @OneToMany(mappedBy="appOvertime", cascade = CascadeType.ALL)
+	public List<KrqdtOvertimeInput> overtimeInputs;
+    
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
