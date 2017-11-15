@@ -13,9 +13,9 @@ import lombok.Getter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
@@ -417,4 +417,80 @@ public abstract class CalculationTimeSheet {
 			return 0;
 		}
 	}
+	
+	/**
+	 * 計算時間帯Listを結合し、計算時間帯を返す
+	 * @author ken_takasu
+	 * @param source
+	 * @return
+	 */
+	public CalculationTimeSheet join(Collection<CalculationTimeSheet> source) {
+		//時間帯（丸め付）Listを1つに結合
+		List<TimeSpanWithRounding> timeSheets = source.stream().map(s -> s.getTimeSheet()).collect(Collectors.toList());
+		val joinedTimeSheet = TimeSpanWithRounding.joinedTimeSpanWithRounding(timeSheets);
+		//計算用時間帯Listを1つに結合
+		val calcRanges = source.stream().map(s -> s.getCalcrange()).collect(Collectors.toList());
+		val joinedCalcRange = TimeSpanForCalc.join(calcRanges);
+		//控除時間帯Listを1つに結合
+		val deductionTimeList = joinedDeductionTimeSheet();
+		//加給時間帯Listを1つに結合
+		val bonusPayTimesheetList = joinedBonusPayTimeSheet();
+		//深夜時間帯Listを1つに結合
+		val midNightTimeSheet = source.stream().map(s -> s.getMidNightTimeSheet()).collect(Collectors.toList());
+		val joinedMidNightTimeSheet = this.midNightTimeSheet.get().joinedMidNightTimeSheet(midNightTimeSheet);
+		//特定日加給時間帯Listを1つに結合
+		val specifiedbonusPayTimeSheetList = joinedSpecifiedbonusPayTimeSheet();
+		
+		CalculationTimeSheet calculationTimeSheet = new CalculationTimeSheet(joinedTimeSheet,
+																			joinedCalcRange,
+																			deductionTimeList,
+																			bonusPayTimesheetList,
+																			specifiedbonusPayTimeSheetList,
+																			joinedMidNightTimeSheet);
+		return calculationTimeSheet;
+	}
+	
+	/**
+	 * 再帰的に控除項目の時間帯を取得する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> joinedDeductionTimeSheet() {
+		List<TimeSheetOfDeductionItem> results = new ArrayList<>();
+		for (val child : this.deductionTimeSheets) {
+			val resultsOfChild = child.collectRecursively();
+			results.addAll(resultsOfChild);
+		}		
+		return results;
+	}
+	
+	
+	/**
+	 * 再帰的に加給時間帯を取得する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public List<BonusPayTimesheet> joinedBonusPayTimeSheet() {
+		List<BonusPayTimesheet> results = new ArrayList<>();
+		for (val child : this.bonusPayTimeSheet) {
+			val resultsOfChild = child.joinedBonusPayTimeSheet();
+			results.addAll(resultsOfChild);
+		}		
+		return results;
+	}
+	
+	/**
+	 * 再帰的に特定日加給時間帯を取得する
+	 * @author ken_takasu
+	 * @return
+	 */
+	public List<SpecifiedbonusPayTimeSheet> joinedSpecifiedbonusPayTimeSheet() {
+		List<SpecifiedbonusPayTimeSheet> results = new ArrayList<>();
+		for (val child : this.specifiedBonusPayTimeSheet) {
+			val resultsOfChild = child.joinedSpecifiedbonusPayTimeSheet();
+			results.addAll(resultsOfChild);
+		}		
+		return results;
+	}
+	
 }
