@@ -13,11 +13,4 @@ public interface PeregCommandHandler<C> {
 	 * @return class of command
 	 */
 	Class<?> commandClass();
-	
-	void handle(C command);
-	
-	@SuppressWarnings("unchecked")
-	default void handlePeregCommand(Object peregCommand) {
-		this.handle((C)peregCommand);
-	}
 }
