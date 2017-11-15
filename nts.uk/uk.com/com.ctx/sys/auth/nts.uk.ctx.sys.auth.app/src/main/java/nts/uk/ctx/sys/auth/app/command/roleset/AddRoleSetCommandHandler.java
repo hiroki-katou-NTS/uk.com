@@ -17,6 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,6 +28,9 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 
 	@Inject
 	private RoleSetRepository roleSetRepository;
+	
+	@Inject
+	private RoleSetService roleSetService;
 	
 	@Inject
 	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
