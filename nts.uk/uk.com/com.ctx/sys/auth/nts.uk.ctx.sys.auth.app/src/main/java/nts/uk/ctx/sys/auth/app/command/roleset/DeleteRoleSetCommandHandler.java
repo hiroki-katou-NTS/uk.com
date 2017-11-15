@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,6 +20,9 @@ public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
 	@Inject
 	private RoleSetRepository roleSetRepository;
 
+	@Inject
+	private RoleSetAndWebMenuAdapter roleSetAndWebMenuAdapter;
+	
 	@Override
 	protected String handle(CommandHandlerContext<RoleSetCommand> context) {
 		RoleSetCommand command = context.getCommand();
@@ -37,13 +41,15 @@ public class DeleteRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
 	
 			// Confirm preconditions - 事前条件を確認する - ドメインモデル「既定のロールセット」を取得する
 			roleSetDom.validateForDelete();
-			
+
+			// remove web menu link - ドメインモデル「ロールセット別紐付け」を削除する
+			roleSetAndWebMenuAdapter.deleteListOfRoleSetAndWebMenu(command.getRoleSetCd(), companyId);
+
 			// remove Role Set from DB - ドメインモデル「ロールセット」を削除する
 			this.roleSetRepository.delete(command.getRoleSetCd(), companyId);
-	
-			// remove web menu link - ドメインモデル「ロールセット別紐付け」を削除する
-			// TODO how to call from other context???
+			
+			return command.getRoleSetCd();
 		}
-		return command.getRoleSetCd();
+		return null;
 	}
 }

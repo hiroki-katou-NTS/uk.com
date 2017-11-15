@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu.webmenulinking;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.sys.auth.app.find.roleset.RoleSetDto;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu;
 
 @Data
