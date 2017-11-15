@@ -14,12 +14,6 @@ module nts.uk.at.view.kdw001.d {
             }
             
             opendScreenBorJ() {
-//                let self = this;
-//                if(self.screenName == "B"){
-//                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 1});    
-//                }else{
-//                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"activeStep": 1});
-//                }
                 $("#wizard").ntsWizard("prev");        
             }
             

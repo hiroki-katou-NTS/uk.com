@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdw001.c {
     import getText = nts.uk.resource.getText;
-    
+
     export module viewmodel {
         export class ScreenModel {
 
@@ -33,6 +33,10 @@ module nts.uk.at.view.kdw001.c {
             // Options
             baseDate: KnockoutObservable<Date>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+
+            //close period
+            periodStartDate: any;
+
 
 
             constructor() {
@@ -85,11 +89,14 @@ module nts.uk.at.view.kdw001.c {
                 self.dateValue = ko.observable({});
                 self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
+                
 
                 var closureID = __viewContext.transferred.value.closureID;
-                service.findPeriodById(closureID).done((data) => {
+                service.findPeriodById(Number(closureID)).done((data) => {
+                    self.periodStartDate = data.startDate.toString();
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
+                    self.dateValue.valueHasMutated();
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -180,9 +187,8 @@ module nts.uk.at.view.kdw001.c {
 
             opendScreenBorJ() {
                 let self = this;
-              var closureID =  __viewContext["viewmodel"].closureID;
-                service.findById(closureID).done((data) => {
-
+                var closureID = __viewContext["viewmodel"].closureID;
+                service.findPeriodById(Number(closureID)).done((data) => {
                     if (data) {
                         let listEmpSelected = self.listComponentOption.selectedCode();
                         if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
@@ -201,16 +207,20 @@ module nts.uk.at.view.kdw001.c {
 
                         if (timeDifferenceInDays > 31) {
                             nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                                let monthNow = data.month;
+                                let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+                                let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+                                let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+                                let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
                                 let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                if (monthStartDate < monthNow) {
+                                let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+                                if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
                                 }
-                                
+
                                 __viewContext["viewmodel"].params.setParamsScreenC({
                                     lstEmployeeID: listEmpSelected,
-                                    periodStartDate:self.dateValue().startDate,
+                                    periodStartDate: self.dateValue().startDate,
                                     periodEndDate: self.dateValue().endDate
                                 });
                                 $("#wizard").ntsWizard("next");
@@ -224,11 +234,11 @@ module nts.uk.at.view.kdw001.c {
                                 nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                 return;
                             }
-                                __viewContext["viewmodel"].params.setParamsScreenC({
-                                    lstEmployeeID: listEmpSelected,
-                                    periodStartDate:self.dateValue().startDate,
-                                    periodEndDate: self.dateValue().endDate
-                                });
+                            __viewContext["viewmodel"].params.setParamsScreenC({
+                                lstEmployeeID: listEmpSelected,
+                                periodStartDate: self.dateValue().startDate,
+                                periodEndDate: self.dateValue().endDate
+                            });
                             $("#wizard").ntsWizard("next");
 
                         }

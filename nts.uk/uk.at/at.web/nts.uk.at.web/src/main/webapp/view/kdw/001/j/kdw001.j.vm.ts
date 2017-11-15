@@ -4,6 +4,7 @@ module nts.uk.at.view.kdw001.j {
     export module viewmodel {
         export class ScreenModel {
             params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
+           closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -18,11 +19,12 @@ module nts.uk.at.view.kdw001.j {
             stepList: Array<NtsWizardStep>;
             stepSelected: KnockoutObservable<NtsWizardStep>;
             activeStep: KnockoutObservable<number>;
+            
+            
 
             constructor() {
                 var self = this;
-                var closureID = __viewContext.transferred.value.closureID;
-                self.params.setParamsScreenA({ closure: closureID });
+               self.params.setParamsScreenA({closure: self.closureID});
 
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();

@@ -66,7 +66,7 @@ module nts.uk.at.view.kdw001.b {
 
             constructor() {
                 var self = this;
-                self.params.setParamsScreenA({closure: self.closureID()});
+                self.params.setParamsScreenA({closure: self.closureID});
 
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
@@ -247,8 +247,8 @@ module nts.uk.at.view.kdw001.b {
                             resetTimeForAssig: self.transferTimeCheck(),
                             dailyCalClass: self.dailyCalCheck(),
                             calClass: self.selectedCalDivisionCode(),
-                            refApprovalresult: approvalResultCheck(),
-                            refClass: selectedReflectClassCode(),
+                            refApprovalresult: self.approvalResultCheck(),
+                            refClass: self.selectedReflectClassCode(),
                             alsoForciblyReflectEvenIfItIsConfirmed: self.forciblyCommitCheck(),
                             monthlyAggregation: self.MonthCountCheck(),
                             summaryClass: self.selectedAggregateClassCode()
@@ -271,8 +271,8 @@ module nts.uk.at.view.kdw001.b {
                             resetTimeForAssig: self.transferTimeCheck(),
                             dailyCalClass: self.dailyCalCheck(),
                             calClass: self.selectedCalDivisionCode(),
-                            refApprovalresult: approvalResultCheck(),
-                            refClass: selectedReflectClassCode(),
+                            refApprovalresult: self.approvalResultCheck(),
+                            refClass: self.selectedReflectClassCode(),
                             alsoForciblyReflectEvenIfItIsConfirmed: self.forciblyCommitCheck(),
                             monthlyAggregation: self.MonthCountCheck(),
                             summaryClass: self.selectedAggregateClassCode()
