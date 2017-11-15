@@ -307,9 +307,9 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
-                
+                let textReason = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                    self.selectedReason(),
+                    textReason.reasonName,
                     self.prePostSelected(),
                     self.appDate(),
                     self.employeeID,

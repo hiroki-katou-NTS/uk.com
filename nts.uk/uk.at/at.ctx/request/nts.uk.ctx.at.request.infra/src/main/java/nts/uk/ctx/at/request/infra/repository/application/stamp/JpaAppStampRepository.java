@@ -78,8 +78,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplicationID());
 		KrqdtAppStamp krqdtAppStamp = optional.get();
 		krqdtAppStamp.version = appStamp.getVersion();
-		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
-		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v();
 		switch(appStamp.getStampRequestMode()) {
 			case STAMP_GO_OUT_PERMIT: 
 				for(int i=0;i<appStamp.getAppStampGoOutPermits().size();i++){
@@ -207,7 +206,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				krqdtAppStamp.kafdtApplication.enteredPersonSID, 
 				new AppReason(krqdtAppStamp.kafdtApplication.reversionReason), 
 				krqdtAppStamp.kafdtApplication.applicationDate, 
-				krqdtAppStamp.kafdtApplication.appReasonId,
 				new AppReason(krqdtAppStamp.kafdtApplication.applicationReason), 
 				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.applicationType, ApplicationType.class), 
 				krqdtAppStamp.kafdtApplication.applicantSID, 
@@ -245,7 +243,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								appStamp.getCompanyID(), 
 								appStamp.getApplicationID()), 
 						appStamp.getVersion(),
-						appStamp.getAppReasonID(),
 						appStamp.getPrePostAtr().value, 
 						appStamp.getInputDate(), 
 						appStamp.getEnteredPersonSID(), 

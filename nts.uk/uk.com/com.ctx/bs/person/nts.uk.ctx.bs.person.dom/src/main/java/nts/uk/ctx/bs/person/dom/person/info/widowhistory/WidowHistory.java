@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.person.dom.person.info.widowhistory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -14,7 +15,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
-public class WidowHistory {
+public class WidowHistory extends AggregateRoot{
 	// 寡夫寡婦ID
 	private String widowHistoryId;
 	// 寡夫寡婦区分

@@ -1,5 +1,7 @@
 package nts.uk.shr.sample.pereg.command;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -14,6 +16,7 @@ public class SampleUpdatePersonBaseCommandHandler extends CommandHandler<SampleU
 		
 		val command = context.getCommand();
 		String fullName = command.getFullName();
+		fullName.toString();
 	}
 
 	@Override

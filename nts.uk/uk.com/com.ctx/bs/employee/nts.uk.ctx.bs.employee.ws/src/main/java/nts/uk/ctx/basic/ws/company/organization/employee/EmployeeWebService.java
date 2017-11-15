@@ -16,12 +16,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.command.employee.AddEmployeeCommand;
-import nts.uk.ctx.bs.employee.app.command.employee.AddEmployeeCommandHandler;
-import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
-import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
@@ -34,9 +30,6 @@ public class EmployeeWebService extends WebService {
 
 	@Inject
 	private EmployeeFinder employeeFinder;
-
-	@Inject
-	AddEmployeeCommandHandler addEmpHandler;
 
 	/** The employee query processor. */
 	@Inject
@@ -78,22 +71,7 @@ public class EmployeeWebService extends WebService {
 	public JavaTypeResult<String> getGenerateCardNo(String startLetters) {
 		return new JavaTypeResult<String>(this.employeeFinder.getGenerateCardNo(startLetters));
 	}
-	// sonnlb code start
-
-	@POST
-	@Path("getGenerateEmplCodeAndComId")
-	public JavaTypeResult<String> getGenerateEmplCodeAndComId(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateEmplCodeAndComId(startLetters));
-	}
-
-	@POST
-	@Path("validateEmpInfo")
-	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
-
-		return this.employeeFinder.validateEmpInfo(empInfo);
-	}
-
-	// sonnlb code end
+	
 	/**
 	 * Search all employee.
 	 *
@@ -198,13 +176,11 @@ public class EmployeeWebService extends WebService {
 		return this.employeeQueryProcessor.searchEmployees(input);
 	}
 
-	// sonnlb start
+
+
 	@POST
-	@Path("addNewEmployee")
-	public void addNewEmployee(AddEmployeeCommand command) {
-		this.addEmpHandler.handle(command);
+	@Path("get-info/{employeeId}")
+	public EmployeeDto getInfo(@PathParam(value = "employeeId") String employeeId) {
+		return employeeFinder.getInfoById(employeeId).orElse(null);
 	}
-
-	// sonnlb end
-
 }
