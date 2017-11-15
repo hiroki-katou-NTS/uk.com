@@ -20,7 +20,7 @@ public class AppEmploymentSettingImpl extends JpaRepository implements AppEmploy
 	private static final String FINDER_ALL ="SELECT e FROM KrqdtAppEmployWorktype e";
 	private static final String FIND_EMPLOYMENT_SET = "SELECT c FROM KrqstAppEmploymentSet c "
 			+ "WHERE c.krqstAppEmploymentSetPK.cid = :companyId "
-			+ "AND c.krqstAppEmploymentSetPK.employeementCode = :employmentCode AND c.krqstAppEmploymentSetPK.appType = :appType";
+			+ "AND c.krqstAppEmploymentSetPK.employmentCode = :employmentCode AND c.krqstAppEmploymentSetPK.appType = :appType";
 			
 	
 	private static final String FIND;
@@ -72,7 +72,7 @@ public class AppEmploymentSettingImpl extends JpaRepository implements AppEmploy
 						x.getKrqdtAppEmployWorktypePK().getWorkTypeCode())
 				).collect(Collectors.toList());
 		return new AppEmploymentSetting(entity.getKrqstAppEmploymentSetPK().getCid(),
-				entity.getKrqstAppEmploymentSetPK().getEmployeementCode(),
+				entity.getKrqstAppEmploymentSetPK().getEmploymentCode(),
 				EnumAdaptor.valueOf(entity.getKrqstAppEmploymentSetPK().getAppType(), ApplicationType.class),
 				entity.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(),
 				holidayTypeUseFlg,

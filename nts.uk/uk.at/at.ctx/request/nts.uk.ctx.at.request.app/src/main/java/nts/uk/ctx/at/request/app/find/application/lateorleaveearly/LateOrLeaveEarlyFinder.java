@@ -60,7 +60,7 @@ public class LateOrLeaveEarlyFinder {
 
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = "";
+		String employeeID = AppContexts.user().employeeId();
 		String applicantName = "";
 	
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
