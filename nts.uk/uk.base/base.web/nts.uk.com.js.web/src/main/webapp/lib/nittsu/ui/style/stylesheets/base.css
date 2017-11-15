@@ -4232,6 +4232,43 @@ div .ex-area-line.x-stay {
   outline: 1px solid red !important;
 }
 
+.ntsTable td{
+	border: 0px;
+}
+	
+.ntsTable .ntsButtonTableButton {
+  	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
+  	border: 1px solid LightGrey;
+  	margin-bottom: 0px;
+	position: unset;
+}
+.ntsTable .ntsButtonTableButton:active {
+	position: unset;
+}
+.ntsTable .ntsButtonTableButton:hover {
+	background: #fff;
+}
+.ntsTable .ntsButtonTableButton:focus{
+	border: 1px solid LightGrey;
+}
+.ntsTable .ntsButtonCellData {
+  	border: 1px solid black;
+}
+.ntsTable .ntsButtonCellData:focus{
+	border: 1px solid black;
+}
+.ntsTable .ntsButtonCellSelected{
+	background-color: #BDD7EE;
+  	border: 1px solid DodgerBlue;
+}
+.ntsTable .ntsButtonCellSelected:focus{
+  	border: 1px solid DodgerBlue;
+}
+.ntsTable .ntsButtonCellSelected:hover{
+	background-color: #BDD7EE;
+  	border: 1px solid DodgerBlue;
+}
+
 /* line 49, ../sass/base.scss */
 html {
   font-size: 14px;
