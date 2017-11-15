@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -14,6 +15,7 @@ import nts.arc.layer.dom.AggregateRoot;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class RoleSetGrantedJobTitle extends AggregateRoot {
 
 	// 会社ID

@@ -8,11 +8,14 @@ import java.util.Optional;
  * @author HungTT
  *
  */
+
 public interface RoleSetGrantedJobTitleRepository {
 
 	public List<RoleSetGrantedJobTitle> getAllByCompanyId(String companyId);
 	
 	public Optional<RoleSetGrantedJobTitle> getOneByCompanyId(String companyId);
+	
+	public boolean checkRoleSetCdExist(String roleSetCd, String companyId);
 	
 	public void insert (RoleSetGrantedJobTitle domain);
 	
