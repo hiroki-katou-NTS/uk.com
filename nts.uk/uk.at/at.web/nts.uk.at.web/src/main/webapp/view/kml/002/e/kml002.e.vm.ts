@@ -116,24 +116,24 @@ module nts.uk.at.view.kml002.e.viewmodel {
             });
 
             self.unitPriceItems = ko.observableArray([
-                { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
-                { uPCd: 1, uPName: nts.uk.resource.getText("KML002_54") },
-                { uPCd: 2, uPName: nts.uk.resource.getText("KML002_55") },
-                { uPCd: 3, uPName: nts.uk.resource.getText("KML002_56") },
-                { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
+                { uPCd: UnitPrice.UNIT_PRICE_1, uPName: nts.uk.resource.getText("KML002_53") },
+                { uPCd: UnitPrice.UNIT_PRICE_2, uPName: nts.uk.resource.getText("KML002_54") },
+                { uPCd: UnitPrice.UNIT_PRICE_3, uPName: nts.uk.resource.getText("KML002_55") },
+                { uPCd: UnitPrice.CONTRACT, uPName: nts.uk.resource.getText("KML002_56") },
+                { uPCd: UnitPrice.STANDARD, uPName: nts.uk.resource.getText("KML002_57") }
             ]);
 
             self.uPCd = ko.observable(0);
 
             self.roundingItems = ko.observableArray([
-                { roundingCd: 0, roundingName: nts.uk.resource.getText("KML002_53") },
-                { roundingCd: 1, roundingName: nts.uk.resource.getText("KML002_54") },
-                { roundingCd: 2, roundingName: nts.uk.resource.getText("KML002_55") },
-                { roundingCd: 3, roundingName: nts.uk.resource.getText("KML002_56") },
-                { roundingCd: 4, roundingName: nts.uk.resource.getText("KML002_54") },
-                { roundingCd: 5, roundingName: nts.uk.resource.getText("KML002_55") },
-                { roundingCd: 6, roundingName: nts.uk.resource.getText("KML002_56") },
-                { roundingCd: 7, roundingName: nts.uk.resource.getText("KML002_57") }
+                { roundingCd: RoundingTime.ONE_MINUTE, roundingName: nts.uk.resource.getText("KML002_53") },
+                { roundingCd: RoundingTime.FIVE_MINS, roundingName: nts.uk.resource.getText("KML002_54") },
+                { roundingCd: RoundingTime.SIX_MINS, roundingName: nts.uk.resource.getText("KML002_55") },
+                { roundingCd: RoundingTime.TEN_MINS, roundingName: nts.uk.resource.getText("KML002_56") },
+                { roundingCd: RoundingTime.FIFTEEN_MINS, roundingName: nts.uk.resource.getText("KML002_54") },
+                { roundingCd: RoundingTime.TWENTY_MINS, roundingName: nts.uk.resource.getText("KML002_55") },
+                { roundingCd: RoundingTime.THIRTY_MINS, roundingName: nts.uk.resource.getText("KML002_56") },
+                { roundingCd: RoundingTime.SIXTY_MINS, roundingName: nts.uk.resource.getText("KML002_57") }
             ]);
 
             self.roundingCd = ko.observable(0);
@@ -629,10 +629,11 @@ module nts.uk.at.view.kml002.e.viewmodel {
     }
 
     export enum CategoryIndicator {
-        /* 0- 外部予算実績項目 */
-        EXTERNAL_BUDGET_RECORD_ITEMS = 0,
         /* 1- 勤怠項目 */
-        ATTENDANCE_ITEM
+        ATTENDANCE_ITEM =0,        
+        /* 0- 外部予算実績項目 */
+        EXTERNAL_BUDGET_RECORD_ITEMS = 1
+
     }
 
     export enum UseAtr {
@@ -643,10 +644,11 @@ module nts.uk.at.view.kml002.e.viewmodel {
     }
 
     export enum CalMethodAtr {
-        /** 0- 金額項目 **/
-        AMOUNT_ITEM = 0,
         /** 1- 時間項目×単価 **/
-        TIME_ITEM_X_UNIT_PRICE
+        TIME_ITEM_X_UNIT_PRICE = 0,
+        /** 0- 金額項目 **/
+        AMOUNT_ITEM = 1
+
     }
     export enum RoundingTime {
         /** 0- 1分 **/

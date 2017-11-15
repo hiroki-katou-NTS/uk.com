@@ -480,21 +480,18 @@ var nts;
             var exception;
             (function (exception_1) {
                 function isBundledBusinessErrors(exception) {
-                    return check(exception, $.isArray(exception["errors"])
+                    return !isNullOrUndefined(exception) && ($.isArray(exception["errors"])
                         && exception["businessException"]);
                 }
                 exception_1.isBundledBusinessErrors = isBundledBusinessErrors;
                 function isErrorToReject(res) {
-                    return check(res, res.businessException || res.optimisticLock);
+                    return !isNullOrUndefined(res) && (res.businessException || res.optimisticLock);
                 }
                 exception_1.isErrorToReject = isErrorToReject;
                 function isBusinessError(res) {
-                    return check(res, res.businessException);
+                    return !isNullOrUndefined(res) && (res.businessException);
                 }
                 exception_1.isBusinessError = isBusinessError;
-                function check(exception, expression) {
-                    return !isNullOrUndefined(exception) && expression;
-                }
             })(exception = util.exception || (util.exception = {}));
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
@@ -7437,13 +7434,11 @@ var nts;
                     function NtsSearchBoxBindingHandler() {
                     }
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var minusWidth = 0;
                         var data = ko.unwrap(valueAccessor());
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
-                        var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
                         var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -7466,23 +7461,15 @@ var nts;
                         var $container = $(element);
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
-                        $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
-                        if (!nts.uk.util.isNullOrEmpty(label)) {
-                            var $formLabel = $("<div>", { text: label });
-                            $formLabel.prependTo($container);
-                            ko.bindingHandlers["ntsFormLabel"].init($formLabel, function () {
-                                return {};
-                            }, allBindingsAccessor, viewModel, bindingContext);
-                            minusWidth += $formLabel.outerWidth(true);
-                        }
+                        $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span>");
+                        $container.append("<button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button>");
                         var $button = $container.find("button.search-btn");
                         var $input = $container.find("input.ntsSearchBox");
-                        minusWidth += $button.outerWidth(true);
+                        var buttonWidth = $button.outerWidth(true);
                         if (searchMode === "filter") {
                             $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>");
                             var $clearButton = $container.find("button.clear-btn");
-                            minusWidth += $clearButton.outerWidth(true);
+                            buttonWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
                                 if (component.length === 0) {
                                     component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
@@ -7500,7 +7487,7 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", "検索テキストボックス");
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - buttonWidth);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
@@ -7596,7 +7583,6 @@ var nts;
                         if (enable === false) {
                             $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
                         }
-                        return { 'controlsDescendantBindings': true };
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);
@@ -22298,4 +22284,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

@@ -75,7 +75,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		String applicationReason = lateOrLeaveEarly.getApplicationReason().v();
 		
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(lateOrLeaveEarly.getAppReasonID() + applicationReason)) {
+				&& Strings.isBlank(applicationReason)) {
 			throw new BusinessException("Msg_115");
 		}
 
@@ -124,7 +124,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(lateOrLeaveEarly.getAppReasonID()+lateOrLeaveEarly.getApplicationReason().v())) {
+				&& Strings.isEmpty(lateOrLeaveEarly.getApplicationReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
 		

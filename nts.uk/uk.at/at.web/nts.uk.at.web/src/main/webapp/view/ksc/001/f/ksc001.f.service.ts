@@ -12,7 +12,8 @@ module nts.uk.at.view.ksc001.f {
         /**
          * call service find ScheduleExecutionLog by id
          */
-        export function findScheduleExecutionLogById(executionId: string): JQueryPromise<model.ScheduleExecutionLogDto> {
+        export function findScheduleExecutionLogById(executionId: string)
+            : JQueryPromise<model.ScheduleExecutionLogDto> {
             return nts.uk.request.ajax('at', paths.findScheduleExecutionLogById + '/' + executionId);
         }
         
@@ -26,7 +27,8 @@ module nts.uk.at.view.ksc001.f {
         /**
          * call service find ScheduleExecutionLogInfo by id
          */
-        export function findScheduleExecutionLogInfoById(executionId: string): JQueryPromise<model.ScheduleExecutionLogInfoDto> {
+        export function findScheduleExecutionLogInfoById(executionId: string)
+            : JQueryPromise<model.ScheduleExecutionLogInfoDto> {
             return nts.uk.request.ajax('at', paths.findScheduleExecutionLogInfoById + '/' + executionId);
         }
         /**

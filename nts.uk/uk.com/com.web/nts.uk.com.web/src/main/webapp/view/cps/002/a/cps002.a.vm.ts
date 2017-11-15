@@ -136,8 +136,7 @@ module cps002.a.vm {
                 var self = this;
                 var avartarContent = $("#employeeAvatar");
                 avartarContent.html("");
-                avartarContent.append($("<img/>").attr("src", liveView(avartarId)));
-                avartarContent.append($("<iframe/>").attr("src", liveView(avartarId)));
+                avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
 
 
             });

@@ -9,8 +9,11 @@
 		<div id="ccgcomponent" tabindex="2"></div>
 		<div class="contentB" tabindex="-1">
 			<div class="periodCovered" tabindex="-1">
-				<div class="labelRangeDate" tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-					<div tabindex="3" id="dateRangePickerPeriod" data-bind="ntsDateRangePicker: { required: true,showNextPrevious: false, value: periodDate, maxRange: 'oneMonth'}"></div>
+				<div class="labelRangeDate" tabindex="-1" 
+					data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+					<div tabindex="3" id="dateRangePickerPeriod" 
+						data-bind="ntsDateRangePicker: { required: true,showNextPrevious: false, 
+						value: periodDate, maxRange: 'oneMonth'}"></div>
 				</div>
 			
 			<div class ="selectionEmployee" tabindex="-1">
@@ -18,7 +21,8 @@
 			</div>
 			
 			<div class="buttonNext" tabindex="-1">
-				<button class="proceed large"  tabindex="6"  data-bind="click: nextPageEmployee">#{i18n.getText('KSC001_20')}</button>
+				<button class="proceed large"  tabindex="6"  
+					data-bind="click: nextPageEmployee">#{i18n.getText('KSC001_20')}</button>
 			</div>
 			
 		</div>

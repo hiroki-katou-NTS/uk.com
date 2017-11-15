@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -30,7 +29,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -50,6 +48,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		AppStampCmd appStampCmd = context.getCommand();
+		String applicationReason = appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason();
 		AppStamp appStamp = null;
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
@@ -100,7 +99,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 					null,
 					null,
 					null);
-				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appApprovalPhases);
 			case STAMP_ADDITIONAL: 
 				appStamp = AppStamp.createFromJavaType(
 						companyID, 
@@ -125,7 +124,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 					).collect(Collectors.toList()),
 					null,
 					null);
-				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appApprovalPhases);
 				
 			case STAMP_CANCEL: 
 				appStamp = AppStamp.createFromJavaType(
@@ -145,7 +144,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
-				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appApprovalPhases);
 				
 			case STAMP_ONLINE_RECORD: 
 				appStamp = AppStamp.createFromJavaType(
@@ -162,7 +161,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
-				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appApprovalPhases);
 				
 			case OTHER: 
 				appStamp = AppStamp.createFromJavaType(
@@ -188,7 +187,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 					).collect(Collectors.toList()),
 					null,
 					null);
-				return applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				return applicationStampNewDomainService.appStampRegister(applicationReason, appStamp, appApprovalPhases);
 				
 			default:
 				return Collections.emptyList();
