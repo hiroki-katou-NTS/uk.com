@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.ws.addemployee;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
@@ -12,6 +13,13 @@ import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommandHandler;
 
+/**
+ * @author sonnlb
+ *
+ */
+
+@Path("ctx/pereg/addemployee")
+@Produces("application/json")
 public class AddEmployeeWebService extends WebService {
 	@Inject
 	AddEmployeeCommandHandler addEmpHandler;

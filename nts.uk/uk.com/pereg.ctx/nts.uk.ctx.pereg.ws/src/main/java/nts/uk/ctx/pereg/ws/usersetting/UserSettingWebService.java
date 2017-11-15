@@ -11,7 +11,7 @@ import find.person.setting.user.UserSettingFinder;
  * @author sonnlb
  *
  */
-@Path("reginfo/usersetting")
+@Path("ctx/pereg/usersetting")
 @Produces("application/json")
 public class UserSettingWebService {
 

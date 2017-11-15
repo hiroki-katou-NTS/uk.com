@@ -15,7 +15,7 @@ import find.person.setting.init.category.SettingCtgDto;
  * @author sonnlb
  *
  */
-@Path("reginfo/copysetting/initsetting/category")
+@Path("ctx/pereg/initsetting/category")
 @Produces("application/json")
 public class PerInfoInitValueSettingCtgWebservice {
 

@@ -17,7 +17,7 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
  * @author sonnlb
  *
  */
-@Path("reginfo/initsetting/item")
+@Path("ctx/pereg/initsetting/item")
 @Produces(MediaType.APPLICATION_JSON)
 public class InitValueSetItemWebService {
 

@@ -14,7 +14,7 @@ import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
  * @author sonnlb
  *
  */
-@Path("reginfo/copysetting/setting")
+@Path("ctx/pereg/copysetting/setting")
 @Produces("application/json")
 public class EmpCopySettingWebService {
 

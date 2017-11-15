@@ -16,7 +16,7 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
  * @author sonnlb
  *
  */
-@Path("ctx/bs/person/info/setting/copySettingItem")
+@Path("ctx/pereg/copysetting/item")
 @Produces("application/json")
 public class EmpCopySettingItemWebService {
 

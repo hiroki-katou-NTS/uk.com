@@ -12,7 +12,7 @@ import nts.uk.ctx.pereg.app.find.reghistory.EmpRegHistoryFinder;
  * @author sonnlb
  *
  */
-@Path("reginfo/empreghistory")
+@Path("ctx/pereg/empreghistory")
 @Produces("application/json")
 public class EmpRegHistoryWebService {
 	@Inject

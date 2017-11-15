@@ -15,7 +15,7 @@ import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
  * @author sonnlb
  *
  */
-@Path("reginfo/layout")
+@Path("ctx/pereg/layout")
 @Produces(MediaType.APPLICATION_JSON)
 public class LayoutWebService extends WebService {
 
