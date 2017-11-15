@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.basic.ws.company.organization.employee;
@@ -22,6 +22,9 @@ import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
 import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeInDesignatedFinder;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeSearchOutput;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.SearchEmpInput;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
@@ -41,6 +44,10 @@ public class EmployeeWebService extends WebService {
 	/** The employee query processor. */
 	@Inject
 	private EmployeeSearchQueryProcessor employeeQueryProcessor;
+	
+	/** The emp in designated finder. */
+	@Inject
+	private EmployeeInDesignatedFinder empInDesignatedFinder;
 
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
@@ -212,4 +219,22 @@ public class EmployeeWebService extends WebService {
 	public EmployeeDto getInfo(@PathParam(value = "employeeId") String employeeId) {
 		return employeeFinder.getInfoById(employeeId).orElse(null);
 	}
+	
+	
+	/**
+	 * Search by workplace list.
+	 *
+	 * @param input the input
+	 * @return the list
+	 */
+	// QuyenNT
+	@POST
+	@Path("searchByWorkplaceList")
+	public List<EmployeeSearchOutput> searchByWorkplaceList(SearchEmpInput input) {
+		return this.empInDesignatedFinder.searchEmpByWorkplaceList(input);
+	}
+	
+	
+	
+	
 }
