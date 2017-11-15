@@ -62,8 +62,8 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                         self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate)
                             .format("YYYY/MM/DD HH:mm:ss");
                         self.periodInfo = nts.uk.resource.getText("KSC001_46",
-                            [moment(data.period.startDate).format('YYYY/MM/DD'),
-                            (moment(data.period.endDate).format('YYYY/MM/DD'))])
+                            [data.period.startDate,
+                            data.period.endDate])
                         self.inputData = inputData;
                         dfd.resolve();
                     });
