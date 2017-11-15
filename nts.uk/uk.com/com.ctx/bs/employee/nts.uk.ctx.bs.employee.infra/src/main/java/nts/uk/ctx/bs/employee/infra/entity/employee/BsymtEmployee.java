@@ -1,4 +1,4 @@
-package entity.employeeinfo;
+package nts.uk.ctx.bs.employee.infra.entity.employee;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,9 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.bs.employee.infra.entity.employee.jobentryhistory.BsymtJobEntryHistory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
