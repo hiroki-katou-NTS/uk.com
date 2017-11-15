@@ -1,4 +1,4 @@
-package find.person.setting.user;
+package nts.uk.ctx.pereg.app.find.usersetting;
 
 import lombok.Value;
 import nts.uk.ctx.bs.person.dom.person.info.setting.user.UserSetting;
