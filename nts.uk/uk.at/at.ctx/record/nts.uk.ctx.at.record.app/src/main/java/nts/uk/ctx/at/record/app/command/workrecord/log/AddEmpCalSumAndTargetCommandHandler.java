@@ -22,9 +22,11 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 @Transactional
 public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResult<ExecutionProcessingCommand, ExecutionCommandResult> {
 
-	@Inject EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
-	@Inject TargetPersonRepository targetPersonRepository;
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
 	
 	@Override
 	protected ExecutionCommandResult handle(CommandHandlerContext<ExecutionProcessingCommand> context) {
@@ -34,13 +36,6 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		ExecutionProcessingCommandAssembler empCalAndAggregationAssembler = new ExecutionProcessingCommandAssembler();
 		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
 		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
-		
-		// Set return Metadata
-		ExecutionCommandResult metadata = new ExecutionCommandResult(
-				empCalAndSumExeLog.getEmpCalAndSumExecLogID(), 
-				command.getPeriodStartDate(),
-				command.getPeriodEndDate(),
-				command.getTargetEndDate());
 		
 		// Insert all TargetPersons
 		List<TargetPerson> lstTargetPerson = new ArrayList<TargetPerson>();
@@ -57,8 +52,10 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		ExecutionCommandResult result = new ExecutionCommandResult(
 				empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 				command.getPeriodStartDate(),
-				command.getPeriodEndDate(), 
-				command.getTargetEndDate());
+				command.getPeriodEndDate());
+		
+		// TODO: Chạy xử lí phía anh Nam
+		
 		return result;
 	}
 

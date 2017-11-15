@@ -14,8 +14,7 @@ module nts.uk.at.view.kdw001 {
                 var paramC: shareModel.paramScreenC = {
                     lstEmployeeID: ["000000000001", "000000000002", "000000000003", "000000000004", "000000000005", "000000000006", "000000000007", "000000000008", "000000000009"],
                     periodStartDate: "2017/11/08",
-                    periodEndDate: "2017/11/14",
-                    targetEndDate: "2017/11/14"
+                    periodEndDate: "2017/11/14"
                 };
                 var paramB: shareModel.paramScreenB = {
                     dailyCreation: true,

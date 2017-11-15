@@ -60,9 +60,8 @@ public class ExecutionProcessingCommand {
     private List<String> lstEmployeeID;
     /** 対象期間開始日 */
     private String periodStartDate;
-    private String periodEndDate;
     /** 対象期間終了日 */
-    private String targetEndDate;
+    private String periodEndDate;
     
     /**＜画面 J から受け取るパラメータ＞  | Params from J screen */
     /** ケース別実行実施内容ID */

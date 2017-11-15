@@ -22,6 +22,12 @@ module nts.uk.at.view.kdw001 {
             resetTimeForChildOrNurseCare: boolean;
             calClassReset: boolean;
         }
+        
+        export interface executionResult {
+            empCalAndSumExecLogID: string;
+            periodStartDate: string;
+            periodEndDate: string;
+        }
 
         export class executionProcessingCommand implements paramScreenA, paramScreenB, paramScreenC, paramScreenJ {
             private screen: string;
@@ -31,7 +37,6 @@ module nts.uk.at.view.kdw001 {
             lstEmployeeID: Array<string>;
             periodStartDate: string;
             periodEndDate: string;
-            targetEndDate: string;
             // Screen B
             dailyCreation: boolean;
             creationType: number;
@@ -66,7 +71,6 @@ module nts.uk.at.view.kdw001 {
                 this.lstEmployeeID = params.lstEmployeeID;
                 this.periodStartDate = params.periodStartDate;
                 this.periodEndDate = params.periodEndDate;
-                this.targetEndDate = params.targetEndDate;
             }
             
             setParamsScreenB(params: paramScreenB): void {
@@ -144,9 +148,8 @@ module nts.uk.at.view.kdw001 {
             lstEmployeeID: Array<string>;
             /** 対象期間開始日 */
             periodStartDate: string;
-            periodEndDate: string;
             /** 対象期間終了日 */
-            targetEndDate: string;
+            periodEndDate: string;
         }
 
         export interface paramScreenJ {
