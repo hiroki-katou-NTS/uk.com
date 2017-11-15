@@ -5,8 +5,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -27,14 +25,11 @@ public class RoleSetGrantedJobTitle extends AggregateRoot {
 	//ロールセット職位別付与詳細
 	private List<RoleSetGrantedJobTitleDetail> details;
 
-	public RoleSetGrantedJobTitle(String companyId, boolean applyToConcurrentPerson) {
+	public RoleSetGrantedJobTitle(String companyId, boolean applyToConcurrentPerson, List<RoleSetGrantedJobTitleDetail> details) {
 		super();
 		this.companyId = companyId;
 		this.applyToConcurrentPerson = applyToConcurrentPerson;
-	}
-
-	public void setDetails(List<RoleSetGrantedJobTitleDetail> details) {
 		this.details = details;
-	} 
+	}
 	
 }

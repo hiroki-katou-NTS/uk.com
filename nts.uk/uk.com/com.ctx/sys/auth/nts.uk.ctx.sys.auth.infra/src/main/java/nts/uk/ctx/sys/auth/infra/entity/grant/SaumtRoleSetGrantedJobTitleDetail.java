@@ -2,20 +2,19 @@ package nts.uk.ctx.sys.auth.infra.entity.grant;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author Admin
+ * @author HungTT
  *
  */
 
@@ -31,6 +30,12 @@ public class SaumtRoleSetGrantedJobTitleDetail extends UkJpaEntity implements Se
 	@EmbeddedId
 	public SaumtRoleSetGrantedJobTitleDetailPK roleSetGrantedJobTitleDetailPK;
 
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
+    })
+	public SaumtRoleSetGrantedJobTitle roleSetGrantedJobTitle;
+	
 	@Override
 	protected Object getKey() {
 		return this.roleSetGrantedJobTitleDetailPK;
