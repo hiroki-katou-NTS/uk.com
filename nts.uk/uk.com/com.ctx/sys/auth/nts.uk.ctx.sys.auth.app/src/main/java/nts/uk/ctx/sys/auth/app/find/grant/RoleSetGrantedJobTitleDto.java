@@ -15,24 +15,22 @@ import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitle;
 @Data
 public class RoleSetGrantedJobTitleDto {
 
-	private String companyId;
+	// private String companyId;
 
 	private boolean applyToConcurrentPerson;
 
 	private List<RoleSetGrantedJobTitleDetailDto> details;
 
-	public RoleSetGrantedJobTitleDto(String companyId, boolean applyToConcurrentPerson,
-			List<RoleSetGrantedJobTitleDetailDto> details) {
+	public RoleSetGrantedJobTitleDto(boolean applyToConcurrentPerson, List<RoleSetGrantedJobTitleDetailDto> details) {
 		super();
-		this.companyId = companyId;
+		// this.companyId = companyId;
 		this.applyToConcurrentPerson = applyToConcurrentPerson;
 		this.details = details;
 	}
 
 	public static RoleSetGrantedJobTitleDto fromDomain(RoleSetGrantedJobTitle domain) {
-		return new RoleSetGrantedJobTitleDto(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
-				domain.getDetails().stream().map(detail -> RoleSetGrantedJobTitleDetailDto.fromDomain(detail))
-						.collect(Collectors.toList()));
+		return new RoleSetGrantedJobTitleDto(domain.isApplyToConcurrentPerson(), domain.getDetails().stream()
+				.map(detail -> RoleSetGrantedJobTitleDetailDto.fromDomain(detail)).collect(Collectors.toList()));
 	}
 
 }

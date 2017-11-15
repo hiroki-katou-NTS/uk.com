@@ -80,4 +80,10 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 
 	}
 
+	@Override
+	public boolean checkRoleSetCdExist(String roleSetCd, String companyId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
