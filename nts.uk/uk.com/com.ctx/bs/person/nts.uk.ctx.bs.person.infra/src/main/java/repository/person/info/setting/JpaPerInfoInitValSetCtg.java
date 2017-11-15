@@ -25,30 +25,6 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
-	// sonnlb
-	// private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId,
-	// b.categoryName, "
-	//// + " CASE WHEN (c.settingCtgPk.settingId) IS NOT NULL THEN 'True' ELSE
-	// 'False' END AS isSetting "
-	// + " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "
-	// + " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN
-	// PpemtPerInfoCtgOrder e "
-	// + " ON b.ppemtPerInfoCtgPK.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId "
-	// + " AND b.cid = e.cid "
-	// + " LEFT JOIN PpemtPersonInitValueSettingCtg c "
-	// + " ON b.ppemtPerInfoCtgPK.perInfoCtgId = c.settingCtgPk.perInfoCtgId "
-	// + " AND c.settingCtgPk.settingId = :settingId "
-	/// * + " INNER JOIN PpemtPersonInitValueSettingItem item"
-	// + " ON b.ppemtPerInfoCtgPK.perInfoCtgId = item.settingItemPk.perInfoCtgId"
-	// + " AND item.settingItemPk.settingId = :settingId"*/
-	// + " WHERE ( b.abolitionAtr = 0 "
-	// + " AND cm.personEmployeeType = 2 " + " AND ( cm.categoryType <> 2 " + " AND
-	// cm.categoryType <> 5 )"
-	// + " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId )"
-	/// * + " AND (item.settingItemPk.settingId = c.settingCtgPk.settingId OR
-	// item.settingItemPk.settingId IS NULL)"*/
-	// + " ORDER BY e.disporder ";
-
 	private final String SEL_ALL_CTG = "SELECT b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
 			+ " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "

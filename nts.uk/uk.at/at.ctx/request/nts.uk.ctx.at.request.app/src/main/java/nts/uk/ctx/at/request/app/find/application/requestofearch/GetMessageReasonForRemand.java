@@ -23,10 +23,11 @@ public class GetMessageReasonForRemand {
 		String loginEmp = AppContexts.user().employeeId();
 		ApplicationDto ouput = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID);
 		//add reason B3_1 in list Reason
+		//申請.差戻し理由
 		if(ouput == null) {
 			listReason.add("");
 		}else {
-			listReason.add( ouput.getApplicationReason());
+			listReason.add( ouput.getReversionReason());
 		}
 		//get list phase
 		List<AppApprovalPhaseDto>  outputPhase  = new ArrayList<>();

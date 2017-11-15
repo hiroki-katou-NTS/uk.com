@@ -44,7 +44,7 @@ public class OverTimeDto {
 	/**
 	 * 残業申請時間設定
 	 */
-	private List<OvertimeInputDto> overTimeInput;
+	private List<OvertimeInputDto> overTimeInputs;
 	/**
 	 *  事前事後区分表示 
 	 */
@@ -138,5 +138,10 @@ public class OverTimeDto {
 	 * displayDivergenceReasonInput
 	 */
 	private boolean displayDivergenceReasonInput;
+	
+	/**
+	 * appOvertimeNightFlg
+	 */
+	private int appOvertimeNightFlg;
 	
 }

@@ -23,23 +23,17 @@ public class LayoutWebService extends WebService {
 
 	@Inject
 	private LayoutFinder layoutFinder;
-	
+
 	@Path("getAllSimpleLayouts/{employeeId}")
 	@POST
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(@PathParam("employeeId") String employeeId) {
 		return this.layoutFinder.getSimpleLayoutList(employeeId);
 	}
-	
+
 	@Path("getByEmp")
 	@POST
 	public EmpMaintLayoutDto getByCreateType(LayoutQuery query) {
 		return this.layoutFinder.getLayout(query);
-	}
-	
-	@Path("getByCreateType")
-	@POST
-	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
-		return this.layoutFinder.getByCreateType(command);
 	}
 
 }
