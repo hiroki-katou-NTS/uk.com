@@ -112,5 +112,4 @@ public class Role extends AggregateRoot {
 		return true;
 	}
 	
-	
 }

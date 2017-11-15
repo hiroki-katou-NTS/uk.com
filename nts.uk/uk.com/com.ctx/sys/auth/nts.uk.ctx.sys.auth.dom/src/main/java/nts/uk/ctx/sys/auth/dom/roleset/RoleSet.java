@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.dom.grant.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 
@@ -29,6 +31,12 @@ public class RoleSet extends AggregateRoot {
 	
 	@Inject
 	private RoleSetRepository roleSetRepository;
+	
+	@Inject
+	private RoleSetGrantedPersonRepository roleSetGrantedPersonRepository;
+	
+	@Inject
+	private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepository;
 	
 	/** ロールセットコード. */
 	private RoleSetCode roleSetCd;
@@ -206,7 +214,7 @@ public class RoleSet extends AggregateRoot {
 	 */
 	public void validateForDelete() {
 		// ロールセット個人別付与で使用されている場合は削除できない
-		if (isGrantedForMember()) {
+		if (isGrantedForPerson()) {
 			BundledBusinessException bbe = BundledBusinessException.newInstance();
 			bbe.addMessage("Msg_???");
 			bbe.throwExceptions();
@@ -238,9 +246,9 @@ public class RoleSet extends AggregateRoot {
 	 * Check if this Role Set is granted for member
 	 * @return
 	 */
-	private boolean isGrantedForMember() {
-		/**TODO -> check from CAS014 */
-		return false;
+	private boolean isGrantedForPerson() {
+		/**check from CAS014 */
+		return roleSetGrantedPersonRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
 	}
 	
 	/**
@@ -248,7 +256,7 @@ public class RoleSet extends AggregateRoot {
 	 * @return
 	 */
 	private boolean isGrantedForPosition() {
-		/**TODO -> check from CAS014 */
-		return false;
+		/** check from CAS014 */
+		return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(this.roleSetCd.v(), this.companyId);
 	}
 }
