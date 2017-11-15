@@ -214,8 +214,8 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe 
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
-                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){
-                        self.selectedCurrentWkp(codeChanged);
+                    self.selectedCurrentWkp(codeChanged);
+                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
                         self.loadWkpAutoCal(codeChanged);
 
                         nts.uk.ui.block.invisible();
@@ -737,8 +737,9 @@ module nts.uk.at.view.kmk006.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
                                 // reload pa    
+                                self.multiSelectedWorkplaceId(wkpId);
                                 self.loadWkpAutoCal(wkpId);
-                                self.loadWkpAlreadySettingList();
+                                //self.loadWkpAlreadySettingList();
                             });
                         });
                     });
@@ -860,7 +861,6 @@ module nts.uk.at.view.kmk006.a {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                                     self.loadJobAutoCal(self.selectedCurrentJob());
-                                    self.loadJobAlreadySettingList();
                                 });
                             });
                         });
@@ -892,7 +892,7 @@ module nts.uk.at.view.kmk006.a {
                         self.loadWkpAlreadySettingList().done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
-                                    self.loadJobAutoCal(self.selectedCurrentWkp());
+                                    self.loadWkpAutoCal(self.selectedCurrentWkp());
                                 });
                             });
                            
