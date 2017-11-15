@@ -14,5 +14,5 @@ public interface AppStampDetailDomainService {
 	// 打刻申請（詳細）起動前処理
 	public void appStampPreProcess(AppStamp appStamp);
 	
-	public void appStampUpdate(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
+	public void appStampUpdate(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
 }

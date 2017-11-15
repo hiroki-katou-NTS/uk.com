@@ -88,7 +88,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		KafdtApplication newEntity = KafdtApplication.toEntity(application);
 		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class).get();
 		updateEntity.version = newEntity.version;
-		updateEntity.appReasonId = newEntity.appReasonId;
 		updateEntity.prePostAtr = newEntity.prePostAtr;
 		updateEntity.inputDate = newEntity.inputDate;
 		updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
