@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf005.a.viewmodel {
     import common = nts.uk.at.view.kaf005.share.common;
     import service = nts.uk.at.view.kaf005.shr.service;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
@@ -205,41 +206,40 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 divergenceReasonContent: divergenceReason
             };
             //登録前エラーチェック
-            service.checkBeforeRegister(overtime).done((data) => {                
+            service.checkBeforeRegister(overtime).done((data) => {    
+                if(data.errorCode == 0){
+                    //メッセージNO：829
+                    dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
+                        //登録処理を実行
+                        service.createOvertime(overtime).done(() => {
+                            //2-3.新規画面登録後の処理を実行
+                            //TODO:
+                            //メッセージを表示（Msg_15）
+                            //TODO:
+                            //  - 送信先リストに項目がいる 
+                            //      情報メッセージに（Msg_392）を表示する Display (Msg_392) in information message
+                            //  - 送信先リストに項目がない (There are no items in the destination list)
+                            //      - 情報メッセージを閉じる Close information message
+                            //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
+                            //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
+                            dialog.info({ messageId: "Msg_15" }).then(function() {
+                                location.reload();
+                            });
+                        }).fail((res) => {
+                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+                        });
+                    }).ifNo(() => {
+                        //終了状態：処理をキャンセル
+                        return;
+                    });                           
+                    
+                }else{
+                    //Change background color
+                    dialog.alertError("Change backgroud:attendanceId=" + data.attendanceId + "frameNo:"+ data.frameNo);
+                }        
             }).fail((res) => {
-                if (res.optimisticLock == true) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
-                        location.reload();
-                    });
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
-                }
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
-            //TODO:           
-            //登録処理を実行
-            service.createOvertime(overtime).done((data) => {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    location.reload();
-                });
-            }).fail((res) => {
-                if (res.optimisticLock == true) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
-                        location.reload();
-                    });
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
-                }
-            });
-            //2-3.新規画面登録後の処理を実行
-            //TODO:
-            //メッセージを表示（Msg_15）
-            //TODO:
-            //  - 送信先リストに項目がいる 
-            //      情報メッセージに（Msg_392）を表示する Display (Msg_392) in information message
-            //  - 送信先リストに項目がない (There are no items in the destination list)
-            //      - 情報メッセージを閉じる Close information message
-            //      - メールを送信する(新規) Sending mail (new) (Đã có common xử lý)      
-            //      - 画面をクリアする(起動時と同じ画面) Clear the screen (same screen as at startup)
         }
 
         /**

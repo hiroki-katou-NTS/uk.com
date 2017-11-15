@@ -43,7 +43,7 @@ public interface IErrorCheckBeforeRegister {
 	 * @param appDate: 画面上の申請日付
 	 * @param usAtr: 残業休出申請共通設定.実績超過区分
 	 */
-	void OvercountCheck(String companyId, GeneralDate appDate, UseAtr usAtr);
+	void OvercountCheck(String companyId, GeneralDate appDate, PrePostAtr prePostAtr);
 	
 	//３６協定時間上限チェック（月間）
 	void TimeUpperLimitMonthCheck();

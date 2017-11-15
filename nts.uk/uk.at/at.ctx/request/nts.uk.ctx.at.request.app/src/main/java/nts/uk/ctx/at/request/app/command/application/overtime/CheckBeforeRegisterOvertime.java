@@ -17,7 +17,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
@@ -62,9 +61,9 @@ public class CheckBeforeRegisterOvertime {
 				command.getDivergenceReasonContent(), command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				getOverTimeInput(command, companyId, appID));	
 		
-		return CheckBeforeRegister(appRoot, overTimeDomain, command.getApplicationDate(), command.getApplicationDate());
+		return CheckBeforeRegister(appRoot, overTimeDomain);
 	}
-	public OvertimeCheckResultDto CheckBeforeRegister(Application app, AppOverTime overtime, GeneralDate appDate, GeneralDate inputDate) {
+	public OvertimeCheckResultDto CheckBeforeRegister(Application app, AppOverTime overtime) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0,0,0);
@@ -72,12 +71,12 @@ public class CheckBeforeRegisterOvertime {
 		newBeforeRegister.processBeforeRegister(app);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
-		beforeCheck.calculateButtonCheck(0, app.getCompanyID(), employeeId, 0, ApplicationType.OVER_TIME_APPLICATION,
+		beforeCheck.calculateButtonCheck(0, app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION,
 				app.getApplicationDate());
 		// 事前申請超過チェック
 		Map<AttendanceID, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream().collect(groupingBy(OverTimeInput::getAttendanceID));
 		for (Map.Entry<AttendanceID, List<OverTimeInput>> pair : findMap.entrySet()) {
-			OvertimeCheckResult res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), appDate, inputDate, EnumAdaptor.valueOf(0, PrePostAtr.class), pair.getKey().value, pair.getValue());
+			OvertimeCheckResult res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getApplicationDate(), app.getInputDate(), app.getPrePostAtr(), pair.getKey().value, pair.getValue());
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
@@ -86,7 +85,7 @@ public class CheckBeforeRegisterOvertime {
 			}
 		}
 		//実績超過チェック
-		beforeCheck.OvercountCheck(app.getCompanyID(), appDate, null);
+		beforeCheck.OvercountCheck(app.getCompanyID(), app.getApplicationDate(), null);
 		//３６協定時間上限チェック（月間）
 		beforeCheck.TimeUpperLimitMonthCheck();
 		//３６協定時間上限チェック（年間）

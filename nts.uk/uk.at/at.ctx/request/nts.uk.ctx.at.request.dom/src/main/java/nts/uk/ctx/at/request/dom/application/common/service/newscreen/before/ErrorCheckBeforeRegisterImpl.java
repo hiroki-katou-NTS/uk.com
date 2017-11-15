@@ -17,12 +17,10 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
@@ -41,8 +39,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 
 	@Inject
 	private ApplicationRepository appRepository;
-	@Inject
-	private OvertimeRepository overtimeRepository;
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
 	// @Inject
@@ -99,32 +95,27 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
-		Optional<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				ApplicationType.OVER_TIME_APPLICATION, prePostAtr);
-		if (!beforeApplication.isPresent()) {
+		ApplicationType apptype = ApplicationType.OVER_TIME_APPLICATION;
+		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
+				apptype.value, prePostAtr.value);
+		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
 			result.setErrorCode(1);
 			return result;
 		}
-
 		// 事前申請否認チェック
 		// 否認以外：
 		// 反映情報.実績反映状態＝未反映、反映済、反映待ち
-		ReflectPlanPerState refPlan = beforeApplication.get().getReflectPerState();
+		ReflectPlanPerState refPlan = beforeApplication.get(0).getReflectPerState();
 		if (refPlan.equals(ReflectPlanPerState.NOTREFLECTED) || refPlan.equals(ReflectPlanPerState.NOTREFLECTED)
 				|| refPlan.equals(ReflectPlanPerState.WAITREFLECTION)) {
 			// 背景色を設定する
 			result.setErrorCode(1);
 			return result;
 		}
-		String beforeCid = beforeApplication.get().getCompanyID();
-		String beforeAppId = beforeApplication.get().getApplicationID();
-		// Optional<AppOverTime> beforeOvertimeDomain =
-		// overtimeRepository.getAppOvertime(beforeCid, beforeAppId);
-		// if (!beforeOvertimeDomain.isPresent()) {
-		// result.setErrorCode(0);
-		// return result;
-		// }
+		String beforeCid = beforeApplication.get(0).getCompanyID();
+		String beforeAppId = beforeApplication.get(0).getApplicationID();
+
 		// 事前申請の申請時間
 		List<OverTimeInput> beforeOvertimeInputs = overtimeInputRepository.getOvertimeInput(beforeCid, beforeAppId)
 				.stream()
@@ -160,12 +151,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 * 03-02_実績超過チェック
 	 */
 	@Override
-	public void OvercountCheck(String companyId, GeneralDate appDate, UseAtr usAtr) {
+	public void OvercountCheck(String companyId, GeneralDate appDate, PrePostAtr prePostAtr) {
 		// 当日の場合
 		GeneralDate systemDate = GeneralDate.today();
 		// 1. チェック条件
-		PrePostAtr prePostAtr1 = PrePostAtr.POSTERIOR;
-		if (!this.confirmCheck(companyId, prePostAtr1)) {
+		if (!this.confirmCheck(companyId, prePostAtr)) {
 			// Falseの場合
 			return;
 		}
@@ -227,7 +217,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// ドメインモデル「残業休出申請共通設定」を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, prePostAtr.value);
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
 			// 残業休出申請共通設定.事前表示区分＝表示する
 			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().equals(UseAtr.USE)) {

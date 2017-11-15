@@ -68,7 +68,7 @@ public interface ApplicationRepository {
 	 * @param prePostAtr: 事前事後区分
 	 * @return
 	 */
-	Optional<Application>  getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, ApplicationType appType, PrePostAtr prePostAtr);
+	List<Application>  getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, int appType, int prePostAtr);
 	
 	
 }
