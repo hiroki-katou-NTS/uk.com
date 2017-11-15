@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.reginfo.initsetting.category;
+package nts.uk.ctx.pereg.ws.initsetting.category;
 
 import java.util.List;
 

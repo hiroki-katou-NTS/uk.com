@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.reginfo.reghistory;
+package nts.uk.ctx.pereg.ws.reghistory;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

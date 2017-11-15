@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.reginfo.usersetting;
+package nts.uk.ctx.pereg.ws.usersetting;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

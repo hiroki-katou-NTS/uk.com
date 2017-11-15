@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.reginfo.addemployee;
+package nts.uk.ctx.pereg.ws.addemployee;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

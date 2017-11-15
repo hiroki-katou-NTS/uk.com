@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.reginfo.copysetting.item;
+package nts.uk.ctx.pereg.ws.copysetting.item;
 
 import java.util.List;
 

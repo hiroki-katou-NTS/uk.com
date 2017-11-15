@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.reginfo.initsetting.item;
+package nts.uk.ctx.pereg.ws.initsetting.item;
 
 import java.util.List;
 
