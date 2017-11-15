@@ -62,8 +62,10 @@ __viewContext.ready(function() {
             var self = this;
             var liveviewcontainer = $("#file-review");
             liveviewcontainer.html("");
-            liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.liveView(self.fileId())));
-            liveviewcontainer.append($("<iframe/>").attr("src", nts.uk.request.liveView(self.fileId())));
+            let fileId = self.fileId();
+            if (!_.isEmpty(this.zipEntry())) fileId = self.fileId() + "/" + this.zipEntry();
+            liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.liveView(fileId)));
+            liveviewcontainer.append($("<iframe/>").css("width", "100%").attr("src", nts.uk.request.liveView(fileId)));
         }
         
         getInfo() {

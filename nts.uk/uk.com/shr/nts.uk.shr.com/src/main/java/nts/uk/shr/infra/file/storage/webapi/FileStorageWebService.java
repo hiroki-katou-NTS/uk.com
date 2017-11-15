@@ -11,7 +11,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
@@ -33,6 +32,14 @@ public class FileStorageWebService {
 		return this.fileInfoRepository.find(fileId).map(fileInfo -> this.buildFileResponse(fileInfo))
 				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
 	}
+	
+	@GET
+	@Path("get/{fileid}/{entry}")
+	public Response download(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName)
+				.map(fileInfo -> this.buildFileResponse(fileInfo))
+				.orElseThrow(() -> new RuntimeException("File not found."));
+	}
 
 	private Response buildFileResponse(StoredFileInfo fileInfo) {
 
@@ -52,7 +59,11 @@ public class FileStorageWebService {
 	}
 
 	static String contentDisposition(StoredFileInfo fileInfo) {
-		String encodedName = URLEncode.encodeAsUtf8(fileInfo.getOriginalName());
+		String originalName = fileInfo.getOriginalName();
+		if (fileInfo.getOriginalName().indexOf("/") > -1) {
+			 originalName = fileInfo.getOriginalName().split("/")[1];
+		}
+		String encodedName = URLEncode.encodeAsUtf8(originalName);
 		return String.format("attachment; filename=\"%s\"", encodedName);
 	}
 
@@ -63,13 +74,19 @@ public class FileStorageWebService {
 		return this.fileInfoRepository.find(fileId).map(fileInfo -> this.buildFileResponseInLine(fileInfo))
 				.orElseThrow(() -> new RuntimeException("stored file info is not found."));
 	}
+	
+	@GET
+	@Path("liveview/{fileid}/{entry}")
+	public Response liveviewZipEntry(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
+		return this.fileInfoRepository.findZipEntry(fileId, entryName)
+				.map(fileInfo -> this.buildFileResponseInLine(fileInfo))
+				.orElseThrow(() -> new RuntimeException("File not found."));
+	}
 
 	private Response buildFileResponseInLine(StoredFileInfo fileInfo) {
-
 		val fileInputStream = this.getInputStream(fileInfo);
-
-		return Response.ok(fileInputStream, fileInfo.getMimeType()).encoding("UTF-8")
-				.header("Content-Disposition", "inline").build();
+		return Response.ok(fileInputStream, fileInfo.getMimeType())
+				.encoding("UTF-8").header("Content-Disposition", "inline").build();
 	}
 
 	@POST
