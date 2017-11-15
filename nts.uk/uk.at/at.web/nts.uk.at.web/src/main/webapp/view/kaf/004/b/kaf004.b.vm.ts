@@ -110,7 +110,11 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     prePostAtr = 0;
                 }
                 nts.uk.ui.block.invisible();
-                var reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                let txtReasonTmp = self.selectedCode();
+                if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
+                    let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                    txtReasonTmp = reasonText.reasonTemp;
+                }
                 
                 let lateOrLeaveEarly: LateOrLeaveEarly = {
                     prePostAtr: prePostAtr, 
@@ -124,7 +128,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     lateTime2: self.lateTime2(),
                     early2: self.early2() ? 1 : 0,
                     earlyTime2: self.earlyTime2(),
-                    reasonTemp: reasonText.reasonTemp,
+                    reasonTemp: txtReasonTmp,
                     appReason: self.appreason(),
                     appApprovalPhaseCmds: self.kaf000_a2.approvalList
                 };

@@ -99,8 +99,12 @@ module nts.uk.at.view.kaf002.cm {
             
             register(){
                 var self = this;
-                var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
-                self.application().titleReason(reasonText.content);
+                if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
+                    var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                    self.application().titleReason(reasonText.content);    
+                }else{
+                    self.application().titleReason("");
+                }
                 switch(self.stampRequestMode()){
                     case 0: self.m1.register(self.application(), self.approvalList);break;    
                     case 1: self.m2.register(self.application(), self.approvalList);break;  
@@ -113,8 +117,13 @@ module nts.uk.at.view.kaf002.cm {
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
-                self.application().titleReason(reasonText.content);           
+                if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
+                    var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                    self.application().titleReason(reasonText.content);    
+                }else{
+                    self.application().titleReason("");
+                }
+                           
                 switch(self.stampRequestMode()){
                     case 0: self.m1.update(self.application(), approvalList);break;    
                     case 1: self.m2.update(self.application(), approvalList);break;  

@@ -307,9 +307,13 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
-                let textReason = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});
+                let txtReasonTmp = self.selectedReason();
+                if(!nts.uk.text.isNullOrEmpty(self.selectedReason())){
+                    let reasonText = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});;
+                    txtReasonTmp = reasonText.reasonName;
+                }
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
-                    textReason.reasonName,
+                    txtReasonTmp,
                     self.prePostSelected(),
                     self.appDate(),
                     self.employeeID,
