@@ -214,38 +214,41 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe 
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
-                    self.selectedCurrentWkp(codeChanged);
-                    self.loadWkpAutoCal(codeChanged);
+                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){
+                        self.selectedCurrentWkp(codeChanged);
+                        self.loadWkpAutoCal(codeChanged);
 
-                    nts.uk.ui.block.invisible();
-                    self.treeItemCode($('#tree-grid-srcc').getRowSelected()[0].workplaceCode);
-                    let wkplId: string = $('#component-items-list').getRowSelected()[0].workplaceId;
-                    var params: any = {
-                        "workplaceId": wkplId,
-                        "baseDate"   : self.baseDateTreeList()
-                    };
-                    service.getDetailWkpl(params).done(function(data: any){
-                        nts.uk.ui.block.clear();
-                        self.treeItemName(data.workplaceName);                    
-                    });
-                    
+                        nts.uk.ui.block.invisible();
+                        self.treeItemCode($('#tree-grid-srcc').getRowSelected()[0].workplaceCode);
+                        let wkplId: string = $('#component-items-list').getRowSelected()[0].workplaceId;
+                        var params: any = {
+                            "workplaceId": wkplId,
+                            "baseDate"   : self.baseDateTreeList()
+                        };
+                        service.getDetailWkpl(params).done(function(data: any){
+                            nts.uk.ui.block.clear();
+                            self.treeItemName(data.workplaceName);                    
+                        });
+                    }   
                 });
 
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
-                    self.selectedCurrentWkp(codeChanged);
-                    self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
-                    nts.uk.ui.block.invisible();
-                    self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
-                    let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
-                    var params: any = {
-                        "workplaceId": wkplId,
-                        "baseDate"   : self.baseDateTreeList()
-                    };
-                    service.getDetailWkpl(params).done(function(data: any){
-                        nts.uk.ui.block.clear();
-                        self.treeItemName(data.workplaceName);                    
-                    });
+                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){
+                        self.selectedCurrentWkp(codeChanged);
+                        self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
+                        nts.uk.ui.block.invisible();
+                        self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
+                        let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
+                        var params: any = {
+                            "workplaceId": wkplId,
+                            "baseDate"   : self.baseDateTreeList()
+                        };
+                        service.getDetailWkpl(params).done(function(data: any){
+                            nts.uk.ui.block.clear();
+                            self.treeItemName(data.workplaceName);                    
+                        });
+                    }
                 });
 
                 //subscribe 
