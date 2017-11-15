@@ -65,7 +65,7 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	public KrcdtEmpExecutionLog empexecutionlog;
 	
 	@OneToOne(mappedBy="executionlog", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCDT_CAL_EXE_SET_INFO")
+	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO")
 	public KrcdtCalExeSetInfor calExeSetInfor;
 	
 	public KrcdtExecutionLog(KrcdtExecutionLogPK krcdtExecutionLogPK, int existenceError,

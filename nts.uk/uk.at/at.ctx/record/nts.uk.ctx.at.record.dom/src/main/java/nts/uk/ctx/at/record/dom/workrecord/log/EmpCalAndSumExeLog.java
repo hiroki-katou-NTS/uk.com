@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +43,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	 * 実行したメニュー
 	 * ・選択して実行 ・ケース別実行
 	 */
+	@Setter
 	private ExecutedMenu executedMenu;
 	
 	/**
