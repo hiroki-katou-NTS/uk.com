@@ -84,7 +84,17 @@ module nts.uk.at.view.kml002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             
+            if(data.formBuilt != null) {
+                self.settingMethod1(data.formBuilt.settingMethod1);            
+                self.settingMethod2(data.formBuilt.settingMethod2);
+                self.selectedItem1(data.formBuilt.verticalCalItem1);
+                self.selectedItem2(data.formBuilt.verticalCalItem2);
+                self.verticalInputItem1(data.formBuilt.verticalInputItem1);
+                self.verticalInputItem2(data.formBuilt.verticalInputItem2);
+                self.selectedOperator(data.formBuilt.operatorAtr);
+            }
             
             dfd.resolve();
             return dfd.promise();

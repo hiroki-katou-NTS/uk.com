@@ -91,11 +91,13 @@ module nts.uk.at.view.kml002.d.viewmodel {
             var dfd = $.Deferred();
             let array = [];
             let i = 2;
+            
             let param = {
                 budgetAtr: 1,   
                 // received from mother screen 0: day or 1: time
                 unitAtr: 0
             }
+            
             service.getByAtr(param).done((lst) => {  
                 console.log(lst);
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
@@ -122,8 +124,33 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 let sortedLst= _.orderBy(array, ['id'], ['asc']);
                 self.items(sortedLst); 
                 self.listBudget(sortedLst);
+                
+                var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+                if(data.formPeople.lstPeopleFunc.length > 0) {
+                    let dataItems = [];
+                    
+                    _.forEach(data.formPeople.lstPeopleFunc, function(item){
+                        let curItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
+                        
+                        let data = {
+                            id: item.dispOrder,
+                            code: item.externalBudgetCd,
+                            operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                            name: curItem.name
+                        }
+        
+                        dataItems.push(data);
+                    });
+                    
+                    self.rightItems.removeAll();
+                    var sortedItems = _.sortBy(dataItems, [function(o) { return o.id; }]);
+                    self.rightItems(sortedItems);
+                }
+                    
                 dfd.resolve();
-            })
+            });
+            
             return dfd.promise();
         }
         
@@ -133,7 +160,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
         submit() {
             var t0 = performance.now();
             var self = this;
-            let array = [];
+            let dataItems = [];
             var dataA = nts.uk.ui.windows.getShared("KML002_A_DATA");
             
             _.forEach(self.rightItems(), function(item, index){
@@ -142,16 +169,18 @@ module nts.uk.at.view.kml002.d.viewmodel {
                     verticalCalItemId: dataA.itemId,
                     externalBudgetCd: item.code,
                     categoryAtr: 1,
-                    operatorAtr: item.operatorAtr,
-                    dispOrder: index,
+                    operatorAtr: item.operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
+                    dispOrder: index
                 }
 
-                array.push(data);
+                dataItems.push(data);
             });
 
             let transfer = {
-                checked: self.checked(),
-                rightItems: array,
+                verticalCalCd: dataA.verticalCalCd,
+                verticalCalItemId: dataA.itemId,                
+                actualDisplayAtr: self.checked() ? 1 : 0,
+                lstPeopleFunc: dataItems
             }
             
             setSharedD('KML002_D_Budget', transfer);
