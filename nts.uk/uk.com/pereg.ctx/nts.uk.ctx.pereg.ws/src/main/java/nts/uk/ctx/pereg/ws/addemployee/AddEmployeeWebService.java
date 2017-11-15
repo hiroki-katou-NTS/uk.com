@@ -41,10 +41,7 @@ public class AddEmployeeWebService extends WebService {
 
 		return this.employeeFinder.validateEmpInfo(empInfo);
 	}
-
-	// sonnlb code end
-
-	// sonnlb start
+	
 	@POST
 	@Path("addNewEmployee")
 	public void addNewEmployee(AddEmployeeCommand command) {

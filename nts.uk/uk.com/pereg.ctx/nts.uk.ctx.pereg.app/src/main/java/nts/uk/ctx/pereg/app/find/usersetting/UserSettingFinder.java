@@ -1,4 +1,4 @@
-package find.person.setting.user;
+package nts.uk.ctx.pereg.app.find.usersetting;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class UserSettingFinder {
 
 	@Inject
-	UserSettingRepository userSetRepo;
+	private UserSettingRepository userSetRepo;
 
 	public UserSettingDto getUserSetting() {
 
