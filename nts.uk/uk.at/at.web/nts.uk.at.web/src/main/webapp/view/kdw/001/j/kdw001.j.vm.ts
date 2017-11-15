@@ -4,7 +4,7 @@ module nts.uk.at.view.kdw001.j {
     export module viewmodel {
         export class ScreenModel {
             params: shareModel.executionProcessingCommand = new shareModel.executionProcessingCommand();
-           closureID: any = __viewContext.transferred.value.closureID;
+            closureID: any = __viewContext.transferred.value.closureID;
             //Declare import cScreenmodel, dScreenmodel
             cScreenmodel: any;
             dScreenmodel: any;
@@ -19,12 +19,12 @@ module nts.uk.at.view.kdw001.j {
             stepList: Array<NtsWizardStep>;
             stepSelected: KnockoutObservable<NtsWizardStep>;
             activeStep: KnockoutObservable<number>;
-            
-            
+
+
 
             constructor() {
                 var self = this;
-               self.params.setParamsScreenA({closure: self.closureID});
+                self.params.setParamsScreenA({ closure: self.closureID });
 
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
@@ -75,7 +75,8 @@ module nts.uk.at.view.kdw001.j {
                 self.params.setParamsScreenJ({
                     caseSpecExeContentID: self.currentCode()
                 });
-
+                self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
+                self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
                 $("#wizard").ntsWizard("next");
             }
 
