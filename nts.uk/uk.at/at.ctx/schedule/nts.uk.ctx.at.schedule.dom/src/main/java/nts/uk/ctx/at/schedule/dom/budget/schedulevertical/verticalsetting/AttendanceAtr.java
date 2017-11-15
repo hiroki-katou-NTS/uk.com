@@ -6,11 +6,12 @@ import lombok.AllArgsConstructor;
 public enum AttendanceAtr {
 
 	/** 0- スケジュール **/
-	SCHEDULE (0),
+	SCHEDULE (0, "Enum_CategoryAtr_SCHEDULE"),
 	/** 1- 日別実績 **/
-	DAY_ACHIEVEMENTS (1),
+	DAY_ACHIEVEMENTS (1, "Enum_CategoryAtr_DAILY_PERFORMANCE"),
 	/** 2- 日別実績/スケジュール **/
-	UNIT_PRICE_3(2);
+	UNIT_PRICE_3(2, "");
 
 	public final int value;
+	public String nameId;
 }
