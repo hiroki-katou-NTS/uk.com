@@ -360,12 +360,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.initSettingId("");
-                    self.initSettingId.valueHasMutated();
-                    self.start(updateObj.settingId);
-                    self.currentCategory().currentItemId("");
-                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
-                    self.currentCategory().currentItemId.valueHasMutated();
+//                    self.initSettingId("");
+//                    self.initSettingId.valueHasMutated();
+//                    self.initSettingId(updateObj.settingId);
+//                    self.initSettingId.valueHasMutated();
+//                    self.currentCategory().currentItemId("");
+//                    self.currentCategory().currentItemId.valueHasMutated();
+//                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
+//                    self.currentCategory().currentItemId.valueHasMutated();
+                    self.getItemList(updateObj.settingId, updateObj.perInfoCtgId);
                 });
 
                 block.clear();
