@@ -9,6 +9,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * ロール
  * The Class Role.
  */
 @Getter

@@ -64,16 +64,19 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Override
 	public List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid) {
-		// TODO Auto-generated method stub
 		List<Employee> listEmpDomain = repo.getByListEmployeeId(sid);
 		List<EmpBasicInfoExport> listResult = new ArrayList<>();
 
 		if (!listEmpDomain.isEmpty()) {
 
 			listResult = listEmpDomain.stream()
-					.map(item -> EmpBasicInfoExport.builder().employeeId(item.getSId()).employeeCode(item.getSCd().v())
+					.map(item -> EmpBasicInfoExport.builder()
+							.employeeId(item.getSId())
+							.employeeCode(item.getSCd().v())
+							.pId(item.getPId())
 							.companyMailAddress(item.getCompanyMail().v())
-							.entryDate(item.getListEntryJobHist().get(0).getJoinDate()).build())
+							.entryDate(item.getListEntryJobHist().get(0).getJoinDate())
+							.retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build())
 					.collect(Collectors.toList());
 
 			List<String> pids = listEmpDomain.stream().map(Employee::getPId).collect(Collectors.toList());
@@ -81,12 +84,18 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			List<Person> listPersonDomain = personRepo.getPersonByPersonIds(pids);
 
 			if (!listPersonDomain.isEmpty()) {
-				listResult = listPersonDomain.stream()
-						.map(item -> EmpBasicInfoExport.builder().pId(item.getPersonId())
-								.personMailAddress(item.getMailAddress().v())
-								.personName(item.getPersonNameGroup().getPersonName().v())
-								.gender(item.getGender().value).birthDay(item.getBirthDate()).build())
-						.collect(Collectors.toList());
+				
+				for (int i = 0; i < listPersonDomain.size(); i++) {
+					for (int j = 0; j < listResult.size(); j++) {
+						if (listPersonDomain.get(i).getPersonId() == listResult.get(j).getPId()) {
+							listResult.get(j).setPersonMailAddress(listPersonDomain.get(i).getMailAddress().v());
+							listResult.get(j).setPersonName(listPersonDomain.get(i).getPersonNameGroup().getPersonName().v());
+							listResult.get(j).setGender(listPersonDomain.get(i).getGender().value);
+							listResult.get(j).setBirthDay(listPersonDomain.get(i).getBirthDate());
+						}
+					}
+				}
+
 			}
 		}
 

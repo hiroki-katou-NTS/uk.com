@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg025.a.main.css" />
+			<com:scriptfile path="ccg025.a.start.js" />
+			<com:scriptfile path="ccg025.a.vm.js" />
+			<com:scriptfile path="ccg025.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
+				<div id="pannel-top" data-bind="ntsPanel:{width: '915px', height: '500px', direction: '', showIcon: true, visible: true}">
+				</div>
+			</div>
+		</ui:define>
+
+
+	</ui:composition>
+</body>
+</html>

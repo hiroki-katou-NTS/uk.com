@@ -46,4 +46,11 @@ public interface PerInfoCategoryRepositoty {
 	//laitv
 	DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId);
 	
+	/**
+	 * Get category by category code
+	 * @param categoryCD
+	 * @param companyID
+	 * @return
+	 */
+	Optional<PersonInfoCategory> getPerInfoCategoryByCtgCD(String categoryCD, String companyID);
 }

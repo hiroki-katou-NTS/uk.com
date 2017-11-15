@@ -13,7 +13,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
 @Produces("application/json")
 public class SamplePeregWebService extends WebService {
 
-	//@Inject
+	@Inject
 	private PeregCommandFacade commandFacade;
 	
 	@POST
