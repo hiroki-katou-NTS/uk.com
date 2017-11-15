@@ -20,22 +20,22 @@ public interface RoleSetAndWebMenuPub {
 	List<RoleSetWebMenuPubDto> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
 	
 	/**
-	 * Register list of RoleSet and WebMenu
+	 * Register RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void addListOfRoleSetAndWebMenu(List<RoleSetWebMenuPubDto> roleSetWebMenuPubDto);
+	void addRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId);
 	
 	/**
-	 * Update list of the RoleSet and WebMenu
+	 * Update the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void updateListOfRoleSetAndWebMenu(List<RoleSetWebMenuPubDto> roleSetWebMenuPubDto);
+	void updateRoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId);
 	
 	/**
-	 * Delete list of the RoleSet and WebMenu
+	 * Delete the RoleSet and WebMenu
 	 * @param roleSetWebMenuPubDto
 	 */
-	void deleteRoleSetAndWebMenuByCompanyIdAndRoleSetCd(List<RoleSetWebMenuPubDto> roleSetWebMenuPubDto);
+	void deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(String roleSetCd, String companyId);
 	
 	
 	

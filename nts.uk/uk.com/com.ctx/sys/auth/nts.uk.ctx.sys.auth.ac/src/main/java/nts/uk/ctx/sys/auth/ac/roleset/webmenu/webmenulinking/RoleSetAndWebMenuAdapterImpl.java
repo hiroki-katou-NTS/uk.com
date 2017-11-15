@@ -7,14 +7,18 @@ package nts.uk.ctx.sys.auth.ac.roleset.webmenu.webmenulinking;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenu;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetAndWebMenuAdapter;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetAndWebMenuPub;
+import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleSetWebMenuPubDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,31 +35,36 @@ public class RoleSetAndWebMenuAdapterImpl implements RoleSetAndWebMenuAdapter {
 	@Override
 	public List<RoleSetAndWebMenu> findAllWebMenuByRoleSetCd(String roleSetCd) {
 		//Get company Id
-				String companyId = AppContexts.user().companyId();
-				if (!StringUtils.isNoneEmpty(companyId)) {
-					
-					//return this.roleSetAndWebMenuPub.findByCompanyId(companyId).stream().map(item -> WebMenu.build(item))
-					//	.collect(Collectors.toList());
-				}
-				return new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		if (!StringUtils.isNoneEmpty(companyId)) {
+			return this.roleSetAndWebMenuPub.findAllWebMenuByRoleSetCd(companyId, roleSetCd).stream()
+					.map(item -> new RoleSetAndWebMenu(item.getCompanyId(), item.getWebMenuCd(), item.getRoleSetCd())
+					).collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 	@Override
 	public void addListOfRoleSetAndWebMenu(List<RoleSetAndWebMenu> roleSetAndWebMenus) {
-		// TODO Auto-generated method stub
-		//RoleSetWebMenuPubDto
+		if (!CollectionUtil.isEmpty(roleSetAndWebMenus)) {
+			roleSetAndWebMenus.forEach(item-> {
+				this.roleSetAndWebMenuPub.addRoleSetAndWebMenu(item.getRoleSetCd(), item.getWebMenuCd(), item.getCompanyId());
+			});
+		}
 	}
 
 	@Override
 	public void updateListOfRoleSetAndWebMenu(List<RoleSetAndWebMenu> roleSetAndWebMenus) {
-		// TODO Auto-generated method stub
-		
+		if (!CollectionUtil.isEmpty(roleSetAndWebMenus)) {
+			roleSetAndWebMenus.forEach(item-> {
+				this.roleSetAndWebMenuPub.updateRoleSetAndWebMenu(item.getRoleSetCd(), item.getWebMenuCd(), item.getCompanyId());
+			});
+		}
 	}
 
 	@Override
 	public void deleteListOfRoleSetAndWebMenu(String roleSetCd, String companyId) {
-		// TODO Auto-generated method stub
-		
+		this.roleSetAndWebMenuPub.deleteRoleSetAndWebMenuByRoleSetCdAndCompanyId(roleSetCd, companyId);
 	}
 	
 }
