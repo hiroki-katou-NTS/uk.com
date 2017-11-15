@@ -1,9 +1,11 @@
 package nts.uk.ctx.sys.auth.app.command.person.role;
 
 import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -11,7 +13,6 @@ import nts.uk.ctx.sys.auth.dom.role.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.PersonRoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -36,7 +37,7 @@ public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleC
 
 	private void insertPersonInfoRole(SavePersonRoleCommand command) {
 		
-		List<Role> roles = roleRepo.findByType(AppContexts.user().companyId(), RoleType.valueOf(command.getRoleType()));
+		List<Role> roles = roleRepo.findByType(AppContexts.user().companyId(), command.getRoleType());
 		if (roles !=null && roles.get(0).getRoleCode().toString().equals(command.getRoleCode()))
 			throw new BusinessException("Msg_3");
 		

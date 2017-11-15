@@ -112,7 +112,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	}
 
 	@Override
-	public List<Role> findByType(String companyId, RoleType roleType) {
+	public List<Role> findByType(String companyId, int roleType) {
 		List<Role> result = new ArrayList<>();
 		
 		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.code";
@@ -125,7 +125,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	}
 
 	@Override
-	public List<Role> findByType(RoleType roleType) {
+	public List<Role> findByType(int roleType) {
 		List<Role> result = new ArrayList<>();
 		String query ="SELECT e FROM SacmtRole e WHERE e.roleType = :roleType ORDER BY e.code";
 		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class).setParameter("roleType", roleType).getList();

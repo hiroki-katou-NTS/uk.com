@@ -30,7 +30,7 @@ public class PersonInforRoleFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		// get domain role
-		List<Role> roles = roleRepo.findByType(companyId, RoleType.PERSONAL_INFO);
+		List<Role> roles = roleRepo.findByType(companyId, RoleType.PERSONAL_INFO.value);
 		if (roles !=null && !roles.isEmpty()) {
 			List<String> roleIds = roles.stream().map(x ->x.getRoleId()).collect(Collectors.toList());
 			Map<String, PersonRole> mapPerson = personRoleRepo.find(roleIds).stream().collect(Collectors.toMap(PersonRole::getRoleId,  Function.identity()));
