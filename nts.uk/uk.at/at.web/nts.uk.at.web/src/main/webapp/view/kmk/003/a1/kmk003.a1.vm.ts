@@ -40,7 +40,7 @@ module a1 {
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: string, settingMethod: string) {
+        constructor(data: any, screenMode: string, settingMethod: string,workTimeCode: string) {
             let self = this;
 
             //day start Time
@@ -127,12 +127,19 @@ module a1 {
             let data = input.data;
             let screenMode = ko.unwrap(input.screenMode);
             let settingMethod = ko.unwrap(input.settingMethod);
-
-            var screenModel = new ScreenModel(data, screenMode, settingMethod);
+            let workTimeCode = input.workTimeCode;
+            
+            var screenModel = new ScreenModel(data, screenMode, settingMethod,workTimeCode);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
             });
+        }
+        
+        private getData()
+        {
+        let self =this;
+            service.findWorkTimeSetByCode()    
         }
 
         /**

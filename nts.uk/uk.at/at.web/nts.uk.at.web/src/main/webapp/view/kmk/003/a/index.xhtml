@@ -10,6 +10,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
 			<com:stylefile path="../a1/kmk003.a1.style.css" />
+			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
+			<com:stylefile path="../a4/kmk003.a4.style.css" />
 			
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
@@ -205,7 +207,7 @@
 											data-bind="ntsTabPanel: {width:300, dataSource: tabs, active: selectedTab,direction: 'vertical' }">
 											<div class="tab-a1">
 												<div
-													data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod}"></div>
+													data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod,workTimeCode: siftCode}"></div>
 											</div>
 											<div class="tab-a2">
 												<span>Tab Content 2</span><br />
@@ -214,7 +216,8 @@
 												<span>Tab Content 1</span><br />
 											</div>
 											<div class="tab-a4">
-												<span>Tab Content 2</span><br />
+												<div
+													data-bind="ntsKMK003A4: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod,workTimeCode: siftCode}"></div>
 											</div>
 											<div class="tab-a5">
 												<span>Tab Content 1</span><br />
