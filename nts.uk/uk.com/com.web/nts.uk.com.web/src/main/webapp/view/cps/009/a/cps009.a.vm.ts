@@ -33,7 +33,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.initValue();
             self.start(undefined);
-
             self.initSettingId.subscribe(function(value: string) {
                 $('.ntsSearchBox.nts-editor.ntsSearchBox_Component').focus();
                 nts.uk.ui.errors.clearAll();
@@ -65,6 +64,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return;
                 }
             });
+
 
         }
 
@@ -343,45 +343,37 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                         };
                     })
-                };
-            let isUpdate: boolean = true;
-            let errorList: Array<any> = [];
-            _.each(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
-                if (self.checkError(obj)) {
-                    let errorItem: any = self.listError(obj);
-                    if (!nts.uk.util.isNullOrUndefined(errorItem)) {
-                        errorList.push(errorItem);
-
-                    }
-                    isUpdate = false;
-                }
-            });
-
-
-
+                },
+                dateInputList = $(".contents-data").find('tbody').find('tr').find('#date'),
+                itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
+                    return item.dataType === 3 && item.selectedRuleCode === 2;
+                });
+            if (dateInputList.length > 0) {
+                let i: number = 0;
+                _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
+                    let $input1 = $(".contents-data").find('tbody').find('tr').find('#date')[i];
+                    $input1.setAttribute("nameid", item.itemName)
+                    i++;
+                });
+            }
 
             block.invisible();
-            if (isUpdate) {
-                service.update(updateObj).done(function(data) {
-                    dialog.info({ messageId: "Msg_15" }).then(function() {
-                        self.initSettingId("");
-                        self.initSettingId.valueHasMutated();
-                        self.start(updateObj.settingId);
-                        self.currentCategory().currentItemId("");
-                        self.currentCategory().currentItemId(updateObj.perInfoCtgId);
-                        self.currentCategory().currentItemId.valueHasMutated();
-                    });
-
-                    block.clear();
-                }).fail(function(res: any) {
-                    dialog.alertError({ messageId: res.messageId });
-                    block.clear();
+            service.update(updateObj).done(function(data) {
+                dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.initSettingId("");
+                    self.initSettingId.valueHasMutated();
+                    self.start(updateObj.settingId);
+                    self.currentCategory().currentItemId("");
+                    self.currentCategory().currentItemId(updateObj.perInfoCtgId);
+                    self.currentCategory().currentItemId.valueHasMutated();
                 });
-            } else {
-                dialog.alertError(errorList);
-                block.clear();
 
-            }
+                block.clear();
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.bundledErrors(res);
+                block.clear();
+            });
+
         }
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
@@ -416,84 +408,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                 });
             }
-
-        }
-
-        checkError(itemDto: PerInfoInitValueSettingItemDto): boolean {
-            if (itemDto.selectedRuleCode === 2) {
-                if (itemDto.dataType === 1 || itemDto.dataType === 0) {
-                    let stringValue = $('#string').val();
-                    if (nts.uk.util.isNullOrUndefined(stringValue) || stringValue === "") {
-                        $('#string').focus();
-                        return true;
-                    }
-                } else if (itemDto.dataType === 2) {
-                    let numberValue = $('#number').val();
-                    if (nts.uk.util.isNullOrUndefined(itemDto.numbereditor.value || itemDto.numbereditor.value === 0)) {
-                        $('#number').focus();
-                        return true;
-                    }
-
-                } else if (itemDto.dataType === 3) {
-                    let date = $('#date').val();
-                    if (nts.uk.util.isNullOrUndefined(itemDto.dateValue)) {
-                        $('#date').focus();
-                        return true;
-                    }
-
-                } else if (itemDto.dataType === 4) {
-                    let timeitem = $('#timeItem').val();
-                    if (nts.uk.util.isNullOrUndefined(timeitem)) {
-                        $('#timeItem').focus();
-                        return true;
-                    }
-                } else if (itemDto.dataType === 5) {
-                    let timePoint = $('#timePoint').val();
-                    if (nts.uk.util.isNullOrUndefined(timePoint)) {
-                        $('#timePoint').focus();
-                        return true;
-                    }
-
-                }
-            }
-            return false;
-
-        }
-
-
-        listError(itemDto: PerInfoInitValueSettingItemDto): any {
-            if (itemDto.selectedRuleCode === 2) {
-                if (itemDto.dataType === 1 || itemDto.dataType === 0) {
-                    let stringValue = $('#string').val();
-                    if (nts.uk.util.isNullOrUndefined(stringValue) || stringValue === "") {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
-                    }
-                } else if (itemDto.dataType === 2) {
-                    let numberValue = $('#number').val();
-                    if (nts.uk.util.isNullOrUndefined(itemDto.numbereditor.value || itemDto.numbereditor.value === 0)) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_824", messageParams: [itemDto.itemName] });
-                    }
-
-                } else if (itemDto.dataType === 3) {
-                    let date = $('#date').val();
-                    if (nts.uk.util.isNullOrUndefined(itemDto.dateValue)) {
-                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
-                    }
-
-                } else if (itemDto.dataType === 4) {
-                    let timeitem = $('#timeItem').val();
-                    if (nts.uk.util.isNullOrUndefined(timeitem)) {
-                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
-                    }
-                } else if (itemDto.dataType === 5) {
-                    let timePoint = $('#timePoint').val();
-                    if (nts.uk.util.isNullOrUndefined(timePoint)) {
-                        return { messageId: "Msg_824", messageParams: [itemDto.itemName] };
-                    }
-
-                }
-            }
-            return {};
 
         }
 
@@ -873,8 +787,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     readonly: ko.observable(false)
                 };
             }
+
+
+
+
         }
-    }
 
     export interface IPerInfoInitValueSettingDto {
         companyId?: string;
