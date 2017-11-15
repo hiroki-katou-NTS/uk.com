@@ -4,6 +4,7 @@ __viewContext.ready(function () {
         constraint: Array<string>;
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
+        css: KnockoutObservable<string>;
         enable: KnockoutObservable<boolean>;
         
         constructor() {
@@ -12,6 +13,7 @@ __viewContext.ready(function () {
             self.constraint = ['ResidenceCode','ResidenceCode'];
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
+            self.css = ko.observable("abc")
             self.enable = ko.observable(true);
         }
     }
