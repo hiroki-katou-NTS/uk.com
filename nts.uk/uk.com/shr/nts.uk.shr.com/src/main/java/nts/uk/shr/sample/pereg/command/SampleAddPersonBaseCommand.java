@@ -4,19 +4,15 @@ import lombok.Getter;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
-import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
-public class SampleUpdatePersonBaseCommand {
+public class SampleAddPersonBaseCommand {
 
 	@PeregPersonId
 	private String personId;
 	
 	@PeregEmployeeId
 	private String employeeId;
-	
-	@PeregRecordId
-	private String currentAddressId;
 	
 	@PeregItem("IS00001")
 	private String fullName;
