@@ -2,16 +2,18 @@ package nts.uk.shr.pereg.app;
 
 import java.math.BigDecimal;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class ItemValue {
 
 	private final String definitionId;
 	private final String itemCode;
-	private final String value;
+	private String value;
 	private final int type;
 	
 	/**
@@ -48,6 +50,22 @@ public class ItemValue {
 		}
 		
 		return (T)convertedValue;
+	}
+	
+	public void setValue(Object obj) {
+		switch (this.itemValueType()) {
+		case NUMERIC:
+			this.value = obj.toString();
+			break;
+		case STRING:
+			this.value = obj.toString();
+			break;
+		case DATE:
+			this.value = ((GeneralDate)obj).toString("yyyyMMdd");
+			break;
+		default:
+			throw new RuntimeException("invalid type: " + this.type);
+		}
 	}
 	
 	public ItemValueType itemValueType() {

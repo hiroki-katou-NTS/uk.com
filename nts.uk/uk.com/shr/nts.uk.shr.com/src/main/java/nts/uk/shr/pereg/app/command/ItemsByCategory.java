@@ -8,7 +8,6 @@ import lombok.Value;
 import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
-import nts.gul.reflection.ReflectionUtil.Condition;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -51,8 +50,8 @@ public class ItemsByCategory {
 		val inputsMap = this.createInputsMap();
 		
 		AnnotationUtil.getStreamOfFieldsAnnotated(commandClass, PeregItem.class).forEach(field -> {
-			String itemId = field.getAnnotation(PeregItem.class).value();
-			val inputItem = inputsMap.get(itemId);
+			String itemCode = field.getAnnotation(PeregItem.class).value();
+			val inputItem = inputsMap.get(itemCode);
 			if (inputItem != null) {
 				ReflectionUtil.setFieldValue(field, command, inputItem.value());
 			}
@@ -70,15 +69,15 @@ public class ItemsByCategory {
 	
 	public List<ItemValue> collectItemsDefinedByUser() {
 		return this.items.stream()
-				.filter(item -> isDefinedByUser(item.definitionId()))
+				.filter(item -> isDefinedByUser(item.itemCode()))
 				.collect(Collectors.toList());
 	}
 	
-	private static boolean isDefinedBySystem(String itemId) {
-		return !isDefinedByUser(itemId);
+	private static boolean isDefinedBySystem(String itemCode) {
+		return !isDefinedByUser(itemCode);
 	}
 	
-	private static boolean isDefinedByUser(String itemId) {
-		return itemId.charAt(1) == 'O';
+	private static boolean isDefinedByUser(String itemCode) {
+		return itemCode.charAt(1) == 'O';
 	}
 }
