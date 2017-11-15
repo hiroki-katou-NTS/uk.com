@@ -9,12 +9,25 @@ import nts.arc.time.GeneralDate;
 @RequiredArgsConstructor
 public class ItemValue {
 
-	private final String id;
+	private final String definitionId;
+	private final String itemCode;
 	private final String value;
 	private final int type;
 	
-	public String id() {
-		return this.id;
+	/**
+	 * 個人情報項目定義ID
+	 * @return 個人情報項目定義ID
+	 */
+	public String definitionId() {
+		return this.definitionId;
+	}
+	
+	/**
+	 * 項目定義コード
+	 * @return 項目定義コード
+	 */
+	public String itemCode() {
+		return this.itemCode;
 	}
 	
 	@SuppressWarnings("unchecked")

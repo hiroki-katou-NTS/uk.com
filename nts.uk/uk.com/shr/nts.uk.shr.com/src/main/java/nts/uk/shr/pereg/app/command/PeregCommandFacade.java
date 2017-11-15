@@ -3,8 +3,9 @@ package nts.uk.shr.pereg.app.command;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -37,8 +38,8 @@ public class PeregCommandFacade {
 	/**
 	 * Initializes.
 	 */
-	@PostConstruct
-	private void init() {
+	public void init(@Observes @Initialized(ApplicationScoped.class) Object event) {
+		
 		this.addHandlers = this.handlerCollector.collectAddHandlers().stream()
 				.collect(Collectors.toMap(h -> h.targetCategoryId(), h -> h));
 		
@@ -49,34 +50,32 @@ public class PeregCommandFacade {
 	
 	/**
 	 * Handles add commands.
-	 * @param inputContainer inputs
+	 * @param container inputs
 	 */
 	@Transactional
-	public void add(PeregInputContainer inputContainer) {
+	public void add(PeregInputContainer container) {
 		
-		inputContainer.getInputs().forEach(inputsByCategory -> {
-			val handler = this.addHandlers.get(inputsByCategory.getCategoryId());
-			val commandForSystemDomain = inputsByCategory.createCommandForSystemDomain(handler.commandClass());
-			handler.handlePeregCommand(commandForSystemDomain);
+		container.getInputs().forEach(itemsByCategory -> {
+			val handler = this.addHandlers.get(itemsByCategory.getCategoryId());
+			handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
 			
-			val commandForUserDef = new PeregUserDefAddCommand(inputsByCategory);
+			val commandForUserDef = new PeregUserDefAddCommand(itemsByCategory);
 			this.userDefAdd.handle(commandForUserDef);
 		});
 	}
 	
 	/**
 	 * Handles update commands.
-	 * @param inputContainer inputs
+	 * @param container inputs
 	 */
 	@Transactional
-	public void update(PeregInputContainer inputContainer) {
+	public void update(PeregInputContainer container) {
 		
-		inputContainer.getInputs().forEach(inputsByCategory -> {
-			val handler = this.updateHandlers.get(inputsByCategory.getCategoryId());
-			val commandForSystemDomain = inputsByCategory.createCommandForSystemDomain(handler.commandClass());
-			handler.handlePeregCommand(commandForSystemDomain);
+		container.getInputs().forEach(itemsByCategory -> {
+			val handler = this.updateHandlers.get(itemsByCategory.getCategoryId());
+			handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
 			
-			val commandForUserDef = new PeregUserDefUpdateCommand(inputsByCategory);
+			val commandForUserDef = new PeregUserDefUpdateCommand(itemsByCategory);
 			this.userDefUpdate.handle(commandForUserDef);
 		});
 	}
