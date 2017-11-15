@@ -49,7 +49,7 @@ public interface RoleRepository {
 	 * @param roleType
 	 * @return Role
 	 */
-	List<Role> findByType(String companyId, RoleType roleType);
+	List<Role> findByType(String companyId, int roleType);
 	
 	/**
 	 * find by role type
@@ -57,5 +57,5 @@ public interface RoleRepository {
 	 * @param roleType
 	 * @return Role
 	 */
-	List<Role> findByType(RoleType roleType);
+	List<Role> findByType(int roleType);
 }
