@@ -190,10 +190,12 @@
                         constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
                         break;
                     case 'Decimal':
-                        constraintText += (constraintText.length > 0) ? "/" : "";
-                        constraintText += constraint.min + "～" + constraint.max; 
-                        break;
                     case 'Integer':
+                    case 'Date':
+                    case 'Duration':
+                    case 'Time':
+                    case 'Clock ':
+                    case 'TimePoint ':
                         constraintText += (constraintText.length > 0) ? "/" : "";
                         constraintText += constraint.min + "～" + constraint.max; 
                         break;
@@ -524,6 +526,21 @@
                 }
             }
         }
+        
+        export module exception {
+            export function isBundledBusinessErrors(exception: any): boolean {
+                return !isNullOrUndefined(exception) && ($.isArray(exception["errors"]) 
+                                            && exception["businessException"]);
+            }    
+            
+            export function isErrorToReject(res: any) : boolean{
+                return !isNullOrUndefined(res) && (res.businessException || res.optimisticLock);
+            }
+            
+            export function isBusinessError(res: any) : boolean{
+                return !isNullOrUndefined(res) && (res.businessException);
+            }
+        }
     }
 
     export class WebStorageWrapper {
@@ -665,15 +682,19 @@
             }
         }
     }
+     
+    
     export module resource {
-
+        
+        var names = window['names'] || {};
+        var messages = window['messages'] || {};
 
         export function getText(code: string, params?: string[]): string {
             let text = names[code];
             if (text) {
                 text = formatCompCustomizeResource(text);
                 text = formatParams(text, params);
-                return text;
+                return text.replace(/\\r\\n/g, '\r\n');
             }
             return code;
         }
@@ -682,7 +703,7 @@
             let message = messages[messageId];
             if (!message) {
                 let responseText="";
-                nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function(res) {
+                nts.uk.request.syncAjax("com", "i18n/resources/rawcontent/" + messageId).done(function(res) {
                     responseText=res;
                 }).fail(function() {
                 });
@@ -690,10 +711,11 @@
                     return messageId;
                 }
                 message = responseText;
+                messages[messageId] = message;
             }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);
-            return message;
+            return message.replace(/\\r\\n/g, '\r\n');
         }
         function formatCompCustomizeResource(message: string) {
             let compDependceParamRegex = /{#(\w*)}/;
@@ -760,7 +782,7 @@
                 result.push([p,key[p]]);
             }
             result.sort(function(a,b){
-                return a>b;    
+                return (a > b) ? 1 : (a < b) ? -1 : 0;    
             });
             return result.toString();
         }    

@@ -11,7 +11,7 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             var self = this;
-            var value: (newText: string) => {} = data.value;
+            var value: KnockoutObservable<any> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
@@ -34,6 +34,7 @@ module nts.uk.ui.koExtentions {
                 if (result.isValid) {
                     $input.ntsError('clear');
                     value(result.parsedValue);
+                    value.valueHasMutated();
                 } else {
                     let error = $input.ntsError('getError');
                     if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
@@ -117,6 +118,7 @@ module nts.uk.ui.koExtentions {
             // Format value
             var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
             $input.val(formatted);
+//            $input.trigger("validate");
         }
 
         getDefaultOption(): any {
@@ -138,6 +140,7 @@ module nts.uk.ui.koExtentions {
     class TextEditorProcessor extends EditorProcessor {
 
         init($input: JQuery, data: any) {
+            let self = this;
             var value: KnockoutObservable<string> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
@@ -150,10 +153,10 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
-            let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
+                let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
@@ -166,6 +169,7 @@ module nts.uk.ui.koExtentions {
             // Format on blur
             $input.blur(() => {
                 if (!$input.attr('readonly')) {
+                    let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
@@ -177,6 +181,7 @@ module nts.uk.ui.koExtentions {
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
+                    let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
                     $input.ntsError('clear');
@@ -194,6 +199,7 @@ module nts.uk.ui.koExtentions {
             });
 
             $input.on('validate', (function(e: Event) {
+                let validator = self.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -225,6 +231,7 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
             return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
         }
 
@@ -372,7 +379,7 @@ module nts.uk.ui.koExtentions {
 
         update($input: JQuery, data: any) {
             super.update($input, data);
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            var option: nts.uk.ui.option.ITimeEditorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var width: string = option.width;
             var $parent = $input.parent();
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
@@ -387,6 +394,11 @@ module nts.uk.ui.koExtentions {
                 
                 let css = data.mode === "year" ? {"padding-right": "20px"} : {"padding-right": "35px"};
                 $input.css(css);
+            }
+            
+            if(!nts.uk.util.isNullOrEmpty(option.defaultValue) 
+                && nts.uk.util.isNullOrEmpty(data.value())){
+                data.value(option.defaultValue);        
             }
         }
 
@@ -408,7 +420,9 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
             var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-            return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+            
+            let validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
+            return new validation.TimeValidator(name, constraintName, validateOption);
         }
     }
     
@@ -425,12 +439,16 @@ module nts.uk.ui.koExtentions {
                 }
                 if ($input.ntsError('hasError')) {
                     return;
-                }
+                } 
                 
                 var selectionTypeOnFocusing = document.getSelection().type;
                 
-                let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
-                $input.val(timeWithDayAttr.shortText);
+                if(!nts.uk.util.isNullOrEmpty(data.value())){
+                    let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
+                    $input.val(timeWithDayAttr.shortText);    
+                } else {
+                    $input.val("");
+                }
 
                 // If focusing is caused by Tab key, select text
                 // this code is needed because removing separator deselects.

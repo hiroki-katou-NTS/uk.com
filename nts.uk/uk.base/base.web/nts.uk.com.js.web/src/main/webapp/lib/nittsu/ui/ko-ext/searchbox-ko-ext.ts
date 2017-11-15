@@ -129,13 +129,15 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            let minusWidth = 0;
             
             var data = ko.unwrap(valueAccessor());
             var fields = ko.unwrap(data.fields);
             var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
-
+            
             var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+            var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
             var enable = ko.unwrap(data.enable);
             var selectedKey = null;
             if (data.selectedKey) {
@@ -158,21 +160,31 @@ module nts.uk.ui.koExtentions {
             var $container = $(element);
             let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
             $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-            $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span>");  
-            $container.append("<button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button>"); 
+            $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");  
+            $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>"); 
+            
+            if(!nts.uk.util.isNullOrEmpty(label)){
+                var $formLabel = $("<div>", { text: label });
+                $formLabel.prependTo($container);
+                ko.bindingHandlers["ntsFormLabel"].init($formLabel, function() {
+                    return {};　
+                }, allBindingsAccessor, viewModel, bindingContext);
+                minusWidth += $formLabel.outerWidth(true);
+            }
             
             var $button = $container.find("button.search-btn");
             var $input = $container.find("input.ntsSearchBox");
-            let buttonWidth = $button.outerWidth(true);
+            minusWidth += $button.outerWidth(true);
             if(searchMode === "filter"){
                 $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>"); 
                 let $clearButton = $container.find("button.clear-btn");  
-                buttonWidth +=  $clearButton.outerWidth(true);
+                minusWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
                     if(component.length === 0){
-                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");     
                     }
                     let srh: SearchPub= $container.data("searchObject");
+                    $input.val("");
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
@@ -186,7 +198,7 @@ module nts.uk.ui.koExtentions {
             
             $input.attr("placeholder", placeHolder);
             $input.attr("data-name", "検索テキストボックス");
-            $input.outerWidth($container.outerWidth(true) - buttonWidth);　
+            $input.outerWidth($container.outerWidth(true) - minusWidth);　
             
             let primaryKey = ko.unwrap(data.targetKey);
             let searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
@@ -212,19 +224,14 @@ module nts.uk.ui.koExtentions {
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
                     if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
-                        return;        
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT")).then(() => { 
+                            $input.focus(); 
+                            $input.select();
+                        });
+                        return false;        
                     }
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
-//                    let selectedValue;
-//                    if(selectedKey !== null){
-//                        selectedValue = isMulti ? _.map(result.selectItems, selectedKey) : 
-//                            result.selectItems.length > 0 ? result.selectItems[0][selectedKey] : undefined;        
-//                    } else {
-//                        selectedValue = isMulti ? [result.selectItems] : 
-//                            result.selectItems.length > 0 ? result.selectItems[0] : undefined;    
-//                    }
                     
                     if (targetMode === 'igGrid') {  
                         component.ntsGridList("setSelected", selectedProperties);
@@ -261,23 +268,29 @@ module nts.uk.ui.koExtentions {
                     });
                     
                     $container.data("searchKey", searchKey);  
-                }    
-            }
+                }
+                return true;    
+            } 
             
             var nextSearch = function() {
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
-                    return;        
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(() => { 
+                        $input.focus(); 
+//                        $input.select();
+                    });
+                    return false;        
                 }
-                search(searchKey);    
+                return search(searchKey);    
             }
             $input.keydown(function(event) {
                 if (event.which == 13) {
                     event.preventDefault();
-                    nextSearch();
+                    let result = nextSearch();
                     _.defer(() => {
-                        $input.focus();                
+                        if(result){
+                            $input.focus();         
+                        }                
                     });
                 }
             });
@@ -290,6 +303,8 @@ module nts.uk.ui.koExtentions {
             if(enable === false){
                 $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');        
             }
+            
+            return { 'controlsDescendantBindings': true };
         }
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var $searchBox = $(element);

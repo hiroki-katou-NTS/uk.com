@@ -18,25 +18,30 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             let data = valueAccessor();
-            let fileName = data.filename;
-            let onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
-            let onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;;
+            let fileName: KnockoutObservable<string> = data.filename;
+            let onchange: (filename: string) => void = (data.onchange !== undefined) ? data.onchange : $.noop;
+            let onfilenameclick: (filename: string) => void = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
             
             // Container
             let container = $(element);
-            let $fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+            let $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
             let $fileBrowserButton = $("<button class='browser-button'></button>");
-            let $fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
-            let $fileInput = $("<input style='display:none;' type='file' class='fileinput'/>");
+            let $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
+            let $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly'/>");
+            let $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
+            let $fileInput = $("<input type='file' class='fileinput'/>");
+            
             $fileuploadContainer.append($fileBrowserButton);
-            $fileuploadContainer.append($fileNameLable);
+            $fileNameWrap.append($fileNameInput);
+            $fileuploadContainer.append($fileNameWrap);
+            $fileuploadContainer.append($fileNameLabel);
             $fileuploadContainer.append($fileInput);
             $fileuploadContainer.appendTo(container);
+
             $fileBrowserButton.click(function() {
-//                $fileInput.val(null);
-//                fileName("");
                 $fileInput.click();
             });
+
             $fileInput.change(function() {
                 var selectedFilePath = $(this).val();
                 if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
@@ -51,7 +56,8 @@ module nts.uk.ui.koExtentions {
                 fileName(getSelectedFileName);
                 onchange(getSelectedFileName);
             });
-            $fileNameLable.click(function() {
+            
+            $fileNameLabel.click(function() {
                 onfilenameclick($(this).text());
             });
         }
@@ -61,34 +67,40 @@ module nts.uk.ui.koExtentions {
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             let data = valueAccessor();
-            let fileName = ko.unwrap(data.filename);
+            let fileName: string = ko.unwrap(data.filename);
             let accept: string[] = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
             let asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-            let text: string = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "ファイルアップロード";
+            let text: string = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            
             let container = $(element);
             container.find("input[type='file']").attr("accept", accept.toString());
+            let $fileNameWrap = container.find(".nts-editor-wrapped");
+            let $fileNameInput = container.find(".nts-input");
+            let $fileNameLabel = container.find(".filenamelabel");
             
-            let $fileNameLable = container.find(".filenamelabel");
             if (container.data("file-name") !== fileName) {
                 container.data( "file-name", "" );
-                $fileNameLable.text("");
+                $fileNameInput.val("");
+                $fileNameLabel.text("");
                 container.find("input[type='file']").val(null);
                 data.filename("");
             } else {
-                $fileNameLable.text(fileName);    
+                $fileNameLabel.text(fileName);   
+                $fileNameInput.val(fileName); 
             }   
             if (asLink == true) {
-                $fileNameLable.addClass("hyperlink");
-                $fileNameLable.removeClass("standard-file-name");
+                $fileNameLabel.removeClass("hidden");
+                $fileNameWrap.addClass("hidden");
             } else {
-                $fileNameLable.addClass("standard-file-name");
-                $fileNameLable.removeClass("hyperlink");
+                $fileNameLabel.addClass("hidden");
+                $fileNameWrap.removeClass("hidden");
             }
             
             let $fileBrowserButton = container.find(".browser-button");
             $fileBrowserButton.text(text);
             $fileBrowserButton.prop("disabled", !enable);
+            $fileNameInput.prop("disabled", !enable);
         }
     }
 

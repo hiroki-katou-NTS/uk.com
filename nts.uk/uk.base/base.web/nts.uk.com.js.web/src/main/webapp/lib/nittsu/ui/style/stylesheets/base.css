@@ -129,135 +129,61 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   background-color: #F7EFD4;
 }
 
-/* line 7, ../sass/components/_color.scss */
-.color-daily-holiday {
-  color: #FF2D2D;
-}
+.color-working-day {color: #31859C !important;}
+.color-non-working-day {color: #FF3B3B !important;}
+.color-attendance {color: #0000ff !important;}
+.color-holiday {color: #ff0000 !important;}
+.color-daily-holiday {color: #FF2D2D !important;}
+.color-daily-extra-holiday {color: #0086EA !important;}
+.bg-daily-alter-self {background-color:#94B7FE !important;}
+.bg-daily-alter-other {background-color:#CEE6FF !important;}
+.bg-daily-reflect-application {background-color:#92F29B !important;}
+.bg-daily-error {background-color:#FEC6C6 !important;}
+.bg-daily-alarm {background-color:#E3F385 !important;}
+.bg-daily-calculated {background-color:#E4C9FF !important;}
 
-/* line 8, ../sass/components/_color.scss */
-.color-daily-extra-holiday {
-  color: #0086EA;
-}
+.color-schedule-performance {color:#92D050 !important;}
+.color-schedule-error {color:#FF0000 !important;}
+.color-schedule-saturday {color:#0000FF !important;}
+.color-schedule-sunday {color:#FF0000 !important;}
+.bg-schedule-support {background-color:#fedfe6 !important;}
+.bg-schedule-no-empl-insurance {background-color:#ef7f7f !important;}
+.bg-schedule-no-health-insurance {background-color:#acfe2f !important;}
+.bg-schedule-no-empl-health-insurance {background-color:#fea400 !important;}
+.bg-schedule-fixed {background-color:#eccefb !important;}
+.bg-schedule-uncorrectable {background-color:#ddddd2 !important;}
+.bg-schedule-work-by-dow {background-color:#FFFF69 !important;}
+.bg-schedule-shift-work {background-color:#FFE699 !important;}
+.bg-schedule-saturday {background-color:#8bd8ff !important;}
+.bg-schedule-sunday {background-color:#fabf8f !important;}
+.bg-schedule-specific-date {background-color:#ffc0cb !important;}
+.bg-schedule-that-day {background-color:#ffff00 !important;}
+.bg-schedule-focus {background-color:#ffffcc !important;}
 
-/* line 9, ../sass/components/_color.scss */
-.bg-daily-alter-self {
-  background-color: #94B7FE;
-}
+.bg-choice-row {background-color:#CEE6FF !important;}
+.bg-calendar-ym-set {background-color:#BFEA60 !important;}
+.bg-workinh-result-excess {background-color:#ffff00 !important;}
+.bg-pre-application-excess {background-color:#ffc0cb !important;}
+.bg-application-approved {background-color:#BFEA60 !important;}
+.bg-application-reflected {background-color:#CEE6FF !important;}
+.bg-denial-application {background-color:#FD4D4D !important;}
+.bg-unapproved-application {background-color:#ffffff !important;}
+.bg-remanded-application {background-color:#FD4D4D !important;}
+.bg-canceled-application {background-color:#F6F636 !important;}
 
-/* line 10, ../sass/components/_color.scss */
-.bg-daily-alter-other {
-  background-color: #CEE6FF;
-}
-
-/* line 11, ../sass/components/_color.scss */
-.bg-daily-reflect-application {
-  background-color: #92F29B;
-}
-
-/* line 12, ../sass/components/_color.scss */
-.bg-daily-error {
-  background-color: #FEC6C6;
-}
-
-/* line 13, ../sass/components/_color.scss */
-.bg-daily-alarm {
-  background-color: #E3F385;
-}
-
-/* line 14, ../sass/components/_color.scss */
-.bg-daily-calculated {
-  background-color: #E4C9FF;
-}
-
-/* line 16, ../sass/components/_color.scss */
-.color-schedule-performance {
-  color: #92D050;
-}
-
-/* line 17, ../sass/components/_color.scss */
-.color-schedule-error {
-  color: #FF0000;
-}
-
-/* line 18, ../sass/components/_color.scss */
-.color-schedule-saturday {
-  color: #0000FF;
-}
-
-/* line 19, ../sass/components/_color.scss */
-.color-schedule-sunday {
-  color: #FF0000;
-}
-
-/* line 20, ../sass/components/_color.scss */
-.bg-schedule-support {
-  background-color: #fedfe6;
-}
-
-/* line 21, ../sass/components/_color.scss */
-.bg-schedule-no-empl-insurance {
-  background-color: #ef7f7f;
-}
-
-/* line 22, ../sass/components/_color.scss */
-.bg-schedule-no-health-insurance {
-  background-color: #acfe2f;
-}
-
-/* line 23, ../sass/components/_color.scss */
-.bg-schedule-no-empl-health-insurance {
-  background-color: #fea400;
-}
-
-/* line 24, ../sass/components/_color.scss */
-.bg-schedule-fixed {
-  background-color: #eccefb;
-}
-
-/* line 25, ../sass/components/_color.scss */
-.bg-schedule-uncorrectable {
-  background-color: #ddddd2;
-}
-
-/* line 26, ../sass/components/_color.scss */
-.bg-schedule-work-by-dow {
-  background-color: #FFFF69;
-}
-
-/* line 27, ../sass/components/_color.scss */
-.bg-schedule-shift-work {
-  background-color: #FFE699;
-}
-
-/* line 28, ../sass/components/_color.scss */
-.bg-schedule-saturday {
-  background-color: #8bd8ff;
-}
-
-/* line 29, ../sass/components/_color.scss */
-.bg-schedule-sunday {
-  background-color: #fabf8f;
-}
-
-/* line 30, ../sass/components/_color.scss */
-.bg-schedule-specific-date {
-  background-color: #ffc0cb;
-}
-
-/* line 31, ../sass/components/_color.scss */
-.bg-schedule-that-day {
-  background-color: #ffff00;
-}
-
-/* line 32, ../sass/components/_color.scss */
-.bg-schedule-focus {
-  background-color: #ffffcc;
-}
-
-/* line 34, ../sass/components/_color.scss */
-.bg-calendar-ym-set {
-  background-color: #BFEA60;
-}
+.color-operation-case-character {color: #ff0000 !important;}
+.color-working-schedule {color: #00cc00 !important;}
+.color-sunday {color: #FF2D2D !important;}
+.color-saturday {color: #0086EA !important;}
+.color-half-day-work {color: #FF7F27 !important;}
+.bg-weekdays {background-color:#D9D9D9 !important;}
+.color-weekdays {color: #404040 !important;}
+.bg-pasted {background-color:#F8CBAD !important;}
+.bg-updating-cell {background-color:#FFD966 !important;}
+.bg-selecting {background-color:#BDD7EE !important;}
+.bg-added-row {background-color:#AFEEEE !important;}
+.bg-actual-superior-unverified {background-color:#FF7F27 !important;}
+.bg-error-actual {background-color:#ffc0cb !important;}
 
 /*****************************
   Overwrite JQueryUI
@@ -576,7 +502,9 @@ div.popup-panel {
 div.label {
   width: 100%;
 }
-
+.pre {
+    white-space: pre-wrap;
+}
 /*****************************
   Icon
 *****************************/
@@ -2153,25 +2081,27 @@ button.nts-switch-button[disabled]:hover {
   background: #F39814;
   color: white;
 }
+/* line 22, ../sass/components/_listbox.scss */
+.ntsListBox tbody tr {
+  /* .ui-iggrid-selectedcell{ 
+  	background: #007fff !important;
+  } */
+}
 /* line 23, ../sass/components/_listbox.scss */
 .ntsListBox tbody tr td {
-  height: 28px;
+  /* height: 28px; */
   overflow: hidden;
   user-select: none;
   cursor: default;
   box-sizing: border-box;
   border: 0px transparent !important;
 }
-/* line 32, ../sass/components/_listbox.scss */
-.ntsListBox tbody tr .ui-iggrid-selectedcell {
-  background: #F39814 !important;
-}
 /* line 39, ../sass/components/_listbox.scss */
 .ntsListBox .nts-column {
   /* float: left; */
   padding: 0 2px;
-  height: 28px;
-  line-height: 28px;
+  height: 23px;
+  line-height: 23px;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -2428,25 +2358,27 @@ button.nts-switch-button[disabled]:hover {
 /* line 8, ../sass/components/_combobox.scss */
 .nts-combo-item {
   height: 20px;
+  font-size: 0px;
+  white-space: nowrap;
 }
-
-/* line 11, ../sass/components/_combobox.scss */
-.nts-column {
+/* line 13, ../sass/components/_combobox.scss */
+.nts-combo-item .nts-column {
+  display: inline-block;
   height: 20px;
   overflow: hidden;
   margin-right: 5px;
 }
 
-/* line 18, ../sass/components/_combobox.scss */
+/* line 22, ../sass/components/_combobox.scss */
 .ui-state-active {
   border-color: #0096f2;
 }
-/* line 21, ../sass/components/_combobox.scss */
+/* line 25, ../sass/components/_combobox.scss */
 .ui-state-active:focus {
   border-color: #0096f2;
 }
 
-/* line 27, ../sass/components/_combobox.scss */
+/* line 31, ../sass/components/_combobox.scss */
 .compact-grid .ui-igcombo-wrapper {
   height: 27px;
 }
@@ -2969,7 +2901,7 @@ button.nts-switch-button[disabled]:hover {
 /* line 26, ../sass/components/_swaplist.scss */
 .ntsMoveDataArea .move-button {
   width: 75px;
-  margin: 10px 20px;
+  margin: 10px 0px;
 }
 
 /* line 31, ../sass/components/_swaplist.scss */
@@ -3028,6 +2960,11 @@ button.nts-switch-button[disabled]:hover {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+}
+
+.nts-searchbbox-wrapper div.input-wrapper {
+	display: inline-block;
+	line-height: 32px;
 }
 
 /*!
@@ -3275,8 +3212,9 @@ button.nts-switch-button[disabled]:hover {
   padding: 4px 0;
   border-radius: 2px;
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+  z-index: 120050;
 }
-/* line 11, ../sass/components/_contextmenu.scss */
+/* line 12, ../sass/components/_contextmenu.scss */
 .ntsContextMenu:after {
   content: '';
   display: block;
@@ -3290,7 +3228,7 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   z-index: 1;
 }
-/* line 25, ../sass/components/_contextmenu.scss */
+/* line 26, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li {
   position: relative;
   display: block;
@@ -3300,24 +3238,24 @@ button.nts-switch-button[disabled]:hover {
   cursor: pointer;
   z-index: 2;
 }
-/* line 34, ../sass/components/_contextmenu.scss */
+/* line 35, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
-/* line 38, ../sass/components/_contextmenu.scss */
+/* line 39, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
-/* line 44, ../sass/components/_contextmenu.scss */
+/* line 45, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li .menu-icon {
   position: absolute;
   left: 7px;
   top: 50%;
   margin-top: -8px;
 }
-/* line 52, ../sass/components/_contextmenu.scss */
+/* line 53, ../sass/components/_contextmenu.scss */
 .ntsContextMenu .divider {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3438,41 +3376,61 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 1, ../sass/components/_ntsgrid.scss */
-.nts-grid-wrapper table .ui-ig-altrecord {
+.nts-grid-wrapper table .ui-ig-altrecord,
+.nts-grid .ui-ig-altrecord {
   background-color: #FFF;
 }
 
-/* line 5, ../sass/components/_ntsgrid.scss */
-.nts-grid-wrapper table tr td.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover {
-  background-color: aqua;
+/* line 6, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td,
+.nts-grid-wrapper table tr th.ui-iggrid-header {
+  border-color: #AAB7B8;
 }
 
-/* line 10, ../sass/components/_ntsgrid.scss */
+/* line 11, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td.ui-state-hover,
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
+.nts-grid tr td.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ui-state-hover {
+  background-color: aqua;
+  border-color: #AAB7B8;
+}
+
+/* line 19, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-disable.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover,
+.nts-grid tr td.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-disable.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
   background-color: #CCC;
   color: gray;
 }
 
-/* line 17, ../sass/components/_ntsgrid.scss */
+/* line 30, ../sass/components/_ntsgrid.scss */
 .ui-iggrid .ui-iggrid-tablebody td {
   height: 21px;
 }
 
-/* line 20, ../sass/components/_ntsgrid.scss */
+/* line 33, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover,
+.nts-grid tr td.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-calc.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-calc.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-calc.ui-state-hover {
   background-color: purple;
 }
 
-/* line 29, ../sass/components/_ntsgrid.scss */
+/* line 48, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3480,11 +3438,19 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover,
+.nts-grid tr td.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-reflect.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-reflect.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-reflect.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-reflect.ui-state-hover {
   background-color: green;
 }
 
-/* line 40, ../sass/components/_ntsgrid.scss */
+/* line 67, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3494,11 +3460,21 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover,
+.nts-grid tr td.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-manual-edit-other.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-manual-edit-other.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
   background-color: orange;
 }
 
-/* line 53, ../sass/components/_ntsgrid.scss */
+/* line 90, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3510,11 +3486,23 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover,
+.nts-grid tr td.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-manual-edit-target.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-manual-edit-target.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
   background-color: pink;
 }
 
-/* line 68, ../sass/components/_ntsgrid.scss */
+/* line 117, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3528,11 +3516,25 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover,
+.nts-grid tr td.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-alarm.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-alarm.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-alarm.ui-state-hover {
   background-color: yellow;
 }
 
-/* line 85, ../sass/components/_ntsgrid.scss */
+/* line 148, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3548,11 +3550,27 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ntsgrid-error.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover,
+.nts-grid tr td.ntsgrid-error,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error,
+.nts-grid tr td.ntsgrid-error.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-alarm,
+.nts-grid tr td.ntsgrid-error.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-manual-edit-target,
+.nts-grid tr td.ntsgrid-error.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-manual-edit-other,
+.nts-grid tr td.ntsgrid-error.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-reflect,
+.nts-grid tr td.ntsgrid-error.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-calc,
+.nts-grid tr td.ntsgrid-error.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ntsgrid-disable,
+.nts-grid tr td.ntsgrid-error.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ntsgrid-error.ui-state-hover {
   background-color: red;
 }
 
-/* line 104, ../sass/components/_ntsgrid.scss */
+/* line 183, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3570,71 +3588,110 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ui-state-hover,
-.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
+.nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover,
+.nts-grid tr td.ui-iggrid-selectedcell,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-error,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-error,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-alarm,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-alarm,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-manual-edit-target,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-manual-edit-target,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-manual-edit-other,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-manual-edit-other,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-reflect,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-reflect,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-calc,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-calc,
+.nts-grid tr td.ui-iggrid-selectedcell.ntsgrid-disable,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
+.nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover,
+.nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
   background-color: #007fff;
 }
 
-/* line 129, ../sass/components/_ntsgrid.scss */
+/* line 222, ../sass/components/_ntsgrid.scss */
+.nts-image-container {
+  height: 100%;
+  text-align: center;
+}
+
+/* line 231, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 137, ../sass/components/_ntsgrid.scss */
+/* line 239, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }
 
+/* line 1, ../sass/components/_extable.scss */
 .extable {
   position: relative;
 }
 
-/* line 1, ../sass/components/_extable.scss */
+.extable table th, .extable table td {
+	border: 1px solid #AAB7B8;
+}
+
+/* line 4, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
   background-color: #CFF1A5;
   font-weight: bold;
 }
 
-/* line 6, ../sass/components/_extable.scss */
+/* line 9, ../sass/components/_extable.scss */
 .extable td.edit-cell {
   padding: 0px;
 }
 
-/* line 9, ../sass/components/_extable.scss */
+/* line 12, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
   background-color: aqua;
 }
 
-/* line 12, ../sass/components/_extable.scss */
+/* line 15, ../sass/components/_extable.scss */
 .extable div.xdet, .extable td.xdet {
   background-color: #D2B4DE;
 }
 
-/* line 15, ../sass/components/_extable.scss */
+/* line 18, ../sass/components/_extable.scss */
 .extable div.edited, .extable td.edited {
   background-color: #FAD7A0;
 }
 
-.extable td.ex-round-go {
-	cursor: pointer;
+.extable div.xhidden, .extable td.xhidden {
+	background-color: #CCC;
 }
 
-/* line 18, ../sass/components/_extable.scss */
+.extable div.xseal, .extable td.xseal {
+	background-color: #CCC;
+}
+
+/* line 21, ../sass/components/_extable.scss */
+.extable td.ex-round-go {
+  cursor: pointer;
+}
+
+/* line 24, ../sass/components/_extable.scss */
 .extable div.x-cell-selected, .extable td.x-cell-selected {
   background-color: #3498DB;
   color: #FFF;
 }
 
+/* line 28, ../sass/components/_extable.scss */
 .extable tr.x-row-selected {
-	background-color: #AED6F1;
+  background-color: #AED6F1;
 }
 
-/* line 22, ../sass/components/_extable.scss */
+/* line 31, ../sass/components/_extable.scss */
 .extable td.x-error, .extable div.x-error {
   border: solid 1px #FF6666 !important;
 }
 
-/* line 25, ../sass/components/_extable.scss */
+/* line 34, ../sass/components/_extable.scss */
 .extable td .column-icon {
   position: absolute;
   left: 6px;
@@ -3642,24 +3699,27 @@ button.nts-switch-button[disabled]:hover {
   margin-top: -8px;
 }
 
+/* line 40, ../sass/components/_extable.scss */
 .ex-editor input::-ms-clear {
   display: none;
 }
 
+/* line 43, ../sass/components/_extable.scss */
 .extable-crud {
   padding-bottom: 4px;
 }
 
+/* line 46, ../sass/components/_extable.scss */
 .extable-delete-rows {
   margin-left: 4px;
 }
 
-/* line 32, ../sass/components/_extable.scss */
+/* line 49, ../sass/components/_extable.scss */
 div .ex-area-line.x-stay {
   cursor: default !important;
 }
 
-/* line 36, ../sass/components/_extable.scss */
+/* line 53, ../sass/components/_extable.scss */
 .top-right-tooltip:before {
   width: 0;
   height: 0;
@@ -3674,7 +3734,7 @@ div .ex-area-line.x-stay {
   left: -14px;
 }
 
-/* line 49, ../sass/components/_extable.scss */
+/* line 66, ../sass/components/_extable.scss */
 .top-right-tooltip {
   background-color: #CACA1E;
   box-shadow: 2px 2px 2px #95A5A6;
@@ -3685,7 +3745,7 @@ div .ex-area-line.x-stay {
   padding-top: 4px;
 }
 
-/* line 59, ../sass/components/_extable.scss */
+/* line 76, ../sass/components/_extable.scss */
 .x-context-menu {
   position: absolute;
   display: inline-block;
@@ -3695,9 +3755,10 @@ div .ex-area-line.x-stay {
   padding: 4px 0;
   border-radius: 2px;
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+  z-index: 120050;
 }
 
-/* line 69, ../sass/components/_extable.scss */
+/* line 87, ../sass/components/_extable.scss */
 .x-context-menu:after {
   content: '';
   display: block;
@@ -3712,7 +3773,7 @@ div .ex-area-line.x-stay {
   z-index: 1;
 }
 
-/* line 83, ../sass/components/_extable.scss */
+/* line 101, ../sass/components/_extable.scss */
 .x-context-menu li {
   position: relative;
   display: block;
@@ -3723,19 +3784,19 @@ div .ex-area-line.x-stay {
   z-index: 2;
 }
 
-/* line 92, ../sass/components/_extable.scss */
+/* line 110, ../sass/components/_extable.scss */
 .x-context-menu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
 
-/* line 95, ../sass/components/_extable.scss */
+/* line 113, ../sass/components/_extable.scss */
 .x-context-menu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
 
-/* line 100, ../sass/components/_extable.scss */
+/* line 118, ../sass/components/_extable.scss */
 .x-context-menu li .menu-icon {
   position: absolute;
   left: 7px;
@@ -3743,7 +3804,7 @@ div .ex-area-line.x-stay {
   margin-top: -8px;
 }
 
-/* line 106, ../sass/components/_extable.scss */
+/* line 124, ../sass/components/_extable.scss */
 .x-context-menu .partition {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3751,7 +3812,7 @@ div .ex-area-line.x-stay {
   margin: 5px 0;
 }
 
-/* line 113, ../sass/components/_extable.scss */
+/* line 131, ../sass/components/_extable.scss */
 .x-popup-panel {
   position: absolute;
   display: block;
@@ -3763,7 +3824,7 @@ div .ex-area-line.x-stay {
   padding: 5px;
 }
 
-/* line 124, ../sass/components/_extable.scss */
+/* line 142, ../sass/components/_extable.scss */
 .x-link {
   display: inline-block;
   color: #0D86D1;
@@ -3791,6 +3852,7 @@ div .ex-area-line.x-stay {
   background: #ffc;
   border: solid 1px #b85;
   padding: 5px;
+  z-index: 120100;
 }
 
 /* line 1, ../sass/components/_legendbutton.scss */
@@ -3907,6 +3969,33 @@ div .ex-area-line.x-stay {
 /* line 30, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {
   margin: -1px 0 0 -1px;
+}
+
+/* line 2, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .browser-button {
+  float: left;
+  margin-right: 5px;
+}
+/* line 3, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .filenamelabel,
+.nts-fileupload-container .nts-editor-wrapped {
+  display: block;
+  overflow: hidden;
+}
+/* line 5, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .filenamelabel {
+  line-height: 30px;
+  text-overflow: ellipsis;
+}
+/* line 6, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .nts-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* line 7, ../sass/components/_fileupload.scss */
+.nts-fileupload-container .fileinput {
+  display: none;
 }
 
 /* line 1, ../sass/frame/_header.scss */
@@ -4072,12 +4161,120 @@ div .ex-area-line.x-stay {
   top: 10px;
 }
 
-/* line 47, ../sass/base.scss */
+/* line 1, ../sass/components/_imagepreview.scss */
+.image-holder {
+  width: 600px;
+  height: 600px;
+}
+
+/* line 5, ../sass/components/_imagepreview.scss */
+.image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 9, ../sass/components/_imagepreview.scss */
+.inline-container {
+  float: left;
+  padding: 5px 10px;
+}
+
+/* line 13, ../sass/components/_imagepreview.scss */
+.info-label {
+  display: block;
+}
+
+/* line 16, ../sass/components/_imagepreview.scss */
+.checkbox-holder {
+  padding: 10px 10px;
+}
+
+/* line 19, ../sass/components/_imagepreview.scss */
+.crop-icon {
+  border: 1px red solid;
+  height: 15px;
+  width: 25px;
+}
+
+/* line 24, ../sass/components/_imagepreview.scss */
+.crop-description {
+  padding: 5px 5px;
+}
+
+/* line 27, ../sass/components/_imagepreview.scss */
+.mouse-icon {
+  height: 15px;
+  width: 15px;
+  background-image: url("../images/mouse-128.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 5px 5px;
+}
+
+/* line 35, ../sass/components/_imagepreview.scss */
+.mouse-description-text {
+  padding: 5px 0px;
+}
+
+/* line 38, ../sass/components/_imagepreview.scss */
+.cropper-line {
+  background-color: red !important;
+}
+
+/* line 41, ../sass/components/_imagepreview.scss */
+.cropper-point {
+  background-color: red !important;
+}
+
+/* line 44, ../sass/components/_imagepreview.scss */
+.cropper-crop-box {
+  outline-color: rgba(255, 0, 0, 0.75) !important;
+  outline: 1px solid red !important;
+}
+
+.ntsTable td{
+	border: 0px;
+}
+	
+.ntsTable .ntsButtonTableButton {
+  	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
+  	border: 1px solid LightGrey;
+  	margin-bottom: 0px;
+	position: unset;
+}
+.ntsTable .ntsButtonTableButton:active {
+	position: unset;
+}
+.ntsTable .ntsButtonTableButton:hover {
+	background: #fff;
+}
+.ntsTable .ntsButtonTableButton:focus{
+	border: 1px solid LightGrey;
+}
+.ntsTable .ntsButtonCellData {
+  	border: 1px solid black;
+}
+.ntsTable .ntsButtonCellData:focus{
+	border: 1px solid black;
+}
+.ntsTable .ntsButtonCellSelected{
+	background-color: #BDD7EE;
+  	border: 1px solid DodgerBlue;
+}
+.ntsTable .ntsButtonCellSelected:focus{
+  	border: 1px solid DodgerBlue;
+}
+.ntsTable .ntsButtonCellSelected:hover{
+	background-color: #BDD7EE;
+  	border: 1px solid DodgerBlue;
+}
+
+/* line 49, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 51, ../sass/base.scss */
+/* line 53, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
