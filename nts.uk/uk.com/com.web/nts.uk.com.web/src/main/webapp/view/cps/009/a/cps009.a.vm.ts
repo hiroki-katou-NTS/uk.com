@@ -34,7 +34,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
-                $('.ntsSearchBox.nts-editor.ntsSearchBox_Component').focus();
+                $('#ctgName').focus();
                 nts.uk.ui.errors.clearAll();
                 if (value) {
                     service.getAllCtg(value).done((data: any) => {
@@ -209,6 +209,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             setShared('CPS009B_PARAMS', params);
             block.invisible();
             modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+                $('#ctgName').focus();
                 let itemSelected = getShared('CPS009B_DATA');
                 if (itemSelected.isCancel) {
                     return;
@@ -249,6 +250,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
 
             modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
+               $('#ctgName').focus();
                 self.start(params.settingId);
                 block.clear();
             });
@@ -265,6 +267,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
 
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
+                $('#ctgName').focus();
                 self.start(undefined);
                 block.clear();
             });
@@ -284,6 +287,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deleteInitVal(objDelete).done(function(data) {
                     dialog.info({ messageId: "Msg_16" }).then(function() {
+                        $('#ctgName').focus();
                         var sourceLength = self.initValSettingLst().length;
                         var i = _.findIndex(self.initValSettingLst(), function(init: IPerInfoInitValueSettingDto) { return init.settingId === self.initSettingId(); });
                         var evens = _.remove(self.initValSettingLst(), function(init: IPerInfoInitValueSettingDto) {
@@ -306,6 +310,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     });
                 });
             }).ifNo(() => {
+                $('#ctgName').focus();
                 block.clear();
                 return;
             });
@@ -360,6 +365,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             block.invisible();
             service.update(updateObj).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
+                    $('#ctgName').focus();
 //                    self.initSettingId("");
 //                    self.initSettingId.valueHasMutated();
 //                    self.initSettingId(updateObj.settingId);
