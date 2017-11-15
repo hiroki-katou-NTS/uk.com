@@ -4,14 +4,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistory;
 import nts.uk.ctx.bs.person.dom.person.info.widowhistory.WidowHistoryRepository;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 @Stateless
-public class AddWidowHistoryCommandHandler extends CommandHandler<AddWidowHistoryCommand>
+public class AddWidowHistoryCommandHandler extends CommandHandlerWithResult<AddWidowHistoryCommand,PeregAddCommandResult>
  implements PeregAddCommandHandler<AddWidowHistoryCommand>{
 	
 	@Inject
@@ -28,7 +29,7 @@ public class AddWidowHistoryCommandHandler extends CommandHandler<AddWidowHistor
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<AddWidowHistoryCommand> context) {
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddWidowHistoryCommand> context) {
 		val command = context.getCommand();
 		
 		// Create new Id
@@ -38,6 +39,8 @@ public class AddWidowHistoryCommandHandler extends CommandHandler<AddWidowHistor
 		
 		// Add WidowHistory
 		widowHistoryRepository.addWidowHistory(widowHistory);
+		
+		return new PeregAddCommandResult(newId);
 	}
 
 }
