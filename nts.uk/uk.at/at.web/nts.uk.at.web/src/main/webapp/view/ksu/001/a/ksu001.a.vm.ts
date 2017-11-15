@@ -88,6 +88,10 @@ module ksu001.a.viewmodel {
         lengthListSid: any;
         workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
         dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
+        listStateWorkTypeCode: KnockoutObservableArray<any> = ko.observableArray([]);
+        dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
+        dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
+        dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -201,20 +205,44 @@ module ksu001.a.viewmodel {
                     startDate: self.dtPrev(),
                     endDate: self.dtAft()
                 };
+
             service.getDataBasicSchedule(obj).done(function(data: BasicSchedule[]) {
-                if (data) {
-                    _.each(data, (x: BasicSchedule) => {
-                        self.dataSource.push(new BasicSchedule({
-                            date: x.date,
-                            employeeId: x.employeeId,
-                            workTimeCode: x.workTimeCode,
-                            workTypeCode: x.workTypeCode,
-                            confirmedAtr: x.confirmedAtr,
-                            workDayAtr: x.workDayAtr,
-                            isIntendedData: true
-                        }));
-                    });
-                }
+                self.dataSource([]);
+                _.each(data, (x: BasicSchedule) => {
+                    self.dataSource.push(new BasicSchedule({
+                        date: x.date,
+                        employeeId: x.employeeId,
+                        workTimeCode: x.workTimeCode,
+                        workTypeCode: x.workTypeCode,
+                        confirmedAtr: x.confirmedAtr,
+                        workDayAtr: x.workDayAtr,
+                        isIntendedData: true
+                    }));
+                });
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Check State of list WorkTypeCode
+         */
+        checkStateWorkTypeCode(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                lstWorkTypeCode = [],
+                lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
+            if (lstIntendedData.length > 0) {
+                _.map(lstIntendedData, (x) => {
+                    if (!_.includes(lstWorkTypeCode, x.workTypeCode)) {
+                        lstWorkTypeCode.push(x.workTypeCode);
+                    }
+                });
+            }
+            service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
+                self.listStateWorkTypeCode(data);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -241,6 +269,65 @@ module ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
+
+        /**
+         * Get data WkpSpecificDate
+         */
+        getDataWkpSpecificDate(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                obj = {
+                    workplaceId: self.empItems()[0].workplaceId,
+                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
+                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
+                };
+            service.getDataWkpSpecificDate(obj).done(function(data) {
+                self.dataWkpSpecificDate(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Get data WkpSpecificDate
+         */
+        getDataComSpecificDate(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                obj = {
+                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
+                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
+                };
+            service.getDataComSpecificDate(obj).done(function(data) {
+                self.dataComSpecificDate(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Get data Public Holiday
+         */
+        getDataPublicHoliday(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                obj = {
+                    startDate: +moment(self.dtPrev()).format('YYYYMMDD'),
+                    endDate: +moment(self.dtAft()).format('YYYYMMDD'),
+                };
+            service.getDataPublicHoliday(obj).done(function(data) {
+                self.dataPublicHoliday(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
 
         /**
          * CCG001 return listEmployee
@@ -353,8 +440,6 @@ module ksu001.a.viewmodel {
                 leftHorzContentDs = [],
                 vertSumContentDs = [];
 
-            //            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
-            //test
             self.setColor(detailHeaderDeco, detailContentDeco);
 
             //create dataSource for detailHeader
@@ -655,10 +740,8 @@ module ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
-            //Paste data into cell (set-sticker-single)
-            //            $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
 
-            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
+            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
             _.each(self.listSid(), (x) => {
                 //newLeftMost dataSource
@@ -672,6 +755,14 @@ module ksu001.a.viewmodel {
                 //newVertSumContent dataSource
                 newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
+
+            //create new detailHeaderDs
+            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            for (let i = 0; i < self.arrDay.length; i++) {
+                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
+            }
+            newDetailHeaderDs.push(newObjDetailHeaderDs);
+
             //newLeftHorzSContent dataSource
             for (let i = 0; i < 5; i++) {
                 newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
@@ -697,25 +788,62 @@ module ksu001.a.viewmodel {
                 });
             });
 
-            let updateLeftmostContent = {
-                dataSource: newLeftMostDs,
-            };
-
             let updateMiddleContent = {
                 dataSource: newMiddleDs,
             };
 
-            let detailHeaderDeco = [], detailContentDeco = [];
-            //Set color for detail
-            //            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
-            //test
+            let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
+
             self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
+                //TO-DO test 
+                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000001", "bg-schedule-no-empl-insurance"));
+                leftmostContentDeco.push(new CellColor("empName", "90000000-0000-0000-0000-000000000003", "bg-schedule-no-empl-insurance"));
+                
+                let updateLeftmostContent = {
+                    dataSource: newLeftMostDs,
+                    features: [{
+                        name: "BodyCellStyle",
+                        decorator: leftmostContentDeco
+                    }]
+                }
+
+                let updateDetailHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }, {
+                            name: "HeaderPopups",
+                            menu: {
+                                rows: [0],
+                                items: [
+                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                ]
+                            },
+                            popup: {
+                                rows: [1],
+                                provider: function() { return $("#popup-area4"); }
+                            }
+                        }]
+                };
+
                 let updateDetailContent = {
                     columns: newDetailColumns,
                     dataSource: newDetailContentDs,
                     features: [{
                         name: "BodyCellStyle",
                         decorator: detailContentDeco
+                    }]
+                };
+
+                let updateHorzSumHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
                     }]
                 };
 
@@ -736,13 +864,11 @@ module ksu001.a.viewmodel {
                 $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
                 $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
                 $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
-                $("#extable").exTable("updateTable", "detail", {}, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", {}, updateHorzSumContent);
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                $("#extable").on("extablecellupdated", function() {
-                });
-                $("#extable").on("extablerowupdated", function() {
-                });
+                $("#extable").on("extablecellupdated", function() { });
+                $("#extable").on("extablerowupdated", function() { });
             });
         }
 
@@ -787,47 +913,131 @@ module ksu001.a.viewmodel {
             }
 
             let detailHeaderDeco = [], detailContentDeco = [];
-            //Set color for detail
-            //            self.setColorForDetail(detailHeaderDeco, detailCon            
-            //test
-            self.setColor(detailHeaderDeco, detailContentDeco);
-
-
-            let updateDetailHeader = {
-                columns: newDetailColumns,
-                dataSource: newDetailHeaderDs,
-                features: [{
-                    name: "HeaderCellStyle",
-                    decorator: detailHeaderDeco
-                }, {
-                        name: "HeaderPopups",
-                        menu: {
-                            rows: [0],
-                            items: [
-                                { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                            ]
-                        },
-                        popup: {
-                            rows: [1],
-                            provider: function() { return $("#popup-area8"); }
-                        }
-                    }]
-            };
 
             //if haven't data in extable, only update header detail and header horizontal
             if (self.empItems().length == 0) {
+                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco);
+
+                let updateDetailHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }, {
+                            name: "HeaderPopups",
+                            menu: {
+                                rows: [0],
+                                items: [
+                                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                ]
+                            },
+                            popup: {
+                                rows: [1],
+                                provider: function() { return $("#popup-area8"); }
+                            }
+                        }]
+                };
+
+                let updateHorzSumHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }]
+                };
+
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
             } else if (self.selectedModeDisplayObject() == 1) {
                 self.getDataBasicSchedule().done(() => {
-                    //intended data display mode 
-                    //dataSour of detail
-                    _.each(self.listSid(), (x) => {
-                        let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                        newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                    });
+                    self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
 
+
+                        let updateDetailHeader = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailHeaderDs,
+                            features: [{
+                                name: "HeaderCellStyle",
+                                decorator: detailHeaderDeco
+                            }, {
+                                    name: "HeaderPopups",
+                                    menu: {
+                                        rows: [0],
+                                        items: [
+                                            { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                            { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                        ]
+                                    },
+                                    popup: {
+                                        rows: [1],
+                                        provider: function() { return $("#popup-area8"); }
+                                    }
+                                }]
+                        };
+
+                        //intended data display mode 
+                        //dataSour of detail
+                        _.each(self.listSid(), (x) => {
+                            let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
+                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                        });
+
+                        let updateDetailContent = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailContentDs,
+                            features: [{
+                                name: "BodyCellStyle",
+                                decorator: detailContentDeco
+                            }]
+                        };
+
+                        let updateHorzSumHeader = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailHeaderDs,
+                            features: [{
+                                name: "HeaderCellStyle",
+                                decorator: detailHeaderDeco
+                            }]
+                        };
+
+                        let updateHorzSumContent = {
+                            columns: newDetailColumns,
+                            dataSource: horzSumContentDs
+                        };
+
+                        $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                    });
+                });
+            } else if (self.selectedModeDisplayObject() == 2) {
+                self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
+                    let updateDetailHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
+                            name: "HeaderCellStyle",
+                            decorator: detailHeaderDeco
+                        }, {
+                                name: "HeaderPopups",
+                                menu: {
+                                    rows: [0],
+                                    items: [
+                                        { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                        { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                    ]
+                                },
+                                popup: {
+                                    rows: [1],
+                                    provider: function() { return $("#popup-area8"); }
+                                }
+                            }]
+                    };
+
+                    //actual data display mode , if hasn't actual data, display intended data
+                    newDetailContentDs.push(new ExItem(null, [], __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
                     let updateDetailContent = {
                         columns: newDetailColumns,
                         dataSource: newDetailContentDs,
@@ -837,55 +1047,77 @@ module ksu001.a.viewmodel {
                         }]
                     };
 
+                    let updateHorzSumHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
+                            name: "HeaderCellStyle",
+                            decorator: detailHeaderDeco
+                        }]
+                    };
+
                     let updateHorzSumContent = {
                         columns: newDetailColumns,
                         dataSource: horzSumContentDs
                     };
 
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
+                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
                 });
-            } else if (self.selectedModeDisplayObject() == 2) {
-                //actual data display mode , if hasn't actual data, display intended data
-                newDetailContentDs.push(new ExItem(null, [], __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                let updateDetailContent = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailContentDs,
-                    features: [{
-                        name: "BodyCellStyle",
-                        decorator: detailContentDeco
-                    }]
-                };
-
-                let updateHorzSumContent = {
-                    columns: newDetailColumns,
-                    dataSource: horzSumContentDs
-                };
-
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
             }
         }
 
         /**
-         * Set color for cell : 明細セル背景色の判断処理
          * Set color for text in cell : 明細セル文字色の判断処理
-         * Set color for cell header: 日付セル背景色文字色制御
          */
-        setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
+        setColorForText(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-
-            //Set color for cell header
-            if (moment().isBetween(self.dtPrev(), self.dtAft())) {
-                detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day text-align-center"));
-                detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
+            //Set color for text in cell 
+            if (self.selectedModeDisplayObject() == 2) {
+                let arrActualData: [] = _.filter(self.dataSource(), { 'isIntendedData': false });
+                if (arrActualData.length > 0) {
+                    _.each(arrActualData, (item: BasicSchedule) => {
+                        detailContentDeco.push(new CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance"));
+                    });
+                }
             }
-            //TO-DO
 
-            //Set color for cell
+            if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 3) {
+                self.checkStateWorkTypeCode().done(function() {
+                    _.each(self.dataSource(), (item) => {
+                        let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
+                        if (stateWorkTypeCode) {
+                            let state = stateWorkTypeCode.state;
+                            if (state == 3) {
+                                //state == 3 is work-day
+                                detailContentDeco.push(new CellColor("_" + moment(item.date).format('YYYYMMDD'), item.employeeId, "color-attendance"));
+                            } else if (state == 0) {
+                                //state == 0 is holiday-day
+                                detailContentDeco.push(new CellColor("_" + moment(item.date).format('YYYYMMDD'), item.employeeId, "color-holiday"));
+                            } else {
+                                //state == 1 || 2 is work-half-day
+                                detailContentDeco.push(new CellColor("_" + moment(item.date).format('YYYYMMDD'), item.employeeId, "color-half-day-work"));
+                            }
+                        }
+                    });
+                    dfd.resolve();
+                });
+            } else {
+                dfd.resolve();
+            }
+
+            return dfd.promise();
+        }
+
+        /**
+         * Set color for cell
+         */
+        setColorForCell(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             if (self.selectedBackgroundColor() === '001') {
-                // TO_DO
-                // Return value：就業時間帯 -> query table WorkTime to get color code
+                // Return value：就業時間帯 -> query table WorkTime to get color cod
+                //TO-DO
+                dfd.resolve();
             } else {
                 //get data from WorkScheduleState
                 self.getDataWorkScheduleState().done(() => {
@@ -919,7 +1151,6 @@ module ksu001.a.viewmodel {
                                 }
                             }
                         });
-
                     } else {
                         //Return value of ScheduleEditState of WorkScheduleState
                         let data = [];
@@ -956,49 +1187,60 @@ module ksu001.a.viewmodel {
                             }
                         });
                     }
+                    dfd.resolve();
                 });
             }
-            
-            //Set color for text in cell 
-            if(self.selectedModeDisplayObject() == 2){
-                let arrActualData: [] = _.filter(self.dataSource(), {'isIntendedData' : false});
-                if(arrActualData.length > 0){
-                    _.each(arrActualData, (item: BasicSchedule)=>{
-                        detailContentDeco.push(new CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance"));
-                    });    
-                }
-                
-                if(self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 3){
-                    //TO-DO
-                }
-            }
-            
-            dfd.resolve();
             return dfd.promise();
         }
 
-        setColorForDetail(detailHeaderDeco: any, detailContentDeco: any): void {
-            let self = this;
-            //Set color for detailHeader
-            for (let i = 0; i < self.arrDay.length; i++) {
-                if (self.arrDay[i].weekDay == '土') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "color-blue text-color-blue text-align-center"));
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 1, "color-blue"));
-                } else if (self.arrDay[i].weekDay == '日') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "color-pink text-color-red text-align-center"));
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 1, "color-pink"));
-                } else {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "text-align-center"));
+        /**
+         * Set color for cell header: 日付セル背景色文字色制御
+         * 
+         */
+        setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            if (self.empItems().length != 0) {
+                if (moment().isBetween(self.dtPrev(), self.dtAft())) {
+                    detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day text-align-center"));
+                    detailHeaderDeco.push(new CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
                 }
-                //Set color for detailContent
-                _.each(self.listSid(), (empId) => {
-                    if (self.arrDay[i].weekDay == '土' || self.arrDay[i].weekDay == '日') {
-                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-red"));
-                    } else {
-                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-blue"));
-                    }
+                $.when(self.getDataWkpSpecificDate(), self.getDataComSpecificDate(), self.getDataPublicHoliday()).done(() => {
+                    _.each(self.arrDay, (date) => {
+                        let dateFormat = +date.yearMonthDay;
+                        if (self.dataWkpSpecificDate().includes(dateFormat) || self.dataComSpecificDate().includes(dateFormat)) {
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-specific-date text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-specific-date"));
+                        } else if (self.dataPublicHoliday().includes(dateFormat)) {
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-sunday color-schedule-sunday"));
+                        } else if (date.weekDay === '土') {
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-saturday color-schedule-saturday  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-saturday color-schedule-saturday"));
+                        } else if (date.weekDay === '日') {
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-schedule-sunday color-schedule-sunday  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-schedule-sunday color-schedule-sunday"));
+                        } else {
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 0, "bg-weekdays color-weekdays  text-align-center"));
+                            detailHeaderDeco.push(new CellColor("_" + dateFormat, 1, "bg-weekdays color-weekdays"));
+                        }
+                    });
+                    dfd.resolve();
                 });
+            } else {
+                dfd.resolve();
             }
+            return dfd.promise();
+        }
+
+        /**
+         * Set color for cell : 明細セル背景色の判断処理
+         */
+        setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco), self.setColorForCell(detailHeaderDeco, detailContentDeco)).done(() => {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         /**
@@ -1056,6 +1298,7 @@ module ksu001.a.viewmodel {
         openDialogD(): void {
             let self = this;
             setShared('dataForScreenD', {
+                dataSource: self.dataSource(),
                 empItems: self.empItems(),
                 startDate: self.dtPrev(),
                 endDate: self.dtAft()
@@ -1271,7 +1514,6 @@ module ksu001.a.viewmodel {
     }
 
     class Time {
-        ymd: Date;
         year: string;
         month: string;
         day: string;
@@ -1279,12 +1521,11 @@ module ksu001.a.viewmodel {
         yearMonthDay: string;
 
         constructor(ymd: Date) {
-            this.ymd = ymd;
-            this.year = moment(this.ymd).format('YYYY');
-            this.month = moment(this.ymd).format('M');
-            this.day = moment(this.ymd).format('D');
-            this.weekDay = moment(this.ymd).format('dd');
-            this.yearMonthDay = this.year + moment(this.ymd).format('MM') + moment(this.ymd).format('DD');
+            this.year = moment(ymd).format('YYYY');
+            this.month = moment(ymd).format('M');
+            this.day = moment(ymd).format('D');
+            this.weekDay = moment(ymd).format('dd');
+            this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
         }
     }
 
@@ -1397,18 +1638,8 @@ module ksu001.a.viewmodel {
                 let obj: BasicSchedule = _.find(dsOfSid, (x) => {
                     return moment(new Date(x.date)).format('D') == arrDay[i].day;
                 });
-                //holiday
-                if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {
-                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
-                        endTime: null,
-                        startTime: null,
-                        symbol: null,
-                        workTimeCode: "",
-                        workTimeName: "",
-                        workTypeCode: "",
-                        workTypeName: "休日",
-                    });
-                } else if (obj) {
+                //holida                //                if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土')                 //                    this['_' + arrDay[i].yearMonthDay] = new ExCell(                //                        endTime: null                //                        startTime: null                //                        symbol: null                //                        workTimeCode: ""                //                        workTimeName: ""                //                        workTypeCode: ""                //                        workTypeName: ""                //                    })                //                } else 
+                if (obj) {
                     //get code and name of workType and workTime
                     let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;
                     let workType = _.find(listWorkType, ['workTypeCode', obj.workTypeCode]);

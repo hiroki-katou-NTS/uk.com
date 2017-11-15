@@ -14,7 +14,6 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetReposit
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
@@ -39,9 +37,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
-import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControlRepository;
-import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -73,10 +68,6 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The cre set repository. */
 	@Inject
 	private PersonalWorkScheduleCreSetRepository creSetRepository;
-	
-	/** The control repository. */
-	@Inject
-	private ScheduleManagementControlRepository controlRepository;
 	
 	/** The content repository. */
 	@Inject
@@ -164,8 +155,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		// check exist data
 		if (optionalScheduleExecutionLog.isPresent()) {
 			ScheduleExecutionLog domain = optionalScheduleExecutionLog.get();
-			domain.setExecutionDateTime(
-					new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now()));
+			domain.setExecutionTimeToNow();
 			this.scheduleExecutionLogRepository.update(domain);
 			Optional<ScheduleCreateContent> optionalContent = this.contentRepository
 					.findByExecutionId(command.getExecutionId());
@@ -200,32 +190,19 @@ public class ScheduleCreatorExecutionCommandHandler
 				asyncTask.finishedAsCancelled();
 				break;
 			}
-			Optional<ScheduleManagementControl> optionalScheduleManagementControl;
-			optionalScheduleManagementControl = this.controlRepository
-					.findById(domain.getEmployeeId());
+			
+			// check processExecutionAtr reconfig
+			if (command.getContent().getReCreateContent()
+					.getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value) {
+				this.resetSchedule(command, domain, scheduleExecutionLog);
+			} else {
 
-			// check exist data schedule management control
-			if (optionalScheduleManagementControl.isPresent()) {
-				ScheduleManagementControl scheduleManagementControl = optionalScheduleManagementControl
-						.get();
-
-				// check use manager control use
-				if (scheduleManagementControl.getScheduleManagementAtr().equals(UseAtr.USE)) {
-
-					// check processExecutionAtr reconfig
-					if (command.getContent().getReCreateContent()
-							.getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value) {
-						this.resetSchedule(command, domain, scheduleExecutionLog);
-					} else {
-
-						// check parameter CreateMethodAtr
-						if (command.getContent()
-								.getCreateMethodAtr().value == CreateMethodAtr.PERSONAL_INFO.value) {
-							this.createScheduleBasedPerson(command, domain, scheduleExecutionLog);
-						}
-					}
+				// check parameter CreateMethodAtr
+				if (command.getContent().getCreateMethodAtr().value == CreateMethodAtr.PERSONAL_INFO.value) {
+					this.createScheduleBasedPerson(command, domain, scheduleExecutionLog);
 				}
 			}
+			
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
 		}

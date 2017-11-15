@@ -16,7 +16,7 @@ import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenRe
  *
  */
 @Stateless
-public class JpaWorkScheduleScheduleScreenRepository extends JpaRepository
+public class JpaWorkScheduleStateScreenRepository extends JpaRepository
 		implements WorkScheduleStateScreenRepository {
 
 	private final String SELECT_BY_SID_AND_DATE_AND_SCHEDULE_ITEM_ID = "SELECT a FROM KscstWorkScheduleState a "
