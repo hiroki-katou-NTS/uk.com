@@ -260,6 +260,22 @@ module nts.uk.at.view.ksc001.b {
                return $('#wizard').ntsWizard("prev");
             }
             /**
+             * function next two page wizard by on click button 
+             */
+            private nextTwo(): JQueryPromise<void> {
+                var index = $('#wizard').ntsWizard("getCurrentStep");
+                index = index + 2;
+                return $('#wizard').ntsWizard("goto", index);
+            }
+             /**
+             * function previous wizard by on click button 
+             */
+            private previousTwo(): JQueryPromise<void> {
+                var index = $('#wizard').ntsWizard("getCurrentStep");
+                index = index - 2;
+                return $('#wizard').ntsWizard("goto", index);
+            }
+            /**
              * function convert string to Date
              */
             private toDate(strDate: string): Date {
@@ -413,26 +429,27 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 self.previous();
             }
+            
             /**
              * function next page by selection employee goto next page
              */
             private nextPageC(): void {
                 var self = this;
-                self.next().done(function() {
-                    if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) 
+                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
                     && self.checkProcessExecutionAtrReconfig()) {
-                        //build string for Screen E
-                        self.buildString();
-                        //goto screen E
-                        self.next().done(function() {
-                            $('#buttonFinishPageE').focus();
-                        });
-                    }
-                    else {
+                    //build string for Screen E
+                    self.buildString();
+                    //goto screen E
+                    self.nextTwo().done(function() {
+                        $('#buttonFinishPageE').focus();
+                    });
+                }
+                else {
+                    self.next().done(function() {
                         $('#inputCreateMethodAtr').focus();
-                    }
-                });
-                
+                    });
+                }
+
             }
             /**
              * function previous page by selection employee goto page (D)
@@ -512,12 +529,14 @@ module nts.uk.at.view.ksc001.b {
              */
             private previousPageE(): void {
                 var self = this;
-                 self.previous();
-                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                     && self.checkProcessExecutionAtrReconfig()) {
-                     //back screen C
-                     self.previous();
-                 }
+
+                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                    && self.checkProcessExecutionAtrReconfig()) {
+                    //back screen C
+                    self.previousTwo();
+                } else {
+                    self.previous();
+                }
             }
             /**
              * finish next page by selection employee goto page (F)
