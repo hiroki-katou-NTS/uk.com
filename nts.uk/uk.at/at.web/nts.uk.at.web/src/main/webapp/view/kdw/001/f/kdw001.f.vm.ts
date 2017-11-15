@@ -101,7 +101,9 @@ module nts.uk.at.view.kdw001.f {
                     data = _.orderBy(data, ['executionDate'], ['desc']);
                     let temp = [];
                     _.each(data, (value) => {
-                        self.listSid.push(value.employeeID);
+                        
+                        if (self.listSid.indexOf(value.employeeID) != -1)
+                            self.listSid.push(value.employeeID);
                         
                         let item = new model.EmpCalAndSumExeLog(value);
                         //executedMenuName
