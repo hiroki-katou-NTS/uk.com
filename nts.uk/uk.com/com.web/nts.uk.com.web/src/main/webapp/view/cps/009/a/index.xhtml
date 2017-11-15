@@ -120,7 +120,7 @@
 									<!-- A3_13: button ヘルプボタン -->
 									<button class="small" data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }">?</button>
 									<!-- A3_014: 履歴参照基準日(History reference date) -->
-									<div id="date" data-bind="ntsDatePicker: {
+									<div id="date1" data-bind="ntsDatePicker: {
 											name: '#[CPS009_19]',
 											value: baseDate, 
 											required: true,
@@ -159,7 +159,7 @@
 												<!-- A3_018: button 一括設定ボタン -->
 												<button id="A2_012" class = "small" data-bind=" click: openBDialog">#{i18n.getText('CPS009_22')} </button>
 												<!-- A3_019: help button -->
-												<button id="help" data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }">?</button>
+												<button id="help" data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }" NameID="A">?</button>
 											</td>
 											<!-- A3_020: header 値 -->
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
@@ -192,50 +192,29 @@
 												]}"></div>
 
 										</td>
+										  
+									<com:ko-if bind="[0, 1, 3, 4, 5, 6, 7, 8, undefined].indexOf(selectedRuleCode()) > -1"> 
+ 										<td id="notdata" colspan="2" >
+ 										<span></span>
+ 										</td>
+ 									</com:ko-if> 
 
  						 	 		<com:ko-if bind="(selectedRuleCode() === 2 )">   
 										<td colspan="2" class="input-units-3 ">
 											<!-- String  -->
 											<com:ko-if bind="(dataType() === 0) || (dataType() === 1)">
+											
 												<input id="string" class="sub-input-units save-error"
 														data-bind="ntsTextEditor: {
-														name:  itemName,
+														name:  itemName ,
 														value: stringValue , 
-														constraint: constraint}" />
+														constraint: constraint},
+														attr: { NameID: itemName }" />
 											</com:ko-if> 
-											
-											<!-- number  --> 
-											<com:ko-if bind="(dataType() === 2)">
-											
-											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
-												<div data-bind="with: numbereditor">
- 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
- 												 		name:  itemName,
- 												 		value: value,
-														constraint: constraint,
-														option: option,
-														enable: enable,
-														readonly: readonly,
-														immediate: false}" /> 
-												</div>
-											</com:ko-if>
-											
-											<com:ko-if bind=" ((numbericItem.numberDecimalPart !== 0)) ">
-												<div data-bind="with: numbereditor">
- 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
- 														name:  itemName,
- 														value: value,
-														constraint: constraint,
-														option: option,
-														enable: enable,
-														readonly: readonly,
-														immediate: false}" /> 
-												</div>
-											</com:ko-if>											
-											</com:ko-if>
 											
 											 <!-- date  --> 
 											 <com:ko-if bind="(dataType() === 3)">
+											 
 											 	 <!-- date thuộc kiểu ngày tháng năm  --> 
 											 	<com:ko-if bind="(dateType === 1)">
 													<div id="date" class="sub-input-units save-error input-units-3 " 
@@ -243,7 +222,9 @@
 														 name:  itemName,
 														 value: dateValue, 
 														 dateFormat: 'YYYY/MM/DD',
-														 valueFormat: 'YYYY/MM/DD'}"></div>
+														 valueFormat: 'YYYY/MM/DD'
+														 }, attr: { NameID: itemName }">
+													 </div>
 												</com:ko-if>
 												
 												<!-- date thuộc kiểu tháng năm  --> 
@@ -253,7 +234,9 @@
 	                   									name:  itemName,
 	                   									value: dateValue, 
 	                   									dateFormat: 'YYYY/MM', 
-	                   									valueFormat: 'YYYY/MM'}"></div>								
+	                   									valueFormat: 'YYYY/MM'
+	                   									}, attr: { NameID: itemName }">
+	                   								</div>								
 												</com:ko-if>
 												
 												<!-- date thuộc kiểu  năm  --> 			
@@ -263,19 +246,23 @@
 														name:  itemName,
 														value: dateValue, 
 														dateFormat: 'YYYY', 
-														valueFormat: 'YYYY'}"></div>	
-												</com:ko-if>																							
+														valueFormat: 'YYYY'},
+														attr: { NameID: itemName }">
+													</div>	
+												</com:ko-if>	
+																																		
 											</com:ko-if> 
 											
 											<!-- timeitem  --> 
 											<com:ko-if bind="(dataType() === 4)">
 												<input id="timeItem" class="sub-input-units save-error input-units-3 "
 													data-bind="ntsTimeWithDayEditor: {
-													name: 'Time With Day', 
+													name: itemName, 
 													constraint: itemCode, 
 													value: dateWithDay, 
 													enable: true, 
-													readonly: false }" />
+													readonly: false},
+													attr: { NameID: itemName }" />
 											</com:ko-if>
 											
 											 <!-- timepoint  --> 
@@ -286,7 +273,8 @@
 														constraint: itemCode, 
 														value: dateWithDay, 
 														enable: true, 
-														readonly: false }" />
+														readonly: false },
+														attr: { NameID: itemName }" />
 											</com:ko-if>
 											
 											 <!--  list box  -->
@@ -304,16 +292,39 @@
 														{ prop: 'selectionName', length: 5 },
 													]}"></div>
 											</com:ko-if>
-
+											
+											<!-- number  --> 
+											<com:ko-if bind="(dataType() === 2)">											
+												<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
+													<div data-bind="with: numbereditor">
+		 												<input  id="number" class="sub-input-units save-error input-units-3 " 
+		 														data-bind="ntsNumberEditor: { 
+		 												 		value: value,
+																constraint: constraint,
+																option: option,
+																enable: enable,
+																readonly: readonly
+																immediate: false},
+																attr: { NameID: itemName }" /> 
+													</div>
+												</com:ko-if>
+												
+												<com:ko-if bind=" ((numbericItem.numberDecimalPart !== 0)) ">
+													<div data-bind="with: numbereditor">
+		 												<input id="number"  class="sub-input-units save-error input-units-3 " 
+		 														data-bind="ntsNumberEditor: { 
+		 														value: value,
+																constraint: constraint,
+																option: option,
+																enable: enable,
+																readonly: readonly,
+																immediate: false},
+																attr: { NameID: itemName }" /> 
+													</div>
+												</com:ko-if>																						
+											</com:ko-if>
 										</td>
- 									</com:ko-if>   
-									<com:ko-if bind="(selectedRuleCode() === 0 || selectedRuleCode() === 1 || selectedRuleCode() === 3 
-	 										|| selectedRuleCode() === 4 || selectedRuleCode() === 5 || selectedRuleCode() === 6 
-	 										|| selectedRuleCode() === 7 || selectedRuleCode() === 8 || selectedRuleCode() === undefined)"> 
- 										<td id="notdata" colspan="2" >
- 										<span></span>
- 										</td>
- 										</com:ko-if> 
+ 									</com:ko-if> 
 
 									</tbody>
 								</table>
