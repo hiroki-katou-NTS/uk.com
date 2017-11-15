@@ -294,40 +294,32 @@
 											</com:ko-if>
 											
 											<!-- number  --> 
-											<com:ko-if bind="(dataType() === 2)">	
-												
-												<com:ko-if bind=" ((numbericItem.numberDecimalPart !== 0)) ">
-													<div data-bind="with: numbereditor">
-		 												<input id="number"  class="sub-input-units save-error input-units-3 " 
-		 														data-bind="ntsNumberEditor: { 
-		 														value: value,
-																constraint: constraint,
-																option: option,
-																enable: enable,
-																readonly: readonly,
-																immediate: false},
-																attr: { NameID: itemName }" /> 
-													</div>
-												</com:ko-if>
+											<com:ko-if bind="(dataType() === 2)">
+											
+											<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
+												<div data-bind="with: numbereditor">
+ 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+ 												 		value: value,
+														constraint: constraint,
+														option: option,
+														enable: enable,
+														readonly: readonly,
+														immediate: false}" /> 
+												</div>
 											</com:ko-if>
 											
-											<!-- <com:ko-if bind="(dataType() === 2)">																								
-												<com:ko-if bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart === 0)) ">
-													<div data-bind="with: numbereditor">
-		 												<input  id="number" class="sub-input-units save-error input-units-3 " 
-		 														data-bind="ntsNumberEditor: { 
-		 												 		value: value,
-																constraint: constraint,
-																option: option,
-																enable: enable,
-																readonly: readonly
-																immediate: false},
-																attr: { NameID: itemName }" /> 
-													</div>
-												</com:ko-if>
-											</com:ko-if>
-												 -->
-																					
+											<com:ko-if bind=" ((numbericItem.numberDecimalPart !== 0)) ">
+												<div data-bind="with: numbereditor">
+ 												<input class="sub-input-units save-error input-units-3 " id="number" data-bind="ntsNumberEditor: { 
+ 														value: value,
+														constraint: constraint,
+														option: option,
+														enable: enable,
+														readonly: readonly,
+														immediate: false}" /> 
+												</div>
+											</com:ko-if>											
+											</com:ko-if>						
 											
 										</td>
  									</com:ko-if> 
