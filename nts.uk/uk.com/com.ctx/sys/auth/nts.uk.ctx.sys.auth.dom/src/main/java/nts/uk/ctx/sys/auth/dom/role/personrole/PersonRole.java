@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.role;
+package nts.uk.ctx.sys.auth.dom.role.personrole;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

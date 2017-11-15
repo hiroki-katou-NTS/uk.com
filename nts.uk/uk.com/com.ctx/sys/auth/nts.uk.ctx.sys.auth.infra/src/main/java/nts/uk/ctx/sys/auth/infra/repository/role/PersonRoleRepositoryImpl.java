@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.auth.dom.role.PersonRole;
-import nts.uk.ctx.sys.auth.dom.role.PersonRoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
 
 @Stateless

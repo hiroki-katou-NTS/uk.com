@@ -6,7 +6,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 @Data
-public class PersonInfoRole {
+public class PersonInformationRole {
 
 	/** The role id. */
 	// Id

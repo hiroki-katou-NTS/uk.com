@@ -10,23 +10,23 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.auth.dom.role.PersonRole;
-import nts.uk.ctx.sys.auth.dom.role.PersonRoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class PersonInforRoleFinder {
+public class PersonInformationRoleFinder {
 	@Inject
 	private RoleRepository roleRepo;
 
 	@Inject
 	private PersonRoleRepository personRoleRepo;
 
-	public List<PersonInfoRole> find() {
-		List<PersonInfoRole> result = new ArrayList<PersonInfoRole>();
+	public List<PersonInformationRole> find() {
+		List<PersonInformationRole> result = new ArrayList<PersonInformationRole>();
 		
 		String companyId = AppContexts.user().companyId();
 		// get domain role
@@ -34,7 +34,7 @@ public class PersonInforRoleFinder {
 		if (roles !=null && !roles.isEmpty()) {
 			List<String> roleIds = roles.stream().map(x ->x.getRoleId()).collect(Collectors.toList());
 			Map<String, PersonRole> mapPerson = personRoleRepo.find(roleIds).stream().collect(Collectors.toMap(PersonRole::getRoleId,  Function.identity()));
-			PersonInfoRole personInfoRole = new PersonInfoRole();
+			PersonInformationRole personInfoRole = new PersonInformationRole();
 			roles.forEach(role ->{
 				personInfoRole.setRoleId(role.getRoleId());
 				personInfoRole.setAssignAtr(role.getAssignAtr());
