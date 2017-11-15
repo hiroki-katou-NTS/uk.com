@@ -66,7 +66,15 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode("").done(function(data) {
-                self.ListTypeReason(data.listApplicationReasonDto);
+                self.ListTypeReason.removeAll();
+                _.forEach(data.listApplicationReasonDto, data => {
+                    let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
+                    self.ListTypeReason.push(reasonTmp); 
+                    if(data.defaultFlg == 1){
+                        self.selectedCode(data.reasonID);
+                    }          
+                });
+                
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });

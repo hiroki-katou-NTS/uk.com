@@ -373,7 +373,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         if(reflectPlanState == 0 || reflectPlanState == 1){
                             self.displayButtonControl().enableUpdate(true);
                             self.displayButtonControl().enableDelete(true); 
-                            self.displayButtonControl().displayReturnReasonPanel(true);        
+                            //self.displayButtonControl().displayReturnReasonPanel(true);        
                         } else if(reflectPlanState == 4){
                             self.displayButtonControl().enableCancel(true);
                         }

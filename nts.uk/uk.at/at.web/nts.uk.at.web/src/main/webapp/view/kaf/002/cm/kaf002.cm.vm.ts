@@ -41,11 +41,12 @@ module nts.uk.at.view.kaf002.cm {
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                 self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);
                 self.inputReasons.removeAll();
-                let inputReasonParams = [];
                 _.forEach(commonSet.appStampSetDto.applicationReasonDtos, o => {
-                    inputReasonParams.push(new vmbase.InputReason(o.reasonID, o.reasonTemp));           
+                    self.inputReasons.push(new vmbase.InputReason(o.reasonID, o.reasonTemp)); 
+                    if(o.defaultFlg == 1){
+                        self.currentReason(o.reasonID);
+                    }          
                 });
-                self.inputReasons(inputReasonParams);
                 self.topComment().text(commonSet.appStampSetDto.stampRequestSettingDto.topComment);
                 self.topComment().color(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontColor);
                 self.topComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontWeight);
@@ -63,7 +64,7 @@ module nts.uk.at.view.kaf002.cm {
                         default: break;
                     }     
                 });
-                if(self.screenMode()==0){
+                if(self.screenMode()==0){//detail screen
                     if(!nts.uk.util.isNullOrUndefined(appStampData)) {
                         self.application(new vmbase.Application(
                             appStampData.appID,
@@ -78,14 +79,9 @@ module nts.uk.at.view.kaf002.cm {
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
                     self.employeeName(appStampData.employeeName);
-                    self.currentReason(self.application().titleReason());
-                } else {
+                } else {//new screen
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
-                    if(self.inputReasonsDisp() == 1 && self.inputReasons().length != 0){
-                        self.currentReason(_.first(self.inputReasons()).id);
-                        self.currentReasonText(_.first(self.inputReasons()).content);
-                    }
                 }
                 _.forEach(approvalList, appPhase => {
                     _.forEach(appPhase.approverDtos, appFrame => {

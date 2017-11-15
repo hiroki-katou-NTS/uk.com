@@ -44,7 +44,7 @@
 						</div>
 					</com:ko-if>
 					<div class="valign-center control-group row4 004e-div"
-						style="margin-top: 15px;margin-left: 0px;">
+						style="margin-top: 15px;margin-left: 20px;">
 						<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 						<input style = "margin-left: 35px;"
 							data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time', name:'#[KAF004_42]'}, visible: isVisibleTimeF" />
@@ -55,7 +55,7 @@
 							data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time', name:'#[KAF004_43]'}, visible: isVisibleTimeF" />
 						<label data-bind="ntsFormLabel: {text: txtearlyTime1}; visible: isLblTimeF" style="margin-right: 35px; margin-left: 30px">1:00</label>
 					</div>
-					<div class="valign-center control-group row4 004e-div" style="margin-left: 0px;" data-bind="if: displayOrder() != 0">
+					<div class="valign-center control-group row4 004e-div" style="margin-left: 20px;" data-bind="if: displayOrder() != 0">
 						<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 						<input class="col1"
 							data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time', name:'#[KAF004_50]'}, visible: isVisibleTimeF" />

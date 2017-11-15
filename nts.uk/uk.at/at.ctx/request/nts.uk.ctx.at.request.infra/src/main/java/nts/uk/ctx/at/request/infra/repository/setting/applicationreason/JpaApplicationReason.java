@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.setting.applicationreason;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 		if(CollectionUtil.isEmpty(dataTmp)) {
 			firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, "選択してください", DefaultFlg.DEFAULT);
 		}
-		
+		Collections.sort(data, Comparator.comparing(ApplicationReason :: getDispOrder));
 		data.add(0, firstData);
 		return data;
 	}

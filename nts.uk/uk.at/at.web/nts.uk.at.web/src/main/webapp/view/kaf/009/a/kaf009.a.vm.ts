@@ -421,12 +421,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         setReasonControl(data: Array<common.ReasonDto>) {
             var self = this;
             let comboSource: Array<common.ComboReason> = [];
-            // comboSource.push(new common.ComboReason(0,'選択してください',""));
             _.forEach(data, function(value: common.ReasonDto) {
-                comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                if(value.defaultFlg === 1){
+                    self.selectedReason(value.reasonID);
+                }
             });
-            self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
-            self.selectedReason(_.first(self.reasonCombo()).reasonId);
         }
 
         /**

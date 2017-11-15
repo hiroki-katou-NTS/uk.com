@@ -78,7 +78,7 @@ public class LateOrLeaveEarlyFinder {
 		
 		Optional<WorkManagementMultiple> workManagementMultiple  = workManagementMultipleRepository.findByCode(companyID);
 		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
-																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp()))
+																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp(), r.getDefaultFlg().value))
 																.collect(Collectors.toList());
 		LateOrLeaveEarlyDto lateOrLeaveEarlyDto = null;
 		if(Strings.isNotEmpty(appID)) {

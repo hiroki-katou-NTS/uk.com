@@ -100,7 +100,7 @@
 			
 			<div id="contents-area">
 				<!-- row1 -->
-				<div id="message-area" data-bind =  "visible : outputMessageDeadline() != null"> 
+				<div id="message-area" data-bind =  "visible: outputMessageDeadline() != null"> 
 					<table >
 						<tr >
 							<!-- A1_1 -->
@@ -115,19 +115,19 @@
 					</table>
 				</div>
 				<!-- row2 -->
-				<div id="message-area" style="margin-top: 16px;" data-bind="css: { displayControlFalse: !displayButtonControl().displayReturnReasonPanel() }">
+				<div id="message-area" style="margin-top: 16px;" data-bind="visible: displayButtonControl().displayReturnReasonPanel()">
 					<!-- B3_1 -->
-					<div class="message-td" data-bind="text : reasonApp"></div>
+					<div class="message-td" data-bind="text : reasonApp, visible: displayButtonControl().displayReturnReasonPanel()"></div>
 				</div>
 				<!-- row 2 -->
-				<div style=" margin-top: 16px;margin-left: 39px;float: left;" data-bind="css: { displayControlFalse: !displayButtonControl().displayReturnReason() }">
+				<div style=" margin-top: 16px;margin-left: 39px;float: left;" data-bind="visible: displayButtonControl().displayReturnReason() ">
 					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_28')}</div>
 				</div>	
 				<div style=" margin-top: 16px;">
 					<textarea style="width: 628px;height: 50px;margin-left: 60px" data-bind="ntsMultilineEditor: { value: reasonToApprover, 
 																								constraint: 'ResidenceCode',
 																								enable: displayButtonControl().enableReturnReason},
-																			css: { displayControlFalse: !displayButtonControl().displayReturnReason() }" />
+																								visible: displayButtonControl().displayReturnReason() " />
 					
 				</div>
 				
@@ -141,19 +141,11 @@
 				<com:ko-if bind="appType() == 4">
 					<ui:include src="../../009/b/index.xhtml" />
 				</com:ko-if>
-<!--  				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
-				<!-- <div data-bind="with: screenModel.cm">
-					<ui:include src="../../002/cm/index.xhtml" />
-				</div>--> 
-				
-				<!-- <div class="divKaf009" data-bind="with: screenModel9">
-					<ui:include src="../../009/b/index.xhtml"></ui:include>
-				</div> -->
-				<!-- end body -->
+
 				
 				<!-- Footer -->
 				<div style="clear:both"></div>
-				<div id="label-1" style="margin-left: 39px;">
+				<div id="label-1" style="margin-left: 39px;margin-right: 55px;">
 					<!-- B6 -->
 					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 					

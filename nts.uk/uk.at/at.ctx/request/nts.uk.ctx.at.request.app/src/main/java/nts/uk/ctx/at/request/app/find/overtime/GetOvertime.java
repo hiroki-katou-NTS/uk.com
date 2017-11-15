@@ -308,7 +308,7 @@ public class GetOvertime {
 						List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
 						for (ApplicationReason applicationReason : applicationReasons) {
 							ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-									applicationReason.getReasonTemp());
+									applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
 							applicationReasonDtos.add(applicationReasonDto);
 						}
 						result.setApplicationReasonDtos(applicationReasonDtos);
