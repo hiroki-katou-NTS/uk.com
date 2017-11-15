@@ -239,6 +239,7 @@ public class RoleSet extends AggregateRoot {
 	 * @return
 	 */
 	private boolean isGrantedForMember() {
+		/**TODO -> check from CAS014 */
 		return false;
 	}
 	
@@ -247,6 +248,7 @@ public class RoleSet extends AggregateRoot {
 	 * @return
 	 */
 	private boolean isGrantedForPosition() {
+		/**TODO -> check from CAS014 */
 		return false;
 	}
 }

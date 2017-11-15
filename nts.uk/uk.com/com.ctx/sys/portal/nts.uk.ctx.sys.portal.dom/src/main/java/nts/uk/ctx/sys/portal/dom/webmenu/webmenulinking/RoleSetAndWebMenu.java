@@ -15,14 +15,14 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 @Getter
 public class RoleSetAndWebMenu extends AggregateRoot {
 
-	/** �?社ID */
-	private String companyId;
+	/** ロールセットコード. */
+	private RoleSetCode roleSetCd;
 
 	/** メニューコードリスト */
 	private WebMenuCode webMenuCd;
 
-	/** ロールセットコード. */
-	private RoleSetCode roleSetCd;
+	/** 会社ID */
+	private String companyId;
 
 	/**
 	 * Instantiates a new default role set.
@@ -31,15 +31,10 @@ public class RoleSetAndWebMenu extends AggregateRoot {
 	 * @param webMenuCd
 	 * @param roleSetCd
 	 */
-	public RoleSetAndWebMenu(String companyId, String webMenuCd, String roleSetCd) {
+	public RoleSetAndWebMenu(String roleSetCd, String webMenuCd, String companyId) {
 		super();
-		this.companyId = companyId;
-		this.webMenuCd = new WebMenuCode(webMenuCd);
 		this.roleSetCd = new RoleSetCode(roleSetCd);
-	}
-	
-	@Override
-	public void validate() {
-		super.validate();
+		this.webMenuCd = new WebMenuCode(webMenuCd);
+		this.companyId = companyId;
 	}
 }

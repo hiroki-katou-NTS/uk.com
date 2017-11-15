@@ -31,9 +31,9 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 			+ " rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 	
 	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu toDomain(SptmtRoleSetWebMenu entity) {
-		return new RoleSetAndWebMenu(entity.roleSetWebMenuPK.companyId
+		return new RoleSetAndWebMenu(entity.roleSetWebMenuPK.roleSetCd
 				, entity.roleSetWebMenuPK.webMenuCd
-				, entity.roleSetWebMenuPK.roleSetCd
+				, entity.roleSetWebMenuPK.companyId
 				);
 	}
 
@@ -91,8 +91,11 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 	}
 
 	@Override
-	public void delete(String companyId, String webMenuCd, String roleSetCd) {
-		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, webMenuCd, roleSetCd);
+	public void delete(RoleSetAndWebMenu domain) {
+		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(
+				domain.getCompanyId()
+				, domain.getWebMenuCd().v()
+				, domain.getRoleSetCd().v());
 		this.commandProxy().remove(SptmtRoleSetWebMenu.class, pk);
 	}
 

@@ -45,6 +45,7 @@ public interface DefaultRoleSetRepository {
 	 * Delete the Default Role Set
 	 * @param companyId
 	 */
-	
 	void delete(String companyId);
+	
+	void addOrUpdate(DefaultRoleSet domain);
 }
