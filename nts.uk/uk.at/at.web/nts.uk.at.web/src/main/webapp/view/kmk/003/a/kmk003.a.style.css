@@ -8,12 +8,13 @@
 
 .screen-content-left {
 	width: 300px;
-	padding: 5px;
+	padding: 10px;
+	vertical-align: top;
 }
 
 .screen-content-right {
 	width: 900px;
-	padding: 5px;
+	padding: 10px;
 }
 
 .td-cell {

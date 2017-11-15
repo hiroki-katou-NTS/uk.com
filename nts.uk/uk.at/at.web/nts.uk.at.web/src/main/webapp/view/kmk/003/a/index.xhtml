@@ -8,6 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
+			<com:stylefile path="../a1/kmk003.a1.style.css" />
+			
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
 			<com:scriptfile path="kmk003.a.service.js" />
@@ -197,13 +200,56 @@
 								</tr>
 								<!-- panels -->
 								<tr>
-									<td class="td-cell">
+									<td colspan="10" class="td-cell">
 										<div id="tab-panel"
-											data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,direction: 'vertical' }">
-											<div class="tab-content-1">
+											data-bind="ntsTabPanel: {width:300, dataSource: tabs, active: selectedTab,direction: 'vertical' }">
+											<div class="tab-a1">
+												<div
+													data-bind="ntsKMK003A1: {data: data, screenMode:tabMode, settingMethod:selectedSettingMethod}"></div>
+											</div>
+											<div class="tab-a2">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a3">
 												<span>Tab Content 1</span><br />
 											</div>
-											<div class="tab-content-2">
+											<div class="tab-a4">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a5">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a6">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a7">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a8">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a9">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a10">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a11">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a12">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a13">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a14">
+												<span>Tab Content 2</span><br />
+											</div>
+											<div class="tab-a15">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a16">
 												<span>Tab Content 2</span><br />
 											</div>
 										</div>
@@ -213,6 +259,7 @@
 						</td>
 					</tr>
 				</table>
+
 
 			</div>
 		</ui:define>

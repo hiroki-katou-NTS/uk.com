@@ -45,11 +45,13 @@ module nts.uk.at.view.kmk003.a {
             //use half day
             useHalfDayOptions: KnockoutObservableArray<any>;
             useHalfDay: KnockoutObservable<string>;
-            
+
             //tabs
-            tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+            tabs: KnockoutObservableArray<any>;
             selectedTab: KnockoutObservable<string>;
-            
+
+            //data
+            data: any;
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
@@ -76,67 +78,35 @@ module nts.uk.at.view.kmk003.a {
                 self.isUpdateMode = ko.observable(true);
 
                 self.siftCode = ko.observable('');
-                self.siftCodeOption = new nts.uk.ui.option.TextEditorOption({
-                    width: "60",
-                    textmode: "text",
-                    textalign: "left",
-                    autofill: true,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                });
+                self.siftCodeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "60"
+                }));
                 self.siftName = ko.observable('');
-                self.siftNameOption = new nts.uk.ui.option.TextEditorOption({
-                    width: "150",
-                    textmode: "text",
-                    textalign: "left",
-                    autofill: true,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                });
+                self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "150"
+                }));
                 self.siftShortName = ko.observable('');
-                self.siftShortNameOption = new nts.uk.ui.option.TextEditorOption({
-                    width: "60",
-                    textmode: "text",
-                    textalign: "left",
-                    autofill: true,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                });
+                self.siftShortNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "60"
+                }));
 
                 self.siftSymbolName = ko.observable('');
-                self.siftSymbolNameOption = new nts.uk.ui.option.TextEditorOption({
-                    width: "50",
-                    textmode: "text",
-                    textalign: "left",
-                    autofill: true,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                });
+                self.siftSymbolNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "50"
+                }));
 
                 //color
                 self.pickColor = ko.observable('');
 
                 self.siftRemark = ko.observable('');
-                self.siftRemarkOption = new nts.uk.ui.option.TextEditorOption({
-                    width: "200",
-                    height: "50",
-                    textmode: "text",
-                    textalign: "left",
-                    autofill: true,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                });
+                self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "200"
+                }));
 
                 self.memo = ko.observable('');
-                self.memoOption = new nts.uk.ui.option.TextEditorOption({
-                    width: "200",
-                    height: "50",
-                    textmode: "text",
-                    textalign: "left",
-                    autofill: true,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                });
+                self.memoOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+                    width: "200"
+                }));
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
@@ -154,13 +124,30 @@ module nts.uk.at.view.kmk003.a {
                 ]);
 
                 self.useHalfDay = ko.observable("1");
-                
+
                 //
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: nts.uk.resource.getText("KMK003_17"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: nts.uk.resource.getText("KMK003_18"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-1', title: nts.uk.resource.getText("KMK003_17"), content: '.tab-a1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: nts.uk.resource.getText("KMK003_18"), content: '.tab-a2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-3', title: nts.uk.resource.getText("KMK003_89"), content: '.tab-a3', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-4', title: nts.uk.resource.getText("KMK003_19"), content: '.tab-a4', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-5', title: nts.uk.resource.getText("KMK003_20"), content: '.tab-a5', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-6', title: nts.uk.resource.getText("KMK003_90"), content: '.tab-a6', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-7', title: nts.uk.resource.getText("KMK003_21"), content: '.tab-a7', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-8', title: nts.uk.resource.getText("KMK003_200"), content: '.tab-a8', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-9', title: nts.uk.resource.getText("KMK003_23"), content: '.tab-a9', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-10', title: nts.uk.resource.getText("KMK003_24"), content: '.tab-a10', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-11', title: nts.uk.resource.getText("KMK003_25"), content: '.tab-a11', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-12', title: nts.uk.resource.getText("KMK003_26"), content: '.tab-a12', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-13', title: nts.uk.resource.getText("KMK003_27"), content: '.tab-a13', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-14', title: nts.uk.resource.getText("KMK003_28"), content: '.tab-a14', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-15', title: nts.uk.resource.getText("KMK003_29"), content: '.tab-a15', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-16', title: nts.uk.resource.getText("KMK003_30"), content: '.tab-a16', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
+
+                //data get from service
+                self.data = { test: "abc" };
             }
 
             /**
@@ -170,6 +157,7 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                //                service.
                 // set ntsFixedTable style
                 dfd.resolve();
                 return dfd.promise();
