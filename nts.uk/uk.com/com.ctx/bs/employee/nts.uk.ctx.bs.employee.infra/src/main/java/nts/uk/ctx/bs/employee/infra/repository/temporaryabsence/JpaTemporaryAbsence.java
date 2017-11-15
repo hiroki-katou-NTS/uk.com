@@ -21,7 +21,7 @@ public class JpaTemporaryAbsence extends JpaRepository implements TemporaryAbsen
 
 	private static final String SELECT_NO_WHERE = "SELECT c.bsymtTemporaryAbsencePK.leaveHolidayId,"
 			+ " c.sid, c.leaveHolidayAtr, c.histId, h.strD, h.endD, c.reason, c.familyMemberId,"
-			+ " c.birthday, c.multiple FROM BsymtTemporaryAbsence "
+			+ " c.birthday, c.multiple FROM BsymtTemporaryAbsence c "
 			+ " JOIN BsymtTempAbsenceHist h on c.histId = h.historyId";
 	
 	private static final String SELECT_BY_SID_AND_REFERENCEDATE = SELECT_NO_WHERE
