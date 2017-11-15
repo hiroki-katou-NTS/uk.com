@@ -1,4 +1,4 @@
-package entity.employeeinfo.jobentryhistory;
+package nts.uk.ctx.bs.employee.infra.entity.employee.jobentryhistory;
 
 import java.io.Serializable;
 
