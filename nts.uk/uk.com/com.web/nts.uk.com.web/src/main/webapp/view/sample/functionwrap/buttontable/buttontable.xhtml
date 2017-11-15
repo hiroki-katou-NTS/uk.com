@@ -24,6 +24,10 @@
 						<h1>Image Editor</h1>
 						<div class="cf">
 							<div id="test2"></div>
+							
+							<div id="test" data-bind="ntsTableButton: {source: source, row: 5, column: 6, contextMenu: contextMenu}"></div>
+							
+							<button data-bind="click: clear">Clear Source</button>
 						</div>
 						<article class="cf">
 							<div class="tabs">
@@ -34,7 +38,9 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="test" data-bind="ntsImageEditor: {editable: true}"></div>]]></pre>
+<pre><![CDATA[<div id="test2"></div>
+							
+<div id="test" data-bind="ntsTableButton: {source: source, row: 5, column: 6, contextMenu: contextMenu}"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -47,84 +53,162 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>editable</td>
-												<td>
-													<b>Type:</b> boolean<br/>
-													Image can croppable if editable = true.
-												</td>
-											</tr>
-											<tr>
-												<td>zoomble</td>
-												<td>
-													<b>Type:</b> boolean<br/>
-													Image can zoomble with mouse wheel if zoomble = true.
-												</td>
-											</tr>
-											<tr>
-												<td>width</td>
-												<td>
-													<b>Type:</b> number<br/>
-													Set width for image preview area.
-												</td>
-											</tr>
-											<tr>
-												<td>height</td>
-												<td>
-													<b>Type:</b> number<br/>
-													Set height for image preview area.
-												</td>
-											</tr>
-											<tr>
-												<td>freeResize</td>
-												<td>
-													<b>Type:</b> boolean<br/>
-													Image can crop free.
-												</td>
-											</tr>
-											<tr>
-												<td>resizeRatio</td>
-												<td>
-													<b>Type:</b> number<br/>
-													if resizeRatio is false, use this properties for resize ratio.<br/>
-													Default: 1 (with ratio as original image).
-												</td>
-											</tr>
-										</tbody>
+															<tr>
+																<td>mode<br/><i>(optional)</i></td>
+																<td>
+																	<b>Type:</b> string<br/>
+																	<b>Default:</b> undefined<br/>
+																	Set mode for table button (master or normal)
+																</td>
+															</tr>
+															<tr>
+																<td>click<br/><i>(optional)</i></td>
+																<td>
+																	<b>Type:</b> Function<br/>
+																	<b>Default:</b> undefined<br/>
+																	action when a button is clicked. Return type of function is cell data value (Can view at below).
+																</td>
+															</tr>
+															<tr>
+																<td>row<br/></td>
+																<td>
+																	<b>Type:</b> number<br/>
+																	Set row for table
+																</td>
+															</tr>
+															<tr>
+																<td>column<br/></td>
+																<td>
+																	<b>Type:</b> number<br/>
+																	Set column for table
+																</td>
+															</tr>
+															<tr>
+																<td>source<br/><i></i></td>
+																<td>
+																	<b>Type:</b> KnockoutObservableArray&lt;Array&lt;Object: {text: string, tooltip: string}&gt;&gt;<br/>
+																	Source for table. Can set [] when init.
+																</td>
+															</tr>
+															<tr>
+																<td>width<br/><i>(optional)</i></td>
+																<td>
+																	<b>Type:</b> number<br/>
+																	Set width for the Table
+																</td>
+															</tr>
+															<tr>
+																<td>disableMenuOnDataNotSet<br/><i>(optional)</i></td>
+																<td>
+																	<b>Type:</b> Array<br/>
+																	Disable context menu when right click when cell have not data.
+																</td>
+															</tr>
+															<tr>
+																<td>contextMenu<br/><i></i></td>
+																<td>
+																	<b>Type:</b> Array<br/>
+																	Context menu when right click 
+																	<div class="catalog-accordion">
+																		<a href="#contextmenuoption">Context Menu Item</a>
+																		<table class="table">
+																			<colgroup>
+																				<col width="150px" />
+																			</colgroup>
+																			<thead>
+																				<tr>
+																					<th><h4>Name</h4></th>
+																					<th><h4>Description</h4></th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<tr>
+																					<td>id</td>
+																					<td>
+																						<b>Type:</b> string<br/>
+																						Id for menu item
+																					</td>
+																				</tr>
+																				<tr>
+																					<td>text<br/></td>
+																					<td>
+																						<b>Type:</b> string<br/>
+																						<b>Default:</b> ""<br/>
+																						Text for context menu item.
+																					</td>
+																				</tr>
+																				<tr>
+																					<td>action<br/></td>
+																					<td>
+																						<b>Type:</b> Function<br/>
+																						action when menu is selected. Return type of function is cell data value.
+																					</td>
+																				</tr>
+																				<tr>
+																					<td>style<br/></td>
+																					<td>
+																						<b>Type:</b> string<br/>
+																						style css for menu item
+																					</td>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</div>
+																</td>
+															</tr>
+														</tbody>
 									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
-        url: KnockoutObservable<string>;
-        uploaded: any
+    contextMenu: Array<any>;
+    source: KnockoutObservableArray<any>;
+    constructor(){  
+        let self = this;
         
-        constructor(){
-            this.url = ko.observable("");    
-        }
+        self.source = ko.observableArray([
+            [ {}, {}, {text: "test", tooltip: "test"}, {}],
+            [],
+            []
+            ]);
+        self.contextMenu = [
+                {id: "cut", text: "切り取り", action: self.openDialog, style: "icon icon-dot"},
+                {id: "copy", text: "名前を変更", action: self.openDialog, style: "icon icon-dot"},
+                {id: "delete", text: "削除", action: self.remove, style: "icon icon-close"}
+            ];
+        $("#test2").ntsButtonTable("init", {row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1,2], mode: "normal"});
+    }
+    
+    clear(){
+        let self = this;
+        self.source([]);    
+    }
+    
+    openDialog() {
+        let dfd = $.Deferred();
+        // Set parent value
+        nts.uk.ui.windows.setShared("parentValue", "test");
+        nts.uk.ui.windows.setShared("isTransistReturnData", false);
+        nts.uk.ui.windows.sub.modal("/view/sample/functionwrap/window/subwindow.xhtml").onClosed(() => {
+            // Get child value
+            var returnValue = nts.uk.ui.windows.getShared("childValue");
+            dfd.resolve({text: returnValue, tooltip: returnValue});
+        });
         
-        upload(){
-            var self = this;
-            nts.uk.ui.block.grayout();
-            $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
-                self.uploaded = data;
-                nts.uk.ui.block.clear()
-            });
-        }
-        getImage(){
-            if(!nts.uk.util.isNullOrUndefined(this.uploaded)){
-               $("#test").ntsImageEditor("selectByFileId", this.uploaded.id); 
-            }
-        }
-        show(){ 
-            if(!nts.uk.util.isNullOrEmpty(this.url().trim())){
-               $("#test").ntsImageEditor("showByUrl", this.url()); 
-            }
-        }
-        clear(){
-            $("#test").ntsImageEditor("clear");
-        }
-    }]]></pre>
+        return dfd.promise();
+    }
+    
+    remove() {
+        let dfd = $.Deferred();
+        
+        setTimeout(function(){
+            dfd.resolve(undefined);
+        }, 10);
+        
+        return dfd.promise();
+    }
+}]]></pre>
 								</div>
 								<div id="tabs-methods" class="cf">
 									<table>
@@ -137,26 +221,199 @@
 												<th><h3>Description</h3></th>
 											</tr>
 											<tr>
-												<th><h4>$("#test").ntsImageEditor("upload", {stereoType: "image"}).done( function(data){
-									                
-									            });</h4></th>
-												<th><h4>Upload Image to Server and when done will return a StoredFileInfo object for file information</h4></th>
+												<th><h4>$("#test2").ntsButtonTable("init", option);</h4></th>
+												<th><h4>Upload Image to Server and when done will return a StoredFileInfo object for file information</h4>
+													<div class="catalog-accordion">
+														<a href="#buttontableoption">Button Table Option</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>mode<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		<b>Default:</b> undefined<br/>
+																		Set mode for table button (master or normal)
+																	</td>
+																</tr>
+																<tr>
+																	<td>click<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> Function<br/>
+																		<b>Default:</b> undefined<br/>
+																		action when a button is clicked. Return type of function is cell data value (Can view at below).
+																	</td>
+																</tr>
+																<tr>
+																	<td>row<br/></td>
+																	<td>
+																		<b>Type:</b> number<br/>
+																		Set row for table
+																	</td>
+																</tr>
+																<tr>
+																	<td>column<br/></td>
+																	<td>
+																		<b>Type:</b> number<br/>
+																		Set column for table
+																	</td>
+																</tr>
+																<tr>
+																	<td>source<br/><i></i></td>
+																	<td>
+																		<b>Type:</b> Array&lt;Object: {text: string, tooltip: string}&gt;<br/>
+																		Source for table. Can set [] when init.
+																	</td>
+																</tr>
+																<tr>
+																	<td>width<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> number<br/>
+																		Set width for the Table
+																	</td>
+																</tr>
+																<tr>
+																	<td>disableMenuOnDataNotSet<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> Array<br/>
+																		Disable context menu when right click when cell have not data.
+																	</td>
+																</tr>
+																<tr>
+																	<td>contextMenu<br/><i></i></td>
+																	<td>
+																		<b>Type:</b> Array<br/>
+																		Context menu when right click 
+																		<div class="catalog-accordion">
+																			<a href="#contextmenuoption">Context Menu Item</a>
+																			<table class="table">
+																				<colgroup>
+																					<col width="150px" />
+																				</colgroup>
+																				<thead>
+																					<tr>
+																						<th><h4>Name</h4></th>
+																						<th><h4>Description</h4></th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					<tr>
+																						<td>id</td>
+																						<td>
+																							<b>Type:</b> string<br/>
+																							Id for menu item
+																						</td>
+																					</tr>
+																					<tr>
+																						<td>text<br/></td>
+																						<td>
+																							<b>Type:</b> string<br/>
+																							<b>Default:</b> ""<br/>
+																							Text for context menu item.
+																						</td>
+																					</tr>
+																					<tr>
+																						<td>action<br/></td>
+																						<td>
+																							<b>Type:</b> Function<br/>
+																							action when menu is selected. Return type of function is cell data value.
+																						</td>
+																					</tr>
+																					<tr>
+																						<td>style<br/></td>
+																						<td>
+																							<b>Type:</b> string<br/>
+																							style css for menu item
+																						</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</th>
 											</tr>
 											<tr>
-												<th><h4>$("#test").ntsImageEditor("selectByFileId", this.uploaded.id); </h4></th>
-												<th><h4>Show a image with a fileID which is uploaded</h4></th>
+												<th><h4>$("#test2").ntsButtonTable("dataSource", source?); </h4></th>
+												<th><h4>Get/ Set data source of button table</h4></th>
 											</tr>
 											<tr>
-												<th><h4>$("#test").ntsImageEditor("showByUrl", this.url()); </h4></th>
-												<th><h4>Show a image from a URL in internet</h4></th>
+												<th><h4>$("#test2").ntsButtonTable("column", column?); </h4></th>
+												<th><h4>Get/ Set column size of button table</h4></th>
 											</tr>
 											<tr>
-												<th><h4>$("#test").ntsImageEditor("clear");</h4></th>
-												<th><h4>For clear crop area is selected.</h4></th>
+												<th><h4>$("#test2").ntsButtonTable("row", row?); </h4></th>
+												<th><h4>Get/ Set row size of button table.</h4></th>
 											</tr>
 											<tr>
-												<th><h4>$("#test").ntsImageEditor("getImgStatus");</h4></th>
-												<th><h4>Get image status.</h4></th>
+												<th><h4>$("#test2").ntsButtonTable("cellAt", rowIndex, columnIndex); </h4></th>
+												<th><h4>Get cell with index.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test2").ntsButtonTable("setCellValue", rowIndex, columnIndex, data); </h4></th>
+												<th><h4>Set value for a cell.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test2").ntsButtonTable("getSelectedCells"); </h4></th>
+												<th><h4>Get selected cell.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test2").ntsButtonTable("setSelectedCell", rowIndex, columnIndex); </h4></th>
+												<th><h4>set selected cell at.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test2").ntsButtonTable("clearSelectedCellAt", rowIndex, columnIndex); </h4></th>
+												<th><h4>clear selected at a cell.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test2").ntsButtonTable("clearAllSelectedCells"); </h4></th>
+												<th><h4>clear all selected cells.</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test2").ntsButtonTable("getDataCells"); </h4></th>
+												<th><h4>Get data cell with index.</h4>
+													<div class="catalog-accordion">
+														<a href="#contextmenuoption">Data Object</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>text</td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		text for buttom
+																	</td>
+																</tr>
+																<tr>
+																	<td>tooltip<br/></td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		Tooltip for button.
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</th>
 											</tr>
 										</thead>
 									</table><br/>
@@ -168,11 +425,6 @@
 											<tr>
 												<th><h3>Events</h3></th>
 												<th><h3>Description</h3></th>
-											</tr>
-											<tr>
-												<th><h4>self.$root.bind("imgloaded", function(evt, query?: SrcChangeQuery) {
-												});</h4></th>
-												<th><h4>Event is fired when image is loaded</h4></th>
 											</tr>
 										</thead>
 									</table>

@@ -1,17 +1,26 @@
 __viewContext.ready(function () {
     class ScreenModel {
-        
+        contextMenu: Array<any>;
+        source: KnockoutObservableArray<any>;
         constructor(){  
             let self = this;
-            $("#test2").ntsButtonTable("init", {row: 3, column: 10, source: [
+            
+            self.source = ko.observableArray([
                 [ {}, {}, {text: "test", tooltip: "test"}, {}],
                 [],
                 []
-                ], contextMenu: [
+                ]);
+            self.contextMenu = [
                     {id: "cut", text: "切り取り", action: self.openDialog, style: "icon icon-dot"},
                     {id: "copy", text: "名前を変更", action: self.openDialog, style: "icon icon-dot"},
                     {id: "delete", text: "削除", action: self.remove, style: "icon icon-close"}
-                ], disableMenuOnDataNotSet: [1,2], mode: "normal"});
+                ];
+            $("#test2").ntsButtonTable("init", {row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1,2], mode: "normal"});
+        }
+        
+        clear(){
+            let self = this;
+            self.source([]);    
         }
         
         openDialog() {
