@@ -205,6 +205,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 divergenceReasonContent: divergenceReason
             };
             //登録前エラーチェック
+            service.checkBeforeRegister(overtime).done((data) => {                
+            }).fail((res) => {
+                if (res.optimisticLock == true) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
+                        location.reload();
+                    });
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+                }
+            });
             //TODO:           
             //登録処理を実行
             service.createOvertime(overtime).done((data) => {

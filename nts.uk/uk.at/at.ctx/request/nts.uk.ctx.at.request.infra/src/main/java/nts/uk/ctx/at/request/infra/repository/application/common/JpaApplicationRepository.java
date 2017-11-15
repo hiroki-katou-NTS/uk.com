@@ -32,7 +32,11 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ "AND c.applicationDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.applicationType = :applicationType ";
-
+	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
+			+ "AND c.applicationDate = :appDate "
+			+ "AND c.inputDate = :inputDate "
+			+ "AND c.applicationType = :applicationType "
+			+ "AND c.prePostAtr = :prePostAtr ";
 	/**
 	 * Get ALL application
 	 */
@@ -135,7 +139,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.getList(c -> c.toDomain());
 		return data;
 	}
-
+	
 	@Override
 	public Optional<Application> getApp(String applicantSID, GeneralDate appDate, int prePostAtr,
 			int appType) {
@@ -147,5 +151,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.getSingle(c -> c.toDomain());
 	}
 
-
+	@Override
+	public Optional<Application> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDate inputDate, ApplicationType appType, PrePostAtr prePostAtr){
+		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KafdtApplication.class)
+				.setParameter("companyID", companyId)
+				.setParameter("appDate", appDate)
+				.setParameter("inputDate", inputDate)
+				.setParameter("applicationType", appType)
+				.setParameter("prePostAtr", prePostAtr)				
+				.getSingle(c -> c.toDomain());
+	}
 }

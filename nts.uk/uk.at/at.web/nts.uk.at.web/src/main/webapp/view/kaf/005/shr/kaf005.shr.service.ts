@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf005.shr.service {
         createOvertime: "at/request/application/overtime/create",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
+        checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
     }
 
     /** Get TitleMenu */
@@ -18,5 +19,8 @@ module nts.uk.at.view.kaf005.shr.service {
     }
      export function updateOvertime(overtime:any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.updateOvertime ,overtime);
+    }
+    export function checkBeforeRegister(overtime:any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkBeforeRegister ,overtime);
     }
 }
