@@ -30,6 +30,10 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
 			+ " rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
 	
+	private static final String DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD = "DELETE FROM SacmtRoleSetWebMenu rw"
+			+ " WHERE rw.roleSetWebMenuPK.companyId = :companyId "
+			+ " WHERE rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
+	
 	private nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetAndWebMenu toDomain(SptmtRoleSetWebMenu entity) {
 		return new RoleSetAndWebMenu(entity.roleSetWebMenuPK.roleSetCd
 				, entity.roleSetWebMenuPK.webMenuCd
@@ -91,12 +95,18 @@ public class JpaRoleSetAndWebMenuRepository extends JpaRepository implements Rol
 	}
 
 	@Override
-	public void delete(RoleSetAndWebMenu domain) {
-		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(
-				domain.getCompanyId()
-				, domain.getWebMenuCd().v()
-				, domain.getRoleSetCd().v());
+	public void deleteAllByRoleCd(String companyId, String roleSetCd) {
+		this.getEntityManager().createQuery(DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD)
+		.setParameter("companyId", companyId)
+		.setParameter("roleSetCd", roleSetCd)
+		.executeUpdate();
+	}
+
+	@Override
+	public void deleteAllByRoleCd(String companyId, String roleSetCd, String webMenuCode) {
+		SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, roleSetCd, webMenuCode);
 		this.commandProxy().remove(SptmtRoleSetWebMenu.class, pk);
+		
 	}
 
 
