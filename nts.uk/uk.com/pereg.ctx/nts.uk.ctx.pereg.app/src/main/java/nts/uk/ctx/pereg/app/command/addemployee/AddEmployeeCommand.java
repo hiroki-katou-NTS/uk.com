@@ -1,10 +1,8 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
-import java.util.List;
-
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.command.employee.LayoutPersonInfoCommand;
+import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 @Data
 public class AddEmployeeCommand {
@@ -17,7 +15,7 @@ public class AddEmployeeCommand {
 	private String cardNo;
 	private String avatarId;
 	private int createType;
-
-	private List<LayoutPersonInfoCommand> itemDataList;
+	
+	private PeregInputContainer inputContainer;
 
 }

@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum NotUseAttribute {
 	
-	/* 計算済み*/
-	Calculated(0),
-	/* 未計算*/
-	No_Calculated(1);
+	/* しない区分 */
+	Not_use(0),
+	/* する区分 */
+	Use(1);
 	
 	public final int value;
 
