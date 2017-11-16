@@ -373,7 +373,7 @@ public class ScheduleCreatorExecutionCommandHandler
 						personalWorkScheduleCreSet);
 			} else {
 				// not exist data basic schedule
-				this.scheCreExeWorkTypeHandler.getWorktype(command, personalWorkScheduleCreSet);
+				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
 			}
 		}
 		return false;
@@ -411,10 +411,10 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			// check confirmedAtr of basic schedule
 			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
-				this.scheCreExeWorkTypeHandler.getWorktype(command, personalWorkScheduleCreSet);
+				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
 			}
 		} else {
-			this.scheCreExeWorkTypeHandler.getWorktype(command, personalWorkScheduleCreSet);
+			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
 		}
 	}
 	
