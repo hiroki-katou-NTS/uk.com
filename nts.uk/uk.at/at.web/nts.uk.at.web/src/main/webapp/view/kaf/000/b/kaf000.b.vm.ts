@@ -481,7 +481,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         /**
-         * btn before
+         * btn before　←
          */
         btnBefore() {
             let self = this;
@@ -499,7 +499,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
         
         /**
-         * btn after
+         * btn after　→
          */
         btnAfter() {
             let self = this;
@@ -517,7 +517,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
         
         /**
-         *  btn Approve
+         *  btn Approve　承認
          */
         btnApprove() {
             let self = this;
@@ -539,7 +539,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return dfd.promise();
         }
         /**
-        *  btn Deny
+        *  btn Deny　否認
         */
         btnDeny() {
             let self = this;
@@ -563,13 +563,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         /**
-        *  btn Release
+        *  btn Release //解除
         */
         btnRelease() {
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(),self.reasonToApprover()));
             let dfd = $.Deferred<any>();
-            nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function() {
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_248' }).ifYes(function() {
                 service.releaseApp(self.inputCommonData()).done(function() {
                     self.getAllDataByAppID(self.appID()).done(function(value){
                         
@@ -584,13 +584,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         /**
-         *  btn Registration
+         *  btn Registration　登録
          */
         btnRegistration() {
 
         }
         /**
-         *  btn References 
+         *  btn References 実績参照
          */
         btnReferences() {
             let self = this;
@@ -598,7 +598,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //nts.uk.request.jump("/view/kdl/004/a/index.xhtml");
         }
         /**
-         *  btn SendEmail 
+         *  btn SendEmail メール送信
          */
         btnSendEmail() {
             let self = this;
@@ -606,7 +606,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //nts.uk.request.jump("/view/kdl/030/a/index.xhtml");
         }
         /**
-         *  btn Delete 
+         *  btn Delete 削除
          */
         btnDelete() {
             let self = this;
